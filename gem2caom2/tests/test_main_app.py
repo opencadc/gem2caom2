@@ -83,14 +83,13 @@ TESTDATA_DIR = os.path.join(THIS_DIR, 'data')
 PLUGIN = os.path.join(os.path.dirname(THIS_DIR), '{}.py'.format(APPLICATION))
 
 
-# def pytest_generate_tests(metafunc):
-#     if os.path.exists(TESTDATA_DIR):
-#         files = [os.path.join(TESTDATA_DIR, name) for name in
-#                  os.listdir(TESTDATA_DIR) if name.endswith('header')]
-#         metafunc.parametrize('test_name', files)
+def pytest_generate_tests(metafunc):
+    if os.path.exists(TESTDATA_DIR):
+        files = [os.path.join(TESTDATA_DIR, name) for name in
+                 os.listdir(TESTDATA_DIR) if name.endswith('header')]
+        metafunc.parametrize('test_name', files)
 
 
-@pytest.mark.parametrize('test_name', [])
 def test_main_app(test_name):
     basename = os.path.basename(test_name)
     product_id = basename.split('.fits')[0]

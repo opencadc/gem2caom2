@@ -1,0 +1,589 @@
+SIMPLE  =                    T / file does conform to FITS standard             
+BITPIX  =                   16 / number of bits per data pixel                  
+NAXIS   =                    0 / number of data axes                            
+EXTEND  =                    T / FITS dataset may contain extensions            
+COMMENT   FITS (Flexible Image Transport System) format is defined in 'Astronomy
+COMMENT   and Astrophysics', volume 376, page 359; bibcode: 2001A&A...376..359H 
+INSTRUME= 'GMOS-N  '           / Instrument used to acquire data                
+OBJECT  = 'Dark    '           / Object Name                                    
+OBSTYPE = 'DARK    '           / Observation type                               
+OBSCLASS= 'dayCal  '           / Observe class                                  
+GEMPRGID= 'GN-CAL20150925'     / Gemini programme ID                            
+OBSID   = 'GN-CAL20150925-2'   / Observation ID / Data label                    
+DATALAB = 'GN-CAL20150925-2-007' / DHS data label                               
+OBSERVER= 'Roth    '           / Observer                                       
+OBSERVAT= 'Gemini-North'       / Name of telescope (Gemini-North|Gemini-South)  
+TELESCOP= 'Gemini-North'       / Gemini-North                                   
+PARALLAX=               -9999. / Parallax of Target                             
+RADVEL  =               -9999. / Heliocentric Radial Velocity                   
+EPOCH   =               -9999. / Epoch for Target coordinates                   
+EQUINOX =               -9999. / Equinox of coordinate system                   
+TRKEQUIN=               -9999. / Tracking equinox                               
+SSA     = 'ssa     '           / SSA                                            
+RA      =               -9999. / Right Ascension                                
+DEC     =               -9999. / Declination of Target                          
+ELEVATIO=               -9999. / Current Elevation                              
+AZIMUTH =               -9999. / Current Azimuth                                
+CRPA    =               -9999. / Current Cass Rotator Position Angle            
+HA      = 'No Value'           / Telescope hour angle                           
+LT      = 'No Value'           / Local time at start of observation             
+TRKFRAME= 'No Value'           / Tracking co-ordinate                           
+DECTRACK=               -9999. / Differential tracking rate Dec                 
+TRKEPOCH=               -9999. / Differential tracking reference epoch          
+RATRACK =               -9999. / Differential tracking rate RA                  
+FRAME   = 'No Value'           / Target coordinate system                       
+PMDEC   =               -9999. / Proper Motion in Declination                   
+PMRA    =               -9999. / Proper Motion in RA                            
+WAVELENG=               -9999. / Effective Target Wavelength                    
+RAWIQ   = 'UNKNOWN '           / Raw Image Quality                              
+RAWCC   = 'UNKNOWN '           / Raw Cloud Cover                                
+RAWWV   = 'UNKNOWN '           / Raw Water Vapour/Transparency                  
+RAWBG   = 'UNKNOWN '           / Raw Background                                 
+RAWPIREQ= 'UNKNOWN '           / PI Requirements Met                            
+RAWGEMQA= 'UNKNOWN '           / Gemini Quality Assessment                      
+CGUIDMOD= 'No Value'           / Carousel Mode                                  
+UT      = 'No Value'           / UT at observation start                        
+DATE    = '2015-09-29'         / UT Date of observation (YYYY-MM-DD)            
+M2BAFFLE= 'EXTENDED'           / Position of M2 baffle                          
+M2CENBAF= 'CLOSED  '           / Position of M2 central hole baffle             
+ST      = 'No Value'           / Sidereal time at the start of the exposure     
+XOFFSET =                   0. / Telescope offset in x in arcsec                
+YOFFSET =                   0. / Telescope offset in y in arcsec                
+POFFSET =                   0. / Telescope offset in p in arcsec                
+QOFFSET =                  -0. / Telescope offset in q in arcsec                
+RAOFFSET=                   0. / Telescope offset in RA in arcsec               
+DECOFFSE=                  -0. / Telescope offset in DEC in arcsec              
+RATRGOFF=                   0. / Target offset in RA in arcsec                  
+DECTRGOF=                   0. / Target offset in DEC in arcsec                 
+PA      =               -9999. / Sky Position Angle at start of exposure        
+IAA     =               -9999. / Instrument Alignment Angle                     
+SFRT2   =                  -0. / Science fold rotation angle (degrees)          
+SFTILT  =                 0.67 / Science fold tilt angle (degrees)              
+SFLINEAR=                  10. / Science fold linear position (mm)              
+AOFOLD  = 'undefined'          / AO Pick-Off Mirror Position                    
+PWFS1_ST= 'parked  '           / PWFS1 probe state (frozen,guiding,parked)      
+PWFS2_ST= 'parked  '           / PWFS2 probe state (frozen,guiding,parked)      
+OIWFS_ST= 'parked  '           / OIWFS probe state (frozen,guiding,parked)      
+AOWFS_ST= 'parked  '           / AOWFS probe state (frozen,guiding,parked)      
+SCIBAND =                -9999 / Science Ranking Band                           
+REQIQ   = 'Any     '           / Requested Image Quality                        
+REQCC   = 'Any     '           / Requested Cloud Cover                          
+REQBG   = 'Any     '           / Requested Background                           
+REQWV   = 'Any     '           / Requested Water Vapour                         
+NUMREQTW=                    0 / Number of Requested Timing Window REQTW entries
+HUMIDITY=                  18. / The Relative Humidity (fraction, 0..101).      
+TAMBIENT=                  8.2 / The ambient temp (C).                          
+TAMBIEN2=                46.76 / The ambient temp (F).                          
+PRESSURE=            462.92276 / The atmospheric pressure (mm Hg).              
+PRESSUR2=               61700. / The atmospheric pressure (Pa).                 
+DEWPOINT=                 -15. / The dew point (C).                             
+DEWPOIN2=                   5. / The dew point (F).                             
+WINDSPEE=                  4.1 / The wind speed (m/s).                          
+WINDSPE2=               9.1717 / The wind speed (mph).                          
+WINDDIRE=                  12. / The wind direction (degrees).                  
+INPORT  =                    5 / Number of ISS port where GMOS was located      
+GMOSCC  = 'GMOS-N (V7-2)'      / GMOS components controller s/w                 
+PREIMAGE=                    F / MOS pre-imaging                                
+CONID   = 'GMOS v8.0'          / Detector controller ID                         
+DETECTOR= 'GMOS + e2v DD CCD42-90' / Detector name                              
+DEWAR   = 'Cryostat A'         / Dewar name                                     
+DEW-TEMP=     -100.18779342723 / Dewar temperature (Celsius)                    
+DETSIZE = '[1:6144,1:4644]'    / Detector size                                  
+NCCDS   =                    3 / Number of CCD chips                            
+NAMPS   =                    2 / Number of amplifiers                           
+SHUTTER = 'CLOSED  '           / Shutter state during observation               
+AMPINTEG=                 5000 / Amplifier integration time                     
+OBSEPOCH=     2015.74385762585 / Epoch at start of exposure                     
+TIMESYS = 'UT1     '           / Time system used                               
+DATE-OBS= '2015-09-29'         / UT Date of observation (YYYY-MM-DD)            
+TIME-OBS= '22:39:59.8'         / Time of observation                            
+GMOSTHT = 'GOOD    '           / Shutter health                                 
+NSUBEXP =                    1 / Number of sub exposures                        
+UTSTART = '22:39:59.8'         / UT at observation start                        
+UTEND   = '23:09:59.8'         / UT at observation end                          
+EXPTIME =     1799.97864294052 / Exposure time in seconds                       
+ELAPSED =     1799.97864294052 / Elapsed observation time in seconds            
+DARKTIME=     1865.83610296249 / Dark current integration in seconds            
+MASKID  =                  -99 / Mask/IFU barcode                               
+MASKNAME= 'None    '           / Mask name                                      
+MASKTYP =                    0 / Mask/IFU type (0=none/-1=IFU/1=mask)           
+MASKLOC =                    1 / Mask/IFU location (-1=unknown/0=FP/1=cassette) 
+FILTER1 = 'open1-6 '           / Filter 1 name                                  
+FILTID1 =                   -1 / Filter 1 barcode                               
+FILTER2 = 'r_G0303 '           / Filter 2 name                                  
+FILTID2 =                   -1 / Filter 2 barcode                               
+GRATING = 'MIRROR  '           / Grating name                                   
+GRATID  =                   -1 / Grating barcode                                
+GRWLEN  =                   0. / Grating wavelength at slit (nm)                
+CENTWAVE=                   0. / Central wavelength (nm)                        
+GRORDER =                    0 / Grating order                                  
+GRTILT  =                   0. / Grating tilt angle (degrees)                   
+GRSTEP  =             6912.907 / Requested grating motor step position          
+DTAX    =                 84.4 / Detector translation X position (microns)      
+DTAY    =                79.52 / Detector translation Y position (microns)      
+DTAZ    =                2336. / Detector translation Z position (microns)      
+DTAZST  =                2336. / Focus at observation start (microns)           
+DTAZEN  =                2336. / Focus at observation end (microns)             
+DTAZME  =                   0. / Mean focus during observation (microns)        
+DTMODE  = 'MOVE    '           / Detector translation stage mode                
+ADCMODE = '        '           / ADC mode                                       
+GMOSDC  = 'GMOS DC '           / GMOS detector controller s/w                   
+DETTYPE = 'SDSU II e2v DD CCD42-90' / Detector array type                       
+DETID   = 'e2v 10031-23-05,10031-01-03,10031-18-04' / Chip IDs                  
+EXPOSURE=                1800. / Requested exposure time in seconds             
+ADCUSED =                    1 / ADC used? (0=yes/1=no)                         
+DETNROI =                    1 / No. regions of interest                        
+ADCENPST=                   0. / Start entrance prism angle of ADC              
+ADCENPEN=                   0. / End entrance prism angle of ADC                
+ADCENPME=                   0. / Mean entrance prism angle of ADC               
+ADCEXPST=                   0. / Start exit prism angle of ADC                  
+ADCEXPEN=                   0. / End exit prism angle of ADC                    
+ADCEXPME=                   0. / Mean exit prism angle of ADC                   
+ADCWLEN1=                   0. / Lower wavelength for ADC calculation           
+ADCWLEN2=                   0. / Upper wavelength for ADC calculation           
+DETRO1X =                    1 / ROI 1 X start                                  
+DETRO1XS=                 6144 / ROI 1 X size                                   
+DETRO1Y =                    1 / ROI 1 Y start                                  
+DETRO1YS=                 4608 / ROI 1 Y size                                   
+AIRMASS =               -9999. / Mean airmass for the observation               
+AMSTART =               -9999. / Airmass at start of exposure                   
+AMEND   =               -9999. / Airmass at end of exposure                     
+RELEASE = '2015-09-29'         / End of proprietary period YYYY-MM-DD           
+
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                   16 / number of bits per data pixel                  
+NAXIS   =                    2 / number of data axes                            
+NAXIS1  =                 1056 / length of data axis 1                          
+NAXIS2  =                 4608 / length of data axis 2                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+BZERO   =                32768 / offset data range to that of unsigned short    
+BSCALE  =                    1 / default scaling factor                         
+INHERIT =                    F / inherit the primary header                     
+DATATYPE= 'Intensity'          / Type of Data                                   
+CCDNAME = 'e2v DD ML2AR CCD42-90-1-F43 10031-23-05' / CCD chip name(s)          
+AMPNAME = 'e2v 10031-23-05, right' / Amplifier name(s)                          
+GAIN    =     2.03999996185303 / Amplifier gain                                 
+RDNOISE =                  3.5 / Readout noise                                  
+CCDSIZE = '[1:2048,1:4644]'    / CCD chip size                                  
+CCDSUM  = '1 1     '           / CCD sum                                        
+CCDSEC  = '[1025:2048,1:4608]' / CCD section(s)                                 
+DETSEC  = '[1025:2048,1:4608]' / Detector section(s)                            
+DATASEC = '[33:1056,1:4608]'   / Data section(s)                                
+BIASSEC = '[1:32,1:4608]'      / Bias section(s)                                
+FRMNAME = 'dhsFrame'           / Name assigned to a frame of data.              
+FRAMEID = '1       '           / Frame Id                                       
+DATATYP = '        '           / Type of data frame                             
+EXTVER  =                   -1 / Number assigned to a FITS extension.           
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                   16 / number of bits per data pixel                  
+NAXIS   =                    2 / number of data axes                            
+NAXIS1  =                 1056 / length of data axis 1                          
+NAXIS2  =                 4608 / length of data axis 2                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+BZERO   =                32768 / offset data range to that of unsigned short    
+BSCALE  =                    1 / default scaling factor                         
+INHERIT =                    F / inherit the primary header                     
+DATATYPE= 'Intensity'          / Type of Data                                   
+CCDNAME = 'e2v DD ML2AR CCD42-90-1-F43 10031-23-05' / CCD chip name(s)          
+AMPNAME = 'e2v 10031-23-05, left' / Amplifier name(s)                           
+GAIN    =     2.14000010490417 / Amplifier gain                                 
+RDNOISE =                  3.5 / Readout noise                                  
+CCDSIZE = '[1:2048,1:4644]'    / CCD chip size                                  
+CCDSUM  = '1 1     '           / CCD sum                                        
+CCDSEC  = '[1:1024,1:4608]'    / CCD section(s)                                 
+DETSEC  = '[1:1024,1:4608]'    / Detector section(s)                            
+DATASEC = '[1:1024,1:4608]'    / Data section(s)                                
+BIASSEC = '[1025:1056,1:4608]' / Bias section(s)                                
+FRMNAME = 'dhsFrame'           / Name assigned to a frame of data.              
+FRAMEID = '0       '           / Frame Id                                       
+DATATYP = '        '           / Type of data frame                             
+EXTVER  =                   -1 / Number assigned to a FITS extension.           
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                   16 / number of bits per data pixel                  
+NAXIS   =                    2 / number of data axes                            
+NAXIS1  =                 1056 / length of data axis 1                          
+NAXIS2  =                 4608 / length of data axis 2                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+BZERO   =                32768 / offset data range to that of unsigned short    
+BSCALE  =                    1 / default scaling factor                         
+INHERIT =                    F / inherit the primary header                     
+DATATYPE= 'Intensity'          / Type of Data                                   
+CCDNAME = 'e2v DD ML2AR CCD42-90-1-F43 10031-01-03' / CCD chip name(s)          
+AMPNAME = 'e2v 10031-01-03, right' / Amplifier name(s)                          
+GAIN    =      2.3199999332428 / Amplifier gain                                 
+RDNOISE =     3.29999995231628 / Readout noise                                  
+CCDSIZE = '[1:2048,1:4644]'    / CCD chip size                                  
+CCDSUM  = '1 1     '           / CCD sum                                        
+CCDSEC  = '[1025:2048,1:4608]' / CCD section(s)                                 
+DETSEC  = '[3073:4096,1:4608]' / Detector section(s)                            
+DATASEC = '[33:1056,1:4608]'   / Data section(s)                                
+BIASSEC = '[1:32,1:4608]'      / Bias section(s)                                
+FRMNAME = 'dhsFrame'           / Name assigned to a frame of data.              
+FRAMEID = '3       '           / Frame Id                                       
+DATATYP = '        '           / Type of data frame                             
+EXTVER  =                   -1 / Number assigned to a FITS extension.           
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                   16 / number of bits per data pixel                  
+NAXIS   =                    2 / number of data axes                            
+NAXIS1  =                 1056 / length of data axis 1                          
+NAXIS2  =                 4608 / length of data axis 2                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+BZERO   =                32768 / offset data range to that of unsigned short    
+BSCALE  =                    1 / default scaling factor                         
+INHERIT =                    F / inherit the primary header                     
+DATATYPE= 'Intensity'          / Type of Data                                   
+CCDNAME = 'e2v DD ML2AR CCD42-90-1-F43 10031-01-03' / CCD chip name(s)          
+AMPNAME = 'e2v 10031-01-03, left' / Amplifier name(s)                           
+GAIN    =     2.22000002861023 / Amplifier gain                                 
+RDNOISE =                  3.5 / Readout noise                                  
+CCDSIZE = '[1:2048,1:4644]'    / CCD chip size                                  
+CCDSUM  = '1 1     '           / CCD sum                                        
+CCDSEC  = '[1:1024,1:4608]'    / CCD section(s)                                 
+DETSEC  = '[2049:3072,1:4608]' / Detector section(s)                            
+DATASEC = '[1:1024,1:4608]'    / Data section(s)                                
+BIASSEC = '[1025:1056,1:4608]' / Bias section(s)                                
+FRMNAME = 'dhsFrame'           / Name assigned to a frame of data.              
+FRAMEID = '2       '           / Frame Id                                       
+DATATYP = '        '           / Type of data frame                             
+EXTVER  =                   -1 / Number assigned to a FITS extension.           
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                   16 / number of bits per data pixel                  
+NAXIS   =                    2 / number of data axes                            
+NAXIS1  =                 1056 / length of data axis 1                          
+NAXIS2  =                 4608 / length of data axis 2                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+BZERO   =                32768 / offset data range to that of unsigned short    
+BSCALE  =                    1 / default scaling factor                         
+INHERIT =                    F / inherit the primary header                     
+DATATYPE= 'Intensity'          / Type of Data                                   
+CCDNAME = 'e2v DD ML2AR CCD42-90-1-F43 10031-18-04' / CCD chip name(s)          
+AMPNAME = 'e2v 10031-18-04, left' / Amplifier name(s)                           
+GAIN    =     2.19000005722046 / Amplifier gain                                 
+RDNOISE =                   3. / Readout noise                                  
+CCDSIZE = '[1:2048,1:4644]'    / CCD chip size                                  
+CCDSUM  = '1 1     '           / CCD sum                                        
+CCDSEC  = '[1:1024,1:4608]'    / CCD section(s)                                 
+DETSEC  = '[4097:5120,1:4608]' / Detector section(s)                            
+DATASEC = '[1:1024,1:4608]'    / Data section(s)                                
+BIASSEC = '[1025:1056,1:4608]' / Bias section(s)                                
+FRMNAME = 'dhsFrame'           / Name assigned to a frame of data.              
+FRAMEID = '4       '           / Frame Id                                       
+DATATYP = '        '           / Type of data frame                             
+EXTVER  =                   -1 / Number assigned to a FITS extension.           
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                   16 / number of bits per data pixel                  
+NAXIS   =                    2 / number of data axes                            
+NAXIS1  =                 1056 / length of data axis 1                          
+NAXIS2  =                 4608 / length of data axis 2                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+BZERO   =                32768 / offset data range to that of unsigned short    
+BSCALE  =                    1 / default scaling factor                         
+INHERIT =                    F / inherit the primary header                     
+DATATYPE= 'Intensity'          / Type of Data                                   
+CCDNAME = 'e2v DD ML2AR CCD42-90-1-F43 10031-18-04' / CCD chip name(s)          
+AMPNAME = 'e2v 10031-18-04, right' / Amplifier name(s)                          
+GAIN    =      2.1800000667572 / Amplifier gain                                 
+RDNOISE =     3.29999995231628 / Readout noise                                  
+CCDSIZE = '[1:2048,1:4644]'    / CCD chip size                                  
+CCDSUM  = '1 1     '           / CCD sum                                        
+CCDSEC  = '[1025:2048,1:4608]' / CCD section(s)                                 
+DETSEC  = '[5121:6144,1:4608]' / Detector section(s)                            
+DATASEC = '[33:1056,1:4608]'   / Data section(s)                                
+BIASSEC = '[1:32,1:4608]'      / Bias section(s)                                
+FRMNAME = 'dhsFrame'           / Name assigned to a frame of data.              
+FRAMEID = '5       '           / Frame Id                                       
+DATATYP = '        '           / Type of data frame                             
+EXTVER  =                   -1 / Number assigned to a FITS extension.           
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                

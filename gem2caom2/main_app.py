@@ -107,7 +107,7 @@ def accumulate_bp(bp, uri):
     """Configure the telescope-specific ObsBlueprint at the CAOM model 
     Observation level."""
     logging.debug('Begin accumulate_bp.')
-    bp.configure_position_axes((1,2))
+    bp.configure_position_axes((1, 2))
     bp.configure_time_axis(3)
     bp.configure_energy_axis(4)
     bp.configure_polarization_axis(5)
