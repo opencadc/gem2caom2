@@ -67,30 +67,30 @@
 # ***********************************************************************
 #
 
+import sys
 import tempfile
 
 from caom2pipe import execute_composable as ec
 from caom2pipe import manage_composable as mc
-from blank2caom2 import APPLICATION, COLLECTION
+from gem2caom2 import APPLICATION, COLLECTION, GemName
 
 
 meta_visitors = []
 data_visitors = []
 
 
-def blank_run():
-    ec.run_by_file(ec.StorageName, APPLICATION, COLLECTION, None, meta_visitors,
-                   data_visitors)
+def gem_run():
+    ec.run_by_file(ec.StorageName, APPLICATION, COLLECTION, None,
+                   meta_visitors, data_visitors)
 
 
-def blank_run_proxy():
+def gem_run_proxy():
     proxy = '/usr/src/app/cadcproxy.pem'
-    ec.run_by_file(ec.StorageName, APPLICATION, COLLECTION, proxy, 
-	meta_visitors, data_visitors)
+    ec.run_by_file(ec.StorageName, APPLICATION, COLLECTION, proxy,
+                   meta_visitors, data_visitors)
 
 
-def blank_run_single():
-    import sys
+def gem_run_single():
     config = mc.Config()
     config.get_executors()
     config.resource_id = 'ivo://cadc.nrc.ca/sc2repo'
@@ -105,7 +105,7 @@ def blank_run_single():
         storage_name = ec.StorageName(file_name=sys.argv[1])
     else:
         obs_id = ec.StorageName.remove_extensions(sys.argv[1])
-        storage_name = DraoSTName(obs_id=obs_id)
+        storage_name = GemName(obs_id=obs_id)
     result = ec.run_single(config, storage_name, APPLICATION, meta_visitors,
                            data_visitors)
     sys.exit(result)

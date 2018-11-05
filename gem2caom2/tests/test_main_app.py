@@ -66,124 +66,76 @@
 #
 # ***********************************************************************
 #
+import pytest
 
-import importlib
-import logging
+from gem2caom2 import main_app, APPLICATION, COLLECTION
+from caom2.diff import get_differences
+from caom2pipe import manage_composable as mc
+
+from hashlib import md5
 import os
 import sys
-import traceback
 
-from caom2 import Observation
-from caom2utils import ObsBlueprint, get_gen_proc_arg_parser, gen_proc
-from caom2pipe import manage_composable as mc
-from caom2pipe import execute_composable as ec
+from mock import patch
 
-
-__all__ = ['main_app', 'update', 'BlankName', 'COLLECTION', 'APPLICATION']
+THIS_DIR = os.path.dirname(os.path.realpath(__file__))
+TESTDATA_DIR = os.path.join(THIS_DIR, 'data')
+PLUGIN = os.path.join(os.path.dirname(THIS_DIR), '{}.py'.format(APPLICATION))
 
 
-APPLICATION = 'blank2caom2'
-COLLECTION = 'blank'
+# def pytest_generate_tests(metafunc):
+#     if os.path.exists(TESTDATA_DIR):
+#         files = [os.path.join(TESTDATA_DIR, name) for name in
+#                  os.listdir(TESTDATA_DIR) if name.endswith('header')]
+#         metafunc.parametrize('test_name', files)
 
 
-class BlankName(ec.StorageName):
-    """Naming rules:
-    - support mixed-case file name storage, and mixed-case obs id values
-    - support uncompressed files in storage
-    """
+@pytest.mark.parametrize('test_name', [])
+def test_main_app(test_name):
+    basename = os.path.basename(test_name)
+    product_id = basename.split('.fits')[0]
+    lineage = _get_lineage(product_id, basename)
+    output_file = '{}.actual.xml'.format(test_name)
+    local = _get_local(test_name)
+    plugin = PLUGIN
 
-    BLANK_NAME_PATTERN = '*'
+    with patch('caom2utils.fits2caom2.CadcDataClient') as data_client_mock:
+        def get_file_info(archive, file_id):
+            if '_prev' in file_id:
+                return {'size': 10290,
+                        'md5sum': md5('-37'.encode()).hexdigest(),
+                        'type': 'image/jpeg'}
+            else:
+                return {'size': 37,
+                        'md5sum': md5('-37'.encode()).hexdigest(),
+                        'type': 'application/fits'}
+        data_client_mock.return_value.get_file_info.side_effect = \
+            get_file_info
 
-    def __init__(self, obs_id=None, fname_on_disk=None, file_name=None):
-        self.fname_in_ad = file_name
-        super(BlankName, self).__init__(
-            obs_id, COLLECTION, BlankName.BLANK_NAME_PATTERN, fname_on_disk)
-
-    def is_valid(self):
-        return True
-
-
-def accumulate_bp(bp, uri):
-    """Configure the telescope-specific ObsBlueprint at the CAOM model 
-    Observation level."""
-    logging.debug('Begin accumulate_bp.')
-    bp.configure_position_axes((1,2))
-    bp.configure_time_axis(3)
-    bp.configure_energy_axis(4)
-    bp.configure_polarization_axis(5)
-    bp.configure_observable_axis(6)
-    logging.debug('Done accumulate_bp.')
-
-
-def update(observation, **kwargs):
-    """Called to fill multiple CAOM model elements and/or attributes, must
-    have this signature for import_module loading and execution.
-
-    :param observation A CAOM Observation model instance.
-    :param **kwargs Everything else."""
-    logging.debug('Begin update.')
-    mc.check_param(observation, Observation)
-
-    headers = None
-    if 'headers' in kwargs:
-        headers = kwargs['headers']
-    fqn = None
-    if 'fqn' in kwargs:
-        fqn = kwargs['fqn']
-
-    logging.debug('Done update.')
-    return True
+        sys.argv = \
+            ('{} --no_validate --local {} '
+             '--plugin {} --module {} --observation {} {} -o {} --lineage {}'.
+             format(APPLICATION, local, plugin, plugin, COLLECTION, product_id,
+                    output_file, lineage)).split()
+        print(sys.argv)
+        main_app()
+        obs_path = test_name.replace('header', 'xml')
+        expected = mc.read_obs_from_file(obs_path)
+        actual = mc.read_obs_from_file(output_file)
+        result = get_differences(expected, actual, 'Observation')
+        if result:
+            msg = 'Differences found in observation {}\n{}'. \
+                format(expected.observation_id, '\n'.join(
+                [r for r in result]))
+            raise AssertionError(msg)
+        # assert False  # cause I want to see logging messages
 
 
-def _update_typed_set(typed_set, new_set):
-    # remove the previous values
-    while len(typed_set) > 0:
-        typed_set.pop()
-    typed_set.update(new_set)
+def _get_local(test_name):
+    prev_name = test_name.replace('.fits.header', '_prev.jpg')
+    prev_256_name = test_name.replace('.fits.header', '_prev_256.jpg')
+    return '{} {} {}'.format(test_name, prev_name, prev_256_name)
 
 
-def _build_blueprints(uri):
-    """This application relies on the caom2utils fits2caom2 ObsBlueprint
-    definition for mapping FITS file values to CAOM model element
-    attributes. This method builds the DRAO-ST blueprint for a single
-    artifact.
-
-    The blueprint handles the mapping of values with cardinality of 1:1
-    between the blueprint entries and the model attributes.
-
-    :param uri The artifact URI for the file to be processed."""
-    module = importlib.import_module(__name__)
-    blueprint = ObsBlueprint(module=module)
-    accumulate_bp(blueprint, uri)
-    blueprints = {uri: blueprint}
-    return blueprints
-
-
-def _get_uri(args):
-    result = None
-    if args.observation:
-        result = BlankName(obs_id=args.observation[1]).file_uri
-    elif args.local:
-        obs_id = BlankName.remove_extensions(os.path.basename(args.local[0]))
-        result = BlankName(obs_id=obs_id).file_uri
-    elif args.lineage:
-        result = args.lineage[0].split('/', 1)[1]
-    else:
-        raise mc.CadcException(
-            'Could not define uri from these args {}'.format(args))
-    return result
-
-
-def main_app():
-    args = get_gen_proc_arg_parser().parse_args()
-    try:
-        uri = _get_uri(args)
-        blueprints = _build_blueprints(uri)
-        gen_proc(args, blueprints)
-    except Exception as e:
-        logging.error('Failed {} execution for {}.'.format(APPLICATION, args))
-        tb = traceback.format_exc()
-        logging.error(tb)
-        sys.exit(-1)
-
-    logging.debug('Done {} processing.'.format(APPLICATION))
+def _get_lineage(product_id, basename):
+    return '{}/ad:{}/{}.fits.gz'.format(COLLECTION, product_id, product_id)

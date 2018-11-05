@@ -16,8 +16,8 @@ RUN git clone https://github.com/SharonGoliath/caom2tools.git && \
   cd caom2tools && git pull origin master && \
   pip install ./caom2utils && pip install ./caom2pipe
   
-RUN git clone https://github.com/opencadc-metadata-curation/blank2caom2.git && \
-  pip install ./blank2caom2
+RUN git clone https://github.com/opencadc-metadata-curation/gem2caom2.git && \
+  pip install ./gem2caom2
 
 COPY ./docker-entrypoint.sh ./
 

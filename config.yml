@@ -1,7 +1,7 @@
-working_directory: /usr/src/app/blank2caom2
+working_directory: /usr/src/app/gem2caom2
 # the netrc_filename value must be a fully-qualified name
 netrc_filename: /usr/src/app/netrc
-# operational value is ivo://cadc.nrc.ca/caom2repo
+# operational value is ivo://cadc.nrc.ca/ams
 resource_id: ivo://cadc.nrc.ca/sc2repo
 todo_file_name: todo.txt
 # values True False
@@ -33,5 +33,4 @@ stream: raw
 task_types: 
   - ingest
 features:
-  supports_composite: False
   use_file_names: True

@@ -66,8 +66,124 @@
 #
 # ***********************************************************************
 #
-from blank2caom2 import BlankName
+
+import importlib
+import logging
+import os
+import sys
+import traceback
+
+from caom2 import Observation
+from caom2utils import ObsBlueprint, get_gen_proc_arg_parser, gen_proc
+from caom2pipe import manage_composable as mc
+from caom2pipe import execute_composable as ec
 
 
-def test_is_valid():
-    assert BlankName('anything').is_valid()
+__all__ = ['main_app', 'update', 'GemName', 'COLLECTION', 'APPLICATION']
+
+
+APPLICATION = 'gem2caom2'
+COLLECTION = 'Gemini'
+
+
+class GemName(ec.StorageName):
+    """Naming rules:
+    - support mixed-case file name storage, and mixed-case obs id values
+    - support uncompressed files in storage
+    """
+
+    GEM_NAME_PATTERN = '*'
+
+    def __init__(self, obs_id=None, fname_on_disk=None, file_name=None):
+        self.fname_in_ad = file_name
+        super(GemName, self).__init__(
+            obs_id, COLLECTION, GemName.GEM_NAME_PATTERN, fname_on_disk)
+
+    def is_valid(self):
+        return True
+
+
+def accumulate_bp(bp, uri):
+    """Configure the telescope-specific ObsBlueprint at the CAOM model 
+    Observation level."""
+    logging.debug('Begin accumulate_bp.')
+    bp.configure_position_axes((1,2))
+    bp.configure_time_axis(3)
+    bp.configure_energy_axis(4)
+    bp.configure_polarization_axis(5)
+    bp.configure_observable_axis(6)
+    logging.debug('Done accumulate_bp.')
+
+
+def update(observation, **kwargs):
+    """Called to fill multiple CAOM model elements and/or attributes, must
+    have this signature for import_module loading and execution.
+
+    :param observation A CAOM Observation model instance.
+    :param **kwargs Everything else."""
+    logging.debug('Begin update.')
+    mc.check_param(observation, Observation)
+
+    headers = None
+    if 'headers' in kwargs:
+        headers = kwargs['headers']
+    fqn = None
+    if 'fqn' in kwargs:
+        fqn = kwargs['fqn']
+
+    logging.debug('Done update.')
+    return True
+
+
+def _update_typed_set(typed_set, new_set):
+    # remove the previous values
+    while len(typed_set) > 0:
+        typed_set.pop()
+    typed_set.update(new_set)
+
+
+def _build_blueprints(uri):
+    """This application relies on the caom2utils fits2caom2 ObsBlueprint
+    definition for mapping FITS file values to CAOM model element
+    attributes. This method builds the DRAO-ST blueprint for a single
+    artifact.
+
+    The blueprint handles the mapping of values with cardinality of 1:1
+    between the blueprint entries and the model attributes.
+
+    :param uri The artifact URI for the file to be processed."""
+    module = importlib.import_module(__name__)
+    blueprint = ObsBlueprint(module=module)
+    accumulate_bp(blueprint, uri)
+    blueprints = {uri: blueprint}
+    return blueprints
+
+
+def _get_uri(args):
+    result = None
+    if args.observation:
+        result = GemName(obs_id=args.observation[1]).file_uri
+    elif args.local:
+        obs_id = GemName.remove_extensions(os.path.basename(args.local[0]))
+        result = GemName(obs_id=obs_id).file_uri
+    elif args.lineage:
+        result = args.lineage[0].split('/', 1)[1]
+    else:
+        raise mc.CadcException(
+            'Could not define uri from these args {}'.format(args))
+    return result
+
+
+def main_app():
+    args = get_gen_proc_arg_parser().parse_args()
+    try:
+        uri = _get_uri(args)
+        blueprints = _build_blueprints(uri)
+        gen_proc(args, blueprints)
+    except Exception as e:
+        logging.error('Failed {} execution for {}.'.format(APPLICATION, args))
+        tb = traceback.format_exc()
+        logging.error(tb)
+        sys.exit(-1)
+
+    logging.debug('Done {} processing.'.format(APPLICATION))
