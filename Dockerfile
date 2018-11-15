@@ -20,6 +20,7 @@ RUN git clone https://github.com/opencadc-metadata-curation/gem2caom2.git && \
   pip install ./gem2caom2
 
 COPY ./docker-entrypoint.sh ./
+COPY ./config.yml ./
 
 ENTRYPOINT ["./docker-entrypoint.sh"]
 

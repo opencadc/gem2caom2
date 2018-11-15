@@ -1,11 +1,10 @@
-working_directory: /usr/src/app/gem2caom2
-# the netrc_filename value must be a fully-qualified name
-netrc_filename: /usr/src/app/netrc
+working_directory: /usr/src/app
+proxy_file_name: /usr/src/app/cadcproxy.pem
 # operational value is ivo://cadc.nrc.ca/ams
 resource_id: ivo://cadc.nrc.ca/sc2repo
 todo_file_name: todo.txt
 # values True False
-use_local_files: True
+use_local_files: False
 # values DEBUG INFO WARN ERROR
 logging_level: DEBUG
 # values True False
@@ -25,8 +24,10 @@ failure_log_file_name: failure_log.txt
 #
 # this file is created in the logs directory, default is 'retries.txt'
 retry_file_name: retries.txt
+retry_failures: False
 # ad stream value - sorry
 stream: raw
+collection: GEM
 # how to control the work that gets done
 # possible values are:
 # - scrape, store, ingest, modify, visit

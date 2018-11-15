@@ -66,7 +66,32 @@
 #
 # ***********************************************************************
 #
+"""
+The GEM collection lifecycle means content that gets touched a lot. The start
+is a skeleton observation created from metadata harvested from the Gemini
+web-site, then artifact-sync uses that information to retrieve the files,
+then when the file is retrieved, the skeleton will be fleshed out with
+metadata from the FITS file header.
 
+Notes on the GEM archive/GEMINI collection:
+
+1. Must use the file name as the starting point for work, because that's
+what is coming back from the ad query, and the ad query is what is being
+used to trigger the work.
+
+2. Must find the observation ID value from the file header information,
+because the observation ID is how to get the existing CAOM instance.
+
+3. Artifact URIs in existing observations reference the gemini schema, not
+the ad schema.
+
+4. TODO - what happens to obtaining the observation ID, if a preview
+file is retrieved prior to the FITS file being retrieved?
+
+Because of this, make the GemName a class that, standing on it's own,
+can retrieve the observation ID value from the headers for a file.
+
+"""
 import importlib
 import logging
 import os
@@ -77,30 +102,79 @@ from caom2 import Observation
 from caom2utils import ObsBlueprint, get_gen_proc_arg_parser, gen_proc
 from caom2pipe import manage_composable as mc
 from caom2pipe import execute_composable as ec
+from caom2pipe import astro_composable as ac
 
 
 __all__ = ['main_app', 'update', 'GemName', 'COLLECTION', 'APPLICATION']
 
 
 APPLICATION = 'gem2caom2'
-COLLECTION = 'Gemini'
+COLLECTION = 'GEM'
 
 
 class GemName(ec.StorageName):
     """Naming rules:
-    - support mixed-case file name storage, and mixed-case obs id values
+    - support upper-case file name storage, exception for extensions, and
+            upper-case obs id values
     - support uncompressed files in storage
     """
 
     GEM_NAME_PATTERN = '*'
 
-    def __init__(self, obs_id=None, fname_on_disk=None, file_name=None):
-        self.fname_in_ad = file_name
+    def __init__(self, fname_on_disk=None, file_name=None):
+        if file_name is not None:
+            self.fname_in_ad = '{}.fits'.format(
+                ec.StorageName.remove_extensions(file_name.lower()).upper())
+        elif fname_on_disk is not None:
+            self.fname_in_ad = '{}.fits'.format(
+                ec.StorageName.remove_extensions(
+                    fname_on_disk.lower()).upper())
+        else:
+            raise mc.CadcException('Require file name.')
         super(GemName, self).__init__(
-            obs_id, COLLECTION, GemName.GEM_NAME_PATTERN, fname_on_disk)
+            obs_id=None, collection=COLLECTION,
+            collection_pattern=GemName.GEM_NAME_PATTERN,
+            fname_on_disk=fname_on_disk)
+        self.obs_id = self._get_obs_id()
+
+    @property
+    def file_uri(self):
+        return 'ad:{}/{}'.format(self.collection, self.file_name)
+
+    @property
+    def file_name(self):
+        return self.fname_in_ad
+
+    @property
+    def compressed_file_name(self):
+        return None
+
+    @property
+    def prev(self):
+        return '{}.jpg'.format(
+            ec.StorageName.remove_extensions(self.fname_in_ad.lower()).upper())
+
+    @property
+    def thumb(self):
+        return '{}_th.jpg'.format(
+            ec.StorageName.remove_extensions(self.fname_in_ad.lower()).upper())
+
+    @property
+    def obs_id(self):
+        return self._obs_id
+
+    @obs_id.setter
+    def obs_id(self, value):
+        self._obs_id = value
 
     def is_valid(self):
         return True
+
+    def _get_obs_id(self):
+        headers = mc.get_cadc_headers(self.file_uri)
+        fits_headers = ac.make_headers_from_string(headers)
+        obs_id = fits_headers[0].get('DATALAB')
+        return obs_id
 
 
 def accumulate_bp(bp, uri):
@@ -109,9 +183,9 @@ def accumulate_bp(bp, uri):
     logging.debug('Begin accumulate_bp.')
     bp.configure_position_axes((1, 2))
     bp.configure_time_axis(3)
-    bp.configure_energy_axis(4)
-    bp.configure_polarization_axis(5)
-    bp.configure_observable_axis(6)
+    # bp.configure_energy_axis(4)
+    # bp.configure_polarization_axis(5)
+    # bp.configure_observable_axis(6)
     logging.debug('Done accumulate_bp.')
 
 
@@ -131,15 +205,41 @@ def update(observation, **kwargs):
     if 'fqn' in kwargs:
         fqn = kwargs['fqn']
 
+    for plane in observation.planes:
+        logging.error('calling migrate')
+        artifacts = observation.planes[plane].artifacts
+        try:
+            _migrate_uri(artifacts, fqn)
+        except Exception as e:
+            logging.error('wtf {}'.format(e))
+
     logging.debug('Done update.')
     return True
 
 
-def _update_typed_set(typed_set, new_set):
-    # remove the previous values
-    while len(typed_set) > 0:
-        typed_set.pop()
-    typed_set.update(new_set)
+def _migrate_uri(artifacts, fqn):
+    """Remove an artifact that has a gemini URI, because the initial CAOM2
+    records are created with the schema 'gemini', and that will eventually
+    end up being the schema 'ad'.
+    The action ends up being a replacement with an artifact pointing to the
+    schema 'ad'.
+    """
+    uri = None
+    logging.error('{}'.format(fqn))
+    for artifact in artifacts:
+        if artifacts[artifact].uri.startswith('gemini:'):
+            basename = os.path.basename(fqn).replace('.header', '')
+            logging.error('basename {}'.format(basename))
+            if artifacts[artifact].uri.endswith(basename):
+                uri = artifacts[artifact].uri
+                break
+
+    if uri is not None:
+        logging.info('Migrating artifact schema to ad')
+        if uri in artifacts:
+            artifacts.pop(uri)
+    else:
+        logging.info('No artifact schema modification required.')
 
 
 def _build_blueprints(uri):
@@ -161,11 +261,9 @@ def _build_blueprints(uri):
 
 def _get_uri(args):
     result = None
-    if args.observation:
-        result = GemName(obs_id=args.observation[1]).file_uri
-    elif args.local:
-        obs_id = GemName.remove_extensions(os.path.basename(args.local[0]))
-        result = GemName(obs_id=obs_id).file_uri
+    if args.local:
+        result = GemName(
+            fname_on_disk=os.path.basename(args.local[0])).file_uri
     elif args.lineage:
         result = args.lineage[0].split('/', 1)[1]
     else:

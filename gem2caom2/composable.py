@@ -67,6 +67,7 @@
 # ***********************************************************************
 #
 
+import logging
 import sys
 import tempfile
 
@@ -79,18 +80,23 @@ meta_visitors = []
 data_visitors = []
 
 
-def gem_run():
+def run():
     ec.run_by_file(ec.StorageName, APPLICATION, COLLECTION, None,
                    meta_visitors, data_visitors)
 
 
-def gem_run_proxy():
+def run_proxy():
     proxy = '/usr/src/app/cadcproxy.pem'
     ec.run_by_file(ec.StorageName, APPLICATION, COLLECTION, proxy,
                    meta_visitors, data_visitors)
 
 
-def gem_run_single():
+def run_single():
+    """
+    Run the processing for a single entry.
+    :return 0 if successful, -1 if there's any sort of failure. Return status
+        is used by airflow for task instance management and reporting.
+    """
     config = mc.Config()
     config.get_executors()
     config.resource_id = 'ivo://cadc.nrc.ca/sc2repo'
@@ -108,4 +114,44 @@ def gem_run_single():
         storage_name = GemName(obs_id=obs_id)
     result = ec.run_single(config, storage_name, APPLICATION, meta_visitors,
                            data_visitors)
+    sys.exit(result)
+
+
+def run_query():
+    """
+    Run the processing for all the entries returned from a time-boxed ad
+    query.
+
+    :param sys.argv[1] the timestamp for the > comparison in the time-boxed
+        query
+    :param sys.argv[2] the timestamp for the <= comparison in the time-boxed
+        query
+    :param sys.argv[3] the contents of a PEM-format proxy certificate
+
+    :return 0 if successful, -1 if there's any sort of failure. Return status
+        is used by airflow for task instance management and reporting.
+    """
+    prev_exec_date = sys.argv[1]
+    exec_date = sys.argv[2]
+    proxy_content = sys.argv[3]
+
+    config = mc.Config()
+    config.get()
+
+    logging.error('params {} {} {}'.format(
+        prev_exec_date, exec_date, config.proxy_fqn))
+    logging.error(config)
+
+    with open(config.proxy_fqn, 'w') as f:
+        f.write(proxy_content)
+
+    file_list = mc.read_file_list_from_archive(config, APPLICATION,
+                                               prev_exec_date, exec_date)
+    sys.argv = sys.argv[:1]
+    result = 0
+    if len(file_list) > 0:
+        mc.write_to_file(config.work_fqn, '\n'.join(file_list))
+        result |= ec.run_by_file(GemName, APPLICATION, COLLECTION,
+                                 config.proxy_fqn, meta_visitors,
+                                 data_visitors)
     sys.exit(result)
