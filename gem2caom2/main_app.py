@@ -206,12 +206,8 @@ def update(observation, **kwargs):
         fqn = kwargs['fqn']
 
     for plane in observation.planes:
-        logging.error('calling migrate')
         artifacts = observation.planes[plane].artifacts
-        try:
-            _migrate_uri(artifacts, fqn)
-        except Exception as e:
-            logging.error('wtf {}'.format(e))
+        _migrate_uri(artifacts, fqn)
 
     logging.debug('Done update.')
     return True
@@ -221,15 +217,17 @@ def _migrate_uri(artifacts, fqn):
     """Remove an artifact that has a gemini URI, because the initial CAOM2
     records are created with the schema 'gemini', and that will eventually
     end up being the schema 'ad'.
+
     The action ends up being a replacement with an artifact pointing to the
     schema 'ad'.
+
+    This implementation assumes there is NO metadata at the part or chunk
+    level for the artifact being replaced.
     """
     uri = None
-    logging.error('{}'.format(fqn))
     for artifact in artifacts:
         if artifacts[artifact].uri.startswith('gemini:'):
             basename = os.path.basename(fqn).replace('.header', '')
-            logging.error('basename {}'.format(basename))
             if artifacts[artifact].uri.endswith(basename):
                 uri = artifacts[artifact].uri
                 break
@@ -262,10 +260,17 @@ def _build_blueprints(uri):
 def _get_uri(args):
     result = None
     if args.local:
-        result = GemName(
-            fname_on_disk=os.path.basename(args.local[0])).file_uri
+        if args.local[0].endswith('.jpg'):
+            pass
+        else:
+            result = GemName(
+                fname_on_disk=os.path.basename(args.local[0])).file_uri
     elif args.lineage:
-        result = args.lineage[0].split('/', 1)[1]
+        temp = args.lineage[0].split('/', 1)[1]
+        if temp.endswith('.jpg'):
+            pass
+        else:
+            result = temp
     else:
         raise mc.CadcException(
             'Could not define uri from these args {}'.format(args))

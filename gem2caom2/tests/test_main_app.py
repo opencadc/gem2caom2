@@ -80,21 +80,34 @@ from mock import patch
 
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
 TESTDATA_DIR = os.path.join(THIS_DIR, 'data')
-PLUGIN = os.path.join(os.path.dirname(THIS_DIR), '{}.py'.format(APPLICATION))
+PLUGIN = os.path.join(os.path.dirname(THIS_DIR), 'main_app.py')
+
+LOOKUP = {'N20131203S0006': 'GN-2013B-Q-28-150-002',
+          'N20150216S0142': 'GN-2015A-C-2-96-002',
+          'N20150217S0274': 'GN-2015A-C-4-24-086',
+          'N20150217S0380': 'GN-2015A-Q-91-5-002',
+          'N20150220S0320': 'GN-CAL20020302-5-001',
+          'N20150929S0013': 'GN-CAL20150217-2-003'}
 
 
 def pytest_generate_tests(metafunc):
     if os.path.exists(TESTDATA_DIR):
         files = [os.path.join(TESTDATA_DIR, name) for name in
-                 os.listdir(TESTDATA_DIR) if name.endswith('header')]
+                 os.listdir(TESTDATA_DIR) if
+                 (name.endswith('header') or name.endswith('jpg'))]
         metafunc.parametrize('test_name', files)
 
 
 def test_main_app(test_name):
     basename = os.path.basename(test_name)
-    product_id = basename.split('.fits')[0]
-    lineage = _get_lineage(product_id, basename)
-    output_file = '{}.actual.xml'.format(test_name)
+    # file_id = basename.split('.fits')[0]
+    file_id = _get_file_id(basename)
+    product_id = LOOKUP[file_id]
+    # lineage = mc.get_lineage(
+    #     COLLECTION, product_id, '{}.fits'.format(file_id))
+    lineage = _get_lineage(basename, product_id, file_id)
+    input_file = '{}.in.xml'.format(product_id)
+    actual_fqn = '{}/{}.actual.xml'.format(TESTDATA_DIR, product_id)
     local = _get_local(test_name)
     plugin = PLUGIN
 
@@ -105,23 +118,35 @@ def test_main_app(test_name):
                         'md5sum': md5('-37'.encode()).hexdigest(),
                         'type': 'image/jpeg'}
             else:
-                return {'size': 37,
-                        'md5sum': md5('-37'.encode()).hexdigest(),
+                return {'size': 665151,
+                        'md5sum': 'md5:a347f2754ff2fd4b6209e7566637efad',
                         'type': 'application/fits'}
         data_client_mock.return_value.get_file_info.side_effect = \
             get_file_info
 
+        # sys.argv = \
+        #     ('{} --no_validate --local {} '
+        #      '--plugin {} --module {} --observation {} {} -o {} --lineage {}'.
+        #      format(APPLICATION, local, plugin, plugin, COLLECTION, product_id,
+        #             output_file, lineage)).split()
         sys.argv = \
             ('{} --no_validate --local {} '
-             '--plugin {} --module {} --observation {} {} -o {} --lineage {}'.
-             format(APPLICATION, local, plugin, plugin, COLLECTION, product_id,
-                    output_file, lineage)).split()
+             '--plugin {} --module {} --in {}/{} --out {} --lineage {}'.
+             format(APPLICATION, local, plugin, plugin, TESTDATA_DIR,
+                    input_file, actual_fqn, lineage)).split()
         print(sys.argv)
         main_app()
-        obs_path = test_name.replace('header', 'xml')
-        expected = mc.read_obs_from_file(obs_path)
-        actual = mc.read_obs_from_file(output_file)
+        import logging
+        logging.error('after the main app call')
+        expected_fqn = '{}/{}.xml'.format(TESTDATA_DIR, product_id)
+        logging.error('looking for expected {} actual {}'.format(expected_fqn,
+                                                                 actual_fqn))
+        expected = mc.read_obs_from_file(expected_fqn)
+        logging.error('after reading expected')
+        actual = mc.read_obs_from_file(actual_fqn)
+        logging.error('after reading actual')
         result = get_differences(expected, actual, 'Observation')
+        logging.error('after the differences')
         if result:
             msg = 'Differences found in observation {}\n{}'. \
                 format(expected.observation_id, '\n'.join(
@@ -131,10 +156,18 @@ def test_main_app(test_name):
 
 
 def _get_local(test_name):
-    prev_name = test_name.replace('.fits.header', '_prev.jpg')
-    prev_256_name = test_name.replace('.fits.header', '_prev_256.jpg')
-    return '{} {} {}'.format(test_name, prev_name, prev_256_name)
+    return '{}'.format(test_name)
 
 
-def _get_lineage(product_id, basename):
-    return '{}/ad:{}/{}.fits.gz'.format(COLLECTION, product_id, product_id)
+def _get_file_id(basename):
+    if basename.endswith('jpg'):
+        return basename.split('.jpg')[0]
+    else:
+        return basename.split('.fits')[0]
+
+
+def _get_lineage(basename, product_id, file_id):
+    if basename.endswith('jpg'):
+        return mc.get_lineage(COLLECTION, product_id, '{}.jpg'.format(file_id))
+    else:
+        return mc.get_lineage(COLLECTION, product_id, '{}.fits'.format(file_id))

@@ -66,8 +66,23 @@
 #
 # ***********************************************************************
 #
+from mock import patch
+
 from gem2caom2 import GemName
 
 
-def test_is_valid():
-    assert GemName('anything').is_valid()
+@patch('gem2caom2.GemName._get_obs_id')
+def test_is_valid(mock_obs_id):
+    mock_obs_id.return_value = 'GN-2013B-Q-28-150-002'
+    assert GemName(file_name='anything').is_valid()
+
+
+@patch('gem2caom2.GemName._get_obs_id')
+def test_storage_name(mock_obs_id):
+    mock_obs_id.return_value = 'GN-2013B-Q-28-150-002'
+    test_sn = GemName(file_name='n20131203s0006.fits.gz')
+    assert test_sn.file_uri == 'ad:GEM/N20131203S0006.fits'
+    assert test_sn.file_name == 'N20131203S0006.fits'
+    assert test_sn.prev == 'N20131203S0006.jpg'
+    assert test_sn.thumb == 'N20131203S0006_th.jpg'
+    assert test_sn.compressed_file_name is None
