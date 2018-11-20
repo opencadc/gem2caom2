@@ -9,17 +9,9 @@
   <caom2:intent>science</caom2:intent>
   <caom2:proposal>
     <caom2:id>GN-2015A-Q-91</caom2:id>
-    <caom2:pi>Narae Hwang</caom2:pi>
-    <caom2:title>Pre-imaging for GN-2015A-Q-205</caom2:title>
-    <caom2:keywords>
-      <caom2:keyword>Spiral galaxies, Open star clusters, Mass function, Interacting galaxies, Globular clusters, Absorption lines</caom2:keyword>
-    </caom2:keywords>
   </caom2:proposal>
   <caom2:target>
     <caom2:name>M51F2</caom2:name>
-    <caom2:type>field</caom2:type>
-    <caom2:standard>false</caom2:standard>
-    <caom2:moving>false</caom2:moving>
   </caom2:target>
   <caom2:telescope>
     <caom2:name>Gemini-North</caom2:name>
@@ -33,23 +25,23 @@
   <caom2:planes>
     <caom2:plane caom2:id="00000000-0000-0000-13b5-014cab774287" caom2:lastModified="2015-04-12T02:31:02.896" caom2:maxLastModified="2018-05-08T16:49:37.873" caom2:metaChecksum="md5:ff3ce4c063b5d7917230894ca159a74c" caom2:accMetaChecksum="md5:df3a0cdfc971dc539bae3f002f8f652a">
       <caom2:productID>GN-2015A-Q-91-5-002</caom2:productID>
-      <caom2:metaRelease>2015-02-16T00:00:00.000</caom2:metaRelease>
+      <caom2:metaRelease>2016-08-16T00:00:00.000</caom2:metaRelease>
       <caom2:dataRelease>2016-08-16T00:00:00.000</caom2:dataRelease>
       <caom2:dataProductType>image</caom2:dataProductType>
       <caom2:calibrationLevel>1</caom2:calibrationLevel>
       <caom2:provenance>
-        <caom2:name>Gemini unprocessed data</caom2:name>
-        <caom2:project>Unprocessed GMOS-N data</caom2:project>
+        <caom2:name>Gemini Observatory Data</caom2:name>
+        <caom2:project>Gemini Archive</caom2:project>
         <caom2:producer>Gemini Observatory</caom2:producer>
-        <caom2:reference>http://www.gemini.edu/sciops/instruments/gmos</caom2:reference>
+        <caom2:reference>http://archive.gemini.edu/searchform/GN-2015A-Q-91-5-002</caom2:reference>
       </caom2:provenance>
       <caom2:artifacts>
-        <caom2:artifact caom2:id="00000000-0000-0000-13b5-014cab774295" caom2:lastModified="2018-05-08T16:49:37.873" caom2:maxLastModified="2018-05-08T16:49:37.873" caom2:metaChecksum="md5:fc7b8cce088a099ef5cbcadef66646d2" caom2:accMetaChecksum="md5:0bd79d1a76905b935b71d5f2a59623fa">
-          <caom2:uri>ad:GEMINI/N20150216S0142.fits.gz</caom2:uri>
+        <caom2:artifact caom2:id="00000000-0000-0000-a5e9-f370f4667c71" caom2:lastModified="2018-05-08T16:49:37.873" caom2:maxLastModified="2018-05-08T16:49:37.873" caom2:metaChecksum="md5:fc7b8cce088a099ef5cbcadef66646d2" caom2:accMetaChecksum="md5:0bd79d1a76905b935b71d5f2a59623fa">
+          <caom2:uri>gemini:GEM/N20150216S0142.fits</caom2:uri>
           <caom2:productType>science</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>
-          <caom2:contentLength>8634716</caom2:contentLength>
+          <caom2:contentLength>15102720</caom2:contentLength>
           <caom2:contentChecksum>md5:05cc54aa3481589cd22c7fc069e57477</caom2:contentChecksum>
           <caom2:parts>
             <caom2:part caom2:id="00000000-0000-0000-13b5-014cab774297" caom2:lastModified="2015-04-12T02:31:02.896" caom2:maxLastModified="2015-04-12T02:31:02.896" caom2:metaChecksum="md5:375c586b4d492785c640d02e6a268d80" caom2:accMetaChecksum="md5:9178fe6813c95577bfdae71d35d5036a">
@@ -597,6 +589,12 @@
               </caom2:chunks>
             </caom2:part>
           </caom2:parts>
+        </caom2:artifact>
+        <caom2:artifact caom2:id="00000000-0000-0000-aecb-76d74542e567" caom2:lastModified="2018-05-08T16:49:37.873" caom2:maxLastModified="2018-05-08T16:49:37.873" caom2:metaChecksum="md5:fc7b8cce088a099ef5cbcadef66646d2" caom2:accMetaChecksum="md5:0bd79d1a76905b935b71d5f2a59623fa">
+          <caom2:uri>gemini:GEM/N20150216S0142.jpg</caom2:uri>
+          <caom2:productType>preview</caom2:productType>
+          <caom2:releaseType>data</caom2:releaseType>
+          <caom2:contentType>image/jpeg</caom2:contentType>
         </caom2:artifact>
       </caom2:artifacts>
     </caom2:plane>

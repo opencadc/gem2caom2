@@ -12,7 +12,6 @@
   </caom2:proposal>
   <caom2:target>
     <caom2:name>Dark</caom2:name>
-    <caom2:type>field</caom2:type>
   </caom2:target>
   <caom2:telescope>
     <caom2:name>Gemini-North</caom2:name>
@@ -24,25 +23,25 @@
     <caom2:name>GMOS-N</caom2:name>
   </caom2:instrument>
   <caom2:planes>
-    <caom2:plane caom2:id="00000000-0000-0000-16b2-01506e4c9a5e" caom2:lastModified="2015-10-16T01:38:46.606" caom2:maxLastModified="2018-05-09T07:56:47.463" caom2:metaChecksum="md5:2997f6fcf8fcc09fe3e3bfafa6a19356" caom2:accMetaChecksum="md5:e10c49b0e8a3d7aab6822125ad57ceee">
+    <caom2:plane caom2:id="00000000-0000-0000-89dc-edb27c90c0f6" caom2:lastModified="2018-10-10T01:52:09.812" caom2:maxLastModified="2018-10-10T01:52:09.812" caom2:metaChecksum="md5:2997f6fcf8fcc09fe3e3bfafa6a19356" caom2:accMetaChecksum="md5:e10c49b0e8a3d7aab6822125ad57ceee">
       <caom2:productID>GN-CAL20150925-2-007</caom2:productID>
       <caom2:metaRelease>2015-09-29T00:00:00.000</caom2:metaRelease>
       <caom2:dataRelease>2015-09-29T00:00:00.000</caom2:dataRelease>
       <caom2:dataProductType>image</caom2:dataProductType>
       <caom2:calibrationLevel>1</caom2:calibrationLevel>
       <caom2:provenance>
-        <caom2:name>Gemini unprocessed data</caom2:name>
-        <caom2:project>Unprocessed GMOS-N data</caom2:project>
+        <caom2:name>Gemini Observatory Data</caom2:name>
+        <caom2:project>Gemini Archive</caom2:project>
         <caom2:producer>Gemini Observatory</caom2:producer>
-        <caom2:reference>http://www.gemini.edu/sciops/instruments/gmos</caom2:reference>
+        <caom2:reference>http://archive.gemini.edu/searchform/GN-CAL20150925-2-007</caom2:reference>
       </caom2:provenance>
       <caom2:artifacts>
-        <caom2:artifact caom2:id="00000000-0000-0000-16b2-01506e4c9a6b" caom2:lastModified="2018-05-09T07:56:47.463" caom2:maxLastModified="2018-05-09T07:56:47.463" caom2:metaChecksum="md5:f0caf589ca72a5466d36aa7c2270971b" caom2:accMetaChecksum="md5:3a092008761e9c85d3e44fddad2f03c2">
-          <caom2:uri>ad:GEMINI/N20150929S0013.fits.gz</caom2:uri>
-          <caom2:productType>calibration</caom2:productType>
+        <caom2:artifact caom2:id="00000000-0000-0000-ba10-c26a6be6476f" caom2:lastModified="2018-10-10T01:52:09.812" caom2:maxLastModified="2018-10-10T01:52:09.812" caom2:metaChecksum="md5:f0caf589ca72a5466d36aa7c2270971b" caom2:accMetaChecksum="md5:3a092008761e9c85d3e44fddad2f03c2">
+          <caom2:uri>gemini:GEM/N20150929S0013.fits</caom2:uri>
+          <caom2:productType>science</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>
-          <caom2:contentLength>14113087</caom2:contentLength>
+          <caom2:contentLength>58472640</caom2:contentLength>
           <caom2:contentChecksum>md5:c2ed1a39f8f208d229874984c1733937</caom2:contentChecksum>
           <caom2:parts>
             <caom2:part caom2:id="00000000-0000-0000-16b2-01506e4c9a6d" caom2:lastModified="2015-10-16T01:38:46.606" caom2:maxLastModified="2015-10-16T01:38:46.606" caom2:metaChecksum="md5:70eabcab6a3750ece9a26fd39786ac59" caom2:accMetaChecksum="md5:870a11d4730a0049e1f77e6ab4cf80d6">
@@ -242,6 +241,12 @@
               </caom2:chunks>
             </caom2:part>
           </caom2:parts>
+        </caom2:artifact>
+        <caom2:artifact caom2:id="00000000-0000-0000-ba10-c26a6be6476f" caom2:lastModified="2018-10-10T01:52:09.812" caom2:maxLastModified="2018-10-10T01:52:09.812" caom2:metaChecksum="md5:f0caf589ca72a5466d36aa7c2270971b" caom2:accMetaChecksum="md5:3a092008761e9c85d3e44fddad2f03c2">
+          <caom2:uri>gemini:GEM/N20150929S0013.jpg</caom2:uri>
+          <caom2:productType>preview</caom2:productType>
+          <caom2:releaseType>data</caom2:releaseType>
+          <caom2:contentType>image/jpeg</caom2:contentType>
         </caom2:artifact>
       </caom2:artifacts>
     </caom2:plane>
