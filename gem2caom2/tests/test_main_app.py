@@ -92,9 +92,11 @@ LOOKUP = {'N20131203S0006': 'GN-2013B-Q-28-150-002',
 
 def pytest_generate_tests(metafunc):
     if os.path.exists(TESTDATA_DIR):
-        files = [os.path.join(TESTDATA_DIR, name) for name in
-                 os.listdir(TESTDATA_DIR) if
-                 (name.endswith('header') or name.endswith('jpg'))]
+        # files = [os.path.join(TESTDATA_DIR, name) for name in
+        #          os.listdir(TESTDATA_DIR) if
+        #          (name.endswith('header') or name.endswith('jpg'))]
+        #files = ['{}/{}'.format(TESTDATA_DIR, 'N20150216S0142.fits.header')]
+        files = ['{}/{}'.format(TESTDATA_DIR, 'N20131203S0006.jpg')]
         metafunc.parametrize('test_name', files)
 
 
@@ -130,7 +132,7 @@ def test_main_app(test_name):
         #      format(APPLICATION, local, plugin, plugin, COLLECTION, product_id,
         #             output_file, lineage)).split()
         sys.argv = \
-            ('{} --no_validate --local {} '
+            ('{} --debug --no_validate --local {} '
              '--plugin {} --module {} --in {}/{} --out {} --lineage {}'.
              format(APPLICATION, local, plugin, plugin, TESTDATA_DIR,
                     input_file, actual_fqn, lineage)).split()

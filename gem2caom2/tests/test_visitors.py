@@ -66,31 +66,58 @@
 #
 # ***********************************************************************
 #
+import os
+import pytest
+
 from mock import patch
 
-from gem2caom2 import GemName
+from caom2 import ChecksumURI
+from gem2caom2 import preview_augmentation, GemName
+from caom2pipe import manage_composable as mc
+
+
+THIS_DIR = os.path.dirname(os.path.realpath(__file__))
+TESTDATA_DIR = os.path.join(THIS_DIR, 'data')
+TEST_OBS = 'GN-2013B-Q-28-150-002'
+TEST_FILE = 'N20131203S0006.jpg'
+
+
+def test_preview_aug_visit():
+    with pytest.raises(mc.CadcException):
+        preview_augmentation.visit(None)
 
 
 @patch('gem2caom2.GemName._get_obs_id')
-def test_is_valid(mock_obs_id):
-    mock_obs_id.return_value = 'GN-2013B-Q-28-150-002'
-    assert GemName(file_name='anything.fits').is_valid()
-    assert GemName(file_name='anything.jpg').is_valid()
+def test_preview_augment_plane(mock_obs_id):
+    mock_obs_id.return_value = TEST_OBS
+    thumb = os.path.join(TESTDATA_DIR, GemName(TEST_FILE).thumb)
+    if os.path.exists(thumb):
+        os.remove(thumb)
+    test_fqn = os.path.join(TESTDATA_DIR, '{}.in.xml'.format(TEST_OBS))
+    test_obs = mc.read_obs_from_file(test_fqn)
+    assert len(test_obs.planes[TEST_OBS].artifacts) == 2
+    thumba = 'ad:GEM/N20131203S0006_th.jpg'
 
+    test_kwargs = {'working_directory': TESTDATA_DIR,
+                   'cadc_client': None}
+    test_result = preview_augmentation.visit(test_obs, **test_kwargs)
+    assert test_result is not None, 'expected a visit return value'
+    assert test_result['artifacts'] == 1
+    assert len(test_obs.planes[TEST_OBS].artifacts) == 3
+    assert os.path.exists(thumb)
+    assert test_obs.planes[TEST_OBS].artifacts[thumba].content_checksum == \
+        ChecksumURI('md5:b46adcc02a8b76220e6f50e5d0157491'), \
+        'thumb checksum failure'
 
-@patch('gem2caom2.GemName._get_obs_id')
-def test_storage_name(mock_obs_id):
-    mock_obs_id.return_value = 'GN-2013B-Q-28-150-002'
-    test_sn = GemName(file_name='n20131203s0006.fits.gz')
-    assert test_sn.file_uri == 'ad:GEM/N20131203S0006.fits'
-    assert test_sn.file_name == 'N20131203S0006.fits'
-    assert test_sn.prev == 'N20131203S0006.jpg'
-    assert test_sn.thumb == 'N20131203S0006_th.jpg'
-    assert test_sn.compressed_file_name is None
-
-    test_sn = GemName(file_name='S20060920S0137.jpg')
-    assert test_sn.file_uri == 'ad:GEM/S20060920S0137.jpg'
-    assert test_sn.file_name == 'S20060920S0137.jpg'
-    assert test_sn.prev == 'S20060920S0137.jpg'
-    assert test_sn.thumb == 'S20060920S0137_th.jpg'
-    assert test_sn.compressed_file_name is None
+    # now do updates
+    test_obs.planes[TEST_OBS].artifacts[thumba].content_checksum = \
+        ChecksumURI('19661c3c2508ecc22425ee2a05881ed4')
+    test_result = preview_augmentation.visit(test_obs, **test_kwargs)
+    assert test_result is not None, 'expected update visit return value'
+    assert test_result['artifacts'] == 1
+    assert len(test_obs.planes) == 1
+    assert len(test_obs.planes[TEST_OBS].artifacts) == 3
+    assert os.path.exists(thumb)
+    assert test_obs.planes[TEST_OBS].artifacts[thumba].content_checksum == \
+        ChecksumURI('md5:b46adcc02a8b76220e6f50e5d0157491'), \
+        'thumb update failed'

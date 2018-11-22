@@ -66,31 +66,65 @@
 #
 # ***********************************************************************
 #
-from mock import patch
+import logging
+import os
 
-from gem2caom2 import GemName
+from caom2 import Observation, ProductType, ReleaseType
+from caom2pipe import execute_composable as ec
+from caom2pipe import manage_composable as mc
+from gem2caom2 import GemName, COLLECTION
+
+__all__ = ['visit']
 
 
-@patch('gem2caom2.GemName._get_obs_id')
-def test_is_valid(mock_obs_id):
-    mock_obs_id.return_value = 'GN-2013B-Q-28-150-002'
-    assert GemName(file_name='anything.fits').is_valid()
-    assert GemName(file_name='anything.jpg').is_valid()
+def visit(observation, **kwargs):
+    mc.check_param(observation, Observation)
+
+    working_dir = './'
+    if 'working_directory' in kwargs:
+        working_dir = kwargs['working_directory']
+    if 'cadc_client' in kwargs:
+        cadc_client = kwargs['cadc_client']
+    else:
+        raise mc.CadcException('Need a cadc_client parameter.')
+
+    count = 0
+    for i in observation.planes:
+        plane = observation.planes[i]
+        for j in plane.artifacts:
+            artifact = plane.artifacts[j]
+            file_id = ec.CaomName(artifact.uri).file_id
+            logging.debug('Generate thumbnail for file id {}'.format(file_id))
+            count += _do_prev(file_id, working_dir, plane, cadc_client)
+            break
+    logging.info('Completed preview augmentation for {}.'.format(
+        observation.observation_id))
+    return {'artifacts': count}
 
 
-@patch('gem2caom2.GemName._get_obs_id')
-def test_storage_name(mock_obs_id):
-    mock_obs_id.return_value = 'GN-2013B-Q-28-150-002'
-    test_sn = GemName(file_name='n20131203s0006.fits.gz')
-    assert test_sn.file_uri == 'ad:GEM/N20131203S0006.fits'
-    assert test_sn.file_name == 'N20131203S0006.fits'
-    assert test_sn.prev == 'N20131203S0006.jpg'
-    assert test_sn.thumb == 'N20131203S0006_th.jpg'
-    assert test_sn.compressed_file_name is None
+def _do_prev(file_id, working_dir, plane, cadc_client):
+    gem_name = GemName('{}.jpg'.format(file_id))
+    preview = gem_name.prev
+    preview_fqn = os.path.join(working_dir, preview)
+    thumb = gem_name.thumb
+    thumb_fqn = os.path.join(working_dir, thumb)
 
-    test_sn = GemName(file_name='S20060920S0137.jpg')
-    assert test_sn.file_uri == 'ad:GEM/S20060920S0137.jpg'
-    assert test_sn.file_name == 'S20060920S0137.jpg'
-    assert test_sn.prev == 'S20060920S0137.jpg'
-    assert test_sn.thumb == 'S20060920S0137_th.jpg'
-    assert test_sn.compressed_file_name is None
+    if os.access(thumb_fqn, 0):
+        os.remove(thumb_fqn)
+    convert_cmd = 'convert -resize 256x256 {} {}'.format(
+        preview_fqn, thumb_fqn)
+    mc.exec_cmd(convert_cmd)
+
+    thumb_uri = gem_name.thumb_uri
+    _augment(plane, thumb_uri, thumb_fqn, ProductType.THUMBNAIL)
+    if cadc_client is not None:
+        mc.data_put(cadc_client, working_dir, thumb, COLLECTION)
+    return 1
+
+
+def _augment(plane, uri, fqn, product_type):
+    temp = None
+    if uri in plane.artifacts:
+        temp = plane.artifacts[uri]
+    plane.artifacts[uri] = mc.get_artifact_metadata(
+        fqn, product_type, ReleaseType.DATA, uri, temp)
