@@ -123,12 +123,23 @@ class GemName(ec.StorageName):
 
     def __init__(self, fname_on_disk=None, file_name=None):
         if file_name is not None:
-            self.fname_in_ad = '{}.fits'.format(
-                ec.StorageName.remove_extensions(file_name.lower()).upper())
+            self.file_id = GemName.get_file_id(file_name)
+            if '.fits' in file_name:
+                self.fname_in_ad = '{}.fits'.format(self.file_id)
+            elif '.jpg' in file_name:
+                self.fname_in_ad = '{}.jpg'.format(self.file_id)
+            else:
+                raise mc.CadcException(
+                    'Unrecognized file name format {}'.format(file_name))
         elif fname_on_disk is not None:
-            self.fname_in_ad = '{}.fits'.format(
-                ec.StorageName.remove_extensions(
-                    fname_on_disk.lower()).upper())
+            self.file_id = GemName.get_file_id(fname_on_disk)
+            if '.fits' in fname_on_disk:
+                self.fname_in_ad = '{}.fits'.format(self.file_id)
+            elif '.jpg' in fname_on_disk:
+                self.fname_in_ad = '{}.jpg'.format(self.file_id)
+            else:
+                raise mc.CadcException(
+                    'Unrecognized file name format {}'.format(fname_on_disk))
         else:
             raise mc.CadcException('Require file name.')
         super(GemName, self).__init__(
@@ -151,13 +162,11 @@ class GemName(ec.StorageName):
 
     @property
     def prev(self):
-        return '{}.jpg'.format(
-            ec.StorageName.remove_extensions(self.fname_in_ad.lower()).upper())
+        return '{}.jpg'.format(GemName.get_file_id(self.fname_in_ad))
 
     @property
     def thumb(self):
-        return '{}_th.jpg'.format(
-            ec.StorageName.remove_extensions(self.fname_in_ad.lower()).upper())
+        return '{}_th.jpg'.format(GemName.get_file_id(self.fname_in_ad))
 
     @property
     def obs_id(self):
@@ -167,14 +176,36 @@ class GemName(ec.StorageName):
     def obs_id(self, value):
         self._obs_id = value
 
+    @property
+    def file_id(self):
+        return self._file_id
+
+    @file_id.setter
+    def file_id(self, value):
+        self._file_id = value
+
     def is_valid(self):
         return True
 
     def _get_obs_id(self):
-        headers = mc.get_cadc_headers(self.file_uri)
+        if '.fits' in self.file_uri:
+            headers = mc.get_cadc_headers(self.file_uri)
+        else:
+            temp_uri = self.file_uri.replace('.jpg', '.fits')
+            headers = mc.get_cadc_headers(temp_uri)
         fits_headers = ac.make_headers_from_string(headers)
         obs_id = fits_headers[0].get('DATALAB')
         return obs_id
+
+    @staticmethod
+    def get_file_id(file_name):
+        return GemName.remove_extensions(file_name.lower()).upper()
+
+    @staticmethod
+    def remove_extensions(name):
+        """How to get the file_id from a file_name."""
+        return name.replace('.fits', '').replace('.gz', ''). \
+            replace('.header', '').replace('.jpg', '')
 
 
 def accumulate_bp(bp, uri):

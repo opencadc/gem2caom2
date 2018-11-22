@@ -81,13 +81,14 @@ data_visitors = []
 
 
 def run():
-    ec.run_by_file(ec.StorageName, APPLICATION, COLLECTION, None,
+    proxy = '/usr/src/app/cadcproxy.pem'
+    ec.run_by_file(GemName, APPLICATION, COLLECTION, proxy,
                    meta_visitors, data_visitors)
 
 
 def run_proxy():
     proxy = '/usr/src/app/cadcproxy.pem'
-    ec.run_by_file(ec.StorageName, APPLICATION, COLLECTION, proxy,
+    ec.run_by_file(GemName, APPLICATION, COLLECTION, proxy,
                    meta_visitors, data_visitors)
 
 
@@ -108,10 +109,9 @@ def run_single():
         config.proxy = sys.argv[2]
     config.stream = 'raw'
     if config.features.use_file_names:
-        storage_name = ec.StorageName(file_name=sys.argv[1])
+        storage_name = GemName(file_name=sys.argv[1])
     else:
-        obs_id = ec.StorageName.remove_extensions(sys.argv[1])
-        storage_name = GemName(obs_id=obs_id)
+        raise mc.CadcException('No code to handle running GEM by obs id.')
     result = ec.run_single(config, storage_name, APPLICATION, meta_visitors,
                            data_visitors)
     sys.exit(result)
@@ -126,24 +126,18 @@ def run_query():
         query
     :param sys.argv[2] the timestamp for the <= comparison in the time-boxed
         query
-    :param sys.argv[3] the contents of a PEM-format proxy certificate
 
     :return 0 if successful, -1 if there's any sort of failure. Return status
         is used by airflow for task instance management and reporting.
     """
     prev_exec_date = sys.argv[1]
     exec_date = sys.argv[2]
-    proxy_content = sys.argv[3]
 
     config = mc.Config()
     config.get()
 
-    logging.error('params {} {} {}'.format(
-        prev_exec_date, exec_date, config.proxy_fqn))
+    logging.error('params {} {}'.format(prev_exec_date, exec_date))
     logging.error(config)
-
-    with open(config.proxy_fqn, 'w') as f:
-        f.write(proxy_content)
 
     file_list = mc.read_file_list_from_archive(config, APPLICATION,
                                                prev_exec_date, exec_date)
