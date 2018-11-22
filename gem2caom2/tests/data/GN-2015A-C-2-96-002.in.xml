@@ -9,17 +9,9 @@
   <caom2:intent>calibration</caom2:intent>
   <caom2:proposal>
     <caom2:id>GN-2015A-C-2</caom2:id>
-    <caom2:pi>Michelle Wilson</caom2:pi>
-    <caom2:title>Spatially Resolving the Circumgalactic Medium at z=0.2-0.9</caom2:title>
-    <caom2:keywords>
-      <caom2:keyword>Intergalactic medium, Absorption lines, Redshifts</caom2:keyword>
-    </caom2:keywords>
   </caom2:proposal>
   <caom2:target>
     <caom2:name>GCALflat</caom2:name>
-    <caom2:type>field</caom2:type>
-    <caom2:standard>false</caom2:standard>
-    <caom2:moving>false</caom2:moving>
   </caom2:target>
   <caom2:telescope>
     <caom2:name>Gemini-North</caom2:name>
@@ -31,7 +23,7 @@
     <caom2:name>GMOS-N</caom2:name>
   </caom2:instrument>
   <caom2:planes>
-    <caom2:plane caom2:id="00000000-0000-0000-b31b-014ba54942ad" caom2:lastModified="2015-02-20T04:40:18.303" caom2:maxLastModified="2018-01-30T18:07:49.050" caom2:metaChecksum="md5:ced3f201ea6f23462832de3e2e3b9d6a" caom2:accMetaChecksum="md5:dd79a02e1517a72887ac193dbd6995d8">
+    <caom2:plane caom2:id="00000000-0000-0000-ba88-6c4efb35912c" caom2:lastModified="2015-02-20T04:40:18.303" caom2:maxLastModified="2018-01-30T18:07:49.050" caom2:metaChecksum="md5:ced3f201ea6f23462832de3e2e3b9d6a" caom2:accMetaChecksum="md5:dd79a02e1517a72887ac193dbd6995d8">
       <caom2:productID>GN-2015A-C-2-96-002</caom2:productID>
       <caom2:metaRelease>2015-02-17T00:00:00.000</caom2:metaRelease>
       <caom2:dataRelease>2015-02-17T00:00:00.000</caom2:dataRelease>
@@ -44,12 +36,12 @@
         <caom2:reference>http://www.gemini.edu/sciops/instruments/gmos</caom2:reference>
       </caom2:provenance>
       <caom2:artifacts>
-        <caom2:artifact caom2:id="00000000-0000-0000-b31b-014ba54942b6" caom2:lastModified="2018-01-30T18:07:49.050" caom2:maxLastModified="2018-01-30T18:07:49.050" caom2:metaChecksum="md5:0f9c2204aeb9d862c7d1ae73819d944d" caom2:accMetaChecksum="md5:87bd962f52f61d711a87a2aeda770aa2">
-          <caom2:uri>ad:GEMINI/N20150217S0380.fits.gz</caom2:uri>
-          <caom2:productType>calibration</caom2:productType>
+        <caom2:artifact caom2:id="00000000-0000-0000-b38e-f312d4954b78" caom2:lastModified="2018-10-05T11:29:16.870" caom2:maxLastModified="2018-10-05T11:29:16.870" caom2:metaChecksum="md5:0f9c2204aeb9d862c7d1ae73819d944d" caom2:accMetaChecksum="md5:87bd962f52f61d711a87a2aeda770aa2">
+          <caom2:uri>gemini:GEM/N20150217S0380.fits</caom2:uri>
+          <caom2:productType>science</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>
-          <caom2:contentLength>3328344</caom2:contentLength>
+          <caom2:contentLength>11525760</caom2:contentLength>
           <caom2:contentChecksum>md5:00c225818bac29ce6121f9bb181b5b14</caom2:contentChecksum>
           <caom2:parts>
             <caom2:part caom2:id="00000000-0000-0000-b31b-014ba54942b9" caom2:lastModified="2015-02-20T04:40:18.303" caom2:maxLastModified="2015-02-20T04:40:18.303" caom2:metaChecksum="md5:c772902f8c93ec92195118565d1368d7" caom2:accMetaChecksum="md5:dffc9010fbc0e02dc49cc38d97ab83f1">
@@ -1029,6 +1021,12 @@
               </caom2:chunks>
             </caom2:part>
           </caom2:parts>
+        </caom2:artifact>
+        <caom2:artifact caom2:id="00000000-0000-0000-b6fd-9683fc3c9771" caom2:lastModified="2018-10-05T11:29:16.870" caom2:maxLastModified="2018-10-05T11:29:16.870" caom2:metaChecksum="md5:0f9c2204aeb9d862c7d1ae73819d944d" caom2:accMetaChecksum="md5:87bd962f52f61d711a87a2aeda770aa2">
+          <caom2:uri>gemini:GEM/N20150217S0380.jpg</caom2:uri>
+          <caom2:productType>preview</caom2:productType>
+          <caom2:releaseType>data</caom2:releaseType>
+          <caom2:contentType>image/jpeg</caom2:contentType>
         </caom2:artifact>
       </caom2:artifacts>
     </caom2:plane>

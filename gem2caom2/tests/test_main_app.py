@@ -83,11 +83,11 @@ TESTDATA_DIR = os.path.join(THIS_DIR, 'data')
 PLUGIN = os.path.join(os.path.dirname(THIS_DIR), 'main_app.py')
 
 LOOKUP = {'N20131203S0006': 'GN-2013B-Q-28-150-002',
-          'N20150216S0142': 'GN-2015A-C-2-96-002',
-          'N20150217S0274': 'GN-2015A-C-4-24-086',
-          'N20150217S0380': 'GN-2015A-Q-91-5-002',
-          'N20150220S0320': 'GN-CAL20020302-5-001',
-          'N20150929S0013': 'GN-CAL20150217-2-003'}
+          'N20150216S0142': 'GN-2015A-Q-91-5-002',
+          'N20150217S0274': 'GN-CAL20150217-2-003',
+          'N20150217S0380': 'GN-2015A-C-2-96-002',
+          'N20150220S0320': 'GN-2015A-C-4-24-086',
+          'N20150929S0013': 'GN-CAL20150925-2-007'}
 
 
 def pytest_generate_tests(metafunc):
