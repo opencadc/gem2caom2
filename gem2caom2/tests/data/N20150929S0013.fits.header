@@ -149,7 +149,7 @@ AIRMASS =               -9999. / Mean airmass for the observation
 AMSTART =               -9999. / Airmass at start of exposure                   
 AMEND   =               -9999. / Airmass at end of exposure                     
 RELEASE = '2015-09-29'         / End of proprietary period YYYY-MM-DD           
-
+END                                                                             
 XTENSION= 'IMAGE   '           / IMAGE extension                                
 BITPIX  =                   16 / number of bits per data pixel                  
 NAXIS   =                    2 / number of data axes                            
@@ -175,54 +175,7 @@ FRMNAME = 'dhsFrame'           / Name assigned to a frame of data.
 FRAMEID = '1       '           / Frame Id                                       
 DATATYP = '        '           / Type of data frame                             
 EXTVER  =                   -1 / Number assigned to a FITS extension.           
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-
+END                                                                             
 XTENSION= 'IMAGE   '           / IMAGE extension                                
 BITPIX  =                   16 / number of bits per data pixel                  
 NAXIS   =                    2 / number of data axes                            
@@ -248,54 +201,7 @@ FRMNAME = 'dhsFrame'           / Name assigned to a frame of data.
 FRAMEID = '0       '           / Frame Id                                       
 DATATYP = '        '           / Type of data frame                             
 EXTVER  =                   -1 / Number assigned to a FITS extension.           
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-
+END                                                                             
 XTENSION= 'IMAGE   '           / IMAGE extension                                
 BITPIX  =                   16 / number of bits per data pixel                  
 NAXIS   =                    2 / number of data axes                            
@@ -321,54 +227,7 @@ FRMNAME = 'dhsFrame'           / Name assigned to a frame of data.
 FRAMEID = '3       '           / Frame Id                                       
 DATATYP = '        '           / Type of data frame                             
 EXTVER  =                   -1 / Number assigned to a FITS extension.           
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-
+END                                                                             
 XTENSION= 'IMAGE   '           / IMAGE extension                                
 BITPIX  =                   16 / number of bits per data pixel                  
 NAXIS   =                    2 / number of data axes                            
@@ -394,54 +253,7 @@ FRMNAME = 'dhsFrame'           / Name assigned to a frame of data.
 FRAMEID = '2       '           / Frame Id                                       
 DATATYP = '        '           / Type of data frame                             
 EXTVER  =                   -1 / Number assigned to a FITS extension.           
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-
+END                                                                             
 XTENSION= 'IMAGE   '           / IMAGE extension                                
 BITPIX  =                   16 / number of bits per data pixel                  
 NAXIS   =                    2 / number of data axes                            
@@ -467,54 +279,7 @@ FRMNAME = 'dhsFrame'           / Name assigned to a frame of data.
 FRAMEID = '4       '           / Frame Id                                       
 DATATYP = '        '           / Type of data frame                             
 EXTVER  =                   -1 / Number assigned to a FITS extension.           
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-
+END                                                                             
 XTENSION= 'IMAGE   '           / IMAGE extension                                
 BITPIX  =                   16 / number of bits per data pixel                  
 NAXIS   =                    2 / number of data axes                            
@@ -540,50 +305,4 @@ FRMNAME = 'dhsFrame'           / Name assigned to a frame of data.
 FRAMEID = '5       '           / Frame Id                                       
 DATATYP = '        '           / Type of data frame                             
 EXTVER  =                   -1 / Number assigned to a FITS extension.           
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
+END                                                                             

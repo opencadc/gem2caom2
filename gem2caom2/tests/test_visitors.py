@@ -96,7 +96,7 @@ def test_preview_augment_plane(mock_obs_id):
     test_fqn = os.path.join(TESTDATA_DIR, '{}.in.xml'.format(TEST_OBS))
     test_obs = mc.read_obs_from_file(test_fqn)
     assert len(test_obs.planes[TEST_OBS].artifacts) == 2
-    thumba = 'ad:GEM/N20131203S0006_th.jpg'
+    thumba = 'gemini:GEM/N20131203S0006_th.jpg'
 
     test_kwargs = {'working_directory': TESTDATA_DIR,
                    'cadc_client': None}

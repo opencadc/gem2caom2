@@ -105,11 +105,13 @@ from caom2pipe import execute_composable as ec
 from caom2pipe import astro_composable as ac
 
 
-__all__ = ['main_app', 'update', 'GemName', 'COLLECTION', 'APPLICATION']
+__all__ = ['main_app', 'update', 'GemName', 'COLLECTION', 'APPLICATION',
+           'SCHEME']
 
 
 APPLICATION = 'gem2caom2'
 COLLECTION = 'GEM'
+SCHEME = 'gemini'
 
 
 class GemName(ec.StorageName):
@@ -145,12 +147,13 @@ class GemName(ec.StorageName):
         super(GemName, self).__init__(
             obs_id=None, collection=COLLECTION,
             collection_pattern=GemName.GEM_NAME_PATTERN,
-            fname_on_disk=fname_on_disk)
+            fname_on_disk=fname_on_disk,
+            scheme=SCHEME)
         self.obs_id = self._get_obs_id()
 
     @property
     def file_uri(self):
-        return 'ad:{}/{}'.format(self.collection, self.file_name)
+        return '{}:{}/{}'.format(SCHEME, self.collection, self.file_name)
 
     @property
     def file_name(self):
@@ -208,15 +211,103 @@ class GemName(ec.StorageName):
             replace('.header', '').replace('.jpg', '')
 
 
+def get_time_delta(header):
+    """
+
+    :param header:
+    :return:
+    """
+    exptime = header['EXPTIME']
+    if exptime is None:
+        return None
+    return float(exptime) / (24.0 * 3600.0)
+
+
+def get_time_crval(header):
+    """
+
+    :param header:
+    :return:
+    """
+    dateobs = header['DATE-OBS']
+    timeobs = header['TIME-OBS']
+    if not dateobs and not timeobs:
+        return None
+    return ac.get_datetime('{}T{}'.format(dateobs, timeobs))
+
+
+def get_end_ref_coord_val(header):
+    """Calculate the upper bound of the spectral energy coordinate from
+    FITS header values.
+
+    Called to fill a blueprint value, must have a
+    parameter named header for import_module loading and execution.
+
+    :param header Array of astropy headers"""
+    wlen = header['WLEN']
+    bandpass = header['BANDPASS']
+    if wlen is not None and bandpass is not None:
+        return wlen + bandpass / 2.
+    else:
+        return None
+
+
+def get_time_delta(header):
+    """
+
+    :param header:
+    :return:
+    """
+    exptime = header['EXPTIME']
+    if exptime is None:
+        return None
+    return float(exptime) / (24.0 * 3600.0)
+
+
+def get_time_crval(header):
+    """
+
+    :param header:
+    :return:
+    """
+    dateobs = header['DATE-OBS']
+    timeobs = header['TIME-OBS']
+    if not dateobs and not timeobs:
+        return None
+    return ac.get_datetime('{}T{}'.format(dateobs, timeobs))
+
+
+def get_end_ref_coord_val(header):
+    """Calculate the upper bound of the spectral energy coordinate from
+    FITS header values.
+
+    Called to fill a blueprint value, must have a
+    parameter named header for import_module loading and execution.
+
+    :param header Array of astropy headers"""
+    wlen = header['WLEN']
+    bandpass = header['BANDPASS']
+    if wlen is not None and bandpass is not None:
+        return wlen + bandpass / 2.
+    else:
+        return None
+
+
 def accumulate_bp(bp, uri):
     """Configure the telescope-specific ObsBlueprint at the CAOM model 
     Observation level."""
     logging.debug('Begin accumulate_bp.')
     bp.configure_position_axes((1, 2))
     bp.configure_time_axis(3)
-    # bp.configure_energy_axis(4)
-    # bp.configure_polarization_axis(5)
-    # bp.configure_observable_axis(6)
+
+    bp.add_fits_attribute('Chunk.time.resolution', 'EXPTIME', 0)
+    bp.set_default('Chunk.time.axis.axis.ctype', 'TIME', 0)
+    bp.set_default('Chunk.time.axis.axis.cunit', 'd', 0)
+    bp.set_default('Chunk.time.axis.function.naxis', '1', 0)
+    bp.set('Chunk.time.axis.function.delta', 'get_time_delta(header)', 0)
+    bp.set_default('Chunk.time.axis.function.refCoord.pix', '0.5', 0)
+    bp.set('Chunk.time.axis.function.refCoord.val', 'get_time_crval(header)', 0)
+
     logging.debug('Done accumulate_bp.')
 
 
@@ -229,16 +320,16 @@ def update(observation, **kwargs):
     logging.debug('Begin update.')
     mc.check_param(observation, Observation)
 
-    headers = None
-    if 'headers' in kwargs:
-        headers = kwargs['headers']
-    fqn = None
-    if 'fqn' in kwargs:
-        fqn = kwargs['fqn']
-
-    for plane in observation.planes:
-        artifacts = observation.planes[plane].artifacts
-        _migrate_uri(artifacts, fqn)
+    # headers = None
+    # if 'headers' in kwargs:
+    #     headers = kwargs['headers']
+    # fqn = None
+    # if 'fqn' in kwargs:
+    #     fqn = kwargs['fqn']
+    #
+    # for plane in observation.planes:
+    #     artifacts = observation.planes[plane].artifacts
+    #     _migrate_uri(artifacts, fqn)
 
     logging.debug('Done update.')
     return True
@@ -257,7 +348,7 @@ def _migrate_uri(artifacts, fqn):
     """
     uri = None
     for artifact in artifacts:
-        if artifacts[artifact].uri.startswith('gemini:'):
+        if artifacts[artifact].uri.startswith('{}:'.format(SCHEME)):
             basename = os.path.basename(fqn).replace('.header', '')
             if artifacts[artifact].uri.endswith(basename):
                 uri = artifacts[artifact].uri

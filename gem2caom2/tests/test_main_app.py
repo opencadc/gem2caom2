@@ -68,7 +68,7 @@
 #
 import pytest
 
-from gem2caom2 import main_app, APPLICATION, COLLECTION
+from gem2caom2 import main_app, APPLICATION, COLLECTION, SCHEME
 from caom2.diff import get_differences
 from caom2pipe import manage_composable as mc
 
@@ -78,15 +78,16 @@ import sys
 
 from mock import patch
 
+pytest.main(args=['-s', os.path.abspath(__file__)])
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
 TESTDATA_DIR = os.path.join(THIS_DIR, 'data')
 PLUGIN = os.path.join(os.path.dirname(THIS_DIR), 'main_app.py')
 
 LOOKUP = {'N20131203S0006': 'GN-2013B-Q-28-150-002',
-          'N20150216S0142': 'GN-2015A-Q-91-5-002',
-          'N20150217S0274': 'GN-CAL20150217-2-003',
           'N20150217S0380': 'GN-2015A-C-2-96-002',
           'N20150220S0320': 'GN-2015A-C-4-24-086',
+          'N20150216S0142': 'GN-2015A-Q-91-5-002',
+          'N20150217S0274': 'GN-CAL20150217-2-003',
           'N20150929S0013': 'GN-CAL20150925-2-007'}
 
 
@@ -121,7 +122,7 @@ def test_main_app(test_name):
                         'type': 'image/jpeg'}
             else:
                 return {'size': 665151,
-                        'md5sum': 'md5:a347f2754ff2fd4b6209e7566637efad',
+                        'md5sum': 'a347f2754ff2fd4b6209e7566637efad',
                         'type': 'application/fits'}
         data_client_mock.return_value.get_file_info.side_effect = \
             get_file_info
@@ -170,6 +171,8 @@ def _get_file_id(basename):
 
 def _get_lineage(basename, product_id, file_id):
     if basename.endswith('jpg'):
-        return mc.get_lineage(COLLECTION, product_id, '{}.jpg'.format(file_id))
+        return mc.get_lineage(COLLECTION, product_id, '{}.jpg'.format(file_id),
+                              SCHEME)
     else:
-        return mc.get_lineage(COLLECTION, product_id, '{}.fits'.format(file_id))
+        return mc.get_lineage(COLLECTION, product_id, '{}.fits'.format(file_id),
+                              SCHEME)

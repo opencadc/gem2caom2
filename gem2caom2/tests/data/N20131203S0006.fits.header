@@ -155,7 +155,7 @@ AIRMASS =                   1. / Mean airmass for the observation
 AMSTART =                   1. / Airmass at start of exposure                   
 AMEND   =                   1. / Airmass at end of exposure                     
 RELEASE = '2013-12-03'         / End of proprietary period YYYY-MM-DD           
-
+END                                                                             
 XTENSION= 'IMAGE   '           / IMAGE extension                                
 BITPIX  =                   16 / number of bits per data pixel                  
 NAXIS   =                    2 / number of data axes                            
@@ -194,7 +194,7 @@ FRMNAME = 'dhsFrame'           / Name assigned to a frame of data.
 FRAMEID = '1       '           / Frame Id                                       
 DATATYP = '        '           / Type of data frame                             
 EXTVER  =                   -1 / Number assigned to a FITS extension.           
-
+END                                                                             
 XTENSION= 'IMAGE   '           / IMAGE extension                                
 BITPIX  =                   16 / number of bits per data pixel                  
 NAXIS   =                    2 / number of data axes                            
@@ -233,7 +233,7 @@ FRMNAME = 'dhsFrame'           / Name assigned to a frame of data.
 FRAMEID = '0       '           / Frame Id                                       
 DATATYP = '        '           / Type of data frame                             
 EXTVER  =                   -1 / Number assigned to a FITS extension.           
-
+END                                                                             
 XTENSION= 'IMAGE   '           / IMAGE extension                                
 BITPIX  =                   16 / number of bits per data pixel                  
 NAXIS   =                    2 / number of data axes                            
@@ -272,7 +272,7 @@ FRMNAME = 'dhsFrame'           / Name assigned to a frame of data.
 FRAMEID = '3       '           / Frame Id                                       
 DATATYP = '        '           / Type of data frame                             
 EXTVER  =                   -1 / Number assigned to a FITS extension.           
-
+END                                                                             
 XTENSION= 'IMAGE   '           / IMAGE extension                                
 BITPIX  =                   16 / number of bits per data pixel                  
 NAXIS   =                    2 / number of data axes                            
@@ -311,7 +311,7 @@ FRMNAME = 'dhsFrame'           / Name assigned to a frame of data.
 FRAMEID = '2       '           / Frame Id                                       
 DATATYP = '        '           / Type of data frame                             
 EXTVER  =                   -1 / Number assigned to a FITS extension.           
-
+END                                                                             
 XTENSION= 'IMAGE   '           / IMAGE extension                                
 BITPIX  =                   16 / number of bits per data pixel                  
 NAXIS   =                    2 / number of data axes                            
@@ -350,7 +350,7 @@ FRMNAME = 'dhsFrame'           / Name assigned to a frame of data.
 FRAMEID = '4       '           / Frame Id                                       
 DATATYP = '        '           / Type of data frame                             
 EXTVER  =                   -1 / Number assigned to a FITS extension.           
-
+END                                                                             
 XTENSION= 'IMAGE   '           / IMAGE extension                                
 BITPIX  =                   16 / number of bits per data pixel                  
 NAXIS   =                    2 / number of data axes                            
@@ -389,7 +389,7 @@ FRMNAME = 'dhsFrame'           / Name assigned to a frame of data.
 FRAMEID = '5       '           / Frame Id                                       
 DATATYP = '        '           / Type of data frame                             
 EXTVER  =                   -1 / Number assigned to a FITS extension.           
-
+END                                                                             
 XTENSION= 'IMAGE   '           / IMAGE extension                                
 BITPIX  =                   16 / number of bits per data pixel                  
 NAXIS   =                    2 / number of data axes                            
@@ -428,7 +428,7 @@ FRMNAME = 'dhsFrame'           / Name assigned to a frame of data.
 FRAMEID = '7       '           / Frame Id                                       
 DATATYP = '        '           / Type of data frame                             
 EXTVER  =                   -1 / Number assigned to a FITS extension.           
-
+END                                                                             
 XTENSION= 'IMAGE   '           / IMAGE extension                                
 BITPIX  =                   16 / number of bits per data pixel                  
 NAXIS   =                    2 / number of data axes                            
@@ -467,7 +467,7 @@ FRMNAME = 'dhsFrame'           / Name assigned to a frame of data.
 FRAMEID = '6       '           / Frame Id                                       
 DATATYP = '        '           / Type of data frame                             
 EXTVER  =                   -1 / Number assigned to a FITS extension.           
-
+END                                                                             
 XTENSION= 'IMAGE   '           / IMAGE extension                                
 BITPIX  =                   16 / number of bits per data pixel                  
 NAXIS   =                    2 / number of data axes                            
@@ -506,7 +506,7 @@ FRMNAME = 'dhsFrame'           / Name assigned to a frame of data.
 FRAMEID = '9       '           / Frame Id                                       
 DATATYP = '        '           / Type of data frame                             
 EXTVER  =                   -1 / Number assigned to a FITS extension.           
-
+END                                                                             
 XTENSION= 'IMAGE   '           / IMAGE extension                                
 BITPIX  =                   16 / number of bits per data pixel                  
 NAXIS   =                    2 / number of data axes                            
@@ -545,7 +545,7 @@ FRMNAME = 'dhsFrame'           / Name assigned to a frame of data.
 FRAMEID = '8       '           / Frame Id                                       
 DATATYP = '        '           / Type of data frame                             
 EXTVER  =                   -1 / Number assigned to a FITS extension.           
-
+END                                                                             
 XTENSION= 'IMAGE   '           / IMAGE extension                                
 BITPIX  =                   16 / number of bits per data pixel                  
 NAXIS   =                    2 / number of data axes                            
@@ -584,7 +584,7 @@ FRMNAME = 'dhsFrame'           / Name assigned to a frame of data.
 FRAMEID = '10      '           / Frame Id                                       
 DATATYP = '        '           / Type of data frame                             
 EXTVER  =                   -1 / Number assigned to a FITS extension.           
-
+END                                                                             
 XTENSION= 'IMAGE   '           / IMAGE extension                                
 BITPIX  =                   16 / number of bits per data pixel                  
 NAXIS   =                    2 / number of data axes                            
@@ -623,7 +623,7 @@ FRMNAME = 'dhsFrame'           / Name assigned to a frame of data.
 FRAMEID = '11      '           / Frame Id                                       
 DATATYP = '        '           / Type of data frame                             
 EXTVER  =                   -1 / Number assigned to a FITS extension.           
-
+END                                                                             
 XTENSION= 'IMAGE   '           / IMAGE extension                                
 BITPIX  =                   16 / number of bits per data pixel                  
 NAXIS   =                    2 / number of data axes                            
@@ -662,7 +662,7 @@ FRMNAME = 'dhsFrame'           / Name assigned to a frame of data.
 FRAMEID = '13      '           / Frame Id                                       
 DATATYP = '        '           / Type of data frame                             
 EXTVER  =                   -1 / Number assigned to a FITS extension.           
-
+END                                                                             
 XTENSION= 'IMAGE   '           / IMAGE extension                                
 BITPIX  =                   16 / number of bits per data pixel                  
 NAXIS   =                    2 / number of data axes                            
@@ -701,7 +701,7 @@ FRMNAME = 'dhsFrame'           / Name assigned to a frame of data.
 FRAMEID = '12      '           / Frame Id                                       
 DATATYP = '        '           / Type of data frame                             
 EXTVER  =                   -1 / Number assigned to a FITS extension.           
-
+END                                                                             
 XTENSION= 'IMAGE   '           / IMAGE extension                                
 BITPIX  =                   16 / number of bits per data pixel                  
 NAXIS   =                    2 / number of data axes                            
@@ -740,7 +740,7 @@ FRMNAME = 'dhsFrame'           / Name assigned to a frame of data.
 FRAMEID = '15      '           / Frame Id                                       
 DATATYP = '        '           / Type of data frame                             
 EXTVER  =                   -1 / Number assigned to a FITS extension.           
-
+END                                                                             
 XTENSION= 'IMAGE   '           / IMAGE extension                                
 BITPIX  =                   16 / number of bits per data pixel                  
 NAXIS   =                    2 / number of data axes                            
@@ -779,7 +779,7 @@ FRMNAME = 'dhsFrame'           / Name assigned to a frame of data.
 FRAMEID = '14      '           / Frame Id                                       
 DATATYP = '        '           / Type of data frame                             
 EXTVER  =                   -1 / Number assigned to a FITS extension.           
-
+END                                                                             
 XTENSION= 'IMAGE   '           / IMAGE extension                                
 BITPIX  =                   16 / number of bits per data pixel                  
 NAXIS   =                    2 / number of data axes                            
@@ -818,7 +818,7 @@ FRMNAME = 'dhsFrame'           / Name assigned to a frame of data.
 FRAMEID = '16      '           / Frame Id                                       
 DATATYP = '        '           / Type of data frame                             
 EXTVER  =                   -1 / Number assigned to a FITS extension.           
-
+END                                                                             
 XTENSION= 'IMAGE   '           / IMAGE extension                                
 BITPIX  =                   16 / number of bits per data pixel                  
 NAXIS   =                    2 / number of data axes                            
@@ -857,3 +857,4 @@ FRMNAME = 'dhsFrame'           / Name assigned to a frame of data.
 FRAMEID = '17      '           / Frame Id                                       
 DATATYP = '        '           / Type of data frame                             
 EXTVER  =                   -1 / Number assigned to a FITS extension.           
+END                                                                             
