@@ -106,7 +106,7 @@ def test_preview_augment_plane(mock_obs_id):
     assert len(test_obs.planes[TEST_OBS].artifacts) == 3
     assert os.path.exists(thumb)
     assert test_obs.planes[TEST_OBS].artifacts[thumba].content_checksum == \
-        ChecksumURI('md5:b46adcc02a8b76220e6f50e5d0157491'), \
+        ChecksumURI('md5:a8c106c04db4c148695787bfc364cbd8'), \
         'thumb checksum failure'
 
     # now do updates
@@ -119,5 +119,5 @@ def test_preview_augment_plane(mock_obs_id):
     assert len(test_obs.planes[TEST_OBS].artifacts) == 3
     assert os.path.exists(thumb)
     assert test_obs.planes[TEST_OBS].artifacts[thumba].content_checksum == \
-        ChecksumURI('md5:b46adcc02a8b76220e6f50e5d0157491'), \
+        ChecksumURI('md5:a8c106c04db4c148695787bfc364cbd8'), \
         'thumb update failed'
