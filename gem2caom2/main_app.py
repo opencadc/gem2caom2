@@ -256,47 +256,6 @@ def get_end_ref_coord_val(header):
         return None
 
 
-def get_time_delta(header):
-    """
-
-    :param header:
-    :return:
-    """
-    exptime = header['EXPTIME']
-    if exptime is None:
-        return None
-    return float(exptime) / (24.0 * 3600.0)
-
-
-def get_time_crval(header):
-    """
-
-    :param header:
-    :return:
-    """
-    dateobs = header['DATE-OBS']
-    timeobs = header['TIME-OBS']
-    if not dateobs and not timeobs:
-        return None
-    return ac.get_datetime('{}T{}'.format(dateobs, timeobs))
-
-
-def get_end_ref_coord_val(header):
-    """Calculate the upper bound of the spectral energy coordinate from
-    FITS header values.
-
-    Called to fill a blueprint value, must have a
-    parameter named header for import_module loading and execution.
-
-    :param header Array of astropy headers"""
-    wlen = header['WLEN']
-    bandpass = header['BANDPASS']
-    if wlen is not None and bandpass is not None:
-        return wlen + bandpass / 2.
-    else:
-        return None
-
-
 def accumulate_fits_bp(bp, uri):
     """Configure the telescope-specific ObsBlueprint at the CAOM model 
     Observation level."""
