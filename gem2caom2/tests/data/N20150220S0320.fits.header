@@ -159,25 +159,7 @@ DETRO3Y =                 3801 / ROI 3 Y start
 DETRO3YS=                  187 / ROI 3 Y size                                   
 AIRMASS =                   1. / Mean airmass for the observation               
 AMSTART =                   1. / Airmass at start of exposure                   
-AMEND   =                   1. / Airmass at end of exposure                     
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
+AMEND   =                   1. / Airmass at end of exposure
 RELEASE = '2015-02-20'         / End of proprietary period YYYY-MM-DD           
 END                                                                             
 XTENSION= 'IMAGE   '           / IMAGE extension                                

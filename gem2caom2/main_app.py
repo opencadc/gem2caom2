@@ -97,12 +97,17 @@ import logging
 import os
 import sys
 import traceback
+import requests
+from requests.adapters import HTTPAdapter
+from urllib3 import Retry
 
 from caom2 import Observation
 from caom2utils import ObsBlueprint, get_gen_proc_arg_parser, gen_proc
 from caom2pipe import manage_composable as mc
 from caom2pipe import execute_composable as ec
 from caom2pipe import astro_composable as ac
+
+from gem2caom2.caom2_gmos import GMOS
 
 
 __all__ = ['main_app', 'update', 'GemName', 'COLLECTION', 'APPLICATION',
@@ -112,6 +117,7 @@ __all__ = ['main_app', 'update', 'GemName', 'COLLECTION', 'APPLICATION',
 APPLICATION = 'gem2caom2'
 COLLECTION = 'GEM'
 SCHEME = 'gemini'
+GEMINI_METADATA_URL = 'https://archive.gemini.edu/jsonsummary/canonical/'
 
 
 class GemName(ec.StorageName):
@@ -211,13 +217,90 @@ class GemName(ec.StorageName):
             replace('.header', '').replace('.jpg', '')
 
 
+def get_obs_metadata(obs_id):
+    gemini_url = '{}{}'.format(GEMINI_METADATA_URL, obs_id)
+
+    # Open the URL and fetch the JSON document for the observation
+    session = requests.Session()
+    retries = 10
+    retry = Retry(total=retries, read=retries, connect=retries,
+                  backoff_factor=0.5)
+    adapter = HTTPAdapter(max_retries=retry)
+    session.mount('http://', adapter)
+    session.mount('https://', adapter)
+    try:
+        response = session.get(gemini_url, timeout=20)
+        metadata = response.json()[0]
+        response.close()
+    except Exception as e:
+        raise mc.CadcException(
+            'Unable to download Gemini observation metadata from {} because {}'
+                .format(gemini_url, str(e)))
+    return metadata
+
+
+def get_energy_metadata(obs_metadata):
+    """
+    For the given observation retrieve the energy metadata.
+
+    :param obs_metadata: Dictionary of observation metadata.
+    :return: Dictionary of energy metadata.
+    """
+    energy_metadata = {'energy': False}
+    if obs_metadata['instrument'] in ('GMOS-N', 'GMOS-S'):
+        gmos = GMOS()
+        energy_metadata = gmos.energy_metadata(obs_metadata)
+    return energy_metadata
+
+
+def get_energy_wcs(bp, obs_id):
+    """
+    Set the energy WCS for the given observation.
+
+    :param bp: The blueprint.
+    :param obs_id: The current Observation ID.
+    """
+    obs_metadata = get_obs_metadata(obs_id)
+    energy_metadata = get_energy_metadata(obs_metadata)
+
+    # No energy metadata found
+    if not energy_metadata['energy']:
+        return
+
+    bp.configure_energy_axis(4)
+    filter_name = energy_metadata['filter_name']
+    resolving_power = energy_metadata['resolving_power']
+    ctype = energy_metadata['wavelength_type']
+    cunit = energy_metadata['wavelength_unit']
+    naxis = energy_metadata['number_pixels']
+    crpix = energy_metadata['reference_pixel']
+    crval = energy_metadata['reference_wavelength']
+    cdelt = energy_metadata['delta']
+
+    # don't set the cunit since fits2caom2 sets the cunit
+    # based on the ctype.
+    bp.set('Chunk.energy.bandpassName', filter_name)
+    bp.set('Chunk.energy.resolvingPower', resolving_power)
+    bp.set('Chunk.energy.specsys', 'TOPOCENT')
+    bp.set('Chunk.energy.ssysobs', 'TOPOCENT')
+    bp.set('Chunk.energy.ssyssrc', 'TOPOCENT')
+    bp.set('Chunk.energy.axis.axis.ctype', ctype)
+    bp.set('Chunk.energy.axis.function.naxis', naxis)
+    bp.set('Chunk.energy.axis.function.delta', cdelt)
+    bp.set('Chunk.energy.axis.function.refCoord.pix', crpix)
+    bp.set('Chunk.energy.axis.function.refCoord.val', crval)
+
+
 def get_time_delta(header):
     """
+    Calculate the Time WCS delta.
 
-    :param header:
-    :return:
+    :param header: The FITS header for the current extension.
+    :return: The Time delta, or None if none found.
     """
-    exptime = header['EXPTIME']
+    exptime = None
+    if 'EXPTIME' in header:
+        exptime = header['EXPTIME']
     if exptime is None:
         return None
     return float(exptime) / (24.0 * 3600.0)
@@ -225,88 +308,53 @@ def get_time_delta(header):
 
 def get_time_crval(header):
     """
+    Calculate the Time WCS reference value.
 
-    :param header:
-    :return:
+    :param header: The FITS header for the current extension.
+    :return: The Time reference value, or None if none found.
     """
-    dateobs = header['DATE-OBS']
-    timeobs = header['TIME-OBS']
+    dateobs = None
+    timeobs = None
+    if 'DATE-OBS' in header:
+        dateobs = header['DATE-OBS']
+    if 'TIME-OBS' in header:
+        timeobs = header['TIME-OBS']
     if not dateobs and not timeobs:
         return None
     return ac.get_datetime('{}T{}'.format(dateobs, timeobs))
 
 
-def get_end_ref_coord_val(header):
-    """Calculate the upper bound of the spectral energy coordinate from
-    FITS header values.
-
-    Called to fill a blueprint value, must have a
-    parameter named header for import_module loading and execution.
-
-    :param header Array of astropy headers"""
-    wlen = header['WLEN']
-    bandpass = header['BANDPASS']
-    if wlen is not None and bandpass is not None:
-        return wlen + bandpass / 2.
-    else:
-        return None
-
-
-def get_time_delta(header):
+def get_exposure(header):
     """
+    Calculate the exposure time.
 
-    :param header:
-    :return:
+    :param header:  The FITS header for the current extension.
+    :return: The exposure time, or None if not found.
     """
-    exptime = header['EXPTIME']
-    if exptime is None:
-        return None
-    return float(exptime) / (24.0 * 3600.0)
+    if 'EXPTIME' in header:
+        return header['EXPTIME']
+    return None
 
 
-def get_time_crval(header):
-    """
-
-    :param header:
-    :return:
-    """
-    dateobs = header['DATE-OBS']
-    timeobs = header['TIME-OBS']
-    if not dateobs and not timeobs:
-        return None
-    return ac.get_datetime('{}T{}'.format(dateobs, timeobs))
-
-
-def get_end_ref_coord_val(header):
-    """Calculate the upper bound of the spectral energy coordinate from
-    FITS header values.
-
-    Called to fill a blueprint value, must have a
-    parameter named header for import_module loading and execution.
-
-    :param header Array of astropy headers"""
-    wlen = header['WLEN']
-    bandpass = header['BANDPASS']
-    if wlen is not None and bandpass is not None:
-        return wlen + bandpass / 2.
-    else:
-        return None
-
-
-def accumulate_bp(bp, uri):
+def accumulate_bp(bp, uri, obs_id):
     """Configure the telescope-specific ObsBlueprint at the CAOM model 
     Observation level."""
     logging.debug('Begin accumulate_bp.')
     bp.configure_position_axes((1, 2))
     bp.configure_time_axis(3)
 
-    bp.add_fits_attribute('Chunk.time.resolution', 'EXPTIME', 0)
-    bp.set_default('Chunk.time.axis.axis.ctype', 'TIME', 0)
-    bp.set_default('Chunk.time.axis.axis.cunit', 'd', 0)
-    bp.set_default('Chunk.time.axis.function.naxis', '1', 0)
-    bp.set('Chunk.time.axis.function.delta', 'get_time_delta(header)', 0)
-    bp.set_default('Chunk.time.axis.function.refCoord.pix', '0.5', 0)
-    bp.set('Chunk.time.axis.function.refCoord.val', 'get_time_crval(header)', 0)
+    bp.set('Chunk.time.resolution', 'get_exposure(header)')
+    bp.set('Chunk.time.exposure', 'get_exposure(header)')
+    bp.set('Chunk.time.axis.axis.ctype', 'TIME')
+    bp.set('Chunk.time.axis.axis.cunit', 'd')
+    bp.set('Chunk.time.axis.error.syser', '1e-07')
+    bp.set('Chunk.time.axis.error.rnder', '1e-07')
+    bp.set('Chunk.time.axis.function.naxis', '1')
+    bp.set('Chunk.time.axis.function.delta', 'get_time_delta(header)')
+    bp.set('Chunk.time.axis.function.refCoord.pix', '0.5')
+    bp.add_fits_attribute('Chunk.time.axis.function.refCoord.val', 'MJD-OBS')
+
+    get_energy_wcs(bp, obs_id)
 
     logging.debug('Done accumulate_bp.')
 
@@ -319,50 +367,11 @@ def update(observation, **kwargs):
     :param **kwargs Everything else."""
     logging.debug('Begin update.')
     mc.check_param(observation, Observation)
-
-    # headers = None
-    # if 'headers' in kwargs:
-    #     headers = kwargs['headers']
-    # fqn = None
-    # if 'fqn' in kwargs:
-    #     fqn = kwargs['fqn']
-    #
-    # for plane in observation.planes:
-    #     artifacts = observation.planes[plane].artifacts
-    #     _migrate_uri(artifacts, fqn)
-
     logging.debug('Done update.')
     return True
 
 
-def _migrate_uri(artifacts, fqn):
-    """Remove an artifact that has a gemini URI, because the initial CAOM2
-    records are created with the schema 'gemini', and that will eventually
-    end up being the schema 'ad'.
-
-    The action ends up being a replacement with an artifact pointing to the
-    schema 'ad'.
-
-    This implementation assumes there is NO metadata at the part or chunk
-    level for the artifact being replaced.
-    """
-    uri = None
-    for artifact in artifacts:
-        if artifacts[artifact].uri.startswith('{}:'.format(SCHEME)):
-            basename = os.path.basename(fqn).replace('.header', '')
-            if artifacts[artifact].uri.endswith(basename):
-                uri = artifacts[artifact].uri
-                break
-
-    if uri is not None:
-        logging.info('Migrating artifact schema to ad')
-        if uri in artifacts:
-            artifacts.pop(uri)
-    else:
-        logging.info('No artifact schema modification required.')
-
-
-def _build_blueprints(uri):
+def _build_blueprints(uri, obs_id):
     """This application relies on the caom2utils fits2caom2 ObsBlueprint
     definition for mapping FITS file values to CAOM model element
     attributes. This method builds the DRAO-ST blueprint for a single
@@ -371,10 +380,11 @@ def _build_blueprints(uri):
     The blueprint handles the mapping of values with cardinality of 1:1
     between the blueprint entries and the model attributes.
 
-    :param uri The artifact URI for the file to be processed."""
+    :param uri The artifact URI for the file to be processed.
+    :param obs_id The Observation ID of the file"""
     module = importlib.import_module(__name__)
     blueprint = ObsBlueprint(module=module)
-    accumulate_bp(blueprint, uri)
+    accumulate_bp(blueprint, uri, obs_id)
     blueprints = {uri: blueprint}
     return blueprints
 
@@ -399,11 +409,33 @@ def _get_uri(args):
     return result
 
 
+def _get_obs_id(args):
+    result = None
+    if args.lineage:
+        temp = args.lineage[0].split('/', 1)
+        if temp[1].endswith('.jpg'):
+            pass
+        else:
+            result = temp[0]
+    elif args.local:
+        if args.local[0].endswith('.jpg'):
+            pass
+        else:
+            result = GemName(
+                fname_on_disk=os.path.basename(args.local[0]))._get_obs_id()
+    else:
+        raise mc.CadcException(
+            'Cannot get the obsID without the file_uri from args {}'
+                .format(args))
+    return result
+
+
 def main_app():
     args = get_gen_proc_arg_parser().parse_args()
     try:
         uri = _get_uri(args)
-        blueprints = _build_blueprints(uri)
+        obs_id = _get_obs_id(args)
+        blueprints = _build_blueprints(uri, obs_id)
         gen_proc(args, blueprints)
     except Exception as e:
         logging.error('Failed {} execution for {}.'.format(APPLICATION, args))

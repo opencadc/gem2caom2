@@ -41,17 +41,17 @@
           <caom2:productType>science</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>
-          <caom2:contentLength>58472640</caom2:contentLength>
+          <caom2:contentLength>665151</caom2:contentLength>
           <caom2:contentChecksum>md5:c2ed1a39f8f208d229874984c1733937</caom2:contentChecksum>
           <caom2:parts>
-            <caom2:part caom2:id="00000000-0000-0000-16b2-01506e4c9a6d" caom2:lastModified="2015-10-16T01:38:46.606" caom2:maxLastModified="2015-10-16T01:38:46.606" caom2:metaChecksum="md5:70eabcab6a3750ece9a26fd39786ac59" caom2:accMetaChecksum="md5:870a11d4730a0049e1f77e6ab4cf80d6">
+            <caom2:part caom2:id="00000000-0000-0000-8e8f-65f253f510e2">
               <caom2:name>0</caom2:name>
               <caom2:chunks/>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-16b2-01506e4c9a6f" caom2:lastModified="2015-10-16T01:38:46.606" caom2:maxLastModified="2015-10-16T01:38:46.606" caom2:metaChecksum="md5:4d344608205b79029a81b854a4f8f7d9" caom2:accMetaChecksum="md5:ca91400f8bde687ea8762451f663ba3e">
+            <caom2:part caom2:id="00000000-0000-0000-b97c-d9fb76edf84e">
               <caom2:name>1</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-16b2-01506e4c9a71" caom2:lastModified="2015-10-16T01:38:46.606" caom2:maxLastModified="2015-10-16T01:38:46.606" caom2:metaChecksum="md5:339c9f9034a1b9e944179079469bb8f4" caom2:accMetaChecksum="md5:645ca5a9f2ccbcb76a8622533d6262b2">
+                <caom2:chunk caom2:id="00000000-0000-0000-a758-d20da9e2ecc3">
                   <caom2:naxis>2</caom2:naxis>
                   <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:time>
@@ -66,24 +66,24 @@
                       </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>0.020833</caom2:delta>
+                        <caom2:delta>0.02083308614514491</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>57294.9444329</caom2:val>
+                          <caom2:val>0.0</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
                     <caom2:timesys>UTC</caom2:timesys>
-                    <caom2:exposure>1799.978643</caom2:exposure>
-                    <caom2:resolution>1799.978643</caom2:resolution>
+                    <caom2:exposure>1799.97864294052</caom2:exposure>
+                    <caom2:resolution>1799.97864294052</caom2:resolution>
                   </caom2:time>
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-16b2-01506e4c9a7e" caom2:lastModified="2015-10-16T01:38:46.606" caom2:maxLastModified="2015-10-16T01:38:46.606" caom2:metaChecksum="md5:50841cdf844770be150a808673802685" caom2:accMetaChecksum="md5:1a6892e9d8b92c84c4d24e139868895b">
+            <caom2:part caom2:id="00000000-0000-0000-90d9-8a7495a8a084">
               <caom2:name>2</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-16b2-01506e4c9a80" caom2:lastModified="2015-10-16T01:38:46.606" caom2:maxLastModified="2015-10-16T01:38:46.606" caom2:metaChecksum="md5:06c5a5fc2b8fa3f3b4091ec3a5dc958d" caom2:accMetaChecksum="md5:71afa55fab5f9b909144c0bfde854a18">
+                <caom2:chunk caom2:id="00000000-0000-0000-b5ba-51d2a05b63d5">
                   <caom2:naxis>2</caom2:naxis>
                   <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:time>
@@ -98,24 +98,24 @@
                       </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>0.020833</caom2:delta>
+                        <caom2:delta>0.02083308614514491</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>57294.9444329</caom2:val>
+                          <caom2:val>0.0</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
                     <caom2:timesys>UTC</caom2:timesys>
-                    <caom2:exposure>1799.978643</caom2:exposure>
-                    <caom2:resolution>1799.978643</caom2:resolution>
+                    <caom2:exposure>1799.97864294052</caom2:exposure>
+                    <caom2:resolution>1799.97864294052</caom2:resolution>
                   </caom2:time>
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-16b2-01506e4c9a86" caom2:lastModified="2015-10-16T01:38:46.606" caom2:maxLastModified="2015-10-16T01:38:46.606" caom2:metaChecksum="md5:2be8fc08261b0af212500dc3faaf89d8" caom2:accMetaChecksum="md5:9c7c16d6c1cdc1c8406d56a185383be9">
+            <caom2:part caom2:id="00000000-0000-0000-9c9f-6d8e40ab3979">
               <caom2:name>3</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-16b2-01506e4c9a87" caom2:lastModified="2015-10-16T01:38:46.606" caom2:maxLastModified="2015-10-16T01:38:46.606" caom2:metaChecksum="md5:8ebe07263306e64a0133fd1e8219a7c8" caom2:accMetaChecksum="md5:c756caa00a16ea44954e2db2a5a7b1a1">
+                <caom2:chunk caom2:id="00000000-0000-0000-850c-0bf082c834f6">
                   <caom2:naxis>2</caom2:naxis>
                   <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:time>
@@ -130,24 +130,24 @@
                       </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>0.020833</caom2:delta>
+                        <caom2:delta>0.02083308614514491</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>57294.9444329</caom2:val>
+                          <caom2:val>0.0</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
                     <caom2:timesys>UTC</caom2:timesys>
-                    <caom2:exposure>1799.978643</caom2:exposure>
-                    <caom2:resolution>1799.978643</caom2:resolution>
+                    <caom2:exposure>1799.97864294052</caom2:exposure>
+                    <caom2:resolution>1799.97864294052</caom2:resolution>
                   </caom2:time>
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-16b2-01506e4c9a8a" caom2:lastModified="2015-10-16T01:38:46.606" caom2:maxLastModified="2015-10-16T01:38:46.606" caom2:metaChecksum="md5:bf0c9650bac73a97c3e2264c280e4659" caom2:accMetaChecksum="md5:62e08a67e8c9a54052bda767dfbd254e">
+            <caom2:part caom2:id="00000000-0000-0000-bee5-edcb97458710">
               <caom2:name>4</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-16b2-01506e4c9a8c" caom2:lastModified="2015-10-16T01:38:46.606" caom2:maxLastModified="2015-10-16T01:38:46.606" caom2:metaChecksum="md5:b68676954edc4c616317016be3f0e82e" caom2:accMetaChecksum="md5:443440616cc8ee1dcdcf9f35ccdb0c3c">
+                <caom2:chunk caom2:id="00000000-0000-0000-9b5b-9f5e95a38ebe">
                   <caom2:naxis>2</caom2:naxis>
                   <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:time>
@@ -162,24 +162,24 @@
                       </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>0.020833</caom2:delta>
+                        <caom2:delta>0.02083308614514491</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>57294.9444329</caom2:val>
+                          <caom2:val>0.0</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
                     <caom2:timesys>UTC</caom2:timesys>
-                    <caom2:exposure>1799.978643</caom2:exposure>
-                    <caom2:resolution>1799.978643</caom2:resolution>
+                    <caom2:exposure>1799.97864294052</caom2:exposure>
+                    <caom2:resolution>1799.97864294052</caom2:resolution>
                   </caom2:time>
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-16b2-01506e4c9a90" caom2:lastModified="2015-10-16T01:38:46.606" caom2:maxLastModified="2015-10-16T01:38:46.606" caom2:metaChecksum="md5:a3bfce9fdbe32f22ca39d1f13ff3b541" caom2:accMetaChecksum="md5:6243c768edc16832235b019e4a503e01">
+            <caom2:part caom2:id="00000000-0000-0000-abea-eeeefec7f4d5">
               <caom2:name>5</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-16b2-01506e4c9a91" caom2:lastModified="2015-10-16T01:38:46.606" caom2:maxLastModified="2015-10-16T01:38:46.606" caom2:metaChecksum="md5:62f3532e7a5f3b3c79d82875506d1bd6" caom2:accMetaChecksum="md5:59bbf5bcc3b564e7bf2a4b4fc94e86d6">
+                <caom2:chunk caom2:id="00000000-0000-0000-8d9b-ed41931c4cdc">
                   <caom2:naxis>2</caom2:naxis>
                   <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:time>
@@ -194,24 +194,24 @@
                       </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>0.020833</caom2:delta>
+                        <caom2:delta>0.02083308614514491</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>57294.9444329</caom2:val>
+                          <caom2:val>0.0</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
                     <caom2:timesys>UTC</caom2:timesys>
-                    <caom2:exposure>1799.978643</caom2:exposure>
-                    <caom2:resolution>1799.978643</caom2:resolution>
+                    <caom2:exposure>1799.97864294052</caom2:exposure>
+                    <caom2:resolution>1799.97864294052</caom2:resolution>
                   </caom2:time>
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-16b2-01506e4c9a98" caom2:lastModified="2015-10-16T01:38:46.606" caom2:maxLastModified="2015-10-16T01:38:46.606" caom2:metaChecksum="md5:4a98054416254a16c5ec6c2f585521a1" caom2:accMetaChecksum="md5:af79464c63f6869b944bb20ca861d841">
+            <caom2:part caom2:id="00000000-0000-0000-9931-3f4a42ec086c">
               <caom2:name>6</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-16b2-01506e4c9a99" caom2:lastModified="2015-10-16T01:38:46.606" caom2:maxLastModified="2015-10-16T01:38:46.606" caom2:metaChecksum="md5:29afbb7469f6ed5258146ff834eac127" caom2:accMetaChecksum="md5:07a4797384d403d47fc287c926d9236e">
+                <caom2:chunk caom2:id="00000000-0000-0000-a5c8-bd9906bc8626">
                   <caom2:naxis>2</caom2:naxis>
                   <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:time>
@@ -226,23 +226,23 @@
                       </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>0.020833</caom2:delta>
+                        <caom2:delta>0.02083308614514491</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>57294.9444329</caom2:val>
+                          <caom2:val>0.0</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
                     <caom2:timesys>UTC</caom2:timesys>
-                    <caom2:exposure>1799.978643</caom2:exposure>
-                    <caom2:resolution>1799.978643</caom2:resolution>
+                    <caom2:exposure>1799.97864294052</caom2:exposure>
+                    <caom2:resolution>1799.97864294052</caom2:resolution>
                   </caom2:time>
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
           </caom2:parts>
         </caom2:artifact>
-        <caom2:artifact caom2:id="00000000-0000-0000-ba10-c26a6be6476f" caom2:lastModified="2018-10-10T01:52:09.812" caom2:maxLastModified="2018-10-10T01:52:09.812" caom2:metaChecksum="md5:f0caf589ca72a5466d36aa7c2270971b" caom2:accMetaChecksum="md5:3a092008761e9c85d3e44fddad2f03c2">
+        <caom2:artifact caom2:id="00000000-0000-0000-ba10-c26a6be6476e" caom2:lastModified="2018-10-10T01:52:09.812" caom2:maxLastModified="2018-10-10T01:52:09.812" caom2:metaChecksum="md5:f0caf589ca72a5466d36aa7c2270971b" caom2:accMetaChecksum="md5:3a092008761e9c85d3e44fddad2f03c2">
           <caom2:uri>gemini:GEM/N20150929S0013.jpg</caom2:uri>
           <caom2:productType>preview</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
