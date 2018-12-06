@@ -1,3 +1,4 @@
+<?xml version='1.0' encoding='UTF-8'?>
 <caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="00000000-0000-0000-2bef-014afa864f99" caom2:lastModified="2018-01-25T19:52:32.786" caom2:maxLastModified="2018-01-25T19:52:32.786" caom2:metaChecksum="md5:50ace9df2b6f2a17aa38bd1021ef46d2" caom2:accMetaChecksum="md5:eb472aebd11fb1dcf6519ff398014579">
   <caom2:collection>GEMINI</caom2:collection>
   <caom2:observationID>GN-2013B-Q-28-150-002</caom2:observationID>
@@ -1679,6 +1680,8 @@
           <caom2:productType>preview</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>image/jpeg</caom2:contentType>
+          <caom2:contentLength>38006</caom2:contentLength>
+          <caom2:contentChecksum>md5:467ab3962f9e1c4baaf51c1fe1ce3a2a</caom2:contentChecksum>
           <caom2:parts/>
         </caom2:artifact>
       </caom2:artifacts>

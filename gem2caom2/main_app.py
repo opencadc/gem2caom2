@@ -134,7 +134,7 @@ class GemName(ec.StorageName):
             self.file_id = GemName.get_file_id(file_name)
             if '.fits' in file_name:
                 self.fname_in_ad = '{}.fits'.format(self.file_id)
-            elif '.jpg' in file_name:
+            elif GemName.is_preview(file_name):
                 self.fname_in_ad = '{}.jpg'.format(self.file_id)
             else:
                 raise mc.CadcException(
@@ -143,7 +143,7 @@ class GemName(ec.StorageName):
             self.file_id = GemName.get_file_id(fname_on_disk)
             if '.fits' in fname_on_disk:
                 self.fname_in_ad = '{}.fits'.format(self.file_id)
-            elif '.jpg' in fname_on_disk:
+            elif GemName.is_preview(fname_on_disk):
                 self.fname_in_ad = '{}.jpg'.format(self.file_id)
             else:
                 raise mc.CadcException(
@@ -215,6 +215,10 @@ class GemName(ec.StorageName):
         """How to get the file_id from a file_name."""
         return name.replace('.fits', '').replace('.gz', ''). \
             replace('.header', '').replace('.jpg', '')
+
+    @staticmethod
+    def is_preview(entry):
+        return '.jpg' in entry
 
 
 def get_obs_metadata(obs_id):
@@ -336,10 +340,10 @@ def get_exposure(header):
     return None
 
 
-def accumulate_bp(bp, uri, obs_id):
+def accumulate_fits_bp(bp, uri, obs_id):
     """Configure the telescope-specific ObsBlueprint at the CAOM model 
     Observation level."""
-    logging.debug('Begin accumulate_bp.')
+    logging.debug('Begin accumulate_fits_bp.')
     bp.configure_position_axes((1, 2))
     bp.configure_time_axis(3)
 
@@ -356,7 +360,7 @@ def accumulate_bp(bp, uri, obs_id):
 
     get_energy_wcs(bp, obs_id)
 
-    logging.debug('Done accumulate_bp.')
+    logging.debug('Done accumulate_fits_bp.')
 
 
 def update(observation, **kwargs):
@@ -371,7 +375,7 @@ def update(observation, **kwargs):
     return True
 
 
-def _build_blueprints(uri, obs_id):
+def _build_blueprints(uris, obs_id):
     """This application relies on the caom2utils fits2caom2 ObsBlueprint
     definition for mapping FITS file values to CAOM model element
     attributes. This method builds the DRAO-ST blueprint for a single
@@ -380,29 +384,28 @@ def _build_blueprints(uri, obs_id):
     The blueprint handles the mapping of values with cardinality of 1:1
     between the blueprint entries and the model attributes.
 
-    :param uri The artifact URI for the file to be processed.
-    :param obs_id The Observation ID of the file"""
+    :param uris The list of artifact URIs for the files to be processed.
+    :param obs_id The Observation ID of the file."""
     module = importlib.import_module(__name__)
-    blueprint = ObsBlueprint(module=module)
-    accumulate_bp(blueprint, uri, obs_id)
-    blueprints = {uri: blueprint}
+    blueprints = {}
+    for uri in uris:
+        blueprint = ObsBlueprint(module=module)
+        if not GemName.is_preview(uri):
+            accumulate_fits_bp(blueprint, uri, obs_id)
+        blueprints[uri] = blueprint
     return blueprints
 
 
-def _get_uri(args):
-    result = None
+def _get_uris(args):
+    result = []
     if args.local:
-        if args.local[0].endswith('.jpg'):
-            pass
-        else:
-            result = GemName(
-                fname_on_disk=os.path.basename(args.local[0])).file_uri
+        for ii in args.local:
+            result.append(GemName(
+                fname_on_disk=os.path.basename(ii)).file_uri)
     elif args.lineage:
-        temp = args.lineage[0].split('/', 1)[1]
-        if temp.endswith('.jpg'):
-            pass
-        else:
-            result = temp
+        for ii in args.lineage:
+            ignore, temp = mc.decompose_lineage(ii)
+            result.append(temp)
     else:
         raise mc.CadcException(
             'Could not define uri from these args {}'.format(args))
@@ -433,7 +436,7 @@ def _get_obs_id(args):
 def main_app():
     args = get_gen_proc_arg_parser().parse_args()
     try:
-        uri = _get_uri(args)
+        uri = _get_uris(args)
         obs_id = _get_obs_id(args)
         blueprints = _build_blueprints(uri, obs_id)
         gen_proc(args, blueprints)

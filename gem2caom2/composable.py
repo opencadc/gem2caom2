@@ -76,6 +76,7 @@ from caom2pipe import manage_composable as mc
 from gem2caom2 import APPLICATION, COLLECTION, GemName
 
 
+# meta_visitors = [preview_augmentation]
 meta_visitors = []
 data_visitors = []
 

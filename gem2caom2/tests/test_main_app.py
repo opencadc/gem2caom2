@@ -94,10 +94,8 @@ LOOKUP = {'N20131203S0006': 'GN-2013B-Q-28-150-002',
 def pytest_generate_tests(metafunc):
     if os.path.exists(TESTDATA_DIR):
         # files = [os.path.join(TESTDATA_DIR, name) for name in
-        #          os.listdir(TESTDATA_DIR) if
-        #          (name.endswith('header') or name.endswith('jpg'))]
-        #files = ['{}/{}'.format(TESTDATA_DIR, 'N20150216S0142.fits.header')]
-        files = ['{}/{}'.format(TESTDATA_DIR, 'N20131203S0006.jpg')]
+        #          os.listdir(TESTDATA_DIR) if name.endswith('header')]
+        files = ['{}/{}'.format(TESTDATA_DIR, 'N20131203S0006.fits.header')]
         metafunc.parametrize('test_name', files)
 
 
@@ -121,35 +119,23 @@ def test_main_app(test_name):
                         'md5sum': md5('-37'.encode()).hexdigest(),
                         'type': 'image/jpeg'}
             else:
-                return {'size': 665151,
+                return {'size': 665345,
                         'md5sum': 'a347f2754ff2fd4b6209e7566637efad',
                         'type': 'application/fits'}
         data_client_mock.return_value.get_file_info.side_effect = \
             get_file_info
 
-        # sys.argv = \
-        #     ('{} --no_validate --local {} '
-        #      '--plugin {} --module {} --observation {} {} -o {} --lineage {}'.
-        #      format(APPLICATION, local, plugin, plugin, COLLECTION, product_id,
-        #             output_file, lineage)).split()
         sys.argv = \
-            ('{} --debug --no_validate --local {} '
+            ('{} --no_validate --local {} '
              '--plugin {} --module {} --in {}/{} --out {} --lineage {}'.
              format(APPLICATION, local, plugin, plugin, TESTDATA_DIR,
                     input_file, actual_fqn, lineage)).split()
         print(sys.argv)
         main_app()
-        import logging
-        logging.error('after the main app call')
         expected_fqn = '{}/{}.xml'.format(TESTDATA_DIR, product_id)
-        logging.error('looking for expected {} actual {}'.format(expected_fqn,
-                                                                 actual_fqn))
         expected = mc.read_obs_from_file(expected_fqn)
-        logging.error('after reading expected')
         actual = mc.read_obs_from_file(actual_fqn)
-        logging.error('after reading actual')
         result = get_differences(expected, actual, 'Observation')
-        logging.error('after the differences')
         if result:
             msg = 'Differences found in observation {}\n{}'. \
                 format(expected.observation_id, '\n'.join(
@@ -159,7 +145,12 @@ def test_main_app(test_name):
 
 
 def _get_local(test_name):
-    return '{}'.format(test_name)
+    # return '{}'.format(test_name)
+    jpg = test_name.replace('.fits.header', '.jpg')
+    if os.path.exists(jpg):
+        return '{} {}'.format(jpg, test_name)
+    else:
+        return test_name
 
 
 def _get_file_id(basename):
@@ -170,9 +161,13 @@ def _get_file_id(basename):
 
 
 def _get_lineage(basename, product_id, file_id):
-    if basename.endswith('jpg'):
-        return mc.get_lineage(COLLECTION, product_id, '{}.jpg'.format(file_id),
+    jpg_file = basename.replace('.fits.header', '.jpg')
+    if os.path.exists(os.path.join(TESTDATA_DIR, jpg_file)):
+        jpg = mc.get_lineage(COLLECTION, product_id, '{}.jpg'.format(file_id),
+                             SCHEME)
+        fits = mc.get_lineage(COLLECTION, product_id, '{}.fits'.format(file_id),
                               SCHEME)
+        return '{} {}'.format(jpg, fits)
     else:
         return mc.get_lineage(COLLECTION, product_id, '{}.fits'.format(file_id),
                               SCHEME)
