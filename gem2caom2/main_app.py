@@ -415,17 +415,19 @@ def _get_uris(args):
 def _get_obs_id(args):
     result = None
     if args.lineage:
-        temp = args.lineage[0].split('/', 1)
-        if temp[1].endswith('.jpg'):
-            pass
-        else:
-            result = temp[0]
+        for lineage in args.lineage:
+            temp = lineage.split('/', 1)
+            if temp[1].endswith('.jpg'):
+                pass
+            else:
+                result = temp[0]
     elif args.local:
-        if args.local[0].endswith('.jpg'):
-            pass
-        else:
-            result = GemName(
-                fname_on_disk=os.path.basename(args.local[0]))._get_obs_id()
+        for local in args.local:
+            if local.endswith('.jpg'):
+                pass
+            else:
+                result = GemName(
+                    fname_on_disk=os.path.basename(local))._get_obs_id()
     else:
         raise mc.CadcException(
             'Cannot get the obsID without the file_uri from args {}'
@@ -436,9 +438,9 @@ def _get_obs_id(args):
 def main_app():
     args = get_gen_proc_arg_parser().parse_args()
     try:
-        uri = _get_uris(args)
+        uris = _get_uris(args)
         obs_id = _get_obs_id(args)
-        blueprints = _build_blueprints(uri, obs_id)
+        blueprints = _build_blueprints(uris, obs_id)
         gen_proc(args, blueprints)
     except Exception as e:
         logging.error('Failed {} execution for {}.'.format(APPLICATION, args))
