@@ -72,7 +72,7 @@ import pytest
 from mock import patch
 
 from caom2 import ChecksumURI
-from gem2caom2 import preview_augmentation, GemName
+from gem2caom2 import preview_augmentation, GemName, SCHEME, ARCHIVE
 from caom2pipe import manage_composable as mc
 
 
@@ -96,7 +96,7 @@ def test_preview_augment_plane(mock_obs_id):
     test_fqn = os.path.join(TESTDATA_DIR, '{}.in.xml'.format(TEST_OBS))
     test_obs = mc.read_obs_from_file(test_fqn)
     assert len(test_obs.planes[TEST_OBS].artifacts) == 2
-    thumba = 'gemini:GEM/N20131203S0006_th.jpg'
+    thumba = '{}:{}/N20131203S0006_th.jpg'.format(SCHEME, ARCHIVE)
 
     test_kwargs = {'working_directory': TESTDATA_DIR,
                    'cadc_client': None}

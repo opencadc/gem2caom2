@@ -73,7 +73,7 @@ import tempfile
 
 from caom2pipe import execute_composable as ec
 from caom2pipe import manage_composable as mc
-from gem2caom2 import APPLICATION, COLLECTION, GemName
+from gem2caom2 import APPLICATION, COLLECTION, ARCHIVE, GemName
 
 
 # meta_visitors = [preview_augmentation]
@@ -84,13 +84,13 @@ data_visitors = []
 def run():
     proxy = '/usr/src/app/cadcproxy.pem'
     ec.run_by_file(GemName, APPLICATION, COLLECTION, proxy,
-                   meta_visitors, data_visitors)
+                   meta_visitors, data_visitors, archive=ARCHIVE)
 
 
 def run_proxy():
     proxy = '/usr/src/app/cadcproxy.pem'
     ec.run_by_file(GemName, APPLICATION, COLLECTION, proxy,
-                   meta_visitors, data_visitors)
+                   meta_visitors, data_visitors, archive=ARCHIVE)
 
 
 def run_single():
@@ -148,5 +148,5 @@ def run_query():
         mc.write_to_file(config.work_fqn, '\n'.join(file_list))
         result |= ec.run_by_file(GemName, APPLICATION, COLLECTION,
                                  config.proxy_fqn, meta_visitors,
-                                 data_visitors)
+                                 data_visitors, archive=ARCHIVE)
     sys.exit(result)

@@ -111,11 +111,12 @@ from gem2caom2.caom2_gmos import GMOS
 
 
 __all__ = ['main_app', 'update', 'GemName', 'COLLECTION', 'APPLICATION',
-           'SCHEME']
+           'SCHEME', 'ARCHIVE']
 
 
 APPLICATION = 'gem2caom2'
-COLLECTION = 'GEM'
+COLLECTION = 'GEMINI'
+ARCHIVE = 'GEM'
 SCHEME = 'gemini'
 GEMINI_METADATA_URL = 'https://archive.gemini.edu/jsonsummary/canonical/'
 
@@ -151,7 +152,7 @@ class GemName(ec.StorageName):
         else:
             raise mc.CadcException('Require file name.')
         super(GemName, self).__init__(
-            obs_id=None, collection=COLLECTION,
+            obs_id=None, collection=ARCHIVE,
             collection_pattern=GemName.GEM_NAME_PATTERN,
             fname_on_disk=fname_on_disk,
             scheme=SCHEME)
