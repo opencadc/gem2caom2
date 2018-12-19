@@ -72,7 +72,7 @@ import os
 from caom2 import Observation, ProductType, ReleaseType
 from caom2pipe import execute_composable as ec
 from caom2pipe import manage_composable as mc
-from gem2caom2 import GemName, COLLECTION
+from gem2caom2 import GemName, COLLECTION, ARCHIVE
 
 __all__ = ['visit']
 
@@ -86,7 +86,11 @@ def visit(observation, **kwargs):
     if 'cadc_client' in kwargs:
         cadc_client = kwargs['cadc_client']
     else:
-        raise mc.CadcException('Need a cadc_client parameter.')
+        raise mc.CadcException('Visitor needs a cadc_client parameter.')
+    if 'stream' in kwargs:
+        stream = kwargs['stream']
+    else:
+        raise mc.CadcException('Visitor needs a stream parameter.')
 
     count = 0
     for i in observation.planes:
@@ -95,19 +99,22 @@ def visit(observation, **kwargs):
             artifact = plane.artifacts[j]
             file_id = ec.CaomName(artifact.uri).file_id
             logging.debug('Generate thumbnail for file id {}'.format(file_id))
-            count += _do_prev(file_id, working_dir, plane, cadc_client)
+            count += _do_prev(file_id, working_dir, plane, cadc_client, stream)
             break
     logging.info('Completed preview augmentation for {}.'.format(
         observation.observation_id))
     return {'artifacts': count}
 
 
-def _do_prev(file_id, working_dir, plane, cadc_client):
+def _do_prev(file_id, working_dir, plane, cadc_client, stream):
     gem_name = GemName('{}.jpg'.format(file_id))
     preview = gem_name.prev
     preview_fqn = os.path.join(working_dir, preview)
     thumb = gem_name.thumb
     thumb_fqn = os.path.join(working_dir, thumb)
+
+    if not os.access(preview_fqn, 0):
+        mc.data_get(cadc_client, working_dir, preview, ARCHIVE)
 
     if os.access(thumb_fqn, 0):
         os.remove(thumb_fqn)
@@ -118,7 +125,7 @@ def _do_prev(file_id, working_dir, plane, cadc_client):
     thumb_uri = gem_name.thumb_uri
     _augment(plane, thumb_uri, thumb_fqn, ProductType.THUMBNAIL)
     if cadc_client is not None:
-        mc.data_put(cadc_client, working_dir, thumb, COLLECTION)
+        mc.data_put(cadc_client, working_dir, thumb, ARCHIVE, stream)
     return 1
 
 

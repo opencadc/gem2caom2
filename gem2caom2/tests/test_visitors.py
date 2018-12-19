@@ -99,7 +99,8 @@ def test_preview_augment_plane(mock_obs_id):
     thumba = '{}:{}/N20131203S0006_th.jpg'.format(SCHEME, ARCHIVE)
 
     test_kwargs = {'working_directory': TESTDATA_DIR,
-                   'cadc_client': None}
+                   'cadc_client': None,
+                   'stream': 'default'}
     test_result = preview_augmentation.visit(test_obs, **test_kwargs)
     assert test_result is not None, 'expected a visit return value'
     assert test_result['artifacts'] == 1

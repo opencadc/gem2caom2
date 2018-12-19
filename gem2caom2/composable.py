@@ -67,17 +67,16 @@
 # ***********************************************************************
 #
 
-import logging
 import sys
 import tempfile
 
 from caom2pipe import execute_composable as ec
 from caom2pipe import manage_composable as mc
 from gem2caom2 import APPLICATION, COLLECTION, ARCHIVE, GemName
+from gem2caom2 import preview_augmentation
 
 
-# meta_visitors = [preview_augmentation]
-meta_visitors = []
+meta_visitors = [preview_augmentation]
 data_visitors = []
 
 
@@ -108,7 +107,7 @@ def run_single():
         config.proxy = temp.name
     else:
         config.proxy = sys.argv[2]
-    config.stream = 'raw'
+    config.stream = 'default'
     if config.features.use_file_names:
         storage_name = GemName(file_name=sys.argv[1])
     else:
@@ -136,9 +135,7 @@ def run_query():
 
     config = mc.Config()
     config.get()
-
-    logging.error('params {} {}'.format(prev_exec_date, exec_date))
-    logging.error(config)
+    config.stream = 'default'
 
     file_list = mc.read_file_list_from_archive(config, APPLICATION,
                                                prev_exec_date, exec_date)
