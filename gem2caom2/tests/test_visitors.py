@@ -71,15 +71,18 @@ import pytest
 
 from mock import patch
 
-from caom2 import ChecksumURI
-from gem2caom2 import preview_augmentation, GemName
+from caom2 import ChecksumURI, Dimension2D
+from gem2caom2 import preview_augmentation, GemName, plane_augmentation
 from caom2pipe import manage_composable as mc
+from caom2utils.caomvalidator import validate
 
-
+pytest.main(args=['-s', os.path.abspath(__file__)])
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
 TESTDATA_DIR = os.path.join(THIS_DIR, 'data')
 TEST_OBS = 'GN-2013B-Q-28-150-002'
 TEST_FILE = 'N20131203S0006.jpg'
+TEST_FP_OBS = 'GN-2015A-Q-91-5-002'
+TEST_FP_FILE = 'N20150216S0142.fits'
 
 
 def test_preview_aug_visit():
@@ -87,37 +90,84 @@ def test_preview_aug_visit():
         preview_augmentation.visit(None)
 
 
+# @patch('gem2caom2.GemName._get_obs_id')
+# def test_preview_augment_plane(mock_obs_id):
+#     mock_obs_id.return_value = TEST_OBS
+#     thumb = os.path.join(TESTDATA_DIR, GemName(TEST_FILE).thumb)
+#     if os.path.exists(thumb):
+#         os.remove(thumb)
+#     test_fqn = os.path.join(TESTDATA_DIR, '{}.in.xml'.format(TEST_OBS))
+#     test_obs = mc.read_obs_from_file(test_fqn)
+#     assert len(test_obs.planes[TEST_OBS].artifacts) == 2
+#     thumba = 'gemini:GEM/N20131203S0006_th.jpg'
+#
+#     test_kwargs = {'working_directory': TESTDATA_DIR,
+#                    'cadc_client': None}
+#     test_result = preview_augmentation.visit(test_obs, **test_kwargs)
+#     assert test_result is not None, 'expected a visit return value'
+#     assert test_result['artifacts'] == 1
+#     assert len(test_obs.planes[TEST_OBS].artifacts) == 3
+#     assert os.path.exists(thumb)
+#     assert test_obs.planes[TEST_OBS].artifacts[thumba].content_checksum == \
+#         ChecksumURI('md5:a8c106c04db4c148695787bfc364cbd8'), \
+#         'thumb checksum failure'
+#
+#     # now do updates
+#     test_obs.planes[TEST_OBS].artifacts[thumba].content_checksum = \
+#         ChecksumURI('19661c3c2508ecc22425ee2a05881ed4')
+#     test_result = preview_augmentation.visit(test_obs, **test_kwargs)
+#     assert test_result is not None, 'expected update visit return value'
+#     assert test_result['artifacts'] == 1
+#     assert len(test_obs.planes) == 1
+#     assert len(test_obs.planes[TEST_OBS].artifacts) == 3
+#     assert os.path.exists(thumb)
+#     assert test_obs.planes[TEST_OBS].artifacts[thumba].content_checksum == \
+#         ChecksumURI('md5:a8c106c04db4c148695787bfc364cbd8'), \
+#         'thumb update failed'
+
+
 @patch('gem2caom2.GemName._get_obs_id')
-def test_preview_augment_plane(mock_obs_id):
+def test_bounds_augment_plane(mock_obs_id):
     mock_obs_id.return_value = TEST_OBS
-    thumb = os.path.join(TESTDATA_DIR, GemName(TEST_FILE).thumb)
-    if os.path.exists(thumb):
-        os.remove(thumb)
-    test_fqn = os.path.join(TESTDATA_DIR, '{}.in.xml'.format(TEST_OBS))
+    test_fqn = os.path.join(TESTDATA_DIR, '{}.in.xml'.format(TEST_FP_OBS))
     test_obs = mc.read_obs_from_file(test_fqn)
-    assert len(test_obs.planes[TEST_OBS].artifacts) == 2
-    thumba = 'gemini:GEM/N20131203S0006_th.jpg'
+    assert len(test_obs.planes[TEST_FP_OBS].artifacts) == 2
 
     test_kwargs = {'working_directory': TESTDATA_DIR,
+                   'science_file': TEST_FP_FILE,
                    'cadc_client': None}
-    test_result = preview_augmentation.visit(test_obs, **test_kwargs)
-    assert test_result is not None, 'expected a visit return value'
-    assert test_result['artifacts'] == 1
-    assert len(test_obs.planes[TEST_OBS].artifacts) == 3
-    assert os.path.exists(thumb)
-    assert test_obs.planes[TEST_OBS].artifacts[thumba].content_checksum == \
-        ChecksumURI('md5:a8c106c04db4c148695787bfc364cbd8'), \
-        'thumb checksum failure'
+    test_result = plane_augmentation.visit(test_obs, **test_kwargs)
 
-    # now do updates
-    test_obs.planes[TEST_OBS].artifacts[thumba].content_checksum = \
-        ChecksumURI('19661c3c2508ecc22425ee2a05881ed4')
-    test_result = preview_augmentation.visit(test_obs, **test_kwargs)
+    # additional Plane metadata for AladinLite
+    test_obs.planes[TEST_FP_OBS].position.dimension = Dimension2D(3107, 2302)
+    test_obs.planes[TEST_FP_OBS].position.sample_size = 0.1455995277107371
+
+    validate(test_obs, True)
+
+    mc.write_obs_to_file(test_obs, '{}-fp.xml'.format(TEST_FP_OBS))
+
     assert test_result is not None, 'expected update visit return value'
-    assert test_result['artifacts'] == 1
+    assert test_result['planes'] == 1
+
     assert len(test_obs.planes) == 1
-    assert len(test_obs.planes[TEST_OBS].artifacts) == 3
-    assert os.path.exists(thumb)
-    assert test_obs.planes[TEST_OBS].artifacts[thumba].content_checksum == \
-        ChecksumURI('md5:a8c106c04db4c148695787bfc364cbd8'), \
-        'thumb update failed'
+    assert test_obs.planes[TEST_FP_OBS].position is not None, \
+        'expected Plane.position'
+    assert test_obs.planes[TEST_FP_OBS].position.bounds is not None, \
+        'expected.Plane.position.bounds'
+
+    bounds = test_obs.planes[TEST_FP_OBS].position.bounds
+    assert bounds.samples is not None, 'expected bounds.samples'
+    assert len(bounds.samples.vertices) == 24, 'expected 24 bounds samples'
+    assert bounds.points is not None, 'expected bounds.points'
+    assert len(bounds.points) == 8, 'expected 8 bounds points'
+
+    assert len(test_obs.planes[TEST_FP_OBS].artifacts) == 2
+    fits_uri = 'gemini:GEM/{}'.format(TEST_FP_FILE)
+    artifact = test_obs.planes[TEST_FP_OBS].artifacts[fits_uri]
+    assert artifact.content_type == 'application/fits', \
+        'expected ContentType application/fits'
+    assert artifact.content_length == 15102720, \
+        'expected ContentLength 15102720'
+    assert artifact.content_checksum.checksum == \
+           '5c4f933788ae79553951d10cb5cbedd6', \
+        'expected ContentChecksum 5c4f933788ae79553951d10cb5cbedd6'

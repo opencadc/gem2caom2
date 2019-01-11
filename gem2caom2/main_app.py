@@ -107,7 +107,7 @@ from caom2pipe import manage_composable as mc
 from caom2pipe import execute_composable as ec
 from caom2pipe import astro_composable as ac
 
-from gem2caom2.caom2_gmos import GMOS
+from gem2caom2.external_metadata import gmos_metadata, niri_metadata
 
 
 __all__ = ['main_app', 'update', 'GemName', 'COLLECTION', 'APPLICATION',
@@ -222,6 +222,12 @@ class GemName(ec.StorageName):
 
 
 def get_obs_metadata(obs_id):
+    """
+    Download the Gemini observation metadata for the given obs_id.
+
+    :param obs_id: The Obs ID
+    :return: Dictionary of observation metadata.
+    """
     gemini_url = '{}{}'.format(GEMINI_METADATA_URL, obs_id)
 
     # Open the URL and fetch the JSON document for the observation
@@ -251,13 +257,15 @@ def get_energy_metadata(obs_metadata):
     :return: Dictionary of energy metadata.
     """
     energy_metadata = {'energy': False}
-    if obs_metadata['instrument'] in ('GMOS-N', 'GMOS-S'):
-        gmos = GMOS()
-        energy_metadata = gmos.energy_metadata(obs_metadata)
+    instrument = obs_metadata['instrument']
+    if instrument in ['GMOS-N', 'GMOS-S']:
+        energy_metadata = gmos_metadata(obs_metadata)
+    elif instrument in ['NIRI']:
+        energy_metadata = niri_metadata(obs_metadata)
     return energy_metadata
 
 
-def get_energy_wcs(bp, obs_id):
+def get_chunk_wcs(bp, obs_id):
     """
     Set the energy WCS for the given observation.
 
@@ -265,6 +273,13 @@ def get_energy_wcs(bp, obs_id):
     :param obs_id: The current Observation ID.
     """
     obs_metadata = get_obs_metadata(obs_id)
+
+    # if types contains 'AZEL_TARGET' do not create
+    # spatial WCS
+    # types = obs_metadata['types']
+    # if 'AZEL_TARGET' not in types:
+    #     bp.configure_position_axes((1, 2))
+
     energy_metadata = get_energy_metadata(obs_metadata)
 
     # No energy metadata found
@@ -275,7 +290,7 @@ def get_energy_wcs(bp, obs_id):
     filter_name = energy_metadata['filter_name']
     resolving_power = energy_metadata['resolving_power']
     ctype = energy_metadata['wavelength_type']
-    cunit = energy_metadata['wavelength_unit']
+    # cunit = energy_metadata['wavelength_unit']
     naxis = energy_metadata['number_pixels']
     crpix = energy_metadata['reference_pixel']
     crval = energy_metadata['reference_wavelength']
@@ -347,18 +362,18 @@ def accumulate_fits_bp(bp, uri, obs_id):
     bp.configure_position_axes((1, 2))
     bp.configure_time_axis(3)
 
-    bp.set('Chunk.time.resolution', 'get_exposure(header)')
-    bp.set('Chunk.time.exposure', 'get_exposure(header)')
-    bp.set('Chunk.time.axis.axis.ctype', 'TIME')
-    bp.set('Chunk.time.axis.axis.cunit', 'd')
-    bp.set('Chunk.time.axis.error.syser', '1e-07')
-    bp.set('Chunk.time.axis.error.rnder', '1e-07')
-    bp.set('Chunk.time.axis.function.naxis', '1')
-    bp.set('Chunk.time.axis.function.delta', 'get_time_delta(header)')
-    bp.set('Chunk.time.axis.function.refCoord.pix', '0.5')
-    bp.add_fits_attribute('Chunk.time.axis.function.refCoord.val', 'MJD-OBS')
+    # bp.set('Chunk.time.resolution', 'get_exposure(header)')
+    # bp.set('Chunk.time.exposure', 'get_exposure(header)')
+    # bp.set('Chunk.time.axis.axis.ctype', 'TIME')
+    # bp.set('Chunk.time.axis.axis.cunit', 'd')
+    # bp.set('Chunk.time.axis.error.syser', '1e-07')
+    # bp.set('Chunk.time.axis.error.rnder', '1e-07')
+    # bp.set('Chunk.time.axis.function.naxis', '1')
+    # bp.set('Chunk.time.axis.function.delta', 'get_time_delta(header)')
+    # bp.set('Chunk.time.axis.function.refCoord.pix', '0.5')
+    # bp.add_fits_attribute('Chunk.time.axis.function.refCoord.val', 'MJD-OBS')
 
-    get_energy_wcs(bp, obs_id)
+    # get_chunk_wcs(bp, obs_id)
 
     logging.debug('Done accumulate_fits_bp.')
 
@@ -426,8 +441,7 @@ def _get_obs_id(args):
             if local.endswith('.jpg'):
                 pass
             else:
-                result = GemName(
-                    fname_on_disk=os.path.basename(local))._get_obs_id()
+                result = GemName(fname_on_disk=os.path.basename(local))._get_obs_id()
     else:
         raise mc.CadcException(
             'Cannot get the obsID without the file_uri from args {}'

@@ -1,0 +1,111 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="00000000-0000-0000-9d43-014cb13de692" caom2:lastModified="2018-05-09T05:50:52.306" caom2:maxLastModified="2018-05-09T05:50:52.306" caom2:metaChecksum="md5:f49c5f967ee984690d7aeadce18eb90a" caom2:accMetaChecksum="md5:e6ed9fa431ef29d8044860b8da0b7a01">
+  <caom2:collection>GEMINI</caom2:collection>
+  <caom2:observationID>GN-2015A-C-1-27-071</caom2:observationID>
+  <caom2:metaRelease>2015-04-05T00:00:00.000</caom2:metaRelease>
+  <caom2:algorithm>
+    <caom2:name>exposure</caom2:name>
+  </caom2:algorithm>
+  <caom2:type>FLAT</caom2:type>
+  <caom2:intent>calibration</caom2:intent>
+  <caom2:proposal>
+    <caom2:id>GN-2015A-C-1</caom2:id>
+    <caom2:pi>Kohji Tsumura</caom2:pi>
+    <caom2:title>Vertical structure of Jovian haze based on deep Galilean satellite eclipses</caom2:title>
+    <caom2:keywords>
+      <caom2:keyword>Planetary satellites, Solar system, Atmospheres</caom2:keyword>
+    </caom2:keywords>
+  </caom2:proposal>
+  <caom2:target>
+    <caom2:name>GCALflat</caom2:name>
+    <caom2:type>field</caom2:type>
+  </caom2:target>
+  <caom2:telescope>
+    <caom2:name>Gemini-North</caom2:name>
+    <caom2:geoLocationX>-5464284.388114523</caom2:geoLocationX>
+    <caom2:geoLocationY>-2493782.309746151</caom2:geoLocationY>
+    <caom2:geoLocationZ>2150786.371607106</caom2:geoLocationZ>
+  </caom2:telescope>
+  <caom2:instrument>
+    <caom2:name>NIRI</caom2:name>
+  </caom2:instrument>
+  <caom2:planes>
+    <caom2:plane caom2:id="00000000-0000-0000-9d43-014cb13de742" caom2:lastModified="2015-04-13T05:26:07.060" caom2:maxLastModified="2018-05-09T05:50:52.306" caom2:metaChecksum="md5:7e6f0dceeb516dfd762a70eda171a8c5" caom2:accMetaChecksum="md5:a8799f0b323eab84376029adafa784fe">
+      <caom2:productID>GN-2015A-C-1-27-071</caom2:productID>
+      <caom2:metaRelease>2015-04-05T00:00:00.000</caom2:metaRelease>
+      <caom2:dataRelease>2015-04-05T00:00:00.000</caom2:dataRelease>
+      <caom2:dataProductType>image</caom2:dataProductType>
+      <caom2:calibrationLevel>1</caom2:calibrationLevel>
+      <caom2:artifacts>
+        <caom2:artifact caom2:id="00000000-0000-0000-9d43-014cb13de749" caom2:lastModified="2018-05-09T05:50:52.306" caom2:maxLastModified="2018-05-09T05:50:52.306" caom2:metaChecksum="md5:85783fa80a3ee5abf445e14d78da72ad" caom2:accMetaChecksum="md5:1cfb8e503bf74251c2605eb8097a249f">
+          <caom2:uri>ad:GEMINI/N20150405S0028.fits.gz</caom2:uri>
+          <caom2:productType>calibration</caom2:productType>
+          <caom2:releaseType>data</caom2:releaseType>
+          <caom2:contentType>application/fits</caom2:contentType>
+          <caom2:contentLength>936745</caom2:contentLength>
+          <caom2:contentChecksum>md5:ef5c5e53b416a19f7a8391e85b656dd1</caom2:contentChecksum>
+          <caom2:parts>
+            <caom2:part caom2:id="00000000-0000-0000-9d43-014cb13de74c" caom2:lastModified="2015-04-13T05:26:07.060" caom2:maxLastModified="2015-04-13T05:26:07.060" caom2:metaChecksum="md5:0514e55d018c72e1799c92f4848f6018" caom2:accMetaChecksum="md5:cdbfb0a875f536786d543a0f6a399c29">
+              <caom2:name>0</caom2:name>
+              <caom2:chunks/>
+            </caom2:part>
+            <caom2:part caom2:id="00000000-0000-0000-9d43-014cb13de74e" caom2:lastModified="2015-04-13T05:26:07.060" caom2:maxLastModified="2015-04-13T05:26:07.060" caom2:metaChecksum="md5:6b93599435437c806e91f94380fa7955" caom2:accMetaChecksum="md5:d8ef8e7e045d374243d5bcffdeac5f3a">
+              <caom2:name>1</caom2:name>
+              <caom2:chunks>
+                <caom2:chunk caom2:id="00000000-0000-0000-9d43-014cb13de74f" caom2:lastModified="2015-04-13T05:26:07.060" caom2:maxLastModified="2015-04-13T05:26:07.060" caom2:metaChecksum="md5:d16537e2d4d083a50e5999e555c1d569" caom2:accMetaChecksum="md5:5e171db20709ec9432d383e25357ddd7">
+                  <caom2:naxis>2</caom2:naxis>
+                  <caom2:energyAxis>4</caom2:energyAxis>
+                  <caom2:timeAxis>3</caom2:timeAxis>
+                  <caom2:energy>
+                    <caom2:axis>
+                      <caom2:axis>
+                        <caom2:ctype>WAVE</caom2:ctype>
+                        <caom2:cunit>um</caom2:cunit>
+                      </caom2:axis>
+                      <caom2:function>
+                        <caom2:naxis>1</caom2:naxis>
+                        <caom2:delta>0.10985</caom2:delta>
+                        <caom2:refCoord>
+                          <caom2:pix>1.0</caom2:pix>
+                          <caom2:val>1.635075</caom2:val>
+                        </caom2:refCoord>
+                      </caom2:function>
+                    </caom2:axis>
+                    <caom2:specsys>TOPOCENT</caom2:specsys>
+                    <caom2:ssysobs>TOPOCENT</caom2:ssysobs>
+                    <caom2:ssyssrc>TOPOCENT</caom2:ssyssrc>
+                    <caom2:bandpassName>PK50 CH4long</caom2:bandpassName>
+                    <caom2:resolvingPower>15.384615</caom2:resolvingPower>
+                  </caom2:energy>
+                  <caom2:time>
+                    <caom2:axis>
+                      <caom2:axis>
+                        <caom2:ctype>TIME</caom2:ctype>
+                        <caom2:cunit>d</caom2:cunit>
+                      </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
+                      <caom2:function>
+                        <caom2:naxis>1</caom2:naxis>
+                        <caom2:delta>0.000486</caom2:delta>
+                        <caom2:refCoord>
+                          <caom2:pix>0.5</caom2:pix>
+                          <caom2:val>57117.1441551</caom2:val>
+                        </caom2:refCoord>
+                      </caom2:function>
+                    </caom2:axis>
+                    <caom2:timesys>UTC</caom2:timesys>
+                    <caom2:exposure>42.001</caom2:exposure>
+                    <caom2:resolution>42.001</caom2:resolution>
+                  </caom2:time>
+                </caom2:chunk>
+              </caom2:chunks>
+            </caom2:part>
+          </caom2:parts>
+        </caom2:artifact>
+      </caom2:artifacts>
+    </caom2:plane>
+  </caom2:planes>
+</caom2:Observation>

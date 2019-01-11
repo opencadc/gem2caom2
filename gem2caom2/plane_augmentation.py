@@ -3,7 +3,7 @@
 # ******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
 # *************  CENTRE CANADIEN DE DONNÉES ASTRONOMIQUES  **************
 #
-#  (c) 2018.                            (c) 2018.
+#  (c) 2019.                            (c) 2019.
 #  Government of Canada                 Gouvernement du Canada
 #  National Research Council            Conseil national de recherches
 #  Ottawa, Canada, K1A 0R6              Ottawa, Canada, K1A 0R6
@@ -67,97 +67,100 @@
 # ***********************************************************************
 #
 
-import re
-import caom2
-from gem2caom2.svofps import filter_metadata
+import logging
+import os
+from astropy.io import fits
+
+from caom2 import Observation, Plane, Position, Artifact
+from caom2.common import ChecksumURI
+from caom2pipe import manage_composable as mc
+from caom2utils import PositionUtil
 
 
-# __all__ = ['GMOS']
+__all__ = ['visit']
 
 
-class GMOS():
-    """
-    GMOS-N/S CAOM2 metadata generation
-    """
+def visit(observation, **kwargs):
+    assert observation is not None, 'Input parameter must have a value.'
+    assert isinstance(observation, Observation), \
+        'Input parameter must be an Observation'
 
-    def __init__(self):
-        """
-        GMOS N/S resolving power, dispersion, etc. from Gemini web pages
-        """
-        self.energy_band = caom2.EnergyBand['OPTICAL']
+    working_dir = './'
+    if 'working_directory' in kwargs:
+        working_dir = kwargs['working_directory']
+    if 'science_file' in kwargs:
+        science_file = kwargs['science_file']
+    else:
+        raise mc.CadcException(
+            'No science_file parameter provided to vistor '
+            'for obs {}.'.format(observation.observation_id))
 
-        self.res_power = {
-            'B1200': 3744.0,
-            'R831': 4396.0,
-            'B600': 1688.0,
-            'R600': 3744.0,
-            'R400': 1918.0,
-            'R150': 631.0
-        }
+    science_fqn = os.path.join(working_dir, science_file)
+    if not os.path.exists(science_fqn):
+        if science_fqn.endswith('.gz'):
+            science_fqn = science_fqn.replace('.gz', '')
+            if not os.path.exists(science_fqn):
+                raise mc.CadcException(
+                    '{} visit file not found'.format(science_fqn))
 
-        # Angstroms/pixel
-        self.dispersion = {
-            'B1200': 0.245,
-            'R831': 0.36,
-            'B600': 0.475,
-            'R600': 0.495,
-            'R400': 0.705,
-            'R150': 1.835
-        }
+    science_fqn = _unzip(science_fqn)
 
-    def energy_metadata(self, obs_metadata):
-        energy_metadata = {
-            'energy': True,
-            'energy_band': self.energy_band
-        }
+    count = 0
+    for i in observation.planes:
+        plane = observation.planes[i]
+        _update_plane_position(plane, science_fqn)
+        _update_fits_artifact_metadata(plane, science_fqn, science_file)
+        count += 1
 
-        # Determine energy metadata for the plane.  
-        # No energy information is determined for biases or darks.  The
-        # latter are sometimes only identified by a 'blank' filter.  e.g.
-        # NIRI 'flats' are sometimes obtained with the filter wheel blocked off.
+    logging.info('Completed footprint augmentation for {}'.format(
+        observation.observation_id))
+    return {'planes': count}
 
-        if obs_metadata['observation_type'] in ('BIAS', 'DARK'):
-            energy_metadata['energy'] = False
-            return energy_metadata
 
-        if obs_metadata['mode'] == 'imaging':
-            filter_md = filter_metadata(obs_metadata['instrument'],
-                                        obs_metadata['filter_name'])
+def _unzip(science_fqn):
+    if science_fqn.endswith('.gz'):
+        logging.debug('Unzipping {}.'.format(science_fqn))
+        unzipped_science_fqn = science_fqn.replace('.gz', '')
+        import gzip
+        with open(science_fqn, 'rb') as f_read:
+            gz = gzip.GzipFile(fileobj=f_read)
+            with open(unzipped_science_fqn, 'wb') as f_write:
+                f_write.write(gz.read())
+        return unzipped_science_fqn
+    else:
+        return science_fqn
 
-            delta = filter_md['wl_eff_width']
-            reference_wavelength = filter_md['wl_eff']
-            resolving_power = reference_wavelength/delta
-            reference_wavelength /= 1.0e10
-            delta /= 1.0e10
-        elif obs_metadata['mode'] in ('LS', 'spectroscopy', 'MOS'):
-            reference_wavelength = obs_metadata['central_wavelength']
-            # Ignore energy information if value of 'central_wavelength' = 0.0
-            if reference_wavelength == 0.0:
-                energy_metadata['energy'] = False
-                # if 'focus' in fpmask:
-                #     md['observation_type'] = 'FOCUS'
-                return energy_metadata
 
-            resolving_power = self.res_power[obs_metadata['disperser']]
-            delta = self.dispersion[obs_metadata['disperser']]
+def _update_plane_position(plane, science_file):
+    """This function assumes that if the code got here, the science file is
+    on disk."""
+    logging.debug('Begin _update_plane_position')
+    assert isinstance(plane, Plane), 'Expecting type Plane'
 
-            reference_wavelength /= 1.0e6
-            delta /= 1.0e10
+    with fits.open(science_file) as hdulist:
+        bounds = PositionUtil.calculate_footprint(hdulist)
+        if not plane.position:
+            plane.position = Position()
+        plane.position.bounds = bounds
 
-        filter_name = re.sub(r'&', ' & ', obs_metadata['filter_name'])
-        energy_metadata['filter_name'] = filter_name
-        energy_metadata['wavelength_type'] = 'WAVE'
-        energy_metadata['wavelength_unit'] = 'm'
-        energy_metadata['number_pixels'] = 1
-        energy_metadata['reference_wavelength'] = reference_wavelength
-        energy_metadata['delta'] = delta
-        energy_metadata['resolving_power'] = resolving_power
-        energy_metadata['reference_pixel'] = 1.0
+    logging.debug('Done _update_plane_position.')
 
-        # On occasion (e.g. Moon observations) two filters with
-        # inconsistent passbands result in negative r.  e.g. RG610 + g
-        # Skip energy metadata in this case.
-        if energy_metadata['resolving_power'] < 0:
-            energy_metadata['energy'] = False
-  
-        return energy_metadata
+
+def _update_fits_artifact_metadata(plane, science_fqn, science_file):
+    logging.debug('Begin _update_fits_artifact_metadata')
+
+    # Get the file metadata
+    file_meta = mc.get_file_meta(science_fqn)
+
+    # Find the science artifact to update
+    for i in plane.artifacts:
+        artifact = plane.artifacts[i]
+        uri = artifact.uri
+        if uri.split('/')[1] == science_file:
+            artifact.content_type = file_meta['type']
+            artifact.content_length = file_meta['size']
+            artifact.content_checksum = ChecksumURI(
+                'md5:{}'.format(file_meta['md5sum']))
+            break
+
+    logging.debug('Done _update_fits_artifact_metadata.')

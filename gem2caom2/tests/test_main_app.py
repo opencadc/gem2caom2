@@ -81,21 +81,32 @@ from mock import patch
 pytest.main(args=['-s', os.path.abspath(__file__)])
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
 TESTDATA_DIR = os.path.join(THIS_DIR, 'data')
+INSTRUMENTS = ('GMOS', 'NIRI')
 PLUGIN = os.path.join(os.path.dirname(THIS_DIR), 'main_app.py')
 
-LOOKUP = {'N20131203S0006': 'GN-2013B-Q-28-150-002',
-          'N20150217S0380': 'GN-2015A-C-2-96-002',
-          'N20150220S0320': 'GN-2015A-C-4-24-086',
-          'N20150216S0142': 'GN-2015A-Q-91-5-002',
-          'N20150217S0274': 'GN-CAL20150217-2-003',
-          'N20150929S0013': 'GN-CAL20150925-2-007'}
+LOOKUP = {
+    # GMOS
+    'N20131203S0006': 'GN-2013B-Q-28-150-002',
+    'N20150217S0380': 'GN-2015A-C-2-96-002',
+    'N20150220S0320': 'GN-2015A-C-4-24-086',
+    'N20150216S0142': 'GN-2015A-Q-91-5-002',
+    'N20150217S0274': 'GN-CAL20150217-2-003',
+    'N20150929S0013': 'GN-CAL20150925-2-007',
+    # NIRI
+    'N20020620S0021': 'GN-2002A-C-5-1-001',
+    'N20020620S0035': 'GN-2002A-C-5-1-015',
+    'N20020620S0315': 'GN-2002A-C-5-21-002',
+    'N20150404S0726': 'GN-2015A-C-1-20-001',
+    'N20150404S0872': 'GN-2015A-C-1-27-001',
+    'N20150405S0028': 'GN-2015A-C-1-27-071'
+}
 
 
 def pytest_generate_tests(metafunc):
     if os.path.exists(TESTDATA_DIR):
         # files = [os.path.join(TESTDATA_DIR, name) for name in
         #          os.listdir(TESTDATA_DIR) if name.endswith('header')]
-        files = ['{}/{}'.format(TESTDATA_DIR, 'N20131203S0006.fits.header')]
+        files = ['{}/{}'.format(TESTDATA_DIR, 'N20150216S0142.fits.header')]
         metafunc.parametrize('test_name', files)
 
 
