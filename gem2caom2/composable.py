@@ -67,30 +67,29 @@
 # ***********************************************************************
 #
 
-import logging
 import sys
 import tempfile
 
 from caom2pipe import execute_composable as ec
 from caom2pipe import manage_composable as mc
-from gem2caom2 import APPLICATION, COLLECTION, GemName
+from gem2caom2 import APPLICATION, COLLECTION, ARCHIVE, GemName
+from gem2caom2 import preview_augmentation
 
 
-# meta_visitors = [preview_augmentation]
-meta_visitors = []
+meta_visitors = [preview_augmentation]
 data_visitors = []
 
 
 def run():
     proxy = '/usr/src/app/cadcproxy.pem'
     ec.run_by_file(GemName, APPLICATION, COLLECTION, proxy,
-                   meta_visitors, data_visitors)
+                   meta_visitors, data_visitors, archive=ARCHIVE)
 
 
 def run_proxy():
     proxy = '/usr/src/app/cadcproxy.pem'
     ec.run_by_file(GemName, APPLICATION, COLLECTION, proxy,
-                   meta_visitors, data_visitors)
+                   meta_visitors, data_visitors, archive=ARCHIVE)
 
 
 def run_single():
@@ -108,7 +107,7 @@ def run_single():
         config.proxy = temp.name
     else:
         config.proxy = sys.argv[2]
-    config.stream = 'raw'
+    config.stream = 'default'
     if config.features.use_file_names:
         storage_name = GemName(file_name=sys.argv[1])
     else:
@@ -136,9 +135,7 @@ def run_query():
 
     config = mc.Config()
     config.get()
-
-    logging.error('params {} {}'.format(prev_exec_date, exec_date))
-    logging.error(config)
+    config.stream = 'default'
 
     file_list = mc.read_file_list_from_archive(config, APPLICATION,
                                                prev_exec_date, exec_date)
@@ -148,5 +145,5 @@ def run_query():
         mc.write_to_file(config.work_fqn, '\n'.join(file_list))
         result |= ec.run_by_file(GemName, APPLICATION, COLLECTION,
                                  config.proxy_fqn, meta_visitors,
-                                 data_visitors)
+                                 data_visitors, archive=ARCHIVE)
     sys.exit(result)

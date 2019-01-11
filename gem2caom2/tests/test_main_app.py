@@ -68,7 +68,7 @@
 #
 import pytest
 
-from gem2caom2 import main_app, APPLICATION, COLLECTION, SCHEME
+from gem2caom2 import main_app, APPLICATION, ARCHIVE, SCHEME
 from caom2.diff import get_differences
 from caom2pipe import manage_composable as mc
 
@@ -174,11 +174,11 @@ def _get_file_id(basename):
 def _get_lineage(basename, product_id, file_id):
     jpg_file = basename.replace('.fits.header', '.jpg')
     if os.path.exists(os.path.join(TESTDATA_DIR, jpg_file)):
-        jpg = mc.get_lineage(COLLECTION, product_id, '{}.jpg'.format(file_id),
+        jpg = mc.get_lineage(ARCHIVE, product_id, '{}.jpg'.format(file_id),
                              SCHEME)
-        fits = mc.get_lineage(COLLECTION, product_id, '{}.fits'.format(file_id),
+        fits = mc.get_lineage(ARCHIVE, product_id, '{}.fits'.format(file_id),
                               SCHEME)
         return '{} {}'.format(jpg, fits)
     else:
-        return mc.get_lineage(COLLECTION, product_id, '{}.fits'.format(file_id),
+        return mc.get_lineage(ARCHIVE, product_id, '{}.fits'.format(file_id),
                               SCHEME)
