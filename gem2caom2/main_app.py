@@ -363,18 +363,18 @@ def accumulate_fits_bp(bp, uri, obs_id):
     bp.configure_position_axes((1, 2))
     bp.configure_time_axis(3)
 
-    bp.set('Chunk.time.resolution', 'get_exposure(header)')
-    bp.set('Chunk.time.exposure', 'get_exposure(header)')
-    bp.set('Chunk.time.axis.axis.ctype', 'TIME')
-    bp.set('Chunk.time.axis.axis.cunit', 'd')
-    bp.set('Chunk.time.axis.error.syser', '1e-07')
-    bp.set('Chunk.time.axis.error.rnder', '1e-07')
-    bp.set('Chunk.time.axis.function.naxis', '1')
-    bp.set('Chunk.time.axis.function.delta', 'get_time_delta(header)')
-    bp.set('Chunk.time.axis.function.refCoord.pix', '0.5')
-    bp.add_fits_attribute('Chunk.time.axis.function.refCoord.val', 'MJD-OBS')
-
-    get_chunk_wcs(bp, obs_id)
+    # bp.set('Chunk.time.resolution', 'get_exposure(header)')
+    # bp.set('Chunk.time.exposure', 'get_exposure(header)')
+    # bp.set('Chunk.time.axis.axis.ctype', 'TIME')
+    # bp.set('Chunk.time.axis.axis.cunit', 'd')
+    # bp.set('Chunk.time.axis.error.syser', '1e-07')
+    # bp.set('Chunk.time.axis.error.rnder', '1e-07')
+    # bp.set('Chunk.time.axis.function.naxis', '1')
+    # bp.set('Chunk.time.axis.function.delta', 'get_time_delta(header)')
+    # bp.set('Chunk.time.axis.function.refCoord.pix', '0.5')
+    # bp.add_fits_attribute('Chunk.time.axis.function.refCoord.val', 'MJD-OBS')
+    #
+    # get_chunk_wcs(bp, obs_id)
 
     logging.debug('Done accumulate_fits_bp.')
 

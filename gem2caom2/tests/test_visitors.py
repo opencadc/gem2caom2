@@ -82,13 +82,10 @@ THIS_DIR = os.path.dirname(os.path.realpath(__file__))
 TESTDATA_DIR = os.path.join(THIS_DIR, 'data')
 TEST_OBS = 'GN-2013B-Q-28-150-002'
 TEST_FILE = 'N20131203S0006.jpg'
-TEST_FP_OBS = 'GN-2015A-Q-91-5-002'
-TEST_FP_FILE = 'N20150216S0142.fits'
-
-
-def test_preview_aug_visit():
-    with pytest.raises(mc.CadcException):
-        preview_augmentation.visit(None)
+# TEST_FP_OBS = 'GN-2015A-Q-91-5-002'
+TEST_FP_OBS = 'GN-2015A-C-1-20-001'
+# TEST_FP_FILE = 'N20150216S0142.fits'
+TEST_FP_FILE = 'N20150404S0726.fits'
 
 
 @patch('gem2caom2.GemName._get_obs_id')
@@ -128,6 +125,7 @@ def test_preview_augment_plane(mock_obs_id):
         'thumb update failed'
 
 
+@pytest.mark.skip(reason='Possibly not needed')
 @patch('gem2caom2.GemName._get_obs_id')
 def test_bounds_augment_plane(mock_obs_id):
     mock_obs_id.return_value = TEST_OBS
@@ -141,12 +139,12 @@ def test_bounds_augment_plane(mock_obs_id):
     test_result = plane_augmentation.visit(test_obs, **test_kwargs)
 
     # additional Plane metadata for AladinLite
-    test_obs.planes[TEST_FP_OBS].position.dimension = Dimension2D(3107, 2302)
-    test_obs.planes[TEST_FP_OBS].position.sample_size = 0.1455995277107371
+    # test_obs.planes[TEST_FP_OBS].position.dimension = Dimension2D(3107, 2302)
+    # test_obs.planes[TEST_FP_OBS].position.sample_size = 0.1455995277107371
 
     validate(test_obs, True)
 
-    mc.write_obs_to_file(test_obs, '{}-fp.xml'.format(TEST_FP_OBS))
+    # mc.write_obs_to_file(test_obs, '{}-fp.xml'.format(TEST_FP_OBS))
 
     assert test_result is not None, 'expected update visit return value'
     assert test_result['planes'] == 1
