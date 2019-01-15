@@ -361,7 +361,7 @@ def accumulate_fits_bp(bp, uri, obs_id):
     Observation level."""
     logging.debug('Begin accumulate_fits_bp.')
     bp.configure_position_axes((1, 2))
-    bp.configure_time_axis(3)
+    # bp.configure_time_axis(3)
 
     # bp.set('Chunk.time.resolution', 'get_exposure(header)')
     # bp.set('Chunk.time.exposure', 'get_exposure(header)')
