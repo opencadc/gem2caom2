@@ -1,3 +1,9 @@
+Filename: N20150216S0142.fits.bz2
+
+AstroData Types: ['GEMINI_NORTH', 'GMOS_N', 'GMOS_IMAGE', 'GEMINI', 'SIDEREAL', 'IMAGE', 'GMOS', 'GMOS_RAW', 'RAW', 'UNPREPARED']
+
+
+--- HDU 0 ---
 SIMPLE  =                    T / file does conform to FITS standard             
 BITPIX  =                   16 / number of bits per data pixel                  
 NAXIS   =                    0 / number of data axes                            
@@ -179,7 +185,8 @@ AMEND   =                1.125 / Airmass at end of exposure
                                                                                 
                                                                                 
 RELEASE = '2016-08-16'         / End of proprietary period YYYY-MM-DD           
-END                                                                             
+
+--- HDU 1 ---
 XTENSION= 'IMAGE   '           / IMAGE extension                                
 BITPIX  =                   16 / number of bits per data pixel                  
 NAXIS   =                    2 / number of data axes                            
@@ -187,6 +194,8 @@ NAXIS1  =                  544 / length of data axis 1
 NAXIS2  =                 2304 / length of data axis 2                          
 PCOUNT  =                    0 / required keyword; must = 0                     
 GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'SCI     '           / ad1406: added by AstroData                     
+EXTVER  =                    1 / ad1410: added by AstroData                     
 BZERO   =                32768 / offset data range to that of unsigned short    
 BSCALE  =                    1 / default scaling factor                         
 INHERIT =                    F / inherit the primary header                     
@@ -217,8 +226,8 @@ BIASSEC = '[1:32,1:2304]'      / Bias section(s)
 FRMNAME = 'dhsFrame'           / Name assigned to a frame of data.              
 FRAMEID = '1       '           / Frame Id                                       
 DATATYP = '        '           / Type of data frame                             
-EXTVER  =                   -1 / Number assigned to a FITS extension.           
-END                                                                             
+
+--- HDU 2 ---
 XTENSION= 'IMAGE   '           / IMAGE extension                                
 BITPIX  =                   16 / number of bits per data pixel                  
 NAXIS   =                    2 / number of data axes                            
@@ -226,6 +235,8 @@ NAXIS1  =                  544 / length of data axis 1
 NAXIS2  =                 2304 / length of data axis 2                          
 PCOUNT  =                    0 / required keyword; must = 0                     
 GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'SCI     '           / ad1406: added by AstroData                     
+EXTVER  =                    2 / ad1410: added by AstroData                     
 BZERO   =                32768 / offset data range to that of unsigned short    
 BSCALE  =                    1 / default scaling factor                         
 INHERIT =                    F / inherit the primary header                     
@@ -256,8 +267,8 @@ BIASSEC = '[513:544,1:2304]'   / Bias section(s)
 FRMNAME = 'dhsFrame'           / Name assigned to a frame of data.              
 FRAMEID = '0       '           / Frame Id                                       
 DATATYP = '        '           / Type of data frame                             
-EXTVER  =                   -1 / Number assigned to a FITS extension.           
-END                                                                             
+
+--- HDU 3 ---
 XTENSION= 'IMAGE   '           / IMAGE extension                                
 BITPIX  =                   16 / number of bits per data pixel                  
 NAXIS   =                    2 / number of data axes                            
@@ -265,6 +276,8 @@ NAXIS1  =                  544 / length of data axis 1
 NAXIS2  =                 2304 / length of data axis 2                          
 PCOUNT  =                    0 / required keyword; must = 0                     
 GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'SCI     '           / ad1406: added by AstroData                     
+EXTVER  =                    3 / ad1410: added by AstroData                     
 BZERO   =                32768 / offset data range to that of unsigned short    
 BSCALE  =                    1 / default scaling factor                         
 INHERIT =                    F / inherit the primary header                     
@@ -295,8 +308,8 @@ BIASSEC = '[1:32,1:2304]'      / Bias section(s)
 FRMNAME = 'dhsFrame'           / Name assigned to a frame of data.              
 FRAMEID = '3       '           / Frame Id                                       
 DATATYP = '        '           / Type of data frame                             
-EXTVER  =                   -1 / Number assigned to a FITS extension.           
-END                                                                             
+
+--- HDU 4 ---
 XTENSION= 'IMAGE   '           / IMAGE extension                                
 BITPIX  =                   16 / number of bits per data pixel                  
 NAXIS   =                    2 / number of data axes                            
@@ -304,6 +317,8 @@ NAXIS1  =                  544 / length of data axis 1
 NAXIS2  =                 2304 / length of data axis 2                          
 PCOUNT  =                    0 / required keyword; must = 0                     
 GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'SCI     '           / ad1406: added by AstroData                     
+EXTVER  =                    4 / ad1410: added by AstroData                     
 BZERO   =                32768 / offset data range to that of unsigned short    
 BSCALE  =                    1 / default scaling factor                         
 INHERIT =                    F / inherit the primary header                     
@@ -334,8 +349,8 @@ BIASSEC = '[513:544,1:2304]'   / Bias section(s)
 FRMNAME = 'dhsFrame'           / Name assigned to a frame of data.              
 FRAMEID = '2       '           / Frame Id                                       
 DATATYP = '        '           / Type of data frame                             
-EXTVER  =                   -1 / Number assigned to a FITS extension.           
-END                                                                             
+
+--- HDU 5 ---
 XTENSION= 'IMAGE   '           / IMAGE extension                                
 BITPIX  =                   16 / number of bits per data pixel                  
 NAXIS   =                    2 / number of data axes                            
@@ -343,6 +358,8 @@ NAXIS1  =                  544 / length of data axis 1
 NAXIS2  =                 2304 / length of data axis 2                          
 PCOUNT  =                    0 / required keyword; must = 0                     
 GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'SCI     '           / ad1406: added by AstroData                     
+EXTVER  =                    5 / ad1410: added by AstroData                     
 BZERO   =                32768 / offset data range to that of unsigned short    
 BSCALE  =                    1 / default scaling factor                         
 INHERIT =                    F / inherit the primary header                     
@@ -373,8 +390,8 @@ BIASSEC = '[513:544,1:2304]'   / Bias section(s)
 FRMNAME = 'dhsFrame'           / Name assigned to a frame of data.              
 FRAMEID = '4       '           / Frame Id                                       
 DATATYP = '        '           / Type of data frame                             
-EXTVER  =                   -1 / Number assigned to a FITS extension.           
-END                                                                             
+
+--- HDU 6 ---
 XTENSION= 'IMAGE   '           / IMAGE extension                                
 BITPIX  =                   16 / number of bits per data pixel                  
 NAXIS   =                    2 / number of data axes                            
@@ -382,6 +399,8 @@ NAXIS1  =                  544 / length of data axis 1
 NAXIS2  =                 2304 / length of data axis 2                          
 PCOUNT  =                    0 / required keyword; must = 0                     
 GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'SCI     '           / ad1406: added by AstroData                     
+EXTVER  =                    6 / ad1410: added by AstroData                     
 BZERO   =                32768 / offset data range to that of unsigned short    
 BSCALE  =                    1 / default scaling factor                         
 INHERIT =                    F / inherit the primary header                     
@@ -412,5 +431,3 @@ BIASSEC = '[1:32,1:2304]'      / Bias section(s)
 FRMNAME = 'dhsFrame'           / Name assigned to a frame of data.              
 FRAMEID = '5       '           / Frame Id                                       
 DATATYP = '        '           / Type of data frame                             
-EXTVER  =                   -1 / Number assigned to a FITS extension.           
-END                                                                             

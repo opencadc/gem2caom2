@@ -1,3 +1,9 @@
+Filename: N20150929S0013.fits.bz2
+
+AstroData Types: ['GEMINI_NORTH', 'GMOS_N', 'GMOS_IMAGE', 'GEMINI', 'GMOS_DARK', 'IMAGE', 'GMOS', 'GMOS_RAW', 'RAW', 'UNPREPARED']
+
+
+--- HDU 0 ---
 SIMPLE  =                    T / file does conform to FITS standard             
 BITPIX  =                   16 / number of bits per data pixel                  
 NAXIS   =                    0 / number of data axes                            
@@ -149,7 +155,8 @@ AIRMASS =               -9999. / Mean airmass for the observation
 AMSTART =               -9999. / Airmass at start of exposure                   
 AMEND   =               -9999. / Airmass at end of exposure                     
 RELEASE = '2015-09-29'         / End of proprietary period YYYY-MM-DD           
-END                                                                             
+
+--- HDU 1 ---
 XTENSION= 'IMAGE   '           / IMAGE extension                                
 BITPIX  =                   16 / number of bits per data pixel                  
 NAXIS   =                    2 / number of data axes                            
@@ -157,6 +164,8 @@ NAXIS1  =                 1056 / length of data axis 1
 NAXIS2  =                 4608 / length of data axis 2                          
 PCOUNT  =                    0 / required keyword; must = 0                     
 GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'SCI     '           / ad1406: added by AstroData                     
+EXTVER  =                    1 / ad1410: added by AstroData                     
 BZERO   =                32768 / offset data range to that of unsigned short    
 BSCALE  =                    1 / default scaling factor                         
 INHERIT =                    F / inherit the primary header                     
@@ -174,8 +183,53 @@ BIASSEC = '[1:32,1:4608]'      / Bias section(s)
 FRMNAME = 'dhsFrame'           / Name assigned to a frame of data.              
 FRAMEID = '1       '           / Frame Id                                       
 DATATYP = '        '           / Type of data frame                             
-EXTVER  =                   -1 / Number assigned to a FITS extension.           
-END                                                                             
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+
+--- HDU 2 ---
 XTENSION= 'IMAGE   '           / IMAGE extension                                
 BITPIX  =                   16 / number of bits per data pixel                  
 NAXIS   =                    2 / number of data axes                            
@@ -183,6 +237,8 @@ NAXIS1  =                 1056 / length of data axis 1
 NAXIS2  =                 4608 / length of data axis 2                          
 PCOUNT  =                    0 / required keyword; must = 0                     
 GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'SCI     '           / ad1406: added by AstroData                     
+EXTVER  =                    2 / ad1410: added by AstroData                     
 BZERO   =                32768 / offset data range to that of unsigned short    
 BSCALE  =                    1 / default scaling factor                         
 INHERIT =                    F / inherit the primary header                     
@@ -200,8 +256,53 @@ BIASSEC = '[1025:1056,1:4608]' / Bias section(s)
 FRMNAME = 'dhsFrame'           / Name assigned to a frame of data.              
 FRAMEID = '0       '           / Frame Id                                       
 DATATYP = '        '           / Type of data frame                             
-EXTVER  =                   -1 / Number assigned to a FITS extension.           
-END                                                                             
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+
+--- HDU 3 ---
 XTENSION= 'IMAGE   '           / IMAGE extension                                
 BITPIX  =                   16 / number of bits per data pixel                  
 NAXIS   =                    2 / number of data axes                            
@@ -209,6 +310,8 @@ NAXIS1  =                 1056 / length of data axis 1
 NAXIS2  =                 4608 / length of data axis 2                          
 PCOUNT  =                    0 / required keyword; must = 0                     
 GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'SCI     '           / ad1406: added by AstroData                     
+EXTVER  =                    3 / ad1410: added by AstroData                     
 BZERO   =                32768 / offset data range to that of unsigned short    
 BSCALE  =                    1 / default scaling factor                         
 INHERIT =                    F / inherit the primary header                     
@@ -226,8 +329,53 @@ BIASSEC = '[1:32,1:4608]'      / Bias section(s)
 FRMNAME = 'dhsFrame'           / Name assigned to a frame of data.              
 FRAMEID = '3       '           / Frame Id                                       
 DATATYP = '        '           / Type of data frame                             
-EXTVER  =                   -1 / Number assigned to a FITS extension.           
-END                                                                             
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+
+--- HDU 4 ---
 XTENSION= 'IMAGE   '           / IMAGE extension                                
 BITPIX  =                   16 / number of bits per data pixel                  
 NAXIS   =                    2 / number of data axes                            
@@ -235,6 +383,8 @@ NAXIS1  =                 1056 / length of data axis 1
 NAXIS2  =                 4608 / length of data axis 2                          
 PCOUNT  =                    0 / required keyword; must = 0                     
 GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'SCI     '           / ad1406: added by AstroData                     
+EXTVER  =                    4 / ad1410: added by AstroData                     
 BZERO   =                32768 / offset data range to that of unsigned short    
 BSCALE  =                    1 / default scaling factor                         
 INHERIT =                    F / inherit the primary header                     
@@ -252,8 +402,53 @@ BIASSEC = '[1025:1056,1:4608]' / Bias section(s)
 FRMNAME = 'dhsFrame'           / Name assigned to a frame of data.              
 FRAMEID = '2       '           / Frame Id                                       
 DATATYP = '        '           / Type of data frame                             
-EXTVER  =                   -1 / Number assigned to a FITS extension.           
-END                                                                             
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+
+--- HDU 5 ---
 XTENSION= 'IMAGE   '           / IMAGE extension                                
 BITPIX  =                   16 / number of bits per data pixel                  
 NAXIS   =                    2 / number of data axes                            
@@ -261,6 +456,8 @@ NAXIS1  =                 1056 / length of data axis 1
 NAXIS2  =                 4608 / length of data axis 2                          
 PCOUNT  =                    0 / required keyword; must = 0                     
 GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'SCI     '           / ad1406: added by AstroData                     
+EXTVER  =                    5 / ad1410: added by AstroData                     
 BZERO   =                32768 / offset data range to that of unsigned short    
 BSCALE  =                    1 / default scaling factor                         
 INHERIT =                    F / inherit the primary header                     
@@ -278,8 +475,53 @@ BIASSEC = '[1025:1056,1:4608]' / Bias section(s)
 FRMNAME = 'dhsFrame'           / Name assigned to a frame of data.              
 FRAMEID = '4       '           / Frame Id                                       
 DATATYP = '        '           / Type of data frame                             
-EXTVER  =                   -1 / Number assigned to a FITS extension.           
-END                                                                             
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+
+--- HDU 6 ---
 XTENSION= 'IMAGE   '           / IMAGE extension                                
 BITPIX  =                   16 / number of bits per data pixel                  
 NAXIS   =                    2 / number of data axes                            
@@ -287,6 +529,8 @@ NAXIS1  =                 1056 / length of data axis 1
 NAXIS2  =                 4608 / length of data axis 2                          
 PCOUNT  =                    0 / required keyword; must = 0                     
 GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'SCI     '           / ad1406: added by AstroData                     
+EXTVER  =                    6 / ad1410: added by AstroData                     
 BZERO   =                32768 / offset data range to that of unsigned short    
 BSCALE  =                    1 / default scaling factor                         
 INHERIT =                    F / inherit the primary header                     
@@ -304,5 +548,48 @@ BIASSEC = '[1:32,1:4608]'      / Bias section(s)
 FRMNAME = 'dhsFrame'           / Name assigned to a frame of data.              
 FRAMEID = '5       '           / Frame Id                                       
 DATATYP = '        '           / Type of data frame                             
-EXTVER  =                   -1 / Number assigned to a FITS extension.           
-END                                                                             
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                

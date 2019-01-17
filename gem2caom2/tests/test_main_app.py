@@ -84,6 +84,7 @@ TESTDATA_DIR = os.path.join(THIS_DIR, 'data')
 INSTRUMENTS = ('GMOS', 'NIRI')
 PLUGIN = os.path.join(os.path.dirname(THIS_DIR), 'main_app.py')
 
+
 LOOKUP = {
     # GMOS
     'N20131203S0006': 'GN-2013B-Q-28-150-002',
@@ -104,14 +105,21 @@ LOOKUP = {
 
 def pytest_generate_tests(metafunc):
     if os.path.exists(TESTDATA_DIR):
-        # files = [os.path.join(TESTDATA_DIR, name) for name in
-        #          os.listdir(TESTDATA_DIR) if name.endswith('header')]
-        files = ['{}/{}'.format(TESTDATA_DIR, 'N20150216S0142.fits.header')]
-        metafunc.parametrize('test_name', files)
+        ## file_list = [os.path.join(TESTDATA_DIR, name) for name in os.listdir(TESTDATA_DIR) if name.endswith('header')]
+
+        # file_list = []
+        # for root, dirs, files in os.walk(TESTDATA_DIR):
+        #     for file in files:
+        #         if file.endswith(".header"):
+        #             file_list.append(os.path.join(root, file))
+
+        file_list = ['{}/{}/{}'.format(TESTDATA_DIR, 'GMOS', 'N20131203S0006.fits.header')]
+        metafunc.parametrize('test_name', file_list)
 
 
 def test_main_app(test_name):
     basename = os.path.basename(test_name)
+    dirname = os.path.dirname(test_name)
     # file_id = basename.split('.fits')[0]
     file_id = _get_file_id(basename)
     product_id = LOOKUP[file_id]
@@ -119,7 +127,7 @@ def test_main_app(test_name):
     #     COLLECTION, product_id, '{}.fits'.format(file_id))
     lineage = _get_lineage(basename, product_id, file_id)
     input_file = '{}.in.xml'.format(product_id)
-    actual_fqn = '{}/{}.actual.xml'.format(TESTDATA_DIR, product_id)
+    actual_fqn = '{}/{}.actual.xml'.format(dirname, product_id)
     local = _get_local(test_name)
     plugin = PLUGIN
 
@@ -139,11 +147,11 @@ def test_main_app(test_name):
         sys.argv = \
             ('{} --no_validate --local {} '
              '--plugin {} --module {} --in {}/{} --out {} --lineage {}'.
-             format(APPLICATION, local, plugin, plugin, TESTDATA_DIR,
+             format(APPLICATION, local, plugin, plugin, dirname,
                     input_file, actual_fqn, lineage)).split()
         print(sys.argv)
         main_app()
-        expected_fqn = '{}/{}.xml'.format(TESTDATA_DIR, product_id)
+        expected_fqn = '{}/{}.xml'.format(dirname, product_id)
         expected = mc.read_obs_from_file(expected_fqn)
         actual = mc.read_obs_from_file(actual_fqn)
         result = get_differences(expected, actual, 'Observation')

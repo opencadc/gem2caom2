@@ -100,6 +100,7 @@ import traceback
 import requests
 from requests.adapters import HTTPAdapter
 from urllib3 import Retry
+import re
 
 from caom2 import Observation
 from caom2utils import ObsBlueprint, get_gen_proc_arg_parser, gen_proc
@@ -220,6 +221,30 @@ class GemName(ec.StorageName):
     @staticmethod
     def is_preview(entry):
         return '.jpg' in entry
+
+
+def multi_replace(string, replacements):
+    """
+    Given a string and a replacement map, it returns the replaced string.
+
+    :param str string: string to execute replacements on
+    :param dict replacements: replacement dictionary {value to find: value
+                                                      to replace}
+    :rtype: str
+
+    """
+    # Place longer ones first to keep shorter substrings from matching where
+    # the longer ones should take place
+    # For instance given the replacements {'ab': 'AB', 'abc': 'ABC'}
+    # against the string 'hey abc', it should produce
+    # 'hey ABC' and not 'hey ABc'
+    substrs = sorted(replacements, key=len, reverse=True)
+
+    # Create a big OR regex that matches any of the substrings to replace
+    regexp = re.compile('|'.join(map(re.escape, substrs)))
+
+    # For each match, look up the new string in the replacements
+    return regexp.sub(lambda match: replacements[match.group(0)], string)
 
 
 def get_obs_metadata(obs_id):
@@ -361,20 +386,20 @@ def accumulate_fits_bp(bp, uri, obs_id):
     Observation level."""
     logging.debug('Begin accumulate_fits_bp.')
     bp.configure_position_axes((1, 2))
-    # bp.configure_time_axis(3)
+    bp.configure_time_axis(3)
 
-    # bp.set('Chunk.time.resolution', 'get_exposure(header)')
-    # bp.set('Chunk.time.exposure', 'get_exposure(header)')
-    # bp.set('Chunk.time.axis.axis.ctype', 'TIME')
-    # bp.set('Chunk.time.axis.axis.cunit', 'd')
-    # bp.set('Chunk.time.axis.error.syser', '1e-07')
-    # bp.set('Chunk.time.axis.error.rnder', '1e-07')
-    # bp.set('Chunk.time.axis.function.naxis', '1')
-    # bp.set('Chunk.time.axis.function.delta', 'get_time_delta(header)')
-    # bp.set('Chunk.time.axis.function.refCoord.pix', '0.5')
-    # bp.add_fits_attribute('Chunk.time.axis.function.refCoord.val', 'MJD-OBS')
-    #
-    # get_chunk_wcs(bp, obs_id)
+    bp.set('Chunk.time.resolution', 'get_exposure(header)')
+    bp.set('Chunk.time.exposure', 'get_exposure(header)')
+    bp.set('Chunk.time.axis.axis.ctype', 'TIME')
+    bp.set('Chunk.time.axis.axis.cunit', 'd')
+    bp.set('Chunk.time.axis.error.syser', '1e-07')
+    bp.set('Chunk.time.axis.error.rnder', '1e-07')
+    bp.set('Chunk.time.axis.function.naxis', '1')
+    bp.set('Chunk.time.axis.function.delta', 'get_time_delta(header)')
+    bp.set('Chunk.time.axis.function.refCoord.pix', '0.5')
+    bp.add_fits_attribute('Chunk.time.axis.function.refCoord.val', 'MJD-OBS')
+
+    get_chunk_wcs(bp, obs_id)
 
     logging.debug('Done accumulate_fits_bp.')
 
