@@ -132,7 +132,7 @@ def test_main_app(test_name):
     product_id = LOOKUP[file_id]
     # lineage = mc.get_lineage(
     #     COLLECTION, product_id, '{}.fits'.format(file_id))
-    lineage = _get_lineage(basename, product_id, file_id)
+    lineage = _get_lineage(dirname, basename, product_id, file_id)
     input_file = '{}.in.xml'.format(product_id)
     actual_fqn = '{}/{}.actual.xml'.format(dirname, product_id)
     local = _get_local(test_name)
@@ -186,9 +186,9 @@ def _get_file_id(basename):
         return basename.split('.fits')[0]
 
 
-def _get_lineage(basename, product_id, file_id):
+def _get_lineage(dirname, basename, product_id, file_id):
     jpg_file = basename.replace('.fits.header', '.jpg')
-    if os.path.exists(os.path.join(TESTDATA_DIR, jpg_file)):
+    if os.path.exists(os.path.join(dirname, jpg_file)):
         jpg = mc.get_lineage(ARCHIVE, product_id, '{}.jpg'.format(file_id),
                              SCHEME)
         fits = mc.get_lineage(ARCHIVE, product_id, '{}.fits'.format(file_id),
