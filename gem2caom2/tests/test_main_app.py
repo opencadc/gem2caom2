@@ -67,6 +67,7 @@
 # ***********************************************************************
 #
 import pytest
+import tempfile
 
 from gem2caom2 import main_app, APPLICATION, ARCHIVE, SCHEME
 from caom2.diff import get_differences
@@ -145,7 +146,7 @@ def test_main_app(test_name):
             get_file_info
 
         sys.argv = \
-            ('{} --no_validate --local {} '
+            ('{} --debug --no_validate --local {} '
              '--plugin {} --module {} --in {}/{} --out {} --lineage {}'.
              format(APPLICATION, local, plugin, plugin, dirname,
                     input_file, actual_fqn, lineage)).split()
@@ -163,13 +164,31 @@ def test_main_app(test_name):
         # assert False  # cause I want to see logging messages
 
 
+def _build_temp_content(test_name):
+    # temp_named_file = tempfile.NamedTemporaryFile(suffix='.fits.header')
+    x = test_name.split('/')
+    length = len(x)
+    stuff = x[length-1].split('.')[0]
+    temp_named_file = '/tmp/{}.fits.header'.format(stuff)
+    content = None
+    with open(test_name) as f:
+        content = f.readlines()
+
+    if content is not None:
+        import caom2utils.fits2caom2 as f2c2
+        with open(temp_named_file, 'w') as f:
+            f.writelines(f2c2._make_understandable_string(content))
+
+    return temp_named_file
+
+
 def _get_local(test_name):
-    # return '{}'.format(test_name)
     jpg = test_name.replace('.fits.header', '.jpg')
+    header_name = _build_temp_content(test_name)
     if os.path.exists(jpg):
-        return '{} {}'.format(jpg, test_name)
+        return '{} {}'.format(jpg, header_name)
     else:
-        return test_name
+        return header_name
 
 
 def _get_file_id(basename):
@@ -179,9 +198,10 @@ def _get_file_id(basename):
         return basename.split('.fits')[0]
 
 
-def _get_lineage(basename, product_id, file_id):
-    jpg_file = basename.replace('.fits.header', '.jpg')
-    if os.path.exists(os.path.join(TESTDATA_DIR, jpg_file)):
+def _get_lineage(basename, product_id, file_id, instrument='GMOS'):
+    jpg_file = '{}/{}/{}'.format(TESTDATA_DIR, instrument,
+                                 basename.replace('.fits.header', '.jpg'))
+    if os.path.exists(jpg_file):
         jpg = mc.get_lineage(ARCHIVE, product_id, '{}.jpg'.format(file_id),
                              SCHEME)
         fits = mc.get_lineage(ARCHIVE, product_id, '{}.fits'.format(file_id),

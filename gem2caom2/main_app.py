@@ -198,7 +198,11 @@ class GemName(ec.StorageName):
         return True
 
     def _get_obs_id(self):
-        if '.fits' in self.file_uri:
+        if 'TMP' in self.file_uri:
+            # TODO for testing only
+            with open(self.file_uri) as f:
+                headers = f.readlines()
+        elif '.fits' in self.file_uri:
             headers = mc.get_cadc_headers(self.file_uri)
         else:
             temp_uri = self.file_uri.replace('.jpg', '.fits')
@@ -442,7 +446,8 @@ def _get_obs_id(args):
             if local.endswith('.jpg'):
                 pass
             else:
-                result = GemName(fname_on_disk=os.path.basename(local))._get_obs_id()
+                result = GemName(
+                    fname_on_disk=os.path.basename(local))._get_obs_id()
     else:
         raise mc.CadcException(
             'Cannot get the obsID without the file_uri from args {}'

@@ -75,7 +75,7 @@ from caom2 import ChecksumURI, Dimension2D
 from gem2caom2 import preview_augmentation, GemName, plane_augmentation, \
     SCHEME, ARCHIVE
 from caom2pipe import manage_composable as mc
-from caom2utils.caomvalidator import validate
+# from caom2utils.caomvalidator import validate
 
 pytest.main(args=['-s', os.path.abspath(__file__)])
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
@@ -91,15 +91,17 @@ TEST_FP_FILE = 'N20150404S0726.fits'
 @patch('gem2caom2.GemName._get_obs_id')
 def test_preview_augment_plane(mock_obs_id):
     mock_obs_id.return_value = TEST_OBS
-    thumb = os.path.join(TESTDATA_DIR, GemName(TEST_FILE).thumb)
+    thumb = os.path.join(TESTDATA_DIR,
+                         'GMOS/{}'.format(GemName(TEST_FILE).thumb))
     if os.path.exists(thumb):
         os.remove(thumb)
-    test_fqn = os.path.join(TESTDATA_DIR, '{}.in.xml'.format(TEST_OBS))
+    test_fqn = os.path.join(TESTDATA_DIR, '{}/{}.in.xml'.format(
+        'GMOS', TEST_OBS))
     test_obs = mc.read_obs_from_file(test_fqn)
     assert len(test_obs.planes[TEST_OBS].artifacts) == 2
     thumba = '{}:{}/N20131203S0006_th.jpg'.format(SCHEME, ARCHIVE)
 
-    test_kwargs = {'working_directory': TESTDATA_DIR,
+    test_kwargs = {'working_directory': '{}/GMOS'.format(TESTDATA_DIR),
                    'cadc_client': None,
                    'stream': 'default'}
     test_result = preview_augmentation.visit(test_obs, **test_kwargs)
