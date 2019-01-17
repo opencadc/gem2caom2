@@ -67,7 +67,6 @@
 # ***********************************************************************
 #
 import pytest
-import tempfile
 
 from gem2caom2 import main_app, APPLICATION, ARCHIVE, SCHEME
 from caom2.diff import get_differences
@@ -94,6 +93,13 @@ LOOKUP = {
     'N20150216S0142': 'GN-2015A-Q-91-5-002',
     'N20150217S0274': 'GN-CAL20150217-2-003',
     'N20150929S0013': 'GN-CAL20150925-2-007',
+    'N20030107S0163': 'GN-2003A-Q-22-3-004',
+    'N20030104S0065': 'GN-CAL20030104-14-001',
+    'N20030104S0161': 'GN-CAL20030104-18-003',
+    'N20090313S0180': 'GN2009AQ021-04',
+    'N20120105S0344': 'GN-2011A-Q-31-21-005',
+    'N20150216S0129': 'GN-2015A-Q-36-15-001',
+    'S20181023S0087': 'GS-CAL20181023-5-001',
     # NIRI
     'N20020620S0021': 'GN-2002A-C-5-1-001',
     'N20020620S0035': 'GN-2002A-C-5-1-015',
@@ -126,7 +132,7 @@ def test_main_app(test_name):
     product_id = LOOKUP[file_id]
     # lineage = mc.get_lineage(
     #     COLLECTION, product_id, '{}.fits'.format(file_id))
-    lineage = _get_lineage(basename, product_id, file_id)
+    lineage = _get_lineage(dirname, basename, product_id, file_id)
     input_file = '{}.in.xml'.format(product_id)
     actual_fqn = '{}/{}.actual.xml'.format(dirname, product_id)
     local = _get_local(test_name)
@@ -146,7 +152,7 @@ def test_main_app(test_name):
             get_file_info
 
         sys.argv = \
-            ('{} --debug --no_validate --local {} '
+            ('{} --no_validate --local {} '
              '--plugin {} --module {} --in {}/{} --out {} --lineage {}'.
              format(APPLICATION, local, plugin, plugin, dirname,
                     input_file, actual_fqn, lineage)).split()
@@ -177,14 +183,16 @@ def _build_temp_content(test_name):
     if content is not None:
         import caom2utils.fits2caom2 as f2c2
         with open(temp_named_file, 'w') as f:
-            f.writelines(f2c2._make_understandable_string(content))
+            f.writelines(f2c2._make_understandable_string(content[0]))
 
     return temp_named_file
 
 
 def _get_local(test_name):
     jpg = test_name.replace('.fits.header', '.jpg')
-    header_name = _build_temp_content(test_name)
+    # TODO - fix header metadata as returned by Gemini fullmetadata service
+    # header_name = _build_temp_content(test_name)
+    header_name = test_name
     if os.path.exists(jpg):
         return '{} {}'.format(jpg, header_name)
     else:
@@ -198,10 +206,9 @@ def _get_file_id(basename):
         return basename.split('.fits')[0]
 
 
-def _get_lineage(basename, product_id, file_id, instrument='GMOS'):
-    jpg_file = '{}/{}/{}'.format(TESTDATA_DIR, instrument,
-                                 basename.replace('.fits.header', '.jpg'))
-    if os.path.exists(jpg_file):
+def _get_lineage(dirname, basename, product_id, file_id):
+    jpg_file = basename.replace('.fits.header', '.jpg')
+    if os.path.exists(os.path.join(dirname, jpg_file)):
         jpg = mc.get_lineage(ARCHIVE, product_id, '{}.jpg'.format(file_id),
                              SCHEME)
         fits = mc.get_lineage(ARCHIVE, product_id, '{}.fits'.format(file_id),
