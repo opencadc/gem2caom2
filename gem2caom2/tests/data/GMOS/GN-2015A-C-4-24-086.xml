@@ -27,7 +27,7 @@
       <caom2:productID>GN-2015A-C-4-24-086</caom2:productID>
       <caom2:metaRelease>2015-02-20T00:00:00.000</caom2:metaRelease>
       <caom2:dataRelease>2015-02-20T00:00:00.000</caom2:dataRelease>
-      <caom2:dataProductType>image</caom2:dataProductType>
+      <caom2:dataProductType>spectrum</caom2:dataProductType>
       <caom2:calibrationLevel>1</caom2:calibrationLevel>
       <caom2:provenance>
         <caom2:name>Gemini Observatory Data</caom2:name>
