@@ -101,7 +101,8 @@ import requests
 from requests.adapters import HTTPAdapter
 from urllib3 import Retry
 
-from caom2 import Observation
+from caom2 import Observation, ObservationIntentType, DataProductType
+from caom2 import CalibrationLevel
 from caom2utils import ObsBlueprint, get_gen_proc_arg_parser, gen_proc
 from caom2pipe import manage_composable as mc
 from caom2pipe import execute_composable as ec
@@ -130,7 +131,7 @@ class GemName(ec.StorageName):
 
     GEM_NAME_PATTERN = '*'
 
-    def __init__(self, fname_on_disk=None, file_name=None):
+    def __init__(self, fname_on_disk=None, file_name=None, obs_id=None):
         if file_name is not None:
             self.file_id = GemName.get_file_id(file_name)
             if '.fits' in file_name:
@@ -156,7 +157,7 @@ class GemName(ec.StorageName):
             collection_pattern=GemName.GEM_NAME_PATTERN,
             fname_on_disk=fname_on_disk,
             scheme=SCHEME)
-        self.obs_id = self._get_obs_id()
+        self.obs_id = obs_id
 
     @property
     def file_uri(self):
@@ -197,15 +198,19 @@ class GemName(ec.StorageName):
     def is_valid(self):
         return True
 
-    def _get_obs_id(self):
-        if '.fits' in self.file_uri:
-            headers = mc.get_cadc_headers(self.file_uri)
-        else:
-            temp_uri = self.file_uri.replace('.jpg', '.fits')
-            headers = mc.get_cadc_headers(temp_uri)
-        fits_headers = ac.make_headers_from_string(headers)
-        obs_id = fits_headers[0].get('DATALAB')
-        return obs_id
+    # def _get_obs_id(self):
+    #     if 'TMP' in self.file_uri:
+    #         # TODO for testing only
+    #         with open(self.file_uri) as f:
+    #             headers = f.readlines()
+    #     elif '.fits' in self.file_uri:
+    #         headers = mc.get_cadc_headers(self.file_uri)
+    #     else:
+    #         temp_uri = self.file_uri.replace('.jpg', '.fits')
+    #         headers = mc.get_cadc_headers(temp_uri)
+    #     fits_headers = ac.make_headers_from_string(headers)
+    #     obs_id = fits_headers[0].get('DATALAB')
+    #     return obs_id
 
     @staticmethod
     def get_file_id(file_name):
@@ -356,10 +361,54 @@ def get_exposure(header):
     return None
 
 
+def get_obs_intent(header):
+    """
+    Determine the Observation intent.
+
+    :param header:  The FITS header for the current extension.
+    :return: The Observation intent, or None if not found.
+    """
+    lookup = header.get('OBSCLASS')
+    if lookup is None:
+        object = header.get('OBJECT')
+        if object in ['GCALflat', 'Bias', 'Twilight']:
+            result = ObservationIntentType.CALIBRATION
+        else:
+            result = ObservationIntentType.SCIENCE
+    elif 'science' in lookup:
+        result = ObservationIntentType.SCIENCE
+    else:
+        result = ObservationIntentType.CALIBRATION
+    return result
+
+
+def get_data_product_type(header):
+    # TODO this is ridiculously wrong
+    obs_type = header.get('OBSTYPE')
+    if obs_type is not None and obs_type == 'MASK':
+        result = DataProductType.IMAGE
+    else:
+        result = DataProductType.SPECTRUM
+    return result
+
+
+def get_calibration_level(header):
+    # TODO
+    return CalibrationLevel.RAW_STANDARD
+
+
 def accumulate_fits_bp(bp, uri, obs_id):
     """Configure the telescope-specific ObsBlueprint at the CAOM model 
     Observation level."""
     logging.debug('Begin accumulate_fits_bp.')
+
+    bp.set('Observation.intent', 'get_obs_intent(header)')
+    bp.clear('Observation.metaRelease')
+    bp.add_fits_attribute('Observation.metaRelease', 'RELEASE')
+
+    bp.set('Plane.dataProductType', 'get_data_product_type(header)')
+    bp.set('Plane.calibrationLevel', 'get_calibration_level(header)')
+
     bp.configure_position_axes((1, 2))
     bp.configure_time_axis(3)
 
@@ -385,9 +434,16 @@ def update(observation, **kwargs):
 
     :param observation A CAOM Observation model instance.
     :param **kwargs Everything else."""
-    logging.debug('Begin update.')
+    logging.error('Begin update.')
     mc.check_param(observation, Observation)
-    logging.debug('Done update.')
+
+    for p in observation.planes:
+        for a in observation.planes[p].artifacts:
+            for part in observation.planes[p].artifacts[a].parts:
+                if observation.planes[p].artifacts[a].parts[part].name == '0':
+                    observation.planes[p].artifacts[a].parts[part].chunks.pop()
+                    logging.error('Set chunks to None for 0-th part.')
+    logging.error('Done update.')
     return True
 
 
@@ -437,12 +493,14 @@ def _get_obs_id(args):
                 pass
             else:
                 result = temp[0]
-    elif args.local:
-        for local in args.local:
-            if local.endswith('.jpg'):
-                pass
-            else:
-                result = GemName(fname_on_disk=os.path.basename(local))._get_obs_id()
+    # TODO - figure out what to do about GemName.obs_id value
+    # elif args.local:
+    #     for local in args.local:
+    #         if local.endswith('.jpg'):
+    #             pass
+    #         else:
+    #             # result = GemName(
+    #             #     fname_on_disk=os.path.basename(local))._get_obs_id()
     else:
         raise mc.CadcException(
             'Cannot get the obsID without the file_uri from args {}'

@@ -96,7 +96,8 @@ LOOKUP = {
     'N20030107S0163': 'GN-2003A-Q-22-3-004',
     'N20030104S0065': 'GN-CAL20030104-14-001',
     'N20030104S0161': 'GN-CAL20030104-18-003',
-    'N20090313S0180': 'GN2009AQ021-04',
+    # 'N20090313S0180': 'GN2009AQ021-04',
+    'N20090313S0180': 'GN-2009A-Q-21-115-001',
     'N20120105S0344': 'GN-2011A-Q-31-21-005',
     'N20150216S0129': 'GN-2015A-Q-36-15-001',
     'S20181023S0087': 'GS-CAL20181023-5-001',
@@ -170,13 +171,33 @@ def test_main_app(test_name):
         # assert False  # cause I want to see logging messages
 
 
+def _build_temp_content(test_name):
+    # temp_named_file = tempfile.NamedTemporaryFile(suffix='.fits.header')
+    x = test_name.split('/')
+    length = len(x)
+    stuff = x[length-1].split('.')[0]
+    temp_named_file = '/tmp/{}.fits.header'.format(stuff)
+    content = None
+    with open(test_name) as f:
+        content = f.readlines()
+
+    if content is not None:
+        import caom2utils.fits2caom2 as f2c2
+        with open(temp_named_file, 'w') as f:
+            f.writelines(f2c2._make_understandable_string(content[0]))
+
+    return temp_named_file
+
+
 def _get_local(test_name):
-    # return '{}'.format(test_name)
     jpg = test_name.replace('.fits.header', '.jpg')
+    # TODO - fix header metadata as returned by Gemini fullmetadata service
+    # header_name = _build_temp_content(test_name)
+    header_name = test_name
     if os.path.exists(jpg):
-        return '{} {}'.format(jpg, test_name)
+        return '{} {}'.format(jpg, header_name)
     else:
-        return test_name
+        return header_name
 
 
 def _get_file_id(basename):

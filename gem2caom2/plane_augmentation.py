@@ -74,7 +74,7 @@ from astropy.io import fits
 from caom2 import Observation, Plane, Position, Artifact
 from caom2.common import ChecksumURI
 from caom2pipe import manage_composable as mc
-from caom2utils import PositionUtil
+# from caom2utils import PositionUtil
 
 
 __all__ = ['visit']
