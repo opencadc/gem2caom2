@@ -185,7 +185,7 @@ RELEASE = '2018-10-23'         / End of proprietary period YYY-MM-DD
                                                                                 
                                                                                 
 
---- HDU 1 ---
+END
 XTENSION= 'IMAGE   '           / IMAGE extension                                
 BITPIX  =                  -32 / number of bits per data pixel                  
 NAXIS   =                    2 / number of data axes                            
@@ -258,7 +258,7 @@ RDNOISE =     26.5300006866455 / Read noise (e-)
                                                                                 
                                                                                 
 
---- HDU 2 ---
+END
 XTENSION= 'IMAGE   '           / IMAGE extension                                
 BITPIX  =                  -32 / number of bits per data pixel                  
 NAXIS   =                    2 / number of data axes                            
@@ -331,7 +331,7 @@ RDNOISE =     19.1000003814697 / Read noise (e-)
                                                                                 
                                                                                 
 
---- HDU 3 ---
+END
 XTENSION= 'IMAGE   '           / IMAGE extension                                
 BITPIX  =                  -32 / number of bits per data pixel                  
 NAXIS   =                    2 / number of data axes                            
@@ -404,7 +404,7 @@ RDNOISE =     27.2399997711182 / Read noise (e-)
                                                                                 
                                                                                 
 
---- HDU 4 ---
+END
 XTENSION= 'IMAGE   '           / IMAGE extension                                
 BITPIX  =                  -32 / number of bits per data pixel                  
 NAXIS   =                    2 / number of data axes                            

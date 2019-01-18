@@ -71,24 +71,30 @@ from mock import patch
 from gem2caom2 import GemName, SCHEME, ARCHIVE
 
 
-@patch('gem2caom2.GemName._get_obs_id')
-def test_is_valid(mock_obs_id):
-    mock_obs_id.return_value = 'GN-2013B-Q-28-150-002'
-    assert GemName(file_name='anything.fits').is_valid()
-    assert GemName(file_name='anything.jpg').is_valid()
+# @patch('gem2caom2.GemName._get_obs_id')
+# def test_is_valid(mock_obs_id):
+def test_is_valid():
+    mock_obs_id = 'GN-2013B-Q-28-150-002'
+    assert GemName(file_name='anything.fits',
+                   obs_id=mock_obs_id).is_valid()
+    assert GemName(file_name='anything.jpg',
+                   obs_id=mock_obs_id).is_valid()
 
 
-@patch('gem2caom2.GemName._get_obs_id')
-def test_storage_name(mock_obs_id):
-    mock_obs_id.return_value = 'GN-2013B-Q-28-150-002'
-    test_sn = GemName(file_name='n20131203s0006.fits.gz')
+# @patch('gem2caom2.GemName._get_obs_id')
+# def test_storage_name(mock_obs_id):
+def test_storage_name():
+    mock_obs_id = 'GN-2013B-Q-28-150-002'
+    test_sn = GemName(file_name='n20131203s0006.fits.gz',
+                      obs_id=mock_obs_id)
     assert test_sn.file_uri == '{}:{}/N20131203S0006.fits'.format(SCHEME, ARCHIVE)
     assert test_sn.file_name == 'N20131203S0006.fits'
     assert test_sn.prev == 'N20131203S0006.jpg'
     assert test_sn.thumb == 'N20131203S0006_th.jpg'
     assert test_sn.compressed_file_name is None
 
-    test_sn = GemName(file_name='S20060920S0137.jpg')
+    test_sn = GemName(file_name='S20060920S0137.jpg',
+                      obs_id=mock_obs_id)
     assert test_sn.file_uri == '{}:{}/S20060920S0137.jpg'.format(SCHEME, ARCHIVE)
     assert test_sn.file_name == 'S20060920S0137.jpg'
     assert test_sn.prev == 'S20060920S0137.jpg'
