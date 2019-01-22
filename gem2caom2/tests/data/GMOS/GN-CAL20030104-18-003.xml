@@ -2,7 +2,7 @@
 <caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="00000000-0000-0000-bac0-b99181aad317" caom2:lastModified="2018-11-08T06:37:10.782" caom2:maxLastModified="2018-11-08T06:37:10.782" caom2:metaChecksum="md5:e103a136c44ab0f3ef8b90ada77fb001" caom2:accMetaChecksum="md5:44e0d452cdd924ac86e6e7a8df7782ae">
   <caom2:collection>GEMINI</caom2:collection>
   <caom2:observationID>GN-CAL20030104-18-003</caom2:observationID>
-  <caom2:metaRelease>2003-01-04T00:00:00.000</caom2:metaRelease>
+  <caom2:metaRelease>2003-01-09T02:19:49.000</caom2:metaRelease>
   <caom2:algorithm>
     <caom2:name>exposure</caom2:name>
   </caom2:algorithm>
@@ -27,7 +27,7 @@
   <caom2:planes>
     <caom2:plane caom2:id="00000000-0000-0000-a0bc-6eb5bdfc0d40" caom2:lastModified="2018-11-08T06:37:10.782" caom2:maxLastModified="2018-11-08T06:37:10.782" caom2:metaChecksum="md5:3277694258b3746121cb0a6bda1cea44" caom2:accMetaChecksum="md5:889d0510f8094500a82e34fcf60e814d">
       <caom2:productID>GN-CAL20030104-18-003</caom2:productID>
-      <caom2:metaRelease>2003-01-04T00:00:00.000</caom2:metaRelease>
+      <caom2:metaRelease>2003-01-09T02:19:49.000</caom2:metaRelease>
       <caom2:dataRelease>2003-01-04T00:00:00.000</caom2:dataRelease>
       <caom2:dataProductType>image</caom2:dataProductType>
       <caom2:calibrationLevel>1</caom2:calibrationLevel>
@@ -44,7 +44,7 @@
       <caom2:artifacts>
         <caom2:artifact caom2:id="00000000-0000-0000-a31c-c88d8c33ebe5" caom2:lastModified="2018-11-08T06:37:10.782" caom2:maxLastModified="2018-11-08T06:37:10.782" caom2:metaChecksum="md5:4e866d2b628db641d5664eebaab37f4d" caom2:accMetaChecksum="md5:b173a39241b55cd3e198d742e2b1ad25">
           <caom2:uri>gemini:GEM/N20030104S0161.fits</caom2:uri>
-          <caom2:productType>science</caom2:productType>
+          <caom2:productType>calibration</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>
           <caom2:contentLength>665345</caom2:contentLength>

@@ -67,12 +67,6 @@
 # ***********************************************************************
 #
 """
-The GEM collection lifecycle means content that gets touched a lot. The start
-is a skeleton observation created from metadata harvested from the Gemini
-web-site, then artifact-sync uses that information to retrieve the files,
-then when the file is retrieved, the skeleton will be fleshed out with
-metadata from the FITS file header.
-
 Notes on the GEM archive/GEMINI collection:
 
 1. Must use the file name as the starting point for work, because that's
@@ -264,6 +258,7 @@ def get_energy_metadata():
 
     :return: Dictionary of energy metadata.
     """
+    logging.debug('Begin get_energy_metadata')
     global obs_metadata
     instrument = obs_metadata['instrument']
     if instrument in ['GMOS-N', 'GMOS-S']:
@@ -276,6 +271,8 @@ def get_energy_metadata():
     else:
         raise mc.CadcException(
             'Do not understand energy for instrument {}'.format(instrument))
+    logging.debug(
+        'End get_energy_metadata for instrument {}'.format(instrument))
     return energy_metadata
 
 
@@ -374,8 +371,18 @@ def get_calibration_level(header):
 def get_art_product_type(header):
     obs_type = header.get('OBSTYPE')
     obs_class = header.get('OBSCLASS')
+    logging.debug('type is {} and class is {}'.format(obs_type, obs_class))
     if obs_type is not None and obs_type == 'MASK':
         result = ProductType.AUXILIARY
+    elif obs_class is None:
+        if obs_type is not None and obs_type == 'OBJECT':
+            obs_id = header.get('DATALAB')
+            if obs_id is not None and 'CAL' in obs_id:
+                result = ProductType.CALIBRATION
+            else:
+                result = ProductType.SCIENCE
+        else:
+            result = ProductType.CALIBRATION
     elif obs_class is not None and obs_class == 'science':
         result = ProductType.SCIENCE
     else:
@@ -460,12 +467,15 @@ def accumulate_fits_bp(bp, uri, obs_id):
     bp.set('Observation.type', 'get_obs_type(header)')
 
     bp.clear('Observation.metaRelease')
-    bp.add_fits_attribute('Observation.metaRelease', 'RELEASE')
+    bp.add_fits_attribute('Observation.metaRelease', 'DATE')
 
     bp.set('Observation.target.type', 'get_target_type(header)')
 
     bp.set('Plane.dataProductType', 'get_data_product_type(header)')
     bp.set('Plane.calibrationLevel', 'get_calibration_level(header)')
+
+    bp.clear('Plane.metaRelease')
+    bp.add_fits_attribute('Plane.metaRelease', 'DATE')
 
     bp.set('Artifact.productType', 'get_art_product_type(header)')
 

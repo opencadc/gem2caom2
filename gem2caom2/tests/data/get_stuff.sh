@@ -27,7 +27,9 @@
 # instrument = Flamingos
 # for ii in GS-2002B-DD-2-6-0230
 # instrument = HOKUPAA
-for ii in GN-2002A-DD-1-319-591 GN-CAL20020424-1-007
+#for ii in GN-2002A-DD-1-319-591 GN-CAL20020424-1-007
+# instrument = GMOS
+for ii in GS-2003B-Q-5-29-003 GS-2005B-Q-27-4-001 GS-CAL20060125-1-002 GS-2005B-Q-27-33-001 GS-2008A-Q-41-26-013 GN2009AQ021-04 GS-2005B-Q-22-17-006 GS-2005B-Q-22-29-004 GS-2005B-Q-54-2-004 GS-2006A-Q-48-15-002 GS-2009A-Q-30-6-007 GN-2009B-Q-121-15-003 GN-2010A-Q-35-10-002 GN-2009B-Q-121-15-001 GN-2007B-Q-112-14-018
 do
 	echo $ii
         caom2-repo read --cert $HOME/.ssl/cadcproxy.pem --resource-id ivo://cadc.nrc.ca/sc2repo GEMINI $ii > "${ii}.in.xml"
