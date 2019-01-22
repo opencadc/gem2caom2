@@ -369,6 +369,16 @@ def get_calibration_level(header):
 
 
 def get_art_product_type(header):
+    """
+    Calculate the Artifact ProductType.
+
+    If obsclass is unknown then CAOM2 ProductType is set to CALIBRATION.
+    This should only effect early data when OBSCLASS was not in the JSON
+    summary metadata or FITS headers.
+
+    :param header:  The FITS header for the current extension.
+    :return: The Artifact ProductType, or None if not found.
+    """
     obs_type = header.get('OBSTYPE')
     obs_class = header.get('OBSCLASS')
 
@@ -396,6 +406,12 @@ def get_art_product_type(header):
 
 
 def get_data_product_type(header):
+    """
+    Calculate the Plane DataProductType.
+
+    :param header:  The FITS header for the current extension.
+    :return: The Plane DataProductType, or None if not found.
+    """
     global obs_metadata
     mode = mc.response_lookup(obs_metadata, 'mode')
     obs_type = header.get('OBSTYPE')
@@ -455,6 +471,12 @@ def get_obs_type(header):
 
 
 def get_target_type(header):
+    """
+    Calculate the Target TargetType
+
+    :param header:  The FITS header for the current extension.
+    :return: The Target TargetType, or None if not found.
+    """
     global obs_metadata
     spectroscopy = mc.response_lookup(obs_metadata, 'spectroscopy')
     if spectroscopy:
