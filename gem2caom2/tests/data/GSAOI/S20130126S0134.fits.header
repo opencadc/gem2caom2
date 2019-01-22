@@ -1,0 +1,945 @@
+Filename: S20130126S0134.fits.bz2
+
+AstroData Types: ['GEMINI', 'SIDEREAL', 'IMAGE', 'GSAOI_IMAGE', 'GSAOI', 'GEMINI_SOUTH', 'RAW', 'UNPREPARED']
+
+
+--- HDU 0 ---
+SIMPLE  =                    T / Fits standard                                  
+BITPIX  =                   16 / Bits per pixel                                 
+NAXIS   =                    0 / Number of axes                                 
+EXTEND  =                    T / File may contain extensions                    
+ORIGIN  = 'NOAO-IRAF FITS Image Kernel July 2003' / FITS file originator        
+DATE    = '2013-01-26'         / Date FITS file was generated                   
+IRAF-TLM= '2013-07-11T18:22:40' / Time of last modification                     
+COMMENT   FITS (Flexible Image Transport System) format is defined in 'Astronomy
+COMMENT   and Astrophysics', volume 376, page 359; bibcode: 2001A&A...376..359H 
+INSTRUME= 'GSAOI   '           / Instrument used to acquire data                
+OBJECT  = 'NGC 1851'           / Object Name                                    
+OBSTYPE = 'OBJECT  '           / Observation type                               
+OBSCLASS= 'science '           / Observe class                                  
+GEMPRGID= 'GS-2012B-SV-499'    / Gemini programme ID                            
+OBSID   = 'GS-2012B-SV-499-21' / Gemini Observation ID                          
+DATALAB = 'GS-2012B-SV-499-21-002' / Gemini Datalabel                           
+OBSERVER= 'Carrasco, Neichel, Vidal' / Observer                                 
+OBSERVAT= 'Gemini-South'       / Observatory (Gemini-North|Gemini-South)        
+TELESCOP= 'Gemini-South'       / Name of telescope (Gemini-North|Gemini-South)  
+PARALLAX=                   0. / Target Parallax                                
+RADVEL  =                   0. / Target Heliocentric Radial Velocity            
+EPOCH   =                2000. / Target Coordinate Epoch                        
+EQUINOX =                2000. / Equinox of coordinate system                   
+TRKEQUIN=                2000. / Tracking equinox                               
+SSA     = 'Marin, Cardwell'    / SSA                                            
+RA      =          78.53534583 / Target Right Ascension                         
+DEC     =         -40.04392222 / Target Declination                             
+ELEVATIO=     71.7217972222222 / Telescope Elevation at the start of exposure   
+AZIMUTH =     232.555570833333 / Telescope Azimuth at the start of exposure     
+CRPA    =     115.468952558287 / Cass Rotator Position Angle at start           
+HA      = '+01:16:12.75'       / Telescope hour angle at the start of exposure  
+LT      = '23:51:28.6'         / Local time at start of exposure                
+TRKFRAME= 'FK5     '           / Tracking co-ordinate                           
+DECTRACK=                   0. / Differential tracking rate Dec                 
+TRKEPOCH=         56318.107882 / Differential tracking reference epoch          
+RATRACK =                   0. / Differential tracking rate RA                  
+FRAME   = 'FK5     '           / Target coordinate system                       
+PMDEC   =                   0. / Target proper motion in Declination            
+PMRA    =                   0. / Target proper motion in RA                     
+WAVELENG=               21500. / Effective Target Wavelength (A)                
+RAWIQ   = 'Any     '           / Raw Image Quality                              
+RAWCC   = 'Any     '           / Raw Cloud Cover                                
+RAWWV   = 'Any     '           / Raw Water Vapour/Transparency                  
+RAWBG   = 'Any     '           / Raw Background                                 
+RAWPIREQ= 'UNKNOWN '           / PI Requirements Met                            
+RAWGEMQA= 'UNKNOWN '           / Gemini Quality Assessment                      
+CGUIDMOD= 'Basic   '           / Driving mode for carousel                      
+UT      = '02:51:29.6'         / UTC at start of exposure                       
+M2BAFFLE= 'RETRACTED'          / Position of M2 baffle                          
+M2CENBAF= 'OPEN    '           / Position of M2 central hole baffle             
+ST      = '06:30:49.8'         / Sidereal time at the start of the exposure     
+XOFFSET =                   0. / Telescope offset in x in arcsec                
+YOFFSET =                   0. / Telescope offset in y in arcsec                
+POFFSET =                   0. / Telescope offset in p in arcsec                
+QOFFSET =                  -0. / Telescope offset in q in arcsec                
+RAOFFSET=                  -0. / Telescope offset in RA in arcsec               
+DECOFFSE=                   0. / Telescope offset in DEC in arcsec              
+RATRGOFF=                   0. / Target offset in RA in arcsec                  
+DECTRGOF=                   0. / Target offset in DEC in arcsec                 
+PA      =                   0. / Instrument Position Angle at start (degrees)   
+IAA     =                0.953 / Instrument Alignment Angle                     
+SFRT2   =              -89.975 / Science fold rotation angle (degrees)          
+SFTILT  =               -44.83 / Science fold tilt angle (degrees)              
+SFLINEAR=                 -18. / Science fold linear position (mm)              
+AOFOLD  = 'IN      '           / AO Pick-Off Mirror Position                    
+PWFS1_ST= 'parked  '           / PWFS1 probe state (frozen,guiding,parked)      
+PWFS2_ST= 'parked  '           / PWFS2 probe state (frozen,guiding,parked)      
+OIWFS_ST= 'parked  '           / OIWFS probe state (frozen,guiding,parked)      
+AOWFS_ST= 'parked  '           / AOWFS probe state (frozen,guiding,parked)      
+REQIQ   = 'Any     '           / Requested Image Quality                        
+REQCC   = 'Any     '           / Requested Cloud Cover                          
+REQBG   = 'Any     '           / Requested Background                           
+REQWV   = 'Any     '           / Requested Water Vapour                         
+GWFS1CFG= 'TTGS1   '           / WFS Guide star 1 configuration                 
+GWFS1OBJ= '0499-0048382'       / WFS1 guide star object name                    
+GWFS1RA =              78.5295 / WFS1 guide star RA                             
+GWFS1DEC=         -40.03816667 / WFS1 guide star DEC                            
+GWFS1RV =                   0. / WFS1 guide star heliocentric velocity          
+GWFS1EPC=                2000. / WFS1 guide star coordinates epoch              
+GWFS1EQN=                2000. / WFS1 guide star coordinates equinox            
+GWFS1FRM= 'FK5     '           / WFS1 guide star coordinate system              
+GWFS1PMD=                   0. / WFS1 guide star proper motion in declination   
+GWFS1PMR=                   0. / WFS1 guide star proper motion in RA            
+GWFS1PAR=                   0. / WFS1 guide star parallax                       
+GWFS1WAV=                6500. / WFS1 guide effective target wavelength         
+GWFS2CFG= 'TTGS2   '           / WFS Guide star 2 configuration                 
+GWFS2OBJ= '0499-0048225'       / WFS2 guide star object name                    
+GWFS2RA =            78.517425 / WFS2 guide star RA                             
+GWFS2DEC=         -40.05621111 / WFS2 guide star DEC                            
+GWFS2RV =                   0. / WFS2 guide star heliocentric velocity          
+GWFS2EPC=                2000. / WFS2 guide star coordinates epoch              
+GWFS2EQN=                2000. / WFS2 guide star coordinates equinox            
+GWFS2FRM= 'FK5     '           / WFS2 guide star coordinate system              
+GWFS2PMD=                  -0. / WFS2 guide star proper motion in declination   
+GWFS2PMR=                   0. / WFS2 guide star proper motion in RA            
+GWFS2PAR=                   0. / WFS2 guide star parallax                       
+GWFS2WAV=                6500. / WFS2 guide effective target wavelength         
+GWFS3CFG= 'TTGS3   '           / WFS Guide star 3 configuration                 
+GWFS3OBJ= '0499-0048536'       / WFS3 guide star object name                    
+GWFS3RA =          78.54040417 / WFS3 guide star RA                             
+GWFS3DEC=         -40.05408889 / WFS3 guide star DEC                            
+GWFS3RV =                   0. / WFS3 guide star heliocentric velocity          
+GWFS3EPC=                2000. / WFS3 guide star coordinates epoch              
+GWFS3EQN=                2000. / WFS3 guide star coordinates equinox            
+GWFS3FRM= 'FK5     '           / WFS3 guide star coordinate system              
+GWFS3PMD=                   0. / WFS3 guide star proper motion in declination   
+GWFS3PMR=                   0. / WFS3 guide star proper motion in RA            
+GWFS3PAR=                   0. / WFS3 guide star parallax                       
+GWFS3WAV=                6500. / WFS3 guide effective target wavelength         
+GWFS4CFG= 'ODGW1   '           / WFS Guide star 4 configuration                 
+GWFS4OBJ= '05140969-4003147'   / WFS4 guide star object name                    
+GWFS4RA =          78.54040417 / WFS4 guide star RA                             
+GWFS4DEC=         -40.05408889 / WFS4 guide star DEC                            
+GWFS4RV =                   0. / WFS4 guide star heliocentric velocity          
+GWFS4EPC=                2000. / WFS4 guide star coordinates epoch              
+GWFS4EQN=                2000. / WFS4 guide star coordinates equinox            
+GWFS4FRM= 'FK5     '           / WFS4 guide star coordinate system              
+GWFS4PMD=                   0. / WFS4 guide star proper motion in declination   
+GWFS4PMR=                   0. / WFS4 guide star proper motion in RA            
+GWFS4PAR=                   0. / WFS4 guide star parallax                       
+GWFS4WAV=               21500. / WFS4 guide effective target wavelength         
+GWFS4X  =                 1036 / X central pixel of WFS Guide star 4            
+GWFS4Y  =                  453 / Y central pixel of WFS Guide star 4            
+GWFS4SIZ=                  128 / Size of WFS4 box (pixels)                      
+HUMIDITY=                  56. / The relative humidity (fraction, 0..101).      
+TAMBIENT=                 10.6 / The ambient temp (C).                          
+TAMBIEN2=                51.08 / The ambient temp (F).                          
+PRESSURE=            549.20496 / The atmospheric pressure (mm Hg).              
+PRESSUR2=               73200. / The atmospheric pressure (Pa).                 
+DEWPOINT=                  2.3 / The dew point (C).                             
+DEWPOIN2=                36.14 / The dew point (F).                             
+WINDSPEE=                  1.9 / The wind speed (m/s).                          
+WINDSPE2=               4.2503 / The wind speed (mph).                          
+WINDDIRE=                 335. / The wind direction (degrees).                  
+INPORT  =                    1 / Number of ISS port where instrument is located 
+FILTER1 = 'Kshort_G1105'       / Upper filter wheel component in beam           
+FILT1POS=                23533 / Upper filter wheel engineering position        
+FILT1CAR= 'GOOD    '           / Upper filter wheel combined CAR state          
+FILTER2 = 'Clear   '           / Lower filter wheel component in beam           
+FILT2POS=                69633 / Lower filter wheel engineering position        
+FILT2CAR= 'GOOD    '           / Lower filter wheel combined CAR state          
+UTLWHEEL= 'Clear   '           / Utility wheel component in beam                
+UTLWPOS =                54720 / Utility wheel engineering position             
+UTLWCAR = 'GOOD    '           / Utility wheel combined CAR state               
+COVER   = 'OPEN    '           / Cover status                                   
+CVERPOS =                 9300 / Cover engineering position                     
+CVERCAR = 'GOOD    '           / Cover combined CAR state                       
+CWSTEMP =                  70. / Cold work surface temperature                  
+DETTEMP =                  70. / Detector temperature                           
+DETHTEMP=                  65. / Detector housing temperature                   
+DEWPRES =             1.21E-08 / Dewar pressure                                 
+DATE-OBS= '2013-01-26'         / UT Date of observation (YYYY-MM-DD)            
+TIME-OBS= '02:51:29.6'         / UT Time of observation                         
+MJD-OBS =          56318.11845 / MJD of start of observation                    
+SAMPMODE= 'FOWLER  '           / Read method                                    
+EXPMODE = 'NONDESTRUCTIVE'     / Read mode                                      
+NRESETS =                    1 / Number of resets btw each exposure             
+RSTDLAY =                   0. / Reset delay (seconds)                          
+READTIME=                  5.3 / Read time                                      
+BUNIT   = 'ADU     '           / Units of quantity read from detector array     
+DCNAME  = 'GSAOI DC'           / Detector controller name                       
+DCHLTH  = 'GOOD    '           / Detector controller health                     
+DCSIM   = 'NONE    '           / Detector controller simulation mode            
+DSPTIMBN= 'tim.lod '           / SDSU timing board DSP code                     
+DSPTIMBV= 'V1.8.0  '           / SDSU timing board DSP code version             
+DSPPCIN = 'pci.lod '           / SDSU PCI board DSP code                        
+DSPPCIV = 'V1.8.0  '           / SDSU PCI board DSP code version                
+DETSIZE = '[1:4096,1:4096]'    / Detector size                                  
+DETECTOR= 'GSAOI   '           / Detector                                       
+NCCDS   =                    4 / Number of CCD chips                            
+NAMPS   =                   16 / Number of Amplifiers in this image             
+NEXTEND =                    4 / Number of standard extensions                  
+READMODE= 'FOWLER  '           / Detector Readout mode                          
+RDTIME  =           5.27849082 / integration time (seconds)                     
+COADDS  =                    1 / Number of coadds                               
+LNRS    =                    2 / Number of Non-destructive reads                
+EXPTIME =                  5.5 / Exposure time requested (seconds)              
+UTSTART = '02:51:41.5'         / UT at observation start                        
+UTEND   = '02:51:52.3'         / UT at observation end                          
+ELAPSED =                  12. / Time from reset to final NDR of 1st pixel (seco
+READDLAY=                  0.2 / Read interval (seconds)                        
+CRFOLLOW= 'INDEF   '           / Cass Rotator follow mode                       
+GEMSSADC= 'OFF     '           / GeMS Science ADC                               
+GEMSDICH=                   1. / GeMS dichroic beamspliter (microns)            
+GEMSASTR= 'off     '           / GeMS Astrometric correction                    
+GEMSNADC= 'OFF     '           / GeMS NGS WFS ADC                               
+LGWFS1CT=                  76. / Total counts in LGWFS1 at end of exposure      
+LGWFS2CT=                  93. / Total counts in LGWFS2 at end of exposure      
+LGWFS3CT=                  92. / Total counts in LGWFS3 at end of exposure      
+LGWFS4CT=                  61. / Total counts in LGWFS4 at end of exposure      
+LGWFS5CT=                  56. / Total counts in LGWFS5 at end of exposure      
+SFSFOCUS=                   0. / SFS focus at the end of the exposure           
+SFSCTNS =                   0. / SFS counts at the end of exposure              
+LGSLOOP = 'CLOSED  '           / Status of the LGS loop                         
+TTLOOP  = 'CLOSED  '           / Status of the tip-tilt loop                    
+FOCLOOP = 'OPEN    '           / Status of the Slow Focus loop                  
+FLEXLOOP= 'OPEN    '           / Status of the flexure loop                     
+LGSSTRHL=                   0. / Strehl estimate from the LGS in H-band         
+RZEROVAL=                   6. / r0 value at 500nm in cm                        
+CNSQARE1=                   0. / Cn2 value for altitude from 0 to 0.8km         
+CNSQARE2=                   0. / Cn2 value for altitude from 0.8 to 4.0km       
+CNSQARE3=                   0. / Cn2 value for altitude from 4.0 to 7.1km       
+CNSQARE4=                   0. / Cn2 value for altitude from 7.1 to 9.6km       
+CNSQARE5=                   0. / Cn2 value for altitude from 9.6 to 11km        
+CNSQARE6=                   0. / Cn2 value for altitude higher than 11km        
+GWFS1CTS=                6900. / APD/Detector counts in WFS1 at the end of expos
+GWFS2CTS=              105400. / APD/Detector counts in WFS2 at the end of expos
+GWFS3CTS=               14000. / APD/Detector counts in WFS3 at the end of expos
+GWFS4CTS=               40689. / APD/Detector counts in WFS4 at the end of expos
+AIRMASS =                1.053 / Mean airmass for the exposure                  
+AMSTART =                1.053 / Airmass at start of exposure                   
+AMEND   =                1.054 / Airmass at end of exposure                     
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+RELEASE = '2013-07-26'         / End of proprietary period YYYY-MM-DD           
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+
+--- HDU 1 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                  -32 / number of bits per data pixel                  
+NAXIS   =                    2 / number of data axes                            
+NAXIS1  =                 2048 / length of data axis 1                          
+NAXIS2  =                 2048 / length of data axis 2                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'SCI     '           / ad1406: added by AstroData                     
+EXTVER  =                    1 / ad1410: added by AstroData                     
+INHERIT =                    F / inherit the primary header                     
+CCDNAME = 'G1      '           / Array name                                     
+CCDSIZE = '[1:2048,1:2048]'    / Array dimensions                               
+CCDSUM  = '1 1     '           / Array binning                                  
+CCDSEC  = '[1:2048,1:2048]'    / Array section                                  
+AMPNAME1= 'A       '           / Amplifier 1 name                               
+AMPSEC1 = '[1:512,1:2048]'     / Amplifier 1 section                            
+DETSEC  = '[2049:4096,1:2048]' / Detector section (wrt mosaic)                  
+DATASEC = '[1:2048,1:2048]'    / Current datasection of the frame               
+AMPNAME2= 'B       '           / Amplifier 2 name                               
+AMPSEC2 = '[1024:513,1:2048]'  / Amplifier 2 section                            
+AMPNAME3= 'C       '           / Amplifier 3 name                               
+AMPSEC3 = '[1025:1536,1:2048]' / Amplifier 3 section                            
+AMPNAME4= 'D       '           / Amplifier 4 name                               
+AMPSEC4 = '[2048:1537,1:2048]' / Amplifier 4 section                            
+CTYPE1  = 'RA---TAN'           / R.A. in tangent plane projection               
+CTYPE2  = 'DEC--TAN'           / DEC. in tangent plane projection               
+CRPIX1  =    -123.298960105293 / Ref pix of axis 1                              
+CRPIX2  =     2976.91703355903 / Ref pix of axis 2                              
+CRVAL1  =      78.533190813356 / RA at Ref pix in decimal degrees               
+CRVAL2  =    -40.0408223432132 / DEC. at Ref pix in decimal degrees             
+CD1_1   = 5.40512482807923E-06 / partial of first axis coord w.r.t. x           
+CD1_2   = 4.95989924074699E-08 / partial of first axis coord w.r.t. y           
+CD2_1   = 4.29344012943412E-08 / partial of second axis coord w.r.t. x          
+CD2_2   =  5.4782329435367E-06 / partial of second axis coord w.r.t. y          
+RADECSYS= 'FK5     '           / R.A./DEC. coordinate system reference          
+XSCALE  =   0.0194472819480821 / Pixel scale in X (in arcsec)                   
+YSCALE  =    0.019710767743792 / Pixel scale in Y (in arcsec)                   
+ARRAYID = 'H2RG-032-074'       / Array serial number                            
+FRMNAME = 'GSAOI_Frame1'       / Name assigned to a data frame                  
+FRAMEID = '0       '           / GSAOI Frame identifier                         
+DATATYP = 'Intensity'          / Type of data frame                             
+GAIN    =     2.43400001525879 / Gain (e-/ADU)                                  
+RDNOISE =     26.5300006866455 / Read noise (e-)                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+
+--- HDU 2 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                  -32 / number of bits per data pixel                  
+NAXIS   =                    2 / number of data axes                            
+NAXIS1  =                 2048 / length of data axis 1                          
+NAXIS2  =                 2048 / length of data axis 2                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'SCI     '           / ad1406: added by AstroData                     
+EXTVER  =                    2 / ad1410: added by AstroData                     
+INHERIT =                    F / inherit the primary header                     
+CCDNAME = 'G2      '           / Array name                                     
+CCDSIZE = '[1:2048,1:2048]'    / Array dimensions                               
+CCDSUM  = '1 1     '           / Array binning                                  
+CCDSEC  = '[1:2048,1:2048]'    / Array section                                  
+AMPNAME1= 'A       '           / Amplifier 1 name                               
+AMPSEC1 = '[1:512,1:2048]'     / Amplifier 1 section                            
+DETSEC  = '[1:2048,1:2048]'    / Detector section (wrt mosaic)                  
+DATASEC = '[1:2048,1:2048]'    / Current datasection of the frame               
+AMPNAME2= 'B       '           / Amplifier 2 name                               
+AMPSEC2 = '[1024:513,1:2048]'  / Amplifier 2 section                            
+AMPNAME3= 'C       '           / Amplifier 3 name                               
+AMPSEC3 = '[1025:1536,1:2048]' / Amplifier 3 section                            
+AMPNAME4= 'C       '           / Amplifier 4 name                               
+AMPSEC4 = '[2048:1537,1:2048]' / Amplifier 4 section                            
+CTYPE1  = 'RA---TAN'           / R.A. in tangent plane projection               
+CTYPE2  = 'DEC--TAN'           / DEC. in tangent plane projection               
+CRPIX1  =     2116.11485571372 / Ref pix of axis 1                              
+CRPIX2  =     2970.10831400216 / Ref pix of axis 2                              
+CRVAL1  =      78.533190813356 / RA at Ref pix in decimal degrees               
+CRVAL2  =    -40.0408223432132 / DEC. at Ref pix in decimal degrees             
+CD1_1   = 5.56490131829359E-06 / partial of first axis coord w.r.t. x           
+CD1_2   = 5.15472644554777E-08 / partial of first axis coord w.r.t. y           
+CD2_1   = 4.27182654878656E-08 / partial of second axis coord w.r.t. x          
+CD2_2   = 5.47734202704374E-06 / partial of second axis coord w.r.t. y          
+RADECSYS= 'FK5     '           / R.A./DEC. coordinate system reference          
+XSCALE  =   0.0200221055609682 / Pixel scale in X (in arcsec)                   
+YSCALE  =   0.0197076270685495 / Pixel scale in Y (in arcsec)                   
+ARRAYID = 'H2RG-032-064'       / Array serial number                            
+FRMNAME = 'GSAOI_Frame2'       / Name assigned to a data frame                  
+FRAMEID = '1       '           / GSAOI Frame identifier                         
+DATATYP = 'Intensity'          / Type of data frame                             
+GAIN    =     2.00999999046326 / Gain (e-/ADU)                                  
+RDNOISE =     19.1000003814697 / Read noise (e-)                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+
+--- HDU 3 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                  -32 / number of bits per data pixel                  
+NAXIS   =                    2 / number of data axes                            
+NAXIS1  =                 2048 / length of data axis 1                          
+NAXIS2  =                 2048 / length of data axis 2                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'SCI     '           / ad1406: added by AstroData                     
+EXTVER  =                    3 / ad1410: added by AstroData                     
+INHERIT =                    F / inherit the primary header                     
+CCDNAME = 'G3      '           / Array name                                     
+CCDSIZE = '[1:2048,1:2048]'    / Array dimensions                               
+CCDSUM  = '1 1     '           / Array binning                                  
+CCDSEC  = '[1:2048,1:2048]'    / Array section                                  
+AMPNAME1= 'A       '           / Amplifier 1 name                               
+AMPSEC1 = '[2048:1537,2048:1]' / Amplifier 1 section                            
+DETSEC  = '[1:2048,2049:4096]' / Detector section (wrt mosaic)                  
+DATASEC = '[1:2048,1:2048]'    / Current datasection of the frame               
+AMPNAME2= 'B       '           / Amplifier 2 name                               
+AMPSEC2 = '[1025:1536,2048:1]' / Amplifier 2 section                            
+AMPNAME3= 'C       '           / Amplifier 3 name                               
+AMPSEC3 = '[1024:513,2048:1]'  / Amplifier 3 section                            
+AMPNAME4= 'C       '           / Amplifier 4 name                               
+AMPSEC4 = '[1:512,2048:1]'     / Amplifier 4 section                            
+CTYPE1  = 'RA---TAN'           / R.A. in tangent plane projection               
+CTYPE2  = 'DEC--TAN'           / DEC. in tangent plane projection               
+CRPIX1  =     2083.31276022021 / Ref pix of axis 1                              
+CRPIX2  =     780.085720541112 / Ref pix of axis 2                              
+CRVAL1  =      78.533190813356 / RA at Ref pix in decimal degrees               
+CRVAL2  =    -40.0408223432132 / DEC. at Ref pix in decimal degrees             
+CD1_1   = 5.55884324577494E-06 / partial of first axis coord w.r.t. x           
+CD1_2   = -1.14418317151674E-07 / partial of first axis coord w.r.t. y          
+CD2_1   = 5.98462400701411E-08 / partial of second axis coord w.r.t. x          
+CD2_2   = 5.47616953260292E-06 / partial of second axis coord w.r.t. y          
+RADECSYS= 'FK5     '           / R.A./DEC. coordinate system reference          
+XSCALE  =     0.02000087775423 / Pixel scale in X (in arcsec)                   
+YSCALE  =    0.019706846402433 / Pixel scale in Y (in arcsec)                   
+ARRAYID = 'H2RG-032-071'       / Array serial number                            
+FRMNAME = 'GSAOI_Frame3'       / Name assigned to a data frame                  
+FRAMEID = '2       '           / GSAOI Frame identifier                         
+DATATYP = 'Intensity'          / Type of data frame                             
+GAIN    =     2.41100001335144 / Gain (e-/ADU)                                  
+RDNOISE =     27.2399997711182 / Read noise (e-)                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+
+--- HDU 4 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                  -32 / number of bits per data pixel                  
+NAXIS   =                    2 / number of data axes                            
+NAXIS1  =                 2048 / length of data axis 1                          
+NAXIS2  =                 2048 / length of data axis 2                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'SCI     '           / ad1406: added by AstroData                     
+EXTVER  =                    4 / ad1410: added by AstroData                     
+INHERIT =                    F / inherit the primary header                     
+CCDNAME = 'G4      '           / Array name                                     
+CCDSIZE = '[1:2048,1:2048]'    / Array dimensions                               
+CCDSUM  = '1 1     '           / Array binning                                  
+CCDSEC  = '[1:2048,1:2048]'    / Array section                                  
+AMPNAME1= 'A       '           / Amplifier 1 name                               
+AMPSEC1 = '[2048:1537,2048:1]' / Amplifier 1 section                            
+DETSEC  = '[2049:4096,2049:4096]' / Detector section (wrt mosaic)               
+DATASEC = '[1:2048,1:2048]'    / Current datasection of the frame               
+AMPNAME2= 'B       '           / Amplifier 2 name                               
+AMPSEC2 = '[1025:1536,2048:1]' / Amplifier 2 section                            
+AMPNAME3= 'C       '           / Amplifier 3 name                               
+AMPSEC3 = '[1024:513,2048:1]'  / Amplifier 3 section                            
+AMPNAME4= 'C       '           / Amplifier 4 name                               
+AMPSEC4 = '[1:512,2048:1]'     / Amplifier 4 section                            
+CTYPE1  = 'RA---TAN'           / R.A. in tangent plane projection               
+CTYPE2  = 'DEC--TAN'           / DEC. in tangent plane projection               
+CRPIX1  =    -147.812495943543 / Ref pix of axis 1                              
+CRPIX2  =     788.631378591377 / Ref pix of axis 2                              
+CRVAL1  =      78.533190813356 / RA at Ref pix in decimal degrees               
+CRVAL2  =    -40.0408223432132 / DEC. at Ref pix in decimal degrees             
+CD1_1   = 5.40442665957721E-06 / partial of first axis coord w.r.t. x           
+CD1_2   = -1.06833833788759E-07 / partial of first axis coord w.r.t. y          
+CD2_1   = 3.63664115367229E-08 / partial of second axis coord w.r.t. x          
+CD2_2   = 5.47209533132654E-06 / partial of second axis coord w.r.t. y          
+RADECSYS= 'FK5     '           / R.A./DEC. coordinate system reference          
+XSCALE  =   0.0194445971867326 / Pixel scale in X (in arcsec)                   
+YSCALE  =   0.0196916391480457 / Pixel scale in Y (in arcsec)                   
+ARRAYID = 'H2RG-032-061'       / Array serial number                            
+FRMNAME = 'GSAOI_Frame4'       / Name assigned to a data frame                  
+FRAMEID = '3       '           / GSAOI Frame identifier                         
+DATATYP = 'Intensity'          / Type of data frame                             
+GAIN    =     2.64400005340576 / Gain (e-/ADU)                                  
+RDNOISE =     32.2599983215332 / Read noise (e-)                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                

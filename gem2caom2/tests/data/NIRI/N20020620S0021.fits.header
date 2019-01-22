@@ -125,7 +125,7 @@ OBSEPOCH=        2002.46625724 / Epoch at start of exposure
 AIRMASS =                1.187 / Mean airmass for the observation               
 AMSTART =                1.187 / Airmass at start of exposure                   
 AMEND   =                1.187 / Airmass at end of exposure                     
-RELEASE =           2003-12-20 / End of proprietary period YYYY-MM-DD
+RELEASE = '2003-12-20'         / End of proprietary period YYYY-MM-DD           
 END                                                                             
 XTENSION= 'IMAGE   '           / IMAGE extension                                
 BITPIX  =                   32 / number of bits per data pixel                  

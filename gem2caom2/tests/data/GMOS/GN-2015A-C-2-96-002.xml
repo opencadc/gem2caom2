@@ -12,6 +12,7 @@
   </caom2:proposal>
   <caom2:target>
     <caom2:name>GCALflat</caom2:name>
+    <caom2:type>field</caom2:type>
   </caom2:target>
   <caom2:telescope>
     <caom2:name>Gemini-North</caom2:name>
@@ -27,7 +28,7 @@
       <caom2:productID>GN-2015A-C-2-96-002</caom2:productID>
       <caom2:metaRelease>2015-02-17T00:00:00.000</caom2:metaRelease>
       <caom2:dataRelease>2015-02-17T00:00:00.000</caom2:dataRelease>
-      <caom2:dataProductType>spectrum</caom2:dataProductType>
+      <caom2:dataProductType>image</caom2:dataProductType>
       <caom2:calibrationLevel>1</caom2:calibrationLevel>
       <caom2:provenance>
         <caom2:name>Gemini unprocessed data</caom2:name>

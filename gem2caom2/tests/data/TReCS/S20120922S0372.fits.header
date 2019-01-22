@@ -1,0 +1,648 @@
+Filename: S20120922S0372.fits.bz2
+
+AstroData Types: ['LS', 'TRECS', 'GEMINI', 'SIDEREAL', 'TRECS_SPECT', 'GEMINI_SOUTH', 'SPECT', 'RAW', 'UNPREPARED']
+
+
+--- HDU 0 ---
+SIMPLE  =                    T / file does conform to FITS standard             
+BITPIX  =                   16 / number of bits per data pixel                  
+NAXIS   =                    0 / number of data axes                            
+EXTEND  =                    T / FITS dataset may contain extensions            
+COMMENT   FITS (Flexible Image Transport System) format is defined in 'Astronomy
+COMMENT   and Astrophysics', volume 376, page 359; bibcode: 2001A&A...376..359H 
+INSTRUME= 'TReCS   '           / Instrument used to acquire data.               
+OBJECT  = 'NGC1386 '           / Target Name                                    
+OBSTYPE = 'OBJECT  '           / Observation type                               
+OBSCLASS= 'science '           / Observe class                                  
+GEMPRGID= 'GS-2012A-Q-7'       / Gemini Science Program ID                      
+OBSID   = 'GS-2012A-Q-7-31'    / Gemini Observation ID                          
+DATALAB = 'GS-2012A-Q-7-31-001' / DHS Data Label                                
+OBSERVER= 'J. Radomski'        / Gemini Observers                               
+OBSERVAT= 'Gemini-South'       / Gemini North or Gemini South                   
+TELESCOP= 'Gemini-South'       / Telescope where data taken                     
+PARALLAX=                   0. / Target Parallax                                
+RADVEL  =                   0. / Target Heliocentric Radial Velocity            
+EPOCH   =                2000. / Target Coordinate Epoch                        
+EQUINOX =                2000. / Equinox of coordinate system                   
+TRKEQUIN=                2000. / Tracking equinox                               
+SSA     = 'A. Serio'           / Gemini SSAs                                    
+RA      =          54.19265833 / Target Right Ascension                         
+DEC     =           -35.999275 / Target Declination                             
+ELEVATIO=     81.5369930555556 / Telescope Elevation at start                   
+AZIMUTH =     225.890004166667 / Telescope Azimuth at start                     
+CRPA    =     137.125561646062 / Cass Rotator Position Angle at start           
+HA      = '+00:30:11.97'       / Telescope Hour Angle at start                  
+LT      = '05:43:56.6'         / Local time at observation start                
+TRKFRAME= 'FK5     '           / Tracking co-ordinate                           
+DECTRACK=                   0. / Differential tracking rate Dec                 
+TRKEPOCH=         56192.353611 / Differential tracking reference epoch          
+RATRACK =                   0. / Differential tracking rate RA                  
+FRAME   = 'FK5     '           / Target coordinate system                       
+PMDEC   =                   0. / Target Proper Motion in Declination            
+PMRA    =                   0. / Target Proper Motion in RA                     
+WAVELENG=              105000. / Effective Target Wavelength                    
+RAWIQ   = '20-percentile'      / Raw Image Quality                              
+RAWCC   = '50-percentile'      / Raw Cloud Cover                                
+RAWWV   = '20-percentile'      / Raw Water Vapour/Transparency                  
+RAWBG   = '20-percentile'      / Raw Background                                 
+RAWPIREQ= 'NO      '           / PI Requirements Met                            
+RAWGEMQA= 'USABLE  '           / Gemini Quality Assessment                      
+CGUIDMOD= 'Basic   '           / Driving mode for carousel                      
+UT      = '08:43:57.6'         / UT of Observation                              
+DATE    = '2012-09-22'         / UT Date of observation (YYYY-MM-DD)            
+M2BAFFLE= 'RETRACTED'          / Position of M2 baffle                          
+M2CENBAF= 'OPEN    '           / Position of M2 central hole baffle             
+ST      = '04:07:29.8'         / Sidereal time at observation start             
+XOFFSET =       0.270473624898 / Instrument offset in x in arcsec               
+YOFFSET =       0.332535568249 / Instrument offset in y in arcsec               
+POFFSET =      -0.282589831622 / Telescope offset in p in arcsec                
+QOFFSET =      -0.322302455746 / Telescope offset in q in arcsec                
+RAOFFSET=       0.253423982077 / Instrument offset in RA in arcsec              
+DECOFFSE=       0.345705324264 / Instrument offset in DEC in arcsec             
+RATRGOFF=                   0. / Target offset in RA in arcsec                  
+DECTRGOF=                   0. / Target offset in DEC in arcsec                 
+PA      =                   5. / Instrument Position Angle at start (degrees)   
+IAA     =               357.88 / Instrument Alignment Angle                     
+SFRT2   =               179.74 / Science fold rotation angle (degrees)          
+SFTILT  =                 0.04 / Science fold tilt angle (degrees)              
+SFLINEAR=              -357.41 / Science fold linear position (mm)              
+AOFOLD  = 'park-pos.'          / AO Pick-Off Mirror Position                    
+PWFS1_ST= 'parked  '           / PWFS1 probe state (frozen,guiding,parked)      
+PWFS2_ST= 'guiding '           / PWFS2 probe state (frozen,guiding,parked)      
+OIWFS_ST= 'parked  '           / OIWFS probe state (frozen,guiding,parked)      
+AOWFS_ST= 'parked  '           / AOWFS probe state (frozen,guiding,parked)      
+REQIQ   = '70-percentile'      / Requested Image Quality                        
+REQCC   = '50-percentile'      / Requested Cloud Cover                          
+REQBG   = 'Any     '           / Requested Background                           
+REQWV   = '80-percentile'      / Requested Water Vapour                         
+P2ARA   =          54.30907917 / RA of PWFS2 guide star                         
+P2ARV   =                   0. / PWFS2 Heliocentric Radial Velocity             
+P2AWAVEL=                6000. / PWFS2 Effective Target Wavelength              
+P2ADEC  =         -35.95864167 / Declination of PWFS2 guide star                
+P2AEPOCH=                2000. / Epoch for PWFS2 guide star coordinates         
+P2AEQUIN=                2000. / Equinox for PWFS2 guide star coordinates       
+P2AFRAME= 'FK5     '           / PWFS2 Target co-ordinate system                
+P2AOBJEC= '109-008358'         / Object Name for PWFS 2, Chop A                 
+P2APMDEC=                   0. / PWFS2 Proper Motion in Declination             
+P2APMRA =                   0. / PWFS2 Proper Motion in RA                      
+P2APARAL=                   0. / PWFS2 Parallax of Target                       
+P2FOCUS =               -0.075 / PWFS2 Focus Offset (mm)                        
+HUMIDITY=                  15. / The Relative Humidity (fraction, 0..101).      
+TAMBIENT=                 11.1 / The ambient temp (C).                          
+TAMBIEN2=                51.98 / The ambient temp (F).                          
+PRESSURE=            546.20384 / The atmospheric pressure (mm Hg).              
+PRESSUR2=               72800. / The atmospheric pressure (Pa).                 
+DEWPOINT=                -14.6 / The dew point (C).                             
+DEWPOIN2=                 5.72 / The dew point (F).                             
+WINDSPEE=                  3.9 / The wind speed (m/s).                          
+WINDSPE2=               8.7243 / The wind speed (mph).                          
+WINDDIRE=                   0. / The wind direction (degrees).                  
+INPORT  =                    1 / Number of ISS port where T-ReCS was located    
+DATE-OBS= '2012-09-22'         / UT Date of Observation (YYYY-MM-DD)            
+TIME-OBS= '08:43:57.6'         / UT of Observation                              
+UTSTART = '08:43:57.6'         / UT at observation start                        
+CHPTHROW=                  15. / M2 chop throw (arcsec)                         
+CHPDUTY =                  60. / Chop duty cycle (%)                            
+CHPPA   =                  95. / M2 chop PA (degrees)                           
+TELFOC  =              0.14175 / M2 focus at start                              
+INSTALIG=               357.88 / Instrument Alignment Angle (degrees)           
+FOCOFFS =               -0.075 / Offset from nominal focus                      
+PWV     =                   0. / Water Vapor at the start of observation (mm)   
+UTEND   = '09:00:57.1'         / UT at observation end                          
+AZIMEND =     236.848511111111 / Telescope Azimuth at end                       
+ELEVEND =     78.6438527777778 / Telescope Elevation at end                     
+HAEND   = '+00:47:14.76'       / Telescope Hour Angle at end                    
+CRPAEND =     123.824408434626 / Cass Rotator Position Angle at end             
+TELFOCEN=              0.13533 / M2 focus at end                                
+ENDPWV  =                   0. / Water Vapor at the end of observation (mm)     
+AIRMASS =                1.015 / Mean airmass for the observation               
+AMSTART =                1.011 / Airmass at start of exposure                   
+AMEND   =                 1.02 / Airmass at end of exposure                     
+APERPOS =                  167 / Aperture Position                              
+BKAEND  =                    0 / Background at end of obs. (ADU)                
+BKAMAX  =                    0 / Max. background during obs. (ADU)              
+BKAMIN  =                    0 / Min. background during obs. (ADU)              
+BKASTART=                13294 / Background at start of obs. (ADU)              
+CHPCOADD=                   23 / Coadded chop cycles per saveset                
+CHPSETTL=                    2 / Frames discarded per chop settle               
+FILT1POS=                  -72 / Filter#1 Position                              
+FILT2POS=                  791 / Filter#2 Position                              
+FRMCOADD=                    3 / Coadded frames per chop phase                  
+GRATPOS =                 1216 / Grating Position                               
+LYOTPOS =                 1331 / Lyot Position                                  
+NCHOPS  =                    2 / Number of Chop Phases (NAXIS3: 1 or 2)         
+NNODS   =                    2 / Number of Nod Phases (1 or 2)                  
+NNODSETS=                   11 / Number of Nod Sets                             
+NODSETS =                   11 / Nod cycles per total integration               
+NODSETTL=                   19 / Chop cycles per nod settle                     
+NODSETTR=                  190 / Chop cycles coadded per nod                    
+NSAVSETS=                    5 / Number of Chop Sets (NAXIS4)                   
+PIXCLOCK=                    5 / MCE4 Pixel Base Clock (PBC)                    
+PRECHPS =                   17 / Pre-valid throwaway chop cycles                
+PSTCHPS =                    7 / Post-valid throwaway chop cycles               
+PUPILPOS=                   35 / PupilImaging Position                          
+RDAEND  =                    0 / Detector clamp level at end of obs. (ADU)      
+RDAMAX  =                    0 / Max. Detector clamp level during obs. (ADU)    
+RDAMIN  =                    0 / Min. Detector clamp level during obs. (ADU)    
+RDASTART=                 8282 / Detector clamp level at start of obs. (ADU)    
+SAVESETS=                    5 / Savesets per nod phase                         
+SECTPOS =                  841 / SectorWheel Position                           
+SLITPOS =                 7707 / Slit Position                                  
+WINDPOS =                 2578 / Window Position                                
+CD1_1   = -2.46175186475739E-05 / WCS matrix element 1,1                        
+CD1_2   = 2.25136409426341E-06 / WCS matrix element 1,2                         
+CD2_1   = 2.25125518227287E-06 / WCS matrix element 2,1                         
+CD2_2   = 2.46175095526269E-05 / WCS matrix element 2,2                         
+CHPDELAY=     86.1859970092773 / Chop settle time (ms)                          
+CHPFREQ =     2.32055997848511 / Chop frequency (Hz)                            
+COLDFING=     6.58920001983643 / (Kelvin)                                       
+COLDPLAT=     7.04199981689453 / (Kelvin)                                       
+CRPIX1  =                 160. / Ref pix of axis 1                              
+CRPIX2  =                 120. / Ref pix of axis 2                              
+CRVAL1  =     54.1918449401855 / RA at Ref pix in decimal degrees               
+CRVAL2  =    -35.9990615844727 / DEC at Ref pix in decimal degrees              
+DETARRAY=     7.68400001525879 / Detector Actual Temp (Kelvin)                  
+DETSET  =                  -1. / Detector Set Temp (Kelvin)                     
+EFF_CHP =                  60. / Chop duty cycle (%)                            
+EFF_FRM =                 100. / Frame duty cycle (%)                           
+EFF_NOD =     85.8208999633789 / Nod duty cycle (%)                             
+EQUINOX =                2000. / Equinox of coordinate system                   
+FIRSTSTG=      44.068000793457 / (Kelvin)                                       
+FRMTIME =     43.0929985046387 / Frame time (ms)                                
+GRATMOT =     74.5999984741211 / (Kelvin)                                       
+HRCENWL =     8.60000038146973 / HiRes-10 mode central wavelength (microns)     
+MJD-OBS =       56192.36328125 / MJD at observation start                       
+NODDELAY=     8.18766975402832 / Nod settle time (sec)                          
+NODTIME =     49.5569000244141 / Nod time (sec)                                 
+OBJTIME =     327.075988769531 / On-source time (sec)                           
+OBSEPOCH=     2012.72998046875 / Epoch at observation start                     
+PRECHPT =     7.32580995559692 / Time before valid chopping (sec)               
+PSTCHPT =     3.01651000976562 / Time after valid chopping (sec)                
+SAVETIME=     9.91139030456543 / SaveSet Time (sec)                             
+SIGFMAX =                   0. / Maximum Std. Dev. of total noise (ADU)         
+SIGFMIN =                   0. / Minimum Std. Dev. of total noise (ADU)         
+SIGFRM  =                   0. / Std. Dev. of total noise in last frame (ADU)   
+SIGREAD =                   0. / Std. Dev. of read noise in last frame (ADU)    
+SIGRMAX =                   0. / Maximum Std. Dev. of read noise (ADU)          
+SIGRMIN =                   0. / Minimum Std. Dev. of read noise (ADU)          
+VACUUM  = 6.98000022225642E-08 / (Torr)                                         
+APERTURE= 'Matched '           / Aperture Name                                  
+BIASLEVL= '2       '           / Detector Bias (V_detgrv): 0=off, 1=low, 2=med, 
+COMPSTAT= 'STARTING: S2012092' / Observation completion status                  
+CTYPE1  = 'RA---TAN'           / R.A. in tangent plane projection               
+CTYPE2  = 'DEC--TAN'           / DEC. in tangent plane projection               
+FILTER1 = 'Open    '           / Filter#1 Name                                  
+FILTER2 = 'N       '           / Filter#2 Name                                  
+GRATING = 'LowRes-10'          / Grating Name                                   
+LYOT    = 'Circ-2  '           / Lyot Name                                      
+OBSMODE = 'chop-nod'           / Observing mode: chop, nod, stare, chop-nod     
+PUPILIMA= 'Open-1  '           / PupilImaging Name                              
+RADECSYS= 'FK5     '           / R.A./DEC. coordinate system reference          
+READMODE= 'S1R3    '           / Detector Readout mode                          
+SECTOR  = 'Open    '           / SectorWheel Name                               
+SLIT    = '0.35" - 75'         / Slit Name                                      
+TIMESYS = 'UT1     '           / Time System                                    
+USRNOTE = '        '           / Observation Note                               
+WELLDPTH= '0       '           / Detector Well Depth: 0=shallow, 1=deep         
+WINDOW  = 'ZnSe    '           / Window Name                                    
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+RELEASE = '2014-03-22'         / End of proprietary period YYYY-MM-DD           
+
+--- HDU 1 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                   32 / number of bits per data pixel                  
+NAXIS   =                    4 / number of data axes                            
+NAXIS1  =                  320 / length of data axis 1                          
+NAXIS2  =                  240 / length of data axis 2                          
+NAXIS3  =                    2 / length of data axis 3                          
+NAXIS4  =                    5 / length of data axis 4                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'SCI     '           / ad1406: added by AstroData                     
+EXTVER  =                    1 / ad1410: added by AstroData                     
+AXISLAB1= 'Xaxis   '           / Axis label                                     
+AXISLAB2= 'Yaxis   '           / Axis label                                     
+AXISLAB3= 'instrument'         / Axis label                                     
+AXISLAB4= 'instrument'         / Axis label                                     
+NODSET  =                    1 / Index of NodSet                                
+AMSTART =      1.0110000371933 / Airmass at start of exposure                   
+NOD     = 'A       '           / Name of Nod Phase (A or B)                     
+UTEND   = '08:44:44.928787'    / UT at observation end                          
+UTSTART = '08:44:06.928681'    / UT at observation start                        
+FRMNAME = ' 10 of 220'         / Name assigned to a frame of data.              
+FRAMEID = '9       '           / Frame ID                                       
+DATATYP = 'Intensity'          / Type of data frame                             
+
+--- HDU 2 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                   32 / number of bits per data pixel                  
+NAXIS   =                    4 / number of data axes                            
+NAXIS1  =                  320 / length of data axis 1                          
+NAXIS2  =                  240 / length of data axis 2                          
+NAXIS3  =                    2 / length of data axis 3                          
+NAXIS4  =                    5 / length of data axis 4                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'SCI     '           / ad1406: added by AstroData                     
+EXTVER  =                    2 / ad1410: added by AstroData                     
+AXISLAB1= 'Xaxis   '           / Axis label                                     
+AXISLAB2= 'Yaxis   '           / Axis label                                     
+AXISLAB3= 'instrument'         / Axis label                                     
+AXISLAB4= 'instrument'         / Axis label                                     
+NODSET  =                    1 / Index of NodSet                                
+AMSTART =     1.01199996471405 / Airmass at start of exposure                   
+NOD     = 'B       '           / Name of Nod Phase (A or B)                     
+UTEND   = '08:45:42.928736'    / UT at observation end                          
+UTSTART = '08:45:01.929600'    / UT at observation start                        
+FRMNAME = ' 20 of 220'         / Name assigned to a frame of data.              
+FRAMEID = '19      '           / Frame ID                                       
+DATATYP = 'Intensity'          / Type of data frame                             
+
+--- HDU 3 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                   32 / number of bits per data pixel                  
+NAXIS   =                    4 / number of data axes                            
+NAXIS1  =                  320 / length of data axis 1                          
+NAXIS2  =                  240 / length of data axis 2                          
+NAXIS3  =                    2 / length of data axis 3                          
+NAXIS4  =                    5 / length of data axis 4                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'SCI     '           / ad1406: added by AstroData                     
+EXTVER  =                    3 / ad1410: added by AstroData                     
+AXISLAB1= 'Xaxis   '           / Axis label                                     
+AXISLAB2= 'Yaxis   '           / Axis label                                     
+AXISLAB3= 'instrument'         / Axis label                                     
+AXISLAB4= 'instrument'         / Axis label                                     
+NODSET  =                    2 / Index of NodSet                                
+AMSTART =     1.01199996471405 / Airmass at start of exposure                   
+NOD     = 'A       '           / Name of Nod Phase (A or B)                     
+UTEND   = '08:46:40.928655'    / UT at observation end                          
+UTSTART = '08:45:59.929019'    / UT at observation start                        
+FRMNAME = ' 30 of 220'         / Name assigned to a frame of data.              
+FRAMEID = '29      '           / Frame ID                                       
+DATATYP = 'Intensity'          / Type of data frame                             
+
+--- HDU 4 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                   32 / number of bits per data pixel                  
+NAXIS   =                    4 / number of data axes                            
+NAXIS1  =                  320 / length of data axis 1                          
+NAXIS2  =                  240 / length of data axis 2                          
+NAXIS3  =                    2 / length of data axis 3                          
+NAXIS4  =                    5 / length of data axis 4                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'SCI     '           / ad1406: added by AstroData                     
+EXTVER  =                    4 / ad1410: added by AstroData                     
+AXISLAB1= 'Xaxis   '           / Axis label                                     
+AXISLAB2= 'Yaxis   '           / Axis label                                     
+AXISLAB3= 'instrument'         / Axis label                                     
+AXISLAB4= 'instrument'         / Axis label                                     
+NODSET  =                    2 / Index of NodSet                                
+AMSTART =     1.01199996471405 / Airmass at start of exposure                   
+NOD     = 'B       '           / Name of Nod Phase (A or B)                     
+UTEND   = '08:47:37.929074'    / UT at observation end                          
+UTSTART = '08:46:57.928918'    / UT at observation start                        
+FRMNAME = ' 40 of 220'         / Name assigned to a frame of data.              
+FRAMEID = '39      '           / Frame ID                                       
+DATATYP = 'Intensity'          / Type of data frame                             
+
+--- HDU 5 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                   32 / number of bits per data pixel                  
+NAXIS   =                    4 / number of data axes                            
+NAXIS1  =                  320 / length of data axis 1                          
+NAXIS2  =                  240 / length of data axis 2                          
+NAXIS3  =                    2 / length of data axis 3                          
+NAXIS4  =                    5 / length of data axis 4                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'SCI     '           / ad1406: added by AstroData                     
+EXTVER  =                    5 / ad1410: added by AstroData                     
+AXISLAB1= 'Xaxis   '           / Axis label                                     
+AXISLAB2= 'Yaxis   '           / Axis label                                     
+AXISLAB3= 'instrument'         / Axis label                                     
+AXISLAB4= 'instrument'         / Axis label                                     
+NODSET  =                    3 / Index of NodSet                                
+AMSTART =     1.01300001144409 / Airmass at start of exposure                   
+NOD     = 'A       '           / Name of Nod Phase (A or B)                     
+UTEND   = '08:48:35.928974'    / UT at observation end                          
+UTSTART = '08:47:55.928868'    / UT at observation start                        
+FRMNAME = ' 50 of 220'         / Name assigned to a frame of data.              
+FRAMEID = '49      '           / Frame ID                                       
+DATATYP = 'Intensity'          / Type of data frame                             
+
+--- HDU 6 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                   32 / number of bits per data pixel                  
+NAXIS   =                    4 / number of data axes                            
+NAXIS1  =                  320 / length of data axis 1                          
+NAXIS2  =                  240 / length of data axis 2                          
+NAXIS3  =                    2 / length of data axis 3                          
+NAXIS4  =                    5 / length of data axis 4                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'SCI     '           / ad1406: added by AstroData                     
+EXTVER  =                    6 / ad1410: added by AstroData                     
+AXISLAB1= 'Xaxis   '           / Axis label                                     
+AXISLAB2= 'Yaxis   '           / Axis label                                     
+AXISLAB3= 'instrument'         / Axis label                                     
+AXISLAB4= 'instrument'         / Axis label                                     
+NODSET  =                    3 / Index of NodSet                                
+AMSTART =     1.01300001144409 / Airmass at start of exposure                   
+NOD     = 'B       '           / Name of Nod Phase (A or B)                     
+UTEND   = '08:49:32.929493'    / UT at observation end                          
+UTSTART = '08:48:52.929327'    / UT at observation start                        
+FRMNAME = ' 60 of 220'         / Name assigned to a frame of data.              
+FRAMEID = '59      '           / Frame ID                                       
+DATATYP = 'Intensity'          / Type of data frame                             
+
+--- HDU 7 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                   32 / number of bits per data pixel                  
+NAXIS   =                    4 / number of data axes                            
+NAXIS1  =                  320 / length of data axis 1                          
+NAXIS2  =                  240 / length of data axis 2                          
+NAXIS3  =                    2 / length of data axis 3                          
+NAXIS4  =                    5 / length of data axis 4                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'SCI     '           / ad1406: added by AstroData                     
+EXTVER  =                    7 / ad1410: added by AstroData                     
+AXISLAB1= 'Xaxis   '           / Axis label                                     
+AXISLAB2= 'Yaxis   '           / Axis label                                     
+AXISLAB3= 'instrument'         / Axis label                                     
+AXISLAB4= 'instrument'         / Axis label                                     
+NODSET  =                    4 / Index of NodSet                                
+AMSTART =     1.01400005817413 / Airmass at start of exposure                   
+NOD     = 'A       '           / Name of Nod Phase (A or B)                     
+UTEND   = '08:50:30.929442'    / UT at observation end                          
+UTSTART = '08:49:50.929296'    / UT at observation start                        
+FRMNAME = ' 70 of 220'         / Name assigned to a frame of data.              
+FRAMEID = '69      '           / Frame ID                                       
+DATATYP = 'Intensity'          / Type of data frame                             
+
+--- HDU 8 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                   32 / number of bits per data pixel                  
+NAXIS   =                    4 / number of data axes                            
+NAXIS1  =                  320 / length of data axis 1                          
+NAXIS2  =                  240 / length of data axis 2                          
+NAXIS3  =                    2 / length of data axis 3                          
+NAXIS4  =                    5 / length of data axis 4                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'SCI     '           / ad1406: added by AstroData                     
+EXTVER  =                    8 / ad1410: added by AstroData                     
+AXISLAB1= 'Xaxis   '           / Axis label                                     
+AXISLAB2= 'Yaxis   '           / Axis label                                     
+AXISLAB3= 'instrument'         / Axis label                                     
+AXISLAB4= 'instrument'         / Axis label                                     
+NODSET  =                    4 / Index of NodSet                                
+AMSTART =     1.01400005817413 / Airmass at start of exposure                   
+NOD     = 'B       '           / Name of Nod Phase (A or B)                     
+UTEND   = '08:51:28.929402'    / UT at observation end                          
+UTSTART = '08:50:48.928786'    / UT at observation start                        
+FRMNAME = ' 80 of 220'         / Name assigned to a frame of data.              
+FRAMEID = '79      '           / Frame ID                                       
+DATATYP = 'Intensity'          / Type of data frame                             
+
+--- HDU 9 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                   32 / number of bits per data pixel                  
+NAXIS   =                    4 / number of data axes                            
+NAXIS1  =                  320 / length of data axis 1                          
+NAXIS2  =                  240 / length of data axis 2                          
+NAXIS3  =                    2 / length of data axis 3                          
+NAXIS4  =                    5 / length of data axis 4                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'SCI     '           / ad1406: added by AstroData                     
+EXTVER  =                    9 / ad1410: added by AstroData                     
+AXISLAB1= 'Xaxis   '           / Axis label                                     
+AXISLAB2= 'Yaxis   '           / Axis label                                     
+AXISLAB3= 'instrument'         / Axis label                                     
+AXISLAB4= 'instrument'         / Axis label                                     
+NODSET  =                    5 / Index of NodSet                                
+AMSTART =     1.01499998569489 / Airmass at start of exposure                   
+NOD     = 'A       '           / Name of Nod Phase (A or B)                     
+UTEND   = '08:52:26.928811'    / UT at observation end                          
+UTSTART = '08:51:46.928695'    / UT at observation start                        
+FRMNAME = ' 90 of 220'         / Name assigned to a frame of data.              
+FRAMEID = '89      '           / Frame ID                                       
+DATATYP = 'Intensity'          / Type of data frame                             
+
+--- HDU 10 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                   32 / number of bits per data pixel                  
+NAXIS   =                    4 / number of data axes                            
+NAXIS1  =                  320 / length of data axis 1                          
+NAXIS2  =                  240 / length of data axis 2                          
+NAXIS3  =                    2 / length of data axis 3                          
+NAXIS4  =                    5 / length of data axis 4                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'SCI     '           / ad1406: added by AstroData                     
+EXTVER  =                   10 / ad1410: added by AstroData                     
+AXISLAB1= 'Xaxis   '           / Axis label                                     
+AXISLAB2= 'Yaxis   '           / Axis label                                     
+AXISLAB3= 'instrument'         / Axis label                                     
+AXISLAB4= 'instrument'         / Axis label                                     
+NODSET  =                    5 / Index of NodSet                                
+AMSTART =     1.01499998569489 / Airmass at start of exposure                   
+NOD     = 'B       '           / Name of Nod Phase (A or B)                     
+UTEND   = '08:53:24.928820'    / UT at observation end                          
+UTSTART = '08:52:44.928662'    / UT at observation start                        
+FRMNAME = ' 100 of 220'        / Name assigned to a frame of data.              
+FRAMEID = '99      '           / Frame ID                                       
+DATATYP = 'Intensity'          / Type of data frame                             
+
+--- HDU 11 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                   32 / number of bits per data pixel                  
+NAXIS   =                    4 / number of data axes                            
+NAXIS1  =                  320 / length of data axis 1                          
+NAXIS2  =                  240 / length of data axis 2                          
+NAXIS3  =                    2 / length of data axis 3                          
+NAXIS4  =                    5 / length of data axis 4                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'SCI     '           / ad1406: added by AstroData                     
+EXTVER  =                   11 / ad1410: added by AstroData                     
+AXISLAB1= 'Xaxis   '           / Axis label                                     
+AXISLAB2= 'Yaxis   '           / Axis label                                     
+AXISLAB3= 'instrument'         / Axis label                                     
+AXISLAB4= 'instrument'         / Axis label                                     
+NODSET  =                    6 / Index of NodSet                                
+AMSTART =     1.01600003242493 / Airmass at start of exposure                   
+NOD     = 'A       '           / Name of Nod Phase (A or B)                     
+UTEND   = '08:54:21.929260'    / UT at observation end                          
+UTSTART = '08:53:41.929093'    / UT at observation start                        
+FRMNAME = ' 110 of 220'        / Name assigned to a frame of data.              
+FRAMEID = '109     '           / Frame ID                                       
+DATATYP = 'Intensity'          / Type of data frame                             
+
+--- HDU 12 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                   32 / number of bits per data pixel                  
+NAXIS   =                    4 / number of data axes                            
+NAXIS1  =                  320 / length of data axis 1                          
+NAXIS2  =                  240 / length of data axis 2                          
+NAXIS3  =                    2 / length of data axis 3                          
+NAXIS4  =                    5 / length of data axis 4                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'SCI     '           / ad1406: added by AstroData                     
+EXTVER  =                   12 / ad1410: added by AstroData                     
+AXISLAB1= 'Xaxis   '           / Axis label                                     
+AXISLAB2= 'Yaxis   '           / Axis label                                     
+AXISLAB3= 'instrument'         / Axis label                                     
+AXISLAB4= 'instrument'         / Axis label                                     
+NODSET  =                    6 / Index of NodSet                                
+AMSTART =     1.01600003242493 / Airmass at start of exposure                   
+NOD     = 'B       '           / Name of Nod Phase (A or B)                     
+UTEND   = '08:55:19.929179'    / UT at observation end                          
+UTSTART = '08:54:39.929083'    / UT at observation start                        
+FRMNAME = ' 120 of 220'        / Name assigned to a frame of data.              
+FRAMEID = '119     '           / Frame ID                                       
+DATATYP = 'Intensity'          / Type of data frame                             
+
+--- HDU 13 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                   32 / number of bits per data pixel                  
+NAXIS   =                    4 / number of data axes                            
+NAXIS1  =                  320 / length of data axis 1                          
+NAXIS2  =                  240 / length of data axis 2                          
+NAXIS3  =                    2 / length of data axis 3                          
+NAXIS4  =                    5 / length of data axis 4                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'SCI     '           / ad1406: added by AstroData                     
+EXTVER  =                   13 / ad1410: added by AstroData                     
+AXISLAB1= 'Xaxis   '           / Axis label                                     
+AXISLAB2= 'Yaxis   '           / Axis label                                     
+AXISLAB3= 'instrument'         / Axis label                                     
+AXISLAB4= 'instrument'         / Axis label                                     
+NODSET  =                    7 / Index of NodSet                                
+AMSTART =     1.01699995994568 / Airmass at start of exposure                   
+NOD     = 'A       '           / Name of Nod Phase (A or B)                     
+UTEND   = '08:56:17.929098'    / UT at observation end                          
+UTSTART = '08:55:36.929432'    / UT at observation start                        
+FRMNAME = ' 130 of 220'        / Name assigned to a frame of data.              
+FRAMEID = '129     '           / Frame ID                                       
+DATATYP = 'Intensity'          / Type of data frame                             
+
+--- HDU 14 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                   32 / number of bits per data pixel                  
+NAXIS   =                    4 / number of data axes                            
+NAXIS1  =                  320 / length of data axis 1                          
+NAXIS2  =                  240 / length of data axis 2                          
+NAXIS3  =                    2 / length of data axis 3                          
+NAXIS4  =                    5 / length of data axis 4                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'SCI     '           / ad1406: added by AstroData                     
+EXTVER  =                   14 / ad1410: added by AstroData                     
+AXISLAB1= 'Xaxis   '           / Axis label                                     
+AXISLAB2= 'Yaxis   '           / Axis label                                     
+AXISLAB3= 'instrument'         / Axis label                                     
+AXISLAB4= 'instrument'         / Axis label                                     
+NODSET  =                    7 / Index of NodSet                                
+AMSTART =     1.01699995994568 / Airmass at start of exposure                   
+NOD     = 'B       '           / Name of Nod Phase (A or B)                     
+UTEND   = '08:57:14.929517'    / UT at observation end                          
+UTSTART = '08:56:34.929391'    / UT at observation start                        
+FRMNAME = ' 140 of 220'        / Name assigned to a frame of data.              
+FRAMEID = '139     '           / Frame ID                                       
+DATATYP = 'Intensity'          / Type of data frame                             
+
+--- HDU 15 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                   32 / number of bits per data pixel                  
+NAXIS   =                    4 / number of data axes                            
+NAXIS1  =                  320 / length of data axis 1                          
+NAXIS2  =                  240 / length of data axis 2                          
+NAXIS3  =                    2 / length of data axis 3                          
+NAXIS4  =                    5 / length of data axis 4                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'SCI     '           / ad1406: added by AstroData                     
+EXTVER  =                   15 / ad1410: added by AstroData                     
+AXISLAB1= 'Xaxis   '           / Axis label                                     
+AXISLAB2= 'Yaxis   '           / Axis label                                     
+AXISLAB3= 'instrument'         / Axis label                                     
+AXISLAB4= 'instrument'         / Axis label                                     
+NODSET  =                    8 / Index of NodSet                                
+AMSTART =     1.01800000667572 / Airmass at start of exposure                   
+NOD     = 'A       '           / Name of Nod Phase (A or B)                     
+UTEND   = '08:58:12.929437'    / UT at observation end                          
+UTSTART = '08:57:32.929321'    / UT at observation start                        
+FRMNAME = ' 150 of 220'        / Name assigned to a frame of data.              
+FRAMEID = '149     '           / Frame ID                                       
+DATATYP = 'Intensity'          / Type of data frame                             
+
+--- HDU 16 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                   32 / number of bits per data pixel                  
+NAXIS   =                    4 / number of data axes                            
+NAXIS1  =                  320 / length of data axis 1                          
+NAXIS2  =                  240 / length of data axis 2                          
+NAXIS3  =                    2 / length of data axis 3                          
+NAXIS4  =                    5 / length of data axis 4                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'SCI     '           / ad1406: added by AstroData                     
+EXTVER  =                   16 / ad1410: added by AstroData                     
+AXISLAB1= 'Xaxis   '           / Axis label                                     
+AXISLAB2= 'Yaxis   '           / Axis label                                     
+AXISLAB3= 'instrument'         / Axis label                                     
+AXISLAB4= 'instrument'         / Axis label                                     
+NODSET  =                    8 / Index of NodSet                                
+AMSTART =     1.01900005340576 / Airmass at start of exposure                   
+NOD     = 'B       '           / Name of Nod Phase (A or B)                     
+UTEND   = '08:59:10.929366'    / UT at observation end                          
+UTSTART = '08:58:30.928760'    / UT at observation start                        
+FRMNAME = ' 160 of 220'        / Name assigned to a frame of data.              
+FRAMEID = '159     '           / Frame ID                                       
+DATATYP = 'Intensity'          / Type of data frame                             
+
+--- HDU 17 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                   32 / number of bits per data pixel                  
+NAXIS   =                    4 / number of data axes                            
+NAXIS1  =                  320 / length of data axis 1                          
+NAXIS2  =                  240 / length of data axis 2                          
+NAXIS3  =                    2 / length of data axis 3                          
+NAXIS4  =                    5 / length of data axis 4                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'SCI     '           / ad1406: added by AstroData                     
+EXTVER  =                   17 / ad1410: added by AstroData                     
+AXISLAB1= 'Xaxis   '           / Axis label                                     
+AXISLAB2= 'Yaxis   '           / Axis label                                     
+AXISLAB3= 'instrument'         / Axis label                                     
+AXISLAB4= 'instrument'         / Axis label                                     
+NODSET  =                    9 / Index of NodSet                                
+AMSTART =     1.01900005340576 / Airmass at start of exposure                   
+NOD     = 'A       '           / Name of Nod Phase (A or B)                     
+UTEND   = '08:44:15.202073'    / UT at observation end                          
+UTSTART = '08:59:28.928660'    / UT at observation start                        
+FRMNAME = ' 166 of 220'        / Name assigned to a frame of data.              
+FRAMEID = '165     '           / Frame ID                                       
+DATATYP = 'Intensity'          / Type of data frame                             

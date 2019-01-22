@@ -68,6 +68,7 @@
 #
 
 import io
+import logging
 import re
 
 import requests
@@ -121,84 +122,88 @@ def filter_metadata(instrument, filters):
     :return: Energy metadata dictionary.
     """
 
-    filter_md = {}
-    filter_names = filters.split('&')
-    wl_min = 0.0
-    wl_max = 100000.0
-    width_min = 100000.0
+    try:
+        filter_md = {}
+        filter_names = filters.split('&')
+        wl_min = 0.0
+        wl_max = 100000.0
+        width_min = 100000.0
 
-    for filter_name in filter_names:
-        if 'Hartmann' in filter_name:
-            continue
-        if filter_name == 'open':
-            if 'GMOS' in instrument:
-                wmin = 3500.0
+        for filter_name in filter_names:
+            if 'Hartmann' in filter_name:
+                continue
+            if filter_name == 'open':
+                if 'GMOS' in instrument:
+                    wmin = 3500.0
+                    wmax = 11000.0
+                    wl_width = wmax - wmin
+                    wl_eff = (wmax + wmin)/2.0
+            elif filter_name == 'GG455':
+                wmin = 4600.0
                 wmax = 11000.0
                 wl_width = wmax - wmin
                 wl_eff = (wmax + wmin)/2.0
-        elif filter_name == 'GG455':
-            wmin = 4600.0
-            wmax = 11000.0
-            wl_width = wmax - wmin
-            wl_eff = (wmax + wmin)/2.0
-        elif filter_name == 'OG515':
-            wmin = 5200.0
-            wmax = 11000.0
-            wl_width = wmax - wmin
-            wl_eff = (wmax + wmin)/2.0
-        elif filter_name == 'RG610':
-            wmin = 6150.0
-            wmax = 11000.0
-            wl_width = wmax - wmin
-            wl_eff = (wmax + wmin)/2.0
-        elif filter_name == 'RG780':
-            wmin = 780.0
-            wmax = 11000.0
-            wl_width = wmax - wmin
-            wl_eff = (wmax + wmin)/2.0
-        else:
-            if instrument == 'F2':
-                instrument = 'Flamingos2'
-            if instrument == 'NIRI':
-                filter_name = re.sub(r'con', 'cont', filter_name)
-                # SVO filter service has renamed some Gemini NIRI filters...
-                if filter_name == 'H2v=2-1s1-G0220':
-                    filter_name = 'H2S1v2-1-G0220'
-                if filter_name == 'H2v=1-0s1-G0216':
-                    filter_name = 'H2S1v1-0-G0216'
+            elif filter_name == 'OG515':
+                wmin = 5200.0
+                wmax = 11000.0
+                wl_width = wmax - wmin
+                wl_eff = (wmax + wmin)/2.0
+            elif filter_name == 'RG610':
+                wmin = 6150.0
+                wmax = 11000.0
+                wl_width = wmax - wmin
+                wl_eff = (wmax + wmin)/2.0
+            elif filter_name == 'RG780':
+                wmin = 780.0
+                wmax = 11000.0
+                wl_width = wmax - wmin
+                wl_eff = (wmax + wmin)/2.0
+            else:
+                if instrument == 'F2':
+                    instrument = 'Flamingos2'
+                if instrument == 'NIRI':
+                    filter_name = re.sub(r'con', 'cont', filter_name)
+                    # SVO filter service has renamed some Gemini NIRI filters...
+                    if filter_name == 'H2v=2-1s1-G0220':
+                        filter_name = 'H2S1v2-1-G0220'
+                    if filter_name == 'H2v=1-0s1-G0216':
+                        filter_name = 'H2S1v1-0-G0216'
 
-            filter_id = "{}.{}".format(instrument, filter_name)
-            url = "{}{}".format(SVO_URL, filter_id)
+                filter_id = "{}.{}".format(instrument, filter_name)
+                url = "{}{}".format(SVO_URL, filter_id)
 
-            # Open the URL and fetch the VOTable document.
-            # Some Gemini filters in SVO filter database have bandpass info 
-            # only for 'w'arm filters.  First check for filter without 'w' 
-            # appended to the ID (which I assume means bandpass is for cold 
-            # filter), then search for 'w' if nothing is found...
-            votable, error_message = get_votable(url)
-            if not votable:
-                url += 'w'
+                # Open the URL and fetch the VOTable document.
+                # Some Gemini filters in SVO filter database have bandpass info
+                # only for 'w'arm filters.  First check for filter without 'w'
+                # appended to the ID (which I assume means bandpass is for cold
+                # filter), then search for 'w' if nothing is found...
+                logging.error(filter_id)
                 votable, error_message = get_votable(url)
-            if not votable:
-                raise mc.CadcException(
-                    'Unable to download SVO filter data from {} because {}'
-                        .format(url, error_message))
+                if not votable:
+                    url += 'w'
+                    votable, error_message = get_votable(url)
+                if not votable:
+                    raise mc.CadcException(
+                        'Unable to download SVO filter data from {} because {}'
+                            .format(url, error_message))
 
-            wl_width = votable.get_field_by_id('WidthEff').value
-            wl_eff = votable.get_field_by_id('WavelengthEff').value
-            wmin = wl_eff - wl_width/2.0
-            wmax = wl_eff + wl_width/2.0
+                wl_width = votable.get_field_by_id('WidthEff').value
+                wl_eff = votable.get_field_by_id('WavelengthEff').value
+                wmin = wl_eff - wl_width/2.0
+                wmax = wl_eff + wl_width/2.0
 
-        if wmin > wl_min:
-            wl_min = wmin
-        if wmax < wl_max:
-            wl_max = wmax
-        if wl_width < width_min:
-            width_min = wl_width
+            if wmin > wl_min:
+                wl_min = wmin
+            if wmax < wl_max:
+                wl_max = wmax
+            if wl_width < width_min:
+                width_min = wl_width
 
-    filter_md['wl_min'] = wmin
-    filter_md['wl_max'] = wmax
-    filter_md['wl_eff_width'] = wl_width
-    filter_md['wl_eff'] = wl_eff
-    print('\tFilter(s): {}  MD: {}'.format(filter_names, filter_md))
-    return filter_md
+        filter_md['wl_min'] = wmin
+        filter_md['wl_max'] = wmax
+        filter_md['wl_eff_width'] = wl_width
+        filter_md['wl_eff'] = wl_eff
+        logging.debug('\tFilter(s): {}  MD: {}'.format(filter_names, filter_md))
+        return filter_md
+    except Exception as e:
+        logging.error(e)
