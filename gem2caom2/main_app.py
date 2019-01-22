@@ -371,6 +371,11 @@ def get_calibration_level(header):
 def get_art_product_type(header):
     obs_type = header.get('OBSTYPE')
     obs_class = header.get('OBSCLASS')
+
+    if obs_class is None:
+        global obs_metadata
+        obs_class = obs_metadata['observation_class']
+
     logging.debug('type is {} and class is {}'.format(obs_type, obs_class))
     if obs_type is not None and obs_type == 'MASK':
         result = ProductType.AUXILIARY
@@ -482,15 +487,8 @@ def accumulate_fits_bp(bp, uri, obs_id):
     bp.configure_position_axes((1, 2))
     bp.configure_time_axis(3)
 
-    # TODO - figure out why the function needs execution here .... :(
     bp.set('Chunk.time.resolution', 'get_exposure(header)')
     bp.set('Chunk.time.exposure', 'get_exposure(header)')
-    # bp.clear('Chunk.time.resolution')
-    # bp.add_fits_attribute('Chunk.time.resolution', 'EXPTIME')
-    # bp.set_default('Chunk.time.resolution', None)
-    # bp.clear('Chunk.time.exposure')
-    # bp.add_fits_attribute('Chunk.time.exposure', 'EXPTIME')
-    # bp.set_default('Chunk.time.exposure', None)
 
     bp.set('Chunk.time.axis.axis.ctype', 'TIME')
     bp.set('Chunk.time.axis.axis.cunit', 'd')
