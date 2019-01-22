@@ -1,0 +1,212 @@
+Filename: 2003mar03_0052.fits.bz2
+
+AstroData Types: ['AZEL_TARGET', 'HRWFS', 'GEMINI', 'GEMINI_SOUTH', 'RAW', 'UNPREPARED']
+
+
+--- HDU 0 ---
+SIMPLE  =                    T / conforms to FITS standard                      
+BITPIX  =                    8 / array data type                                
+NAXIS   =                    0 / number of array dimensions                     
+EXTEND  =                    T                                                  
+ORIGIN  = 'NOAO-IRAF FITS Image Kernel July 2003' / FITS file originator        
+OBJECT  = 'Bias binned'        / Name of the object observed                    
+DATE    = '2010-05-25T18:19:47' / Date FITS file was generated                  
+IRAF-TLM= '2012-07-06T21:49:27' / Time of last modification                     
+UTSTART = '2003-03-03T10:31:39'                                                 
+DATE-OBS= '2003-03-03'                                                          
+TIME-OBS= '10:31:39.554'                                                        
+UTEND   = '2003-03-03T10:31:40'                                                 
+EXPTIME =             0.006000 /                                                
+DARKTIME=             0.006000 /                                                
+ELAPSED =             0.504081 /                                                
+TELESCOP= 'Gemini-South'                                                        
+INSTRUME= 'hrwfs   '                                                            
+OBSERVAT= 'Gemini-South'                                                        
+FILTER1 = 'U_G0151 '                                                            
+FILTER2 = 'ND25_G0159'                                                          
+ACLENS  = 'AC      '                                                            
+FLDSTOP = 'lim-    '                                                            
+CALSRC  = 'off     '                                                            
+ACFOCUS =            -0.012153 /                                                
+DETTEMP =           -29.470875 /                                                
+INPORT  =                   -1 /                                                
+BUNIT   = 'SDSU    '                                                            
+UNITS   = 'SDSU    '                                                            
+OBSTYPE = 'BIAS    '                                                            
+CTYPE1  = 'AZ---TAN'                                                            
+CRPIX1  =           270.187451 /                                                
+CRVAL1  =            88.999413 /                                                
+CTYPE2  = 'EL---TAN'                                                            
+CRPIX2  =           266.624997 /                                                
+CRVAL2  =            89.000014 /                                                
+CD1_1   =             0.000066 /                                                
+CD1_2   =             0.000000 /                                                
+CD2_1   =             0.000000 /                                                
+CD2_2   =            -0.000066 /                                                
+RADECSYS= '___     '                                                            
+RA      =             5.933333 /                                                
+DEC     =            89.000000 /                                                
+MJDOBS  =         52701.439026 /                                                
+FRAME   = 'AZEL_TOPO'                                                           
+XBIN    =                    2 /                                                
+YBIN    =                    2 /                                                
+CCDSIZE = '[1:1024,1:1024]'                                                     
+CCDSEC  = '[1:1024,1:1024]'                                                     
+CCDSEC1 = '[1:512,1:1024]'                                                      
+CCDSEC2 = '[513:1024,1:1024]'                                                   
+DATASEC1= '[1:256,1:512]'                                                       
+DATASEC2= '[257:512,1:512]'                                                     
+BIASSEC1= '[513:520,1:512]'                                                     
+BIASSEC2= '[521:528,1:512]'                                                     
+DETTYPE = 'CCD47+SDSUII'                                                        
+DETID   = 'xxxxxxxxx'                                                           
+AIRMASS =                   1. / Airmass at start of exposure                   
+GEMPRGID= 'GS-CAL20030303'      / Gemini Science Program ID                     
+OBSID   = 'GS-CAL20030303-7'    / Observation ID                                
+DATALAB = 'GS-CAL20030303-7-0006' / Data Label                                  
+OBSERVER= 'Ledlow,Bergmann'    / Observer(s)                                    
+SSA     = 'Grashuis,Adams'     / SSA                                            
+RAWIQ   = 'Any     '           / Raw Image Quality                              
+RAWCC   = 'Any     '           / Raw Cloud Cover                                
+RAWBG   = 'Any     '           / Raw Background                                 
+RAWWV   = 'Any     '           / Raw Water Vapour/Transparency                  
+GAIN    =                   1. / Gain (e-/ADU)                                  
+RDNOISE =                   5. / Readout noise                                  
+RAWPIREQ= 'YES               ' / PI Requirements Met                            
+RAWGEMQA= 'USABLE            ' / Gemini Quality Assessment                      
+RELEASE = '2003-03-03'          / End of proprietary period YYYY-MM-DD          
+OBSCLASS= 'dayCal  '                                                            
+EQUINOX =                2000.                                                  
+HISTORY Corrected metadata: RAWBG, RAWCC, RAWIQ, RAWWV                          
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+
+--- HDU 1 ---
+XTENSION= 'IMAGE   '           / Image extension                                
+BITPIX  =                   16 / array data type                                
+NAXIS   =                    2 / number of array dimensions                     
+NAXIS1  =                  528                                                  
+NAXIS2  =                  512                                                  
+PCOUNT  =                    0 / number of parameters                           
+GCOUNT  =                    1 / number of groups                               
+BSCALE  =                    1                                                  
+BZERO   =                32768                                                  
+EXTNAME = 'SCI     '           / ad4549: added by AstroData                     
+EXTVER  =                    1                                                  
+ORIGIN  = 'NOAO-IRAF FITS Image Kernel July 2003' / FITS file originator        
+OBJECT  = 'Bias binned'        / Name of the object observed                    
+DATE    = '2010-05-25T18:19:47' / Date FITS file was generated                  
+IRAF-TLM= '2012-07-06T21:49:27' / Time of last modification                     
+UTSTART = '2003-03-03T10:31:39'                                                 
+DATE-OBS= '2003-03-03'                                                          
+TIME-OBS= '10:31:39.554'                                                        
+UTEND   = '2003-03-03T10:31:40'                                                 
+EXPTIME =             0.006000 /                                                
+DARKTIME=             0.006000 /                                                
+ELAPSED =             0.504081 /                                                
+TELESCOP= 'Gemini-South'                                                        
+INSTRUME= 'hrwfs   '                                                            
+OBSERVAT= 'Gemini-South'                                                        
+FILTER1 = 'U_G0151 '                                                            
+FILTER2 = 'ND25_G0159'                                                          
+ACLENS  = 'AC      '                                                            
+FLDSTOP = 'lim-    '                                                            
+CALSRC  = 'off     '                                                            
+ACFOCUS =            -0.012153 /                                                
+DETTEMP =           -29.470875 /                                                
+INPORT  =                   -1 /                                                
+BUNIT   = 'SDSU    '                                                            
+UNITS   = 'SDSU    '                                                            
+OBSTYPE = 'BIAS    '                                                            
+CTYPE1  = 'AZ---TAN'                                                            
+CRPIX1  =           270.187451 /                                                
+CRVAL1  =            88.999413 /                                                
+CTYPE2  = 'EL---TAN'                                                            
+CRPIX2  =           266.624997 /                                                
+CRVAL2  =            89.000014 /                                                
+CD1_1   =             0.000066 /                                                
+CD1_2   =             0.000000 /                                                
+CD2_1   =             0.000000 /                                                
+CD2_2   =            -0.000066 /                                                
+RADECSYS= '___     '                                                            
+RA      =             5.933333 /                                                
+DEC     =            89.000000 /                                                
+MJDOBS  =         52701.439026 /                                                
+FRAME   = 'AZEL_TOPO'                                                           
+XBIN    =                    2 /                                                
+YBIN    =                    2 /                                                
+CCDSIZE = '[1:1024,1:1024]'                                                     
+CCDSEC  = '[1:1024,1:1024]'                                                     
+CCDSEC1 = '[1:512,1:1024]'                                                      
+CCDSEC2 = '[513:1024,1:1024]'                                                   
+DATASEC1= '[1:256,1:512]'                                                       
+DATASEC2= '[257:512,1:512]'                                                     
+BIASSEC1= '[513:520,1:512]'                                                     
+BIASSEC2= '[521:528,1:512]'                                                     
+DETTYPE = 'CCD47+SDSUII'                                                        
+DETID   = 'xxxxxxxxx'                                                           
+AIRMASS =                   1. / Airmass at start of exposure                   
+GEMPRGID= 'GS-CAL20030303'      / Gemini Science Program ID                     
+OBSID   = 'GS-CAL20030303-7'    / Observation ID                                
+DATALAB = 'GS-CAL20030303-7-0006' / Data Label                                  
+OBSERVER= 'Ledlow,Bergmann'    / Observer(s)                                    
+SSA     = 'Grashuis,Adams'     / SSA                                            
+RAWIQ   = 'Any     '           / Raw Image Quality                              
+RAWCC   = 'Any     '           / Raw Cloud Cover                                
+RAWBG   = 'Any     '           / Raw Background                                 
+RAWWV   = 'Any     '           / Raw Water Vapour/Transparency                  
+GAIN    =                   1. / Gain (e-/ADU)                                  
+RDNOISE =                   5. / Readout noise                                  
+RAWPIREQ= 'YES               ' / PI Requirements Met                            
+RAWGEMQA= 'USABLE            ' / Gemini Quality Assessment                      
+RELEASE = '2003-03-03'          / End of proprietary period YYYY-MM-DD          
+OBSCLASS= 'dayCal  '                                                            
+EQUINOX =                2000.                                                  
+HISTORY Corrected metadata: RAWBG, RAWCC, RAWIQ, RAWWV                          
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                

@@ -1,0 +1,204 @@
+Filename: N20100722S0185.fits.bz2
+
+AstroData Types: ['GNIRS', 'GEMINI_NORTH', 'GEMINI', 'SIDEREAL', 'ACQUISITION', 'IMAGE', 'GNIRS_IMAGE', 'RAW', 'UNPREPARED']
+
+
+--- HDU 0 ---
+SIMPLE  =                    T / Fits standard                                  
+BITPIX  =                   16 / Bits per pixel                                 
+NAXIS   =                    0 / Number of axes                                 
+EXTEND  =                    T / File may contain extensions                    
+ORIGIN  = 'NOAO-IRAF FITS Image Kernel July 2003' / FITS file originator        
+DATE    = '2010-07-22         ' / Date FITS file was generated                  
+IRAF-TLM= '2012-07-04T17:24:31' / Time of last modification                     
+COMMENT   FITS (Flexible Image Transport System) format defined in Astronomy and
+COMMENT   Astrophysics Supplement Series v44/p363, v44/p371, v73/p359, v73/p365.
+COMMENT   Contact the NASA Science Office of Standards and Technology for the   
+COMMENT   FITS Definition document #100 and other FITS information.             
+INSTRUME= 'GNIRS   '           / Instrument used to acquire data                
+OBJECT  = 'NGC 6572'           / Object Name                                    
+OBSTYPE = 'OBJECT  '           / Observation type                               
+OBSCLASS= 'acq     '           / Observe class                                  
+GEMPRGID= 'GN-2010B-SV-142'    / Gemini Science Program ID                      
+OBSID   = 'GN-2010B-SV-142-10' / Gemini Observation ID                          
+DATALAB = 'GN-2010B-SV-142-10-007' / DHS Data Label                             
+OBSERVER= 'Mason   '           / Gemini Observers                               
+OBSERVAT= 'Gemini-North'       / Name of telescope (Gemini-North|Gemini-South)  
+TELESCOP= 'Gemini-North'       / Gemini-North                                   
+PARALLAX=                   0. / Target Parallax                                
+RADVEL  =                   0. / Target Heliocentric Radial Velocity            
+EPOCH   =                2000. / Target Coordinate Epoch                        
+EQUINOX =                2000. / Equinox of coordinate system                   
+TRKEQUIN=                2000. / Tracking equinox                               
+SSA     = 'Walp    '           / Gemini SSAs                                    
+RA      =         273.02652083 / Target Right Ascension                         
+DEC     =           6.85361389 / Target Declination                             
+ELEVATIO=             76.20575 / Current Elevation                              
+AZIMUTH =           159.673325 / Current Azimuth                                
+CRPA    =    -71.2366652859059 / Cass Rotator Position Angle at start           
+HA      = '-00:19:12.29'       / Telescope hour angle                           
+LT      = '22:15:23.6'         / Local time at start of observation             
+TRKFRAME= 'FK5     '           / Tracking co-ordinate                           
+DECTRACK=                   0. / Differential tracking rate Dec                 
+TRKEPOCH=         55399.337916 / Differential tracking reference epoch          
+RATRACK =                   0. / Differential tracking rate RA                  
+FRAME   = 'FK5     '           / Target coordinate system                       
+PMDEC   =               -0.004 / Target Proper Motion in Declination            
+PMRA    =               0.0006 / Target Proper Motion in RA                     
+WAVELENG=               12500. / Effective Target Wavelength                    
+RAWIQ   = '70-percentile'      / Raw Image Quality                              
+RAWCC   = '70-percentile'      / Raw Cloud Cover                                
+RAWWV   = '50-percentile'      / Raw Water Vapour/Transparency                  
+RAWBG   = 'Any     '           / Raw Background                                 
+RAWPIREQ= 'UNKNOWN '           / PI Requirements Met                            
+RAWGEMQA= 'UNKNOWN '           / Gemini Quality Assessment                      
+CGUIDMOD= 'Basic   '           / Carousel Mode                                  
+UT      = '08:15:24.1'         / UNIVERSAL TIME                                 
+M2BAFFLE= 'NEAR IR '           / Position of M2 baffle                          
+M2CENBAF= 'OPEN    '           / Position of M2 central hole baffle             
+ST      = '17:53:27.6'         / Sideral time at start of observation           
+XOFFSET =         3.6157017615 / Telescope offset in x in arcsec                
+YOFFSET =        2.08047154944 / Telescope offset in y in arcsec                
+POFFSET =       -2.10817652625 / Telescope offset in p in arcsec                
+QOFFSET =        3.59961842843 / Telescope offset in q in arcsec                
+RAOFFSET=        2.10817652625 / Telescope offset in RA in arcsec               
+DECOFFSE=       -3.59961842843 / Telescope offset in DEC in arcsec              
+RATRGOFF=                   0. / Target offset in RA in arcsec                  
+DECTRGOF=                   0. / Target offset in DEC in arcsec                 
+PA      =                   0. / Sky Position Angle at start (degrees)          
+IAA     =               270.44 / Instrument Alignment Angle                     
+SFRT2   =              178.698 / Science fold rotation angle (degrees)          
+SFTILT  =                 0.47 / Science fold tilt angle (degrees)              
+SFLINEAR=              -343.56 / Science fold linear position (mm)              
+AOFOLD  = 'park-pos.'          / AO Pick-Off Mirror Position                    
+PWFS1_ST= 'parked  '           / PWFS1 probe state (frozen,guiding,parked)      
+PWFS2_ST= 'guiding '           / PWFS2 probe state (frozen,guiding,parked)      
+OIWFS_ST= 'parked  '           / OIWFS probe state (frozen,guiding,parked)      
+AOWFS_ST= 'parked  '           / AOWFS probe state (frozen,guiding,parked)      
+P2ARA   =            272.94885 / RA of PWFS2 guide star                         
+P2ARV   =                   0. / PWFS2 Heliocentric Radial Velocity             
+P2AWAVEL=                6000. / PWFS2 Effective Target Wavelength              
+P2ADEC  =           6.78538889 / Declination of PWFS2 guide star                
+P2AEPOCH=                2000. / Epoch for PWFS2 guide star coordinates         
+P2AEQUIN=                2000. / Equinox for PWFS2 guide star coordinates       
+P2AFRAME= 'FK5     '           / PWFS2 Target co-ordinate system                
+P2AOBJEC= 'GSC0044301992'      / Object Name for PWFS 2, Chop A                 
+P2APMDEC=                   0. / PWFS2 Proper Motion in Declination             
+P2APMRA =                   0. / PWFS2 Proper Motion in RA                      
+P2APARAL=                   0. / PWFS2 Parallax of Target                       
+P2FOCUS =                0.025 / PWFS2 Focus Offset (mm)                        
+HUMIDITY=                   9. / The Relative Humidity (fraction, 0..101).      
+TAMBIENT=                  3.7 / The ambient temp (C).                          
+TAMBIEN2=                38.66 / The ambient temp (F).                          
+PRESSURE=             465.1736 / The atmospheric pressure (mm Hg).              
+PRESSUR2=               62000. / The atmospheric pressure (Pa).                 
+DEWPOINT=                -27.1 / The dew point (C).                             
+DEWPOIN2=               -16.78 / The dew point (F).                             
+WINDSPEE=                  1.3 / The wind speed (m/s).                          
+WINDSPE2=               2.9081 / The wind speed (mph).                          
+WINDDIRE=                 268. / The wind direction (degrees).                  
+INPORT  =                    1 / Number of ISS port where GNIRS was located     
+ARRAYID = 'SN7638228.1'        / ID # of array                                  
+ARRAYTYP= 'ALADDIN_III_1024'   / ALADDIN II or ALADDIN III                      
+DATE-OBS= '2010-07-22'         / UT Date of observation (YYYY-MM-DD)            
+TIME-OBS= '08:15:24.1'         / Time of observation                            
+UTSTART = '08:15:24.1'         / UT at observation start                        
+DETBIAS =               -0.277 / Achieved Detector Bias                         
+FILTER1 = 'Open    '           / filter wheel 1 position                        
+FW1_ENG =                    0 / fw1 Eng position (steps)                       
+FILTER2 = 'J_G0517 '           / filter wheel 2 position                        
+FW2_ENG =               -20700 / fw2 eng psition (steps)                        
+CAMERA  = 'ShortBlue_G5521'    / Camera position                                
+CAM_ENG =               101700 / Camera eng psition (steps)                     
+SLIT    = '0.30 arcsec'        / slit position                                  
+SLIT_ENG=               117400 / slit Eng Position (steps)                      
+DECKER  = 'SC_XD   '           / decker position                                
+DKR_ENG =                52000 / decker Eng position (steps)                    
+GRATING = '32/mmSB_G5506'      / grating position                               
+GR_ENG  =                83492 / grating Eng Position (steps)                   
+GRATWAVE=                 1.25 / grating wavelength                             
+GRATORD =                -9999 / order of grating                               
+GRATTILT=               -9999. / grating tilt                                   
+PRISM   = 'MIR_G5511'          / prism position                                 
+PRSM_ENG=               246220 / Prism Eng position (steps)                     
+ACQMIR  = 'In      '           / acquisition mirror position                    
+COVER   = 'Open    '           / cover position                                 
+FOCUS   = '** ENG -55005 **'   / focus position                                 
+FCS_ENG =               -55005 / Focus Eng position (steps)                     
+UTEND   = '08:15:28.1'         / UT at observation end                          
+OBSEPOCH=        2010.55397923 / Epoch at start of exposure                     
+AIRMASS =                 1.03 / Mean airmass for the observation               
+AMSTART =                 1.03 / Airmass at start of exposure                   
+AMEND   =                 1.03 / Airmass at end of exposure                     
+CTYPE1  = 'RA---TAN'           / R.A. in tangent plane projection               
+CRPIX1  =     482.771287176907 / Ref pix of axis 1                              
+CRVAL1  =     273.025956178336 / RA at Ref pix in decimal degrees               
+CTYPE2  = 'DEC--TAN'           / DEC. in tangent plane projection               
+CRPIX2  =     466.095539920184 / Ref pix of axis 2                              
+CRVAL2  =     6.85455917458946 / DEC at Ref pix in decimal degrees              
+CD1_1   = 3.89888651003509E-07 / WCS matrix element 1 1                         
+CD1_2   = 4.18263178878127E-05 / WCS matrix element 1 2                         
+CD2_1   = -4.21921760761612E-05 / WCS matrix element 2 1                        
+CD2_2   = 6.23436011538049E-07 / WCS matrix element 2 2                         
+MJD_OBS =     55399.3416739505 / MJD of start of obseration                     
+UCODEPTH= './tpSource/ucode/NAAC/' / Path for ucode directory                   
+UCODENAM= 'gnAIII_1024xSU01_4u' / Name of ucode file loaded                     
+COADDS  =                    1 / # of coadded images                            
+LNRS    =                    1 / # of fowler samples                            
+NDAVGS  =                    1 / # of digital averages                          
+ROWS    =                 1024 / array rows                                     
+P_MODE  = 'STARE   '           / proc mode (stare, sep)                         
+COLS    =                 1024 / array cols                                     
+EXPTIME =                   3. / integration time (seconds)                     
+MIN_INT =                0.179 / minimum integration time (seconds)             
+FRMS_EXP=                    2                                                  
+DSRDTEMP=                  27. / desired detector temperature (K)               
+DETTEMP =                 28.3 / detector temperature (K)                       
+FOOT_PWR=                   0. / detector foot heater power                     
+RELEASE = '2011-01-22'         / End of proprietary period YYYY-MM-DD           
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+
+--- HDU 1 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                  -32 / number of bits per data pixel                  
+NAXIS   =                    2 / number of data axes                            
+NAXIS1  =                 1024 / length of data axis 1                          
+NAXIS2  =                 1022 / length of data axis 2                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'SCI     '           / ad1406: added by AstroData                     
+EXTVER  =                    1 / ad1410: added by AstroData                     
+DROINUM =                    0 / roi number                                     
+LOWROW  =                    0 / y min of region                                
+LOWCOL  =                    0 / Start col of region of interest                
+HIROW   =                 1023 / End row of region of interest                  
+HICOL   =                 1023 / End col of region of interest                  
+FRMNAME = 'N20100722S0185:0'   / Name assigned to a frame of data.              
+FRAMEID = '0       '           / Frame ID                                       
+DATATYPE= '        '                                                            

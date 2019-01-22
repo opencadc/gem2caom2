@@ -1,0 +1,212 @@
+Filename: 2003jan05_0082.fits.bz2
+
+AstroData Types: ['NON_SIDEREAL', 'HRWFS', 'GEMINI', 'GEMINI_SOUTH', 'RAW', 'UNPREPARED']
+
+
+--- HDU 0 ---
+SIMPLE  =                    T / conforms to FITS standard                      
+BITPIX  =                    8 / array data type                                
+NAXIS   =                    0 / number of array dimensions                     
+EXTEND  =                    T                                                  
+ORIGIN  = 'NOAO-IRAF FITS Image Kernel July 2003' / FITS file originator        
+OBJECT  = 'Darks   '           / Name of the object observed                    
+DATE    = '2010-05-25T18:14:20' / Date FITS file was generated                  
+IRAF-TLM= '2012-07-06T21:33:28' / Time of last modification                     
+UTSTART = '2003-01-04T22:20:32'                                                 
+DATE-OBS= '2003-01-04'                                                          
+TIME-OBS= '22:20:32.21'                                                         
+UTEND   = '2003-01-04T22:21:03'                                                 
+EXPTIME =            30.000000 /                                                
+DARKTIME=            30.000000 /                                                
+ELAPSED =            31.523190 /                                                
+TELESCOP= 'Gemini-South'                                                        
+INSTRUME= 'hrwfs   '                                                            
+OBSERVAT= 'Gemini-South'                                                        
+FILTER1 = 'U_G0151 '                                                            
+FILTER2 = 'ND25_G0159'                                                          
+ACLENS  = 'AC      '                                                            
+FLDSTOP = 'lim-    '                                                            
+CALSRC  = 'off     '                                                            
+ACFOCUS =            -0.000326 /                                                
+DETTEMP =           -29.463150 /                                                
+INPORT  =                   -1 /                                                
+BUNIT   = 'SDSU    '                                                            
+UNITS   = 'SDSU    '                                                            
+OBSTYPE = 'DARK    '                                                            
+CTYPE1  = 'RA---TAN'                                                            
+CRPIX1  =           539.874902 /                                                
+CRVAL1  =             8.392501 /                                                
+CTYPE2  = 'DEC--TAN'                                                            
+CRPIX2  =           532.749999 /                                                
+CRVAL2  =           -30.252982 /                                                
+CD1_1   =             0.000012 /                                                
+CD1_2   =            -0.000031 /                                                
+CD2_1   =             0.000031 /                                                
+CD2_2   =             0.000012 /                                                
+RADECSYS= 'FK5     '                                                            
+RA      =             0.000000 /                                                
+DEC     =             0.000000 /                                                
+MJDOBS  =         52643.931302 /                                                
+FRAME   = 'FK5     '                                                            
+XBIN    =                    1 /                                                
+YBIN    =                    1 /                                                
+CCDSIZE = '[1:1024,1:1024]'                                                     
+CCDSEC  = '[1:1024,1:1024]'                                                     
+CCDSEC1 = '[1:512,1:1024]'                                                      
+CCDSEC2 = '[513:1024,1:1024]'                                                   
+DATASEC1= '[1:512,1:1024]'                                                      
+DATASEC2= '[513:1024,1:1024]'                                                   
+BIASSEC1= '[1025:1032,1:1024]'                                                  
+BIASSEC2= '[1033:1040,1:1024]'                                                  
+DETTYPE = 'CCD47+SDSUII'                                                        
+DETID   = 'xxxxxxxxx'                                                           
+AIRMASS =                   1. / Airmass at start of exposure                   
+GEMPRGID= 'GS-CAL20030105'      / Gemini Science Program ID                     
+OBSID   = 'GS-CAL20030105-2'    / Observation ID                                
+DATALAB = 'GS-CAL20030105-2-0072' / Data Label                                  
+OBSERVER= 'Winge             ' / Observer(s)                                    
+SSA     = 'Trancho           ' / SSA                                            
+RAWIQ   = '50-percentile'       / Raw Image Quality                             
+RAWCC   = '20-percentile'       / Raw Cloud Cover                               
+RAWBG   = 'Any     '           / Raw Background                                 
+RAWWV   = 'Any     '           / Raw Water Vapour/Transparency                  
+RELEASE = '2003-01-04'          / End of proprietary period YYYY-MM-DD          
+OBSCLASS= 'dayCal  '                                                            
+HISTORY Corrected metadata: RAWWV, RAWBG                                        
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+
+--- HDU 1 ---
+XTENSION= 'IMAGE   '           / Image extension                                
+BITPIX  =                   16 / array data type                                
+NAXIS   =                    2 / number of array dimensions                     
+NAXIS1  =                 1040                                                  
+NAXIS2  =                 1024                                                  
+PCOUNT  =                    0 / number of parameters                           
+GCOUNT  =                    1 / number of groups                               
+BSCALE  =                    1                                                  
+BZERO   =                32768                                                  
+EXTNAME = 'SCI     '           / ad4549: added by AstroData                     
+EXTVER  =                    1                                                  
+ORIGIN  = 'NOAO-IRAF FITS Image Kernel July 2003' / FITS file originator        
+OBJECT  = 'Darks   '           / Name of the object observed                    
+DATE    = '2010-05-25T18:14:20' / Date FITS file was generated                  
+IRAF-TLM= '2012-07-06T21:33:28' / Time of last modification                     
+UTSTART = '2003-01-04T22:20:32'                                                 
+DATE-OBS= '2003-01-04'                                                          
+TIME-OBS= '22:20:32.21'                                                         
+UTEND   = '2003-01-04T22:21:03'                                                 
+EXPTIME =            30.000000 /                                                
+DARKTIME=            30.000000 /                                                
+ELAPSED =            31.523190 /                                                
+TELESCOP= 'Gemini-South'                                                        
+INSTRUME= 'hrwfs   '                                                            
+OBSERVAT= 'Gemini-South'                                                        
+FILTER1 = 'U_G0151 '                                                            
+FILTER2 = 'ND25_G0159'                                                          
+ACLENS  = 'AC      '                                                            
+FLDSTOP = 'lim-    '                                                            
+CALSRC  = 'off     '                                                            
+ACFOCUS =            -0.000326 /                                                
+DETTEMP =           -29.463150 /                                                
+INPORT  =                   -1 /                                                
+BUNIT   = 'SDSU    '                                                            
+UNITS   = 'SDSU    '                                                            
+OBSTYPE = 'DARK    '                                                            
+CTYPE1  = 'RA---TAN'                                                            
+CRPIX1  =           539.874902 /                                                
+CRVAL1  =             8.392501 /                                                
+CTYPE2  = 'DEC--TAN'                                                            
+CRPIX2  =           532.749999 /                                                
+CRVAL2  =           -30.252982 /                                                
+CD1_1   =             0.000012 /                                                
+CD1_2   =            -0.000031 /                                                
+CD2_1   =             0.000031 /                                                
+CD2_2   =             0.000012 /                                                
+RADECSYS= 'FK5     '                                                            
+RA      =             0.000000 /                                                
+DEC     =             0.000000 /                                                
+MJDOBS  =         52643.931302 /                                                
+FRAME   = 'FK5     '                                                            
+XBIN    =                    1 /                                                
+YBIN    =                    1 /                                                
+CCDSIZE = '[1:1024,1:1024]'                                                     
+CCDSEC  = '[1:1024,1:1024]'                                                     
+CCDSEC1 = '[1:512,1:1024]'                                                      
+CCDSEC2 = '[513:1024,1:1024]'                                                   
+DATASEC1= '[1:512,1:1024]'                                                      
+DATASEC2= '[513:1024,1:1024]'                                                   
+BIASSEC1= '[1025:1032,1:1024]'                                                  
+BIASSEC2= '[1033:1040,1:1024]'                                                  
+DETTYPE = 'CCD47+SDSUII'                                                        
+DETID   = 'xxxxxxxxx'                                                           
+AIRMASS =                   1. / Airmass at start of exposure                   
+GEMPRGID= 'GS-CAL20030105'      / Gemini Science Program ID                     
+OBSID   = 'GS-CAL20030105-2'    / Observation ID                                
+DATALAB = 'GS-CAL20030105-2-0072' / Data Label                                  
+OBSERVER= 'Winge             ' / Observer(s)                                    
+SSA     = 'Trancho           ' / SSA                                            
+RAWIQ   = '50-percentile'       / Raw Image Quality                             
+RAWCC   = '20-percentile'       / Raw Cloud Cover                               
+RAWBG   = 'Any     '           / Raw Background                                 
+RAWWV   = 'Any     '           / Raw Water Vapour/Transparency                  
+RELEASE = '2003-01-04'          / End of proprietary period YYYY-MM-DD          
+OBSCLASS= 'dayCal  '                                                            
+HISTORY Corrected metadata: RAWWV, RAWBG                                        
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                

@@ -1,0 +1,109 @@
+Filename: S20080610S0045.fits.bz2
+
+AstroData Types: ['LS', 'TRECS', 'GEMINI', 'SIDEREAL', 'TRECS_SPECT', 'ACQUISITION', 'GEMINI_SOUTH', 'SPECT', 'RAW', 'UNPREPARED']
+
+
+--- HDU 0 ---
+SIMPLE  =                    T / file does conform to FITS standard             
+BITPIX  =                   16 / number of bits per data pixel                  
+NAXIS   =                    0 / number of data axes                            
+EXTEND  =                    T / FITS dataset may contain extensions            
+COMMENT   FITS (Flexible Image Transport System) format defined in Astronomy and
+COMMENT   Astrophysics Supplement Series v44/p363, v44/p371, v73/p359, v73/p365.
+COMMENT   Contact the NASA Science Office of Standards and Technology for the   
+COMMENT   FITS Definition document #100 and other FITS information.             
+INSTRUME= 'TReCS   '           / Instrument used to acquire data.               
+OBJECT  = 'HD 137333'          / Target Name                                    
+OBSTYPE = 'OBJECT  '           / Observation type                               
+OBSCLASS= 'acq     '           / Observe class                                  
+GEMPRGID= 'GS-2008A-C-5'       / Gemini Science Program ID                      
+OBSID   = 'GS-2008A-C-5-35'    / Gemini Observation ID                          
+DATALAB = 'GS-2008A-C-5-35-002' / DHS Data Label                                
+OBSERVER= 'Fujiwara, Yamashita, Diaz' / Gemini Observers                        
+OBSERVAT= 'Gemini-South'       / Gemini North or Gemini South                   
+TELESCOP= 'Gemini-South'       / Telescope where data taken                     
+PARALLAX=                   0. / Target Parallax                                
+RADVEL  =                   0. / Target Heliocentric Radial Velocity            
+EPOCH   =                2000. / Target Coordinate Epoch                        
+EQUINOX =                2000. / Equinox of coordinate system                   
+TRKEQUIN=                2000. / Tracking equinox                               
+SSA     = 'Fuhrman '           / Gemini SSAs                                    
+RA      =          235.8205375 / Target Right Ascension                         
+DEC     =         -84.46527222 / Target Declination                             
+ELEVATIO=     32.4767680555556 / Telescope Elevation at start                   
+AZIMUTH =     185.918531944444 / Telescope Azimuth at start                     
+CRPA    =     112.610258956324 / Cass Rotator Position Angle at start           
+HA      = '+04:23:48.28'       / Telescope Hour Angle at start                  
+LT      = '03:36:10.0'         / Local time at observation start                
+TRKFRAME= 'FK5     '           / Tracking co-ordinate                           
+DECTRACK=                   0. / Differential tracking rate Dec                 
+TRKEPOCH=         54627.283957 / Differential tracking reference epoch          
+RATRACK =                   0. / Differential tracking rate RA                  
+FRAME   = 'FK5     '           / Target coordinate system                       
+PMDEC   =               0.0968 / Target Proper Motion in Declination            
+PMRA    =              0.08738 / Target Proper Motion in RA                     
+WAVELENG=              105000. / Effective Target Wavelength                    
+RAWIQ   = '85-percentile'      / Raw Image Quality                              
+RAWCC   = '50-percentile'      / Raw Cloud Cover                                
+RAWWV   = '80-percentile'      / Raw Water Vapour/Transparency                  
+RAWBG   = 'Any     '           / Raw Background                                 
+RAWPIREQ= 'UNKNOWN '           / PI Requirements Met                            
+RAWGEMQA= 'UNKNOWN '           / Gemini Quality Assessment                      
+CGUIDMOD= 'Basic   '           / Carousel Mode                                  
+UT      = '07:36:10.0'         / UT of Observation                              
+DATE    = '2008-06-10'         / UT Date of observation (YYYY-MM-DD)            
+M2BAFFLE= 'RETRACTED'          / Position of M2 baffle                          
+M2CENBAF= 'OPEN    '           / Position of M2 central hole baffle             
+ST      = '20:09:20.9'         / Sidereal time at observation start             
+XOFFSET =        0.43309513384 / Instrument offset in x in arcsec               
+YOFFSET =       -4.12812070829 / Instrument offset in y in arcsec               
+POFFSET =      -0.280089036643 / Telescope offset in p in arcsec                
+QOFFSET =        4.14131647049 / Telescope offset in q in arcsec                
+RAOFFSET=       0.280089036643 / Instrument offset in RA in arcsec              
+DECOFFSE=       -4.14131647049 / Instrument offset in DEC in arcsec             
+RATRGOFF=                   0. / Target offset in RA in arcsec                  
+DECTRGOF=                   0. / Target offset in DEC in arcsec                 
+PA      =                   0. / Instrument Position Angle at start (degrees)   
+IAA     =               357.88 / Instrument Alignment Angle                     
+SFRT2   =               -0.226 / Science fold rotation angle (degrees)          
+SFTILT  =                 2.88 / Science fold tilt angle (degrees)              
+SFLINEAR=              -357.21 / Science fold linear position (mm)              
+AOFOLD  = 'park-pos.'          / AO Pick-Off Mirror Position                    
+PWFS1_ST= 'parked  '           / PWFS1 probe state (frozen,guiding,parked)      
+PWFS2_ST= 'guiding '           / PWFS2 probe state (frozen,guiding,parked)      
+OIWFS_ST= 'parked  '           / OIWFS probe state (frozen,guiding,parked)      
+AOWFS_ST= 'parked  '           / AOWFS probe state (frozen,guiding,parked)      
+P2ARA   =         236.85285833 / RA of PWFS2 guide star                         
+P2ARV   =                   0. / PWFS2 Heliocentric Radial Velocity             
+P2AWAVEL=                6500. / PWFS2 Effective Target Wavelength              
+P2ADEC  =         -84.45873056 / Declination of PWFS2 guide star                
+P2AEPOCH=                2000. / Epoch for PWFS2 guide star coordinates         
+P2AEQUIN=                2000. / Equinox for PWFS2 guide star coordinates       
+P2AFRAME= 'FK5     '           / PWFS2 Target co-ordinate system                
+P2AOBJEC= 'GSC0951300320'      / Object Name for PWFS 2, Chop A                 
+P2APMDEC=                   0. / PWFS2 Proper Motion in Declination             
+P2APMRA =                   0. / PWFS2 Proper Motion in RA                      
+P2APARAL=                   0. / PWFS2 Parallax of Target                       
+P2FOCUS =               -0.075 / PWFS2 Focus Offset (mm)                        
+HUMIDITY=                  11. / The Relative Humidity (fraction, 0..101).      
+TAMBIENT=                  8.9 / The ambient temp (C).                          
+TAMBIEN2=                48.02 / The ambient temp (F).                          
+PRESSURE=            546.95412 / The atmospheric pressure (mm Hg).              
+PRESSUR2=               72900. / The atmospheric pressure (Pa).                 
+DEWPOINT=                -19.8 / The dew point (C).                             
+DEWPOIN2=                -3.64 / The dew point (F).                             
+WINDSPEE=                  5.6 / The wind speed (m/s).                          
+WINDSPE2=              12.5272 / The wind speed (mph).                          
+WINDDIRE=                 330. / The wind direction (degrees).                  
+INPORT  =                    1 / Number of ISS port where T-ReCS was located    
+DATE-OBS= '2008-06-10'         / UT Date of Observation (YYYY-MM-DD)            
+TIME-OBS= '07:36:10.5'         / UT of Observation                              
+UTSTART = '07:36:10.5'         / UT at observation start                        
+CHPTHROW=                   8. / M2 chop throw (arcsec)                         
+CHPDUTY =              71.4286 / Chop duty cycle (%)                            
+CHPPA   =                   0. / M2 chop PA (degrees)                           
+TELFOC  =              0.55599 / M2 focus at start                              
+INSTALIG=               357.88 / Instrument Alignment Angle (degrees)           
+FOCOFFS =               -0.075 / Offset from nominal focus                      
+PWV     =                   0. / Water Vapor at the start of observation (mm)   
+RELEASE = '2009-12-10'         / End of proprietary period YYYY-MM-DD           

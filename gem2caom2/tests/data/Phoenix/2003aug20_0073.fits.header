@@ -1,0 +1,146 @@
+Filename: 2003aug20_0073.fits.bz2
+
+AstroData Types: ['GEMINI', 'PHOENIX', 'GEMINI_SOUTH', 'SPECT', 'RAW', 'UNPREPARED']
+
+
+--- HDU 0 ---
+SIMPLE  =                    T / conforms to FITS standard                      
+BITPIX  =                    8 / array data type                                
+NAXIS   =                    0 / number of array dimensions                     
+EXTEND  =                    T                                                  
+ORIGIN  = 'Gemini-South'       / FITS file originator                           
+DATE    = '2003-09-12T18:58:47' / Date FITS file was generated                  
+IRAF-TLM= '2010-04-30T19:56:00' / Time of last modification                     
+CHANNEL = 'only              '  /                                               
+INSTRUME= 'PHOENIX           '  /                                               
+OBJECT  = 'ARC     '           /                                                
+COADDS  =                    1  /  No. internal coadds                          
+INT_S   =           300.000000  /  Exposure time                                
+EXPTIME =           300.000000  /  Exp.time (usual)                             
+MODE    = 'stare             '  /                                               
+LNRS    =                    8  /  Low noise reads                              
+UCODE   = 'PHaladII_12_11    '  /  Detector microcode                           
+IMAGETYP= 'object            '  /                                               
+OFFSET  = '0.441997 south 10.4624 east                                         '
+COMMENT = 'none              '  /                                               
+OBSERVER= 'Volk,Blum'          / Observer(s)                                    
+DETECTOR= 'ALAD256x1024      '  /                                               
+RA      = '22:04:12.427      '  /                                               
+DEC     = '-56:47:04.42      '  /                                               
+EQUINOX =          2000.000000  /                                               
+EPOCH   =          2000.000000  /                                               
+UT      = '05:10:28.7        '  /  Gemini UTC                                   
+UTDATE  = '2003-08-20        '  /  Gemini UTCDATE                               
+LST     = '22:20:03.0        '  /                                               
+HA      =             0.259500  /                                               
+ZD      =            26.585600  /                                               
+AIRMASS =             1.118000  /                                               
+FOCUS   =            -0.013000  /                                               
+PLATE_SC=             0.085000  /  Arc sec. per pixel                           
+RECID   = 'gscp8m.20030820.051027.27                                           '
+FILT_POS= '7799 (10)         '  /                                               
+LYOT_POS= '8m_1.5 (3)        '  /                                               
+CVF_POS = 'open (1)          '  /                                               
+SLIT_POS= '84u_0.9-2.0 (5)   '  /                                               
+VIEW_POS= 'open (-152998)    '  /                                               
+GRAT_POS= 'encoder -9270     '  /                                               
+FOC_POS = '247.3             '  /                                               
+COVR_POS= 'closed            '  /                                               
+OBSERVAT= 'Gemini-South'                                                        
+TELESCOP= 'Gemini-South'                                                        
+SSA     = 'Prado   '           / SSA                                            
+OBSID   = 'GS-2003B-Q-51-27'   / Observation ID                                 
+DATALAB = 'GS-2003B-Q-51-27-0073' / Data Label                                  
+GEMPRGID= 'GS-2003B-Q-51'      / Gemini Science Program ID                      
+RAWBG   = '80-percentile'      / Raw Background                                 
+RAWCC   = '70-percentile'      / Raw Cloud Cover                                
+RAWIQ   = '70-percentile'      / Raw Image Quality                              
+RAWWV   = '50-percentile'      / Raw Water Vapour/Transparency                  
+RAWGEMOA= 'Unknown           '  /                                               
+RAWPIREQ= 'UNKNOWN '           / PI Requirements Met                            
+RAWGEMQA= 'USABLE  '           / Gemini Quality Assessment                      
+RELEASE = '2005-02-20'         / End of proprietary period YYYY-MM-DD           
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+
+--- HDU 1 ---
+XTENSION= 'IMAGE   '           / Image extension                                
+BITPIX  =                  -32 / array data type                                
+NAXIS   =                    2 / number of array dimensions                     
+NAXIS1  =                  256                                                  
+NAXIS2  =                 1024                                                  
+PCOUNT  =                    0 / number of parameters                           
+GCOUNT  =                    1 / number of groups                               
+EXTNAME = 'SCI     '           / ad4549: added by AstroData                     
+EXTVER  =                    1                                                  
+ORIGIN  = 'Gemini-South'       / FITS file originator                           
+DATE    = '2003-09-12T18:58:47' / Date FITS file was generated                  
+IRAF-TLM= '2010-04-30T19:56:00' / Time of last modification                     
+CHANNEL = 'only              '  /                                               
+INSTRUME= 'PHOENIX           '  /                                               
+OBJECT  = 'ARC     '           /                                                
+COADDS  =                    1  /  No. internal coadds                          
+INT_S   =           300.000000  /  Exposure time                                
+EXPTIME =           300.000000  /  Exp.time (usual)                             
+MODE    = 'stare             '  /                                               
+LNRS    =                    8  /  Low noise reads                              
+UCODE   = 'PHaladII_12_11    '  /  Detector microcode                           
+IMAGETYP= 'object            '  /                                               
+OFFSET  = '0.441997 south 10.4624 east                                         '
+COMMENT = 'none              '  /                                               
+OBSERVER= 'Volk,Blum'          / Observer(s)                                    
+DETECTOR= 'ALAD256x1024      '  /                                               
+RA      = '22:04:12.427      '  /                                               
+DEC     = '-56:47:04.42      '  /                                               
+EQUINOX =          2000.000000  /                                               
+EPOCH   =          2000.000000  /                                               
+UT      = '05:10:28.7        '  /  Gemini UTC                                   
+UTDATE  = '2003-08-20        '  /  Gemini UTCDATE                               
+LST     = '22:20:03.0        '  /                                               
+HA      =             0.259500  /                                               
+ZD      =            26.585600  /                                               
+AIRMASS =             1.118000  /                                               
+FOCUS   =            -0.013000  /                                               
+PLATE_SC=             0.085000  /  Arc sec. per pixel                           
+RECID   = 'gscp8m.20030820.051027.27                                           '
+FILT_POS= '7799 (10)         '  /                                               
+LYOT_POS= '8m_1.5 (3)        '  /                                               
+CVF_POS = 'open (1)          '  /                                               
+SLIT_POS= '84u_0.9-2.0 (5)   '  /                                               
+VIEW_POS= 'open (-152998)    '  /                                               
+GRAT_POS= 'encoder -9270     '  /                                               
+FOC_POS = '247.3             '  /                                               
+COVR_POS= 'closed            '  /                                               
+OBSERVAT= 'Gemini-South'                                                        
+TELESCOP= 'Gemini-South'                                                        
+SSA     = 'Prado   '           / SSA                                            
+OBSID   = 'GS-2003B-Q-51-27'   / Observation ID                                 
+DATALAB = 'GS-2003B-Q-51-27-0073' / Data Label                                  
+GEMPRGID= 'GS-2003B-Q-51'      / Gemini Science Program ID                      
+RAWBG   = '80-percentile'      / Raw Background                                 
+RAWCC   = '70-percentile'      / Raw Cloud Cover                                
+RAWIQ   = '70-percentile'      / Raw Image Quality                              
+RAWWV   = '50-percentile'      / Raw Water Vapour/Transparency                  
+RAWGEMOA= 'Unknown           '  /                                               
+RAWPIREQ= 'UNKNOWN '           / PI Requirements Met                            
+RAWGEMQA= 'USABLE  '           / Gemini Quality Assessment                      
+RELEASE = '2005-02-20'         / End of proprietary period YYYY-MM-DD           
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                

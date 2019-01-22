@@ -66,9 +66,13 @@
 #
 # ***********************************************************************
 #
+import json
+import logging
 import pytest
 
-from gem2caom2 import main_app, APPLICATION, ARCHIVE, SCHEME
+from astropy.io.votable import parse_single_table
+
+from gem2caom2 import main_app2, APPLICATION, ARCHIVE, SCHEME, svofps
 from caom2.diff import get_differences
 from caom2pipe import manage_composable as mc
 
@@ -84,30 +88,38 @@ TESTDATA_DIR = os.path.join(THIS_DIR, 'data')
 INSTRUMENTS = ('GMOS', 'NIRI')
 PLUGIN = os.path.join(os.path.dirname(THIS_DIR), 'main_app.py')
 
-
+# structured by file id, observation id, filter_name (when looking up
+# from SVOFPS
 LOOKUP = {
     # GMOS
-    'N20131203S0006': 'GN-2013B-Q-28-150-002',
-    'N20150217S0380': 'GN-2015A-C-2-96-002',
-    'N20150220S0320': 'GN-2015A-C-4-24-086',
-    'N20150216S0142': 'GN-2015A-Q-91-5-002',
-    'N20150217S0274': 'GN-CAL20150217-2-003',
-    'N20150929S0013': 'GN-CAL20150925-2-007',
-    'N20030107S0163': 'GN-2003A-Q-22-3-004',
-    'N20030104S0065': 'GN-CAL20030104-14-001',
-    'N20030104S0161': 'GN-CAL20030104-18-003',
-    # 'N20090313S0180': 'GN2009AQ021-04',
-    'N20090313S0180': 'GN-2009A-Q-21-115-001',
-    'N20120105S0344': 'GN-2011A-Q-31-21-005',
-    'N20150216S0129': 'GN-2015A-Q-36-15-001',
-    'S20181023S0087': 'GS-CAL20181023-5-001',
+    'N20131203S0006': ['GN-2013B-Q-28-150-002', 'GMOS-N.g', 'GMOS'],
+    'N20150217S0380': ['GN-2015A-C-2-96-002', 'GMOS-N.r', 'GMOS'],
+    'N20150220S0320': ['GN-2015A-C-4-24-086', 'GMOS-N.r', 'GMOS'],
+    'N20150216S0142': ['GN-2015A-Q-91-5-002', 'GMOS-N.r', 'GMOS'],
+    'N20150217S0274': ['GN-CAL20150217-2-003', 'x', 'GMOS'],
+    'N20150929S0013': ['GN-CAL20150925-2-007', 'x', 'GMOS'],
+    'N20030107S0163': ['GN-2003A-Q-22-3-004', 'GMOS-N.i', 'GMOS'],
+    'N20030104S0065': ['GN-CAL20030104-14-001', 'x', 'GMOS'],
+    'N20030104S0161': ['GN-CAL20030104-18-003', 'GMOS-N.g', 'GMOS'],
+    'N20090313S0180': ['GN-2009A-Q-21-115-001', 'GMOS-N.r', 'GMOS'],
+    'N20120105S0344': ['GN-2011A-Q-31-21-005', 'GMOS-N.g', 'GMOS'],
+    'N20150216S0129': ['GN-2015A-Q-36-15-001', 'GMOS-N.i', 'GMOS'],
     # NIRI
-    'N20020620S0021': 'GN-2002A-C-5-1-001',
-    'N20020620S0035': 'GN-2002A-C-5-1-015',
-    'N20020620S0315': 'GN-2002A-C-5-21-002',
-    'N20150404S0726': 'GN-2015A-C-1-20-001',
-    'N20150404S0872': 'GN-2015A-C-1-27-001',
-    'N20150405S0028': 'GN-2015A-C-1-27-071'
+    'N20020620S0021': ['GN-2002A-C-5-1-001', 'x', 'NIRI'],
+    'N20020620S0035': ['GN-2002A-C-5-1-015', 'x', 'NIRI'],
+    'N20020620S0315': ['GN-2002A-C-5-21-002', 'x', 'NIRI'],
+    'N20150404S0726': ['GN-2015A-C-1-20-001', 'x', 'NIRI'],
+    'N20150404S0872': ['GN-2015A-C-1-27-001', 'x', 'NIRI'],
+    'N20150405S0028': ['GN-2015A-C-1-27-071', 'x', 'NIRI'],
+    # GSAIO
+    'S20181023S0087': ['GS-CAL20181023-5-001', 'x'],
+    # GNIRS
+    'N20160123S0097': ['GN-2015B-SV-101-1061-005', 'x', 'GNIRS'],
+    'N20151213S0022': ['GN-CAL20151213-6-002', 'x', 'GNIRS'],
+    'N20100722S0185': ['GN-2010B-SV-142-10-007', 'x', 'GNIRS'],
+    'N20100915S0167': ['GN-2010B-Q-2-44-003', 'x', 'GNIRS'],
+    'N20160202S0098': ['GN-CAL20160202-3-039', 'x', 'GNIRS'],
+    'N20110323S0235': ['GN-2011A-Q-53-42-007', 'x', 'GNIRS'],
 }
 
 
@@ -115,14 +127,15 @@ def pytest_generate_tests(metafunc):
     if os.path.exists(TESTDATA_DIR):
         ## file_list = [os.path.join(TESTDATA_DIR, name) for name in os.listdir(TESTDATA_DIR) if name.endswith('header')]
 
-        # file_list = []
-        # for root, dirs, files in os.walk(TESTDATA_DIR):
-        #     for file in files:
-        #         if file.endswith(".header"):
-        #             file_list.append(os.path.join(root, file))
+        file_list = []
+        for root, dirs, files in os.walk(TESTDATA_DIR):
+            for file in files:
+                if file.endswith(".header"):
+                    file_list.append(os.path.join(root, file))
 
         # file_list = ['{}/{}/{}'.format(TESTDATA_DIR, 'GMOS', 'N20150216S0129.fits.header')] // broken, missing expected xml
-        file_list = ['{}/{}/{}'.format(TESTDATA_DIR, 'NIRI', 'N20020620S0021.fits.header')]
+        # file_list = ['{}/{}/{}'.format(TESTDATA_DIR, 'NIRI', 'N20020620S0021.fits.header')]
+        # metafunc.parametrize('test_name', file_list[8:])
         metafunc.parametrize('test_name', file_list)
 
 
@@ -131,7 +144,7 @@ def test_main_app(test_name):
     dirname = os.path.dirname(test_name)
     # file_id = basename.split('.fits')[0]
     file_id = _get_file_id(basename)
-    product_id = LOOKUP[file_id]
+    product_id = LOOKUP[file_id][0]
     # lineage = mc.get_lineage(
     #     COLLECTION, product_id, '{}.fits'.format(file_id))
     lineage = _get_lineage(dirname, basename, product_id, file_id)
@@ -140,18 +153,43 @@ def test_main_app(test_name):
     local = _get_local(test_name)
     plugin = PLUGIN
 
-    with patch('caom2utils.fits2caom2.CadcDataClient') as data_client_mock:
+    with patch('caom2utils.fits2caom2.CadcDataClient') as data_client_mock, \
+        patch('gem2caom2.main_app.get_obs_metadata') as gemini_client_mock, \
+        patch('gem2caom2.svofps.get_votable') as svofps_mock:
+
         def get_file_info(archive, file_id):
             if '_prev' in file_id:
                 return {'size': 10290,
-                        'md5sum': md5('-37'.encode()).hexdigest(),
+                        'md5sum': 'md5:{}'.format(
+                            md5('-37'.encode()).hexdigest()),
                         'type': 'image/jpeg'}
             else:
                 return {'size': 665345,
-                        'md5sum': 'a347f2754ff2fd4b6209e7566637efad',
+                        'md5sum': 'md5:a347f2754ff2fd4b6209e7566637efad',
                         'type': 'application/fits'}
+
+        def get_obs_metadata(obs_id):
+            try:
+                fname = '{}/{}/json/{}.json'.format(TESTDATA_DIR,
+                                                    LOOKUP[file_id][2], obs_id)
+                with open(fname) as f:
+                    y = json.loads(f.read())
+                    return y[0]
+            except Exception as e:
+                logging.error(e)
+
+        def get_votable(url):
+            x = url.split('/')
+            filter_name = x[len(x) - 1]
+            votable = parse_single_table(
+                '{}/votable/{}.xml'.format(TESTDATA_DIR, filter_name))
+            return votable, None
+        logging.error('file_id is {}'.format(file_id))
         data_client_mock.return_value.get_file_info.side_effect = \
             get_file_info
+        gemini_client_mock.return_value = get_obs_metadata(product_id)
+        svofps_mock.return_value = get_votable(
+            '{}/{}'.format(svofps.SVO_URL, LOOKUP[file_id][1]))
 
         sys.argv = \
             ('{} --no_validate --local {} '
@@ -159,7 +197,7 @@ def test_main_app(test_name):
              format(APPLICATION, local, plugin, plugin, dirname,
                     input_file, actual_fqn, lineage)).split()
         print(sys.argv)
-        main_app()
+        main_app2()
         expected_fqn = '{}/{}.xml'.format(dirname, product_id)
         expected = mc.read_obs_from_file(expected_fqn)
         actual = mc.read_obs_from_file(actual_fqn)
@@ -173,7 +211,6 @@ def test_main_app(test_name):
 
 
 def _build_temp_content(test_name):
-    # temp_named_file = tempfile.NamedTemporaryFile(suffix='.fits.header')
     x = test_name.split('/')
     length = len(x)
     stuff = x[length-1].split('.')[0]

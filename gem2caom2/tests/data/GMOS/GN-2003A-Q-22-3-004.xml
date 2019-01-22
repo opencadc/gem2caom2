@@ -13,6 +13,7 @@
   </caom2:proposal>
   <caom2:target>
     <caom2:name>NGC3379_field2</caom2:name>
+    <caom2:type>field</caom2:type>
   </caom2:target>
   <caom2:telescope>
     <caom2:name>Gemini-North</caom2:name>
@@ -28,7 +29,7 @@
       <caom2:productID>GN-2003A-Q-22-3-004</caom2:productID>
       <caom2:metaRelease>2004-07-07T00:00:00.000</caom2:metaRelease>
       <caom2:dataRelease>2004-07-07T00:00:00.000</caom2:dataRelease>
-      <caom2:dataProductType>spectrum</caom2:dataProductType>
+      <caom2:dataProductType>image</caom2:dataProductType>
       <caom2:calibrationLevel>1</caom2:calibrationLevel>
       <caom2:provenance>
         <caom2:name>Gemini Observatory Data</caom2:name>

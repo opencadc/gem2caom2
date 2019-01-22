@@ -1,0 +1,176 @@
+Filename: S20070113S0060.fits.bz2
+
+AstroData Types: ['BHROS', 'GEMINI', 'SIDEREAL', 'GEMINI_SOUTH', 'SPECT', 'RAW', 'UNPREPARED']
+
+
+--- HDU 0 ---
+SIMPLE  =                    T / file does conform to FITS standard             
+BITPIX  =                   16 / number of bits per data pixel                  
+NAXIS   =                    0 / number of data axes                            
+EXTEND  =                    T / FITS dataset may contain extensions            
+COMMENT   FITS (Flexible Image Transport System) format defined in Astronomy and
+COMMENT   Astrophysics Supplement Series v44/p363, v44/p371, v73/p359, v73/p365.
+COMMENT   Contact the NASA Science Office of Standards and Technology for the   
+COMMENT   FITS Definition document #100 and other FITS information.             
+INSTRUME= 'bHROS   '           / Instrument used to acquire data                
+OBJECT  = 'GCALflat'           / Object Name                                    
+OBSTYPE = 'FLAT    '           / Observation type                               
+OBSCLASS= 'partnerCal'         / Observe class                                  
+GEMPRGID= 'GS-2006B-Q-7'       / Gemini programme ID                            
+OBSID   = 'GS-2006B-Q-7-32'    / Observation ID / Data label                    
+DATALAB = 'GS-2006B-Q-7-32-008' / DHS data label                                
+OBSERVER= 'Hayward '           / Observer                                       
+OBSERVAT= 'Gemini-South'       / Name of telescope (Gemini-North|Gemini-South)  
+TELESCOP= 'Gemini-South'       / Telescope                                      
+PARALLAX=                   0. / Parallax of Target                             
+RADVEL  =                   0. / Heliocentric Radial Velocity                   
+EPOCH   =                2000. / Epoch for Target coordinates                   
+EQUINOX =                2000. / Equinox of coordinate system                   
+TRKEQUIN=                2000. / Tracking equinox                               
+SSA     = 'Prado   '           / SSA                                            
+RA      =             79.28175 / Right Ascension                                
+DEC     =         -44.18211111 / Declination of Target                          
+ELEVATIO=     40.9431347222222 / Current Elevation                              
+AZIMUTH =     235.752863888889 / Current Azimuth                                
+CRPA    =     85.0903383121805 / Current Cass Rotator Position Angle            
+HA      = '+04:02:56.12'       / Telescope hour angle                           
+LT      = '02:33:47.1'         / Local time at start of observation             
+TRKFRAME= 'FK5     '           / Tracking co-ordinate                           
+DECTRACK=                   0. / Differential tracking rate Dec                 
+TRKEPOCH=         54113.114093 / Differential tracking reference epoch          
+RATRACK =                   0. / Differential tracking rate RA                  
+FRAME   = 'FK5     '           / Target coordinate system                       
+PMDEC   =                   0. / Proper Motion in Declination                   
+PMRA    =                   0. / Proper Motion in RA                            
+WAVELENG=                5455. / Effective Target Wavelength                    
+RAWIQ   = '70-percentile'      / Raw Image Quality                              
+RAWCC   = '50-percentile'      / Raw Cloud Cover                                
+RAWWV   = '80-percentile'      / Transparency                                   
+RAWBG   = '50-percentile'      / Raw Background                                 
+RAWPIREQ= 'YES     '           / PI Requirements Met                            
+RAWGEMQA= 'USABLE  '           / Gemini Quality Assessment                      
+CGUIDMOD= 'Basic   '           / Carousel Mode                                  
+UT      = '06:33:47.6'         / UT at observation start                        
+DATE    = '2007-01-13'         / Date FITS file was generated                   
+M2BAFFLE= 'VISIBLE '           / Position of M2 baffle                          
+M2CENBAF= 'CLOSED  '           / Position of M2 central hole baffle             
+ST      = '09:20:18.8'         / Sidereal time at the start of the exposure     
+XOFFSET =        16.2943774804 / Telescope offset in x in arcsec                
+YOFFSET =        36.1242061745 / Telescope offset in y in arcsec                
+POFFSET =       -16.3700000481 / Telescope offset in p in arcsec                
+QOFFSET =       -36.0900001058 / Telescope offset in q in arcsec                
+RAOFFSET=        16.3700000481 / Telescope offset in RA in arcsec               
+DECOFFSE=        36.0900001058 / Telescope offset in DEC in arcsec              
+RATRGOFF=                   0. / Target offset in RA in arcsec                  
+DECTRGOF=                   0. / Target offset in DEC in arcsec                 
+PA      =                   0. / Sky Position Angle at start of exposure        
+IAA     =               359.88 / Instrument Alignment Angle                     
+SFRT2   =                  45. / Science fold rotation angle (degrees)          
+SFTILT  =                   1. / Science fold tilt angle (degrees)              
+SFLINEAR=                  -3. / Science fold linear position (mm)              
+AOFOLD  = 'park-pos.'          / AO Pick-Off Mirror Position                    
+GCALLAMP= 'QH      '           / GCAL Lamp name                                 
+GCALFILT= 'CLEAR   '           / GCAL Filter name                               
+GCALDIFF= 'VISIBLE '           / GCAL Diffuser name                             
+GCALSHUT= 'CLOSED  '           / GCAL Shutter (OPEN or CLOSED)                  
+OIARA   =          79.25534167 / RA of OIWFS guide star                         
+OIARV   =                   0. / OIWFS Heliocentric Radial Velocity             
+OIAWAVEL=               22000. / OIWFS Effective Target Wavelength              
+OIADEC  =         -44.18160278 / Declination of OIWFS guide star                
+OIAEPOCH=                2000. / Epoch for OIWFS guide star coordinates         
+OIAEQUIN=                2000. / Equinox for OIWFS guide star coordinates       
+OIAFRAME= 'FK5     '           / OIWFS Target co-ordinate system                
+OIAOBJEC= '48      '           / Object Name for OIWFS, Chop A                  
+OIAPMDEC=                   0. / OIWFS Proper Motion in Declination             
+OIAPMRA =                   0. / OIWFS Proper Motion in RA                      
+OIAPARAL=                   0. / OIWFS Parallax of Target                       
+HUMIDITY=                  26. / The Relative Humidity (fraction, 0..101)       
+TAMBIENT=                 14.9 / The ambient temp (C)                           
+TAMBIEN2=                58.82 / The ambient temp (F)                           
+PRESSURE=            546.20384 / The atmospheric pressure (mm Hg)               
+PRESSUR2=               72800. / The atmospheric pressure (Pa)                  
+DEWPOINT=                 -4.3 / The dew point (C)                              
+DEWPOIN2=                24.26 / The dew point (F)                              
+WINDSPEE=                   0. / The wind speed (m/s)                           
+WINDSPE2=                   0. / The wind speed (mph)                           
+WINDDIRE=                 164. / The wind direction (degrees)                   
+INPORT  =                    3 / Number of ISS port where GMOS was located      
+DETTEMP =            -119.2488 / CCD temperature                                
+DETID   = 'EEV8352-16-03EEV9273-01-04' / Chip IDs                               
+DETNROI =                    1 / No. regions of interest                        
+DETRO1X =                    1 / ROI 1 X start                                  
+DETRO1XS=                  512 / ROI 1 X size                                   
+DETRO1Y =                    1 / ROI 1 Y start                                  
+DETRO1YS=                 4608 / ROI 1 Y size                                   
+EXPOSURE=                 100. / Requested exposure time                        
+GRT_TILT=             -55.9649 / Echelle Altitude angle (degrees?)              
+GRT_ROT =               0.8055 / Echelle Azimuth angle (degrees?)               
+FILTER  = 'NONE    '           / Filter wheel position (filter names)           
+FOCUS   =                6000. / Focus collimator position (microns)            
+IMG_SLCR= 'ObjectOnly'         / Image slicer (object or object/sky mode)       
+SLCR_ROT=                2.484 / Image slicer rotation angle (mdegrees)         
+BHROSCC = 'HROSCC  '           / BHROS component controller s/w                 
+BHROSDC = 'bHROS DC'           / BHROS detector controller s/w                  
+HARTPOS1= 'Lower OUT, Upper OUT' / Vertical Hartmann shutter pair?              
+HARTPOS2= 'Left OUT, Right OUT' / Horizontal Hatrmann shutter pair?             
+CONID   = 'bHROS v1.0'         / Controller ID                                  
+DETECTOR= 'bHROS II + CCD'     / Detector                                       
+DEWAR   = 'Number 1'           / Dewar identification                           
+DEW-TEMP=     -119.24882629108 / Dewar temperature (Celsius)                    
+DETSIZE = '[1:4096,1:4644]'    / Detector size for DETSEC                       
+NCCDS   =                    1 / Number of CCDS in this image                   
+NAMPS   =                    1 / Number of Amplifiers in this image             
+SHUTTER = 'OPEN    '           / Shutter status                                 
+AMPINTEG=                 5000 / Double Correlated Sample Time (ns)             
+OBSEPOCH=     2007.03291849352 / Epoch at start of exposure                     
+TIMESYS = 'UT1     '           / Time system                                    
+DATE-OBS= '2007-01-13'         / Date of observation start                      
+TIME-OBS= '06:34:24.0'         / Time of observation start                      
+HROSTHT = 'GOOD    '           / BHROS shutter                                  
+NSUBEXP =                    1 / Number of subexposures                         
+UTSTART = '06:34:24.0'         / Start of Exposure                              
+UTEND   = '06:36:04.1'         / End of exposure                                
+EXPTIME =     100.010461091995 / Exposure time (sec)                            
+ELAPSED =     100.010461091995 / Total elapsed time in secs                     
+DARKTIME=     145.451861143112 / Total time including readout                   
+AIRMASS =                1.531 / Mean airmass for the observation               
+AMSTART =                1.524 / Airmass at start of exposure                   
+AMEND   =                1.538 / Airmass at end of exposure                     
+RELEASE = '2007-01-13'         / End of proprietary period YYYY-MM-DD           
+
+--- HDU 1 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                   16 / number of bits per data pixel                  
+NAXIS   =                    2 / number of data axes                            
+NAXIS1  =                  544 / length of data axis 1                          
+NAXIS2  =                 4608 / length of data axis 2                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'SCI     '           / ad1406: added by AstroData                     
+EXTVER  =                    1 / ad1410: added by AstroData                     
+BZERO   =                32768 / offset data range to that of unsigned short    
+BSCALE  =                    1 / default scaling factor                         
+INHERIT =                    F / Inherits global header                         
+DATATYPE= 'Intensity'          / Type of data frame                             
+CCDNAME = 'EEV 8352-16-03'     / CCD name                                       
+AMPNAME = 'EEV 8352-16-03, left' / Amplifier name                               
+GAIN    =     1.86000001430511 / Gain for amp 11 (e-/dn)                        
+RDNOISE =     5.30000019073486 / Read noise for amp 11 (e-RMS)                  
+CCDSIZE = '[1:2048,1:4644]'    / CCD size                                       
+CCDSUM  = '4 1     '           / CCD pixel summing                              
+CCDSEC  = '[1:2048,1:4608]'    / CCD section                                    
+DETSEC  = '[1:2048,1:4608]'    / Detector section                               
+DATASEC = '[1:512,1:4608]'     / Data section                                   
+BIASSEC = '[513:544,1:4608]'   / Bias section                                   
+FRMNAME = 'dhsFrame'           / Name assigned to a frame of data.              
+FRAMEID = '0       '           / Frame ID                                       
+DATATYPE= '        '                                                            
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                

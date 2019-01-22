@@ -67,6 +67,7 @@
 # ***********************************************************************
 #
 
+import logging
 import os
 import re
 import requests
@@ -154,6 +155,7 @@ def gmos_metadata(obs_metadata):
     :param obs_metadata: Dictionary of observation metadata.
     :return: Dictionary of energy metadata
     """
+    logging.debug('Begin gmos_metadata')
     metadata = {
         'energy': True,
         'energy_band': GMOS_ENERGY_BAND
@@ -210,6 +212,7 @@ def gmos_metadata(obs_metadata):
     if metadata['resolving_power'] < 0:
         metadata['energy'] = False
 
+    logging.debug('End gmos_metadata')
     return metadata
 
 
@@ -220,6 +223,7 @@ def niri_metadata(obs_metadata):
     :param obs_metadata: Dictionary of observation metadata.
     :return: Dictionary of energy metadata
     """
+    logging.debug('Begin niri_metadata')
     metadata = {
         'energy': True,
         'energy_band': NIRI_ENERGY_BAND
@@ -288,4 +292,5 @@ def niri_metadata(obs_metadata):
     metadata['resolving_power'] = resolving_power
     metadata['reference_pixel'] = 512.0
 
+    logging.debug('End niri_metadata')
     return metadata

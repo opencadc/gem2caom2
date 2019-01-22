@@ -102,7 +102,7 @@ from requests.adapters import HTTPAdapter
 from urllib3 import Retry
 
 from caom2 import Observation, ObservationIntentType, DataProductType
-from caom2 import CalibrationLevel
+from caom2 import CalibrationLevel, TargetType, ProductType
 from caom2utils import ObsBlueprint, get_gen_proc_arg_parser, gen_proc
 from caom2pipe import manage_composable as mc
 from caom2pipe import execute_composable as ec
@@ -111,7 +111,7 @@ from caom2pipe import astro_composable as ac
 from gem2caom2.external_metadata import gmos_metadata, niri_metadata
 
 
-__all__ = ['main_app', 'update', 'GemName', 'COLLECTION', 'APPLICATION',
+__all__ = ['main_app2', 'update', 'GemName', 'COLLECTION', 'APPLICATION',
            'SCHEME', 'ARCHIVE']
 
 
@@ -120,6 +120,8 @@ COLLECTION = 'GEMINI'
 ARCHIVE = 'GEM'
 SCHEME = 'gemini'
 GEMINI_METADATA_URL = 'https://archive.gemini.edu/jsonsummary/canonical/'
+
+obs_metadata = {}
 
 
 class GemName(ec.StorageName):
@@ -248,6 +250,7 @@ def get_obs_metadata(obs_id):
         response = session.get(gemini_url, timeout=20)
         metadata = response.json()[0]
         response.close()
+        logging.error('got obs metdata')
     except Exception as e:
         raise mc.CadcException(
             'Unable to download Gemini observation metadata from {} because {}'
@@ -255,19 +258,24 @@ def get_obs_metadata(obs_id):
     return metadata
 
 
-def get_energy_metadata(obs_metadata):
+def get_energy_metadata():
     """
     For the given observation retrieve the energy metadata.
 
-    :param obs_metadata: Dictionary of observation metadata.
     :return: Dictionary of energy metadata.
     """
-    energy_metadata = {'energy': False}
+    global obs_metadata
     instrument = obs_metadata['instrument']
     if instrument in ['GMOS-N', 'GMOS-S']:
         energy_metadata = gmos_metadata(obs_metadata)
     elif instrument in ['NIRI']:
         energy_metadata = niri_metadata(obs_metadata)
+    elif instrument in ['GNIRS']:
+        # TODO
+        energy_metadata = niri_metadata(obs_metadata)
+    else:
+        raise mc.CadcException(
+            'Do not understand energy for instrument {}'.format(instrument))
     return energy_metadata
 
 
@@ -278,42 +286,51 @@ def get_chunk_wcs(bp, obs_id):
     :param bp: The blueprint.
     :param obs_id: The current Observation ID.
     """
-    obs_metadata = get_obs_metadata(obs_id)
+    logging.debug('Begin get_chunk_wcs')
+    try:
+        global obs_metadata
+        obs_metadata = get_obs_metadata(obs_id)
 
-    # if types contains 'AZEL_TARGET' do not create
-    # spatial WCS
-    # types = obs_metadata['types']
-    # if 'AZEL_TARGET' not in types:
-    #     bp.configure_position_axes((1, 2))
+        # if types contains 'AZEL_TARGET' do not create
+        # spatial WCS
+        # types = obs_metadata['types']
+        # if 'AZEL_TARGET' not in types:
+        #     bp.configure_position_axes((1, 2))
 
-    energy_metadata = get_energy_metadata(obs_metadata)
+        energy_metadata = get_energy_metadata()
 
-    # No energy metadata found
-    if not energy_metadata['energy']:
-        return
+        # No energy metadata found
+        if not energy_metadata['energy']:
+            logging.error('No energy metadata found for {}'.format(obs_id))
+            return
 
-    bp.configure_energy_axis(4)
-    filter_name = energy_metadata['filter_name']
-    resolving_power = energy_metadata['resolving_power']
-    ctype = energy_metadata['wavelength_type']
-    # cunit = energy_metadata['wavelength_unit']
-    naxis = energy_metadata['number_pixels']
-    crpix = energy_metadata['reference_pixel']
-    crval = energy_metadata['reference_wavelength']
-    cdelt = energy_metadata['delta']
+        bp.configure_energy_axis(4)
+        filter_name = energy_metadata['filter_name']
+        resolving_power = energy_metadata['resolving_power']
+        ctype = energy_metadata['wavelength_type']
+        # cunit = energy_metadata['wavelength_unit']
+        naxis = energy_metadata['number_pixels']
+        crpix = energy_metadata['reference_pixel']
+        crval = energy_metadata['reference_wavelength']
+        cdelt = energy_metadata['delta']
 
-    # don't set the cunit since fits2caom2 sets the cunit
-    # based on the ctype.
-    bp.set('Chunk.energy.bandpassName', filter_name)
-    bp.set('Chunk.energy.resolvingPower', resolving_power)
-    bp.set('Chunk.energy.specsys', 'TOPOCENT')
-    bp.set('Chunk.energy.ssysobs', 'TOPOCENT')
-    bp.set('Chunk.energy.ssyssrc', 'TOPOCENT')
-    bp.set('Chunk.energy.axis.axis.ctype', ctype)
-    bp.set('Chunk.energy.axis.function.naxis', naxis)
-    bp.set('Chunk.energy.axis.function.delta', cdelt)
-    bp.set('Chunk.energy.axis.function.refCoord.pix', crpix)
-    bp.set('Chunk.energy.axis.function.refCoord.val', crval)
+        # don't set the cunit since fits2caom2 sets the cunit
+        # based on the ctype.
+        bp.set('Chunk.energy.bandpassName', filter_name)
+        bp.set('Chunk.energy.resolvingPower', resolving_power)
+        bp.set('Chunk.energy.specsys', 'TOPOCENT')
+        bp.set('Chunk.energy.ssysobs', 'TOPOCENT')
+        bp.set('Chunk.energy.ssyssrc', 'TOPOCENT')
+        bp.set('Chunk.energy.axis.axis.ctype', ctype)
+        bp.set('Chunk.energy.axis.function.naxis', naxis)
+        bp.set('Chunk.energy.axis.function.delta', cdelt)
+        bp.set('Chunk.energy.axis.function.refCoord.pix', crpix)
+        bp.set('Chunk.energy.axis.function.refCoord.val', crval)
+    except Exception as e:
+        logging.error(e)
+        raise mc.CadcException(
+            'Could not get chunk metadata for {}'.format(obs_id))
+    logging.debug('End get_chunk_wcs')
 
 
 def get_time_delta(header):
@@ -349,6 +366,35 @@ def get_time_crval(header):
     return ac.get_datetime('{}T{}'.format(dateobs, timeobs))
 
 
+def get_calibration_level(header):
+    # TODO
+    return CalibrationLevel.RAW_STANDARD
+
+
+def get_art_product_type(header):
+    obs_type = header.get('OBSTYPE')
+    obs_class = header.get('OBSCLASS')
+    if obs_type is not None and obs_type == 'MASK':
+        result = ProductType.AUXILIARY
+    elif obs_class is not None and obs_class == 'science':
+        result = ProductType.SCIENCE
+    else:
+        result = ProductType.CALIBRATION
+    return result
+
+
+def get_data_product_type(header):
+    global obs_metadata
+    mode = mc.response_lookup(obs_metadata, 'mode')
+    obs_type = header.get('OBSTYPE')
+    if ((mode is not None and mode == 'imaging') or
+            (obs_type is not None and obs_type == 'MASK')):
+        result = DataProductType.IMAGE
+    else:
+        result = DataProductType.SPECTRUM
+    return result
+
+
 def get_exposure(header):
     """
     Calculate the exposure time.
@@ -382,19 +428,27 @@ def get_obs_intent(header):
     return result
 
 
-def get_data_product_type(header):
-    # TODO this is ridiculously wrong
-    obs_type = header.get('OBSTYPE')
-    if obs_type is not None and obs_type == 'MASK':
-        result = DataProductType.IMAGE
-    else:
-        result = DataProductType.SPECTRUM
+def get_obs_type(header):
+    """
+    Determine the Observation type.
+
+    :param header:  The FITS header for the current extension.
+    :return: The Observation type, or None if not found.
+    """
+    result = header.get('OBSTYPE')
+    obs_class = header.get('OBSCLASS')
+    if obs_class is not None and 'acq' in obs_class:
+        result = 'ACQUISITION'
     return result
 
 
-def get_calibration_level(header):
-    # TODO
-    return CalibrationLevel.RAW_STANDARD
+def get_target_type(header):
+    global obs_metadata
+    spectroscopy = mc.response_lookup(obs_metadata, 'spectroscopy')
+    if spectroscopy:
+        return TargetType.OBJECT
+    else:
+        return TargetType.FIELD
 
 
 def accumulate_fits_bp(bp, uri, obs_id):
@@ -403,17 +457,31 @@ def accumulate_fits_bp(bp, uri, obs_id):
     logging.debug('Begin accumulate_fits_bp.')
 
     bp.set('Observation.intent', 'get_obs_intent(header)')
+    bp.set('Observation.type', 'get_obs_type(header)')
+
     bp.clear('Observation.metaRelease')
     bp.add_fits_attribute('Observation.metaRelease', 'RELEASE')
+
+    bp.set('Observation.target.type', 'get_target_type(header)')
 
     bp.set('Plane.dataProductType', 'get_data_product_type(header)')
     bp.set('Plane.calibrationLevel', 'get_calibration_level(header)')
 
+    bp.set('Artifact.productType', 'get_art_product_type(header)')
+
     bp.configure_position_axes((1, 2))
     bp.configure_time_axis(3)
 
+    # TODO - figure out why the function needs execution here .... :(
     bp.set('Chunk.time.resolution', 'get_exposure(header)')
     bp.set('Chunk.time.exposure', 'get_exposure(header)')
+    # bp.clear('Chunk.time.resolution')
+    # bp.add_fits_attribute('Chunk.time.resolution', 'EXPTIME')
+    # bp.set_default('Chunk.time.resolution', None)
+    # bp.clear('Chunk.time.exposure')
+    # bp.add_fits_attribute('Chunk.time.exposure', 'EXPTIME')
+    # bp.set_default('Chunk.time.exposure', None)
+
     bp.set('Chunk.time.axis.axis.ctype', 'TIME')
     bp.set('Chunk.time.axis.axis.cunit', 'd')
     bp.set('Chunk.time.axis.error.syser', '1e-07')
@@ -437,12 +505,12 @@ def update(observation, **kwargs):
     logging.error('Begin update.')
     mc.check_param(observation, Observation)
 
-    for p in observation.planes:
-        for a in observation.planes[p].artifacts:
-            for part in observation.planes[p].artifacts[a].parts:
-                if observation.planes[p].artifacts[a].parts[part].name == '0':
-                    observation.planes[p].artifacts[a].parts[part].chunks.pop()
-                    logging.error('Set chunks to None for 0-th part.')
+    # for p in observation.planes:
+    #     for a in observation.planes[p].artifacts:
+    #         for part in observation.planes[p].artifacts[a].parts:
+    #             if observation.planes[p].artifacts[a].parts[part].name == '0':
+    #                 observation.planes[p].artifacts[a].parts[part].chunks.pop()
+    #                 logging.error('Set chunks to None for 0-th part.')
     logging.error('Done update.')
     return True
 
@@ -508,7 +576,7 @@ def _get_obs_id(args):
     return result
 
 
-def main_app():
+def main_app2():
     args = get_gen_proc_arg_parser().parse_args()
     try:
         uris = _get_uris(args)

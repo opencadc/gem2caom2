@@ -1,0 +1,146 @@
+Filename: 2006apr02_0073.fits.bz2
+
+AstroData Types: ['GEMINI', 'PHOENIX', 'GEMINI_SOUTH', 'SPECT', 'RAW', 'UNPREPARED']
+
+
+--- HDU 0 ---
+SIMPLE  =                    T / conforms to FITS standard                      
+BITPIX  =                    8 / array data type                                
+NAXIS   =                    0 / number of array dimensions                     
+EXTEND  =                    T                                                  
+ORIGIN  = 'NOAO-IRAF FITS Image Kernel July 2003' / FITS file originator        
+DATE    = '2006-04-28T18:19:49' / Date FITS file was generated                  
+IRAF-TLM= '15:26:34 (28/04/2006)' / Time of last modification                   
+CHANNEL = 'only              '  /                                               
+INSTRUME= 'PHOENIX           '  /                                               
+OBJECT  = 'flat 4230 cm-1 1 sec'                                                
+COADDS  =                    1  /  No. internal coadds                          
+INT_S   =             1.002000  /  Exposure time                                
+EXPTIME =             1.002000  /  Exp.time (usual)                             
+MODE    = 'stare             '  /                                               
+LNRS    =                    1  /  Low noise reads                              
+UCODE   = 'PHaladII_12_11    '  /  Detector microcode                           
+IMAGETYP= 'Object  '           /                                                
+OFFSET  = '2.926 north 4.3505 east                                             '
+COMMENT = 'none              '  /                                               
+OBSERVER= 'Doppmann,Greene,Hinkle' /                                            
+DETECTOR= 'ALAD256x1024      '  /                                               
+PLATE_SC=             0.085000  /  Arc sec. per pixel                           
+RECID   = 'gscp8m.20060402.012749.72                                           '
+FILT_POS= '4220 (5)          '  /                                               
+LYOT_POS= '8m_2.5 (4)        '  /                                               
+CVF_POS = 'open (1)          '  /                                               
+SLIT_POS= '107u_1.0-5.0 (8)  '  /                                               
+VIEW_POS= 'open (-152991)    '  /                                               
+GRAT_POS= 'encoder -10787    '  /                                               
+FOC_POS = '251.2             '  /                                               
+COVR_POS= 'open              '  /                                               
+OBSERVAT= 'Gemini-South'       /                                                
+TELESCOP= 'Gemini-South'       /                                                
+SSA     = 'Prado   '           /                                                
+OBSID   = 'GS-2006A-DD-1-1'    /                                                
+DATALAB = 'GS-2006A-DD-1-1-0073' /                                              
+GEMPRGID= 'GS-2006A-DD-1'      /                                                
+RAWBG   = 'UNKNOWN '           /                                                
+RAWCC   = 'UNKNOWN '           /                                                
+RAWIQ   = 'UNKNOWN '           /                                                
+RAWWV   = 'UNKNOWN '           /                                                
+RAWGEMOA= 'Unknown           '  /                                               
+RAWPIREQ= 'YES     '           /                                                
+RA      = '06:19:58.143      '  /                                               
+DEC     = '-10:38:13.87      '  /                                               
+EQUINOX =          2000.000000  /                                               
+EPOCH   =          2000.000000  /                                               
+UT      = '01:27:48.9        '  /  Gemini UTC                                   
+UTDATE  = '2006-04-02        '  /  Gemini UTCDATE                               
+LST     = '09:25:54.9        '  /                                               
+HA      =             3.094300  /                                               
+ZD      =            47.175301  /                                               
+AIRMASS =             1.470000  /                                               
+FOCUS   =            -0.361000  /                                               
+OBS_TYPE= 'Object  '                                                            
+RELEASE = '2007-10-02'         / End of proprietary period YYYY-MM-DD           
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+
+--- HDU 1 ---
+XTENSION= 'IMAGE   '           / Image extension                                
+BITPIX  =                  -32 / array data type                                
+NAXIS   =                    2 / number of array dimensions                     
+NAXIS1  =                  256                                                  
+NAXIS2  =                 1024                                                  
+PCOUNT  =                    0 / number of parameters                           
+GCOUNT  =                    1 / number of groups                               
+EXTNAME = 'SCI     '           / ad4549: added by AstroData                     
+EXTVER  =                    1                                                  
+ORIGIN  = 'NOAO-IRAF FITS Image Kernel July 2003' / FITS file originator        
+DATE    = '2006-04-28T18:19:49' / Date FITS file was generated                  
+IRAF-TLM= '15:26:34 (28/04/2006)' / Time of last modification                   
+CHANNEL = 'only              '  /                                               
+INSTRUME= 'PHOENIX           '  /                                               
+OBJECT  = 'flat 4230 cm-1 1 sec'                                                
+COADDS  =                    1  /  No. internal coadds                          
+INT_S   =             1.002000  /  Exposure time                                
+EXPTIME =             1.002000  /  Exp.time (usual)                             
+MODE    = 'stare             '  /                                               
+LNRS    =                    1  /  Low noise reads                              
+UCODE   = 'PHaladII_12_11    '  /  Detector microcode                           
+IMAGETYP= 'Object  '           /                                                
+OFFSET  = '2.926 north 4.3505 east                                             '
+COMMENT = 'none              '  /                                               
+OBSERVER= 'Doppmann,Greene,Hinkle' /                                            
+DETECTOR= 'ALAD256x1024      '  /                                               
+PLATE_SC=             0.085000  /  Arc sec. per pixel                           
+RECID   = 'gscp8m.20060402.012749.72                                           '
+FILT_POS= '4220 (5)          '  /                                               
+LYOT_POS= '8m_2.5 (4)        '  /                                               
+CVF_POS = 'open (1)          '  /                                               
+SLIT_POS= '107u_1.0-5.0 (8)  '  /                                               
+VIEW_POS= 'open (-152991)    '  /                                               
+GRAT_POS= 'encoder -10787    '  /                                               
+FOC_POS = '251.2             '  /                                               
+COVR_POS= 'open              '  /                                               
+OBSERVAT= 'Gemini-South'       /                                                
+TELESCOP= 'Gemini-South'       /                                                
+SSA     = 'Prado   '           /                                                
+OBSID   = 'GS-2006A-DD-1-1'    /                                                
+DATALAB = 'GS-2006A-DD-1-1-0073' /                                              
+GEMPRGID= 'GS-2006A-DD-1'      /                                                
+RAWBG   = 'UNKNOWN '           /                                                
+RAWCC   = 'UNKNOWN '           /                                                
+RAWIQ   = 'UNKNOWN '           /                                                
+RAWWV   = 'UNKNOWN '           /                                                
+RAWGEMOA= 'Unknown           '  /                                               
+RAWPIREQ= 'YES     '           /                                                
+RA      = '06:19:58.143      '  /                                               
+DEC     = '-10:38:13.87      '  /                                               
+EQUINOX =          2000.000000  /                                               
+EPOCH   =          2000.000000  /                                               
+UT      = '01:27:48.9        '  /  Gemini UTC                                   
+UTDATE  = '2006-04-02        '  /  Gemini UTCDATE                               
+LST     = '09:25:54.9        '  /                                               
+HA      =             3.094300  /                                               
+ZD      =            47.175301  /                                               
+AIRMASS =             1.470000  /                                               
+FOCUS   =            -0.361000  /                                               
+OBS_TYPE= 'Object  '                                                            
+RELEASE = '2007-10-02'         / End of proprietary period YYYY-MM-DD           
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
