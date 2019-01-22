@@ -67,18 +67,18 @@
 # ***********************************************************************
 #
 
+# import os
 import logging
 import os
 import re
-import requests
-from requests.adapters import HTTPAdapter
-from urllib3 import Retry
+# import requests
+# from requests.adapters import HTTPAdapter
+# from urllib3 import Retry
 
 import caom2
-from caom2pipe import manage_composable as mc
+# from caom2pipe import manage_composable as mc
 from gem2caom2.svofps import filter_metadata
 
-GEMINI_METADATA_URL = 'https://archive.gemini.edu/jsonsummary/canonical/'
 GEMINI_FITS_HEADER_URL = 'https://archive.gemini.edu/fullheader/'
 
 GMOS_ENERGY_BAND = caom2.EnergyBand['OPTICAL']
@@ -116,36 +116,36 @@ NIRI_RESOLVING_POWER = {
 }
 
 
-def get_fits_headers(file_name):
-    """
-    Get the headers for the given FITS file name.
-
-    :param file_name: The FITS file name.
-    :return: List of FITS headers.
-    """
-    # file_name should end in .fits, strip off extensions after .fits
-    if not file_name.endswith('.fits'):
-        file_name = os.path.splitext(file_name)[0]
-
-    gemini_url = '{}{}'.format(GEMINI_FITS_HEADER_URL, file_name)
-
-    # Open the URL and fetch the FITS headers for the observation
-    session = requests.Session()
-    retries = 10
-    retry = Retry(total=retries, read=retries, connect=retries,
-                  backoff_factor=0.5)
-    adapter = HTTPAdapter(max_retries=retry)
-    session.mount('http://', adapter)
-    session.mount('https://', adapter)
-    try:
-        response = session.get(gemini_url, timeout=20)
-        header = response.text.split('\n')
-        response.close()
-    except Exception as e:
-        raise mc.CadcException(
-            'Unable to download Gemini observation header from {} because {}'
-                .format(gemini_url, str(e)))
-    return header
+# def get_fits_headers(file_name):
+#     """
+#     Get the headers for the given FITS file name.
+#
+#     :param file_name: The FITS file name.
+#     :return: List of FITS headers.
+#     """
+#     # file_name should end in .fits, strip off extensions after .fits
+#     if not file_name.endswith('.fits'):
+#         file_name = os.path.splitext(file_name)[0]
+#
+#     gemini_url = '{}{}'.format(GEMINI_FITS_HEADER_URL, file_name)
+#
+#     # Open the URL and fetch the FITS headers for the observation
+#     session = requests.Session()
+#     retries = 10
+#     retry = Retry(total=retries, read=retries, connect=retries,
+#                   backoff_factor=0.5)
+#     adapter = HTTPAdapter(max_retries=retry)
+#     session.mount('http://', adapter)
+#     session.mount('https://', adapter)
+#     try:
+#         response = session.get(gemini_url, timeout=20)
+#         header = response.text.split('\n')
+#         response.close()
+#     except Exception as e:
+#         raise mc.CadcException(
+#             'Unable to download Gemini observation header from {} because {}'
+#                 .format(gemini_url, str(e)))
+#     return header
 
 
 def gmos_metadata(obs_metadata):
@@ -216,7 +216,7 @@ def gmos_metadata(obs_metadata):
     return metadata
 
 
-def niri_metadata(obs_metadata):
+def niri_metadata(obs_metadata, filename):
     """
     Calculate NIRI energy metadata using the Gemini observation metadata.
 
@@ -233,7 +233,7 @@ def niri_metadata(obs_metadata):
     # No energy information is determined for darks.  The
     # latter are sometimes only identified by a 'blank' filter.  e.g.
     # NIRI 'flats' are sometimes obtained with the filter wheel blocked off.
-    headers = get_fits_headers(obs_metadata['filename'])
+    # headers = get_fits_headers(obs_metadata['filename'])
     header_filters = []
     filters2ignore = ['open', 'INVALID', 'PK50', 'pupil']
     for header in headers:

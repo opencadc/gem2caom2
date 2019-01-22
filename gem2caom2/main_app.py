@@ -96,6 +96,7 @@ import importlib
 import logging
 import os
 import sys
+import re
 import traceback
 import requests
 from requests.adapters import HTTPAdapter
@@ -119,7 +120,7 @@ APPLICATION = 'gem2caom2'
 COLLECTION = 'GEMINI'
 ARCHIVE = 'GEM'
 SCHEME = 'gemini'
-GEMINI_METADATA_URL = 'https://archive.gemini.edu/jsonsummary/canonical/'
+GEMINI_METADATA_URL = 'https://archive.gemini.edu/jsonsummary/canonical/filepre='
 
 obs_metadata = {}
 
@@ -229,14 +230,14 @@ class GemName(ec.StorageName):
         return '.jpg' in entry
 
 
-def get_obs_metadata(obs_id):
+def get_obs_metadata(file_id):
     """
     Download the Gemini observation metadata for the given obs_id.
 
     :param obs_id: The Obs ID
     :return: Dictionary of observation metadata.
     """
-    gemini_url = '{}{}'.format(GEMINI_METADATA_URL, obs_id)
+    gemini_url = '{}{}'.format(GEMINI_METADATA_URL, file_id)
 
     # Open the URL and fetch the JSON document for the observation
     session = requests.Session()
@@ -279,17 +280,17 @@ def get_energy_metadata():
     return energy_metadata
 
 
-def get_chunk_wcs(bp, obs_id):
+def get_chunk_wcs(bp, file_id):
     """
     Set the energy WCS for the given observation.
 
     :param bp: The blueprint.
-    :param obs_id: The current Observation ID.
+    :param file_id: The current file ID.
     """
     logging.debug('Begin get_chunk_wcs')
     try:
         global obs_metadata
-        obs_metadata = get_obs_metadata(obs_id)
+        obs_metadata = get_obs_metadata(file_id)
 
         # if types contains 'AZEL_TARGET' do not create
         # spatial WCS
@@ -451,7 +452,7 @@ def get_target_type(header):
         return TargetType.FIELD
 
 
-def accumulate_fits_bp(bp, uri, obs_id):
+def accumulate_fits_bp(bp, uri, obs_id, file_id):
     """Configure the telescope-specific ObsBlueprint at the CAOM model 
     Observation level."""
     logging.debug('Begin accumulate_fits_bp.')
@@ -491,7 +492,7 @@ def accumulate_fits_bp(bp, uri, obs_id):
     bp.set('Chunk.time.axis.function.refCoord.pix', '0.5')
     bp.add_fits_attribute('Chunk.time.axis.function.refCoord.val', 'MJD-OBS')
 
-    get_chunk_wcs(bp, obs_id)
+    get_chunk_wcs(bp, file_id)
 
     logging.debug('Done accumulate_fits_bp.')
 
@@ -515,7 +516,7 @@ def update(observation, **kwargs):
     return True
 
 
-def _build_blueprints(uris, obs_id):
+def _build_blueprints(uris, obs_id, file_id):
     """This application relies on the caom2utils fits2caom2 ObsBlueprint
     definition for mapping FITS file values to CAOM model element
     attributes. This method builds the DRAO-ST blueprint for a single
@@ -525,13 +526,14 @@ def _build_blueprints(uris, obs_id):
     between the blueprint entries and the model attributes.
 
     :param uris The list of artifact URIs for the files to be processed.
-    :param obs_id The Observation ID of the file."""
+    :param obs_id The Observation ID of the file.
+    :param file_id The file ID."""
     module = importlib.import_module(__name__)
     blueprints = {}
     for uri in uris:
         blueprint = ObsBlueprint(module=module)
         if not GemName.is_preview(uri):
-            accumulate_fits_bp(blueprint, uri, obs_id)
+            accumulate_fits_bp(blueprint, uri, obs_id, file_id)
         blueprints[uri] = blueprint
     return blueprints
 
@@ -576,12 +578,29 @@ def _get_obs_id(args):
     return result
 
 
+def _get_file_id(args):
+    result = None
+    if args.lineage:
+        for lineage in args.lineage:
+            temp = lineage.split(':', 1)
+            if temp[1].endswith('.jpg'):
+                pass
+            else:
+                result = re.split(r"[/.]", temp[1])[1]
+    else:
+        raise mc.CadcException(
+            'Cannot get the fileID without the file_uri from args {}'
+                .format(args))
+    return result
+
+
 def main_app2():
     args = get_gen_proc_arg_parser().parse_args()
     try:
         uris = _get_uris(args)
         obs_id = _get_obs_id(args)
-        blueprints = _build_blueprints(uris, obs_id)
+        file_id = _get_file_id(args)
+        blueprints = _build_blueprints(uris, obs_id, file_id)
         gen_proc(args, blueprints)
     except Exception as e:
         logging.error('Failed {} execution for {}.'.format(APPLICATION, args))
