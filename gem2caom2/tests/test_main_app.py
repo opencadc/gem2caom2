@@ -104,7 +104,6 @@ LOOKUP = {
     'N20090313S0180': ['GN-2009A-Q-21-115-001', 'GMOS-N.r', 'GMOS'],
     'N20120105S0344': ['GN-2011A-Q-31-21-005', 'GMOS-N.g', 'GMOS'],
     'N20150216S0129': ['GN-2015A-Q-36-15-001', 'GMOS-N.i', 'GMOS'],
-    'S20181023S0087': ['GS-CAL20181023-5-001','', 'GMOS'],
     # NIRI
     'N20020620S0021': ['GN-2002A-C-5-1-001', 'x', 'NIRI'],
     'N20020620S0035': ['GN-2002A-C-5-1-015', 'x', 'NIRI'],
@@ -128,14 +127,13 @@ def pytest_generate_tests(metafunc):
     if os.path.exists(TESTDATA_DIR):
         ## file_list = [os.path.join(TESTDATA_DIR, name) for name in os.listdir(TESTDATA_DIR) if name.endswith('header')]
 
-        file_list = []
-        for root, dirs, files in os.walk(TESTDATA_DIR):
-            for file in files:
-                if file.endswith(".header"):
-                    file_list.append(os.path.join(root, file))
+        # file_list = []
+        # for root, dirs, files in os.walk(TESTDATA_DIR):
+        #     for file in files:
+        #         if file.endswith(".header"):
+        #             file_list.append(os.path.join(root, file))
 
-        # file_list = ['{}/{}/{}'.format(TESTDATA_DIR, 'GMOS', 'N20150216S0129.fits.header')] // broken, missing expected xml
-        # file_list = ['{}/{}/{}'.format(TESTDATA_DIR, 'NIRI', 'N20020620S0021.fits.header')]
+        file_list = ['{}/{}/{}'.format(TESTDATA_DIR, 'GMOS', 'N20030104S0065.fits.header')]
         # metafunc.parametrize('test_name', file_list[8:])
         metafunc.parametrize('test_name', file_list)
 

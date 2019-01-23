@@ -110,6 +110,7 @@ from caom2pipe import execute_composable as ec
 from caom2pipe import astro_composable as ac
 
 from gem2caom2.external_metadata import gmos_metadata, niri_metadata
+from gem2caom2.svofps import filter_metadata
 
 
 __all__ = ['main_app2', 'update', 'GemName', 'COLLECTION', 'APPLICATION',
@@ -120,7 +121,8 @@ APPLICATION = 'gem2caom2'
 COLLECTION = 'GEMINI'
 ARCHIVE = 'GEM'
 SCHEME = 'gemini'
-GEMINI_METADATA_URL = 'https://archive.gemini.edu/jsonsummary/canonical/filepre='
+GEMINI_METADATA_URL = \
+    'https://archive.gemini.edu/jsonsummary/canonical/filepre='
 
 obs_metadata = {}
 
@@ -234,7 +236,7 @@ def get_obs_metadata(file_id):
     """
     Download the Gemini observation metadata for the given obs_id.
 
-    :param obs_id: The Obs ID
+    :param file_id: The file ID
     :return: Dictionary of observation metadata.
     """
     gemini_url = '{}{}'.format(GEMINI_METADATA_URL, file_id)
@@ -259,6 +261,32 @@ def get_obs_metadata(file_id):
     return metadata
 
 
+def get_niri_filter_name(header):
+    """
+    Create the filter name for NIRI.
+
+    :param header: The FITS header for the current extension.
+    :return: The NIRI filter name, or None if none found.
+    """
+    filters = None
+    header_filters = []
+    filters2ignore = ['open', 'INVALID', 'PK50', 'pupil']
+    for key in header.keys():
+        if 'FILTER' in key:
+            if any(x in key for x in filters2ignore):
+                continue
+            else:
+                filter = "".join(re.findall(r'\'(.+?)\'', header))
+                filter = filter.replace('_', '-').strip()
+                filter = ''.join('' if ch in '()' else ch for ch in filter)
+                header_filters.append(filter)
+        filters = "&".join(header_filters)
+    if filters:
+        filters = re.sub(r'&', ' & ', filters)
+        filters = re.sub(r'-G.{4}(|w)', '', filters)
+    return filters
+
+
 def get_energy_metadata():
     """
     For the given observation retrieve the energy metadata.
@@ -280,20 +308,20 @@ def get_energy_metadata():
     return energy_metadata
 
 
-def get_chunk_wcs(bp, file_id):
+def get_chunk_wcs(bp, obs_id, file_id):
     """
     Set the energy WCS for the given observation.
 
     :param bp: The blueprint.
-    :param file_id: The current file ID.
+    :param obs_id: The Observation ID.
+    :param file_id: The file ID.
     """
     logging.debug('Begin get_chunk_wcs')
     try:
         global obs_metadata
         obs_metadata = get_obs_metadata(file_id)
 
-        # if types contains 'AZEL_TARGET' do not create
-        # spatial WCS
+        # if types contains 'AZEL_TARGET' do not create spatial WCS
         # types = obs_metadata['types']
         # if 'AZEL_TARGET' not in types:
         #     bp.configure_position_axes((1, 2))
@@ -309,7 +337,6 @@ def get_chunk_wcs(bp, file_id):
         filter_name = energy_metadata['filter_name']
         resolving_power = energy_metadata['resolving_power']
         ctype = energy_metadata['wavelength_type']
-        # cunit = energy_metadata['wavelength_unit']
         naxis = energy_metadata['number_pixels']
         crpix = energy_metadata['reference_pixel']
         crval = energy_metadata['reference_wavelength']
@@ -317,7 +344,10 @@ def get_chunk_wcs(bp, file_id):
 
         # don't set the cunit since fits2caom2 sets the cunit
         # based on the ctype.
-        bp.set('Chunk.energy.bandpassName', filter_name)
+        if obs_metadata['instrument'] in ['NIRI']:
+            bp.set('Chunk.energy.bandpassName', 'get_niri_filter_name(header)')
+        else:
+            bp.set('Chunk.energy.bandpassName', filter_name)
         bp.set('Chunk.energy.resolvingPower', resolving_power)
         bp.set('Chunk.energy.specsys', 'TOPOCENT')
         bp.set('Chunk.energy.ssysobs', 'TOPOCENT')
@@ -341,9 +371,7 @@ def get_time_delta(header):
     :param header: The FITS header for the current extension.
     :return: The Time delta, or None if none found.
     """
-    exptime = None
-    if 'EXPTIME' in header:
-        exptime = header['EXPTIME']
+    exptime = header.get('EXPTIME')
     if exptime is None:
         return None
     return float(exptime) / (24.0 * 3600.0)
@@ -356,12 +384,8 @@ def get_time_crval(header):
     :param header: The FITS header for the current extension.
     :return: The Time reference value, or None if none found.
     """
-    dateobs = None
-    timeobs = None
-    if 'DATE-OBS' in header:
-        dateobs = header['DATE-OBS']
-    if 'TIME-OBS' in header:
-        timeobs = header['TIME-OBS']
+    dateobs = header.get('DATE-OBS')
+    timeobs = header.get('TIME-OBS')
     if not dateobs and not timeobs:
         return None
     return ac.get_datetime('{}T{}'.format(dateobs, timeobs))
@@ -403,9 +427,7 @@ def get_exposure(header):
     :param header:  The FITS header for the current extension.
     :return: The exposure time, or None if not found.
     """
-    if 'EXPTIME' in header:
-        return header['EXPTIME']
-    return None
+    return header.get('EXPTIME')
 
 
 def get_obs_intent(header):
@@ -473,15 +495,11 @@ def accumulate_fits_bp(bp, uri, obs_id, file_id):
     bp.configure_position_axes((1, 2))
     bp.configure_time_axis(3)
 
-    # TODO - figure out why the function needs execution here .... :(
+    # The Chunk time metadata is calculated using keywords from the
+    # primary header, and the only I could figure out to access keywords
+    # in the primary is through a function. JB
     bp.set('Chunk.time.resolution', 'get_exposure(header)')
     bp.set('Chunk.time.exposure', 'get_exposure(header)')
-    # bp.clear('Chunk.time.resolution')
-    # bp.add_fits_attribute('Chunk.time.resolution', 'EXPTIME')
-    # bp.set_default('Chunk.time.resolution', None)
-    # bp.clear('Chunk.time.exposure')
-    # bp.add_fits_attribute('Chunk.time.exposure', 'EXPTIME')
-    # bp.set_default('Chunk.time.exposure', None)
 
     bp.set('Chunk.time.axis.axis.ctype', 'TIME')
     bp.set('Chunk.time.axis.axis.cunit', 'd')
@@ -492,7 +510,7 @@ def accumulate_fits_bp(bp, uri, obs_id, file_id):
     bp.set('Chunk.time.axis.function.refCoord.pix', '0.5')
     bp.add_fits_attribute('Chunk.time.axis.function.refCoord.val', 'MJD-OBS')
 
-    get_chunk_wcs(bp, file_id)
+    get_chunk_wcs(bp, obs_id, file_id)
 
     logging.debug('Done accumulate_fits_bp.')
 
@@ -506,12 +524,58 @@ def update(observation, **kwargs):
     logging.error('Begin update.')
     mc.check_param(observation, Observation)
 
-    # for p in observation.planes:
-    #     for a in observation.planes[p].artifacts:
-    #         for part in observation.planes[p].artifacts[a].parts:
-    #             if observation.planes[p].artifacts[a].parts[part].name == '0':
-    #                 observation.planes[p].artifacts[a].parts[part].chunks.pop()
-    #                 logging.error('Set chunks to None for 0-th part.')
+    # No energy information is determined for darks.  The
+    # latter are sometimes only identified by a 'blank' filter.  e.g.
+    # NIRI 'flats' are sometimes obtained with the filter wheel blocked off.
+    if observation.instrument.name == 'NIRI':
+        for p in observation.planes:
+            mode = p.dataProductType
+            for a in observation.planes[p].artifacts:
+                for part in observation.planes[p].artifacts[a].parts:
+                    for chunk in observation.planes[p].artifacts[a].parts[part]:
+                        bandpass_name = chunk.energy.bandpass_name
+                        if 'blank' in bandpass_name:
+                            chunk.energy = None
+                        else:
+                            cval = 0.0
+                            delta = 0.0
+                            resolving_power = 0.0
+                            filter_md = filter_metadata(
+                                obs_metadata['instrument'], bandpass_name)
+                            if mode == 'imaging':
+                                delta = filter_md['wl_eff_width']
+                                cval = filter_md['wl_eff']
+                                resolving_power = cval/delta
+                                cval /= 1.0e10
+                                delta /= 1.0e10
+                            # elif obs_metadata['mode'] in ('LS', 'spectroscopy'):
+                            #    # this code has to be rewritten for NIRI!!!
+                            #    reference_wavelength = obs_metadata['central_wavelength']
+                            #    nrgdim = int(niri_metadata['naxis2']/bin_y)
+
+                            #    # Ignore energy information if value of 'central_wavelength' = 0.0
+                            #    if reference_wavelength == 0.0 \
+                            #            or obs_metadata['observation_type'] == 'BIAS':
+                            #        metadata['energy'] = False
+                            #        return metadata
+
+                            #   if 'focus' in fpmask:
+                            #       obstype = 'FOCUS'
+                            #    resolving_power = NIRI_RESOLVING_POWER[bandpassname][fpmask]
+                            #    delta = filter_md['wl_eff_width']/metadata['naxis1']
+                            #    reference_wavelength /= 1.0e6
+                            #    delta /= 1.0e10
+
+                            chunk.energy.resolvingPower = resolving_power
+                            chunk.energy.specsys = 'TOPOCENT'
+                            chunk.energy.ssysobs = 'TOPOCENT'
+                            chunk.energy.ssyssrc = 'TOPOCENT'
+                            chunk.energy.axis.axis.ctype = 'WAVE'
+                            chunk.energy.axis.function.naxis = 1024
+                            chunk.energy.axis.function.delta = delta
+                            chunk.energy.axis.function.refCoord.pix = 512.0
+                            chunk.energy.axis.function.refCoord.val = cval
+
     logging.error('Done update.')
     return True
 
