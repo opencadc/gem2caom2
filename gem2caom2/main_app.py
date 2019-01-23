@@ -379,12 +379,8 @@ def get_art_product_type(header):
     :param header:  The FITS header for the current extension.
     :return: The Artifact ProductType, or None if not found.
     """
-    obs_type = header.get('OBSTYPE')
-    obs_class = header.get('OBSCLASS')
-
-    if obs_class is None:
-        global obs_metadata
-        obs_class = obs_metadata['observation_class']
+    obs_type = _get_obs_type(header)
+    obs_class = _get_obs_class(header)
 
     logging.debug('type is {} and class is {}'.format(obs_type, obs_class))
     if obs_type is not None and obs_type == 'MASK':
@@ -414,7 +410,7 @@ def get_data_product_type(header):
     """
     global obs_metadata
     mode = mc.response_lookup(obs_metadata, 'mode')
-    obs_type = header.get('OBSTYPE')
+    obs_type = _get_obs_type(header)
     if ((mode is not None and mode == 'imaging') or
             (obs_type is not None and obs_type == 'MASK')):
         result = DataProductType.IMAGE
@@ -442,10 +438,10 @@ def get_obs_intent(header):
     :param header:  The FITS header for the current extension.
     :return: The Observation intent, or None if not found.
     """
-    lookup = header.get('OBSCLASS')
+    lookup = _get_obs_class(header)
     if lookup is None:
-        object = header.get('OBJECT')
-        if object in ['GCALflat', 'Bias', 'Twilight']:
+        object_value = header.get('OBJECT')
+        if object_value in ['GCALflat', 'Bias', 'Twilight', 'Ar']:
             result = ObservationIntentType.CALIBRATION
         else:
             result = ObservationIntentType.SCIENCE
@@ -463,8 +459,8 @@ def get_obs_type(header):
     :param header:  The FITS header for the current extension.
     :return: The Observation type, or None if not found.
     """
-    result = header.get('OBSTYPE')
-    obs_class = header.get('OBSCLASS')
+    result = _get_obs_type(header)
+    obs_class = _get_obs_class(header)
     if obs_class is not None and 'acq' in obs_class:
         result = 'ACQUISITION'
     return result
@@ -485,6 +481,28 @@ def get_target_type(header):
         return TargetType.FIELD
 
 
+def _get_obs_class(header):
+    """Common location to lookup OBSCLASS from the FITS headers, and if
+    it's not present, to lookup observation_class from JSON summary
+    metadata."""
+    obs_class = header.get('OBSCLASS')
+    if obs_class is None:
+        global obs_metadata
+        obs_class = obs_metadata['observation_class']
+    return obs_class
+
+
+def _get_obs_type(header):
+    """Common location to lookup OBSTYPE from the FITS headers, and if
+    it's not present, to lookup observation_type from JSON summary
+    metadata."""
+    obs_type = header.get('OBSTYPE')
+    if obs_type is None:
+        global obs_metadata
+        obs_type = obs_metadata['observation_type']
+    return obs_type
+
+
 def accumulate_fits_bp(bp, uri, obs_id):
     """Configure the telescope-specific ObsBlueprint at the CAOM model 
     Observation level."""
@@ -494,7 +512,7 @@ def accumulate_fits_bp(bp, uri, obs_id):
     bp.set('Observation.type', 'get_obs_type(header)')
 
     bp.clear('Observation.metaRelease')
-    bp.add_fits_attribute('Observation.metaRelease', 'DATE')
+    bp.add_fits_attribute('Observation.metaRelease', 'DATE-OBS')
 
     bp.set('Observation.target.type', 'get_target_type(header)')
 
@@ -502,7 +520,7 @@ def accumulate_fits_bp(bp, uri, obs_id):
     bp.set('Plane.calibrationLevel', 'get_calibration_level(header)')
 
     bp.clear('Plane.metaRelease')
-    bp.add_fits_attribute('Plane.metaRelease', 'DATE')
+    bp.add_fits_attribute('Plane.metaRelease', 'DATE-OBS')
 
     bp.set('Artifact.productType', 'get_art_product_type(header)')
 
