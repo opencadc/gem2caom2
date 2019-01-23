@@ -131,28 +131,30 @@ LOOKUP = {
     # GSAIO
     'S20181023S0087': ['GS-CAL20181023-5-001', 'x', 'GSAIO'],
     # GNIRS
+    'N20100915S0167': ['GN-2010B-Q-2-44-003', 'x', 'GNIRS'],
+    'N20100722S0185': ['GN-2010B-SV-142-10-007', 'x', 'GNIRS'],
+    'N20110323S0235': ['GN-2011A-Q-53-42-007', 'x', 'GNIRS'],
+    'N20120104S0167': ['GN-2011B-Q-63-101-006', 'x', 'GNIRS'],
+    'N20120102S0213': ['GN-2011B-Q-63-126-005', 'x', 'GNIRS'],
+    'N20120101S0195': ['GN-2011B-Q-68-116-013', 'x', 'GNIRS'],
+    'N20120103S0100': ['GN-2011B-Q-7-193-010', 'x', 'GNIRS'],
+    'N20120103S0134': ['GN-2011B-Q-7-193-044', 'x', 'GNIRS'],
     'N20160123S0097': ['GN-2015B-SV-101-1061-005', 'x', 'GNIRS'],
     'N20151213S0022': ['GN-CAL20151213-6-002', 'x', 'GNIRS'],
-    'N20100722S0185': ['GN-2010B-SV-142-10-007', 'x', 'GNIRS'],
-    'N20100915S0167': ['GN-2010B-Q-2-44-003', 'x', 'GNIRS'],
     'N20160202S0098': ['GN-CAL20160202-3-039', 'x', 'GNIRS'],
-    'N20110323S0235': ['GN-2011A-Q-53-42-007', 'x', 'GNIRS'],
 }
 
 
 def pytest_generate_tests(metafunc):
     if os.path.exists(TESTDATA_DIR):
-        ## file_list = [os.path.join(TESTDATA_DIR, name) for name in os.listdir(TESTDATA_DIR) if name.endswith('header')]
 
         file_list = []
-        for root, dirs, files in os.walk(TESTDATA_DIR):
-        # for root, dirs, files in os.walk('{}/{}'.format(TESTDATA_DIR, 'GMOS')):
+        # for root, dirs, files in os.walk(TESTDATA_DIR):
+        for root, dirs, files in os.walk('{}/{}'.format(TESTDATA_DIR, 'GNIRS')):
             for file in files:
                 if file.endswith(".header"):
                     file_list.append(os.path.join(root, file))
 
-        # file_list = ['{}/{}/{}'.format(TESTDATA_DIR, 'GMOS', 'N20150216S0129.fits.header')] // broken, missing expected xml
-        # file_list = ['{}/{}/{}'.format(TESTDATA_DIR, 'NIRI', 'N20020620S0021.fits.header')]
         # metafunc.parametrize('test_name', file_list[8:])
         metafunc.parametrize('test_name', file_list)
 
