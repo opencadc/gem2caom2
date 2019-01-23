@@ -67,18 +67,13 @@
 # ***********************************************************************
 #
 
+# import os
 import logging
-import os
 import re
-import requests
-from requests.adapters import HTTPAdapter
-from urllib3 import Retry
 
 import caom2
-from caom2pipe import manage_composable as mc
 from gem2caom2.svofps import filter_metadata
 
-GEMINI_METADATA_URL = 'https://archive.gemini.edu/jsonsummary/canonical/'
 GEMINI_FITS_HEADER_URL = 'https://archive.gemini.edu/fullheader/'
 
 GMOS_ENERGY_BAND = caom2.EnergyBand['OPTICAL']
@@ -114,38 +109,6 @@ NIRI_RESOLVING_POWER = {
         'f6-6pix': 520.0
     }
 }
-
-
-def get_fits_headers(file_name):
-    """
-    Get the headers for the given FITS file name.
-
-    :param file_name: The FITS file name.
-    :return: List of FITS headers.
-    """
-    # file_name should end in .fits, strip off extensions after .fits
-    if not file_name.endswith('.fits'):
-        file_name = os.path.splitext(file_name)[0]
-
-    gemini_url = '{}{}'.format(GEMINI_FITS_HEADER_URL, file_name)
-
-    # Open the URL and fetch the FITS headers for the observation
-    session = requests.Session()
-    retries = 10
-    retry = Retry(total=retries, read=retries, connect=retries,
-                  backoff_factor=0.5)
-    adapter = HTTPAdapter(max_retries=retry)
-    session.mount('http://', adapter)
-    session.mount('https://', adapter)
-    try:
-        response = session.get(gemini_url, timeout=20)
-        header = response.text.split('\n')
-        response.close()
-    except Exception as e:
-        raise mc.CadcException(
-            'Unable to download Gemini observation header from {} because {}'
-                .format(gemini_url, str(e)))
-    return header
 
 
 def gmos_metadata(obs_metadata):
@@ -217,7 +180,7 @@ def gmos_metadata(obs_metadata):
     return metadata
 
 
-def niri_metadata(obs_metadata):
+def niri_metadata(obs_metadata, filename):
     """
     Calculate NIRI energy metadata using the Gemini observation metadata.
     Requires a filter lookup to an external service.
@@ -231,40 +194,44 @@ def niri_metadata(obs_metadata):
         'energy_band': NIRI_ENERGY_BAND
     }
 
+    if obs_metadata['observation_type'] in 'DARK':
+        metadata['energy'] = False
+        return metadata
+
     # Determine energy metadata for the plane.
     # No energy information is determined for darks.  The
     # latter are sometimes only identified by a 'blank' filter.  e.g.
     # NIRI 'flats' are sometimes obtained with the filter wheel blocked off.
-    headers = get_fits_headers(obs_metadata['filename'])
-    header_filters = []
-    filters2ignore = ['open', 'INVALID', 'PK50', 'pupil']
-    for header in headers:
-        if 'FILTER' in header:
-            if any(x in header for x in filters2ignore):
-                continue
-            else:
-                filter = "".join(re.findall(r'\'(.+?)\'', header))
-                filter = filter.replace('_', '-').strip()
-                filter = ''.join('' if ch in '()' else ch for ch in filter)
-                header_filters.append(filter)
-        filters = "&".join(header_filters)
+    # headers = get_fits_headers(obs_metadata['filename'])
+    # header_filters = []
+    # filters2ignore = ['open', 'INVALID', 'PK50', 'pupil']
+    # for header in headers:
+    #     if 'FILTER' in header:
+    #         if any(x in header for x in filters2ignore):
+    #             continue
+    #         else:
+    #             filter = "".join(re.findall(r'\'(.+?)\'', header))
+    #             filter = filter.replace('_', '-').strip()
+    #             filter = ''.join('' if ch in '()' else ch for ch in filter)
+    #             header_filters.append(filter)
+    #     filters = "&".join(header_filters)
 
-    if obs_metadata['observation_type'] in 'DARK' or 'blank' in filters:
-        metadata['energy'] = False
-        return metadata
+    # if obs_metadata['observation_type'] in 'DARK' or 'blank' in filters:
+    #     metadata['energy'] = False
+    #     return metadata
 
-    reference_wavelength = 0.0
-    delta = 0.0
-    resolving_power = 0.0
-
-    filter_md = filter_metadata(obs_metadata['instrument'], filters)
-    if obs_metadata['mode'] == 'imaging':
-
-        delta = filter_md['wl_eff_width']
-        reference_wavelength = filter_md['wl_eff']
-        resolving_power = reference_wavelength/delta
-        reference_wavelength /= 1.0e10
-        delta /= 1.0e10
+    # reference_wavelength = 0.0
+    # delta = 0.0
+    # resolving_power = 0.0
+    #
+    # filter_md = filter_metadata(obs_metadata['instrument'], filters)
+    # if obs_metadata['mode'] == 'imaging':
+    #
+    #     delta = filter_md['wl_eff_width']
+    #     reference_wavelength = filter_md['wl_eff']
+    #     resolving_power = reference_wavelength/delta
+    #     reference_wavelength /= 1.0e10
+    #     delta /= 1.0e10
     # elif obs_metadata['mode'] in ('LS', 'spectroscopy'):
     #    # this code has to be rewritten for NIRI!!!
     #    reference_wavelength = obs_metadata['central_wavelength']
@@ -283,16 +250,16 @@ def niri_metadata(obs_metadata):
     #    reference_wavelength /= 1.0e6
     #    delta /= 1.0e10
 
-    filters = re.sub(r'&', ' & ', filters)
-    filters = re.sub(r'-G.{4}(|w)', '', filters)
-    metadata['filter_name'] = filters
-    metadata['wavelength_type'] = 'WAVE'
+    # filters = re.sub(r'&', ' & ', filters)
+    # filters = re.sub(r'-G.{4}(|w)', '', filters)
+    # metadata['filter_name'] = filters
+    # metadata['wavelength_type'] = 'WAVE'
     # metadata['wavelength_unit'] = 'm'
-    metadata['number_pixels'] = 1024
-    metadata['reference_wavelength'] = reference_wavelength
-    metadata['delta'] = delta
-    metadata['resolving_power'] = resolving_power
-    metadata['reference_pixel'] = 512.0
+    # metadata['number_pixels'] = 1024
+    # metadata['reference_wavelength'] = reference_wavelength
+    # metadata['delta'] = delta
+    # metadata['resolving_power'] = resolving_power
+    # metadata['reference_pixel'] = 512.0
 
     logging.debug('End niri_metadata')
     return metadata
