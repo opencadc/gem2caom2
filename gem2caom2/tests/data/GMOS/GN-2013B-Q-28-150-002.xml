@@ -44,7 +44,7 @@
       <caom2:artifacts>
         <caom2:artifact caom2:id="00000000-0000-0000-9315-5b78563b7721" caom2:lastModified="2018-01-25T19:52:32.786" caom2:maxLastModified="2018-01-25T19:52:32.786" caom2:metaChecksum="md5:a22e28328d4729c71c29abce26d0d331" caom2:accMetaChecksum="md5:0812fab8b93295cdb2206b2a89a9c6f6">
           <caom2:uri>gemini:GEM/N20131203S0006.fits</caom2:uri>
-          <caom2:productType>science</caom2:productType>
+          <caom2:productType>calibration</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>
           <caom2:contentLength>665345</caom2:contentLength>

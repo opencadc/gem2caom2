@@ -1,0 +1,377 @@
+Filename: S20060101S0075.fits.bz2
+
+AstroData Types: ['GMOS_IFU', 'IFU', 'GMOS_S', 'GEMINI', 'GMOS_IFU_TWO', 'SIDEREAL', 'GMOS_SPECT', 'GMOS', 'GEMINI_SOUTH', 'SPECT', 'GMOS_RAW', 'RAW', 'UNPREPARED']
+
+
+--- HDU 0 ---
+SIMPLE  =                    T / file does conform to FITS standard             
+BITPIX  =                   16 / number of bits per data pixel                  
+NAXIS   =                    0 / number of data axes                            
+EXTEND  =                    T / FITS dataset may contain extensions            
+COMMENT   FITS (Flexible Image Transport System) format defined in Astronomy and
+COMMENT   Astrophysics Supplement Series v44/p363, v44/p371, v73/p359, v73/p365.
+COMMENT   Contact the NASA Science Office of Standards and Technology for the   
+COMMENT   FITS Definition document #100 and other FITS information.             
+INSTRUME= 'GMOS-S  '           / Instrument used to acquire data                
+OBJECT  = 'NGC1351 '           / Object Name                                    
+OBSTYPE = 'OBJECT  '           / Observation type                               
+OBSCLASS= 'science '           / Observe class                                  
+GEMPRGID= 'GS-2005B-Q-22'      / Gemini programme ID                            
+OBSID   = 'GS-2005B-Q-22-17'   / Observation ID / Data label                    
+DATALAB = 'GS-2005B-Q-22-17-006' / DHS data label                               
+OBSERVER= 'R.Diaz  '           / Observer                                       
+OBSERVAT= 'Gemini-South'       / Name of telescope (Gemini-North|Gemini-South)  
+TELESCOP= 'Gemini-South'       / Gemini-North                                   
+PARALLAX=                   0. / Parallax of Target                             
+RADVEL  =                   0. / Heliocentric Radial Velocity                   
+EPOCH   =                2000. / Epoch for Target coordinates                   
+EQUINOX =                2000. / Equinox of coordinate system                   
+TRKEQUIN=                2000. / Tracking equinox                               
+SSA     = 'E.Wenderoth'        / SSA                                            
+RA      =          52.64583333 / Right Ascension                                
+DEC     =         -34.85388889 / Declination of Target                          
+ELEVATIO=              37.2931 / Current Elevation                              
+AZIMUTH =    -112.850452777778 / Current Azimuth                                
+CRPA    =    -51.8951016162325 / Current Cass Rotator Position Angle            
+HA      = '+04:13:57.77'       / Telescope hour angle                           
+LT      = '01:44:46.4'         / Local time at start of observation             
+TRKFRAME= 'FK5     '           / Tracking co-ordinate                           
+DECTRACK=                   0. / Differential tracking rate Dec                 
+TRKEPOCH=         53736.186873 / Differential tracking reference epoch          
+RATRACK =                   0. / Differential tracking rate RA                  
+FRAME   = 'FK5     '           / Target coordinate system                       
+PMDEC   =                   0. / Proper Motion in Declination                   
+PMRA    =                   0. / Proper Motion in RA                            
+WAVELENG=                4780. / Effective Target Wavelength                    
+RAWIQ   = 'Any     '           / Raw Image Quality                              
+RAWCC   = 'Any     '           / Raw Cloud Cover                                
+RAWWV   = 'Any     '           / Raw Water Vapour/Transparency                  
+RAWBG   = 'Any     '           / Raw Background                                 
+RAWPIREQ= 'NO      '           / PI Requirements Met                            
+RAWGEMQA= 'USABLE  '           / Gemini Quality Assessment                      
+CGUIDMOD= 'Basic   '           / Carousel Mode                                  
+UT      = '05:44:47.4'         / UT at observation start                        
+DATE    = '2006-01-01'         / UT Date of observation (YYYY-MM-DD)            
+M2BAFFLE= 'VISIBLE '           / Position of M2 baffle                          
+M2CENBAF= 'CLOSED  '           / Position of M2 central hole baffle             
+ST      = '07:44:49.1'         / Sidereal time at the start of the exposure     
+XOFFSET =      -0.178554474176 / Telescope offset in x in arcsec                
+YOFFSET =      -0.690375479529 / Telescope offset in y in arcsec                
+POFFSET =       0.180000000529 / Telescope offset in p in arcsec                
+QOFFSET =       0.690000002024 / Telescope offset in q in arcsec                
+RAOFFSET=      -0.432908355698 / Telescope offset in RA in arcsec               
+DECOFFSE=       0.566648355287 / Telescope offset in DEC in arcsec              
+RATRGOFF=                   0. / Target offset in RA in arcsec                  
+DECTRGOF=                   0. / Target offset in DEC in arcsec                 
+PA      =                 232. / Sky Position Angle at start of exposure        
+IAA     =               359.88 / Instrument Alignment Angle                     
+SFRT2   =               -0.249 / Science fold rotation angle (degrees)          
+SFTILT  =                45.31 / Science fold tilt angle (degrees)              
+SFLINEAR=                  -3. / Science fold linear position (mm)              
+AOFOLD  = 'park-pos.'          / AO Pick-Off Mirror Position                    
+OIARA   =          52.62622083 / RA of OIWFS guide star                         
+OIARV   =                   0. / OIWFS Heliocentric Radial Velocity             
+OIAWAVEL=                5000. / OIWFS Effective Target Wavelength              
+OIADEC  =             -34.9234 / Declination of OIWFS guide star                
+OIAEPOCH=                2000. / Epoch for OIWFS guide star coordinates         
+OIAEQUIN=                2000. / Equinox for OIWFS guide star coordinates       
+OIAFRAME= 'FK5     '           / OIWFS Target co-ordinate system                
+OIAOBJEC= 'GSC0702400244'      / Object Name for OIWFS, Chop A                  
+OIAPMDEC=                   0. / OIWFS Proper Motion in Declination             
+OIAPMRA =                   0. / OIWFS Proper Motion in RA                      
+OIAPARAL=                   0. / OIWFS Parallax of Target                       
+HUMIDITY=                  35. / The Relative Humidity (fraction, 0..101).      
+TAMBIENT=                 10.2 / The ambient temp (C).                          
+TAMBIEN2=                50.36 / The ambient temp (F).                          
+PRESSURE=             547.7044 / The atmospheric pressure (mm Hg).              
+PRESSUR2=               73000. / The atmospheric pressure (Pa).                 
+DEWPOINT=                 -4.4 / The dew point (C).                             
+DEWPOIN2=                24.08 / The dew point (F).                             
+WINDSPEE=                  2.4 / The wind speed (m/s).                          
+WINDSPE2=               5.3688 / The wind speed (mph).                          
+WINDDIRE=                 324. / The wind direction (degrees).                  
+INPORT  =                    3 / Number of ISS port where GMOS was located      
+GMOSCC  = 'GMOS-CP (V6-1)'     / GMOS components controller s/w                 
+CONID   = 'GMOS v6.0'          / Detector controller ID                         
+DETECTOR= 'GMOS + Blue1 + new CCD1' / Detector name                             
+DEWAR   = 'Cryostat B'         / Dewar name                                     
+DEW-TEMP=    -113.270735524257 / Dewar temperature (Celsius)                    
+DETSIZE = '[1:6144,1:4644]'    / Detector size                                  
+NCCDS   =                    3 / Number of CCD chips                            
+NAMPS   =                    1 / Number of amplifiers                           
+SHUTTER = 'OPEN    '           / Shutter state during observation               
+AMPINTEG=                 5000 / Amplifier integration time                     
+OBSEPOCH=     2006.00065556643 / Epoch at start of exposure                     
+TIMESYS = 'UT1     '           / Time system used                               
+DATE-OBS= '2006-01-01'         / UT Date of observation (YYYY-MM-DD)            
+TIME-OBS= '05:45:23.10'        / Time of observation                            
+GMOSTHT = 'GOOD    '           / Shutter health                                 
+NSUBEXP =                    1 / Number of sub exposures                        
+UTSTART = '05:45:23.10'        / UT at observation start                        
+UTEND   = '06:18:44.4'         / UT at observation end                          
+EXPTIME =     2000.45237588882 / Exposure time in seconds                       
+ELAPSED =     2000.45237588882 / Elapsed observation time in seconds            
+DARKTIME=     2071.84227490425 / Dark current integration in seconds            
+MASKID  =             10000007 / Mask/IFU barcode                               
+MASKNAME= 'IFU-2   '           / Mask name                                      
+MASKTYP =                   -1 / Mask/IFU type (0=none/-1=IFU/1=mask)           
+MASKLOC =                    0 / Mask/IFU location (-1=unknown/0=FP/1=cassette) 
+FILTER1 = 'open1-6 '           / Filter 1 name                                  
+FILTID1 =             20000033 / Filter 1 barcode                               
+FILTER2 = 'g_G0325 '           / Filter 2 name                                  
+FILTID2 =             20000026 / Filter 2 barcode                               
+GRATING = 'B600+_G5323'        / Grating name                                   
+GRATID  =             30000014 / Grating barcode                                
+GRWLEN  =                 482. / Grating central wavelength (nm)                
+GRORDER =                    1 / Grating order                                  
+GRTILT  =              55.8193 / Grating tilt angle (degrees)                   
+GRSTEP  =             5917.347 / Requested grating motor step position          
+DTAX    =                  62. / Detector translation X position (microns)      
+DTAY    =               117.92 / Detector translation Y position (microns)      
+DTAZ    =                3158. / Detector translation Z position (microns)      
+DTAZST  =                3158. / Focus at observation start (microns)           
+DTAZEN  =                3158. / Focus at observation end (microns)             
+DTAZME  =                   0. / Mean focus during observation (microns)        
+DTMODE  = 'FOLLOW  '           / Detector translation stage mode                
+ADCMODE = '        '           / ADC mode                                       
+GMOSDC  = 'GMOS DC '           / GMOS detector controller s/w                   
+DETTYPE = 'SDSU II CCD'        / Detector array type                            
+DETID   = 'EEV2037-06-03EEV8194-19-04EEV8261-07-04' / Chip IDs                  
+EXPOSURE=                2000. / Requested exposure time in seconds             
+ADCUSED =                    1 / ADC used? (0=yes/1=no)                         
+DETNROI =                    1 / No. regions of interest                        
+ADCENPST=                   0. / Start entrance prism angle of ADC              
+ADCENPEN=                   0. / End entrance prism angle of ADC                
+ADCENPME=                   0. / Mean entrance prism angle of ADC               
+ADCEXPST=                   0. / Start exit prism angle of ADC                  
+ADCEXPEN=                   0. / End exit prism angle of ADC                    
+ADCEXPME=                   0. / Mean exit prism angle of ADC                   
+ADCWLEN1=                   0. / Lower wavelength for ADC calculation           
+ADCWLEN2=                   0. / Upper wavelength for ADC calculation           
+DETRO1X =                    1 / ROI 1 X start                                  
+DETRO1XS=                 3072 / ROI 1 X size                                   
+DETRO1Y =                    1 / ROI 1 Y start                                  
+DETRO1YS=                 4608 / ROI 1 Y size                                   
+AIRMASS =               -9999. / Mean airmass for the observation               
+AMSTART =               -9999. / Airmass at start of exposure                   
+AMEND   =               -9999. / Airmass at end of exposure                     
+RELEASE = '2007-07-01'         / End of proprietary period YYYY-MM-DD           
+
+--- HDU 1 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                   16 / number of bits per data pixel                  
+NAXIS   =                    2 / number of data axes                            
+NAXIS1  =                 1056 / length of data axis 1                          
+NAXIS2  =                 4608 / length of data axis 2                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'SCI     '           / ad1406: added by AstroData                     
+EXTVER  =                    1 / ad1410: added by AstroData                     
+BZERO   =                32768 / offset data range to that of unsigned short    
+BSCALE  =                    1 / default scaling factor                         
+INHERIT =                    F / inherit the primary header                     
+DATATYPE= 'Intensity'          / Type of Data                                   
+CTYPE1  = 'RA---TAN'           / R.A. in tangent plane projection               
+CRPIX1  =     1588.45769591583 / Ref pix of axis 1                              
+CRVAL1  =     52.6525898368495 / RA at Ref pix in decimal degrees               
+CTYPE2  = 'DEC--TAN'           / DEC. in tangent plane projection               
+CRPIX2  =     2364.86774693004 / Ref pix of axis 2                              
+CRVAL2  =     -34.860035257784 / DEC at Ref pix in decimal degrees              
+CD1_1   = 2.43710380667198E-05 / WCS matrix element 1 1                         
+CD1_2   = 1.60272261581307E-05 / WCS matrix element 1 2                         
+CD2_1   = -3.20334238435986E-05 / WCS matrix element 2 1                        
+CD2_2   =  1.2316160978163E-05 / WCS matrix element 2 2                         
+RADECSYS= 'FK5     '           / R.A./DEC. coordinate system reference          
+EQUINOX =                2000. / Equinox of coordinate system                   
+MJD-OBS =     53736.2401999862 / MJD of start of obseration                     
+CCDNAME = 'EEV 2037-06-03'     / CCD chip name(s)                               
+AMPNAME = 'EEV 2037-06-03, left' / Amplifier name(s)                            
+GAIN    =                   2. / Amplifier gain                                 
+RDNOISE =     3.20000004768372 / Readout noise                                  
+CCDSIZE = '[1:2048,1:4644]'    / CCD chip size                                  
+CCDSUM  = '2 1     '           / CCD sum                                        
+CCDSEC  = '[1:2048,1:4608]'    / CCD section(s)                                 
+DETSEC  = '[1:2048,1:4608]'    / Detector section(s)                            
+DATASEC = '[1:1024,1:4608]'    / Data section(s)                                
+BIASSEC = '[1025:1056,1:4608]' / Bias section(s)                                
+FRMNAME = 'dhsFrame'           / Name assigned to a frame of data.              
+FRAMEID = '0       '           / Frame Id                                       
+DATATYP = '        '           / Type of data frame                             
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+
+--- HDU 2 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                   16 / number of bits per data pixel                  
+NAXIS   =                    2 / number of data axes                            
+NAXIS1  =                 1056 / length of data axis 1                          
+NAXIS2  =                 4608 / length of data axis 2                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'SCI     '           / ad1406: added by AstroData                     
+EXTVER  =                    2 / ad1410: added by AstroData                     
+BZERO   =                32768 / offset data range to that of unsigned short    
+BSCALE  =                    1 / default scaling factor                         
+INHERIT =                    F / inherit the primary header                     
+DATATYPE= 'Intensity'          / Type of Data                                   
+CTYPE1  = 'RA---TAN'           / R.A. in tangent plane projection               
+CRPIX1  =     541.710538449326 / Ref pix of axis 1                              
+CRVAL1  =     52.6525898368495 / RA at Ref pix in decimal degrees               
+CTYPE2  = 'DEC--TAN'           / DEC. in tangent plane projection               
+CRPIX2  =     2365.12553035283 / Ref pix of axis 2                              
+CRVAL2  =     -34.860035257784 / DEC at Ref pix in decimal degrees              
+CD1_1   = 2.45852341916103E-05 / WCS matrix element 1 1                         
+CD1_2   = 1.60182662377674E-05 / WCS matrix element 1 2                         
+CD2_1   = -3.23131883335108E-05 / WCS matrix element 2 1                        
+CD2_2   = 1.23505978568691E-05 / WCS matrix element 2 2                         
+RADECSYS= 'FK5     '           / R.A./DEC. coordinate system reference          
+EQUINOX =                2000. / Equinox of coordinate system                   
+MJD-OBS =     53736.2401999862 / MJD of start of obseration                     
+CCDNAME = 'EEV 8194-19-04'     / CCD chip name(s)                               
+AMPNAME = 'EEV 8194-19-04, left' / Amplifier name(s)                            
+GAIN    =     1.89999997615814 / Amplifier gain                                 
+RDNOISE =                  3.5 / Readout noise                                  
+CCDSIZE = '[1:2048,1:4644]'    / CCD chip size                                  
+CCDSUM  = '2 1     '           / CCD sum                                        
+CCDSEC  = '[1:2048,1:4608]'    / CCD section(s)                                 
+DETSEC  = '[2049:4096,1:4608]' / Detector section(s)                            
+DATASEC = '[1:1024,1:4608]'    / Data section(s)                                
+BIASSEC = '[1025:1056,1:4608]' / Bias section(s)                                
+FRMNAME = 'dhsFrame'           / Name assigned to a frame of data.              
+FRAMEID = '1       '           / Frame Id                                       
+DATATYP = '        '           / Type of data frame                             
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+
+--- HDU 3 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                   16 / number of bits per data pixel                  
+NAXIS   =                    2 / number of data axes                            
+NAXIS1  =                 1056 / length of data axis 1                          
+NAXIS2  =                 4608 / length of data axis 2                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'SCI     '           / ad1406: added by AstroData                     
+EXTVER  =                    3 / ad1410: added by AstroData                     
+BZERO   =                32768 / offset data range to that of unsigned short    
+BSCALE  =                    1 / default scaling factor                         
+INHERIT =                    F / inherit the primary header                     
+DATATYPE= 'Intensity'          / Type of Data                                   
+CTYPE1  = 'RA---TAN'           / R.A. in tangent plane projection               
+CRPIX1  =    -501.434437377891 / Ref pix of axis 1                              
+CRVAL1  =     52.6525898368495 / RA at Ref pix in decimal degrees               
+CTYPE2  = 'DEC--TAN'           / DEC. in tangent plane projection               
+CRPIX2  =     2365.17082582355 / Ref pix of axis 2                              
+CRVAL2  =     -34.860035257784 / DEC at Ref pix in decimal degrees              
+CD1_1   = 2.44800506320701E-05 / WCS matrix element 1 1                         
+CD1_2   = 1.60215989429238E-05 / WCS matrix element 1 2                         
+CD2_1   = -3.21633064650914E-05 / WCS matrix element 2 1                        
+CD2_2   = 1.23357256630821E-05 / WCS matrix element 2 2                         
+RADECSYS= 'FK5     '           / R.A./DEC. coordinate system reference          
+EQUINOX =                2000. / Equinox of coordinate system                   
+MJD-OBS =     53736.2401999862 / MJD of start of obseration                     
+CCDNAME = 'EEV 8261-07-04'     / CCD chip name(s)                               
+AMPNAME = 'EEV 8261-07-04, right' / Amplifier name(s)                           
+GAIN    =     1.89999997615814 / Amplifier gain                                 
+RDNOISE =     3.09999990463257 / Readout noise                                  
+CCDSIZE = '[1:2048,1:4644]'    / CCD chip size                                  
+CCDSUM  = '2 1     '           / CCD sum                                        
+CCDSEC  = '[1:2048,1:4608]'    / CCD section(s)                                 
+DETSEC  = '[4097:6144,1:4608]' / Detector section(s)                            
+DATASEC = '[33:1056,1:4608]'   / Data section(s)                                
+BIASSEC = '[1:32,1:4608]'      / Bias section(s)                                
+FRMNAME = 'dhsFrame'           / Name assigned to a frame of data.              
+FRAMEID = '2       '           / Frame Id                                       
+DATATYP = '        '           / Type of data frame                             
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                

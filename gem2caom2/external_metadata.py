@@ -114,6 +114,7 @@ NIRI_RESOLVING_POWER = {
 def gmos_metadata(obs_metadata):
     """
     Calculate GMOS energy metadata using the Gemini observation metadata.
+    Imaging observations require a filter lookup to an external service.
 
     :param obs_metadata: Dictionary of observation metadata.
     :return: Dictionary of energy metadata
@@ -182,6 +183,7 @@ def gmos_metadata(obs_metadata):
 def niri_metadata(obs_metadata, filename):
     """
     Calculate NIRI energy metadata using the Gemini observation metadata.
+    Requires a filter lookup to an external service.
 
     :param obs_metadata: Dictionary of observation metadata.
     :return: Dictionary of energy metadata

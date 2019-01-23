@@ -129,7 +129,7 @@ CD2_2   = 2.38011282541623E-05 / partial of second axis coord w.r.t. y
 MJD_OBS =      52445.635184643 / Mean Julian day of observation                 
 INTEGRIT= 'OK      '           / Observation status (OK|STOP|ABORT)             
 FRAME   = 'FK5     '           / Target coordinate system                       
-RELEASE =           2003-12-20 / End of proprietary period YYYY-MM-DD           
+RELEASE =         '2003-12-20' / End of proprietary period YYYY-MM-DD           
 END                                                                             
 XTENSION= 'IMAGE   '           / IMAGE extension                                
 BITPIX  =                   32 / number of bits per data pixel                  

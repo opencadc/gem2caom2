@@ -67,12 +67,6 @@
 # ***********************************************************************
 #
 """
-The GEM collection lifecycle means content that gets touched a lot. The start
-is a skeleton observation created from metadata harvested from the Gemini
-web-site, then artifact-sync uses that information to retrieve the files,
-then when the file is retrieved, the skeleton will be fleshed out with
-metadata from the FITS file header.
-
 Notes on the GEM archive/GEMINI collection:
 
 1. Must use the file name as the starting point for work, because that's
@@ -293,6 +287,7 @@ def get_energy_metadata():
 
     :return: Dictionary of energy metadata.
     """
+    logging.debug('Begin get_energy_metadata')
     global obs_metadata
     instrument = obs_metadata['instrument']
     if instrument in ['GMOS-N', 'GMOS-S']:
@@ -305,6 +300,8 @@ def get_energy_metadata():
     else:
         raise mc.CadcException(
             'Do not understand energy for instrument {}'.format(instrument))
+    logging.debug(
+        'End get_energy_metadata for instrument {}'.format(instrument))
     return energy_metadata
 
 
@@ -397,10 +394,31 @@ def get_calibration_level(header):
 
 
 def get_art_product_type(header):
-    obs_type = header.get('OBSTYPE')
-    obs_class = header.get('OBSCLASS')
+    """
+    Calculate the Artifact ProductType.
+
+    If obsclass is unknown then CAOM2 ProductType is set to CALIBRATION.
+    This should only effect early data when OBSCLASS was not in the JSON
+    summary metadata or FITS headers.
+
+    :param header:  The FITS header for the current extension.
+    :return: The Artifact ProductType, or None if not found.
+    """
+    obs_type = _get_obs_type(header)
+    obs_class = _get_obs_class(header)
+
+    logging.debug('type is {} and class is {}'.format(obs_type, obs_class))
     if obs_type is not None and obs_type == 'MASK':
         result = ProductType.AUXILIARY
+    elif obs_class is None:
+        if obs_type is not None and obs_type == 'OBJECT':
+            obs_id = header.get('DATALAB')
+            if obs_id is not None and 'CAL' in obs_id:
+                result = ProductType.CALIBRATION
+            else:
+                result = ProductType.SCIENCE
+        else:
+            result = ProductType.CALIBRATION
     elif obs_class is not None and obs_class == 'science':
         result = ProductType.SCIENCE
     else:
@@ -409,9 +427,15 @@ def get_art_product_type(header):
 
 
 def get_data_product_type(header):
+    """
+    Calculate the Plane DataProductType.
+
+    :param header:  The FITS header for the current extension.
+    :return: The Plane DataProductType, or None if not found.
+    """
     global obs_metadata
     mode = mc.response_lookup(obs_metadata, 'mode')
-    obs_type = header.get('OBSTYPE')
+    obs_type = _get_obs_type(header)
     if ((mode is not None and mode == 'imaging') or
             (obs_type is not None and obs_type == 'MASK')):
         result = DataProductType.IMAGE
@@ -437,10 +461,10 @@ def get_obs_intent(header):
     :param header:  The FITS header for the current extension.
     :return: The Observation intent, or None if not found.
     """
-    lookup = header.get('OBSCLASS')
+    lookup = _get_obs_class(header)
     if lookup is None:
-        object = header.get('OBJECT')
-        if object in ['GCALflat', 'Bias', 'Twilight']:
+        object_value = header.get('OBJECT')
+        if object_value in ['GCALflat', 'Bias', 'Twilight', 'Ar']:
             result = ObservationIntentType.CALIBRATION
         else:
             result = ObservationIntentType.SCIENCE
@@ -458,20 +482,48 @@ def get_obs_type(header):
     :param header:  The FITS header for the current extension.
     :return: The Observation type, or None if not found.
     """
-    result = header.get('OBSTYPE')
-    obs_class = header.get('OBSCLASS')
+    result = _get_obs_type(header)
+    obs_class = _get_obs_class(header)
     if obs_class is not None and 'acq' in obs_class:
         result = 'ACQUISITION'
     return result
 
 
 def get_target_type(header):
+    """
+    Calculate the Target TargetType
+
+    :param header:  The FITS header for the current extension.
+    :return: The Target TargetType, or None if not found.
+    """
     global obs_metadata
     spectroscopy = mc.response_lookup(obs_metadata, 'spectroscopy')
     if spectroscopy:
         return TargetType.OBJECT
     else:
         return TargetType.FIELD
+
+
+def _get_obs_class(header):
+    """Common location to lookup OBSCLASS from the FITS headers, and if
+    it's not present, to lookup observation_class from JSON summary
+    metadata."""
+    obs_class = header.get('OBSCLASS')
+    if obs_class is None:
+        global obs_metadata
+        obs_class = obs_metadata['observation_class']
+    return obs_class
+
+
+def _get_obs_type(header):
+    """Common location to lookup OBSTYPE from the FITS headers, and if
+    it's not present, to lookup observation_type from JSON summary
+    metadata."""
+    obs_type = header.get('OBSTYPE')
+    if obs_type is None:
+        global obs_metadata
+        obs_type = obs_metadata['observation_type']
+    return obs_type
 
 
 def accumulate_fits_bp(bp, uri, obs_id, file_id):
@@ -483,12 +535,15 @@ def accumulate_fits_bp(bp, uri, obs_id, file_id):
     bp.set('Observation.type', 'get_obs_type(header)')
 
     bp.clear('Observation.metaRelease')
-    bp.add_fits_attribute('Observation.metaRelease', 'RELEASE')
+    bp.add_fits_attribute('Observation.metaRelease', 'DATE-OBS')
 
     bp.set('Observation.target.type', 'get_target_type(header)')
 
     bp.set('Plane.dataProductType', 'get_data_product_type(header)')
     bp.set('Plane.calibrationLevel', 'get_calibration_level(header)')
+
+    bp.clear('Plane.metaRelease')
+    bp.add_fits_attribute('Plane.metaRelease', 'DATE-OBS')
 
     bp.set('Artifact.productType', 'get_art_product_type(header)')
 

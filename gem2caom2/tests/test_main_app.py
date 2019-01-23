@@ -69,6 +69,8 @@
 import json
 import logging
 import pytest
+import tempfile
+
 
 from astropy.io.votable import parse_single_table
 
@@ -89,21 +91,36 @@ INSTRUMENTS = ('GMOS', 'NIRI')
 PLUGIN = os.path.join(os.path.dirname(THIS_DIR), 'main_app.py')
 
 # structured by file id, observation id, filter_name (when looking up
-# from SVOFPS
+# from SVOFPS for imaging files - x means there's no filter name), and
+# instrument name
 LOOKUP = {
     # GMOS
+    'N20030107S0163': ['GN-2003A-Q-22-3-004', 'GMOS-N.i', 'GMOS'],
+    'N20071219S0193': ['GN-2007B-Q-112-14-018', 'x', 'GMOS'],
+    'N20090313S0180': ['GN-2009A-Q-21-115-001', 'GMOS-N.r', 'GMOS'],
+    'N20100104S0208': ['GN-2009B-Q-121-15-001', 'x', 'GMOS'],
+    'N20100104S0210': ['GN-2009B-Q-121-15-003', 'x', 'GMOS'],
+    'N20100115S0346': ['GN-2010A-Q-35-10-002', 'x', 'GMOS'],
+    'N20120105S0344': ['GN-2011A-Q-31-21-005', 'GMOS-N.g', 'GMOS'],
     'N20131203S0006': ['GN-2013B-Q-28-150-002', 'GMOS-N.g', 'GMOS'],
     'N20150217S0380': ['GN-2015A-C-2-96-002', 'GMOS-N.r', 'GMOS'],
     'N20150220S0320': ['GN-2015A-C-4-24-086', 'GMOS-N.r', 'GMOS'],
+    'N20150216S0129': ['GN-2015A-Q-36-15-001', 'GMOS-N.i', 'GMOS'],
     'N20150216S0142': ['GN-2015A-Q-91-5-002', 'GMOS-N.r', 'GMOS'],
-    'N20150217S0274': ['GN-CAL20150217-2-003', 'x', 'GMOS'],
-    'N20150929S0013': ['GN-CAL20150925-2-007', 'x', 'GMOS'],
-    'N20030107S0163': ['GN-2003A-Q-22-3-004', 'GMOS-N.i', 'GMOS'],
     'N20030104S0065': ['GN-CAL20030104-14-001', 'x', 'GMOS'],
     'N20030104S0161': ['GN-CAL20030104-18-003', 'GMOS-N.g', 'GMOS'],
-    'N20090313S0180': ['GN-2009A-Q-21-115-001', 'GMOS-N.r', 'GMOS'],
-    'N20120105S0344': ['GN-2011A-Q-31-21-005', 'GMOS-N.g', 'GMOS'],
-    'N20150216S0129': ['GN-2015A-Q-36-15-001', 'GMOS-N.i', 'GMOS'],
+    'N20150217S0274': ['GN-CAL20150217-2-003', 'x', 'GMOS'],
+    'N20150929S0013': ['GN-CAL20150925-2-007', 'x', 'GMOS'],
+    'S20040124S0077': ['GS-2003B-Q-5-29-003', 'x', 'GMOS'],
+    'S20060101S0075': ['GS-2005B-Q-22-17-006', 'x', 'GMOS'],
+    'S20060103S0143': ['GS-2005B-Q-22-29-004', 'x', 'GMOS'],
+    'S20060128S0316': ['GS-2005B-Q-27-33-001', 'x', 'GMOS'],
+    'S20060122S0004': ['GS-2005B-Q-27-4-001', 'x', 'GMOS'],
+    'S20060131S0110': ['GS-2005B-Q-54-2-004', 'x', 'GMOS'],
+    'S20060620S0066': ['GS-2006A-Q-48-15-002', 'x', 'GMOS'],
+    'S20080526S0024': ['GS-2008A-Q-41-26-013', 'x', 'GMOS'],
+    'S20090620S0145': ['GS-2009A-Q-30-6-007', 'x', 'GMOS'],
+    'S20060125S0027': ['GS-CAL20060125-1-002', 'x', 'GMOS'],
     # NIRI
     'N20020620S0021': ['GN-2002A-C-5-1-001', 'x', 'NIRI'],
     'N20020620S0035': ['GN-2002A-C-5-1-015', 'x', 'NIRI'],
@@ -112,7 +129,7 @@ LOOKUP = {
     'N20150404S0872': ['GN-2015A-C-1-27-001', 'x', 'NIRI'],
     'N20150405S0028': ['GN-2015A-C-1-27-071', 'x', 'NIRI'],
     # GSAIO
-    'S20181023S0087': ['GS-CAL20181023-5-001', 'x'],
+    'S20181023S0087': ['GS-CAL20181023-5-001', 'x', 'GSAIO'],
     # GNIRS
     'N20160123S0097': ['GN-2015B-SV-101-1061-005', 'x', 'GNIRS'],
     'N20151213S0022': ['GN-CAL20151213-6-002', 'x', 'GNIRS'],
@@ -127,13 +144,15 @@ def pytest_generate_tests(metafunc):
     if os.path.exists(TESTDATA_DIR):
         ## file_list = [os.path.join(TESTDATA_DIR, name) for name in os.listdir(TESTDATA_DIR) if name.endswith('header')]
 
-        # file_list = []
-        # for root, dirs, files in os.walk(TESTDATA_DIR):
-        #     for file in files:
-        #         if file.endswith(".header"):
-        #             file_list.append(os.path.join(root, file))
+        file_list = []
+        for root, dirs, files in os.walk(TESTDATA_DIR):
+        # for root, dirs, files in os.walk('{}/{}'.format(TESTDATA_DIR, 'GMOS')):
+            for file in files:
+                if file.endswith(".header"):
+                    file_list.append(os.path.join(root, file))
 
-        file_list = ['{}/{}/{}'.format(TESTDATA_DIR, 'GMOS', 'N20030104S0065.fits.header')]
+        # file_list = ['{}/{}/{}'.format(TESTDATA_DIR, 'GMOS', 'N20150216S0129.fits.header')] // broken, missing expected xml
+        # file_list = ['{}/{}/{}'.format(TESTDATA_DIR, 'NIRI', 'N20020620S0021.fits.header')]
         # metafunc.parametrize('test_name', file_list[8:])
         metafunc.parametrize('test_name', file_list)
 
@@ -183,6 +202,7 @@ def test_main_app(test_name):
             votable = parse_single_table(
                 '{}/votable/{}.xml'.format(TESTDATA_DIR, filter_name))
             return votable, None
+
         logging.error('file_id is {}'.format(file_id))
         data_client_mock.return_value.get_file_info.side_effect = \
             get_file_info

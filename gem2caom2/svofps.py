@@ -177,7 +177,6 @@ def filter_metadata(instrument, filters):
                 # only for 'w'arm filters.  First check for filter without 'w'
                 # appended to the ID (which I assume means bandpass is for cold
                 # filter), then search for 'w' if nothing is found...
-                logging.error(filter_id)
                 votable, error_message = get_votable(url)
                 if not votable:
                     url += 'w'
