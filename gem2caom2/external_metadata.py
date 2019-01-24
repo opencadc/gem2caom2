@@ -70,10 +70,16 @@
 # import os
 import logging
 import re
+import requests
+from requests.adapters import HTTPAdapter
+from urllib3 import Retry
 
 import caom2
+from caom2pipe import manage_composable as mc
 from gem2caom2.svofps import filter_metadata
 
+GEMINI_METADATA_URL = \
+    'https://archive.gemini.edu/jsonsummary/canonical/filepre='
 GEMINI_FITS_HEADER_URL = 'https://archive.gemini.edu/fullheader/'
 
 GMOS_ENERGY_BAND = caom2.EnergyBand['OPTICAL']
@@ -110,8 +116,42 @@ NIRI_RESOLVING_POWER = {
     }
 }
 
+obs_metadata = {}
 
-def gmos_metadata(obs_metadata):
+
+def get_obs_metadata(file_id):
+    """
+    Download the Gemini observation metadata for the given obs_id.
+
+    :param file_id: The file ID
+    :return: Dictionary of observation metadata.
+    """
+    logging.debug('Begin get_obs_metadata')
+    gemini_url = '{}{}'.format(GEMINI_METADATA_URL, file_id)
+
+    # Open the URL and fetch the JSON document for the observation
+    session = requests.Session()
+    retries = 10
+    retry = Retry(total=retries, read=retries, connect=retries,
+                  backoff_factor=0.5)
+    adapter = HTTPAdapter(max_retries=retry)
+    session.mount('http://', adapter)
+    session.mount('https://', adapter)
+    try:
+        response = session.get(gemini_url, timeout=20)
+        metadata = response.json()[0]
+        response.close()
+        logging.error('got obs metdata')
+    except Exception as e:
+        raise mc.CadcException(
+            'Unable to download Gemini observation metadata from {} because {}'
+                .format(gemini_url, str(e)))
+    global obs_metadata
+    obs_metadata = metadata
+    logging.debug('End get_obs_metadata')
+
+
+def gmos_metadata():
     """
     Calculate GMOS energy metadata using the Gemini observation metadata.
     Imaging observations require a filter lookup to an external service.
@@ -129,6 +169,7 @@ def gmos_metadata(obs_metadata):
     # No energy information is determined for biases or darks.  The
     # latter are sometimes only identified by a 'blank' filter.  e.g.
     # NIRI 'flats' are sometimes obtained with the filter wheel blocked off.
+    global obs_metadata
     if obs_metadata['observation_type'] in ('BIAS', 'DARK'):
         metadata['energy'] = False
         return metadata
@@ -180,7 +221,7 @@ def gmos_metadata(obs_metadata):
     return metadata
 
 
-def niri_metadata(obs_metadata, filename):
+def niri_metadata(filename):
     """
     Calculate NIRI energy metadata using the Gemini observation metadata.
     Requires a filter lookup to an external service.
@@ -194,6 +235,7 @@ def niri_metadata(obs_metadata, filename):
         'energy_band': NIRI_ENERGY_BAND
     }
 
+    global obs_metadata
     if obs_metadata['observation_type'] in 'DARK':
         metadata['energy'] = False
         return metadata

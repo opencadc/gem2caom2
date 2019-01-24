@@ -1,8 +1,405 @@
-<!DOCTYPE html>
-<html><head><title>Gemini Archive - 404 Not Found</title></head>
-<body>
-<h1>Not Found</h1>
-Cannot find (non-standard named) file for: N20150807G0046
+Filename: N20150807G0046.fits.bz2
 
-</body>
-</html>
+AstroData Types: ['GRACES', 'SPECT', 'RAW', 'UNPREPARED']
+
+
+--- HDU 0 ---
+SIMPLE  =                    T / conforms to FITS standard                      
+BITPIX  =                    8 / array data type                                
+NAXIS   =                    0 / number of array dimensions                     
+EXTEND  =                    T                                                  
+INHERIT =                    F / No need to inherit global keywords             
+COMMENT                                                                         
+COMMENT Observation Summary                                                     
+COMMENT -------------------                                                     
+COMMENT                                                                         
+CMMTOBS = 'N/A     '                                                            
+CMMTSEQ = '        '                                                            
+OBJECT  = 'GN-CAL20150807-1000' /Object Name                                    
+OBSERVER= 'Engineering Team'                                                    
+PI_NAME = 'Engineering Team'                                                    
+RUNID   = '14AE90  '                                                            
+COMMENT                                                                         
+COMMENT General                                                                 
+COMMENT -------                                                                 
+COMMENT                                                                         
+FILENAME= 'N20150807G0046'     / Base filename at acquisition                   
+PATHNAME= '/data/niele/graces/images' / Original directory name at acquisition  
+DATE    = '2015-08-07T08:19:00' / UTC Date of file creation                     
+HSTTIME = 'Thu Aug 06 22:19:00 HST 2015' / Local time in Hawaii                 
+IMAGESWV= 'CFHT DetCom v3.60.15 (Apr 23 2015)' / Image creation software version
+OBSTYPE = 'ARC     '           / Observation / Exposure type                    
+EXPTYPE = 'ARC     '           / See OBSTYPE                                    
+EXPNUM  =                    0 / CFHT odometer number                           
+OBSID   = 'GN-CAL20150807-1000' /Observation ID / Data label                    
+EXPTIME =                100.0 / Integration time (seconds)                     
+DARKTIME=                100.0 / Dark current time (seconds)                    
+SHUTOPEN= '2015-08-07T8:17:19.974' / Shutter blade opening time (UTC)           
+SHUTCLOS= '2015-08-07T8:19:00.016' / Shutter blade closing time (UTC)           
+COMMENT                                                                         
+COMMENT Detector                                                                
+COMMENT --------                                                                
+COMMENT                                                                         
+COMMENT file N20150807G004600, raster FULL, etype OBJECT, etime 100             
+COMMENT Image data for chip 00                                                  
+DETECTOR= 'OLAPA   '           / Science Detector                               
+CCD     = 'Unknown '           / Science Detector (use DETECTOR)                
+IMAGEID =                    0 / CCD chip number                                
+CHIPID  =                    0 / Use IMAGEID instead                            
+DETSIZE = '[1:2048,1:4608]'    / Total data pixels in full mosaic               
+RASTER  = 'FULL    '           / Active raster description                      
+CCDSUM  = '1 1     '           / Binning factors                                
+CCDBIN1 =                    1 / Binning factor along first axis                
+CCDBIN2 =                    1 / Binning factor along second axis               
+PIXSIZE =                 13.5 / Pixel size for both axes (microns)             
+AMPLIST = 'a       '           / List of amplifiers for this image              
+CCDSIZE = '[1:2048,1:4608]'    / Detector imaging area size                     
+CCDSEC  = '[1:2048,1:4608]'    / Read out area of the detector (unbinned)       
+DATASEC = '[1:2048,1:4608]'    / Imaging area of the detector                   
+BIASSEC = '[2049:2080,1:4608]' / Overscan (bias) area of the detector           
+MAXLIN  =                65535 / Maximum linearity value (ADU)                  
+SATURATE=                65535 / Saturation value (ADU)                         
+GAINA   =                 1.30 / Amp A gain (electrons/ADU)                     
+RDNOISEA=                 4.20 / Amp A read noise (electrons)                   
+DARKCUR =                    0 / Dark current (e-/pixel/hour)                   
+RDTIME  =                38.00 / Read out time (sec)                            
+CONSWV  = 'olA=137,DCU=49'     / Controller software DSPID and SERNO versions   
+DETSTAT = 'detector temp is low' / Detector temp range (-90..-105)              
+DETTEM  =               -100.2 / Detector temp deg C = 745.502 + -0.278 * 3042  
+TIMESYS = 'UTC     '           / Time System for DATExxxx and TIMExxxx          
+DATE-OBS= '2015-08-07'         / Date at start of observation (UTC)             
+TIME-OBS= '8:17:19.974'        / Time at start of observation (UTC)             
+DATEEND = '2015-08-07'         / Date at end of observation (UTC)               
+TIMEEND = '8:19:00.016'        / Time at end of observation (UTC)               
+COMMENT                                                                         
+COMMENT Instrument Description                                                  
+COMMENT ----------------------                                                  
+COMMENT                                                                         
+INSTRUME= 'GRACES  '           / Instrument Name                                
+INSTMODE= 'Spectroscopy, star only' /Observing mode                             
+FILTERID=                   -1 / wheel position                                 
+FILTER  = 'Unknown '           / description of filter                          
+COMMENT                                                                         
+COMMENT ESPaDOnS Spectrograph                                                   
+COMMENT ---------------------                                                   
+COMMENT                                                                         
+ECAMFOC =                -3.45 / ESPaDOnS camera focus position (mm)            
+EHARTPOS= 'OUT     '           / ESPaDOnS hartmann position FULL/DOWN/UP/OUT    
+ESLIPOS = 'No reference'       / ESPaDOnS slicer bench position (# and mm)      
+EHALOPOS= 'OUT     '           / ESPaDOnS halogen lamp position IN/OUT          
+EHALOGEN= 'OFF     '           / ESPaDOnS halogen lamp state ON/OFF             
+ESLICER = 'P2      '           / ESPaDOnS slicer position (# and deg)           
+EDEKKER = 'No reference'       / ESPaDOnS dekker position (# and mm)            
+EEMSHUT = 'CLOSE   '           / ESPaDOnS exposure meter shutter OPEN/CLOSED    
+EEMSTATE= 'OFF     '           / ESPaDOnS exposure meter state ON/OFF           
+EEMCNTS =                -9999 / ESPaDOnS exposure meter count average          
+ETSP1BEG=                15.10 / ESPaDOnS down mirror temp at start (deg C)     
+ETSP2BEG=                15.41 / ESPaDOnS camera temp at start (deg C)          
+ETSP3BEG=                15.33 / ESPaDOnS up mirror temp at start (deg C)       
+ETSP4BEG=                15.66 / ESPaDOnS hygrometer temp at start (deg C)      
+EPRSPBEG=                 3.77 / ESPaDOnS relative pressure at start (mb)       
+ERHSPBEG=                31.98 / ESPaDOnS relative humidity at start (%)        
+ETSP1END=                15.11 / ESPaDOnS down mirror temp at end (deg C)       
+ETSP2END=                15.33 / ESPaDOnS camera temp at end (deg C)            
+ETSP3END=                15.26 / ESPaDOnS up mirror temp at end (deg C)         
+ETSP4END=                15.06 / ESPaDOnS hygrometer temp at end (deg C)        
+EPRSPEND=                 3.73 / ESPaDOnS relative pressure at end (mb)         
+ERHSPEND=                31.82 / ESPaDOnS relative humidity at end (%)          
+EREADSPD= 'Normal: 4.20e noise, 1.30e/ADU, 38s' / ESPaDOnS det read out xslow/sl
+GSLIPOS = 'FOURSLICE'          / GRACES slicer bench position (# and mm)        
+GSLICER = 'FOURSLICE'          / GRACES slicer position (# and deg)             
+GDEKKER = 'FOURSLICE'          / GRACES dekker position (# and mm)              
+GPMIRROR= 'GEMINI  '           / GRACES pickoff mirror position (# and mm)      
+GFIBMODE= 'GRACES  '           / GRACES fiber position (ESPADONS or GRACES)     
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+RA      = '        '           /Right Ascension                                 
+DEC     = '        '           /Declination of Target                           
+POFFSET =        7.72089995344 /Telescope offset in p in arcsec                 
+QOFFSET =        1.98510003370 /Telescope offset in q in arcsec                 
+RAWIQ   = '70-percentile'      /Raw Image Quality                               
+RAWCC   = '70-percentile'      /Raw Cloud Cover                                 
+RAWWV   = 'Any     '           /Raw Water Vapour/Transparency                   
+RAWBG   = '20-percentile'      /Raw Background                                  
+TELESCOP= 'Gemini-North'       /Gemini-North                                    
+EPOCH   =              2000.00 /Epoch for Target coordinates                    
+CRPA    =        96.2788954277 /Current Cass Rotator Position Angle             
+GEMPRGID= 'GN-CAL20150807'     /Gemini programme ID                             
+AIRMASS = '        '           /Mean airmass for the observation                
+AMSTART = '        '           /Airmass at start of exposure                    
+AMEND   = '        '           /Airmass at end of exposure                      
+HA      = '00:00:00.00'        /Hour Angle Sexagesimal                          
+HAD     = '        '           /Hour Angle Decimal                              
+MJDATE  = '57241.345'          /Modified Julian Date at start of observation    
+RELEASE = '2015-08-07'         /End of proprietary period YYYY-MM-DD            
+DATALAB = 'GN-CAL20150807-1000-1035' /DHS data label                            
+
+--- HDU 1 ---
+XTENSION= 'IMAGE   '           / Image extension                                
+BITPIX  =                   16 / array data type                                
+NAXIS   =                    2 / number of array dimensions                     
+NAXIS1  =                 2080                                                  
+NAXIS2  =                 4640                                                  
+PCOUNT  =                    0 / number of parameters                           
+GCOUNT  =                    1 / number of groups                               
+BSCALE  =                    1                                                  
+BZERO   =                32768                                                  
+EXTNAME = 'SCI     '           / ad4549: added by AstroData                     
+EXTVER  =                    1                                                  
+INHERIT =                    F / No need to inherit global keywords             
+COMMENT                                                                         
+COMMENT Observation Summary                                                     
+COMMENT -------------------                                                     
+COMMENT                                                                         
+CMMTOBS = 'N/A     '                                                            
+CMMTSEQ = '        '                                                            
+OBJECT  = 'GN-CAL20150807-1000' /Object Name                                    
+OBSERVER= 'Engineering Team'                                                    
+PI_NAME = 'Engineering Team'                                                    
+RUNID   = '14AE90  '                                                            
+COMMENT                                                                         
+COMMENT General                                                                 
+COMMENT -------                                                                 
+COMMENT                                                                         
+FILENAME= 'N20150807G0046'     / Base filename at acquisition                   
+PATHNAME= '/data/niele/graces/images' / Original directory name at acquisition  
+DATE    = '2015-08-07T08:19:00' / UTC Date of file creation                     
+HSTTIME = 'Thu Aug 06 22:19:00 HST 2015' / Local time in Hawaii                 
+IMAGESWV= 'CFHT DetCom v3.60.15 (Apr 23 2015)' / Image creation software version
+OBSTYPE = 'ARC     '           / Observation / Exposure type                    
+EXPTYPE = 'ARC     '           / See OBSTYPE                                    
+EXPNUM  =                    0 / CFHT odometer number                           
+OBSID   = 'GN-CAL20150807-1000' /Observation ID / Data label                    
+EXPTIME =                100.0 / Integration time (seconds)                     
+DARKTIME=                100.0 / Dark current time (seconds)                    
+SHUTOPEN= '2015-08-07T8:17:19.974' / Shutter blade opening time (UTC)           
+SHUTCLOS= '2015-08-07T8:19:00.016' / Shutter blade closing time (UTC)           
+COMMENT                                                                         
+COMMENT Detector                                                                
+COMMENT --------                                                                
+COMMENT                                                                         
+COMMENT file N20150807G004600, raster FULL, etype OBJECT, etime 100             
+COMMENT Image data for chip 00                                                  
+DETECTOR= 'OLAPA   '           / Science Detector                               
+CCD     = 'Unknown '           / Science Detector (use DETECTOR)                
+IMAGEID =                    0 / CCD chip number                                
+CHIPID  =                    0 / Use IMAGEID instead                            
+DETSIZE = '[1:2048,1:4608]'    / Total data pixels in full mosaic               
+RASTER  = 'FULL    '           / Active raster description                      
+CCDSUM  = '1 1     '           / Binning factors                                
+CCDBIN1 =                    1 / Binning factor along first axis                
+CCDBIN2 =                    1 / Binning factor along second axis               
+PIXSIZE =                 13.5 / Pixel size for both axes (microns)             
+AMPLIST = 'a       '           / List of amplifiers for this image              
+CCDSIZE = '[1:2048,1:4608]'    / Detector imaging area size                     
+CCDSEC  = '[1:2048,1:4608]'    / Read out area of the detector (unbinned)       
+DATASEC = '[1:2048,1:4608]'    / Imaging area of the detector                   
+BIASSEC = '[2049:2080,1:4608]' / Overscan (bias) area of the detector           
+MAXLIN  =                65535 / Maximum linearity value (ADU)                  
+SATURATE=                65535 / Saturation value (ADU)                         
+GAINA   =                 1.30 / Amp A gain (electrons/ADU)                     
+RDNOISEA=                 4.20 / Amp A read noise (electrons)                   
+DARKCUR =                    0 / Dark current (e-/pixel/hour)                   
+RDTIME  =                38.00 / Read out time (sec)                            
+CONSWV  = 'olA=137,DCU=49'     / Controller software DSPID and SERNO versions   
+DETSTAT = 'detector temp is low' / Detector temp range (-90..-105)              
+DETTEM  =               -100.2 / Detector temp deg C = 745.502 + -0.278 * 3042  
+TIMESYS = 'UTC     '           / Time System for DATExxxx and TIMExxxx          
+DATE-OBS= '2015-08-07'         / Date at start of observation (UTC)             
+TIME-OBS= '8:17:19.974'        / Time at start of observation (UTC)             
+DATEEND = '2015-08-07'         / Date at end of observation (UTC)               
+TIMEEND = '8:19:00.016'        / Time at end of observation (UTC)               
+COMMENT                                                                         
+COMMENT Instrument Description                                                  
+COMMENT ----------------------                                                  
+COMMENT                                                                         
+INSTRUME= 'GRACES  '           / Instrument Name                                
+INSTMODE= 'Spectroscopy, star only' /Observing mode                             
+FILTERID=                   -1 / wheel position                                 
+FILTER  = 'Unknown '           / description of filter                          
+COMMENT                                                                         
+COMMENT ESPaDOnS Spectrograph                                                   
+COMMENT ---------------------                                                   
+COMMENT                                                                         
+ECAMFOC =                -3.45 / ESPaDOnS camera focus position (mm)            
+EHARTPOS= 'OUT     '           / ESPaDOnS hartmann position FULL/DOWN/UP/OUT    
+ESLIPOS = 'No reference'       / ESPaDOnS slicer bench position (# and mm)      
+EHALOPOS= 'OUT     '           / ESPaDOnS halogen lamp position IN/OUT          
+EHALOGEN= 'OFF     '           / ESPaDOnS halogen lamp state ON/OFF             
+ESLICER = 'P2      '           / ESPaDOnS slicer position (# and deg)           
+EDEKKER = 'No reference'       / ESPaDOnS dekker position (# and mm)            
+EEMSHUT = 'CLOSE   '           / ESPaDOnS exposure meter shutter OPEN/CLOSED    
+EEMSTATE= 'OFF     '           / ESPaDOnS exposure meter state ON/OFF           
+EEMCNTS =                -9999 / ESPaDOnS exposure meter count average          
+ETSP1BEG=                15.10 / ESPaDOnS down mirror temp at start (deg C)     
+ETSP2BEG=                15.41 / ESPaDOnS camera temp at start (deg C)          
+ETSP3BEG=                15.33 / ESPaDOnS up mirror temp at start (deg C)       
+ETSP4BEG=                15.66 / ESPaDOnS hygrometer temp at start (deg C)      
+EPRSPBEG=                 3.77 / ESPaDOnS relative pressure at start (mb)       
+ERHSPBEG=                31.98 / ESPaDOnS relative humidity at start (%)        
+ETSP1END=                15.11 / ESPaDOnS down mirror temp at end (deg C)       
+ETSP2END=                15.33 / ESPaDOnS camera temp at end (deg C)            
+ETSP3END=                15.26 / ESPaDOnS up mirror temp at end (deg C)         
+ETSP4END=                15.06 / ESPaDOnS hygrometer temp at end (deg C)        
+EPRSPEND=                 3.73 / ESPaDOnS relative pressure at end (mb)         
+ERHSPEND=                31.82 / ESPaDOnS relative humidity at end (%)          
+EREADSPD= 'Normal: 4.20e noise, 1.30e/ADU, 38s' / ESPaDOnS det read out xslow/sl
+GSLIPOS = 'FOURSLICE'          / GRACES slicer bench position (# and mm)        
+GSLICER = 'FOURSLICE'          / GRACES slicer position (# and deg)             
+GDEKKER = 'FOURSLICE'          / GRACES dekker position (# and mm)              
+GPMIRROR= 'GEMINI  '           / GRACES pickoff mirror position (# and mm)      
+GFIBMODE= 'GRACES  '           / GRACES fiber position (ESPADONS or GRACES)     
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+COMMENT  Reserved space.  This line can be used to add a new FITS card.         
+RA      = '        '           /Right Ascension                                 
+DEC     = '        '           /Declination of Target                           
+POFFSET =        7.72089995344 /Telescope offset in p in arcsec                 
+QOFFSET =        1.98510003370 /Telescope offset in q in arcsec                 
+RAWIQ   = '70-percentile'      /Raw Image Quality                               
+RAWCC   = '70-percentile'      /Raw Cloud Cover                                 
+RAWWV   = 'Any     '           /Raw Water Vapour/Transparency                   
+RAWBG   = '20-percentile'      /Raw Background                                  
+TELESCOP= 'Gemini-North'       /Gemini-North                                    
+EPOCH   =              2000.00 /Epoch for Target coordinates                    
+CRPA    =        96.2788954277 /Current Cass Rotator Position Angle             
+GEMPRGID= 'GN-CAL20150807'     /Gemini programme ID                             
+AIRMASS = '        '           /Mean airmass for the observation                
+AMSTART = '        '           /Airmass at start of exposure                    
+AMEND   = '        '           /Airmass at end of exposure                      
+HA      = '00:00:00.00'        /Hour Angle Sexagesimal                          
+HAD     = '        '           /Hour Angle Decimal                              
+MJDATE  = '57241.345'          /Modified Julian Date at start of observation    
+RELEASE = '2015-08-07'         /End of proprietary period YYYY-MM-DD            
+DATALAB = 'GN-CAL20150807-1000-1035' /DHS data label                            

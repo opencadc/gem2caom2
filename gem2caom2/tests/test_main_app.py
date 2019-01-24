@@ -74,6 +74,8 @@ import tempfile
 
 from astropy.io.votable import parse_single_table
 
+import gem2caom2.external_metadata as em
+
 from gem2caom2 import main_app2, APPLICATION, ARCHIVE, SCHEME, svofps
 from caom2.diff import get_differences
 from caom2pipe import manage_composable as mc
@@ -142,6 +144,11 @@ LOOKUP = {
     'N20160123S0097': ['GN-2015B-SV-101-1061-005', 'x', 'GNIRS'],
     'N20151213S0022': ['GN-CAL20151213-6-002', 'x', 'GNIRS'],
     'N20160202S0098': ['GN-CAL20160202-3-039', 'x', 'GNIRS'],
+    # GRACES
+    'N20150807G0044': ['GN-2015B-Q-1-12-1003', 'x', 'GRACES'],
+    'N20150604G0003': ['GN-CAL20150604-1000-1072', 'x', 'GRACES'],
+    'N20150604G0014': ['GN-CAL20150604-1000-1081', 'x', 'GRACES'],
+    'N20150807G0046': ['GN-CAL20150807-1000-1035', 'x', 'GRACES'],
 }
 
 
@@ -150,11 +157,15 @@ def pytest_generate_tests(metafunc):
 
         file_list = []
         # for root, dirs, files in os.walk(TESTDATA_DIR):
-        for root, dirs, files in os.walk('{}/{}'.format(TESTDATA_DIR, 'GNIRS')):
-            for file in files:
-                if file.endswith(".header"):
-                    file_list.append(os.path.join(root, file))
+        for ii in ['GMOS', 'GNIRS', 'GRACES']:
+        # for ii in ['GNIRS']:
+            for root, dirs, files in os.walk('{}/{}'.format(TESTDATA_DIR, ii)):
+                for file in files:
+                    if file.endswith(".header"):
+                        file_list.append(os.path.join(root, file))
 
+        # metafunc.parametrize('test_name',
+        # ['{}/GRACES/N20150807G0044.fits.header'.format(TESTDATA_DIR)])
         # metafunc.parametrize('test_name', file_list[8:])
         metafunc.parametrize('test_name', file_list)
 
@@ -174,7 +185,7 @@ def test_main_app(test_name):
     plugin = PLUGIN
 
     with patch('caom2utils.fits2caom2.CadcDataClient') as data_client_mock, \
-        patch('gem2caom2.main_app.get_obs_metadata') as gemini_client_mock, \
+        patch('gem2caom2.external_metadata.get_obs_metadata') as gemini_client_mock, \
         patch('gem2caom2.svofps.get_votable') as svofps_mock:
 
         def get_file_info(archive, file_id):
@@ -189,12 +200,13 @@ def test_main_app(test_name):
                         'type': 'application/fits'}
 
         def get_obs_metadata(obs_id):
+            logging.error('here?')
             try:
                 fname = '{}/{}/json/{}.json'.format(TESTDATA_DIR,
                                                     LOOKUP[file_id][2], obs_id)
                 with open(fname) as f:
                     y = json.loads(f.read())
-                    return y[0]
+                    em.obs_metadata = y[0]
             except Exception as e:
                 logging.error(e)
 

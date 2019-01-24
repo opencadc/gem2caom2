@@ -43,7 +43,7 @@ An application to generate CAOM2 Observations from FITS file headers.
    1. flat:   GN-2011B-Q-63-130-002 (long-slit)
 1. GRACES has only telescope RA/Dec in the header, no WCS info.  Kludge perhaps a 5" square FOV consisting of a single pixel centered on RA/Dec values (it's a fiber-fed instrument)
 1. GRACES spectroscopy: (No OBSCLASS keyword)
-   1. object: GN-2015B-Q-1-12-1003
+   1. object: GN-2015B-Q-1-12-1003 (issue: file name from jsonsummary != file name from fullheader)
    1. bias:   GN-CAL20150604-1000-1072
    1. flat:   GN-CAL20150604-1000-1081
    1. arc:    GN-CAL20150807-1000-1035
