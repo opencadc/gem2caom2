@@ -117,8 +117,9 @@ SCHEME = 'gemini'
 
 class GemName(ec.StorageName):
     """Naming rules:
-    - support upper-case file name storage, exception for extensions, and
-            upper-case obs id values
+    - support mixed-case file name storage, exception for extensions, and
+            mixed-case obs id values - the case the inputs are provided in are
+            assumed to be correct.
     - support uncompressed files in storage
     """
 
@@ -207,7 +208,9 @@ class GemName(ec.StorageName):
 
     @staticmethod
     def get_file_id(file_name):
-        return GemName.remove_extensions(file_name.lower()).upper()
+        # TODO - how important is the file name case? check with DB.
+        # return GemName.remove_extensions(file_name.lower()).upper()
+        return GemName.remove_extensions(file_name)
 
     @staticmethod
     def remove_extensions(name):
@@ -287,7 +290,8 @@ def get_chunk_wcs(bp, obs_id, file_id):
 
         # No energy metadata found
         if not energy_metadata['energy']:
-            logging.error('No energy metadata found for {}'.format(obs_id))
+            logging.error('No energy metadata found for '
+                          'obs id {}, file id {}'.format(obs_id, file_id))
             return
 
         bp.configure_energy_axis(4)
@@ -527,6 +531,13 @@ def accumulate_fits_bp(bp, obs_id, file_id):
     bp.set('Plane.calibrationLevel', 'get_calibration_level(header)')
     bp.set('Plane.metaRelease', 'get_meta_release(header)')
 
+    bp.set('Plane.provenance.name', 'Gemini Observatory Data')
+    bp.set('Plane.provenance.project', 'Gemini Archive')
+    bp.add_fits_attribute('Plane.provenance.producer', 'IMAGESWV')
+    bp.set_default('Plane.provenance.producer', 'Gemini Observatory')
+    bp.set('Plane.provenance.reference',
+           'http://archive.gemini.edu/searchform/{}'.format(obs_id))
+
     bp.set('Artifact.productType', 'get_art_product_type(header)')
 
     bp.configure_position_axes((1, 2))
@@ -680,6 +691,7 @@ def _build_blueprints(uris, obs_id, file_id):
     for uri in uris:
         blueprint = ObsBlueprint(module=module)
         if not GemName.is_preview(uri):
+            logging.info('Building blueprint for {}'.format(uri))
             accumulate_fits_bp(blueprint, obs_id, file_id)
         blueprints[uri] = blueprint
     return blueprints
@@ -703,7 +715,10 @@ def _get_uris(args):
 
 def _get_obs_id(args):
     result = None
-    if args.lineage:
+    if args.in_obs_xml:
+        temp = args.in_obs_xml.name.split('/')
+        result = temp[-1].split('.')[0]
+    elif args.lineage:
         for lineage in args.lineage:
             temp = lineage.split('/', 1)
             if temp[1].endswith('.jpg'):

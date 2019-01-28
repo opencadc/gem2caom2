@@ -89,7 +89,7 @@ from mock import patch
 
 pytest.main(args=['-s', os.path.abspath(__file__)])
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
-TESTDATA_DIR = os.path.join(THIS_DIR, 'data')
+TEST_DATA_DIR = os.path.join(THIS_DIR, 'data')
 INSTRUMENTS = ('GMOS', 'NIRI')
 PLUGIN = os.path.join(os.path.dirname(THIS_DIR), 'main_app.py')
 
@@ -147,8 +147,8 @@ LOOKUP = {
     'N20160202S0098': ['GN-CAL20160202-3-039', 'x', 'GNIRS'],
     # GRACES
     'N20150807G0044': ['GN-2015B-Q-1-12-1003', 'x', 'GRACES'],
-    # 'N20150807G0044i': ['GN-2015B-Q-1-12-1003', 'x', 'GRACES'],
-    # 'N20150807G0044m': ['GN-2015B-Q-1-12-1003', 'x', 'GRACES'],
+    'N20150807G0044i': ['GN-2015B-Q-1-12-1003', 'x', 'GRACES'],
+    'N20150807G0044m': ['GN-2015B-Q-1-12-1003', 'x', 'GRACES'],
     'N20150604G0003': ['GN-CAL20150604-1000-1072', 'x', 'GRACES'],
     'N20150604G0014': ['GN-CAL20150604-1000-1081', 'x', 'GRACES'],
     'N20150807G0046': ['GN-CAL20150807-1000-1035', 'x', 'GRACES'],
@@ -156,13 +156,13 @@ LOOKUP = {
 
 
 def pytest_generate_tests(metafunc):
-    if os.path.exists(TESTDATA_DIR):
+    if os.path.exists(TEST_DATA_DIR):
 
         file_list = []
         # for root, dirs, files in os.walk(TESTDATA_DIR):
-        # for ii in ['GMOS', 'GNIRS', 'GRACES']:
-        for ii in ['GRACES']:
-            for root, dirs, files in os.walk('{}/{}'.format(TESTDATA_DIR, ii)):
+        for ii in ['GMOS', 'GNIRS', 'GRACES']:
+        # for ii in ['GNIRS']:
+            for root, dirs, files in os.walk('{}/{}'.format(TEST_DATA_DIR, ii)):
                 for file in files:
                     if file.endswith(".header"):
                         file_list.append(os.path.join(root, file))
@@ -177,23 +177,15 @@ def test_main_app(test_name):
     basename = os.path.basename(test_name)
     dirname = os.path.dirname(test_name)
     file_id = _get_file_id(basename)
-    # product_id = LOOKUP[file_id][0]
+    obs_id = LOOKUP[file_id][0]
     product_id = _get_product_id(file_id)
     lineage = _get_lineage(dirname, basename, product_id, file_id)
-    input_file = '{}.in.xml'.format(product_id)
-    actual_fqn = '{}/{}.actual.xml'.format(dirname, product_id)
+    input_file = '{}.in.xml'.format(obs_id)
+    actual_fqn = _get_actual_file_name(dirname, product_id, file_id, obs_id)
     logging.error(test_name)
-    logging.error(type(test_name))
 
     local = _get_local(test_name)
     plugin = PLUGIN
-
-    logging.error(test_name)
-
-    if (test_name.endswith('N20150807G0044i.fits.header') or
-        test_name.endswith('N20150807G0044m.fits.header')):
-        logging.error('done now')
-        return
 
     with patch('caom2utils.fits2caom2.CadcDataClient') as data_client_mock, \
         patch('gem2caom2.external_metadata.get_obs_metadata') as gemini_client_mock, \
@@ -211,10 +203,9 @@ def test_main_app(test_name):
                         'type': 'application/fits'}
 
         def get_obs_metadata(obs_id):
-            logging.error('here?')
             try:
-                fname = '{}/{}/json/{}.json'.format(TESTDATA_DIR,
-                                                    LOOKUP[file_id][2], obs_id)
+                fname = '{}/{}/json/{}.json'.format(TEST_DATA_DIR,
+                                                    _get_instr(file_id), obs_id)
                 with open(fname) as f:
                     y = json.loads(f.read())
                     em.obs_metadata = y[0]
@@ -228,64 +219,49 @@ def test_main_app(test_name):
             x = url.split('/')
             filter_name = x[len(x) - 1]
             votable = parse_single_table(
-                '{}/votable/{}.xml'.format(TESTDATA_DIR, filter_name))
+                '{}/votable/{}.xml'.format(TEST_DATA_DIR, filter_name))
             return votable, None
 
-        logging.error('file_id is {}'.format(file_id))
         data_client_mock.return_value.get_file_info.side_effect = \
             get_file_info
-        gemini_client_mock.return_value = get_obs_metadata(product_id)
+        gemini_client_mock.return_value = get_obs_metadata(obs_id)
         svofps_mock.return_value = get_votable(
-            '{}/{}'.format(svofps.SVO_URL, LOOKUP[file_id][1]))
+            '{}/{}'.format(
+                svofps.SVO_URL, _get_filter_id(product_id, file_id)))
 
         sys.argv = \
-            ('{} --no_validate --local {} '
+            ('{} --verbose --no_validate --local {} '
              '--plugin {} --module {} --in {}/{} --out {} --lineage {}'.
              format(APPLICATION, local, plugin, plugin, dirname,
                     input_file, actual_fqn, lineage)).split()
         print(sys.argv)
         main_app2()
-        expected_fqn = '{}/{}.xml'.format(dirname, product_id)
+        expected_fqn = _get_expected_file_name(dirname, product_id, file_id,
+                                               obs_id)
         expected = mc.read_obs_from_file(expected_fqn)
         actual = mc.read_obs_from_file(actual_fqn)
         result = get_differences(expected, actual, 'Observation')
         if result:
-            msg = 'Differences found in observation {}\n{}'. \
-                format(expected.observation_id, '\n'.join(
-                [r for r in result]))
+            msg = 'Differences found obs id {} file id {} instr {}\n{}'.format(
+                expected.observation_id, file_id, _get_instr(file_id),
+                '\n'.join([r for r in result]))
             raise AssertionError(msg)
         # assert False  # cause I want to see logging messages
 
 
-def _build_temp_content(test_name):
-    x = test_name.split('/')
-    length = len(x)
-    stuff = x[length-1].split('.')[0]
-    temp_named_file = '/tmp/{}.fits.header'.format(stuff)
-    content = None
-    with open(test_name) as f:
-        content = f.readlines()
+def _get_obs_id(file_id):
+    return LOOKUP[file_id][0]
 
-    if content is not None:
-        import caom2utils.fits2caom2 as f2c2
-        with open(temp_named_file, 'w') as f:
-            f.writelines(f2c2._make_understandable_string(content[0]))
 
-    return temp_named_file
+def _get_instr(file_id):
+    return LOOKUP[file_id][2]
 
 
 def _get_local(test_name):
     jpg = test_name.replace('.fits.header', '.jpg')
-    # TODO - fix header metadata as returned by Gemini fullmetadata service
-    # header_name = _build_temp_content(test_name)
     header_name = test_name
     if os.path.exists(jpg):
         return '{} {}'.format(jpg, header_name)
-    # elif test_name.index('N20150807G0044') != -1:
-    elif 'N20150807G0044' in test_name:
-        b = '{}/GRACES/N20150807G0044i.fits.header'.format(TESTDATA_DIR)
-        c = '{}/GRACES/N20150807G0044m.fits.header'.format(TESTDATA_DIR)
-        return '{} {} {}'.format(header_name, b, c)
     else:
         return header_name
 
@@ -300,15 +276,7 @@ def _get_file_id(basename):
 def _get_lineage(dirname, basename, product_id, file_id):
     logging.error('basename is {}'.format(basename))
     jpg_file = basename.replace('.fits.header', '.jpg')
-    if 'N20150807G0044' in basename:
-        orig = mc.get_lineage(ARCHIVE, product_id, 'N20150807G0044.fits.header',
-                              SCHEME)
-        m = mc.get_lineage(ARCHIVE, product_id, 'N20150807G0044m.fits.header',
-                           SCHEME)
-        i = mc.get_lineage(ARCHIVE, product_id, 'N20150807G0044i.fits.header',
-                           SCHEME)
-        return '{} {} {}'.format(orig, i, m)
-    elif os.path.exists(os.path.join(dirname, jpg_file)):
+    if os.path.exists(os.path.join(dirname, jpg_file)):
         jpg = mc.get_lineage(ARCHIVE, product_id, '{}.jpg'.format(file_id),
                              SCHEME)
         fits = mc.get_lineage(ARCHIVE, product_id, '{}.fits'.format(file_id),
@@ -320,8 +288,36 @@ def _get_lineage(dirname, basename, product_id, file_id):
 
 
 def _get_product_id(file_id):
-    if 'N20150807G0044' in file_id:
-        product_id = 'N20150807G0044'
+    if file_id == 'N20150807G0044m' or file_id == 'N20150807G0044i':
+        product_id = 'intensity'
     else:
         product_id = LOOKUP[file_id][0]
     return product_id
+
+
+def _get_filter_id(product_id, file_id):
+    if 'intensity' == product_id:
+        filter_id = 'x'
+    else:
+        filter_id = LOOKUP[file_id][1]
+    return filter_id
+
+
+def _get_expected_file_name(dirname, product_id, file_id, obs_id):
+    if file_id == 'N20150807G0044m':
+        expected_fqn = '{}/{}{}.xml'.format(dirname, obs_id, 'm')
+    elif file_id == 'N20150807G0044i':
+        expected_fqn = '{}/{}{}.xml'.format(dirname, obs_id, 'i')
+    else:
+        expected_fqn = '{}/{}.xml'.format(dirname, product_id)
+    return expected_fqn
+
+
+def _get_actual_file_name(dirname, product_id, file_id, obs_id):
+    if file_id == 'N20150807G0044m':
+        actual_fqn = '{}/{}{}.actual.xml'.format(dirname, obs_id, 'm')
+    elif file_id == 'N20150807G0044i':
+        actual_fqn = '{}/{}{}.actual.xml'.format(dirname, obs_id, 'i')
+    else:
+        actual_fqn = '{}/{}.actual.xml'.format(dirname, product_id)
+    return actual_fqn
