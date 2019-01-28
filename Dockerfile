@@ -14,14 +14,14 @@ RUN pip install pytest && pip install mock && pip install flake8 && \
         pip install pytest-cov && pip install aenum && pip install future
 
 WORKDIR /usr/src/app
-RUN git clone https://github.com/opencadc-metadata-curation/caom2tools.git && \
-  cd caom2tools && git pull origin master && \
-  pip install ./caom2utils && pip install ./caom2pipe
+#RUN git clone https://github.com/opencadc-metadata-curation/caom2tools.git && \
+#  cd caom2tools && git pull origin master && \
+#  pip install ./caom2utils && pip install ./caom2pipe && cd ..
   
 RUN apk --no-cache add imagemagick
 
-RUN git clone https://github.com/opencadc-metadata-curation/gem2caom2.git && \
-  pip install ./gem2caom2
+#RUN git clone https://github.com/opencadc-metadata-curation/gem2caom2.git && \
+#  pip install ./gem2caom2
 
 COPY ./docker-entrypoint.sh ./
 COPY ./config.yml ./

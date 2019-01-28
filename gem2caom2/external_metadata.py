@@ -117,6 +117,7 @@ NIRI_RESOLVING_POWER = {
 }
 
 obs_metadata = {}
+om = None
 
 
 def get_obs_metadata(file_id):
@@ -146,8 +147,11 @@ def get_obs_metadata(file_id):
         raise mc.CadcException(
             'Unable to download Gemini observation metadata from {} because {}'
                 .format(gemini_url, str(e)))
+    import gemini_obs_metadata as gom
     global obs_metadata
     obs_metadata = metadata
+    global om
+    om = gom.GeminiObsMetadata(metadata, file_id)
     logging.debug('End get_obs_metadata')
 
 

@@ -253,7 +253,7 @@ def get_energy_metadata(file_id):
     :return: Dictionary of energy metadata.
     """
     logging.debug('Begin get_energy_metadata')
-    instrument = em.obs_metadata['instrument']
+    instrument = em.om.get('instrument')
     if instrument in ['GMOS-N', 'GMOS-S']:
         energy_metadata = em.gmos_metadata()
     elif instrument in ['NIRI']:
@@ -302,7 +302,7 @@ def get_chunk_wcs(bp, obs_id, file_id):
 
         # don't set the cunit since fits2caom2 sets the cunit
         # based on the ctype.
-        instrument = mc.response_lookup(em.obs_metadata, 'instrument')
+        instrument = em.om.get('instrument')
         if instrument is not None and instrument in ['NIRI']:
             bp.set('Chunk.energy.bandpassName', 'get_niri_filter_name(header)')
         else:
@@ -351,7 +351,7 @@ def get_time_crval(header):
 
 
 def get_calibration_level(header):
-    reduction = mc.response_lookup(em.obs_metadata, 'reduction')
+    reduction = em.om.get('reduction')
     result = CalibrationLevel.RAW_STANDARD
     if reduction is not None and 'PROCESSED_SCIENCE' in reduction:
         result = CalibrationLevel.CALIBRATED
@@ -398,7 +398,7 @@ def get_data_product_type(header):
     :param header:  The FITS header for the current extension.
     :return: The Plane DataProductType, or None if not found.
     """
-    mode = mc.response_lookup(em.obs_metadata, 'mode')
+    mode = em.om.get('mode')
     obs_type = _get_obs_type(header)
     if ((mode is not None and mode == 'imaging') or
             (obs_type is not None and obs_type == 'MASK')):
@@ -427,7 +427,7 @@ def get_meta_release(header):
     """
     meta_release = header.get('DATE-OBS')
     if meta_release is None:
-        meta_release = mc.response_lookup(em.obs_metadata, 'release')
+        meta_release = em.om.get('release')
     return meta_release
 
 
@@ -482,7 +482,7 @@ def get_target_type(header):
     :param header:  The FITS header for the current extension.
     :return: The Target TargetType, or None if not found.
     """
-    spectroscopy = mc.response_lookup(em.obs_metadata, 'spectroscopy')
+    spectroscopy = em.om.get('spectroscopy')
     if spectroscopy:
         return TargetType.OBJECT
     else:
@@ -495,7 +495,7 @@ def _get_obs_class(header):
     metadata."""
     obs_class = header.get('OBSCLASS')
     if obs_class is None:
-        obs_class = mc.response_lookup(em.obs_metadata, 'observation_class')
+        obs_class = em.om.get('observation_class')
     return obs_class
 
 
@@ -505,7 +505,7 @@ def _get_obs_type(header):
     metadata."""
     obs_type = header.get('OBSTYPE')
     if obs_type is None:
-        obs_type = mc.response_lookup(em.obs_metadata, 'observation_type')
+        obs_type = em.om.get('observation_type')
     return obs_type
 
 
@@ -598,7 +598,7 @@ def _update_chunk_energy(chunk, mode, headers):
         delta = 0.0
         resolving_power = 0.0
         filter_md = filter_metadata(
-            em.obs_metadata['instrument'], bandpass_name)
+            em.om.get('instrument'), bandpass_name)
         if mode == 'imaging':
             delta = filter_md['wl_eff_width']
             cval = filter_md['wl_eff']
@@ -642,8 +642,8 @@ def _update_chunk_position(chunk):
     logging.debug('Begin _update_chunk_position')
     mc.check_param(chunk, Chunk)
 
-    ra = mc.response_lookup(em.obs_metadata, 'ra')
-    dec = mc.response_lookup(em.obs_metadata, 'dec')
+    ra = em.om.get('ra')
+    dec = em.om.get('dec')
 
     if ra is not None and dec is not None:
         axis1 = Axis(ctype='RA---TAN', cunit=None)

@@ -1,0 +1,313 @@
+Filename: N20150807G0044i.fits.bz2
+
+AstroData Types: ['GRACES', 'SPECT', 'PROCESSED_SCIENCE', 'RAW', 'UNPREPARED']
+
+
+--- HDU 0 ---
+SIMPLE  =                    T / conforms to FITS standard                      
+BITPIX  =                    8 / array data type                                
+NAXIS   =                    0 / number of array dimensions                     
+EXTEND  =                    T                                                  
+INHERIT =                    F / No need to inherit global keywords             
+FILENAME= 'N20150807G0044'     / Base filename at acquisition                   
+DATE    = '2015-08-07T08:11:34' / UTC Date of file creation                     
+HSTTIME = 'Thu Aug 06 22:11:34 HST 2015' / Local time in Hawaii                 
+IMAGESWV= 'CFHT DetCom v3.60.15 (Apr 23 2015)' / Image creation software version
+OBSTYPE = 'OBJECT  '           / Observation / Exposure type                    
+EXPTYPE = 'OBJECT  '           / See OBSTYPE                                    
+EXPTIME =                100.0 / Integration time (seconds)                     
+DARKTIME=                100.0 / Dark current time (seconds)                    
+SHUTOPEN= '2015-08-07T8:09:54.610' / Shutter blade opening time (UTC)           
+SHUTCLOS= '2015-08-07T8:11:34.652' / Shutter blade closing time (UTC)           
+DETECTOR= 'OLAPA   '           / Science Detector                               
+CCD     = 'Unknown '           / Science Detector (use DETECTOR)                
+IMAGEID =                    0 / CCD chip number                                
+CHIPID  =                    0 / Use IMAGEID instead                            
+DETSIZE = '[1:2048,1:4608]'    / Total data pixels in full mosaic               
+RASTER  = 'FULL    '           / Active raster description                      
+CCDSUM  = '1 1     '           / Binning factors                                
+CCDBIN1 =                    1 / Binning factor along first axis                
+CCDBIN2 =                    1 / Binning factor along second axis               
+PIXSIZE =                 13.5 / Pixel size for both axes (microns)             
+AMPLIST = 'a       '           / List of amplifiers for this image              
+CCDSIZE = '[1:2048,1:4608]'    / Detector imaging area size                     
+CCDSEC  = '[1:2048,1:4608]'    / Read out area of the detector (unbinned)       
+BIASSEC = '[2049:2080,1:4608]' / Overscan (bias) area of the detector           
+MAXLIN  =                65535 / Maximum linearity value (ADU)                  
+SATURATE=                65535 / Saturation value (ADU)                         
+GAINA   =                 1.30 / Amp A gain (electrons/ADU)                     
+RDNOISEA=                 4.20 / Amp A read noise (electrons)                   
+DARKCUR =                    0 / Dark current (e-/pixel/hour)                   
+RDTIME  =                38.00 / Read out time (sec)                            
+CONSWV  = 'olA=137,DCU=49'     / Controller software DSPID and SERNO versions   
+DETSTAT = 'detector temp is low' / Detector temp range (-90..-105)              
+DETTEM  =                -99.9 / Detector temp deg C = 745.502 + -0.278 * 3041  
+INSTRUME= 'GRACES  '           / Instrument Name                                
+ECAMFOC =                -3.45 / ESPaDOnS camera focus position (mm)            
+EHARTPOS= 'OUT     '           / ESPaDOnS hartmann position FULL/DOWN/UP/OUT    
+EEMSHUT = 'CLOSE   '           / ESPaDOnS exposure meter shutter OPEN/CLOSED    
+EEMSTATE= 'OFF     '           / ESPaDOnS exposure meter state ON/OFF           
+EEMCNTS =                -9999 / ESPaDOnS exposure meter count average          
+ETSP1BEG=                15.16 / ESPaDOnS down mirror temp at start (deg C)     
+ETSP2BEG=                15.35 / ESPaDOnS camera temp at start (deg C)          
+ETSP3BEG=                15.27 / ESPaDOnS up mirror temp at start (deg C)       
+ETSP4BEG=                14.91 / ESPaDOnS hygrometer temp at start (deg C)      
+EPRSPBEG=                 3.79 / ESPaDOnS relative pressure at start (mb)       
+ERHSPBEG=                31.98 / ESPaDOnS relative humidity at start (%)        
+ETSP1END=                15.14 / ESPaDOnS down mirror temp at end (deg C)       
+ETSP2END=                15.38 / ESPaDOnS camera temp at end (deg C)            
+ETSP4END=                14.31 / ESPaDOnS hygrometer temp at end (deg C)        
+EPRSPEND=                 3.72 / ESPaDOnS relative pressure at end (mb)         
+EREADSPD= 'Normal: 4.20e noise, 1.30e/ADU, 38s' / ESPaDOnS det read out xslow/sl
+GSLIPOS = 'FOURSLICE'          / GRACES slicer bench position (# and mm)        
+GSLICER = 'FOURSLICE'          / GRACES slicer position (# and deg)             
+GDEKKER = 'FOURSLICE'          / GRACES dekker position (# and mm)              
+GPMIRROR= 'GEMINI  '           / GRACES pickoff mirror position (# and mm)      
+GFIBMODE= 'GRACES  '           / GRACES fiber position (ESPADONS or GRACES)     
+OBSID   = 'GN-2015B-Q-1-12'    /Observation ID / Data label                     
+OBJECT  = 'HD190404'           /Object Name                                     
+RA      = '300.96708'          /Right Ascension                                 
+DEC     = '23.333889'          /Declination of Target                           
+POFFSET =        7.72089995344 /Telescope offset in p in arcsec                 
+QOFFSET =        1.98510003370 /Telescope offset in q in arcsec                 
+RAWIQ   = '70-percentile'      /Raw Image Quality                               
+RAWCC   = '70-percentile'      /Raw Cloud Cover                                 
+RAWWV   = 'Any     '           /Raw Water Vapour/Transparency                   
+RAWBG   = '20-percentile'      /Raw Background                                  
+TELESCOP= 'Gemini-North'       /Gemini-North                                    
+EPOCH   =              2000.00 /Epoch for Target coordinates                    
+CRPA    =        96.2788954277 /Current Cass Rotator Position Angle             
+GEMPRGID= 'GN-2015B-Q-1'       /Gemini programme ID                             
+AIRMASS = '1.047   '           /Mean airmass for the observation                
+AMSTART = '1.048   '           /Airmass at start of exposure                    
+AMEND   = '1.046   '           /Airmass at end of exposure                      
+HA      = '-01:14:24.96'       /Hour Angle Sexagesimal                          
+HAD     = '-1.2402694'         /Hour Angle Decimal                              
+MJDATE  = '57241.340'          /Modified Julian Date at start of observation    
+INSTMODE= 'Spectroscopy, star only' /Observing mode                             
+RELEASE = '2017-02-07'         /End of proprietary period YYYY-MM-DD            
+DATALAB = 'GN-2015B-Q-1-12-1003' /DHS data label                                
+COMMENT ----------------------------------------------------                    
+COMMENT | Processed by the CFHT OPERA Open Source Pipeline |                    
+COMMENT ----------------------------------------------------                    
+COMMENT opera-1.0.1225 build date Wed Feb 17 10:15:01 HST 2016                  
+COMMENT Processing Date                                                         
+COMMENT ---------------                                                         
+COMMENT Tue Sep 20 03:59:24 HST 2016                                            
+COMMENT ------------------------------------------------------------------------
+COMMENT 21                                                                      
+SNR22   = '136.31 / 163.82'    / snr per spectral / ccd bin                     
+SNR23   = '259.16 / 311.47'    / snr per spectral / ccd bin                     
+SNR24   = '303.96 / 365.32'    / snr per spectral / ccd bin                     
+SNR25   = '424.06 / 509.66'    / snr per spectral / ccd bin                     
+SNR26   = '448.8 / 539.4'      / snr per spectral / ccd bin                     
+SNR27   = '472.77 / 568.21'    / snr per spectral / ccd bin                     
+SNR28   = '453.59 / 545.15'    / snr per spectral / ccd bin                     
+SNR29   = '472 / 567.28'       / snr per spectral / ccd bin                     
+SNR30   = '475.06 / 570.96'    / snr per spectral / ccd bin                     
+SNR31   = '464.4 / 558.14'     / snr per spectral / ccd bin                     
+SNR32   = '455.63 / 547.6'     / snr per spectral / ccd bin                     
+SNR33   = '419.21 / 503.83'    / snr per spectral / ccd bin                     
+SNR34   = '417.14 / 501.34'    / snr per spectral / ccd bin                     
+SNR35   = '390.44 / 469.25'    / snr per spectral / ccd bin                     
+SNR36   = '362 / 435.07'       / snr per spectral / ccd bin                     
+SNR37   = '347.16 / 417.23'    / snr per spectral / ccd bin                     
+SNR38   = '314.19 / 377.61'    / snr per spectral / ccd bin                     
+SNR39   = '295.91 / 355.64'    / snr per spectral / ccd bin                     
+SNR40   = '283.37 / 340.57'    / snr per spectral / ccd bin                     
+SNR41   = '269.87 / 324.35'    / snr per spectral / ccd bin                     
+SNR42   = '253.37 / 304.51'    / snr per spectral / ccd bin                     
+SNR43   = '240.33 / 288.84'    / snr per spectral / ccd bin                     
+SNR44   = '212.91 / 255.89'    / snr per spectral / ccd bin                     
+SNR45   = '204.64 / 245.94'    / snr per spectral / ccd bin                     
+SNR46   = '192.23 / 231.03'    / snr per spectral / ccd bin                     
+SNR47   = '174.57 / 209.81'    / snr per spectral / ccd bin                     
+SNR48   = '153.77 / 184.81'    / snr per spectral / ccd bin                     
+SNR49   = '135.67 / 163.05'    / snr per spectral / ccd bin                     
+SNR50   = '115.18 / 138.43'    / snr per spectral / ccd bin                     
+SNR51   = '91.341 / 109.78'    / snr per spectral / ccd bin                     
+SNR52   = '72.252 / 86.837'    / snr per spectral / ccd bin                     
+SNR53   = '52.592 / 63.208'    / snr per spectral / ccd bin                     
+SNR54   = '45.054 / 54.149'    / snr per spectral / ccd bin                     
+SNR55   = '34.205 / 41.109'    / snr per spectral / ccd bin                     
+SNR56   = '24.011 / 28.858'    / snr per spectral / ccd bin                     
+HRV     =             -1.81252 / Heliocentric RV correction (km/s)              
+HRVLUNAR=           0.00930156 / lunar component of HRV correction (km/s)       
+HRVORBIT=             -1.93523 / orbital component of HRV correction (km/s)     
+HRVDIURN=             0.113407 / diurnal component of HRV correction (km/s)     
+HJDUTC  =       2457241.845095 / Heliocentric Julian date (UTC) mid-exposure    
+HJDTT   =       2457241.845884 / Heliocentric Julian date (TT) mid-exposure     
+TELLRV  =             0.043537 / telluric RV correction (km/s)                  
+TELLERR =             0.348319 / telluric RV correction error (km/s)            
+REDUCTIO= 'Intensity'          / Type of reduction                              
+NORMAL  = '2       '           / Normalized and Un-normalized Data              
+COMMENT File contains automatic wavelength correction and uncorrected data.     
+COL1    = 'Wavelength'         / Normalized                                     
+COL2    = 'Intensity'          / Normalized                                     
+COL3    = 'ErrorBar'           / Normalized                                     
+COL4    = 'Wavelength'         / UnNormalized                                   
+COL5    = 'Intensity'          / UnNormalized                                   
+COL6    = 'ErrorBar'           / UnNormalized                                   
+COL7    = 'Wavelength'         / Normalized, no autowave correction             
+COL8    = 'Intensity'          / Normalized, no autowave correction             
+COL9    = 'ErrorBar'           / Normalized, no autowave correction             
+COL10   = 'Wavelength'         / UnNormalized, no autowave correction           
+COL11   = 'Intensity'          / UnNormalized, no autowave correction           
+COL12   = 'ErrorBar'           / UnNormalized, no autowave correction           
+
+--- HDU 1 ---
+XTENSION= 'IMAGE   '           / Image extension                                
+BITPIX  =                  -32 / array data type                                
+NAXIS   =                    2 / number of array dimensions                     
+NAXIS1  =               194467                                                  
+NAXIS2  =                   12                                                  
+PCOUNT  =                    0 / number of parameters                           
+GCOUNT  =                    1 / number of groups                               
+EXTNAME = 'SCI     '           / ad4549: added by AstroData                     
+EXTVER  =                    1                                                  
+INHERIT =                    F / No need to inherit global keywords             
+FILENAME= 'N20150807G0044'     / Base filename at acquisition                   
+DATE    = '2015-08-07T08:11:34' / UTC Date of file creation                     
+HSTTIME = 'Thu Aug 06 22:11:34 HST 2015' / Local time in Hawaii                 
+IMAGESWV= 'CFHT DetCom v3.60.15 (Apr 23 2015)' / Image creation software version
+OBSTYPE = 'OBJECT  '           / Observation / Exposure type                    
+EXPTYPE = 'OBJECT  '           / See OBSTYPE                                    
+EXPTIME =                100.0 / Integration time (seconds)                     
+DARKTIME=                100.0 / Dark current time (seconds)                    
+SHUTOPEN= '2015-08-07T8:09:54.610' / Shutter blade opening time (UTC)           
+SHUTCLOS= '2015-08-07T8:11:34.652' / Shutter blade closing time (UTC)           
+DETECTOR= 'OLAPA   '           / Science Detector                               
+CCD     = 'Unknown '           / Science Detector (use DETECTOR)                
+IMAGEID =                    0 / CCD chip number                                
+CHIPID  =                    0 / Use IMAGEID instead                            
+DETSIZE = '[1:2048,1:4608]'    / Total data pixels in full mosaic               
+RASTER  = 'FULL    '           / Active raster description                      
+CCDSUM  = '1 1     '           / Binning factors                                
+CCDBIN1 =                    1 / Binning factor along first axis                
+CCDBIN2 =                    1 / Binning factor along second axis               
+PIXSIZE =                 13.5 / Pixel size for both axes (microns)             
+AMPLIST = 'a       '           / List of amplifiers for this image              
+CCDSIZE = '[1:2048,1:4608]'    / Detector imaging area size                     
+CCDSEC  = '[1:2048,1:4608]'    / Read out area of the detector (unbinned)       
+BIASSEC = '[2049:2080,1:4608]' / Overscan (bias) area of the detector           
+MAXLIN  =                65535 / Maximum linearity value (ADU)                  
+SATURATE=                65535 / Saturation value (ADU)                         
+GAINA   =                 1.30 / Amp A gain (electrons/ADU)                     
+RDNOISEA=                 4.20 / Amp A read noise (electrons)                   
+DARKCUR =                    0 / Dark current (e-/pixel/hour)                   
+RDTIME  =                38.00 / Read out time (sec)                            
+CONSWV  = 'olA=137,DCU=49'     / Controller software DSPID and SERNO versions   
+DETSTAT = 'detector temp is low' / Detector temp range (-90..-105)              
+DETTEM  =                -99.9 / Detector temp deg C = 745.502 + -0.278 * 3041  
+INSTRUME= 'GRACES  '           / Instrument Name                                
+ECAMFOC =                -3.45 / ESPaDOnS camera focus position (mm)            
+EHARTPOS= 'OUT     '           / ESPaDOnS hartmann position FULL/DOWN/UP/OUT    
+EEMSHUT = 'CLOSE   '           / ESPaDOnS exposure meter shutter OPEN/CLOSED    
+EEMSTATE= 'OFF     '           / ESPaDOnS exposure meter state ON/OFF           
+EEMCNTS =                -9999 / ESPaDOnS exposure meter count average          
+ETSP1BEG=                15.16 / ESPaDOnS down mirror temp at start (deg C)     
+ETSP2BEG=                15.35 / ESPaDOnS camera temp at start (deg C)          
+ETSP3BEG=                15.27 / ESPaDOnS up mirror temp at start (deg C)       
+ETSP4BEG=                14.91 / ESPaDOnS hygrometer temp at start (deg C)      
+EPRSPBEG=                 3.79 / ESPaDOnS relative pressure at start (mb)       
+ERHSPBEG=                31.98 / ESPaDOnS relative humidity at start (%)        
+ETSP1END=                15.14 / ESPaDOnS down mirror temp at end (deg C)       
+ETSP2END=                15.38 / ESPaDOnS camera temp at end (deg C)            
+ETSP4END=                14.31 / ESPaDOnS hygrometer temp at end (deg C)        
+EPRSPEND=                 3.72 / ESPaDOnS relative pressure at end (mb)         
+EREADSPD= 'Normal: 4.20e noise, 1.30e/ADU, 38s' / ESPaDOnS det read out xslow/sl
+GSLIPOS = 'FOURSLICE'          / GRACES slicer bench position (# and mm)        
+GSLICER = 'FOURSLICE'          / GRACES slicer position (# and deg)             
+GDEKKER = 'FOURSLICE'          / GRACES dekker position (# and mm)              
+GPMIRROR= 'GEMINI  '           / GRACES pickoff mirror position (# and mm)      
+GFIBMODE= 'GRACES  '           / GRACES fiber position (ESPADONS or GRACES)     
+OBSID   = 'GN-2015B-Q-1-12'    /Observation ID / Data label                     
+OBJECT  = 'HD190404'           /Object Name                                     
+RA      = '300.96708'          /Right Ascension                                 
+DEC     = '23.333889'          /Declination of Target                           
+POFFSET =        7.72089995344 /Telescope offset in p in arcsec                 
+QOFFSET =        1.98510003370 /Telescope offset in q in arcsec                 
+RAWIQ   = '70-percentile'      /Raw Image Quality                               
+RAWCC   = '70-percentile'      /Raw Cloud Cover                                 
+RAWWV   = 'Any     '           /Raw Water Vapour/Transparency                   
+RAWBG   = '20-percentile'      /Raw Background                                  
+TELESCOP= 'Gemini-North'       /Gemini-North                                    
+EPOCH   =              2000.00 /Epoch for Target coordinates                    
+CRPA    =        96.2788954277 /Current Cass Rotator Position Angle             
+GEMPRGID= 'GN-2015B-Q-1'       /Gemini programme ID                             
+AIRMASS = '1.047   '           /Mean airmass for the observation                
+AMSTART = '1.048   '           /Airmass at start of exposure                    
+AMEND   = '1.046   '           /Airmass at end of exposure                      
+HA      = '-01:14:24.96'       /Hour Angle Sexagesimal                          
+HAD     = '-1.2402694'         /Hour Angle Decimal                              
+MJDATE  = '57241.340'          /Modified Julian Date at start of observation    
+INSTMODE= 'Spectroscopy, star only' /Observing mode                             
+RELEASE = '2017-02-07'         /End of proprietary period YYYY-MM-DD            
+DATALAB = 'GN-2015B-Q-1-12-1003' /DHS data label                                
+COMMENT ----------------------------------------------------                    
+COMMENT | Processed by the CFHT OPERA Open Source Pipeline |                    
+COMMENT ----------------------------------------------------                    
+COMMENT opera-1.0.1225 build date Wed Feb 17 10:15:01 HST 2016                  
+COMMENT Processing Date                                                         
+COMMENT ---------------                                                         
+COMMENT Tue Sep 20 03:59:24 HST 2016                                            
+COMMENT ------------------------------------------------------------------------
+COMMENT 21                                                                      
+SNR22   = '136.31 / 163.82'    / snr per spectral / ccd bin                     
+SNR23   = '259.16 / 311.47'    / snr per spectral / ccd bin                     
+SNR24   = '303.96 / 365.32'    / snr per spectral / ccd bin                     
+SNR25   = '424.06 / 509.66'    / snr per spectral / ccd bin                     
+SNR26   = '448.8 / 539.4'      / snr per spectral / ccd bin                     
+SNR27   = '472.77 / 568.21'    / snr per spectral / ccd bin                     
+SNR28   = '453.59 / 545.15'    / snr per spectral / ccd bin                     
+SNR29   = '472 / 567.28'       / snr per spectral / ccd bin                     
+SNR30   = '475.06 / 570.96'    / snr per spectral / ccd bin                     
+SNR31   = '464.4 / 558.14'     / snr per spectral / ccd bin                     
+SNR32   = '455.63 / 547.6'     / snr per spectral / ccd bin                     
+SNR33   = '419.21 / 503.83'    / snr per spectral / ccd bin                     
+SNR34   = '417.14 / 501.34'    / snr per spectral / ccd bin                     
+SNR35   = '390.44 / 469.25'    / snr per spectral / ccd bin                     
+SNR36   = '362 / 435.07'       / snr per spectral / ccd bin                     
+SNR37   = '347.16 / 417.23'    / snr per spectral / ccd bin                     
+SNR38   = '314.19 / 377.61'    / snr per spectral / ccd bin                     
+SNR39   = '295.91 / 355.64'    / snr per spectral / ccd bin                     
+SNR40   = '283.37 / 340.57'    / snr per spectral / ccd bin                     
+SNR41   = '269.87 / 324.35'    / snr per spectral / ccd bin                     
+SNR42   = '253.37 / 304.51'    / snr per spectral / ccd bin                     
+SNR43   = '240.33 / 288.84'    / snr per spectral / ccd bin                     
+SNR44   = '212.91 / 255.89'    / snr per spectral / ccd bin                     
+SNR45   = '204.64 / 245.94'    / snr per spectral / ccd bin                     
+SNR46   = '192.23 / 231.03'    / snr per spectral / ccd bin                     
+SNR47   = '174.57 / 209.81'    / snr per spectral / ccd bin                     
+SNR48   = '153.77 / 184.81'    / snr per spectral / ccd bin                     
+SNR49   = '135.67 / 163.05'    / snr per spectral / ccd bin                     
+SNR50   = '115.18 / 138.43'    / snr per spectral / ccd bin                     
+SNR51   = '91.341 / 109.78'    / snr per spectral / ccd bin                     
+SNR52   = '72.252 / 86.837'    / snr per spectral / ccd bin                     
+SNR53   = '52.592 / 63.208'    / snr per spectral / ccd bin                     
+SNR54   = '45.054 / 54.149'    / snr per spectral / ccd bin                     
+SNR55   = '34.205 / 41.109'    / snr per spectral / ccd bin                     
+SNR56   = '24.011 / 28.858'    / snr per spectral / ccd bin                     
+HRV     =             -1.81252 / Heliocentric RV correction (km/s)              
+HRVLUNAR=           0.00930156 / lunar component of HRV correction (km/s)       
+HRVORBIT=             -1.93523 / orbital component of HRV correction (km/s)     
+HRVDIURN=             0.113407 / diurnal component of HRV correction (km/s)     
+HJDUTC  =       2457241.845095 / Heliocentric Julian date (UTC) mid-exposure    
+HJDTT   =       2457241.845884 / Heliocentric Julian date (TT) mid-exposure     
+TELLRV  =             0.043537 / telluric RV correction (km/s)                  
+TELLERR =             0.348319 / telluric RV correction error (km/s)            
+REDUCTIO= 'Intensity'          / Type of reduction                              
+NORMAL  = '2       '           / Normalized and Un-normalized Data              
+COMMENT File contains automatic wavelength correction and uncorrected data.     
+COL1    = 'Wavelength'         / Normalized                                     
+COL2    = 'Intensity'          / Normalized                                     
+COL3    = 'ErrorBar'           / Normalized                                     
+COL4    = 'Wavelength'         / UnNormalized                                   
+COL5    = 'Intensity'          / UnNormalized                                   
+COL6    = 'ErrorBar'           / UnNormalized                                   
+COL7    = 'Wavelength'         / Normalized, no autowave correction             
+COL8    = 'Intensity'          / Normalized, no autowave correction             
+COL9    = 'ErrorBar'           / Normalized, no autowave correction             
+COL10   = 'Wavelength'         / UnNormalized, no autowave correction           
+COL11   = 'Intensity'          / UnNormalized, no autowave correction           
+COL12   = 'ErrorBar'           / UnNormalized, no autowave correction           

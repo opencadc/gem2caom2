@@ -77,6 +77,7 @@ from astropy.io.votable import parse_single_table
 import gem2caom2.external_metadata as em
 
 from gem2caom2 import main_app2, APPLICATION, ARCHIVE, SCHEME, svofps
+from gem2caom2 import gemini_obs_metadata as gom
 from caom2.diff import get_differences
 from caom2pipe import manage_composable as mc
 
@@ -146,6 +147,8 @@ LOOKUP = {
     'N20160202S0098': ['GN-CAL20160202-3-039', 'x', 'GNIRS'],
     # GRACES
     'N20150807G0044': ['GN-2015B-Q-1-12-1003', 'x', 'GRACES'],
+    # 'N20150807G0044i': ['GN-2015B-Q-1-12-1003', 'x', 'GRACES'],
+    # 'N20150807G0044m': ['GN-2015B-Q-1-12-1003', 'x', 'GRACES'],
     'N20150604G0003': ['GN-CAL20150604-1000-1072', 'x', 'GRACES'],
     'N20150604G0014': ['GN-CAL20150604-1000-1081', 'x', 'GRACES'],
     'N20150807G0046': ['GN-CAL20150807-1000-1035', 'x', 'GRACES'],
@@ -157,8 +160,8 @@ def pytest_generate_tests(metafunc):
 
         file_list = []
         # for root, dirs, files in os.walk(TESTDATA_DIR):
-        for ii in ['GMOS', 'GNIRS', 'GRACES']:
-        # for ii in ['GNIRS']:
+        # for ii in ['GMOS', 'GNIRS', 'GRACES']:
+        for ii in ['GRACES']:
             for root, dirs, files in os.walk('{}/{}'.format(TESTDATA_DIR, ii)):
                 for file in files:
                     if file.endswith(".header"):
@@ -173,16 +176,24 @@ def pytest_generate_tests(metafunc):
 def test_main_app(test_name):
     basename = os.path.basename(test_name)
     dirname = os.path.dirname(test_name)
-    # file_id = basename.split('.fits')[0]
     file_id = _get_file_id(basename)
-    product_id = LOOKUP[file_id][0]
-    # lineage = mc.get_lineage(
-    #     COLLECTION, product_id, '{}.fits'.format(file_id))
+    # product_id = LOOKUP[file_id][0]
+    product_id = _get_product_id(file_id)
     lineage = _get_lineage(dirname, basename, product_id, file_id)
     input_file = '{}.in.xml'.format(product_id)
     actual_fqn = '{}/{}.actual.xml'.format(dirname, product_id)
+    logging.error(test_name)
+    logging.error(type(test_name))
+
     local = _get_local(test_name)
     plugin = PLUGIN
+
+    logging.error(test_name)
+
+    if (test_name.endswith('N20150807G0044i.fits.header') or
+        test_name.endswith('N20150807G0044m.fits.header')):
+        logging.error('done now')
+        return
 
     with patch('caom2utils.fits2caom2.CadcDataClient') as data_client_mock, \
         patch('gem2caom2.external_metadata.get_obs_metadata') as gemini_client_mock, \
@@ -207,6 +218,9 @@ def test_main_app(test_name):
                 with open(fname) as f:
                     y = json.loads(f.read())
                     em.obs_metadata = y[0]
+                    em.om = gom.GeminiObsMetadata(y, file_id)
+                # >>> with open('./GN-2015B-Q-1-12-1003.json') as f:
+                #     ...     x = json.load(f)
             except Exception as e:
                 logging.error(e)
 
@@ -267,6 +281,11 @@ def _get_local(test_name):
     header_name = test_name
     if os.path.exists(jpg):
         return '{} {}'.format(jpg, header_name)
+    # elif test_name.index('N20150807G0044') != -1:
+    elif 'N20150807G0044' in test_name:
+        b = '{}/GRACES/N20150807G0044i.fits.header'.format(TESTDATA_DIR)
+        c = '{}/GRACES/N20150807G0044m.fits.header'.format(TESTDATA_DIR)
+        return '{} {} {}'.format(header_name, b, c)
     else:
         return header_name
 
@@ -279,8 +298,17 @@ def _get_file_id(basename):
 
 
 def _get_lineage(dirname, basename, product_id, file_id):
+    logging.error('basename is {}'.format(basename))
     jpg_file = basename.replace('.fits.header', '.jpg')
-    if os.path.exists(os.path.join(dirname, jpg_file)):
+    if 'N20150807G0044' in basename:
+        orig = mc.get_lineage(ARCHIVE, product_id, 'N20150807G0044.fits.header',
+                              SCHEME)
+        m = mc.get_lineage(ARCHIVE, product_id, 'N20150807G0044m.fits.header',
+                           SCHEME)
+        i = mc.get_lineage(ARCHIVE, product_id, 'N20150807G0044i.fits.header',
+                           SCHEME)
+        return '{} {} {}'.format(orig, i, m)
+    elif os.path.exists(os.path.join(dirname, jpg_file)):
         jpg = mc.get_lineage(ARCHIVE, product_id, '{}.jpg'.format(file_id),
                              SCHEME)
         fits = mc.get_lineage(ARCHIVE, product_id, '{}.fits'.format(file_id),
@@ -289,3 +317,11 @@ def _get_lineage(dirname, basename, product_id, file_id):
     else:
         return mc.get_lineage(ARCHIVE, product_id, '{}.fits'.format(file_id),
                               SCHEME)
+
+
+def _get_product_id(file_id):
+    if 'N20150807G0044' in file_id:
+        product_id = 'N20150807G0044'
+    else:
+        product_id = LOOKUP[file_id][0]
+    return product_id
