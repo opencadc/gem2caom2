@@ -145,14 +145,13 @@ def pytest_generate_tests(metafunc):
         ## file_list = [os.path.join(TESTDATA_DIR, name) for name in os.listdir(TESTDATA_DIR) if name.endswith('header')]
 
         file_list = []
-        for root, dirs, files in os.walk(TESTDATA_DIR):
+        # for root, dirs, files in os.walk(TESTDATA_DIR):
         # for root, dirs, files in os.walk('{}/{}'.format(TESTDATA_DIR, 'GMOS')):
-            for file in files:
-                if file.endswith(".header"):
-                    file_list.append(os.path.join(root, file))
+        #     for file in files:
+        #         if file.endswith(".header"):
+        #             file_list.append(os.path.join(root, file))
 
-        # file_list = ['{}/{}/{}'.format(TESTDATA_DIR, 'GMOS', 'N20150216S0129.fits.header')] // broken, missing expected xml
-        # file_list = ['{}/{}/{}'.format(TESTDATA_DIR, 'NIRI', 'N20020620S0021.fits.header')]
+        file_list = ['{}/{}/{}'.format(TESTDATA_DIR, 'NIRI', 'N20020620S0035.fits.header')]
         # metafunc.parametrize('test_name', file_list[8:])
         metafunc.parametrize('test_name', file_list)
 

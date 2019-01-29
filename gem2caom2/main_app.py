@@ -270,7 +270,7 @@ def get_niri_filter_name(header):
             if any(x in key for x in filters2ignore):
                 continue
             else:
-                filter = "".join(re.findall(r'\'(.+?)\'', header))
+                filter = "".join(re.findall(r'\'(.+?)\'', key))
                 filter = filter.replace('_', '-').strip()
                 filter = ''.join('' if ch in '()' else ch for ch in filter)
                 header_filters.append(filter)
@@ -331,29 +331,31 @@ def get_chunk_wcs(bp, obs_id, file_id):
             return
 
         bp.configure_energy_axis(4)
-        filter_name = energy_metadata['filter_name']
-        resolving_power = energy_metadata['resolving_power']
-        ctype = energy_metadata['wavelength_type']
-        naxis = energy_metadata['number_pixels']
-        crpix = energy_metadata['reference_pixel']
-        crval = energy_metadata['reference_wavelength']
-        cdelt = energy_metadata['delta']
-
-        # don't set the cunit since fits2caom2 sets the cunit
-        # based on the ctype.
         if obs_metadata['instrument'] in ['NIRI']:
             bp.set('Chunk.energy.bandpassName', 'get_niri_filter_name(header)')
+            bp.set('Chunk.energy.axis.axis.ctype', 'WAVE')
+            bp.set('Chunk.energy.axis.function.naxis', 1024)
         else:
+            filter_name = energy_metadata['filter_name']
+            resolving_power = energy_metadata['resolving_power']
+            ctype = energy_metadata['wavelength_type']
+            naxis = energy_metadata['number_pixels']
+            crpix = energy_metadata['reference_pixel']
+            crval = energy_metadata['reference_wavelength']
+            cdelt = energy_metadata['delta']
+
+            # don't set the cunit since fits2caom2 sets the cunit
+            # based on the ctype.
             bp.set('Chunk.energy.bandpassName', filter_name)
-        bp.set('Chunk.energy.resolvingPower', resolving_power)
-        bp.set('Chunk.energy.specsys', 'TOPOCENT')
-        bp.set('Chunk.energy.ssysobs', 'TOPOCENT')
-        bp.set('Chunk.energy.ssyssrc', 'TOPOCENT')
-        bp.set('Chunk.energy.axis.axis.ctype', ctype)
-        bp.set('Chunk.energy.axis.function.naxis', naxis)
-        bp.set('Chunk.energy.axis.function.delta', cdelt)
-        bp.set('Chunk.energy.axis.function.refCoord.pix', crpix)
-        bp.set('Chunk.energy.axis.function.refCoord.val', crval)
+            bp.set('Chunk.energy.resolvingPower', resolving_power)
+            bp.set('Chunk.energy.specsys', 'TOPOCENT')
+            bp.set('Chunk.energy.ssysobs', 'TOPOCENT')
+            bp.set('Chunk.energy.ssyssrc', 'TOPOCENT')
+            bp.set('Chunk.energy.axis.axis.ctype', ctype)
+            bp.set('Chunk.energy.axis.function.naxis', naxis)
+            bp.set('Chunk.energy.axis.function.delta', cdelt)
+            bp.set('Chunk.energy.axis.function.refCoord.pix', crpix)
+            bp.set('Chunk.energy.axis.function.refCoord.val', crval)
     except Exception as e:
         logging.error(e)
         raise mc.CadcException(

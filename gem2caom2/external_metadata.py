@@ -180,7 +180,7 @@ def gmos_metadata(obs_metadata):
     return metadata
 
 
-def niri_metadata(obs_metadata, filename):
+def niri_metadata(obs_metadata):
     """
     Calculate NIRI energy metadata using the Gemini observation metadata.
     Requires a filter lookup to an external service.
@@ -196,7 +196,7 @@ def niri_metadata(obs_metadata, filename):
 
     if obs_metadata['observation_type'] in 'DARK':
         metadata['energy'] = False
-        return metadata
+        # return metadata
 
     # Determine energy metadata for the plane.
     # No energy information is determined for darks.  The
