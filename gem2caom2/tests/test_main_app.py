@@ -179,6 +179,15 @@ LOOKUP = {
     'S20171226S0358': ['GS-2017A-Q-28-280-012', 'x', 'F2'],
     'S20171123S0216': ['GS-2017B-Q-18-96-006', 'x', 'F2'],
     'S20171123S0166': ['GS-2017B-Q-45-156-079', 'x', 'F2'],
+    # GPI
+    'S20140422S0167': ['GS-2014A-SV-408-6-003', 'x', 'GPI'],
+    'S20180313S0108': ['GS-2018A-FT-101-5-043', 'x', 'GPI'],
+    'S20140315S0348': ['GS-CAL20140315-4-004', 'x', 'GPI'],
+    'S20140317S0028': ['GS-CAL20140316-5-012', 'x', 'GPI'],
+    'S20140321S0011': ['GS-CAL20140320-7-011', 'x', 'GPI'],
+    'S20140323S0255': ['GS-CAL20140323-6-014', 'x', 'GPI'],
+    'S20150410S0541': ['GS-CAL20150410-1-007', 'x', 'GPI'],
+    'S20160224S0323': ['GS-CAL20160224-12-017', 'x', 'GPI'],
 }
 
 
@@ -187,8 +196,8 @@ def pytest_generate_tests(metafunc):
 
         file_list = []
         # for root, dirs, files in os.walk(TESTDATA_DIR):
-        for ii in ['GMOS', 'GNIRS', 'GRACES', 'NIFS', 'GSAOI', 'F2']:
-        # for ii in ['F2']:
+        for ii in ['GMOS', 'GNIRS', 'GRACES', 'NIFS', 'GSAOI', 'F2', 'GPI']:
+        # for ii in ['GPI']:
             for root, dirs, files in os.walk('{}/{}'.format(TEST_DATA_DIR, ii)):
                 for file in files:
                     if file.endswith(".header"):

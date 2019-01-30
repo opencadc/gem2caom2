@@ -533,6 +533,7 @@ def accumulate_fits_bp(bp, obs_id, file_id):
 
     bp.set('Plane.provenance.name', 'Gemini Observatory Data')
     bp.set('Plane.provenance.project', 'Gemini Archive')
+    # Add IMAGESWV for GRACES
     bp.add_fits_attribute('Plane.provenance.producer', 'IMAGESWV')
     bp.set_default('Plane.provenance.producer', 'Gemini Observatory')
     bp.set('Plane.provenance.reference',
