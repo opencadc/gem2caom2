@@ -188,6 +188,10 @@ LOOKUP = {
     'S20140323S0255': ['GS-CAL20140323-6-014', 'x', 'GPI'],
     'S20150410S0541': ['GS-CAL20150410-1-007', 'x', 'GPI'],
     'S20160224S0323': ['GS-CAL20160224-12-017', 'x', 'GPI'],
+    # NICI
+    'S20100102S0035': ['GS-2009B-Q-14-129-029', 'x', 'NICI'],
+    'S20130528S0043': ['GS-2013A-Q-39-158-008', 'x', 'NICI'],
+    'S20100110S0026': ['GS-CAL20100110-1-026', 'x', 'NICI'],
 }
 
 
@@ -196,8 +200,9 @@ def pytest_generate_tests(metafunc):
 
         file_list = []
         # for root, dirs, files in os.walk(TESTDATA_DIR):
-        for ii in ['GMOS', 'GNIRS', 'GRACES', 'NIFS', 'GSAOI', 'F2', 'GPI']:
-        # for ii in ['GPI']:
+        for ii in ['GMOS', 'GNIRS', 'GRACES', 'NIFS', 'GSAOI', 'F2', 'GPI',
+                   'NICI']:
+        # for ii in ['NICI']:
             for root, dirs, files in os.walk('{}/{}'.format(TEST_DATA_DIR, ii)):
                 for file in files:
                     if file.endswith(".header"):
