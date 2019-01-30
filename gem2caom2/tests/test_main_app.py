@@ -152,6 +152,13 @@ LOOKUP = {
     'N20150604G0003': ['GN-CAL20150604-1000-1072', 'x', 'GRACES'],
     'N20150604G0014': ['GN-CAL20150604-1000-1081', 'x', 'GRACES'],
     'N20150807G0046': ['GN-CAL20150807-1000-1035', 'x', 'GRACES'],
+    # NIFS
+    'N20120102S0663': ['GN-2011B-Q-59-70-016', 'x', 'NIFS'],
+    'N20120411S0279': ['GN-2012A-Q-2-22-007', 'x', 'NIFS'],
+    'N20120405S0322': ['GN-2012A-Q-57-151-005', 'x', 'NIFS'],
+    'N20121229S0118': ['GN-2012B-Q-51-108-001', 'x', 'NIFS'],
+    'N20120909S0132': ['GN-2012B-Q-73-172-002', 'x', 'NIFS'],
+    'N20161007S0382': ['GN-2016B-Q-27-31-007', 'x', 'NIFS'],
 }
 
 
@@ -160,8 +167,8 @@ def pytest_generate_tests(metafunc):
 
         file_list = []
         # for root, dirs, files in os.walk(TESTDATA_DIR):
-        for ii in ['GMOS', 'GNIRS', 'GRACES']:
-        # for ii in ['GNIRS']:
+        for ii in ['GMOS', 'GNIRS', 'GRACES', 'NIFS']:
+        # for ii in ['NIFS']:
             for root, dirs, files in os.walk('{}/{}'.format(TEST_DATA_DIR, ii)):
                 for file in files:
                     if file.endswith(".header"):

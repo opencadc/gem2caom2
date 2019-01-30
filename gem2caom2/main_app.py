@@ -507,9 +507,9 @@ def _get_obs_type(header):
     """Common location to lookup OBSTYPE from the FITS headers, and if
     it's not present, to lookup observation_type from JSON summary
     metadata."""
-    obs_type = header.get('OBSTYPE')
+    obs_type = em.om.get('observation_type')
     if obs_type is None:
-        obs_type = em.om.get('observation_type')
+        obs_type = header.get('OBSTYPE')
     return obs_type
 
 
