@@ -66,39 +66,121 @@
 #
 # ***********************************************************************
 #
-
-import logging
-
 from caom2pipe import manage_composable as mc
-from gem2caom2 import GemName
+from caom2pipe import execute_composable as ec
 
 
-class GeminiObsMetadata(object):
-    """A place to hold access to output from a jsonsummary
-    query."""
+__all__ = ['GemName', 'COLLECTION', 'ARCHIVE', 'SCHEME']
 
-    def __init__(self, metadata, file_id):
-        self.obs_metadata = metadata
-        self.index = self._get_index(file_id)
 
-    def get(self, lookup):
-        return mc.response_lookup(self.obs_metadata[self.index], lookup)
+COLLECTION = 'GEMINI'
+ARCHIVE = 'GEM'
+SCHEME = 'gemini'
 
-    def reset_index(self, file_id):
-        self.index = self._get_index(file_id)
 
-    def _get_index(self, file_id):
-        result = -1
-        for index, value in enumerate(self.obs_metadata):
-            indexed_fname = mc.response_lookup(value, 'filename')
-            if indexed_fname is not None:
-                temp = GemName.remove_extensions(indexed_fname)
-                if temp == file_id:
-                    result = index
-                    break
-        if result == -1:
-            # TODO - set obs id?
-            raise mc.CadcException(
-                'JSON Summary: unrecognized file_id {} in obs_id {}'.format(
-                    file_id, ''))
-        return result
+class GemName(ec.StorageName):
+    """Naming rules:
+    - support mixed-case file name storage, exception for extensions, and
+            mixed-case obs id values - the case the inputs are provided in are
+            assumed to be correct.
+    - support uncompressed files in storage
+    """
+
+    GEM_NAME_PATTERN = '*'
+
+    def __init__(self, fname_on_disk=None, file_name=None, obs_id=None):
+        if file_name is not None:
+            self.file_id = GemName.get_file_id(file_name)
+            if '.fits' in file_name:
+                self.fname_in_ad = '{}.fits'.format(self.file_id)
+            elif GemName.is_preview(file_name):
+                self.fname_in_ad = '{}.jpg'.format(self.file_id)
+            else:
+                raise mc.CadcException(
+                    'Unrecognized file name format {}'.format(file_name))
+        elif fname_on_disk is not None:
+            self.file_id = GemName.get_file_id(fname_on_disk)
+            if '.fits' in fname_on_disk:
+                self.fname_in_ad = '{}.fits'.format(self.file_id)
+            elif GemName.is_preview(fname_on_disk):
+                self.fname_in_ad = '{}.jpg'.format(self.file_id)
+            else:
+                raise mc.CadcException(
+                    'Unrecognized file name format {}'.format(fname_on_disk))
+        else:
+            raise mc.CadcException('Require file name.')
+        super(GemName, self).__init__(
+            obs_id=None, collection=ARCHIVE,
+            collection_pattern=GemName.GEM_NAME_PATTERN,
+            fname_on_disk=fname_on_disk,
+            scheme=SCHEME)
+        self.obs_id = obs_id
+
+    @property
+    def file_uri(self):
+        return '{}:{}/{}'.format(SCHEME, self.collection, self.file_name)
+
+    @property
+    def file_name(self):
+        return self.fname_in_ad
+
+    @property
+    def compressed_file_name(self):
+        return None
+
+    @property
+    def prev(self):
+        return '{}.jpg'.format(GemName.get_file_id(self.fname_in_ad))
+
+    @property
+    def thumb(self):
+        return '{}_th.jpg'.format(GemName.get_file_id(self.fname_in_ad))
+
+    @property
+    def obs_id(self):
+        return self._obs_id
+
+    @obs_id.setter
+    def obs_id(self, value):
+        self._obs_id = value
+
+    @property
+    def file_id(self):
+        return self._file_id
+
+    @file_id.setter
+    def file_id(self, value):
+        self._file_id = value
+
+    def is_valid(self):
+        return True
+
+    # def _get_obs_id(self):
+    #     if 'TMP' in self.file_uri:
+    #         # TODO for testing only
+    #         with open(self.file_uri) as f:
+    #             headers = f.readlines()
+    #     elif '.fits' in self.file_uri:
+    #         headers = mc.get_cadc_headers(self.file_uri)
+    #     else:
+    #         temp_uri = self.file_uri.replace('.jpg', '.fits')
+    #         headers = mc.get_cadc_headers(temp_uri)
+    #     fits_headers = ac.make_headers_from_string(headers)
+    #     obs_id = fits_headers[0].get('DATALAB')
+    #     return obs_id
+
+    @staticmethod
+    def get_file_id(file_name):
+        # TODO - how important is the file name case? check with DB.
+        # return GemName.remove_extensions(file_name.lower()).upper()
+        return GemName.remove_extensions(file_name)
+
+    @staticmethod
+    def remove_extensions(name):
+        """How to get the file_id from a file_name."""
+        return name.replace('.fits', '').replace('.bz2', ''). \
+            replace('.header', '').replace('.jpg', '')
+
+    @staticmethod
+    def is_preview(entry):
+        return '.jpg' in entry

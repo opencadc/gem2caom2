@@ -85,7 +85,7 @@ def test_is_valid():
 # def test_storage_name(mock_obs_id):
 def test_storage_name():
     mock_obs_id = 'GN-2013B-Q-28-150-002'
-    test_sn = GemName(file_name='N20131203S0006i.fits.gz',
+    test_sn = GemName(file_name='N20131203S0006i.fits.bz2',
                       obs_id=mock_obs_id)
     assert test_sn.file_uri == '{}:{}/N20131203S0006i.fits'.format(SCHEME,
                                                                    ARCHIVE)

@@ -226,6 +226,8 @@ LOOKUP = {
     '2006dec10_0052': ['GS-2006B-C-8-2-0052', 'x', 'Phoenix'],
     # OSCIR
     'r01dec05_007': ['GS-2001B-Q-31-9-007', 'x', 'OSCIR'],
+    # Flamingos
+    '02sep04.0230': ['GS-2002B-DD-2-6-0230', 'x', 'Flamingos'],
 }
 
 
@@ -236,8 +238,8 @@ def pytest_generate_tests(metafunc):
         # for root, dirs, files in os.walk(TESTDATA_DIR):
         for ii in ['GMOS', 'GNIRS', 'GRACES', 'NIFS', 'GSAOI', 'F2', 'GPI',
                    'NICI', 'Michelle', 'TReCS', 'bHROS', 'hrwfs', 'Phoenix',
-                   'OSCIR']:
-        # for ii in ['OSCIR']:
+                   'OSCIR', 'Flamingos']:
+        # for ii in ['Flamingos']:
             for root, dirs, files in os.walk('{}/{}'.format(TEST_DATA_DIR, ii)):
                 for file in files:
                     if file.endswith(".header"):
