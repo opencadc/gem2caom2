@@ -419,6 +419,9 @@ def get_data_release(header):
     :param header:  The FITS header for the current extension.
     :return: The Plane release date, or None if not found.
     """
+    # every instrument has a 'release' keyword in the JSON summary
+    # not every instrument (Michelle) has a RELEASE keyword in
+    # the appropriate headers
     return em.om.get('release')
 
 
@@ -459,12 +462,17 @@ def get_obs_intent(header):
         object_value = header.get('OBJECT')
         if object_value is not None:
             instrument = header.get('INSTRUME')
-            if instrument is not None and instrument == 'GRACES':
-                obs_type = _get_obs_type(header)
-                if obs_type is not None and obs_type in cal_values:
-                    result = ObservationIntentType.CALIBRATION
-                else:
-                    result = ObservationIntentType.SCIENCE
+            if instrument is not None and instrument in ['GRACES', 'TReCS']:
+                if instrument == 'GRACES':
+                    obs_type = _get_obs_type(header)
+                    if obs_type is not None and obs_type in cal_values:
+                        result = ObservationIntentType.CALIBRATION
+                    else:
+                        result = ObservationIntentType.SCIENCE
+                elif instrument == 'TReCS':
+                    data_label = header.get('DATALAB')
+                    if data_label is not None and '-CAL' in data_label:
+                        result = ObservationIntentType.CALIBRATION
             else:
                 if object_value in cal_values:
                     result = ObservationIntentType.CALIBRATION
