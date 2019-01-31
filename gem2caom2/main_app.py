@@ -292,6 +292,11 @@ def get_art_product_type(header):
                         result = ProductType.CALIBRATION
                     else:
                         result = ProductType.SCIENCE
+                elif instrument == 'Hokupaa+QUIRC':
+                    if _is_hokupaa_calibration(header):
+                        result = ProductType.CALIBRATION
+                    else:
+                        result = ProductType.SCIENCE
                 else:
                     result = ProductType.CALIBRATION
             else:
@@ -375,7 +380,8 @@ def get_obs_intent(header):
             instrument = header.get('INSTRUME')
             # logging.error('instrument is {}'.format(instrument))
             if (instrument is not None and
-                    instrument in ['GRACES', 'TReCS', 'PHOENIX', 'OSCIR']):
+                    instrument in ['GRACES', 'TReCS', 'PHOENIX', 'OSCIR',
+                                   'Hokupaa+QUIRC']):
                 if instrument == 'GRACES':
                     obs_type = _get_obs_type(header)
                     if obs_type is not None and obs_type in cal_values:
@@ -393,6 +399,11 @@ def get_obs_intent(header):
                         result = ObservationIntentType.SCIENCE
                 elif instrument == 'OSCIR':
                     if _is_oscir_calibration(header):
+                        result = ObservationIntentType.CALIBRATION
+                    else:
+                        result = ObservationIntentType.SCIENCE
+                elif instrument == 'Hokupaa+QUIRC':
+                    if _is_hokupaa_calibration(header):
                         result = ObservationIntentType.CALIBRATION
                     else:
                         result = ObservationIntentType.SCIENCE
@@ -465,6 +476,12 @@ def _is_flamingos_calibration(header):
             'Flat' in object_value):
         return True
     return False
+
+
+def _is_hokupaa_calibration(header):
+    image_type = header.get('IMAGETYP')
+    # took the list from the AS GEMINI Obs. Type values
+    return image_type in ['DARK', 'BIAS', 'CAL', 'ARC', 'FLAT']
 
 
 def _is_oscir_calibration(header):

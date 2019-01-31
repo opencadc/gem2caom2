@@ -1,8 +1,218 @@
-<!DOCTYPE html>
-<html><head><title>Gemini Archive - 404 Not Found</title></head>
-<body>
-<h1>Not Found</h1>
-Cannot find (non-standard named) file for: 2002APR23_591
+Filename: 2002APR23_591.fits.bz2
 
-</body>
-</html>
+AstroData Types: ['HOKUPAAQUIRC', 'GEMINI_NORTH', 'GEMINI', 'RAW', 'UNPREPARED']
+
+
+--- HDU 0 ---
+SIMPLE  =                    T / conforms to FITS standard                      
+BITPIX  =                    8 / array data type                                
+NAXIS   =                    0 / number of array dimensions                     
+EXTEND  =                    T                                                  
+ORIGIN  = 'Gemini-North'       / FITS file originator                           
+IRAF-TLM= '21:24:34 (01/07/2007)' / Time of last modification                   
+DATE    = '2002-04-23T22:29:59' / UT Date of file creation (YYYY-MM-DD)         
+LATITUDE=              19.8261  / Latitude (degrees N)                          
+LONGITUD=            -155.4708  / Longitude (degrees E)                         
+INSTRUME= 'Hokupaa+QUIRC'       / Instrument used for observation               
+FRAME   =                  591  / Frame number of observation                   
+CCDPICNO=                  591  / Frame number of observation                   
+OBJECT  = 'PG1617  '           / Name of object                                 
+IMAGETYP= 'OBJECT  '            / Type of observation                           
+EXPTIME =               30.000                                                  
+EXPOSURE=               30.000  / Integration time (seconds)                    
+DARKTIME=               40.966  / Dark current time (seconds)                   
+DATE-OBS= '2002-04-23'          / UT Date of observation (YYYY-MM-DD)           
+TIME-OBS= ' 14:49:23.00'        / Universal time (UTC) at exposure start        
+UT      = ' 14:49:23.00'        / Universal time (UTC) at exposure start        
+JD      =       2452388.117627                                                  
+FILTER  = 'H       '            / Filter description                            
+PUPIL   = 'f26     '           / Pupil setting in camera                        
+GAIN    =                1.850  / Nominal gain (e-/ADU)                         
+SOFT_VER=                 1.77  / Software version number                       
+DATASEC = '[1:1024,1:1024]'     / Image area of frame                           
+NRESET  =                    1  / Number of resets before integration           
+SHUTTER =                    1  / Shutter during exposure (1=open,0=closed)     
+AUTOREAD=                    1  / Detector read after exp                       
+AUTOWRIT=                    1  / Auto file write                               
+AUTOIDLE=                    1  / Auto idle after exposure                      
+DOUBLCOR=                    1  / Double-correlated read                        
+DUMYREAD=                    1  / Dummy read before data reads                  
+QUIKDUMY=                    0  / Quick dummy read mode                         
+LONGSHUT=                    0  / Long Shutter mode                             
+NSAMPLS =                    1  / Data reads before and after exp               
+TELESCOP= 'Gemini-North'                                                        
+OBSERVAT= 'Gemini-North'                                                        
+GEMPRGID= 'GN-2002A-DD-1'      / Gemini Science Program ID                      
+OBSID   = 'GN-2002A-DD-1-319'  / Observation ID                                 
+DATALAB = 'GN-2002A-DD-1-319-591' / Data Label                                  
+OBSERVER= 'Guyon   '           / Observer(s)                                    
+SSA     = 'Hatakeyama'         / SSA                                            
+RAWIQ   = '80-percentile'      / Raw Image Quality                              
+RAWCC   = '70-percentile'      / Raw Cloud Cover                                
+RAWWV   = '80-percentile'      / Raw Water Vapour/Transparency                  
+RAWBG   = '50-percentile'      / Raw Background                                 
+RAWPIREQ= 'YES     '           / PI Requirements Met                            
+RAWGEMQA= 'USABLE  '           / Gemini Quality Assessment                      
+PIXSCALE=              0.01998 / Pixel scale (arcsec/pixel) for Gemini/Hokupaa-3
+FRATIO  =                 26.5 / Gemini/Hokupaa-36                              
+RON     =                   15 / QUIRC detector read noise (e-)                 
+INPORT  =                  -90 / Instrument position on Gemini ISS              
+EPOCH   =  2002.30830222642226 / Epoch of observations                          
+INSTXORG= 0.00000000000000E+00 / Hokupaa instrument origin in mm in tel. F.P.   
+INSTYORG= 0.00000000000000E+00 / Hokupaa instrument origin in mm in tel. F.P.   
+HKXOFF  = 'INDEF   '           / Hokupaa WFS steering mirror x offset (mm)      
+HKYOFF  = 'INDEF   '           / Hokupaa WFS steering mirror y offset (mm)      
+HKLOOPST= 'INDEF   '           / Hokupaa loop state (feedback/stopped/indef)    
+HKLPFREQ= 'INDEF   '           / Hokupaa loop frequency (Hz)                    
+HKEGAIN1= 'INDEF   '           / Hokupaa primary loop gain                      
+HKEGAIN2= 'INDEF   '           / Hokupaa secondary loop gain                    
+HKEGAIN3= 'INDEF   '           / Hokupaa tertiary loop gain                     
+HKOGAIN = 'INDEF   '           / Hokupaa WFS Membrance mirror stroke            
+HKPFLUX = 'INDEF   '           / Hokupaa WFS total photon flux                  
+TFPSCALE=             1.611444 / Telescope focal plane scale (arcsec/mm)        
+RATARG  =         245.04704167 / Hokupaa guide star RA                          
+DECTARG =          17.40766667 / Hokupaa guide star Dec                         
+EQUINOX =  2000.00000000000000 / Equinox of coordinates                         
+RA      = '16:20:11.276'       / Current Telescope RA                           
+DEC     = '+17:24:27.57'       / Current Telescope dec                          
+TELEL   = '+58:25:13.86'       / Current Telescope Elevation                    
+TELAZ   = '+271:12:46.52'      / Current Telescope Azimuth                      
+TELELERR= '-00:00:04.05'       / Current Telescope Elevation error              
+TELAZERR= '+00:00:00.64'       / Current Telescope Azimuth error                
+AMEND   =                1.173 / Air Mass at end of exposure                    
+HAEND   =               2.2182 / Hour angle at end of exposure                  
+XOFFSET =                 -3.0 / Telescope offset in X in mm                    
+YOFFSET =                -8.48 / Telescope offset in Y in mm                    
+DRA     =                  0.0 / Telescope Pointing (offset from source RA)     
+DDEC    =                  0.0 / Telescope Pointing (offset from source Dec)    
+PAX     =                 90.3 / Detector x-axis position angle in deg, E of N  
+PAY     =                  0.3 / Detector y-axis position angle in deg, E of N  
+RELEASE = '2003-10-23'         / End of proprietary period YYYY-MM-DD           
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+
+--- HDU 1 ---
+XTENSION= 'IMAGE   '           / Image extension                                
+BITPIX  =                  -32 / array data type                                
+NAXIS   =                    2 / number of array dimensions                     
+NAXIS1  =                 1024                                                  
+NAXIS2  =                 1024                                                  
+PCOUNT  =                    0 / number of parameters                           
+GCOUNT  =                    1 / number of groups                               
+EXTNAME = 'SCI     '           / ad4549: added by AstroData                     
+EXTVER  =                    1                                                  
+ORIGIN  = 'Gemini-North'       / FITS file originator                           
+IRAF-TLM= '21:24:34 (01/07/2007)' / Time of last modification                   
+DATE    = '2002-04-23T22:29:59' / UT Date of file creation (YYYY-MM-DD)         
+LATITUDE=              19.8261  / Latitude (degrees N)                          
+LONGITUD=            -155.4708  / Longitude (degrees E)                         
+INSTRUME= 'Hokupaa+QUIRC'       / Instrument used for observation               
+FRAME   =                  591  / Frame number of observation                   
+CCDPICNO=                  591  / Frame number of observation                   
+OBJECT  = 'PG1617  '           / Name of object                                 
+IMAGETYP= 'OBJECT  '            / Type of observation                           
+EXPTIME =               30.000                                                  
+EXPOSURE=               30.000  / Integration time (seconds)                    
+DARKTIME=               40.966  / Dark current time (seconds)                   
+DATE-OBS= '2002-04-23'          / UT Date of observation (YYYY-MM-DD)           
+TIME-OBS= ' 14:49:23.00'        / Universal time (UTC) at exposure start        
+UT      = ' 14:49:23.00'        / Universal time (UTC) at exposure start        
+JD      =       2452388.117627                                                  
+FILTER  = 'H       '            / Filter description                            
+PUPIL   = 'f26     '           / Pupil setting in camera                        
+GAIN    =                1.850  / Nominal gain (e-/ADU)                         
+SOFT_VER=                 1.77  / Software version number                       
+DATASEC = '[1:1024,1:1024]'     / Image area of frame                           
+NRESET  =                    1  / Number of resets before integration           
+SHUTTER =                    1  / Shutter during exposure (1=open,0=closed)     
+AUTOREAD=                    1  / Detector read after exp                       
+AUTOWRIT=                    1  / Auto file write                               
+AUTOIDLE=                    1  / Auto idle after exposure                      
+DOUBLCOR=                    1  / Double-correlated read                        
+DUMYREAD=                    1  / Dummy read before data reads                  
+QUIKDUMY=                    0  / Quick dummy read mode                         
+LONGSHUT=                    0  / Long Shutter mode                             
+NSAMPLS =                    1  / Data reads before and after exp               
+TELESCOP= 'Gemini-North'                                                        
+OBSERVAT= 'Gemini-North'                                                        
+GEMPRGID= 'GN-2002A-DD-1'      / Gemini Science Program ID                      
+OBSID   = 'GN-2002A-DD-1-319'  / Observation ID                                 
+DATALAB = 'GN-2002A-DD-1-319-591' / Data Label                                  
+OBSERVER= 'Guyon   '           / Observer(s)                                    
+SSA     = 'Hatakeyama'         / SSA                                            
+RAWIQ   = '80-percentile'      / Raw Image Quality                              
+RAWCC   = '70-percentile'      / Raw Cloud Cover                                
+RAWWV   = '80-percentile'      / Raw Water Vapour/Transparency                  
+RAWBG   = '50-percentile'      / Raw Background                                 
+RAWPIREQ= 'YES     '           / PI Requirements Met                            
+RAWGEMQA= 'USABLE  '           / Gemini Quality Assessment                      
+PIXSCALE=              0.01998 / Pixel scale (arcsec/pixel) for Gemini/Hokupaa-3
+FRATIO  =                 26.5 / Gemini/Hokupaa-36                              
+RON     =                   15 / QUIRC detector read noise (e-)                 
+INPORT  =                  -90 / Instrument position on Gemini ISS              
+EPOCH   =  2002.30830222642226 / Epoch of observations                          
+INSTXORG= 0.00000000000000E+00 / Hokupaa instrument origin in mm in tel. F.P.   
+INSTYORG= 0.00000000000000E+00 / Hokupaa instrument origin in mm in tel. F.P.   
+HKXOFF  = 'INDEF   '           / Hokupaa WFS steering mirror x offset (mm)      
+HKYOFF  = 'INDEF   '           / Hokupaa WFS steering mirror y offset (mm)      
+HKLOOPST= 'INDEF   '           / Hokupaa loop state (feedback/stopped/indef)    
+HKLPFREQ= 'INDEF   '           / Hokupaa loop frequency (Hz)                    
+HKEGAIN1= 'INDEF   '           / Hokupaa primary loop gain                      
+HKEGAIN2= 'INDEF   '           / Hokupaa secondary loop gain                    
+HKEGAIN3= 'INDEF   '           / Hokupaa tertiary loop gain                     
+HKOGAIN = 'INDEF   '           / Hokupaa WFS Membrance mirror stroke            
+HKPFLUX = 'INDEF   '           / Hokupaa WFS total photon flux                  
+TFPSCALE=             1.611444 / Telescope focal plane scale (arcsec/mm)        
+RATARG  =         245.04704167 / Hokupaa guide star RA                          
+DECTARG =          17.40766667 / Hokupaa guide star Dec                         
+EQUINOX =  2000.00000000000000 / Equinox of coordinates                         
+RA      = '16:20:11.276'       / Current Telescope RA                           
+DEC     = '+17:24:27.57'       / Current Telescope dec                          
+TELEL   = '+58:25:13.86'       / Current Telescope Elevation                    
+TELAZ   = '+271:12:46.52'      / Current Telescope Azimuth                      
+TELELERR= '-00:00:04.05'       / Current Telescope Elevation error              
+TELAZERR= '+00:00:00.64'       / Current Telescope Azimuth error                
+AMEND   =                1.173 / Air Mass at end of exposure                    
+HAEND   =               2.2182 / Hour angle at end of exposure                  
+XOFFSET =                 -3.0 / Telescope offset in X in mm                    
+YOFFSET =                -8.48 / Telescope offset in Y in mm                    
+DRA     =                  0.0 / Telescope Pointing (offset from source RA)     
+DDEC    =                  0.0 / Telescope Pointing (offset from source Dec)    
+PAX     =                 90.3 / Detector x-axis position angle in deg, E of N  
+PAY     =                  0.3 / Detector y-axis position angle in deg, E of N  
+RELEASE = '2003-10-23'         / End of proprietary period YYYY-MM-DD           
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
