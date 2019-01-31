@@ -412,6 +412,16 @@ def get_data_product_type(header):
     return result
 
 
+def get_data_release(header):
+    """
+    Determine the plane-level data release date.
+
+    :param header:  The FITS header for the current extension.
+    :return: The Plane release date, or None if not found.
+    """
+    return em.om.get('release')
+
+
 def get_exposure(header):
     """
     Calculate the exposure time.
@@ -530,6 +540,7 @@ def accumulate_fits_bp(bp, obs_id, file_id):
     bp.set('Plane.dataProductType', 'get_data_product_type(header)')
     bp.set('Plane.calibrationLevel', 'get_calibration_level(header)')
     bp.set('Plane.metaRelease', 'get_meta_release(header)')
+    bp.set('Plane.dataRelease', 'get_data_release(header)')
 
     bp.set('Plane.provenance.name', 'Gemini Observatory Data')
     bp.set('Plane.provenance.project', 'Gemini Archive')

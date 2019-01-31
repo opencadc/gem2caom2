@@ -192,6 +192,15 @@ LOOKUP = {
     'S20100102S0035': ['GS-2009B-Q-14-129-029', 'x', 'NICI'],
     'S20130528S0043': ['GS-2013A-Q-39-158-008', 'x', 'NICI'],
     'S20100110S0026': ['GS-CAL20100110-1-026', 'x', 'NICI'],
+    # Michelle
+    'N20060705S0054': ['GN-2006A-C-14-49-002', 'x', 'Michelle'],
+    'N20060418S0123': ['GN-2006A-Q-58-9-007', 'x', 'Michelle'],
+    'N20070310S0156': ['GN-2007A-C-11-234-001', 'x', 'Michelle'],
+    'N20080612S0038': ['GN-2008A-Q-43-6-002', 'x', 'Michelle'],
+    'N20100131S0131': ['GN-2009B-C-1-62-001', 'x', 'Michelle'],
+    'N20110127S0219': ['GN-2010B-C-3-21-002', 'x', 'Michelle'],
+    'N20060413S0129': ['GN-CAL20060413-7-001', 'x', 'Michelle'],
+    'N20080308S0086': ['GN-CAL20080308-8-016', 'x', 'Michelle'],
 }
 
 
@@ -201,8 +210,8 @@ def pytest_generate_tests(metafunc):
         file_list = []
         # for root, dirs, files in os.walk(TESTDATA_DIR):
         for ii in ['GMOS', 'GNIRS', 'GRACES', 'NIFS', 'GSAOI', 'F2', 'GPI',
-                   'NICI']:
-        # for ii in ['NICI']:
+                   'NICI', 'Michelle']:
+        # for ii in ['Michelle']:
             for root, dirs, files in os.walk('{}/{}'.format(TEST_DATA_DIR, ii)):
                 for file in files:
                     if file.endswith(".header"):
