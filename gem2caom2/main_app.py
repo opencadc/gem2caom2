@@ -388,11 +388,19 @@ def get_art_product_type(header):
                 result = ProductType.SCIENCE
         else:
             instrument = header.get('INSTRUME')
-            if instrument is not None and instrument == 'PHOENIX':
-                if _is_phoenix_calibration(header):
-                    result = ProductType.CALIBRATION
+            if instrument is not None:
+                if instrument == 'PHOENIX':
+                    if _is_phoenix_calibration(header):
+                        result = ProductType.CALIBRATION
+                    else:
+                        result = ProductType.SCIENCE
+                elif instrument == 'OSCIR':
+                    if _is_oscir_calibration(header):
+                        result = ProductType.CALIBRATION
+                    else:
+                        result = ProductType.SCIENCE
                 else:
-                    result = ProductType.SCIENCE
+                    result = ProductType.CALIBRATION
             else:
                 result = ProductType.CALIBRATION
     elif obs_class is not None and obs_class == 'science':
@@ -474,7 +482,7 @@ def get_obs_intent(header):
             instrument = header.get('INSTRUME')
             # logging.error('instrument is {}'.format(instrument))
             if (instrument is not None and
-                    instrument in ['GRACES', 'TReCS', 'PHOENIX']):
+                    instrument in ['GRACES', 'TReCS', 'PHOENIX', 'OSCIR']):
                 if instrument == 'GRACES':
                     obs_type = _get_obs_type(header)
                     if obs_type is not None and obs_type in cal_values:
@@ -487,6 +495,11 @@ def get_obs_intent(header):
                         result = ObservationIntentType.CALIBRATION
                 elif instrument == 'PHOENIX':
                     if _is_phoenix_calibration(header):
+                        result = ObservationIntentType.CALIBRATION
+                    else:
+                        result = ObservationIntentType.SCIENCE
+                elif instrument == 'OSCIR':
+                    if _is_oscir_calibration(header):
                         result = ObservationIntentType.CALIBRATION
                     else:
                         result = ObservationIntentType.SCIENCE
@@ -552,6 +565,11 @@ def _get_obs_type(header):
     return obs_type
 
 
+def _is_oscir_calibration(header):
+    # TODO - don't know what else to do right now
+    return False
+
+
 def _is_phoenix_calibration(header):
     object_value = header.get('OBJECT').lower()
     # logging.error('object_value is {}'.format(object_value))
@@ -560,7 +578,7 @@ def _is_phoenix_calibration(header):
         'arc' in object_value or
         'comp' in object_value or
         'lamp' in object_value or
-            'comparison' in object_value):
+        'comparison' in object_value):
         return True
     return False
 

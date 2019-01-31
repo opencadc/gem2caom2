@@ -1,8 +1,350 @@
-<!DOCTYPE html>
-<html><head><title>Gemini Archive - 404 Not Found</title></head>
-<body>
-<h1>Not Found</h1>
-Cannot find (non-standard named) file for: r01dec05_007
+Filename: r01dec05_007.fits.bz2
 
-</body>
-</html>
+AstroData Types: ['OSCIR', 'GEMINI', 'GEMINI_SOUTH', 'UNPREPARED']
+
+
+--- HDU 0 ---
+SIMPLE  =                    T / conforms to FITS standard                      
+BITPIX  =                    8 / array data type                                
+NAXIS   =                    0 / number of array dimensions                     
+EXTEND  =                    T                                                  
+ORIGIN  = 'NOAO-IRAF FITS Image Kernel July 1999' / FITS file originator        
+IRAF-TLM= '23:37:40 (04/12/2001)' / Time of last modification                   
+OBJECT  = 'NGC7552 '           / Name of the object observed                    
+DATE    = '2001-12-05T04:36:56'/ Creation date (CCYY-MM-DD) of FITS header      
+INSTRUME= 'OSCIR   '           /Instrument                                      
+ARRAY   = 'boeing_128'         /Detector Array Name                             
+FILENAME= 'G:\d011205\ngc7552_05.fts; 01dec05_007.fits' /Data file name(s)      
+COMPSTAT= 'normal  '           /Completion status                               
+ACQMODE = 'standard'           /Data Acquisition Mode ('standard' or 'fast')    
+FILTER  = 'IHW_(17-19) (19000)' /Filter (motor position)                        
+SECTOR  = 'Clear (15070)'      /Sector Wheel (motor position)                   
+SLIT    = 'OpenHole (-13199)'  /Aperture Slit (motor position)                  
+GRATING = 'Mirror (-1499)'     /Grating/Mirror (motor position)                 
+OBSMODE = 'chop-nod'           /Observing mode                                  
+FRMTIME = '   10.01'           /Frame time - ms                                 
+SAVEFREQ= '    0.24'           /Save frequency - Hz                             
+OBJTIME = '   5.2120'          /On-source time  - min                           
+CHPFREQ = '2.990   '           /(secondary chopper frequency; Hz)               
+CHPDELAY= '   60.05'           /Chop settle   - ms                              
+NODTIME = '  28.580'           /Nod time    - sec                               
+NODDELAY= '   9.190'           /Nod settle         - sec                        
+CHPSETTL= '       6'           /CHPSETTLE_F - frames per chop settle            
+NODSETTL= '      27'           /NODSETTLE_C - chop cycles per nod settle        
+FRMCOADD= '      11'           /FRMCOADD_F - coadded frames per chop phase      
+CHPCOADD= '      12'           /CHPCOADD_C - coadded chop cycles per saveset    
+SAVESETS= '       7'           /SAVESETS - savesets per nod phase               
+NODSETS = '      17'           /NODSETS - nod cycles per total integration      
+PRECHPS = '     132'           /PRECHPS_C - pre-valid throwaway chop cycles     
+PSTCHPS = '       6'           /PSTCHPS_C - post-valid throwaway chop cycles    
+EFF_CHP = '   64.71'           /Chop duty cycle                                 
+EFF_NOD = '   75.68'           /Nod duty cycle                                  
+EFF_FRM = '   99.46'           /Frame duty cycle                                
+EFF_PHOT= '   48.70'           /Photon collection duty cycle                    
+EFF_SRC = '   24.35'           /On-source duty cycle                            
+EXPTIME = '  21.4038'          /Elapsed time (min)                              
+TOTFRMS = '     476'           /# of coadded frames saved                       
+TOTBYTE = ' 29.750000'         /Data set size (Mbyte)                           
+BK_ADC1 =              61.4334 /Median background %ADC range                    
+BK_ADC2 = '   61.90'           /Median background %ADC range                    
+BK_WELL1=              59.3560 /Median background %Well                         
+BK_WELL2= '   60.07'           /Median background %Well                         
+C_TEMP1 = '   8.750'           /Starting control channel temp.(K)               
+C_TEMP2 = '   8.750'           /Ending control channel temp.(K)                 
+A_TEMP1 = '   4.340'           /Starting auxilliary channel temp.(K)            
+A_TEMP2 = '   4.330'           /Ending auxilliary channel temp.(K)              
+CLK1-2HI= '    9.00'           / (volts); BIAS_DAC id#  0                       
+CLK1-2LO= '    3.99'           / (volts); BIAS_DAC id#  1                       
+CLK3-4HI= '    9.00'           / (volts); BIAS_DAC id#  2                       
+CLK3-4LO= '    3.99'           / (volts); BIAS_DAC id#  3                       
+CLK5-6HI= '    9.00'           / (volts); BIAS_DAC id#  4                       
+CLK5-6LO= '    3.99'           / (volts); BIAS_DAC id#  5                       
+CLK7-8HI= '    9.00'           / (volts); BIAS_DAC id#  6                       
+CLK7-8LO= '    3.99'           / (volts); BIAS_DAC id#  7                       
+VDD_XX  = '    9.00'           /(volts); BIAS_DAC id#  8                        
+VSS_XX  = '    3.99'           /(volts); BIAS_DAC id#  9                        
+NULL_1_ = '    0.00'           / (volts); BIAS_DAC id# 10                       
+NULL_2_ = '    0.00'           / (volts); BIAS_DAC id# 11                       
+VTUB_DIG= '    9.51'           /(volts); BIAS_DAC id# 12                        
+VDD_1-16= '    5.52'           /(volts); BIAS_DAC id# 13                        
+VACC    = '    5.99'           /(volts); BIAS_DAC id# 14                        
+VCURG   = '    4.38'           /(volts); BIAS_DAC id# 15                        
+VCURS   = '    2.51'           /(volts); BIAS_DAC id# 16                        
+VRST    = '    6.89'           /(volts); BIAS_DAC id# 17                        
+DET_SUB = '    3.25'           /(volts); BIAS_DAC id# 18                        
+DET_GRD = '    5.01'           /(volts); BIAS_DAC id# 19                        
+VDI     = '    5.01'           /(volts); BIAS_DAC id# 20                        
+OVERRIDE= '    0.00'           /(volts); BIAS_DAC id# 21                        
+NULL_3_ = '    0.00'           / (volts); BIAS_DAC id# 22                       
+NULL_4_ = '    0.00'           / (volts); BIAS_DAC id# 23                       
+AIRMASS1= '1.249   '           /(airmass; obs. start)                           
+AIRMASS2= '1.323   '           /(airmass; obs. end)                             
+AZIMUTH1= '+238:06:12.48'      /(telescope azimuth; obs. start; deg:min:sec)    
+AZIMUTH2= '+238:25:31.51'      /(telescope azimuth; obs. end; deg:min:sec)      
+AZERROR1= '+00:00:00.24'       /(azimuth error; obs. start; deg:min:sec)        
+AZERROR2= '+00:00:00.18'       /(azimuth error; obs. end; deg:min:sec)          
+CHPPA   = '0.000000'           /(secondary chopper pa; deg)                     
+CHPTHROW= '15.000  '           /(secondary chopper throw; arcsec)               
+DATALAB = 'GS-2001B-Q-31-9-007' / Data Label                                    
+EL1     = '+53:10:48.64'       /(telescope elevation; obs. start; deg:min:sec)  
+EL2     = '+49:03:12.22'       /(telescope elevation; obs. end; deg:min:sec)    
+ELERROR1= '-00:00:02.77'       /(elevation error; obs. start; deg:min:sec)      
+ELERROR2= '-00:00:02.91'       /(elevation error; obs. end; deg:min:sec)        
+TELFOCUS= '-0.222  '           /(telescope focus; mm)                           
+FRAMEPA = 'FK5     '           /(frame of reference of instrument pa; e.g. FK5) 
+GEMPRGID= 'GS-2001B-Q-31'      / Gemini Science Program ID                      
+HA1     = '2.9238  '           /(hour angle; obs. start; hr:min:sec)            
+HA2     = '3.2981  '           /(hour angle; obs. end; hr:min:sec)              
+HUMID1  = '47.0    '           /(% rel. humidity; obs. start)                   
+HUMID2  = '47.0    '           /(% rel. humidity; obs. end)                     
+INSTRAA1= '167.00  '           /(instrument alignment angle; obs. start; deg)   
+INSTRAA2= '167.00  '           /(instrument alignment angle; obs. end; deg)     
+INSTRPA1= '180.00  '           /(instrument pa; obs. start; deg)                
+INSTRPA2= '180.00  '           /(instrument pa; obs. start; deg)                
+LOCTIME1= '21:58:52.8'         /(hr min sec; obs. start)                        
+LOCTIME2= '22:21:17.8'         /(hr min sec; obs. end)                          
+LST1    = '02:11:41.6'         /(hr min sec; obs. start)                        
+LST2    = '02:34:10.3'         /(hr min sec; obs. end)                          
+MJD     = '5.22480825557824e+04' /(mod. julian date)                            
+NODMODE = 'standard'           /(nod mode; e.g. standard or offset)             
+NODPA   = '0.0     '           /(nod pa; deg)                                   
+NODTHROW= '0.0     '           /(nod throw; arcsec)                             
+NODTYPE = 'tangent plane'      /(nod type; e.g. radec or azel)                  
+OBSID   = 'GS-2001B-Q-31-9'    / Observation ID                                 
+OBSERVAT= 'Gemini-South'                                                        
+OBSERVER= 'Hayward,Fisher,Radomski' / Observer(s)                               
+DEC_OFF = '-0.000  '           /(dec offset from base; arcsec)                  
+RA_OFF  = '0.000   '           /(ra offset from base; arcsec)                   
+PIXSCALE= '0.089   '           /(Plate scale at detector; arcsec/pixel)         
+RAWBG   = '50-percentile'      / Raw Background                                 
+RAWCC   = '50-percentile'      / Raw Cloud Cover                                
+RAWIQ   = '50-percentile'      / Raw Image Quality                              
+RAWGEMQA= 'USABLE  '           / Gemini Quality Assessment                      
+RAWPIREQ= 'UNKNOWN '           / PI Requirements Met                            
+RAWWV   = '50-percentile'      / Raw Water Vapour/Transparency                  
+ROTATOR1= '107.824 '           /(rotator mech. angle; obs. start; deg)          
+ROTATOR2= '103.770 '           /(rotator mech. angle; obs. end; deg)            
+ROTERR1 = '-0.001  '           /(rotator error; obs. start; deg)                
+ROTERR2 = '-0.001  '           /(rotator error; obs. start; deg)                
+SSA     = 'Prado,Grashuis'     / SSA                                            
+RA_BASE = '349.04458333'       /(base ra of target;deg)                         
+DEC_BASE= '-42.58472222'       /(base dec of target;deg)                        
+EPOCH   = '        '           /(epoch of target coordinates)                   
+EQUINOX = '2000.00000000000000' /(equinox of target coordinates)                
+TARGFRM = 'FK5     '           /(target frame; e.g. FK5)                        
+TARGSYS = 'FK5     '           /(target coordinate frame; e.g. FK5)             
+TELESCOP= 'Gemini-South'                                                        
+RA_TEL  = '23:16:10.700'       /(RA of telescope pointing origin; hr:min:sec)   
+DEC_TEL = '-42:35:05.00'       /(Dec of telescope pointing origin; deg:min:sec) 
+USRFOC1 = '0.040   '           /(Offset from nominal focus; obs. start; mm)     
+USRFOC2 = '0.040   '           /(Offset from nominal focus; obs. end; mm)       
+UTC1    = '01:58:53.8'         /(UT time; obs. start; hr min sec)               
+UTC2    = '02:21:17.8'         /(UT time; obs. end; hr min sec)                 
+DATE-OBS= '2001-12-05'         /(yyyy mmm dd)                                   
+ZD1     = '36.8263 '           /(zenith distance; obs. start; deg)              
+ZD2     = '40.9499 '           /(zenith distance; obs. end; deg)                
+COMMENT = '        '           /                                                
+WCSDIM  =                    6                                                  
+LTM1_1  =                   1.                                                  
+LTM2_2  =                   1.                                                  
+LTM3_3  =                   1.                                                  
+LTM4_4  =                   1.                                                  
+LTM5_5  =                   1.                                                  
+LTM6_6  =                   1.                                                  
+WAXMAP01= '1 0 2 0 0 0 0 0 0 0 0 0 '                                            
+WAT0_001= 'system=physical'                                                     
+WAT1_001= 'wtype=linear'                                                        
+WAT2_001= 'wtype=linear'                                                        
+WAT3_001= 'wtype=linear'                                                        
+WAT4_001= 'wtype=linear'                                                        
+WAT5_001= 'wtype=linear'                                                        
+WAT6_001= 'wtype=linear'                                                        
+NCOMBINE=                  119                                                  
+GEM-TLM = 'Tue Dec  4 23:37:41 CLST 2001' / Last modification with GEMINI       
+OREDUCE = 'Tue Dec  4 23:37:41 CLST 2001' / Time stamp for oreduce              
+EXPCOADD=      312.78508980469 / Total exposure time for co-add                 
+NORMTYPE= 'sec               ' / Normalization type for co-add                  
+NORMVAL =      312.78508980469 / Normalization value for co-add                 
+FINALINT= 'pass              ' / Requested total integration time               
+FINALIQ = 'pass              ' / Requested final image quality                  
+PICONFIG= 'pass              ' / Requested instrument configuration             
+PITARGET= 'pass              ' / Requested target                               
+RELEASE = '2010-01-01'                                                          
+HISTORY Corrected keywords: NULL(1), CLK1/2HI, CLK7/8LO, CLK7/8HI, NULL(3), CLK5
+HISTORY /6LO, CLK1/2LO, NULL(2), CLK5/6HI, NULL(4), CLK3/4LO, CLK3/4HI          
+HISTORY Corrected metadata: RELEASE                                             
+
+--- HDU 1 ---
+XTENSION= 'IMAGE   '           / Image extension                                
+BITPIX  =                  -32 / array data type                                
+NAXIS   =                    2 / number of array dimensions                     
+NAXIS1  =                  128                                                  
+NAXIS2  =                  128                                                  
+PCOUNT  =                    0 / number of parameters                           
+GCOUNT  =                    1 / number of groups                               
+EXTNAME = 'SCI     '           / ad4549: added by AstroData                     
+ORIGIN  = 'NOAO-IRAF FITS Image Kernel July 1999' / FITS file originator        
+IRAF-TLM= '23:37:40 (04/12/2001)' / Time of last modification                   
+OBJECT  = 'NGC7552 '           / Name of the object observed                    
+DATE    = '2001-12-05T04:36:56'/ Creation date (CCYY-MM-DD) of FITS header      
+INSTRUME= 'OSCIR   '           /Instrument                                      
+ARRAY   = 'boeing_128'         /Detector Array Name                             
+FILENAME= 'G:\d011205\ngc7552_05.fts; 01dec05_007.fits' /Data file name(s)      
+COMPSTAT= 'normal  '           /Completion status                               
+ACQMODE = 'standard'           /Data Acquisition Mode ('standard' or 'fast')    
+FILTER  = 'IHW_(17-19) (19000)' /Filter (motor position)                        
+SECTOR  = 'Clear (15070)'      /Sector Wheel (motor position)                   
+SLIT    = 'OpenHole (-13199)'  /Aperture Slit (motor position)                  
+GRATING = 'Mirror (-1499)'     /Grating/Mirror (motor position)                 
+OBSMODE = 'chop-nod'           /Observing mode                                  
+FRMTIME = '   10.01'           /Frame time - ms                                 
+SAVEFREQ= '    0.24'           /Save frequency - Hz                             
+OBJTIME = '   5.2120'          /On-source time  - min                           
+CHPFREQ = '2.990   '           /(secondary chopper frequency; Hz)               
+CHPDELAY= '   60.05'           /Chop settle   - ms                              
+NODTIME = '  28.580'           /Nod time    - sec                               
+NODDELAY= '   9.190'           /Nod settle         - sec                        
+CHPSETTL= '       6'           /CHPSETTLE_F - frames per chop settle            
+NODSETTL= '      27'           /NODSETTLE_C - chop cycles per nod settle        
+FRMCOADD= '      11'           /FRMCOADD_F - coadded frames per chop phase      
+CHPCOADD= '      12'           /CHPCOADD_C - coadded chop cycles per saveset    
+SAVESETS= '       7'           /SAVESETS - savesets per nod phase               
+NODSETS = '      17'           /NODSETS - nod cycles per total integration      
+PRECHPS = '     132'           /PRECHPS_C - pre-valid throwaway chop cycles     
+PSTCHPS = '       6'           /PSTCHPS_C - post-valid throwaway chop cycles    
+EFF_CHP = '   64.71'           /Chop duty cycle                                 
+EFF_NOD = '   75.68'           /Nod duty cycle                                  
+EFF_FRM = '   99.46'           /Frame duty cycle                                
+EFF_PHOT= '   48.70'           /Photon collection duty cycle                    
+EFF_SRC = '   24.35'           /On-source duty cycle                            
+EXPTIME = '  21.4038'          /Elapsed time (min)                              
+TOTFRMS = '     476'           /# of coadded frames saved                       
+TOTBYTE = ' 29.750000'         /Data set size (Mbyte)                           
+BK_ADC1 =              61.4334 /Median background %ADC range                    
+BK_ADC2 = '   61.90'           /Median background %ADC range                    
+BK_WELL1=              59.3560 /Median background %Well                         
+BK_WELL2= '   60.07'           /Median background %Well                         
+C_TEMP1 = '   8.750'           /Starting control channel temp.(K)               
+C_TEMP2 = '   8.750'           /Ending control channel temp.(K)                 
+A_TEMP1 = '   4.340'           /Starting auxilliary channel temp.(K)            
+A_TEMP2 = '   4.330'           /Ending auxilliary channel temp.(K)              
+CLK1-2HI= '    9.00'           / (volts); BIAS_DAC id#  0                       
+CLK1-2LO= '    3.99'           / (volts); BIAS_DAC id#  1                       
+CLK3-4HI= '    9.00'           / (volts); BIAS_DAC id#  2                       
+CLK3-4LO= '    3.99'           / (volts); BIAS_DAC id#  3                       
+CLK5-6HI= '    9.00'           / (volts); BIAS_DAC id#  4                       
+CLK5-6LO= '    3.99'           / (volts); BIAS_DAC id#  5                       
+CLK7-8HI= '    9.00'           / (volts); BIAS_DAC id#  6                       
+CLK7-8LO= '    3.99'           / (volts); BIAS_DAC id#  7                       
+VDD_XX  = '    9.00'           /(volts); BIAS_DAC id#  8                        
+VSS_XX  = '    3.99'           /(volts); BIAS_DAC id#  9                        
+NULL_1_ = '    0.00'           / (volts); BIAS_DAC id# 10                       
+NULL_2_ = '    0.00'           / (volts); BIAS_DAC id# 11                       
+VTUB_DIG= '    9.51'           /(volts); BIAS_DAC id# 12                        
+VDD_1-16= '    5.52'           /(volts); BIAS_DAC id# 13                        
+VACC    = '    5.99'           /(volts); BIAS_DAC id# 14                        
+VCURG   = '    4.38'           /(volts); BIAS_DAC id# 15                        
+VCURS   = '    2.51'           /(volts); BIAS_DAC id# 16                        
+VRST    = '    6.89'           /(volts); BIAS_DAC id# 17                        
+DET_SUB = '    3.25'           /(volts); BIAS_DAC id# 18                        
+DET_GRD = '    5.01'           /(volts); BIAS_DAC id# 19                        
+VDI     = '    5.01'           /(volts); BIAS_DAC id# 20                        
+OVERRIDE= '    0.00'           /(volts); BIAS_DAC id# 21                        
+NULL_3_ = '    0.00'           / (volts); BIAS_DAC id# 22                       
+NULL_4_ = '    0.00'           / (volts); BIAS_DAC id# 23                       
+AIRMASS1= '1.249   '           /(airmass; obs. start)                           
+AIRMASS2= '1.323   '           /(airmass; obs. end)                             
+AZIMUTH1= '+238:06:12.48'      /(telescope azimuth; obs. start; deg:min:sec)    
+AZIMUTH2= '+238:25:31.51'      /(telescope azimuth; obs. end; deg:min:sec)      
+AZERROR1= '+00:00:00.24'       /(azimuth error; obs. start; deg:min:sec)        
+AZERROR2= '+00:00:00.18'       /(azimuth error; obs. end; deg:min:sec)          
+CHPPA   = '0.000000'           /(secondary chopper pa; deg)                     
+CHPTHROW= '15.000  '           /(secondary chopper throw; arcsec)               
+DATALAB = 'GS-2001B-Q-31-9-007' / Data Label                                    
+EL1     = '+53:10:48.64'       /(telescope elevation; obs. start; deg:min:sec)  
+EL2     = '+49:03:12.22'       /(telescope elevation; obs. end; deg:min:sec)    
+ELERROR1= '-00:00:02.77'       /(elevation error; obs. start; deg:min:sec)      
+ELERROR2= '-00:00:02.91'       /(elevation error; obs. end; deg:min:sec)        
+TELFOCUS= '-0.222  '           /(telescope focus; mm)                           
+FRAMEPA = 'FK5     '           /(frame of reference of instrument pa; e.g. FK5) 
+GEMPRGID= 'GS-2001B-Q-31'      / Gemini Science Program ID                      
+HA1     = '2.9238  '           /(hour angle; obs. start; hr:min:sec)            
+HA2     = '3.2981  '           /(hour angle; obs. end; hr:min:sec)              
+HUMID1  = '47.0    '           /(% rel. humidity; obs. start)                   
+HUMID2  = '47.0    '           /(% rel. humidity; obs. end)                     
+INSTRAA1= '167.00  '           /(instrument alignment angle; obs. start; deg)   
+INSTRAA2= '167.00  '           /(instrument alignment angle; obs. end; deg)     
+INSTRPA1= '180.00  '           /(instrument pa; obs. start; deg)                
+INSTRPA2= '180.00  '           /(instrument pa; obs. start; deg)                
+LOCTIME1= '21:58:52.8'         /(hr min sec; obs. start)                        
+LOCTIME2= '22:21:17.8'         /(hr min sec; obs. end)                          
+LST1    = '02:11:41.6'         /(hr min sec; obs. start)                        
+LST2    = '02:34:10.3'         /(hr min sec; obs. end)                          
+MJD     = '5.22480825557824e+04' /(mod. julian date)                            
+NODMODE = 'standard'           /(nod mode; e.g. standard or offset)             
+NODPA   = '0.0     '           /(nod pa; deg)                                   
+NODTHROW= '0.0     '           /(nod throw; arcsec)                             
+NODTYPE = 'tangent plane'      /(nod type; e.g. radec or azel)                  
+OBSID   = 'GS-2001B-Q-31-9'    / Observation ID                                 
+OBSERVAT= 'Gemini-South'                                                        
+OBSERVER= 'Hayward,Fisher,Radomski' / Observer(s)                               
+DEC_OFF = '-0.000  '           /(dec offset from base; arcsec)                  
+RA_OFF  = '0.000   '           /(ra offset from base; arcsec)                   
+PIXSCALE= '0.089   '           /(Plate scale at detector; arcsec/pixel)         
+RAWBG   = '50-percentile'      / Raw Background                                 
+RAWCC   = '50-percentile'      / Raw Cloud Cover                                
+RAWIQ   = '50-percentile'      / Raw Image Quality                              
+RAWGEMQA= 'USABLE  '           / Gemini Quality Assessment                      
+RAWPIREQ= 'UNKNOWN '           / PI Requirements Met                            
+RAWWV   = '50-percentile'      / Raw Water Vapour/Transparency                  
+ROTATOR1= '107.824 '           /(rotator mech. angle; obs. start; deg)          
+ROTATOR2= '103.770 '           /(rotator mech. angle; obs. end; deg)            
+ROTERR1 = '-0.001  '           /(rotator error; obs. start; deg)                
+ROTERR2 = '-0.001  '           /(rotator error; obs. start; deg)                
+SSA     = 'Prado,Grashuis'     / SSA                                            
+RA_BASE = '349.04458333'       /(base ra of target;deg)                         
+DEC_BASE= '-42.58472222'       /(base dec of target;deg)                        
+EPOCH   = '        '           /(epoch of target coordinates)                   
+EQUINOX = '2000.00000000000000' /(equinox of target coordinates)                
+TARGFRM = 'FK5     '           /(target frame; e.g. FK5)                        
+TARGSYS = 'FK5     '           /(target coordinate frame; e.g. FK5)             
+TELESCOP= 'Gemini-South'                                                        
+RA_TEL  = '23:16:10.700'       /(RA of telescope pointing origin; hr:min:sec)   
+DEC_TEL = '-42:35:05.00'       /(Dec of telescope pointing origin; deg:min:sec) 
+USRFOC1 = '0.040   '           /(Offset from nominal focus; obs. start; mm)     
+USRFOC2 = '0.040   '           /(Offset from nominal focus; obs. end; mm)       
+UTC1    = '01:58:53.8'         /(UT time; obs. start; hr min sec)               
+UTC2    = '02:21:17.8'         /(UT time; obs. end; hr min sec)                 
+DATE-OBS= '2001-12-05'         /(yyyy mmm dd)                                   
+ZD1     = '36.8263 '           /(zenith distance; obs. start; deg)              
+ZD2     = '40.9499 '           /(zenith distance; obs. end; deg)                
+COMMENT = '        '           /                                                
+WCSDIM  =                    6                                                  
+LTM1_1  =                   1.                                                  
+LTM2_2  =                   1.                                                  
+LTM3_3  =                   1.                                                  
+LTM4_4  =                   1.                                                  
+LTM5_5  =                   1.                                                  
+LTM6_6  =                   1.                                                  
+WAXMAP01= '1 0 2 0 0 0 0 0 0 0 0 0 '                                            
+WAT0_001= 'system=physical'                                                     
+WAT1_001= 'wtype=linear'                                                        
+WAT2_001= 'wtype=linear'                                                        
+WAT3_001= 'wtype=linear'                                                        
+WAT4_001= 'wtype=linear'                                                        
+WAT5_001= 'wtype=linear'                                                        
+WAT6_001= 'wtype=linear'                                                        
+NCOMBINE=                  119                                                  
+GEM-TLM = 'Tue Dec  4 23:37:41 CLST 2001' / Last modification with GEMINI       
+OREDUCE = 'Tue Dec  4 23:37:41 CLST 2001' / Time stamp for oreduce              
+EXPCOADD=      312.78508980469 / Total exposure time for co-add                 
+NORMTYPE= 'sec               ' / Normalization type for co-add                  
+NORMVAL =      312.78508980469 / Normalization value for co-add                 
+FINALINT= 'pass              ' / Requested total integration time               
+FINALIQ = 'pass              ' / Requested final image quality                  
+PICONFIG= 'pass              ' / Requested instrument configuration             
+PITARGET= 'pass              ' / Requested target                               
+RELEASE = '2010-01-01'                                                          
+HISTORY Corrected keywords: NULL(1), CLK1/2HI, CLK7/8LO, CLK7/8HI, NULL(3), CLK5
+HISTORY /6LO, CLK1/2LO, NULL(2), CLK5/6HI, NULL(4), CLK3/4LO, CLK3/4HI          
+HISTORY Corrected metadata: RELEASE                                             
