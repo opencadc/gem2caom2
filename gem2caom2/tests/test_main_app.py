@@ -212,6 +212,13 @@ LOOKUP = {
     'S20051027S0089': ['GS-2005B-SV-302-20-001', 'x', 'bHROS'],
     'S20070130S0048': ['GS-2006B-Q-47-76-003', 'x', 'bHROS'],
     'S20070113S0060': ['GS-2006B-Q-7-32-008', 'x', 'bHROS'],
+    # hrwfs
+    'S20030218S0027': ['GS-2003A-Q-6-1-002', 'x', 'hrwfs'],
+    'S20030218S0042': ['GS-2003A-Q-6-1-002', 'x', 'hrwfs'],
+    '2003jan05_0082': ['GS-CAL20030105-2-0072', 'x', 'hrwfs'],
+    '2003mar03_0052': ['GS-CAL20030303-7-0006', 'x', 'hrwfs'],
+    'S20030730S0036': ['GS-CAL20030730-10-006', 'x', 'hrwfs'],
+    'S20031218S0049': ['GS-CAL20031218-1-034', 'x', 'hrwfs'],
 }
 
 
@@ -220,9 +227,9 @@ def pytest_generate_tests(metafunc):
 
         file_list = []
         # for root, dirs, files in os.walk(TESTDATA_DIR):
-        for ii in ['GMOS', 'GNIRS', 'GRACES', 'NIFS', 'GSAOI', 'F2', 'GPI',
-                   'NICI', 'Michelle', 'TReCS', 'bHROS']:
-        # for ii in ['bHROS']:
+        # for ii in ['GMOS', 'GNIRS', 'GRACES', 'NIFS', 'GSAOI', 'F2', 'GPI',
+        #            'NICI', 'Michelle', 'TReCS', 'bHROS']:
+        for ii in ['hrwfs']:
             for root, dirs, files in os.walk('{}/{}'.format(TEST_DATA_DIR, ii)):
                 for file in files:
                     if file.endswith(".header"):
@@ -369,6 +376,10 @@ def _get_expected_file_name(dirname, product_id, file_id, obs_id):
         expected_fqn = '{}/{}{}.xml'.format(dirname, obs_id, 'm')
     elif file_id == 'N20150807G0044i':
         expected_fqn = '{}/{}{}.xml'.format(dirname, obs_id, 'i')
+    elif file_id == 'S20030218S0027':
+        expected_fqn = '{}/{}{}.xml'.format(dirname, obs_id, '27')
+    elif file_id == 'S20030218S0042':
+        expected_fqn = '{}/{}{}.xml'.format(dirname, obs_id, '42')
     else:
         expected_fqn = '{}/{}.xml'.format(dirname, product_id)
     return expected_fqn
@@ -379,6 +390,10 @@ def _get_actual_file_name(dirname, product_id, file_id, obs_id):
         actual_fqn = '{}/{}{}.actual.xml'.format(dirname, obs_id, 'm')
     elif file_id == 'N20150807G0044i':
         actual_fqn = '{}/{}{}.actual.xml'.format(dirname, obs_id, 'i')
+    elif file_id == 'S20030218S0027':
+        actual_fqn = '{}/{}{}.actual.xml'.format(dirname, obs_id, '27')
+    elif file_id == 'S20030218S0042':
+        actual_fqn = '{}/{}{}.actual.xml'.format(dirname, obs_id, '42')
     else:
         actual_fqn = '{}/{}.actual.xml'.format(dirname, product_id)
     return actual_fqn

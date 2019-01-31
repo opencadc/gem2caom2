@@ -92,7 +92,6 @@ class GeminiObsMetadata(object):
             indexed_fname = mc.response_lookup(value, 'filename')
             if indexed_fname is not None:
                 temp = indexed_fname.split('.')[0]
-                logging.error('checking value of {} for file_id {}'.format(temp, file_id))
                 if temp == file_id:
                     result = index
                     break

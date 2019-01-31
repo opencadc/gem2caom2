@@ -456,12 +456,16 @@ def get_obs_intent(header):
     :return: The Observation intent, or None if not found.
     """
     result = ObservationIntentType.CALIBRATION
-    cal_values = ['GCALflat', 'Bias', 'BIAS', 'Twilight', 'Ar', 'FLAT', 'ARC']
+    cal_values = ['GCALflat', 'Bias', 'BIAS', 'Twilight', 'Ar', 'FLAT', 'ARC',
+                  'Domeflat']
     lookup = _get_obs_class(header)
+    # logging.error('lookup is {}'.format(lookup))
     if lookup is None:
         object_value = header.get('OBJECT')
+        # logging.error('object_value is {}'.format(object_value))
         if object_value is not None:
             instrument = header.get('INSTRUME')
+            # logging.error('instrument is {}'.format(instrument))
             if instrument is not None and instrument in ['GRACES', 'TReCS']:
                 if instrument == 'GRACES':
                     obs_type = _get_obs_type(header)
