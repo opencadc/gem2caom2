@@ -219,6 +219,11 @@ LOOKUP = {
     '2003mar03_0052': ['GS-CAL20030303-7-0006', 'x', 'hrwfs'],
     'S20030730S0036': ['GS-CAL20030730-10-006', 'x', 'hrwfs'],
     'S20031218S0049': ['GS-CAL20031218-1-034', 'x', 'hrwfs'],
+    # Phoenix
+    '2003aug20_0073': ['GS-2003B-Q-51-27-0073', 'x', 'Phoenix'],
+    '2006apr07_0258': ['GS-2006A-C-10-1-0258', 'x', 'Phoenix'],
+    '2006apr02_0073': ['GS-2006A-DD-1-1-0073', 'x', 'Phoenix'],
+    '2006dec10_0052': ['GS-2006B-C-8-2-0052', 'x', 'Phoenix'],
 }
 
 
@@ -227,9 +232,9 @@ def pytest_generate_tests(metafunc):
 
         file_list = []
         # for root, dirs, files in os.walk(TESTDATA_DIR):
-        # for ii in ['GMOS', 'GNIRS', 'GRACES', 'NIFS', 'GSAOI', 'F2', 'GPI',
-        #            'NICI', 'Michelle', 'TReCS', 'bHROS']:
-        for ii in ['hrwfs']:
+        for ii in ['GMOS', 'GNIRS', 'GRACES', 'NIFS', 'GSAOI', 'F2', 'GPI',
+                   'NICI', 'Michelle', 'TReCS', 'bHROS', 'hrwfs', 'Phoenix']:
+        # for ii in ['Phoenix']:
             for root, dirs, files in os.walk('{}/{}'.format(TEST_DATA_DIR, ii)):
                 for file in files:
                     if file.endswith(".header"):

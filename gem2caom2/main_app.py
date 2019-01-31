@@ -376,7 +376,7 @@ def get_art_product_type(header):
     obs_type = _get_obs_type(header)
     obs_class = _get_obs_class(header)
 
-    logging.debug('type is {} and class is {}'.format(obs_type, obs_class))
+    # logging.error('type is {} and class is {}'.format(obs_type, obs_class))
     if obs_type is not None and obs_type == 'MASK':
         result = ProductType.AUXILIARY
     elif obs_class is None:
@@ -387,7 +387,14 @@ def get_art_product_type(header):
             else:
                 result = ProductType.SCIENCE
         else:
-            result = ProductType.CALIBRATION
+            instrument = header.get('INSTRUME')
+            if instrument is not None and instrument == 'PHOENIX':
+                if _is_phoenix_calibration(header):
+                    result = ProductType.CALIBRATION
+                else:
+                    result = ProductType.SCIENCE
+            else:
+                result = ProductType.CALIBRATION
     elif obs_class is not None and obs_class == 'science':
         result = ProductType.SCIENCE
     else:
@@ -466,7 +473,8 @@ def get_obs_intent(header):
         if object_value is not None:
             instrument = header.get('INSTRUME')
             # logging.error('instrument is {}'.format(instrument))
-            if instrument is not None and instrument in ['GRACES', 'TReCS']:
+            if (instrument is not None and
+                    instrument in ['GRACES', 'TReCS', 'PHOENIX']):
                 if instrument == 'GRACES':
                     obs_type = _get_obs_type(header)
                     if obs_type is not None and obs_type in cal_values:
@@ -477,6 +485,15 @@ def get_obs_intent(header):
                     data_label = header.get('DATALAB')
                     if data_label is not None and '-CAL' in data_label:
                         result = ObservationIntentType.CALIBRATION
+                elif instrument == 'PHOENIX':
+                    if _is_phoenix_calibration(header):
+                        result = ObservationIntentType.CALIBRATION
+                    else:
+                        result = ObservationIntentType.SCIENCE
+                else:
+                    logging.error(
+                        'get_obs_intent: no handling for {}'.format(
+                            instrument))
             else:
                 if object_value in cal_values:
                     result = ObservationIntentType.CALIBRATION
@@ -533,6 +550,19 @@ def _get_obs_type(header):
     if obs_type is None:
         obs_type = header.get('OBSTYPE')
     return obs_type
+
+
+def _is_phoenix_calibration(header):
+    object_value = header.get('OBJECT').lower()
+    # logging.error('object_value is {}'.format(object_value))
+    if ('flat ' in object_value or
+        'dark ' in object_value or
+        'arc' in object_value or
+        'comp' in object_value or
+        'lamp' in object_value or
+            'comparison' in object_value):
+        return True
+    return False
 
 
 def accumulate_fits_bp(bp, obs_id, file_id):
