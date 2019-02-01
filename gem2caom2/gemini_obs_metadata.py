@@ -70,7 +70,7 @@
 import logging
 
 from caom2pipe import manage_composable as mc
-from gem2caom2 import GemName
+from gem2caom2.gem_name import GemName
 
 
 class GeminiObsMetadata(object):

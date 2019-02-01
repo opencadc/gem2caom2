@@ -96,16 +96,18 @@ import traceback
 from caom2 import Observation, ObservationIntentType, DataProductType
 from caom2 import CalibrationLevel, TargetType, ProductType, Chunk
 from caom2 import SpatialWCS, CoordAxis2D, Axis, CoordPolygon2D, ValueCoord2D
+from caom2 import SpectralWCS, CoordAxis1D, CoordFunction1D, RefCoord
+from caom2 import CoordError
 from caom2utils import ObsBlueprint, get_gen_proc_arg_parser, gen_proc
 from caom2pipe import manage_composable as mc
 from caom2pipe import astro_composable as ac
 
 import gem2caom2.external_metadata as em
 from gem2caom2.svofps import filter_metadata
-from gem2caom2.GemName import GemName, COLLECTION, ARCHIVE, SCHEME
+from gem2caom2.gem_name import GemName, COLLECTION, ARCHIVE, SCHEME
 
-__all__ = ['main_app2', 'update', 'GemName', 'COLLECTION', 'APPLICATION',
-           'SCHEME', 'ARCHIVE']
+__all__ = ['main_app2', 'update', 'COLLECTION', 'APPLICATION', 'SCHEME',
+           'ARCHIVE']
 
 
 APPLICATION = 'gem2caom2'
@@ -123,10 +125,11 @@ def get_niri_filter_name(header):
     filters2ignore = ['open', 'INVALID', 'PK50', 'pupil']
     for key in header.keys():
         if 'FILTER' in key:
-            if any(x in key for x in filters2ignore):
+            logging.error('filter exists {}'.format(header.get(key)))
+            if header.get(key) in filters2ignore:
                 continue
             else:
-                filtr = "".join(re.findall(r'\'(.+?)\'', header))
+                filtr = ''.join(re.findall(r'(.+?)', header.get(key)))
                 filtr = filtr.replace('_', '-').strip()
                 filtr = ''.join('' if ch in '()' else ch for ch in filtr)
                 header_filters.append(filtr)
@@ -134,6 +137,7 @@ def get_niri_filter_name(header):
     if filters:
         filters = re.sub(r'&', ' & ', filters)
         filters = re.sub(r'-G.{4}(|w)', '', filters)
+    logging.info('NIRI filters are {}'.format(filters))
     return filters
 
 
@@ -147,12 +151,8 @@ def get_energy_metadata(file_id):
     instrument = em.om.get('instrument')
     if instrument in ['GMOS-N', 'GMOS-S']:
         energy_metadata = em.gmos_metadata()
-    elif instrument in ['NIRI']:
-        energy_metadata = em.niri_metadata(file_id)
     else:
         energy_metadata = {'energy': False}
-        # raise mc.CadcException(
-        #     'Do not understand energy for instrument {}'.format(instrument))
     logging.debug(
         'End get_energy_metadata for instrument {}'.format(instrument))
     return energy_metadata
@@ -174,14 +174,19 @@ def get_chunk_wcs(bp, obs_id, file_id):
         # if 'AZEL_TARGET' not in types:
         #     bp.configure_position_axes((1, 2))
 
-        energy_metadata = get_energy_metadata(file_id)
+        _get_chunk_energy(bp, obs_id, file_id)
+    except Exception as e:
+        logging.error(e)
+        raise mc.CadcException(
+            'Could not get chunk metadata for {}'.format(obs_id))
+    logging.debug('End get_chunk_wcs')
 
-        # No energy metadata found
-        if not energy_metadata['energy']:
-            logging.error('No energy metadata found for '
-                          'obs id {}, file id {}'.format(obs_id, file_id))
-            return
 
+def _get_chunk_energy(bp, obs_id, file_id):
+    energy_metadata = get_energy_metadata(file_id)
+
+    # No energy metadata found
+    if energy_metadata['energy']:
         bp.configure_energy_axis(4)
         filter_name = mc.response_lookup(energy_metadata, 'filter_name')
         resolving_power = mc.response_lookup(
@@ -208,11 +213,9 @@ def get_chunk_wcs(bp, obs_id, file_id):
         bp.set('Chunk.energy.axis.function.delta', cdelt)
         bp.set('Chunk.energy.axis.function.refCoord.pix', crpix)
         bp.set('Chunk.energy.axis.function.refCoord.val', crval)
-    except Exception as e:
-        logging.error(e)
-        raise mc.CadcException(
-            'Could not get chunk metadata for {}'.format(obs_id))
-    logging.debug('End get_chunk_wcs')
+    else:
+        logging.info('No energy metadata found for '
+                     'obs id {}, file id {}'.format(obs_id, file_id))
 
 
 def get_time_delta(header):
@@ -222,7 +225,7 @@ def get_time_delta(header):
     :param header: The FITS header for the current extension.
     :return: The Time delta, or None if none found.
     """
-    exptime = header.get('EXPTIME')
+    exptime = get_exposure(header)
     if exptime is None:
         return None
     return float(exptime) / (24.0 * 3600.0)
@@ -567,73 +570,96 @@ def update(observation, **kwargs):
     if 'headers' in kwargs:
         headers = kwargs['headers']
 
-    for p in observation.planes:
-        mode = observation.planes[p].data_product_type
-        for a in observation.planes[p].artifacts:
-            for part in observation.planes[p].artifacts[a].parts:
-                for c in observation.planes[p].artifacts[a].parts[part].chunks:
-                    if observation.instrument.name == 'NIRI':
-                        _update_chunk_energy(c, mode, headers)
+    try:
+        for p in observation.planes:
+            mode = observation.planes[p].data_product_type
+            for a in observation.planes[p].artifacts:
+                for part in observation.planes[p].artifacts[a].parts:
+                    for c in observation.planes[p].artifacts[a].parts[part].chunks:
+                        if observation.instrument.name == 'NIRI':
+                            _update_chunk_energy_niri(part, c, mode, headers)
 
-                    if (observation.instrument.name == 'GRACES' and
-                            mode == DataProductType.SPECTRUM):
-                        _update_chunk_position(c)
+                        if (observation.instrument.name == 'GRACES' and
+                                mode == DataProductType.SPECTRUM):
+                            _update_chunk_position(c)
+    except Exception as e:
+        logging.error(e)
     logging.error('Done update.')
     return True
 
 
-def _update_chunk_energy(chunk, mode, headers):
-    """Check that position information has been set appropriately for
-    spectra. Guidance given is it must be a bounds."""
-    logging.debug('Begin _update_chunk_position')
+def _update_chunk_energy_niri(part, chunk, mode, headers):
+    """NIRI-specific chunk-level Energy WCS construction."""
+    logging.debug('Begin _update_chunk_energy_niri')
     mc.check_param(chunk, Chunk)
+
+    observation_type = em.om.get('observation_type')
+    om_filter_name = em.om.get('filter_name')
 
     # No energy information is determined for darks.  The
     # latter are sometimes only identified by a 'blank' filter.  e.g.
     # NIRI 'flats' are sometimes obtained with the filter wheel blocked off.
 
-    bandpass_name = chunk.energy.bandpass_name
-    if 'blank' in bandpass_name:
+    if observation_type == 'DARK' or 'blank' in om_filter_name:
+        logging.debug(
+            'No chunk energy for {}'.format(headers[0].get('DATALAB')))
         chunk.energy = None
+        chunk.energy_axis = None
     else:
-        cval = 0.0
-        delta = 0.0
-        resolving_power = 0.0
-        filter_md = filter_metadata(
-            em.om.get('instrument'), bandpass_name)
+        # calculate the values
+        header = headers[int(part)]
+
+        filters = get_niri_filter_name(header)
+        filter_md = filter_metadata('NIRI', filters)
+        filter_name = em.om.get(
+            'filter_name').replace('(', '').replace(')', '')
+
+        mode = em.om.get('mode')
         if mode == 'imaging':
-            delta = filter_md['wl_eff_width']
-            cval = filter_md['wl_eff']
-            resolving_power = cval/delta
-            cval /= 1.0e10
-            delta /= 1.0e10
-        # elif obs_metadata['mode'] in ('LS', 'spectroscopy'):
-        #    # this code has to be rewritten for NIRI!!!
-        #    reference_wavelength = obs_metadata['central_wavelength']
-        #    nrgdim = int(niri_metadata['naxis2']/bin_y)
+            c_val = filter_md['wl_eff'] / 1.0e10
+            delta = filter_md['wl_eff_width'] / 1.0e10
+            bandpass_name = re.sub(r'([pP]upil38)', '', filters)
+            resolving_power = c_val / delta
+        elif mode in ['LS', 'spectroscopy']:
+            c_val = 0.0  # TODO
+            # For simplicity, assume full NIRI FOV 1024 == NAXIS1
+            delta = filter_md['wl_eff_width'] / 1024 / 1.0e10
+            fp_mask = header.get('FPMASK')
+            bandpass_name = re.sub(r'([pP]upil38)', '', filters)
+            resolving_power = em.NIRI_RESOLVING_POWER[bandpass_name][fp_mask]
+        else:
+            raise mc.CadcException(
+                'Do not understand NIRI mode {}'.format(mode))
 
-        #    # Ignore energy information if value of 'central_wavelength' = 0.0
-        #    if reference_wavelength == 0.0 \
-        #            or obs_metadata['observation_type'] == 'BIAS':
-        #        metadata['energy'] = False
-        #        return metadata
+        # build the CAOM2 structure
 
-        #   if 'focus' in fpmask:
-        #       obstype = 'FOCUS'
-        #    resolving_power = NIRI_RESOLVING_POWER[bandpassname][fpmask]
-        #    delta = filter_md['wl_eff_width']/metadata['naxis1']
-        #    reference_wavelength /= 1.0e6
-        #    delta /= 1.0e10
-
-        chunk.energy.resolvingPower = resolving_power
-        chunk.energy.specsys = 'TOPOCENT'
-        chunk.energy.ssysobs = 'TOPOCENT'
-        chunk.energy.ssyssrc = 'TOPOCENT'
-        chunk.energy.axis.axis.ctype = 'WAVE'
-        chunk.energy.axis.function.naxis = 1024
-        chunk.energy.axis.function.delta = delta
-        chunk.energy.axis.function.refCoord.pix = 512.0
-        chunk.energy.axis.function.refCoord.val = cval
+        chunk.energy_axis = 4
+        axis = Axis(ctype='WAVE', cunit='m')
+        # 512 == 1024/2
+        ref_coord = RefCoord(pix=512.0, val=c_val)
+        # error = CoordError(syser=None, rnder=None)
+        # SGo - assume a function until DB says otherwise
+        function = CoordFunction1D(naxis=1024,
+                                   delta=delta,
+                                   ref_coord=ref_coord)
+        coord_axis = CoordAxis1D(axis=axis,
+                                 error=None,
+                                 range=None,
+                                 bounds=None,
+                                 function=function)
+        chunk.energy = SpectralWCS(axis=coord_axis,
+                                   specsys='TOPOCENT',
+                                   ssysobs='TOPOCENT',
+                                   ssyssrc='TOPOCENT',
+                                   restfrq=None,
+                                   restwav=None,
+                                   velosys=None,
+                                   zsource=None,
+                                   velang=None,
+                                   bandpass_name=filter_name,
+                                   transition=None,
+                                   resolving_power=resolving_power)
+    logging.debug('End _update_chunk_energy_niri')
 
 
 def _update_chunk_position(chunk):
