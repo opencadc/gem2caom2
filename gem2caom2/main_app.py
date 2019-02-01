@@ -125,7 +125,6 @@ def get_niri_filter_name(header):
     filters2ignore = ['open', 'INVALID', 'PK50', 'pupil']
     for key in header.keys():
         if 'FILTER' in key:
-            logging.error('filter exists {}'.format(header.get(key)))
             if header.get(key) in filters2ignore:
                 continue
             else:
@@ -213,9 +212,9 @@ def _get_chunk_energy(bp, obs_id, file_id):
         bp.set('Chunk.energy.axis.function.delta', cdelt)
         bp.set('Chunk.energy.axis.function.refCoord.pix', crpix)
         bp.set('Chunk.energy.axis.function.refCoord.val', crval)
-    else:
-        logging.info('No energy metadata found for '
-                     'obs id {}, file id {}'.format(obs_id, file_id))
+    # else:
+    #     logging.info('No energy metadata found for '
+    #                  'obs id {}, file id {}'.format(obs_id, file_id))
 
 
 def get_time_delta(header):
@@ -600,65 +599,79 @@ def _update_chunk_energy_niri(part, chunk, mode, headers):
     # latter are sometimes only identified by a 'blank' filter.  e.g.
     # NIRI 'flats' are sometimes obtained with the filter wheel blocked off.
 
-    if observation_type == 'DARK' or 'blank' in om_filter_name:
-        logging.debug(
-            'No chunk energy for {}'.format(headers[0].get('DATALAB')))
-        chunk.energy = None
-        chunk.energy_axis = None
-    else:
-        # calculate the values
-        header = headers[int(part)]
-
-        filters = get_niri_filter_name(header)
-        filter_md = filter_metadata('NIRI', filters)
-        filter_name = em.om.get(
-            'filter_name').replace('(', '').replace(')', '')
-
-        mode = em.om.get('mode')
-        if mode == 'imaging':
-            c_val = filter_md['wl_eff'] / 1.0e10
-            delta = filter_md['wl_eff_width'] / 1.0e10
-            bandpass_name = re.sub(r'([pP]upil38)', '', filters)
-            resolving_power = c_val / delta
-        elif mode in ['LS', 'spectroscopy']:
-            c_val = 0.0  # TODO
-            # For simplicity, assume full NIRI FOV 1024 == NAXIS1
-            delta = filter_md['wl_eff_width'] / 1024 / 1.0e10
-            fp_mask = header.get('FPMASK')
-            bandpass_name = re.sub(r'([pP]upil38)', '', filters)
-            resolving_power = em.NIRI_RESOLVING_POWER[bandpass_name][fp_mask]
+    # GN-2002A-C-5-21-002 K_order_sort
+    try:
+        if observation_type == 'DARK' or 'blank' in om_filter_name:
+            logging.error(
+                'No chunk energy for {}'.format(headers[0].get('DATALAB')))
+            chunk.energy = None
+            chunk.energy_axis = None
         else:
-            raise mc.CadcException(
-                'Do not understand NIRI mode {}'.format(mode))
+            # calculate the values
+            header = headers[0]
 
-        # build the CAOM2 structure
+            filters = get_niri_filter_name(header)
+            filter_md = filter_metadata('NIRI', filters)
+            filter_name = em.om.get(
+                'filter_name').replace('(', '').replace(')', '')
 
-        chunk.energy_axis = 4
-        axis = Axis(ctype='WAVE', cunit='m')
-        # 512 == 1024/2
-        ref_coord = RefCoord(pix=512.0, val=c_val)
-        # error = CoordError(syser=None, rnder=None)
-        # SGo - assume a function until DB says otherwise
-        function = CoordFunction1D(naxis=1024,
-                                   delta=delta,
-                                   ref_coord=ref_coord)
-        coord_axis = CoordAxis1D(axis=axis,
-                                 error=None,
-                                 range=None,
-                                 bounds=None,
-                                 function=function)
-        chunk.energy = SpectralWCS(axis=coord_axis,
-                                   specsys='TOPOCENT',
-                                   ssysobs='TOPOCENT',
-                                   ssyssrc='TOPOCENT',
-                                   restfrq=None,
-                                   restwav=None,
-                                   velosys=None,
-                                   zsource=None,
-                                   velang=None,
-                                   bandpass_name=filter_name,
-                                   transition=None,
-                                   resolving_power=resolving_power)
+            mode = em.om.get('mode')
+            if mode == 'imaging':
+                logging.debug('SpectralWCS: NIRI imaging mode.')
+                c_unit = 'm'
+                c_val = filter_md['wl_eff'] / 1.0e10
+                delta = filter_md['wl_eff_width'] / 1.0e10
+                resolving_power = c_val / delta
+            elif mode in ['LS', 'spectroscopy']:
+                logging.debug('SpectralWCS: NIRI LS|Spectroscopy mode.')
+                # For simplicity, assume full NIRI FOV 1024 == NAXIS1
+                n_axis = 1024
+                c_unit = 'um'
+                c_val = 0.0  # TODO
+                delta = filter_md['wl_eff_width'] / n_axis / 1.0e10
+                fp_mask = header.get('FPMASK')
+                bandpass_name = filter_name[0]
+                f_ratio = fp_mask.split('_')[0]
+                logging.info('Bandpass name is {} f_ratio is {}'.format(
+                    bandpass_name, f_ratio))
+                if bandpass_name in em.NIRI_RESOLVING_POWER:
+                    resolving_power = \
+                        em.NIRI_RESOLVING_POWER[bandpass_name][f_ratio]
+                else:
+                    logging.info('No resolving power.')
+            else:
+                raise mc.CadcException(
+                    'Do not understand NIRI mode {}'.format(mode))
+
+            # build the CAOM2 structure
+            chunk.energy_axis = 4
+            axis = Axis(ctype='WAVE', cunit=c_unit)
+            ref_coord = RefCoord(pix=float(n_axis/2.0), val=c_val)
+            # error = CoordError(syser=None, rnder=None)
+            # SGo - assume a function until DB says otherwise
+            function = CoordFunction1D(naxis=n_axis,
+                                       delta=delta,
+                                       ref_coord=ref_coord)
+            coord_axis = CoordAxis1D(axis=axis,
+                                     error=None,
+                                     range=None,
+                                     bounds=None,
+                                     function=function)
+            chunk.energy = SpectralWCS(axis=coord_axis,
+                                       specsys='TOPOCENT',
+                                       ssysobs='TOPOCENT',
+                                       ssyssrc='TOPOCENT',
+                                       restfrq=None,
+                                       restwav=None,
+                                       velosys=None,
+                                       zsource=None,
+                                       velang=None,
+                                       bandpass_name=filter_name,
+                                       transition=None,
+                                       resolving_power=resolving_power)
+    except:
+        tb = traceback.format_exc()
+        logging.error(tb)
     logging.debug('End _update_chunk_energy_niri')
 
 
