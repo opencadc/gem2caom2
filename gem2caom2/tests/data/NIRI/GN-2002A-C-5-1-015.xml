@@ -103,11 +103,11 @@
                         <caom2:cunit>um</caom2:cunit>
                       </caom2:axis>
                       <caom2:function>
-                        <caom2:naxis>1024</caom2:naxis>
-                        <caom2:delta>5.76e-4</caom2:delta>
+                        <caom2:naxis>1</caom2:naxis>
+                        <caom2:delta>1e-05</caom2:delta>
                         <caom2:refCoord>
-                          <caom2:pix>512.0</caom2:pix>
-                          <caom2:val>2.2</caom2:val>
+                          <caom2:pix>0.5</caom2:pix>
+                          <caom2:val>0.0</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>

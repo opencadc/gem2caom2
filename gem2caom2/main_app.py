@@ -97,7 +97,6 @@ from caom2 import Observation, ObservationIntentType, DataProductType
 from caom2 import CalibrationLevel, TargetType, ProductType, Chunk
 from caom2 import SpatialWCS, CoordAxis2D, Axis, CoordPolygon2D, ValueCoord2D
 from caom2 import SpectralWCS, CoordAxis1D, CoordFunction1D, RefCoord
-from caom2 import CoordError
 from caom2utils import ObsBlueprint, get_gen_proc_arg_parser, gen_proc
 from caom2pipe import manage_composable as mc
 from caom2pipe import astro_composable as ac
@@ -111,33 +110,6 @@ __all__ = ['main_app2', 'update', 'COLLECTION', 'APPLICATION', 'SCHEME',
 
 
 APPLICATION = 'gem2caom2'
-
-
-def get_niri_filter_name(header):
-    """
-    Create the filter name for NIRI.
-
-    :param header: The FITS header for the current extension.
-    :return: The NIRI filter name, or None if none found.
-    """
-    filters = None
-    header_filters = []
-    filters2ignore = ['open', 'INVALID', 'PK50', 'pupil']
-    for key in header.keys():
-        if 'FILTER' in key:
-            if header.get(key) in filters2ignore:
-                continue
-            else:
-                filtr = ''.join(re.findall(r'(.+?)', header.get(key)))
-                filtr = filtr.replace('_', '-').strip()
-                filtr = ''.join('' if ch in '()' else ch for ch in filtr)
-                header_filters.append(filtr)
-        filters = "&".join(header_filters)
-    if filters:
-        filters = re.sub(r'&', ' & ', filters)
-        filters = re.sub(r'-G.{4}(|w)', '', filters)
-    logging.info('NIRI filters are {}'.format(filters))
-    return filters
 
 
 def get_energy_metadata(file_id):
@@ -576,7 +548,7 @@ def update(observation, **kwargs):
                 for part in observation.planes[p].artifacts[a].parts:
                     for c in observation.planes[p].artifacts[a].parts[part].chunks:
                         if observation.instrument.name == 'NIRI':
-                            _update_chunk_energy_niri(part, c, mode, headers)
+                            _update_chunk_energy_niri(c, headers)
 
                         if (observation.instrument.name == 'GRACES' and
                                 mode == DataProductType.SPECTRUM):
@@ -587,7 +559,7 @@ def update(observation, **kwargs):
     return True
 
 
-def _update_chunk_energy_niri(part, chunk, mode, headers):
+def _update_chunk_energy_niri(chunk, headers):
     """NIRI-specific chunk-level Energy WCS construction."""
     logging.debug('Begin _update_chunk_energy_niri')
     mc.check_param(chunk, Chunk)
@@ -600,9 +572,15 @@ def _update_chunk_energy_niri(part, chunk, mode, headers):
     # NIRI 'flats' are sometimes obtained with the filter wheel blocked off.
 
     # GN-2002A-C-5-21-002 K_order_sort
+
+    # DB - 02-04-19 - initial pass, do not try to calculate
+    # dispersion, so naxis=1, prefer um as units, strip the bar code
+    # from the filter names
+    n_axis = 1
+
     try:
         if observation_type == 'DARK' or 'blank' in om_filter_name:
-            logging.error(
+            logging.info(
                 'No chunk energy for {}'.format(headers[0].get('DATALAB')))
             chunk.energy = None
             chunk.energy_axis = None
@@ -610,44 +588,39 @@ def _update_chunk_energy_niri(part, chunk, mode, headers):
             # calculate the values
             header = headers[0]
 
-            filters = get_niri_filter_name(header)
+            filters = get_filter_name(header)
             filter_md = filter_metadata('NIRI', filters)
-            filter_name = em.om.get(
-                'filter_name').replace('(', '').replace(')', '')
+            filter_name = em.om.get('filter_name')
 
             mode = em.om.get('mode')
             if mode == 'imaging':
                 logging.debug('SpectralWCS: NIRI imaging mode.')
-                c_unit = 'm'
                 c_val = filter_md['wl_eff'] / 1.0e10
                 delta = filter_md['wl_eff_width'] / 1.0e10
                 resolving_power = c_val / delta
             elif mode in ['LS', 'spectroscopy']:
                 logging.debug('SpectralWCS: NIRI LS|Spectroscopy mode.')
-                # For simplicity, assume full NIRI FOV 1024 == NAXIS1
-                n_axis = 1024
-                c_unit = 'um'
                 c_val = 0.0  # TODO
                 delta = filter_md['wl_eff_width'] / n_axis / 1.0e10
                 fp_mask = header.get('FPMASK')
                 bandpass_name = filter_name[0]
                 f_ratio = fp_mask.split('_')[0]
-                logging.info('Bandpass name is {} f_ratio is {}'.format(
+                logging.debug('Bandpass name is {} f_ratio is {}'.format(
                     bandpass_name, f_ratio))
                 if bandpass_name in em.NIRI_RESOLVING_POWER:
                     resolving_power = \
                         em.NIRI_RESOLVING_POWER[bandpass_name][f_ratio]
                 else:
-                    logging.info('No resolving power.')
+                    resolving_power = None
+                    logging.debug('No resolving power.')
             else:
                 raise mc.CadcException(
-                    'Do not understand NIRI mode {}'.format(mode))
+                    'Do not understand mode {}'.format(mode))
 
             # build the CAOM2 structure
             chunk.energy_axis = 4
-            axis = Axis(ctype='WAVE', cunit=c_unit)
+            axis = Axis(ctype='WAVE', cunit='um')
             ref_coord = RefCoord(pix=float(n_axis/2.0), val=c_val)
-            # error = CoordError(syser=None, rnder=None)
             # SGo - assume a function until DB says otherwise
             function = CoordFunction1D(naxis=n_axis,
                                        delta=delta,
@@ -673,6 +646,36 @@ def _update_chunk_energy_niri(part, chunk, mode, headers):
         tb = traceback.format_exc()
         logging.error(tb)
     logging.debug('End _update_chunk_energy_niri')
+
+
+def get_filter_name(header):
+    """
+    Create the filter names.
+
+    :param header: The FITS header for the current extension.
+    :return: The filter names, or None if none found.
+    """
+    filters = None
+    header_filters = []
+
+    # DB - 04-02-19 - strip out anything with 'pupil' as it doesn't affect
+    # energy transmission
+    filters2ignore = ['open', 'invalid', 'pupil']
+    for key in header.keys():
+        if 'FILTER' in key:
+            value = header.get(key).lower()
+            ignore = False
+            for ii in filters2ignore:
+                if ii.startswith(value):
+                    ignore = True
+                    break
+            if ignore:
+                continue
+            else:
+                header_filters.append(header.get(key).strip())
+        filters = '&'.join(header_filters)
+    logging.info('Filters are {}'.format(filters))
+    return filters
 
 
 def _update_chunk_position(chunk):

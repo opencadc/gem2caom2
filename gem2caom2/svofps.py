@@ -94,19 +94,19 @@ def get_votable(url):
     adapter = HTTPAdapter(max_retries=retry)
     session.mount('http://', adapter)
     session.mount('https://', adapter)
-    votable = None
+    vo_table = None
     response = None
     error_message = None
     try:
         response = session.get(url)
         fh = io.BytesIO(bytes(response.text, 'utf-8'))
         response.close()
-        votable = parse_single_table(fh)
+        vo_table = parse_single_table(fh)
     except Exception as e:
         error_message = str(e)
     if response:
         response.close()
-    return votable, error_message
+    return vo_table, error_message
 
 
 def filter_metadata(instrument, filters):
@@ -125,48 +125,56 @@ def filter_metadata(instrument, filters):
     try:
         filter_md = {}
         filter_names = filters.split('&')
+        # use detector maximums as defaults
+        w_min = 0.0
         wl_min = 0.0
+        w_max = 100000.0
         wl_max = 100000.0
         width_min = 100000.0
+        wl_width = wl_max - wl_min
+        wl_eff = (wl_max + wl_min)/2.0
 
-        for filter_name in filter_names:
+        for index in filter_names:
+            filter_name = index.strip()
             if 'Hartmann' in filter_name:
                 continue
             if filter_name == 'open':
                 if 'GMOS' in instrument:
-                    wmin = 3500.0
-                    wmax = 11000.0
-                    wl_width = wmax - wmin
-                    wl_eff = (wmax + wmin)/2.0
+                    w_min = 3500.0
+                    w_max = 11000.0
+                    wl_width = w_max - w_min
+                    wl_eff = (w_max + w_min)/2.0
             elif filter_name == 'GG455':
-                wmin = 4600.0
-                wmax = 11000.0
-                wl_width = wmax - wmin
-                wl_eff = (wmax + wmin)/2.0
+                w_min = 4600.0
+                w_max = 11000.0
+                wl_width = w_max - w_min
+                wl_eff = (w_max + w_min)/2.0
             elif filter_name == 'OG515':
-                wmin = 5200.0
-                wmax = 11000.0
-                wl_width = wmax - wmin
-                wl_eff = (wmax + wmin)/2.0
+                w_min = 5200.0
+                w_max = 11000.0
+                wl_width = w_max - w_min
+                wl_eff = (w_max + w_min)/2.0
             elif filter_name == 'RG610':
-                wmin = 6150.0
-                wmax = 11000.0
-                wl_width = wmax - wmin
-                wl_eff = (wmax + wmin)/2.0
+                w_min = 6150.0
+                w_max = 11000.0
+                wl_width = w_max - w_min
+                wl_eff = (w_max + w_min)/2.0
             elif filter_name == 'RG780':
-                wmin = 780.0
-                wmax = 11000.0
-                wl_width = wmax - wmin
-                wl_eff = (wmax + wmin)/2.0
+                w_min = 780.0
+                w_max = 11000.0
+                wl_width = w_max - w_min
+                wl_eff = (w_max + w_min)/2.0
             else:
                 if instrument == 'F2':
                     instrument = 'Flamingos2'
                 if instrument == 'NIRI':
                     filter_name = re.sub(r'con', 'cont', filter_name)
+                    filter_name = re.sub(r'_', '-', filter_name)
                     # SVO filter service has renamed some Gemini NIRI filters...
                     if filter_name == 'H2v=2-1s1-G0220':
                         filter_name = 'H2S1v2-1-G0220'
-                    if filter_name == 'H2v=1-0s1-G0216':
+                    if (filter_name == 'H2v=1-0s1-G0216' or
+                            filter_name == 'H2v=1-0S1-G0216'):
                         filter_name = 'H2S1v1-0-G0216'
 
                 filter_id = "{}.{}".format(instrument, filter_name)
@@ -182,27 +190,31 @@ def filter_metadata(instrument, filters):
                     url += 'w'
                     votable, error_message = get_votable(url)
                 if not votable:
-                    raise mc.CadcException(
+                    logging.error(
                         'Unable to download SVO filter data from {} because {}'
-                            .format(url, error_message))
+                        .format(url, error_message))
+                    continue
 
                 wl_width = votable.get_field_by_id('WidthEff').value
                 wl_eff = votable.get_field_by_id('WavelengthEff').value
-                wmin = wl_eff - wl_width/2.0
-                wmax = wl_eff + wl_width/2.0
+                w_min = wl_eff - wl_width/2.0
+                w_max = wl_eff + wl_width/2.0
 
-            if wmin > wl_min:
-                wl_min = wmin
-            if wmax < wl_max:
-                wl_max = wmax
+            if w_min > wl_min:
+                wl_min = w_min
+            if w_max < wl_max:
+                wl_max = w_max
             if wl_width < width_min:
                 width_min = wl_width
 
-        filter_md['wl_min'] = wmin
-        filter_md['wl_max'] = wmax
+        filter_md['wl_min'] = w_min
+        filter_md['wl_max'] = w_max
         filter_md['wl_eff_width'] = wl_width
         filter_md['wl_eff'] = wl_eff
-        logging.debug('\tFilter(s): {}  MD: {}'.format(filter_names, filter_md))
+        logging.info('Filter(s): {}  MD: {}'.format(filter_names, filter_md))
         return filter_md
     except Exception as e:
         logging.error(e)
+        import traceback
+        tb = traceback.format_exc()
+        logging.error(tb)
