@@ -129,14 +129,16 @@
                       </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.0</caom2:delta>
+                        <caom2:delta>4.39814814814814e-06</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>0.0</caom2:val>
+                          <caom2:val>55244.90868287037</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
                     <caom2:timesys>UTC</caom2:timesys>
+                    <caom2:exposure>0.38</caom2:exposure>
+                    <caom2:resolution>0.38</caom2:resolution>
                   </caom2:time>
                 </caom2:chunk>
               </caom2:chunks>
@@ -216,14 +218,16 @@
                       </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.0</caom2:delta>
+                        <caom2:delta>4.39814814814814e-06</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>0.0</caom2:val>
+                          <caom2:val>55244.90868287037</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
                     <caom2:timesys>UTC</caom2:timesys>
+                    <caom2:exposure>0.38</caom2:exposure>
+                    <caom2:resolution>0.38</caom2:resolution>
                   </caom2:time>
                 </caom2:chunk>
               </caom2:chunks>

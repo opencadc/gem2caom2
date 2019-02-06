@@ -183,6 +183,7 @@ LOOKUP = {
     'S20171226S0358': ['GS-2017A-Q-28-280-012', 'F2'],
     'S20171123S0216': ['GS-2017B-Q-18-96-006', 'F2'],
     'S20171123S0166': ['GS-2017B-Q-45-156-079', 'F2'],
+    'S20181230S0026': ['GS-2018B-SV-301-144-020', 'F2'],
     # GPI
     'S20140422S0167': ['GS-2014A-SV-408-6-003', 'GPI'],
     'S20180313S0108': ['GS-2018A-FT-101-5-043', 'GPI'],
@@ -196,6 +197,7 @@ LOOKUP = {
     'S20100102S0035': ['GS-2009B-Q-14-129-029', 'NICI'],
     'S20130528S0043': ['GS-2013A-Q-39-158-008', 'NICI'],
     'S20100110S0026': ['GS-CAL20100110-1-026', 'NICI'],
+    'S20100218S0028': ['GS-2009B-Q-21-19-001', 'NICI'],
     # Michelle
     'N20060705S0054': ['GN-2006A-C-14-49-002', 'Michelle'],
     'N20060418S0123': ['GN-2006A-Q-58-9-007', 'Michelle'],
@@ -243,10 +245,12 @@ def pytest_generate_tests(metafunc):
 
         file_list = []
         # for root, dirs, files in os.walk(TESTDATA_DIR):
-        for ii in ['GMOS', 'GNIRS', 'GRACES', 'NIFS', 'GSAOI', 'F2', 'GPI',
-                   'NICI', 'Michelle', 'TReCS', 'bHROS', 'hrwfs', 'Phoenix',
-                   'OSCIR', 'Flamingos', 'HOKUPAA', 'NIRI']:
-        # for ii in ['GMOS', 'NIRI']:
+        # for ii in ['GMOS', 'GNIRS', 'GRACES', 'NIFS', 'GSAOI', 'F2', 'GPI',
+        #            'NICI', 'Michelle', 'TReCS', 'bHROS', 'hrwfs', 'Phoenix',
+        #            'OSCIR', 'Flamingos', 'HOKUPAA', 'NIRI']:
+        #for ii in ['TReCS']:
+        #for ii in ['NIRI']:
+        for ii in ['GMOS', 'NIRI', 'GPI', 'F2', 'GSAOI', 'NICI']:
             for root, dirs, files in os.walk('{}/{}'.format(TEST_DATA_DIR, ii)):
                 for file in files:
                     if file.endswith(".header"):

@@ -130,16 +130,16 @@
                       </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>0.000231472582176879</caom2:delta>
+                        <caom2:delta>0.000231472222222222</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>57073.8169756396</caom2:val>
+                          <caom2:val>57073.81618981482</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
                     <caom2:timesys>UTC</caom2:timesys>
-                    <caom2:exposure>19.9992311000824</caom2:exposure>
-                    <caom2:resolution>19.9992311000824</caom2:resolution>
+                    <caom2:exposure>19.9992</caom2:exposure>
+                    <caom2:resolution>19.9992</caom2:resolution>
                   </caom2:time>
                 </caom2:chunk>
               </caom2:chunks>
@@ -220,16 +220,16 @@
                       </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>0.000231472582176879</caom2:delta>
+                        <caom2:delta>0.000231472222222222</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>57073.8169756396</caom2:val>
+                          <caom2:val>57073.81618981482</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
                     <caom2:timesys>UTC</caom2:timesys>
-                    <caom2:exposure>19.9992311000824</caom2:exposure>
-                    <caom2:resolution>19.9992311000824</caom2:resolution>
+                    <caom2:exposure>19.9992</caom2:exposure>
+                    <caom2:resolution>19.9992</caom2:resolution>
                   </caom2:time>
                 </caom2:chunk>
               </caom2:chunks>
@@ -310,16 +310,16 @@
                       </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>0.000231472582176879</caom2:delta>
+                        <caom2:delta>0.000231472222222222</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>57073.8169756396</caom2:val>
+                          <caom2:val>57073.81618981482</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
                     <caom2:timesys>UTC</caom2:timesys>
-                    <caom2:exposure>19.9992311000824</caom2:exposure>
-                    <caom2:resolution>19.9992311000824</caom2:resolution>
+                    <caom2:exposure>19.9992</caom2:exposure>
+                    <caom2:resolution>19.9992</caom2:resolution>
                   </caom2:time>
                 </caom2:chunk>
               </caom2:chunks>
@@ -400,16 +400,16 @@
                       </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>0.000231472582176879</caom2:delta>
+                        <caom2:delta>0.000231472222222222</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>57073.8169756396</caom2:val>
+                          <caom2:val>57073.81618981482</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
                     <caom2:timesys>UTC</caom2:timesys>
-                    <caom2:exposure>19.9992311000824</caom2:exposure>
-                    <caom2:resolution>19.9992311000824</caom2:resolution>
+                    <caom2:exposure>19.9992</caom2:exposure>
+                    <caom2:resolution>19.9992</caom2:resolution>
                   </caom2:time>
                 </caom2:chunk>
               </caom2:chunks>
@@ -490,16 +490,16 @@
                       </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>0.000231472582176879</caom2:delta>
+                        <caom2:delta>0.000231472222222222</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>57073.8169756396</caom2:val>
+                          <caom2:val>57073.81618981482</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
                     <caom2:timesys>UTC</caom2:timesys>
-                    <caom2:exposure>19.9992311000824</caom2:exposure>
-                    <caom2:resolution>19.9992311000824</caom2:resolution>
+                    <caom2:exposure>19.9992</caom2:exposure>
+                    <caom2:resolution>19.9992</caom2:resolution>
                   </caom2:time>
                 </caom2:chunk>
               </caom2:chunks>
@@ -580,16 +580,16 @@
                       </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>0.000231472582176879</caom2:delta>
+                        <caom2:delta>0.000231472222222222</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>57073.8169756396</caom2:val>
+                          <caom2:val>57073.81618981482</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
                     <caom2:timesys>UTC</caom2:timesys>
-                    <caom2:exposure>19.9992311000824</caom2:exposure>
-                    <caom2:resolution>19.9992311000824</caom2:resolution>
+                    <caom2:exposure>19.9992</caom2:exposure>
+                    <caom2:resolution>19.9992</caom2:resolution>
                   </caom2:time>
                 </caom2:chunk>
               </caom2:chunks>
@@ -670,16 +670,16 @@
                       </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>0.000231472582176879</caom2:delta>
+                        <caom2:delta>0.000231472222222222</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>57073.8169756396</caom2:val>
+                          <caom2:val>57073.81618981482</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
                     <caom2:timesys>UTC</caom2:timesys>
-                    <caom2:exposure>19.9992311000824</caom2:exposure>
-                    <caom2:resolution>19.9992311000824</caom2:resolution>
+                    <caom2:exposure>19.9992</caom2:exposure>
+                    <caom2:resolution>19.9992</caom2:resolution>
                   </caom2:time>
                 </caom2:chunk>
               </caom2:chunks>
@@ -760,16 +760,16 @@
                       </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>0.000231472582176879</caom2:delta>
+                        <caom2:delta>0.000231472222222222</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>57073.8169756396</caom2:val>
+                          <caom2:val>57073.81618981482</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
                     <caom2:timesys>UTC</caom2:timesys>
-                    <caom2:exposure>19.9992311000824</caom2:exposure>
-                    <caom2:resolution>19.9992311000824</caom2:resolution>
+                    <caom2:exposure>19.9992</caom2:exposure>
+                    <caom2:resolution>19.9992</caom2:resolution>
                   </caom2:time>
                 </caom2:chunk>
               </caom2:chunks>
@@ -850,16 +850,16 @@
                       </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>0.000231472582176879</caom2:delta>
+                        <caom2:delta>0.000231472222222222</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>57073.8169756396</caom2:val>
+                          <caom2:val>57073.81618981482</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
                     <caom2:timesys>UTC</caom2:timesys>
-                    <caom2:exposure>19.9992311000824</caom2:exposure>
-                    <caom2:resolution>19.9992311000824</caom2:resolution>
+                    <caom2:exposure>19.9992</caom2:exposure>
+                    <caom2:resolution>19.9992</caom2:resolution>
                   </caom2:time>
                 </caom2:chunk>
               </caom2:chunks>
@@ -940,16 +940,16 @@
                       </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>0.000231472582176879</caom2:delta>
+                        <caom2:delta>0.000231472222222222</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>57073.8169756396</caom2:val>
+                          <caom2:val>57073.81618981482</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
                     <caom2:timesys>UTC</caom2:timesys>
-                    <caom2:exposure>19.9992311000824</caom2:exposure>
-                    <caom2:resolution>19.9992311000824</caom2:resolution>
+                    <caom2:exposure>19.9992</caom2:exposure>
+                    <caom2:resolution>19.9992</caom2:resolution>
                   </caom2:time>
                 </caom2:chunk>
               </caom2:chunks>
@@ -1030,16 +1030,16 @@
                       </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>0.000231472582176879</caom2:delta>
+                        <caom2:delta>0.000231472222222222</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>57073.8169756396</caom2:val>
+                          <caom2:val>57073.81618981482</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
                     <caom2:timesys>UTC</caom2:timesys>
-                    <caom2:exposure>19.9992311000824</caom2:exposure>
-                    <caom2:resolution>19.9992311000824</caom2:resolution>
+                    <caom2:exposure>19.9992</caom2:exposure>
+                    <caom2:resolution>19.9992</caom2:resolution>
                   </caom2:time>
                 </caom2:chunk>
               </caom2:chunks>
@@ -1120,16 +1120,16 @@
                       </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>0.000231472582176879</caom2:delta>
+                        <caom2:delta>0.000231472222222222</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>57073.8169756396</caom2:val>
+                          <caom2:val>57073.81618981482</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
                     <caom2:timesys>UTC</caom2:timesys>
-                    <caom2:exposure>19.9992311000824</caom2:exposure>
-                    <caom2:resolution>19.9992311000824</caom2:resolution>
+                    <caom2:exposure>19.9992</caom2:exposure>
+                    <caom2:resolution>19.9992</caom2:resolution>
                   </caom2:time>
                 </caom2:chunk>
               </caom2:chunks>
@@ -1210,16 +1210,16 @@
                       </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>0.000231472582176879</caom2:delta>
+                        <caom2:delta>0.000231472222222222</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>57073.8169756396</caom2:val>
+                          <caom2:val>57073.81618981482</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
                     <caom2:timesys>UTC</caom2:timesys>
-                    <caom2:exposure>19.9992311000824</caom2:exposure>
-                    <caom2:resolution>19.9992311000824</caom2:resolution>
+                    <caom2:exposure>19.9992</caom2:exposure>
+                    <caom2:resolution>19.9992</caom2:resolution>
                   </caom2:time>
                 </caom2:chunk>
               </caom2:chunks>
@@ -1300,16 +1300,16 @@
                       </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>0.000231472582176879</caom2:delta>
+                        <caom2:delta>0.000231472222222222</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>57073.8169756396</caom2:val>
+                          <caom2:val>57073.81618981482</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
                     <caom2:timesys>UTC</caom2:timesys>
-                    <caom2:exposure>19.9992311000824</caom2:exposure>
-                    <caom2:resolution>19.9992311000824</caom2:resolution>
+                    <caom2:exposure>19.9992</caom2:exposure>
+                    <caom2:resolution>19.9992</caom2:resolution>
                   </caom2:time>
                 </caom2:chunk>
               </caom2:chunks>
@@ -1390,16 +1390,16 @@
                       </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>0.000231472582176879</caom2:delta>
+                        <caom2:delta>0.000231472222222222</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>57073.8169756396</caom2:val>
+                          <caom2:val>57073.81618981482</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
                     <caom2:timesys>UTC</caom2:timesys>
-                    <caom2:exposure>19.9992311000824</caom2:exposure>
-                    <caom2:resolution>19.9992311000824</caom2:resolution>
+                    <caom2:exposure>19.9992</caom2:exposure>
+                    <caom2:resolution>19.9992</caom2:resolution>
                   </caom2:time>
                 </caom2:chunk>
               </caom2:chunks>
@@ -1480,16 +1480,16 @@
                       </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>0.000231472582176879</caom2:delta>
+                        <caom2:delta>0.000231472222222222</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>57073.8169756396</caom2:val>
+                          <caom2:val>57073.81618981482</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
                     <caom2:timesys>UTC</caom2:timesys>
-                    <caom2:exposure>19.9992311000824</caom2:exposure>
-                    <caom2:resolution>19.9992311000824</caom2:resolution>
+                    <caom2:exposure>19.9992</caom2:exposure>
+                    <caom2:resolution>19.9992</caom2:resolution>
                   </caom2:time>
                 </caom2:chunk>
               </caom2:chunks>
@@ -1570,16 +1570,16 @@
                       </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>0.000231472582176879</caom2:delta>
+                        <caom2:delta>0.000231472222222222</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>57073.8169756396</caom2:val>
+                          <caom2:val>57073.81618981482</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
                     <caom2:timesys>UTC</caom2:timesys>
-                    <caom2:exposure>19.9992311000824</caom2:exposure>
-                    <caom2:resolution>19.9992311000824</caom2:resolution>
+                    <caom2:exposure>19.9992</caom2:exposure>
+                    <caom2:resolution>19.9992</caom2:resolution>
                   </caom2:time>
                 </caom2:chunk>
               </caom2:chunks>
@@ -1660,16 +1660,16 @@
                       </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>0.000231472582176879</caom2:delta>
+                        <caom2:delta>0.000231472222222222</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>57073.8169756396</caom2:val>
+                          <caom2:val>57073.81618981482</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
                     <caom2:timesys>UTC</caom2:timesys>
-                    <caom2:exposure>19.9992311000824</caom2:exposure>
-                    <caom2:resolution>19.9992311000824</caom2:resolution>
+                    <caom2:exposure>19.9992</caom2:exposure>
+                    <caom2:resolution>19.9992</caom2:resolution>
                   </caom2:time>
                 </caom2:chunk>
               </caom2:chunks>

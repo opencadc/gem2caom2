@@ -202,20 +202,6 @@ def get_time_delta(header):
     return float(exptime) / (24.0 * 3600.0)
 
 
-def get_time_crval(header):
-    """
-    Calculate the Time WCS reference value.
-
-    :param header: The FITS header for the current extension.
-    :return: The Time reference value, or None if none found.
-    """
-    date_obs = header.get('DATE-OBS')
-    time_obs = header.get('TIME-OBS')
-    if not date_obs and not time_obs:
-        return None
-    return ac.get_datetime('{}T{}'.format(date_obs, time_obs))
-
-
 def get_calibration_level(header):
     reduction = em.om.get('reduction')
     result = CalibrationLevel.RAW_STANDARD
@@ -319,7 +305,7 @@ def get_exposure(header):
     :param header:  The FITS header for the current extension.
     :return: The exposure time, or None if not found.
     """
-    return header.get('EXPTIME')
+    return em.om.get('exposure_time')
 
 
 def get_meta_release(header):
@@ -438,6 +424,19 @@ def get_target_type(header):
         return TargetType.FIELD
 
 
+def get_time_function_val(header):
+    """
+    Calculate the Chunk Time WCS function value.
+
+    :param header:  The FITS header for the current extension (not used).
+    :return: The Time WCS value from JSON Summary Metadata.
+    """
+    time_val = em.om.get('ut_datetime')
+    mjd_time_value = ac.get_datetime(time_val)
+    logging.error('get_time_function_val {}'.format(mjd_time_value))
+    return mjd_time_value
+
+
 def _get_obs_class(header):
     """Common location to lookup OBSCLASS from the FITS headers, and if
     it's not present, to lookup observation_class from JSON summary
@@ -537,7 +536,8 @@ def accumulate_fits_bp(bp, obs_id, file_id):
     bp.set('Chunk.time.axis.function.naxis', '1')
     bp.set('Chunk.time.axis.function.delta', 'get_time_delta(header)')
     bp.set('Chunk.time.axis.function.refCoord.pix', '0.5')
-    bp.add_fits_attribute('Chunk.time.axis.function.refCoord.val', 'MJD-OBS')
+    bp.set('Chunk.time.axis.function.refCoord.val',
+           'get_time_function_val(header)')
 
     get_chunk_wcs(bp, obs_id, file_id)
 
@@ -591,6 +591,8 @@ def update(observation, **kwargs):
                                 _update_chunk_energy_gsaoi(c)
                             elif observation.instrument.name == 'NICI':
                                 _update_chunk_energy_nici(c)
+                            elif observation.instrument.name == 'TReCS':
+                                _update_chunk_energy_trecs(c, headers[0])
 
                         # position WCS
                         if (observation.instrument.name == 'GRACES' and
@@ -598,6 +600,8 @@ def update(observation, **kwargs):
                             _update_chunk_position(c)
     except Exception as e:
         logging.error(e)
+        tb = traceback.format_exc()
+        logging.error(tb)
     logging.error('Done update.')
     return True
 
@@ -829,6 +833,51 @@ def _update_chunk_energy_nici(chunk):
                         filter_name, resolving_power)
 
     logging.debug('End _update_chunk_energy_nici')
+
+
+def _update_chunk_energy_trecs(chunk, header):
+    """TReCS-specific chunk-level Energy WCS construction."""
+    logging.debug('Begin _update_chunk_energy_trecs')
+    mc.check_param(chunk, Chunk)
+
+    # what filter names look like in Gemini metadata, and what they
+    # look like at the SVO, aren't necessarily the same
+
+    n_axis = 1
+    filter_name = em.om.get('filter_name')
+    temp = filter_name.split('-')
+    if len(temp) > 1:
+        filter_name = temp[0]
+    trecs_repair = {'K': 'k',
+                    'L': 'l',
+                    'M': 'm',
+                    'N': 'n',
+                    'Nprime': 'nprime',
+                    'Qw': 'Qwide',
+                    'NeII_ref2': 'NeII_ref'}
+    if filter_name in trecs_repair:
+        filter_name = trecs_repair[filter_name]
+    logging.error('filter_name is {}'.format(filter_name))
+    filter_md = em.get_filter_metadata('TReCS', filter_name)
+
+    mode = em.om.get('mode')
+    logging.error('mode is {}'.format(mode))
+    if mode in ['imaging', 'IFP', 'IFS']:
+        logging.debug('SpectralWCS: TReCS imaging mode.')
+        reference_wavelength, delta, resolving_power = \
+            _imaging_energy(filter_md)
+    elif mode in ['LS', 'spectroscopy', 'MOS']:
+        logging.debug('SpectralWCS: TReCS LS|Spectroscopy mode.')
+        delta = filter_md['wl_eff_width'] / n_axis / 1.0e4
+        reference_wavelength = em.om.get('central_wavelength')
+        # resolving_power = ''
+    else:
+        raise mc.CadcException(
+            'Do not understand mode {}'.format(mode))
+
+    _build_chunk_energy(chunk, n_axis, reference_wavelength, delta,
+                        filter_name, resolving_power=None)
+    logging.debug('End _update_chunk_energy_trecs')
 
 
 def _reset_energy(data_label):

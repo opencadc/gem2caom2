@@ -132,13 +132,13 @@
                         <caom2:delta>0.000700210973068519</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>53766.1148687908</caom2:val>
+                          <caom2:val>53766.11410069445</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
                     <caom2:timesys>UTC</caom2:timesys>
-                    <caom2:exposure>60.4982280731201</caom2:exposure>
-                    <caom2:resolution>60.4982280731201</caom2:resolution>
+                    <caom2:exposure>60.4982</caom2:exposure>
+                    <caom2:resolution>60.4982</caom2:resolution>
                   </caom2:time>
                 </caom2:chunk>
               </caom2:chunks>
@@ -222,13 +222,13 @@
                         <caom2:delta>0.000700210973068519</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>53766.1148687908</caom2:val>
+                          <caom2:val>53766.11410069445</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
                     <caom2:timesys>UTC</caom2:timesys>
-                    <caom2:exposure>60.4982280731201</caom2:exposure>
-                    <caom2:resolution>60.4982280731201</caom2:resolution>
+                    <caom2:exposure>60.4982</caom2:exposure>
+                    <caom2:resolution>60.4982</caom2:resolution>
                   </caom2:time>
                 </caom2:chunk>
               </caom2:chunks>
@@ -312,13 +312,13 @@
                         <caom2:delta>0.000700210973068519</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>53766.1148687908</caom2:val>
+                          <caom2:val>53766.11410069445</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
                     <caom2:timesys>UTC</caom2:timesys>
-                    <caom2:exposure>60.4982280731201</caom2:exposure>
-                    <caom2:resolution>60.4982280731201</caom2:resolution>
+                    <caom2:exposure>60.4982</caom2:exposure>
+                    <caom2:resolution>60.4982</caom2:resolution>
                   </caom2:time>
                 </caom2:chunk>
               </caom2:chunks>
