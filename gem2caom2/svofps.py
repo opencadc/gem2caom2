@@ -176,6 +176,22 @@ def filter_metadata(instrument, filters):
                     if (filter_name == 'H2v=1-0s1-G0216' or
                             filter_name == 'H2v=1-0S1-G0216'):
                         filter_name = 'H2S1v1-0-G0216'
+                if instrument == 'NICI':
+                    nici_rename = {'CH4-H4S': 'ED451',
+                                   'CH4-H4L': 'ED449',
+                                   'CH4-H1S': 'ED286',
+                                   'CH4-H1Sp': 'ED379',
+                                   '': 'ED299',
+                                   'CH4-H1L': 'ED381',
+                                   'CH4-H1L_2': 'ED283'}
+                # S20100228S0275 CH4-H1%Sp_G0728
+                    if filter_name in nici_rename:
+                        temp = nici_rename[filter_name]
+                        filter_name = temp
+                    else:
+                        logging.info(
+                            'NICI filter {} not at SVO.'.format(filter_name))
+                        continue
 
                 filter_id = "{}.{}".format(instrument, filter_name)
                 url = "{}{}".format(SVO_URL, filter_id)

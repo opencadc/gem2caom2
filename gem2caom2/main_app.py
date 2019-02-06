@@ -589,6 +589,8 @@ def update(observation, **kwargs):
                                 _update_chunk_energy_f2(c, headers)
                             elif observation.instrument.name == 'GSAOI':
                                 _update_chunk_energy_gsaoi(c)
+                            elif observation.instrument.name == 'NICI':
+                                _update_chunk_energy_nici(c)
 
                         # position WCS
                         if (observation.instrument.name == 'GRACES' and
@@ -802,6 +804,31 @@ def _update_chunk_energy_gsaoi(chunk):
                         filter_name, resolving_power)
 
     logging.debug('End _update_chunk_energy_gsaoi')
+
+
+def _update_chunk_energy_nici(chunk):
+    """NICI-specific chunk-level Energy WCS construction."""
+    logging.debug('Begin _update_chunk_energy_nici')
+    mc.check_param(chunk, Chunk)
+
+    n_axis = 1
+    filter_name = em.om.get('filter_name')
+    filter_md = em.get_filter_metadata('NICI', filter_name)
+
+    mode = em.om.get('mode')
+    logging.error('mode is {}'.format(mode))
+    if mode == 'imaging':
+        logging.debug('SpectralWCS: NICI imaging mode.')
+        reference_wavelength, delta, resolving_power = \
+            _imaging_energy(filter_md)
+    else:
+        raise mc.CadcException(
+            'Do not understand mode {}'.format(mode))
+
+    _build_chunk_energy(chunk, n_axis, reference_wavelength, delta,
+                        filter_name, resolving_power)
+
+    logging.debug('End _update_chunk_energy_nici')
 
 
 def _reset_energy(data_label):
