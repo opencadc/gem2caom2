@@ -300,9 +300,13 @@ def get_data_release(header):
 
 def get_exposure(header):
     """
-    Calculate the exposure time.
+    Calculate the exposure time. EXPTIME in the header is not always the
+    total exposure time for some of the IR instruments.  For these EXPTIME
+    is usually the individual exposure time for each chop/nod and a bunch of
+    chops/nods are executed for one observation.  Gemini correctly
+    allows for this in the json ‘exposure_time’ value.
 
-    :param header:  The FITS header for the current extension.
+    :param header:  The FITS header for the current extension (unused).
     :return: The exposure time, or None if not found.
     """
     return em.om.get('exposure_time')
@@ -844,7 +848,8 @@ def _update_chunk_energy_trecs(chunk, header):
     # look like at the SVO, aren't necessarily the same
 
     n_axis = 1
-    filter_name = em.om.get('filter_name')
+    orig_filter_name = em.om.get('filter_name')
+    filter_name = orig_filter_name
     temp = filter_name.split('-')
     if len(temp) > 1:
         filter_name = temp[0]
@@ -870,13 +875,12 @@ def _update_chunk_energy_trecs(chunk, header):
         logging.debug('SpectralWCS: TReCS LS|Spectroscopy mode.')
         delta = filter_md['wl_eff_width'] / n_axis / 1.0e4
         reference_wavelength = em.om.get('central_wavelength')
-        # resolving_power = ''
     else:
         raise mc.CadcException(
             'Do not understand mode {}'.format(mode))
 
     _build_chunk_energy(chunk, n_axis, reference_wavelength, delta,
-                        filter_name, resolving_power=None)
+                        orig_filter_name, resolving_power=None)
     logging.debug('End _update_chunk_energy_trecs')
 
 
