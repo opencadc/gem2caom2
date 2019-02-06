@@ -120,33 +120,7 @@
             </caom2:part>
             <caom2:part caom2:id="00000000-0000-0000-8d2f-68f28bfdd388">
               <caom2:name>2</caom2:name>
-              <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-8cec-2f75b3f2a438">
-                  <caom2:naxis>2</caom2:naxis>
-                  <caom2:timeAxis>3</caom2:timeAxis>
-                  <caom2:time>
-                    <caom2:axis>
-                      <caom2:axis>
-                        <caom2:ctype>TIME</caom2:ctype>
-                        <caom2:cunit>d</caom2:cunit>
-                      </caom2:axis>
-                      <caom2:error>
-                        <caom2:syser>1e-07</caom2:syser>
-                        <caom2:rnder>1e-07</caom2:rnder>
-                      </caom2:error>
-                      <caom2:function>
-                        <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.0</caom2:delta>
-                        <caom2:refCoord>
-                          <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>0.0</caom2:val>
-                        </caom2:refCoord>
-                      </caom2:function>
-                    </caom2:axis>
-                    <caom2:timesys>UTC</caom2:timesys>
-                  </caom2:time>
-                </caom2:chunk>
-              </caom2:chunks>
+              <caom2:chunks/>
             </caom2:part>
           </caom2:parts>
         </caom2:artifact>
