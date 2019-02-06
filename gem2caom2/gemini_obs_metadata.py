@@ -90,9 +90,9 @@ class GeminiObsMetadata(object):
     def _get_index(self, file_id):
         result = -1
         for index, value in enumerate(self.obs_metadata):
-            indexed_fname = mc.response_lookup(value, 'filename')
-            if indexed_fname is not None:
-                temp = GemName.remove_extensions(indexed_fname)
+            indexed_f_name = mc.response_lookup(value, 'filename')
+            if indexed_f_name is not None:
+                temp = GemName.remove_extensions(indexed_f_name)
                 if temp == file_id:
                     result = index
                     break

@@ -97,12 +97,12 @@ from caom2 import Observation, ObservationIntentType, DataProductType
 from caom2 import CalibrationLevel, TargetType, ProductType, Chunk
 from caom2 import SpatialWCS, CoordAxis2D, Axis, CoordPolygon2D, ValueCoord2D
 from caom2 import SpectralWCS, CoordAxis1D, CoordFunction1D, RefCoord
+from caom2 import TypedList
 from caom2utils import ObsBlueprint, get_gen_proc_arg_parser, gen_proc
 from caom2pipe import manage_composable as mc
 from caom2pipe import astro_composable as ac
 
 import gem2caom2.external_metadata as em
-from gem2caom2.svofps import filter_metadata
 from gem2caom2.gem_name import GemName, COLLECTION, ARCHIVE, SCHEME
 
 __all__ = ['main_app2', 'update', 'COLLECTION', 'APPLICATION', 'SCHEME',
@@ -409,6 +409,21 @@ def get_obs_type(header):
     return result
 
 
+def get_target_moving(header):
+    """
+    Calculate whether the Target moving.
+    Non-sidereal tracking -> setting moving target to "True"
+
+    :param header:  The FITS header for the current extension.
+    :return: The Target TargetType, or None if not found.
+    """
+    types = em.om.get('types')
+    if 'NON_SIDEREAL' in types:
+        return True
+    else:
+        return None
+
+
 def get_target_type(header):
     """
     Calculate the Target TargetType
@@ -486,6 +501,7 @@ def accumulate_fits_bp(bp, obs_id, file_id):
     bp.set('Observation.type', 'get_obs_type(header)')
     bp.set('Observation.metaRelease', 'get_meta_release(header)')
     bp.set('Observation.target.type', 'get_target_type(header)')
+    bp.set('Observation.target.moving', 'get_target_moving(header)')
     # GRACES has entries with RUNID set to non-proposal ID values
     # so clear the default FITS value lookup
     bp.clear('Observation.proposal.id')
@@ -554,7 +570,6 @@ def update(observation, **kwargs):
                         logging.info(
                             'GPI: Setting chunks to None for part {}'.format(
                                 part))
-                        from caom2 import TypedList
                         observation.planes[p].artifacts[a].parts[part].chunks \
                             = TypedList(Chunk,)
                         continue
@@ -572,10 +587,13 @@ def update(observation, **kwargs):
                                 _update_chunk_energy_gpi(c, headers[0])
                             elif observation.instrument.name == 'F2':
                                 _update_chunk_energy_f2(c, headers)
+                            elif observation.instrument.name == 'GSAOI':
+                                _update_chunk_energy_gsaoi(c)
 
-                            if (observation.instrument.name == 'GRACES' and
-                                    mode == DataProductType.SPECTRUM):
-                                _update_chunk_position(c)
+                        # position WCS
+                        if (observation.instrument.name == 'GRACES' and
+                                mode == DataProductType.SPECTRUM):
+                            _update_chunk_position(c)
     except Exception as e:
         logging.error(e)
     logging.error('Done update.')
@@ -596,7 +614,7 @@ def _update_chunk_energy_niri(chunk, headers):
         header = headers[0]
 
         filters = get_filter_name(header)
-        filter_md = filter_metadata('NIRI', filters)
+        filter_md = em.get_filter_metadata('NIRI', filters)
         filter_name = em.om.get('filter_name')
 
         mode = em.om.get('mode')
@@ -672,7 +690,7 @@ def _update_chunk_energy_gpi(chunk, header):
 
     try:
         filter_name = em.om.get('filter_name')
-        filter_md = filter_metadata('GPI', filter_name)
+        filter_md = em.get_filter_metadata('GPI', filter_name)
 
         mode = em.om.get('mode')
         if mode in ['imaging', 'IFP', 'IFS']:
@@ -715,7 +733,7 @@ def _update_chunk_energy_f2(chunk, headers):
         header = headers[0]
 
         filter_name = em.om.get('filter_name')
-        filter_md = filter_metadata('Flamingos2', filter_name)
+        filter_md = em.get_filter_metadata('Flamingos2', filter_name)
 
         mode = em.om.get('mode')
         logging.error('mode is {}'.format(mode))
@@ -759,6 +777,31 @@ def _update_chunk_energy_f2(chunk, headers):
         tb = traceback.format_exc()
         logging.error(tb)
     logging.debug('End _update_chunk_energy_f2')
+
+
+def _update_chunk_energy_gsaoi(chunk):
+    """NIRI-specific chunk-level Energy WCS construction."""
+    logging.debug('Begin _update_chunk_energy_gsaoi')
+    mc.check_param(chunk, Chunk)
+
+    n_axis = 1
+    filter_name = em.om.get('filter_name')
+    filter_md = em.get_filter_metadata('GSAOI', filter_name)
+
+    mode = em.om.get('mode')
+    logging.error('mode is {}'.format(mode))
+    if mode == 'imaging':
+        logging.debug('SpectralWCS: GSAOI imaging mode.')
+        reference_wavelength, delta, resolving_power = \
+            _imaging_energy(filter_md)
+    else:
+        raise mc.CadcException(
+            'Do not understand mode {}'.format(mode))
+
+    _build_chunk_energy(chunk, n_axis, reference_wavelength, delta,
+                        filter_name, resolving_power)
+
+    logging.debug('End _update_chunk_energy_gsaoi')
 
 
 def _reset_energy(data_label):

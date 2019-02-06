@@ -120,6 +120,7 @@ NIRI_RESOLVING_POWER = {
 
 obs_metadata = {}
 om = None
+fm = {}
 
 
 def get_obs_metadata(file_id):
@@ -154,6 +155,22 @@ def get_obs_metadata(file_id):
     global om
     om = gom.GeminiObsMetadata(metadata, file_id)
     logging.debug('End get_obs_metadata')
+
+
+def get_filter_metadata(instrument, filter_name):
+    """A way to lazily initialize all the filter metadata reads from SVO."""
+    global fm
+    if instrument in fm and filter_name in fm[instrument]:
+        logging.error('only checking once ...')
+        result = fm[instrument][filter_name]
+    else:
+        result = filter_metadata(instrument, filter_name)
+        if instrument in fm:
+            temp = fm[instrument]
+            temp[filter_name] = result
+        else:
+            fm[instrument] = {filter_name: result}
+    return result
 
 
 def gmos_metadata():
