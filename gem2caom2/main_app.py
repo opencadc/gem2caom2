@@ -589,13 +589,13 @@ def update(observation, **kwargs):
                             elif observation.instrument.name == 'GPI':
                                 _update_chunk_energy_gpi(c, headers[0])
                             elif observation.instrument.name == 'F2':
-                                _update_chunk_energy_f2(c, headers)
+                                _update_chunk_energy_f2(c, headers[0])
                             elif observation.instrument.name == 'GSAOI':
                                 _update_chunk_energy_gsaoi(c)
                             elif observation.instrument.name == 'NICI':
                                 _update_chunk_energy_nici(c, header)
                             elif observation.instrument.name == 'TReCS':
-                                _update_chunk_energy_trecs(c, headers[0])
+                                _update_chunk_energy_trecs(c)
 
                         # position WCS
                         if (observation.instrument.name == 'GRACES' and
@@ -607,6 +607,39 @@ def update(observation, **kwargs):
         logging.error(tb)
     logging.error('Done update.')
     return True
+
+
+def _build_chunk_energy(chunk, n_axis, c_val, delta, filter_name,
+                        resolving_power):
+    # build the CAOM2 structure
+
+    # DB - 02-04-19 - initial pass, do not try to calculate
+    # dispersion, so naxis=1, prefer um as units, strip the bar code
+    # from the filter names
+    chunk.energy_axis = 4
+    axis = Axis(ctype='WAVE', cunit='um')
+    ref_coord = RefCoord(pix=float(n_axis/2.0), val=c_val)
+    # SGo - assume a function until DB says otherwise
+    function = CoordFunction1D(naxis=n_axis,
+                               delta=delta,
+                               ref_coord=ref_coord)
+    coord_axis = CoordAxis1D(axis=axis,
+                             error=None,
+                             range=None,
+                             bounds=None,
+                             function=function)
+    chunk.energy = SpectralWCS(axis=coord_axis,
+                               specsys='TOPOCENT',
+                               ssysobs='TOPOCENT',
+                               ssyssrc='TOPOCENT',
+                               restfrq=None,
+                               restwav=None,
+                               velosys=None,
+                               zsource=None,
+                               velang=None,
+                               bandpass_name=filter_name,
+                               transition=None,
+                               resolving_power=resolving_power)
 
 
 def _update_chunk_energy_niri(chunk, header):
@@ -623,7 +656,7 @@ def _update_chunk_energy_niri(chunk, header):
     # with f/32 camera).   So f#-#pix with or without ‘Bl’.   But there
     # seems to be some inconsistency in the above web page and actual
     # slits.  I don’t think there are 7- or 10-pixel slits used with the
-    # f32 camera.  The Gemini archive pulldown menu only gives f32-6pix
+    # f32 camera.  The Gemini archive pull-down menu only gives f32-6pix
     # and f32-9pix choices.  Assume these refer to the 7 and 10 pixel
     # slits in the web page. Use the ‘disperser’ value to lookup the
     # ‘Estimated Resolving Power’ for the slit in the beam given by the
@@ -674,39 +707,6 @@ def _update_chunk_energy_niri(chunk, header):
     logging.debug('End _update_chunk_energy_niri')
 
 
-def _build_chunk_energy(chunk, n_axis, c_val, delta, filter_name,
-                        resolving_power):
-    # build the CAOM2 structure
-
-    # DB - 02-04-19 - initial pass, do not try to calculate
-    # dispersion, so naxis=1, prefer um as units, strip the bar code
-    # from the filter names
-    chunk.energy_axis = 4
-    axis = Axis(ctype='WAVE', cunit='um')
-    ref_coord = RefCoord(pix=float(n_axis/2.0), val=c_val)
-    # SGo - assume a function until DB says otherwise
-    function = CoordFunction1D(naxis=n_axis,
-                               delta=delta,
-                               ref_coord=ref_coord)
-    coord_axis = CoordAxis1D(axis=axis,
-                             error=None,
-                             range=None,
-                             bounds=None,
-                             function=function)
-    chunk.energy = SpectralWCS(axis=coord_axis,
-                               specsys='TOPOCENT',
-                               ssysobs='TOPOCENT',
-                               ssyssrc='TOPOCENT',
-                               restfrq=None,
-                               restwav=None,
-                               velosys=None,
-                               zsource=None,
-                               velang=None,
-                               bandpass_name=filter_name,
-                               transition=None,
-                               resolving_power=resolving_power)
-
-
 def _update_chunk_energy_gpi(chunk, header):
     """NIRI-specific chunk-level Energy WCS construction."""
     logging.debug('Begin _update_chunk_energy_gpi')
@@ -714,94 +714,84 @@ def _update_chunk_energy_gpi(chunk, header):
 
     n_axis = 1
 
-    try:
-        filter_name = em.om.get('filter_name')
-        filter_md = em.get_filter_metadata('GPI', filter_name)
+    filter_name = em.om.get('filter_name')
+    filter_md = em.get_filter_metadata('GPI', filter_name)
 
-        mode = em.om.get('mode')
-        if mode in ['imaging', 'IFP', 'IFS']:
-            logging.debug('SpectralWCS: GPI imaging mode.')
-            c_val, delta, resolving_power = _imaging_energy(filter_md)
-        elif mode in ['LS', 'spectroscopy']:
-            logging.debug('SpectralWCS: GPI LS|Spectroscopy mode.')
-            c_val = 0.0  # TODO
-            delta = filter_md['wl_eff_width'] / n_axis / 1.0e10
-            fp_mask = header.get('FPMASK')
-            bandpass_name = filter_name[0]
-            f_ratio = fp_mask.split('_')[0]
-            logging.debug('Bandpass name is {} f_ratio is {}'.format(
-                bandpass_name, f_ratio))
-            if bandpass_name in em.NIRI_RESOLVING_POWER:
-                resolving_power = \
-                    em.NIRI_RESOLVING_POWER[bandpass_name][f_ratio]
-            else:
-                resolving_power = None
-                logging.debug('No resolving power.')
+    mode = em.om.get('mode')
+    if mode in ['imaging', 'IFP', 'IFS']:
+        logging.debug('SpectralWCS: GPI imaging mode.')
+        c_val, delta, resolving_power = _imaging_energy(filter_md)
+    elif mode in ['LS', 'spectroscopy']:
+        logging.debug('SpectralWCS: GPI LS|Spectroscopy mode.')
+        c_val = 0.0  # TODO
+        delta = filter_md['wl_eff_width'] / n_axis / 1.0e10
+        fp_mask = header.get('FPMASK')
+        bandpass_name = filter_name[0]
+        f_ratio = fp_mask.split('_')[0]
+        logging.debug('Bandpass name is {} f_ratio is {}'.format(
+            bandpass_name, f_ratio))
+        if bandpass_name in em.NIRI_RESOLVING_POWER:
+            resolving_power = \
+                em.NIRI_RESOLVING_POWER[bandpass_name][f_ratio]
         else:
-            raise mc.CadcException(
-                'Do not understand mode {}'.format(mode))
+            resolving_power = None
+            logging.debug('No resolving power.')
+    else:
+        raise mc.CadcException(
+            'Do not understand mode {}'.format(mode))
 
-        _build_chunk_energy(chunk, n_axis, c_val, delta, filter_name,
-                            resolving_power)
-    except:
-        tb = traceback.format_exc()
-        logging.error(tb)
+    _build_chunk_energy(chunk, n_axis, c_val, delta, filter_name,
+                        resolving_power)
     logging.debug('End _update_chunk_energy_gpi')
 
 
-def _update_chunk_energy_f2(chunk, headers):
+def _update_chunk_energy_f2(chunk, header):
     """NIRI-specific chunk-level Energy WCS construction."""
     logging.debug('Begin _update_chunk_energy_f2')
     mc.check_param(chunk, Chunk)
 
     n_axis = 1
-    try:
-        header = headers[0]
+    filter_name = em.om.get('filter_name')
+    filter_md = em.get_filter_metadata('Flamingos2', filter_name)
 
-        filter_name = em.om.get('filter_name')
-        filter_md = em.get_filter_metadata('Flamingos2', filter_name)
-
-        mode = em.om.get('mode')
-        logging.error('mode is {}'.format(mode))
-        if mode in ['imaging', 'IFP', 'IFS']:
-            logging.debug('SpectralWCS: F2 imaging mode.')
-            reference_wavelength, delta, resolving_power = \
-                _imaging_energy(filter_md)
-        elif mode in ['LS', 'spectroscopy', 'MOS']:
-            logging.debug('SpectralWCS: F2 LS|Spectroscopy mode.')
-            fp_mask = header.get('MASKNAME')
-            if mode == 'LS':
-                slit_width = fp_mask[0]
-            else:
-                # DB - 04-04-19 no way to determine slit widths used in
-                # custom mask, so assume 2
-                slit_width = '2'
-            n_axis = 2048
-            delta = filter_md['wl_eff_width'] / n_axis / 1.0e4
-            reference_wavelength = em.om.get('central_wavelength')
-            grism_name = header.get('GRISM')
-            logging.error('grism name is {} fp_mask is {}'.format(grism_name, fp_mask))
-            # lookup values from
-            # https://www.gemini.edu/sciops/instruments/flamingos2/spectroscopy/longslit-spectroscopy
-            lookup = {'1': [1300.0, 3600.0],
-                      '2': [900.0, 2800.0],
-                      '3': [600.0, 1600.0],
-                      '4': [350.0, 1300.0],
-                      '6': [130.0, 1000.0],
-                      '8': [100.0, 750.0]}
-            if grism_name.startswith('R3K_'):
-                resolving_power = lookup[slit_width][1]
-            else:
-                resolving_power = lookup[slit_width][0]
+    mode = em.om.get('mode')
+    logging.error('mode is {}'.format(mode))
+    if mode in ['imaging', 'IFP', 'IFS']:
+        logging.debug('SpectralWCS: F2 imaging mode.')
+        reference_wavelength, delta, resolving_power = \
+            _imaging_energy(filter_md)
+    elif mode in ['LS', 'spectroscopy', 'MOS']:
+        logging.debug('SpectralWCS: F2 LS|Spectroscopy mode.')
+        fp_mask = header.get('MASKNAME')
+        if mode == 'LS':
+            slit_width = fp_mask[0]
         else:
-            raise mc.CadcException(
-                'Do not understand mode {}'.format(mode))
+            # DB - 04-04-19 no way to determine slit widths used in
+            # custom mask, so assume 2
+            slit_width = '2'
+        n_axis = 2048
+        delta = filter_md['wl_eff_width'] / n_axis / 1.0e4
+        reference_wavelength = em.om.get('central_wavelength')
+        grism_name = header.get('GRISM')
+        logging.error('grism name is {} fp_mask is {}'.format(grism_name, fp_mask))
+        # lookup values from
+        # https://www.gemini.edu/sciops/instruments/flamingos2/spectroscopy/longslit-spectroscopy
+        lookup = {'1': [1300.0, 3600.0],
+                  '2': [900.0, 2800.0],
+                  '3': [600.0, 1600.0],
+                  '4': [350.0, 1300.0],
+                  '6': [130.0, 1000.0],
+                  '8': [100.0, 750.0]}
+        if grism_name.startswith('R3K_'):
+            resolving_power = lookup[slit_width][1]
+        else:
+            resolving_power = lookup[slit_width][0]
+    else:
+        raise mc.CadcException(
+            'Do not understand mode {}'.format(mode))
 
-        _build_chunk_energy(chunk, n_axis, reference_wavelength, delta,
-                            filter_name, resolving_power)
-    except:
-        tb = traceback.format_exc()
-        logging.error(tb)
+    _build_chunk_energy(chunk, n_axis, reference_wavelength, delta,
+                        filter_name, resolving_power)
     logging.debug('End _update_chunk_energy_f2')
 
 
@@ -905,7 +895,7 @@ def _update_chunk_energy_nici(chunk, header):
     logging.debug('End _update_chunk_energy_nici')
 
 
-def _update_chunk_energy_trecs(chunk, header):
+def _update_chunk_energy_trecs(chunk):
     """TReCS-specific chunk-level Energy WCS construction."""
     logging.debug('Begin _update_chunk_energy_trecs')
     mc.check_param(chunk, Chunk)
