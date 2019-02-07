@@ -430,15 +430,13 @@ def get_target_type(header):
 
 def get_time_function_val(header):
     """
-    Calculate the Chunk Time WCS function value.
+    Calculate the Chunk Time WCS function value, in 'mjd'.
 
     :param header:  The FITS header for the current extension (not used).
     :return: The Time WCS value from JSON Summary Metadata.
     """
     time_val = em.om.get('ut_datetime')
-    mjd_time_value = ac.get_datetime(time_val)
-    logging.error('get_time_function_val {}'.format(mjd_time_value))
-    return mjd_time_value
+    return ac.get_datetime(time_val)
 
 
 def _get_obs_class(header):
@@ -585,8 +583,9 @@ def update(observation, **kwargs):
                             c.energy = None
                             c.energy_axis = None
                         else:
+                            header = headers[int(part)]
                             if observation.instrument.name == 'NIRI':
-                                _update_chunk_energy_niri(c, headers)
+                                _update_chunk_energy_niri(c, header)
                             elif observation.instrument.name == 'GPI':
                                 _update_chunk_energy_gpi(c, headers[0])
                             elif observation.instrument.name == 'F2':
@@ -594,8 +593,7 @@ def update(observation, **kwargs):
                             elif observation.instrument.name == 'GSAOI':
                                 _update_chunk_energy_gsaoi(c)
                             elif observation.instrument.name == 'NICI':
-                                _update_chunk_energy_nici(
-                                    c, headers[int(part)])
+                                _update_chunk_energy_nici(c, header)
                             elif observation.instrument.name == 'TReCS':
                                 _update_chunk_energy_trecs(c, headers[0])
 
@@ -611,7 +609,7 @@ def update(observation, **kwargs):
     return True
 
 
-def _update_chunk_energy_niri(chunk, headers):
+def _update_chunk_energy_niri(chunk, header):
     """NIRI-specific chunk-level Energy WCS construction."""
     logging.debug('Begin _update_chunk_energy_niri')
     mc.check_param(chunk, Chunk)
@@ -620,42 +618,59 @@ def _update_chunk_energy_niri(chunk, headers):
     # latter are sometimes only identified by a 'blank' filter.  e.g.
     # NIRI 'flats' are sometimes obtained with the filter wheel blocked off.
 
+    # The focal_plane_mask has values like f6-2pixBl (2-pixel wide blue slit
+    # used with f/6 camera) or f32-6pix (6-pixel wide slit [centered]
+    # with f/32 camera).   So f#-#pix with or without ‘Bl’.   But there
+    # seems to be some inconsistency in the above web page and actual
+    # slits.  I don’t think there are 7- or 10-pixel slits used with the
+    # f32 camera.  The Gemini archive pulldown menu only gives f32-6pix
+    # and f32-9pix choices.  Assume these refer to the 7 and 10 pixel
+    # slits in the web page. Use the ‘disperser’ value to lookup the
+    # ‘Estimated Resolving Power’ for the slit in the beam given by the
+    # focal_plane_mask value.
+
     n_axis = 1
-    try:
-        header = headers[0]
 
-        filters = get_filter_name(header)
-        filter_md = em.get_filter_metadata('NIRI', filters)
-        filter_name = em.om.get('filter_name')
+    filters = get_filter_name(header)
+    filter_md = em.get_filter_metadata('NIRI', filters)
+    filter_name = em.om.get('filter_name')
 
-        mode = em.om.get('mode')
-        if mode == 'imaging':
-            logging.debug('SpectralWCS: NIRI imaging mode.')
-            c_val, delta, resolving_power = _imaging_energy(filter_md)
-        elif mode in ['LS', 'spectroscopy']:
-            logging.debug('SpectralWCS: NIRI LS|Spectroscopy mode.')
-            c_val = 0.0  # TODO
-            delta = filter_md['wl_eff_width'] / n_axis / 1.0e10
-            fp_mask = header.get('FPMASK')
-            bandpass_name = filter_name[0]
-            f_ratio = fp_mask.split('_')[0]
+    mode = em.om.get('mode')
+    if mode == 'imaging':
+        logging.debug('NIRI: SpectralWCS imaging mode.')
+        c_val, delta, resolving_power = _imaging_energy(filter_md)
+    elif mode in ['LS', 'spectroscopy']:
+        logging.debug('NIRI: SpectralWCS mode {}.'.format(mode))
+        if (chunk.position is not None and chunk.position.axis is not None
+            and chunk.position.axis.function is not None
+            and chunk.position.axis.function.dimension is not None
+                and chunk.position.axis.function.dimension.naxis1 is not None):
+            n_axis = chunk.position.axis.function.dimension.naxis1
+        c_val = filter_md['wl_eff']  # central wavelength
+        delta = filter_md['wl_eff_width'] / n_axis / 1.0e4
+        disperser = em.om.get('disperser')
+        if disperser in ['Jgrism', 'Jgrismf32', 'Hgrism', 'Hgrismf32',
+                         'Kgrism', 'Kgrismf32', 'Lgrism', 'Mgrism']:
+            bandpass_name = disperser[0]
+            f_ratio = em.om.get('focal_plane_mask')
             logging.debug('Bandpass name is {} f_ratio is {}'.format(
                 bandpass_name, f_ratio))
             if bandpass_name in em.NIRI_RESOLVING_POWER:
                 resolving_power = \
                     em.NIRI_RESOLVING_POWER[bandpass_name][f_ratio]
             else:
+                logging.info('NIRI: No resolving power.')
                 resolving_power = None
-                logging.debug('No resolving power.')
         else:
-            raise mc.CadcException(
-                'Do not understand mode {}'.format(mode))
+            logging.info(
+                'NIRI: Unknown disperser value {}'.format(disperser))
+            resolving_power = None
+    else:
+        raise mc.CadcException(
+            'NIRI: Do not understand mode {}'.format(mode))
 
-        _build_chunk_energy(chunk, n_axis, c_val, delta, filter_name,
-                            resolving_power)
-    except:
-        tb = traceback.format_exc()
-        logging.error(tb)
+    _build_chunk_energy(chunk, n_axis, c_val, delta, filter_name,
+                        resolving_power)
     logging.debug('End _update_chunk_energy_niri')
 
 
@@ -947,7 +962,9 @@ def _reset_energy(data_label):
     om_filter_name = em.om.get('filter_name')
 
     if observation_type == 'DARK' or 'blank' in om_filter_name:
-        logging.info('No chunk energy for {}'.format(data_label))
+        logging.info(
+            'No chunk energy for {} obs type {} filter name {}'.format(
+                data_label, observation_type, om_filter_name))
         result = True
     return result
 
