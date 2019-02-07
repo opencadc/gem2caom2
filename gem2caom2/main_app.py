@@ -594,7 +594,8 @@ def update(observation, **kwargs):
                             elif observation.instrument.name == 'GSAOI':
                                 _update_chunk_energy_gsaoi(c)
                             elif observation.instrument.name == 'NICI':
-                                _update_chunk_energy_nici(c)
+                                _update_chunk_energy_nici(
+                                    c, headers[int(part)])
                             elif observation.instrument.name == 'TReCS':
                                 _update_chunk_energy_trecs(c, headers[0])
 
@@ -814,24 +815,74 @@ def _update_chunk_energy_gsaoi(chunk):
     logging.debug('End _update_chunk_energy_gsaoi')
 
 
-def _update_chunk_energy_nici(chunk):
+# select filter_id, wavelength_central, wavelength_lower, wavelength_upper
+# from gsa..gsa_filters where instrument = 'NICI'
+# 0 - central
+# 1 - lower
+# 2 - upper
+#
+# dict with the barcodes stripped from the names as returned by query
+NICI = {'Br-gamma': [2.168600, 2.153900, 2.183300],
+        'CH4-H1%L': [1.628000, 1.619300, 1.636700],
+        'CH4-H1%S': [1.587000, 1.579500, 1.594500],
+        'CH4-H1%Sp': [1.603000, 1.594900, 1.611100],
+        'CH4-H4%L': [1.652000, 1.619000, 1.685000],
+        'CH4-H4%S': [1.578000, 1.547000, 1.609000],
+        'CH4-H6.5%L': [1.701000, 1.652400, 1.749600],
+        'CH4-H6.5%S': [1.596000, 1.537250, 1.654750],
+        'CH4-K5%L': [2.241000, 2.187500, 2.294500],
+        'CH4-K5%S': [2.080000, 2.027500, 2.132500],
+        'FeII': [1.644000, 1.631670, 1.656330],
+        'H2-1-0-S1': [2.123900, 2.110800, 2.137000],
+        'H20-Ice-L': [3.090000, 3.020000, 3.150000],
+        'H': [1.650000, 1.490000, 1.780000],
+        'J': [1.250000, 1.150000, 1.330000],
+        'K': [2.200000, 2.030000, 2.360000],
+        'Kcont': [2.271800, 2.254194, 2.289406],
+        'Kprime': [2.120000, 1.950000, 2.300000],
+        'Ks': [2.150000, 1.990000, 2.300000],
+        'Lprime': [3.780000, 3.430000, 4.130000],
+        'Mprime': [4.680000, 4.550000, 4.790000]}
+
+
+def _update_chunk_energy_nici(chunk, header):
     """NICI-specific chunk-level Energy WCS construction."""
     logging.debug('Begin _update_chunk_energy_nici')
     mc.check_param(chunk, Chunk)
 
     n_axis = 1
-    filter_name = em.om.get('filter_name')
-    filter_md = em.get_filter_metadata('NICI', filter_name)
-
     mode = em.om.get('mode')
     logging.error('mode is {}'.format(mode))
+
+    # use filter names from headers, because there's a different
+    # filter/header, and the JSON summary value obfuscates that
+
+    temp = get_filter_name(header)
+    if '&' in temp:
+        raise mc.CadcException(
+            'Do not understand NICI filter {}'.format(temp))
+    filter_name = temp.split('_G')[0]
+    filter_md = em.get_filter_metadata('NICI', filter_name)
+
     if mode == 'imaging':
         logging.debug('SpectralWCS: NICI imaging mode.')
-        reference_wavelength, delta, resolving_power = \
-            _imaging_energy(filter_md)
+        if len(filter_md) == 0:
+            if filter_name in NICI:
+                w_max = NICI[filter_name][2]
+                w_min = NICI[filter_name][1]
+                logging.error('NICI max is {} min is {}'.format(w_max, w_min))
+                reference_wavelength = w_min
+                delta = w_max - w_min
+                resolving_power = (w_max + w_min)/(2*delta)
+            else:
+                raise mc.CadcException(
+                    'Unprepared for NICI filter {}'.format(filter_name))
+        else:
+            reference_wavelength, delta, resolving_power = \
+                _imaging_energy(filter_md)
     else:
         raise mc.CadcException(
-            'Do not understand mode {}'.format(mode))
+            'Do not understand NICI mode {}'.format(mode))
 
     _build_chunk_energy(chunk, n_axis, reference_wavelength, delta,
                         filter_name, resolving_power)

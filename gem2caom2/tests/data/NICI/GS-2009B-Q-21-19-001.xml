@@ -104,18 +104,18 @@
                       </caom2:axis>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>10.0</caom2:delta>
+                        <caom2:delta>0.34999999999999987</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>5.0</caom2:val>
+                          <caom2:val>1.95</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
                     <caom2:specsys>TOPOCENT</caom2:specsys>
                     <caom2:ssysobs>TOPOCENT</caom2:ssysobs>
                     <caom2:ssyssrc>TOPOCENT</caom2:ssyssrc>
-                    <caom2:bandpassName>Kprime+H2-1-0-S1</caom2:bandpassName>
-                    <caom2:resolvingPower>0.5</caom2:resolvingPower>
+                    <caom2:bandpassName>Kprime</caom2:bandpassName>
+                    <caom2:resolvingPower>6.071428571428574</caom2:resolvingPower>
                   </caom2:energy>
                   <caom2:time>
                     <caom2:axis>
@@ -193,18 +193,18 @@
                       </caom2:axis>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>10.0</caom2:delta>
+                        <caom2:delta>0.026200000000000223</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>5.0</caom2:val>
+                          <caom2:val>2.1108</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
                     <caom2:specsys>TOPOCENT</caom2:specsys>
                     <caom2:ssysobs>TOPOCENT</caom2:ssysobs>
                     <caom2:ssyssrc>TOPOCENT</caom2:ssyssrc>
-                    <caom2:bandpassName>Kprime+H2-1-0-S1</caom2:bandpassName>
-                    <caom2:resolvingPower>0.5</caom2:resolvingPower>
+                    <caom2:bandpassName>H2-1-0-S1</caom2:bandpassName>
+                    <caom2:resolvingPower>81.06488549618251</caom2:resolvingPower>
                   </caom2:energy>
                   <caom2:time>
                     <caom2:axis>

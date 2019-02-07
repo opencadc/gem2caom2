@@ -134,6 +134,8 @@ def filter_metadata(instrument, filters):
         wl_width = wl_max - wl_min
         wl_eff = (wl_max + wl_min)/2.0
 
+        filter_name_found = True
+
         for index in filter_names:
             filter_name = index.strip()
             if 'Hartmann' in filter_name:
@@ -189,6 +191,7 @@ def filter_metadata(instrument, filters):
                         temp = nici_rename[filter_name]
                         filter_name = temp
                     else:
+                        filter_name_found = False
                         logging.info(
                             'NICI filter {} not at SVO.'.format(filter_name))
                         continue
@@ -223,10 +226,11 @@ def filter_metadata(instrument, filters):
             if wl_width < width_min:
                 width_min = wl_width
 
-        filter_md['wl_min'] = w_min
-        filter_md['wl_max'] = w_max
-        filter_md['wl_eff_width'] = wl_width
-        filter_md['wl_eff'] = wl_eff
+        if filter_name_found:
+            filter_md['wl_min'] = w_min
+            filter_md['wl_max'] = w_max
+            filter_md['wl_eff_width'] = wl_width
+            filter_md['wl_eff'] = wl_eff
         logging.info('Filter(s): {}  MD: {}'.format(filter_names, filter_md))
         return filter_md
     except Exception as e:
