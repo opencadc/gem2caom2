@@ -13,6 +13,7 @@
   <caom2:target>
     <caom2:name>Bias</caom2:name>
     <caom2:type>field</caom2:type>
+    <caom2:moving>true</caom2:moving>
   </caom2:target>
   <caom2:telescope>
     <caom2:name>Gemini-North</caom2:name>
@@ -75,14 +76,16 @@
                       </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.0</caom2:delta>
+                        <caom2:delta>5.78703703703703e-07</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>0.0</caom2:val>
+                          <caom2:val>54533.0619849537</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
                     <caom2:timesys>UTC</caom2:timesys>
+                    <caom2:exposure>0.05</caom2:exposure>
+                    <caom2:resolution>0.05</caom2:resolution>
                   </caom2:time>
                 </caom2:chunk>
               </caom2:chunks>

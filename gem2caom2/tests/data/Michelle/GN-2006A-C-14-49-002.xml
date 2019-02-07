@@ -1,3 +1,4 @@
+<?xml version='1.0' encoding='UTF-8'?>
 <caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="00000000-0000-0000-bd70-ec3b3f9a79f1" caom2:lastModified="2018-11-18T07:33:35.487" caom2:maxLastModified="2018-11-18T07:33:35.487" caom2:metaChecksum="md5:5f27749b7d04616f713c9380d692a442" caom2:accMetaChecksum="md5:43a3cf04ca81f32a44b33ac8a30af3ff">
   <caom2:collection>GEMINI</caom2:collection>
   <caom2:observationID>GN-2006A-C-14-49-002</caom2:observationID>
@@ -47,22 +48,64 @@
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>
           <caom2:contentLength>665345</caom2:contentLength>
-          <caom2:contentChecksum>md5:6d5cd8b84e9a6706f1ff682421e9608f</caom2:contentChecksum>
+          <caom2:contentChecksum>md5:a347f2754ff2fd4b6209e7566637efad</caom2:contentChecksum>
           <caom2:parts>
-            <caom2:part caom2:id="00000000-0000-0000-a808-d54a7e81829f">
+            <caom2:part caom2:id="00000000-0000-0000-8277-f05897ef46a7">
               <caom2:name>0</caom2:name>
               <caom2:chunks/>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-ba7d-30d5b57bfa2f">
+            <caom2:part caom2:id="00000000-0000-0000-bca1-75041b97195e">
               <caom2:name>1</caom2:name>
               <caom2:chunks/>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-b331-e5d719d0b46c">
+            <caom2:part caom2:id="00000000-0000-0000-b759-3fed11347e97">
               <caom2:name>2</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-8604-a94e9b304bce">
+                <caom2:chunk caom2:id="00000000-0000-0000-9741-3a6e653686af">
                   <caom2:naxis>4</caom2:naxis>
+                  <caom2:positionAxis1>1</caom2:positionAxis1>
+                  <caom2:positionAxis2>2</caom2:positionAxis2>
                   <caom2:timeAxis>3</caom2:timeAxis>
+                  <caom2:position>
+                    <caom2:axis>
+                      <caom2:axis1>
+                        <caom2:ctype>RA---TAN</caom2:ctype>
+                        <caom2:cunit>deg</caom2:cunit>
+                      </caom2:axis1>
+                      <caom2:axis2>
+                        <caom2:ctype>DEC--TAN</caom2:ctype>
+                        <caom2:cunit>deg</caom2:cunit>
+                      </caom2:axis2>
+                      <caom2:bounds>
+                        <caom2:polygon>
+                          <caom2:vertices>
+                            <caom2:vertex>
+                              <caom2:coord1>225.254240562217</caom2:coord1>
+                              <caom2:coord2>-14.857301297784</caom2:coord2>
+                            </caom2:vertex>
+                            <caom2:vertex>
+                              <caom2:coord1>228.05424056221702</caom2:coord1>
+                              <caom2:coord2>-14.857301297784</caom2:coord2>
+                            </caom2:vertex>
+                            <caom2:vertex>
+                              <caom2:coord1>228.05424056221702</caom2:coord1>
+                              <caom2:coord2>-17.657301297784</caom2:coord2>
+                            </caom2:vertex>
+                            <caom2:vertex>
+                              <caom2:coord1>225.254240562217</caom2:coord1>
+                              <caom2:coord2>-17.657301297784</caom2:coord2>
+                            </caom2:vertex>
+                            <caom2:vertex>
+                              <caom2:coord1>226.654240562217</caom2:coord1>
+                              <caom2:coord2>-16.257301297784</caom2:coord2>
+                            </caom2:vertex>
+                          </caom2:vertices>
+                        </caom2:polygon>
+                      </caom2:bounds>
+                    </caom2:axis>
+                    <caom2:coordsys>FK5</caom2:coordsys>
+                    <caom2:equinox>2000.0</caom2:equinox>
+                  </caom2:position>
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
@@ -75,14 +118,16 @@
                       </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.0</caom2:delta>
+                        <caom2:delta>5.78703703703703e-07</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>0.0</caom2:val>
+                          <caom2:val>53921.39509259259</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
                     <caom2:timesys>UTC</caom2:timesys>
+                    <caom2:exposure>0.05</caom2:exposure>
+                    <caom2:resolution>0.05</caom2:resolution>
                   </caom2:time>
                 </caom2:chunk>
               </caom2:chunks>

@@ -249,8 +249,10 @@ def pytest_generate_tests(metafunc):
         # for ii in ['GMOS', 'GNIRS', 'GRACES', 'NIFS', 'GSAOI', 'F2', 'GPI',
         #            'NICI', 'Michelle', 'TReCS', 'bHROS', 'hrwfs', 'Phoenix',
         #            'OSCIR', 'Flamingos', 'HOKUPAA', 'NIRI']:
-        for ii in ['NICI']:
-        # for ii in ['GMOS', 'NIRI', 'GPI', 'F2', 'GSAOI', 'NICI', 'TReCS']:
+        # for ii in ['Michelle', 'GRACES']:
+        for ii in ['Michelle']:
+        # for ii in ['GMOS', 'NIRI', 'GPI', 'F2', 'GSAOI', 'NICI', 'TReCS',
+        #            'Michelle', 'GRACES']:
             for root, dirs, files in os.walk('{}/{}'.format(TEST_DATA_DIR, ii)):
                 for file in files:
                     if file.endswith(".header"):

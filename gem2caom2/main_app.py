@@ -596,11 +596,27 @@ def update(observation, **kwargs):
                                 _update_chunk_energy_nici(c, header)
                             elif observation.instrument.name == 'TReCS':
                                 _update_chunk_energy_trecs(c)
+                            elif observation.instrument.name == 'michelle':
+                                _update_chunk_energy_michelle(c)
 
                         # position WCS
                         if (observation.instrument.name == 'GRACES' and
                                 mode == DataProductType.SPECTRUM):
-                            _update_chunk_position(c)
+                            # radius = 5.0 arcseconds, said DB in test data
+                            # list of Jan 18/19
+                            _update_chunk_position(c, 5.0, header, 'GRACES')
+                        if (observation.instrument.name == 'michelle'):
+                            # Michelle is a retired visitor instrument.
+                            # Spatial WCS info is in primary header. There
+                            # are a variable number of FITS extensions
+                            # defined by primary keyword NUMEXT; assume the
+                            # same spatial WCS for each for now - it differs
+                            # only slightly because of telescope 'chopping'
+                            # and 'nodding' used in acquisition. DB - 01-18-19
+                            # radius == 2.8 arcseconds, according to
+                            # Christian Marios via DB 02-07-19
+                            _update_chunk_position(c, 2.8, headers[0],
+                                                   'michelle')
     except Exception as e:
         logging.error(e)
         tb = traceback.format_exc()
@@ -940,6 +956,55 @@ def _update_chunk_energy_trecs(chunk):
     logging.debug('End _update_chunk_energy_trecs')
 
 
+def _update_chunk_energy_michelle(chunk):
+    """Michelle-specific chunk-level Energy WCS construction."""
+    logging.debug('Begin _update_chunk_energy_michelle')
+    mc.check_param(chunk, Chunk)
+
+    # what filter names look like in Gemini metadata, and what they
+    # look like at the SVO, aren't necessarily the same
+
+    n_axis = 1
+    orig_filter_name = em.om.get('filter_name')
+    filter_name = orig_filter_name
+    temp = filter_name.split('-')
+    if len(temp) > 1:
+        filter_name = temp[0]
+
+    michelle_repair = {'I79B10': 'Si1',
+                       'I88B10': 'Si2',
+                       'I97B10': 'Si3',
+                       'I103B10': 'Si4',
+                       'I105B53': 'N',
+                       'I112B21': 'Np',
+                       'I116B9': 'Si5',
+                       'I125B9': 'Si6',
+                       'I185B9': 'Qa',
+                       'I209B42': 'Q'}
+    if filter_name in michelle_repair:
+        filter_name = michelle_repair[filter_name]
+    logging.error('filter_name is {}'.format(filter_name))
+    filter_md = em.get_filter_metadata('michelle', filter_name)
+
+    mode = em.om.get('mode')
+    logging.error('mode is {}'.format(mode))
+    if mode in ['imaging', 'IFP', 'IFS']:
+        logging.debug('michelle: SpectralWCS imaging mode.')
+        reference_wavelength, delta, resolving_power = \
+            _imaging_energy(filter_md)
+    elif mode in ['LS', 'spectroscopy', 'MOS']:
+        logging.debug('michelle: SpectralWCS LS|Spectroscopy mode.')
+        delta = filter_md['wl_eff_width'] / n_axis / 1.0e4
+        reference_wavelength = em.om.get('central_wavelength')
+    else:
+        raise mc.CadcException(
+            'michelle: Do not understand mode {}'.format(mode))
+
+    _build_chunk_energy(chunk, n_axis, reference_wavelength, delta,
+                        orig_filter_name, resolving_power=None)
+    logging.debug('End _update_chunk_energy_michelle')
+
+
 def _reset_energy(data_label):
     """
     Return True if there should be no energy WCS information created at
@@ -951,7 +1016,9 @@ def _reset_energy(data_label):
     observation_type = em.om.get('observation_type')
     om_filter_name = em.om.get('filter_name')
 
-    if observation_type == 'DARK' or 'blank' in om_filter_name:
+    if ((observation_type is not None and observation_type == 'DARK') or
+        (om_filter_name is not None and ('blank' in om_filter_name or
+         'Blank' in om_filter_name))):
         logging.info(
             'No chunk energy for {} obs type {} filter name {}'.format(
                 data_label, observation_type, om_filter_name))
@@ -999,10 +1066,8 @@ def get_filter_name(header):
     return filters
 
 
-def _update_chunk_position(chunk):
-    """Check that position information has been set appropriately for
-    GRACES spectra. Guidance given from DB, Jan 18/19 is it must be a
-    bounds."""
+def _update_chunk_position(chunk, radius, header, instrument):
+    """Set position information."""
 
     logging.debug('Begin _update_chunk_position')
     mc.check_param(chunk, Chunk)
@@ -1011,19 +1076,24 @@ def _update_chunk_position(chunk):
     dec = em.om.get('dec')
 
     if ra is not None and dec is not None:
-        axis1 = Axis(ctype='RA---TAN', cunit=None)
-        axis2 = Axis(ctype='DEC--TAN', cunit=None)
+        axis1 = Axis(ctype='RA---TAN', cunit='deg')
+        axis2 = Axis(ctype='DEC--TAN', cunit='deg')
         polygon = CoordPolygon2D()
-        # radius = 5.0 degrees, said DB in test data list of Jan 18/19
         for x, y in ([0, 1], [1, 1], [1, 0], [0, 0]):
-            ra_pt = ra - 5.0*(0.5-float(x))
-            dec_pt = dec - 5.0*(0.5-float(y))
+            ra_pt = ra - radius*(0.5-float(x))
+            dec_pt = dec - radius*(0.5-float(y))
             polygon.vertices.append(ValueCoord2D(ra_pt, dec_pt))
         polygon.vertices.append(ValueCoord2D(ra, dec))
         axis = CoordAxis2D(axis1=axis1, axis2=axis2,
                            error1=None, error2=None,
                            range=None, bounds=polygon, function=None)
         chunk.position = SpatialWCS(axis)
+        chunk.position_axis_1 = 1
+        chunk.position_axis_2 = 2
+        chunk.position.coordsys = header.get('RADECSYS')
+        chunk.position.equinox = header.get('TRKEQUIN')
+    else:
+        logging.info('{}: ra or dec missing from JSON.'.format(instrument))
 
     logging.debug('End _update_chunk_position')
 
