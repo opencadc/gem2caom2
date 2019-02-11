@@ -50,18 +50,18 @@
           <caom2:contentLength>665345</caom2:contentLength>
           <caom2:contentChecksum>md5:a347f2754ff2fd4b6209e7566637efad</caom2:contentChecksum>
           <caom2:parts>
-            <caom2:part caom2:id="00000000-0000-0000-a45b-7d7152b4d485">
+            <caom2:part caom2:id="00000000-0000-0000-9bdb-b23a62f8e674">
               <caom2:name>0</caom2:name>
               <caom2:chunks/>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-920b-b9687c66aeec">
+            <caom2:part caom2:id="00000000-0000-0000-92b6-312a9b642775">
               <caom2:name>1</caom2:name>
               <caom2:chunks/>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-a9a3-2c188392cc2d">
+            <caom2:part caom2:id="00000000-0000-0000-99ad-ca7907ceca53">
               <caom2:name>2</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-a322-02711b7e2f58">
+                <caom2:chunk caom2:id="00000000-0000-0000-acae-7dbb8571a34a">
                   <caom2:naxis>4</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -77,32 +77,26 @@
                         <caom2:ctype>DEC--TAN</caom2:ctype>
                         <caom2:cunit>deg</caom2:cunit>
                       </caom2:axis2>
-                      <caom2:bounds>
-                        <caom2:polygon>
-                          <caom2:vertices>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>197.731582185722</caom2:coord1>
-                              <caom2:coord2>37.06094033407</caom2:coord2>
-                            </caom2:vertex>
-                          </caom2:vertices>
-                        </caom2:polygon>
-                      </caom2:bounds>
+                      <caom2:function>
+                        <caom2:dimension>
+                          <caom2:naxis1>320</caom2:naxis1>
+                          <caom2:naxis2>240</caom2:naxis2>
+                        </caom2:dimension>
+                        <caom2:refCoord>
+                          <caom2:coord1>
+                            <caom2:pix>160.31113831429</caom2:pix>
+                            <caom2:val>197.73157085426</caom2:val>
+                          </caom2:coord1>
+                          <caom2:coord2>
+                            <caom2:pix>122.27086448005</caom2:pix>
+                            <caom2:val>37.059902524831</caom2:val>
+                          </caom2:coord2>
+                        </caom2:refCoord>
+                        <caom2:cd11>-2.7876361280673e-05</caom2:cd11>
+                        <caom2:cd12>9.7814414070342e-09</caom2:cd12>
+                        <caom2:cd21>9.6560989992525e-08</caom2:cd21>
+                        <caom2:cd22>2.7507634868086e-05</caom2:cd22>
+                      </caom2:function>
                     </caom2:axis>
                     <caom2:coordsys>FK5</caom2:coordsys>
                     <caom2:equinox>2000.0</caom2:equinox>
@@ -153,10 +147,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-a927-c7bf520ef0c2">
+            <caom2:part caom2:id="00000000-0000-0000-a2d6-314912ea7da2">
               <caom2:name>3</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-89e4-c6670737a285">
+                <caom2:chunk caom2:id="00000000-0000-0000-badf-5e369caac618">
                   <caom2:naxis>4</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -172,32 +166,26 @@
                         <caom2:ctype>DEC--TAN</caom2:ctype>
                         <caom2:cunit>deg</caom2:cunit>
                       </caom2:axis2>
-                      <caom2:bounds>
-                        <caom2:polygon>
-                          <caom2:vertices>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>197.731582185722</caom2:coord1>
-                              <caom2:coord2>37.06094033407</caom2:coord2>
-                            </caom2:vertex>
-                          </caom2:vertices>
-                        </caom2:polygon>
-                      </caom2:bounds>
+                      <caom2:function>
+                        <caom2:dimension>
+                          <caom2:naxis1>320</caom2:naxis1>
+                          <caom2:naxis2>240</caom2:naxis2>
+                        </caom2:dimension>
+                        <caom2:refCoord>
+                          <caom2:coord1>
+                            <caom2:pix>160.31113831429</caom2:pix>
+                            <caom2:val>197.73157085426</caom2:val>
+                          </caom2:coord1>
+                          <caom2:coord2>
+                            <caom2:pix>122.27086448005</caom2:pix>
+                            <caom2:val>37.059902524831</caom2:val>
+                          </caom2:coord2>
+                        </caom2:refCoord>
+                        <caom2:cd11>-2.7876361280673e-05</caom2:cd11>
+                        <caom2:cd12>9.7814414070342e-09</caom2:cd12>
+                        <caom2:cd21>9.6560989992525e-08</caom2:cd21>
+                        <caom2:cd22>2.7507634868086e-05</caom2:cd22>
+                      </caom2:function>
                     </caom2:axis>
                     <caom2:coordsys>FK5</caom2:coordsys>
                     <caom2:equinox>2000.0</caom2:equinox>
@@ -248,10 +236,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-b2c1-e56fd6b5915a">
+            <caom2:part caom2:id="00000000-0000-0000-a6b5-e45d9b57ff54">
               <caom2:name>4</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-ace5-55440414401a">
+                <caom2:chunk caom2:id="00000000-0000-0000-adcc-2cf39d764980">
                   <caom2:naxis>4</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -267,32 +255,26 @@
                         <caom2:ctype>DEC--TAN</caom2:ctype>
                         <caom2:cunit>deg</caom2:cunit>
                       </caom2:axis2>
-                      <caom2:bounds>
-                        <caom2:polygon>
-                          <caom2:vertices>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>197.731582185722</caom2:coord1>
-                              <caom2:coord2>37.06094033407</caom2:coord2>
-                            </caom2:vertex>
-                          </caom2:vertices>
-                        </caom2:polygon>
-                      </caom2:bounds>
+                      <caom2:function>
+                        <caom2:dimension>
+                          <caom2:naxis1>320</caom2:naxis1>
+                          <caom2:naxis2>240</caom2:naxis2>
+                        </caom2:dimension>
+                        <caom2:refCoord>
+                          <caom2:coord1>
+                            <caom2:pix>160.31113831429</caom2:pix>
+                            <caom2:val>197.73157085426</caom2:val>
+                          </caom2:coord1>
+                          <caom2:coord2>
+                            <caom2:pix>122.27086448005</caom2:pix>
+                            <caom2:val>37.059902524831</caom2:val>
+                          </caom2:coord2>
+                        </caom2:refCoord>
+                        <caom2:cd11>-2.7876361280673e-05</caom2:cd11>
+                        <caom2:cd12>9.7814414070342e-09</caom2:cd12>
+                        <caom2:cd21>9.6560989992525e-08</caom2:cd21>
+                        <caom2:cd22>2.7507634868086e-05</caom2:cd22>
+                      </caom2:function>
                     </caom2:axis>
                     <caom2:coordsys>FK5</caom2:coordsys>
                     <caom2:equinox>2000.0</caom2:equinox>
@@ -343,10 +325,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-891f-87651b7ce49f">
+            <caom2:part caom2:id="00000000-0000-0000-88bb-4d577c9a9e59">
               <caom2:name>5</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-a53e-10c49c142a34">
+                <caom2:chunk caom2:id="00000000-0000-0000-aec0-15c52a689b4e">
                   <caom2:naxis>4</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -362,32 +344,26 @@
                         <caom2:ctype>DEC--TAN</caom2:ctype>
                         <caom2:cunit>deg</caom2:cunit>
                       </caom2:axis2>
-                      <caom2:bounds>
-                        <caom2:polygon>
-                          <caom2:vertices>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>197.731582185722</caom2:coord1>
-                              <caom2:coord2>37.06094033407</caom2:coord2>
-                            </caom2:vertex>
-                          </caom2:vertices>
-                        </caom2:polygon>
-                      </caom2:bounds>
+                      <caom2:function>
+                        <caom2:dimension>
+                          <caom2:naxis1>320</caom2:naxis1>
+                          <caom2:naxis2>240</caom2:naxis2>
+                        </caom2:dimension>
+                        <caom2:refCoord>
+                          <caom2:coord1>
+                            <caom2:pix>160.31113831429</caom2:pix>
+                            <caom2:val>197.73157085426</caom2:val>
+                          </caom2:coord1>
+                          <caom2:coord2>
+                            <caom2:pix>122.27086448005</caom2:pix>
+                            <caom2:val>37.059902524831</caom2:val>
+                          </caom2:coord2>
+                        </caom2:refCoord>
+                        <caom2:cd11>-2.7876361280673e-05</caom2:cd11>
+                        <caom2:cd12>9.7814414070342e-09</caom2:cd12>
+                        <caom2:cd21>9.6560989992525e-08</caom2:cd21>
+                        <caom2:cd22>2.7507634868086e-05</caom2:cd22>
+                      </caom2:function>
                     </caom2:axis>
                     <caom2:coordsys>FK5</caom2:coordsys>
                     <caom2:equinox>2000.0</caom2:equinox>
@@ -438,10 +414,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-b95b-0f2439376650">
+            <caom2:part caom2:id="00000000-0000-0000-8494-6ea2143f7077">
               <caom2:name>6</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-baeb-9264ce67561c">
+                <caom2:chunk caom2:id="00000000-0000-0000-895b-c4ad57cc6cd5">
                   <caom2:naxis>4</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -457,32 +433,26 @@
                         <caom2:ctype>DEC--TAN</caom2:ctype>
                         <caom2:cunit>deg</caom2:cunit>
                       </caom2:axis2>
-                      <caom2:bounds>
-                        <caom2:polygon>
-                          <caom2:vertices>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>197.731582185722</caom2:coord1>
-                              <caom2:coord2>37.06094033407</caom2:coord2>
-                            </caom2:vertex>
-                          </caom2:vertices>
-                        </caom2:polygon>
-                      </caom2:bounds>
+                      <caom2:function>
+                        <caom2:dimension>
+                          <caom2:naxis1>320</caom2:naxis1>
+                          <caom2:naxis2>240</caom2:naxis2>
+                        </caom2:dimension>
+                        <caom2:refCoord>
+                          <caom2:coord1>
+                            <caom2:pix>160.31113831429</caom2:pix>
+                            <caom2:val>197.73157085426</caom2:val>
+                          </caom2:coord1>
+                          <caom2:coord2>
+                            <caom2:pix>122.27086448005</caom2:pix>
+                            <caom2:val>37.059902524831</caom2:val>
+                          </caom2:coord2>
+                        </caom2:refCoord>
+                        <caom2:cd11>-2.7876361280673e-05</caom2:cd11>
+                        <caom2:cd12>9.7814414070342e-09</caom2:cd12>
+                        <caom2:cd21>9.6560989992525e-08</caom2:cd21>
+                        <caom2:cd22>2.7507634868086e-05</caom2:cd22>
+                      </caom2:function>
                     </caom2:axis>
                     <caom2:coordsys>FK5</caom2:coordsys>
                     <caom2:equinox>2000.0</caom2:equinox>
@@ -533,10 +503,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-aaa0-f73f93c1425c">
+            <caom2:part caom2:id="00000000-0000-0000-8936-6f98216869e3">
               <caom2:name>7</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-b023-901e6c514960">
+                <caom2:chunk caom2:id="00000000-0000-0000-9244-a321eca7b248">
                   <caom2:naxis>4</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -552,32 +522,26 @@
                         <caom2:ctype>DEC--TAN</caom2:ctype>
                         <caom2:cunit>deg</caom2:cunit>
                       </caom2:axis2>
-                      <caom2:bounds>
-                        <caom2:polygon>
-                          <caom2:vertices>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>197.731582185722</caom2:coord1>
-                              <caom2:coord2>37.06094033407</caom2:coord2>
-                            </caom2:vertex>
-                          </caom2:vertices>
-                        </caom2:polygon>
-                      </caom2:bounds>
+                      <caom2:function>
+                        <caom2:dimension>
+                          <caom2:naxis1>320</caom2:naxis1>
+                          <caom2:naxis2>240</caom2:naxis2>
+                        </caom2:dimension>
+                        <caom2:refCoord>
+                          <caom2:coord1>
+                            <caom2:pix>160.31113831429</caom2:pix>
+                            <caom2:val>197.73157085426</caom2:val>
+                          </caom2:coord1>
+                          <caom2:coord2>
+                            <caom2:pix>122.27086448005</caom2:pix>
+                            <caom2:val>37.059902524831</caom2:val>
+                          </caom2:coord2>
+                        </caom2:refCoord>
+                        <caom2:cd11>-2.7876361280673e-05</caom2:cd11>
+                        <caom2:cd12>9.7814414070342e-09</caom2:cd12>
+                        <caom2:cd21>9.6560989992525e-08</caom2:cd21>
+                        <caom2:cd22>2.7507634868086e-05</caom2:cd22>
+                      </caom2:function>
                     </caom2:axis>
                     <caom2:coordsys>FK5</caom2:coordsys>
                     <caom2:equinox>2000.0</caom2:equinox>
@@ -628,10 +592,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-9e7e-32553d88d581">
+            <caom2:part caom2:id="00000000-0000-0000-994d-ed5f1c46e410">
               <caom2:name>8</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-8428-957a26d2c87e">
+                <caom2:chunk caom2:id="00000000-0000-0000-97c0-e268b6ff766f">
                   <caom2:naxis>4</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -647,32 +611,26 @@
                         <caom2:ctype>DEC--TAN</caom2:ctype>
                         <caom2:cunit>deg</caom2:cunit>
                       </caom2:axis2>
-                      <caom2:bounds>
-                        <caom2:polygon>
-                          <caom2:vertices>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>197.731582185722</caom2:coord1>
-                              <caom2:coord2>37.06094033407</caom2:coord2>
-                            </caom2:vertex>
-                          </caom2:vertices>
-                        </caom2:polygon>
-                      </caom2:bounds>
+                      <caom2:function>
+                        <caom2:dimension>
+                          <caom2:naxis1>320</caom2:naxis1>
+                          <caom2:naxis2>240</caom2:naxis2>
+                        </caom2:dimension>
+                        <caom2:refCoord>
+                          <caom2:coord1>
+                            <caom2:pix>160.31113831429</caom2:pix>
+                            <caom2:val>197.73157085426</caom2:val>
+                          </caom2:coord1>
+                          <caom2:coord2>
+                            <caom2:pix>122.27086448005</caom2:pix>
+                            <caom2:val>37.059902524831</caom2:val>
+                          </caom2:coord2>
+                        </caom2:refCoord>
+                        <caom2:cd11>-2.7876361280673e-05</caom2:cd11>
+                        <caom2:cd12>9.7814414070342e-09</caom2:cd12>
+                        <caom2:cd21>9.6560989992525e-08</caom2:cd21>
+                        <caom2:cd22>2.7507634868086e-05</caom2:cd22>
+                      </caom2:function>
                     </caom2:axis>
                     <caom2:coordsys>FK5</caom2:coordsys>
                     <caom2:equinox>2000.0</caom2:equinox>
@@ -723,10 +681,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-a272-b1b68e16cc22">
+            <caom2:part caom2:id="00000000-0000-0000-a51b-441ef941ffef">
               <caom2:name>9</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-9174-a97c974877b6">
+                <caom2:chunk caom2:id="00000000-0000-0000-aa07-e8ab9f830ac2">
                   <caom2:naxis>4</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -742,32 +700,26 @@
                         <caom2:ctype>DEC--TAN</caom2:ctype>
                         <caom2:cunit>deg</caom2:cunit>
                       </caom2:axis2>
-                      <caom2:bounds>
-                        <caom2:polygon>
-                          <caom2:vertices>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>197.731582185722</caom2:coord1>
-                              <caom2:coord2>37.06094033407</caom2:coord2>
-                            </caom2:vertex>
-                          </caom2:vertices>
-                        </caom2:polygon>
-                      </caom2:bounds>
+                      <caom2:function>
+                        <caom2:dimension>
+                          <caom2:naxis1>320</caom2:naxis1>
+                          <caom2:naxis2>240</caom2:naxis2>
+                        </caom2:dimension>
+                        <caom2:refCoord>
+                          <caom2:coord1>
+                            <caom2:pix>160.31113831429</caom2:pix>
+                            <caom2:val>197.73157085426</caom2:val>
+                          </caom2:coord1>
+                          <caom2:coord2>
+                            <caom2:pix>122.27086448005</caom2:pix>
+                            <caom2:val>37.059902524831</caom2:val>
+                          </caom2:coord2>
+                        </caom2:refCoord>
+                        <caom2:cd11>-2.7876361280673e-05</caom2:cd11>
+                        <caom2:cd12>9.7814414070342e-09</caom2:cd12>
+                        <caom2:cd21>9.6560989992525e-08</caom2:cd21>
+                        <caom2:cd22>2.7507634868086e-05</caom2:cd22>
+                      </caom2:function>
                     </caom2:axis>
                     <caom2:coordsys>FK5</caom2:coordsys>
                     <caom2:equinox>2000.0</caom2:equinox>
@@ -818,10 +770,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-960b-0c41227d6079">
+            <caom2:part caom2:id="00000000-0000-0000-92ed-1acccefea665">
               <caom2:name>10</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-8ed8-51be55931e51">
+                <caom2:chunk caom2:id="00000000-0000-0000-9978-268216b7e09f">
                   <caom2:naxis>4</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -837,32 +789,26 @@
                         <caom2:ctype>DEC--TAN</caom2:ctype>
                         <caom2:cunit>deg</caom2:cunit>
                       </caom2:axis2>
-                      <caom2:bounds>
-                        <caom2:polygon>
-                          <caom2:vertices>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>197.731582185722</caom2:coord1>
-                              <caom2:coord2>37.06094033407</caom2:coord2>
-                            </caom2:vertex>
-                          </caom2:vertices>
-                        </caom2:polygon>
-                      </caom2:bounds>
+                      <caom2:function>
+                        <caom2:dimension>
+                          <caom2:naxis1>320</caom2:naxis1>
+                          <caom2:naxis2>240</caom2:naxis2>
+                        </caom2:dimension>
+                        <caom2:refCoord>
+                          <caom2:coord1>
+                            <caom2:pix>160.31113831429</caom2:pix>
+                            <caom2:val>197.73157085426</caom2:val>
+                          </caom2:coord1>
+                          <caom2:coord2>
+                            <caom2:pix>122.27086448005</caom2:pix>
+                            <caom2:val>37.059902524831</caom2:val>
+                          </caom2:coord2>
+                        </caom2:refCoord>
+                        <caom2:cd11>-2.7876361280673e-05</caom2:cd11>
+                        <caom2:cd12>9.7814414070342e-09</caom2:cd12>
+                        <caom2:cd21>9.6560989992525e-08</caom2:cd21>
+                        <caom2:cd22>2.7507634868086e-05</caom2:cd22>
+                      </caom2:function>
                     </caom2:axis>
                     <caom2:coordsys>FK5</caom2:coordsys>
                     <caom2:equinox>2000.0</caom2:equinox>
@@ -913,10 +859,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-9998-b3b3ff1ff3e2">
+            <caom2:part caom2:id="00000000-0000-0000-80e5-d6334d615e47">
               <caom2:name>11</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-9cff-dec11d22205e">
+                <caom2:chunk caom2:id="00000000-0000-0000-a4ba-65d13fae2e4e">
                   <caom2:naxis>4</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -932,32 +878,26 @@
                         <caom2:ctype>DEC--TAN</caom2:ctype>
                         <caom2:cunit>deg</caom2:cunit>
                       </caom2:axis2>
-                      <caom2:bounds>
-                        <caom2:polygon>
-                          <caom2:vertices>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>197.731582185722</caom2:coord1>
-                              <caom2:coord2>37.06094033407</caom2:coord2>
-                            </caom2:vertex>
-                          </caom2:vertices>
-                        </caom2:polygon>
-                      </caom2:bounds>
+                      <caom2:function>
+                        <caom2:dimension>
+                          <caom2:naxis1>320</caom2:naxis1>
+                          <caom2:naxis2>240</caom2:naxis2>
+                        </caom2:dimension>
+                        <caom2:refCoord>
+                          <caom2:coord1>
+                            <caom2:pix>160.31113831429</caom2:pix>
+                            <caom2:val>197.73157085426</caom2:val>
+                          </caom2:coord1>
+                          <caom2:coord2>
+                            <caom2:pix>122.27086448005</caom2:pix>
+                            <caom2:val>37.059902524831</caom2:val>
+                          </caom2:coord2>
+                        </caom2:refCoord>
+                        <caom2:cd11>-2.7876361280673e-05</caom2:cd11>
+                        <caom2:cd12>9.7814414070342e-09</caom2:cd12>
+                        <caom2:cd21>9.6560989992525e-08</caom2:cd21>
+                        <caom2:cd22>2.7507634868086e-05</caom2:cd22>
+                      </caom2:function>
                     </caom2:axis>
                     <caom2:coordsys>FK5</caom2:coordsys>
                     <caom2:equinox>2000.0</caom2:equinox>
@@ -1008,10 +948,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-a0bd-836509a24f97">
+            <caom2:part caom2:id="00000000-0000-0000-a8cd-beffe01e8abc">
               <caom2:name>12</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-a8e1-a0938157d7f5">
+                <caom2:chunk caom2:id="00000000-0000-0000-a7d6-46d5b5e212e7">
                   <caom2:naxis>4</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -1027,32 +967,26 @@
                         <caom2:ctype>DEC--TAN</caom2:ctype>
                         <caom2:cunit>deg</caom2:cunit>
                       </caom2:axis2>
-                      <caom2:bounds>
-                        <caom2:polygon>
-                          <caom2:vertices>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>197.731582185722</caom2:coord1>
-                              <caom2:coord2>37.06094033407</caom2:coord2>
-                            </caom2:vertex>
-                          </caom2:vertices>
-                        </caom2:polygon>
-                      </caom2:bounds>
+                      <caom2:function>
+                        <caom2:dimension>
+                          <caom2:naxis1>320</caom2:naxis1>
+                          <caom2:naxis2>240</caom2:naxis2>
+                        </caom2:dimension>
+                        <caom2:refCoord>
+                          <caom2:coord1>
+                            <caom2:pix>160.31113831429</caom2:pix>
+                            <caom2:val>197.73157085426</caom2:val>
+                          </caom2:coord1>
+                          <caom2:coord2>
+                            <caom2:pix>122.27086448005</caom2:pix>
+                            <caom2:val>37.059902524831</caom2:val>
+                          </caom2:coord2>
+                        </caom2:refCoord>
+                        <caom2:cd11>-2.7876361280673e-05</caom2:cd11>
+                        <caom2:cd12>9.7814414070342e-09</caom2:cd12>
+                        <caom2:cd21>9.6560989992525e-08</caom2:cd21>
+                        <caom2:cd22>2.7507634868086e-05</caom2:cd22>
+                      </caom2:function>
                     </caom2:axis>
                     <caom2:coordsys>FK5</caom2:coordsys>
                     <caom2:equinox>2000.0</caom2:equinox>
@@ -1103,10 +1037,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-9294-bb2bfe2ad033">
+            <caom2:part caom2:id="00000000-0000-0000-8096-cf86fe8433bb">
               <caom2:name>13</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-93e7-251640b4f040">
+                <caom2:chunk caom2:id="00000000-0000-0000-966e-fc6278765729">
                   <caom2:naxis>4</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -1122,32 +1056,26 @@
                         <caom2:ctype>DEC--TAN</caom2:ctype>
                         <caom2:cunit>deg</caom2:cunit>
                       </caom2:axis2>
-                      <caom2:bounds>
-                        <caom2:polygon>
-                          <caom2:vertices>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>197.731582185722</caom2:coord1>
-                              <caom2:coord2>37.06094033407</caom2:coord2>
-                            </caom2:vertex>
-                          </caom2:vertices>
-                        </caom2:polygon>
-                      </caom2:bounds>
+                      <caom2:function>
+                        <caom2:dimension>
+                          <caom2:naxis1>320</caom2:naxis1>
+                          <caom2:naxis2>240</caom2:naxis2>
+                        </caom2:dimension>
+                        <caom2:refCoord>
+                          <caom2:coord1>
+                            <caom2:pix>160.31113831429</caom2:pix>
+                            <caom2:val>197.73157085426</caom2:val>
+                          </caom2:coord1>
+                          <caom2:coord2>
+                            <caom2:pix>122.27086448005</caom2:pix>
+                            <caom2:val>37.059902524831</caom2:val>
+                          </caom2:coord2>
+                        </caom2:refCoord>
+                        <caom2:cd11>-2.7876361280673e-05</caom2:cd11>
+                        <caom2:cd12>9.7814414070342e-09</caom2:cd12>
+                        <caom2:cd21>9.6560989992525e-08</caom2:cd21>
+                        <caom2:cd22>2.7507634868086e-05</caom2:cd22>
+                      </caom2:function>
                     </caom2:axis>
                     <caom2:coordsys>FK5</caom2:coordsys>
                     <caom2:equinox>2000.0</caom2:equinox>
@@ -1198,10 +1126,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-af90-c92251a2e4df">
+            <caom2:part caom2:id="00000000-0000-0000-9def-3e20fa8f0b49">
               <caom2:name>14</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-b844-e273adcc5d6d">
+                <caom2:chunk caom2:id="00000000-0000-0000-bffd-22518b779b5f">
                   <caom2:naxis>4</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -1217,32 +1145,26 @@
                         <caom2:ctype>DEC--TAN</caom2:ctype>
                         <caom2:cunit>deg</caom2:cunit>
                       </caom2:axis2>
-                      <caom2:bounds>
-                        <caom2:polygon>
-                          <caom2:vertices>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>197.731582185722</caom2:coord1>
-                              <caom2:coord2>37.06094033407</caom2:coord2>
-                            </caom2:vertex>
-                          </caom2:vertices>
-                        </caom2:polygon>
-                      </caom2:bounds>
+                      <caom2:function>
+                        <caom2:dimension>
+                          <caom2:naxis1>320</caom2:naxis1>
+                          <caom2:naxis2>240</caom2:naxis2>
+                        </caom2:dimension>
+                        <caom2:refCoord>
+                          <caom2:coord1>
+                            <caom2:pix>160.31113831429</caom2:pix>
+                            <caom2:val>197.73157085426</caom2:val>
+                          </caom2:coord1>
+                          <caom2:coord2>
+                            <caom2:pix>122.27086448005</caom2:pix>
+                            <caom2:val>37.059902524831</caom2:val>
+                          </caom2:coord2>
+                        </caom2:refCoord>
+                        <caom2:cd11>-2.7876361280673e-05</caom2:cd11>
+                        <caom2:cd12>9.7814414070342e-09</caom2:cd12>
+                        <caom2:cd21>9.6560989992525e-08</caom2:cd21>
+                        <caom2:cd22>2.7507634868086e-05</caom2:cd22>
+                      </caom2:function>
                     </caom2:axis>
                     <caom2:coordsys>FK5</caom2:coordsys>
                     <caom2:equinox>2000.0</caom2:equinox>
@@ -1293,10 +1215,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-9825-0b2755618213">
+            <caom2:part caom2:id="00000000-0000-0000-900b-3c0aabe8000d">
               <caom2:name>15</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-8e0d-8db2c38e4a72">
+                <caom2:chunk caom2:id="00000000-0000-0000-b1d5-9a1eb52d8d80">
                   <caom2:naxis>4</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -1312,32 +1234,26 @@
                         <caom2:ctype>DEC--TAN</caom2:ctype>
                         <caom2:cunit>deg</caom2:cunit>
                       </caom2:axis2>
-                      <caom2:bounds>
-                        <caom2:polygon>
-                          <caom2:vertices>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>197.731582185722</caom2:coord1>
-                              <caom2:coord2>37.06094033407</caom2:coord2>
-                            </caom2:vertex>
-                          </caom2:vertices>
-                        </caom2:polygon>
-                      </caom2:bounds>
+                      <caom2:function>
+                        <caom2:dimension>
+                          <caom2:naxis1>320</caom2:naxis1>
+                          <caom2:naxis2>240</caom2:naxis2>
+                        </caom2:dimension>
+                        <caom2:refCoord>
+                          <caom2:coord1>
+                            <caom2:pix>160.31113831429</caom2:pix>
+                            <caom2:val>197.73157085426</caom2:val>
+                          </caom2:coord1>
+                          <caom2:coord2>
+                            <caom2:pix>122.27086448005</caom2:pix>
+                            <caom2:val>37.059902524831</caom2:val>
+                          </caom2:coord2>
+                        </caom2:refCoord>
+                        <caom2:cd11>-2.7876361280673e-05</caom2:cd11>
+                        <caom2:cd12>9.7814414070342e-09</caom2:cd12>
+                        <caom2:cd21>9.6560989992525e-08</caom2:cd21>
+                        <caom2:cd22>2.7507634868086e-05</caom2:cd22>
+                      </caom2:function>
                     </caom2:axis>
                     <caom2:coordsys>FK5</caom2:coordsys>
                     <caom2:equinox>2000.0</caom2:equinox>
@@ -1388,10 +1304,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-91ea-ea296bb35b21">
+            <caom2:part caom2:id="00000000-0000-0000-a274-ff6418e5f718">
               <caom2:name>16</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-9834-7522376d3641">
+                <caom2:chunk caom2:id="00000000-0000-0000-ab61-e61160969e4c">
                   <caom2:naxis>4</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -1407,32 +1323,26 @@
                         <caom2:ctype>DEC--TAN</caom2:ctype>
                         <caom2:cunit>deg</caom2:cunit>
                       </caom2:axis2>
-                      <caom2:bounds>
-                        <caom2:polygon>
-                          <caom2:vertices>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>197.731582185722</caom2:coord1>
-                              <caom2:coord2>37.06094033407</caom2:coord2>
-                            </caom2:vertex>
-                          </caom2:vertices>
-                        </caom2:polygon>
-                      </caom2:bounds>
+                      <caom2:function>
+                        <caom2:dimension>
+                          <caom2:naxis1>320</caom2:naxis1>
+                          <caom2:naxis2>240</caom2:naxis2>
+                        </caom2:dimension>
+                        <caom2:refCoord>
+                          <caom2:coord1>
+                            <caom2:pix>160.31113831429</caom2:pix>
+                            <caom2:val>197.73157085426</caom2:val>
+                          </caom2:coord1>
+                          <caom2:coord2>
+                            <caom2:pix>122.27086448005</caom2:pix>
+                            <caom2:val>37.059902524831</caom2:val>
+                          </caom2:coord2>
+                        </caom2:refCoord>
+                        <caom2:cd11>-2.7876361280673e-05</caom2:cd11>
+                        <caom2:cd12>9.7814414070342e-09</caom2:cd12>
+                        <caom2:cd21>9.6560989992525e-08</caom2:cd21>
+                        <caom2:cd22>2.7507634868086e-05</caom2:cd22>
+                      </caom2:function>
                     </caom2:axis>
                     <caom2:coordsys>FK5</caom2:coordsys>
                     <caom2:equinox>2000.0</caom2:equinox>
@@ -1483,10 +1393,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-a5f2-8bcae23ee001">
+            <caom2:part caom2:id="00000000-0000-0000-8cb2-046727766cf1">
               <caom2:name>17</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-a4b3-6b865e7c1c12">
+                <caom2:chunk caom2:id="00000000-0000-0000-abbf-24f2ccbf8488">
                   <caom2:naxis>4</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -1502,32 +1412,26 @@
                         <caom2:ctype>DEC--TAN</caom2:ctype>
                         <caom2:cunit>deg</caom2:cunit>
                       </caom2:axis2>
-                      <caom2:bounds>
-                        <caom2:polygon>
-                          <caom2:vertices>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>197.731582185722</caom2:coord1>
-                              <caom2:coord2>37.06094033407</caom2:coord2>
-                            </caom2:vertex>
-                          </caom2:vertices>
-                        </caom2:polygon>
-                      </caom2:bounds>
+                      <caom2:function>
+                        <caom2:dimension>
+                          <caom2:naxis1>320</caom2:naxis1>
+                          <caom2:naxis2>240</caom2:naxis2>
+                        </caom2:dimension>
+                        <caom2:refCoord>
+                          <caom2:coord1>
+                            <caom2:pix>160.31113831429</caom2:pix>
+                            <caom2:val>197.73157085426</caom2:val>
+                          </caom2:coord1>
+                          <caom2:coord2>
+                            <caom2:pix>122.27086448005</caom2:pix>
+                            <caom2:val>37.059902524831</caom2:val>
+                          </caom2:coord2>
+                        </caom2:refCoord>
+                        <caom2:cd11>-2.7876361280673e-05</caom2:cd11>
+                        <caom2:cd12>9.7814414070342e-09</caom2:cd12>
+                        <caom2:cd21>9.6560989992525e-08</caom2:cd21>
+                        <caom2:cd22>2.7507634868086e-05</caom2:cd22>
+                      </caom2:function>
                     </caom2:axis>
                     <caom2:coordsys>FK5</caom2:coordsys>
                     <caom2:equinox>2000.0</caom2:equinox>
@@ -1578,10 +1482,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-9245-168249f8eb69">
+            <caom2:part caom2:id="00000000-0000-0000-a70c-93965f9d6a3e">
               <caom2:name>18</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-9145-6da89ac7fe7e">
+                <caom2:chunk caom2:id="00000000-0000-0000-a135-ca683cdb6f94">
                   <caom2:naxis>4</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -1597,32 +1501,26 @@
                         <caom2:ctype>DEC--TAN</caom2:ctype>
                         <caom2:cunit>deg</caom2:cunit>
                       </caom2:axis2>
-                      <caom2:bounds>
-                        <caom2:polygon>
-                          <caom2:vertices>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>197.731582185722</caom2:coord1>
-                              <caom2:coord2>37.06094033407</caom2:coord2>
-                            </caom2:vertex>
-                          </caom2:vertices>
-                        </caom2:polygon>
-                      </caom2:bounds>
+                      <caom2:function>
+                        <caom2:dimension>
+                          <caom2:naxis1>320</caom2:naxis1>
+                          <caom2:naxis2>240</caom2:naxis2>
+                        </caom2:dimension>
+                        <caom2:refCoord>
+                          <caom2:coord1>
+                            <caom2:pix>160.31113831429</caom2:pix>
+                            <caom2:val>197.73157085426</caom2:val>
+                          </caom2:coord1>
+                          <caom2:coord2>
+                            <caom2:pix>122.27086448005</caom2:pix>
+                            <caom2:val>37.059902524831</caom2:val>
+                          </caom2:coord2>
+                        </caom2:refCoord>
+                        <caom2:cd11>-2.7876361280673e-05</caom2:cd11>
+                        <caom2:cd12>9.7814414070342e-09</caom2:cd12>
+                        <caom2:cd21>9.6560989992525e-08</caom2:cd21>
+                        <caom2:cd22>2.7507634868086e-05</caom2:cd22>
+                      </caom2:function>
                     </caom2:axis>
                     <caom2:coordsys>FK5</caom2:coordsys>
                     <caom2:equinox>2000.0</caom2:equinox>
@@ -1673,10 +1571,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-a511-29d6fe8ec628">
+            <caom2:part caom2:id="00000000-0000-0000-adb0-169656f396b9">
               <caom2:name>19</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-880e-743f93b16652">
+                <caom2:chunk caom2:id="00000000-0000-0000-abe6-51a18e5aad10">
                   <caom2:naxis>4</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -1692,32 +1590,26 @@
                         <caom2:ctype>DEC--TAN</caom2:ctype>
                         <caom2:cunit>deg</caom2:cunit>
                       </caom2:axis2>
-                      <caom2:bounds>
-                        <caom2:polygon>
-                          <caom2:vertices>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>197.731582185722</caom2:coord1>
-                              <caom2:coord2>37.06094033407</caom2:coord2>
-                            </caom2:vertex>
-                          </caom2:vertices>
-                        </caom2:polygon>
-                      </caom2:bounds>
+                      <caom2:function>
+                        <caom2:dimension>
+                          <caom2:naxis1>320</caom2:naxis1>
+                          <caom2:naxis2>240</caom2:naxis2>
+                        </caom2:dimension>
+                        <caom2:refCoord>
+                          <caom2:coord1>
+                            <caom2:pix>160.31113831429</caom2:pix>
+                            <caom2:val>197.73157085426</caom2:val>
+                          </caom2:coord1>
+                          <caom2:coord2>
+                            <caom2:pix>122.27086448005</caom2:pix>
+                            <caom2:val>37.059902524831</caom2:val>
+                          </caom2:coord2>
+                        </caom2:refCoord>
+                        <caom2:cd11>-2.7876361280673e-05</caom2:cd11>
+                        <caom2:cd12>9.7814414070342e-09</caom2:cd12>
+                        <caom2:cd21>9.6560989992525e-08</caom2:cd21>
+                        <caom2:cd22>2.7507634868086e-05</caom2:cd22>
+                      </caom2:function>
                     </caom2:axis>
                     <caom2:coordsys>FK5</caom2:coordsys>
                     <caom2:equinox>2000.0</caom2:equinox>
@@ -1768,10 +1660,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-a253-2ce4e44cfe20">
+            <caom2:part caom2:id="00000000-0000-0000-ac52-d66a3bc9889f">
               <caom2:name>20</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-8dc7-739acd4634d5">
+                <caom2:chunk caom2:id="00000000-0000-0000-8965-8e89eeae9010">
                   <caom2:naxis>4</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -1787,32 +1679,26 @@
                         <caom2:ctype>DEC--TAN</caom2:ctype>
                         <caom2:cunit>deg</caom2:cunit>
                       </caom2:axis2>
-                      <caom2:bounds>
-                        <caom2:polygon>
-                          <caom2:vertices>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>197.731582185722</caom2:coord1>
-                              <caom2:coord2>37.06094033407</caom2:coord2>
-                            </caom2:vertex>
-                          </caom2:vertices>
-                        </caom2:polygon>
-                      </caom2:bounds>
+                      <caom2:function>
+                        <caom2:dimension>
+                          <caom2:naxis1>320</caom2:naxis1>
+                          <caom2:naxis2>240</caom2:naxis2>
+                        </caom2:dimension>
+                        <caom2:refCoord>
+                          <caom2:coord1>
+                            <caom2:pix>160.31113831429</caom2:pix>
+                            <caom2:val>197.73157085426</caom2:val>
+                          </caom2:coord1>
+                          <caom2:coord2>
+                            <caom2:pix>122.27086448005</caom2:pix>
+                            <caom2:val>37.059902524831</caom2:val>
+                          </caom2:coord2>
+                        </caom2:refCoord>
+                        <caom2:cd11>-2.7876361280673e-05</caom2:cd11>
+                        <caom2:cd12>9.7814414070342e-09</caom2:cd12>
+                        <caom2:cd21>9.6560989992525e-08</caom2:cd21>
+                        <caom2:cd22>2.7507634868086e-05</caom2:cd22>
+                      </caom2:function>
                     </caom2:axis>
                     <caom2:coordsys>FK5</caom2:coordsys>
                     <caom2:equinox>2000.0</caom2:equinox>
@@ -1863,10 +1749,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-b438-8257a4c0ca1e">
+            <caom2:part caom2:id="00000000-0000-0000-9d25-e54d51ab649b">
               <caom2:name>21</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-8ce5-f63c47827c21">
+                <caom2:chunk caom2:id="00000000-0000-0000-a696-d857cba375a1">
                   <caom2:naxis>4</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -1882,32 +1768,26 @@
                         <caom2:ctype>DEC--TAN</caom2:ctype>
                         <caom2:cunit>deg</caom2:cunit>
                       </caom2:axis2>
-                      <caom2:bounds>
-                        <caom2:polygon>
-                          <caom2:vertices>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>197.731582185722</caom2:coord1>
-                              <caom2:coord2>37.06094033407</caom2:coord2>
-                            </caom2:vertex>
-                          </caom2:vertices>
-                        </caom2:polygon>
-                      </caom2:bounds>
+                      <caom2:function>
+                        <caom2:dimension>
+                          <caom2:naxis1>320</caom2:naxis1>
+                          <caom2:naxis2>240</caom2:naxis2>
+                        </caom2:dimension>
+                        <caom2:refCoord>
+                          <caom2:coord1>
+                            <caom2:pix>160.31113831429</caom2:pix>
+                            <caom2:val>197.73157085426</caom2:val>
+                          </caom2:coord1>
+                          <caom2:coord2>
+                            <caom2:pix>122.27086448005</caom2:pix>
+                            <caom2:val>37.059902524831</caom2:val>
+                          </caom2:coord2>
+                        </caom2:refCoord>
+                        <caom2:cd11>-2.7876361280673e-05</caom2:cd11>
+                        <caom2:cd12>9.7814414070342e-09</caom2:cd12>
+                        <caom2:cd21>9.6560989992525e-08</caom2:cd21>
+                        <caom2:cd22>2.7507634868086e-05</caom2:cd22>
+                      </caom2:function>
                     </caom2:axis>
                     <caom2:coordsys>FK5</caom2:coordsys>
                     <caom2:equinox>2000.0</caom2:equinox>
@@ -1958,10 +1838,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-8249-e152d75b1c0a">
+            <caom2:part caom2:id="00000000-0000-0000-adc0-2eded59bdf08">
               <caom2:name>22</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-a565-a150b544d54b">
+                <caom2:chunk caom2:id="00000000-0000-0000-8250-2aa93d69af88">
                   <caom2:naxis>4</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -1977,32 +1857,26 @@
                         <caom2:ctype>DEC--TAN</caom2:ctype>
                         <caom2:cunit>deg</caom2:cunit>
                       </caom2:axis2>
-                      <caom2:bounds>
-                        <caom2:polygon>
-                          <caom2:vertices>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>197.731582185722</caom2:coord1>
-                              <caom2:coord2>37.06094033407</caom2:coord2>
-                            </caom2:vertex>
-                          </caom2:vertices>
-                        </caom2:polygon>
-                      </caom2:bounds>
+                      <caom2:function>
+                        <caom2:dimension>
+                          <caom2:naxis1>320</caom2:naxis1>
+                          <caom2:naxis2>240</caom2:naxis2>
+                        </caom2:dimension>
+                        <caom2:refCoord>
+                          <caom2:coord1>
+                            <caom2:pix>160.31113831429</caom2:pix>
+                            <caom2:val>197.73157085426</caom2:val>
+                          </caom2:coord1>
+                          <caom2:coord2>
+                            <caom2:pix>122.27086448005</caom2:pix>
+                            <caom2:val>37.059902524831</caom2:val>
+                          </caom2:coord2>
+                        </caom2:refCoord>
+                        <caom2:cd11>-2.7876361280673e-05</caom2:cd11>
+                        <caom2:cd12>9.7814414070342e-09</caom2:cd12>
+                        <caom2:cd21>9.6560989992525e-08</caom2:cd21>
+                        <caom2:cd22>2.7507634868086e-05</caom2:cd22>
+                      </caom2:function>
                     </caom2:axis>
                     <caom2:coordsys>FK5</caom2:coordsys>
                     <caom2:equinox>2000.0</caom2:equinox>
@@ -2053,10 +1927,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-9fea-2bd56f21f66c">
+            <caom2:part caom2:id="00000000-0000-0000-87b4-5fb9b4d81b01">
               <caom2:name>23</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-8815-d63ff274932c">
+                <caom2:chunk caom2:id="00000000-0000-0000-987e-c62fac1473e4">
                   <caom2:naxis>4</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -2072,32 +1946,26 @@
                         <caom2:ctype>DEC--TAN</caom2:ctype>
                         <caom2:cunit>deg</caom2:cunit>
                       </caom2:axis2>
-                      <caom2:bounds>
-                        <caom2:polygon>
-                          <caom2:vertices>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>197.731582185722</caom2:coord1>
-                              <caom2:coord2>37.06094033407</caom2:coord2>
-                            </caom2:vertex>
-                          </caom2:vertices>
-                        </caom2:polygon>
-                      </caom2:bounds>
+                      <caom2:function>
+                        <caom2:dimension>
+                          <caom2:naxis1>320</caom2:naxis1>
+                          <caom2:naxis2>240</caom2:naxis2>
+                        </caom2:dimension>
+                        <caom2:refCoord>
+                          <caom2:coord1>
+                            <caom2:pix>160.31113831429</caom2:pix>
+                            <caom2:val>197.73157085426</caom2:val>
+                          </caom2:coord1>
+                          <caom2:coord2>
+                            <caom2:pix>122.27086448005</caom2:pix>
+                            <caom2:val>37.059902524831</caom2:val>
+                          </caom2:coord2>
+                        </caom2:refCoord>
+                        <caom2:cd11>-2.7876361280673e-05</caom2:cd11>
+                        <caom2:cd12>9.7814414070342e-09</caom2:cd12>
+                        <caom2:cd21>9.6560989992525e-08</caom2:cd21>
+                        <caom2:cd22>2.7507634868086e-05</caom2:cd22>
+                      </caom2:function>
                     </caom2:axis>
                     <caom2:coordsys>FK5</caom2:coordsys>
                     <caom2:equinox>2000.0</caom2:equinox>
@@ -2148,10 +2016,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-be45-c03820d6f8aa">
+            <caom2:part caom2:id="00000000-0000-0000-b8a6-8d561decc77d">
               <caom2:name>24</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-94c7-0836a2daee26">
+                <caom2:chunk caom2:id="00000000-0000-0000-9fea-be0e58a27438">
                   <caom2:naxis>4</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -2167,32 +2035,26 @@
                         <caom2:ctype>DEC--TAN</caom2:ctype>
                         <caom2:cunit>deg</caom2:cunit>
                       </caom2:axis2>
-                      <caom2:bounds>
-                        <caom2:polygon>
-                          <caom2:vertices>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>197.731582185722</caom2:coord1>
-                              <caom2:coord2>37.06094033407</caom2:coord2>
-                            </caom2:vertex>
-                          </caom2:vertices>
-                        </caom2:polygon>
-                      </caom2:bounds>
+                      <caom2:function>
+                        <caom2:dimension>
+                          <caom2:naxis1>320</caom2:naxis1>
+                          <caom2:naxis2>240</caom2:naxis2>
+                        </caom2:dimension>
+                        <caom2:refCoord>
+                          <caom2:coord1>
+                            <caom2:pix>160.31113831429</caom2:pix>
+                            <caom2:val>197.73157085426</caom2:val>
+                          </caom2:coord1>
+                          <caom2:coord2>
+                            <caom2:pix>122.27086448005</caom2:pix>
+                            <caom2:val>37.059902524831</caom2:val>
+                          </caom2:coord2>
+                        </caom2:refCoord>
+                        <caom2:cd11>-2.7876361280673e-05</caom2:cd11>
+                        <caom2:cd12>9.7814414070342e-09</caom2:cd12>
+                        <caom2:cd21>9.6560989992525e-08</caom2:cd21>
+                        <caom2:cd22>2.7507634868086e-05</caom2:cd22>
+                      </caom2:function>
                     </caom2:axis>
                     <caom2:coordsys>FK5</caom2:coordsys>
                     <caom2:equinox>2000.0</caom2:equinox>
@@ -2243,10 +2105,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-99df-59e6da43eb2b">
+            <caom2:part caom2:id="00000000-0000-0000-9159-4d4932f444a6">
               <caom2:name>25</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-9176-aa0e08eb9d08">
+                <caom2:chunk caom2:id="00000000-0000-0000-a156-4e2e972c96d6">
                   <caom2:naxis>4</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -2262,32 +2124,26 @@
                         <caom2:ctype>DEC--TAN</caom2:ctype>
                         <caom2:cunit>deg</caom2:cunit>
                       </caom2:axis2>
-                      <caom2:bounds>
-                        <caom2:polygon>
-                          <caom2:vertices>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>197.731582185722</caom2:coord1>
-                              <caom2:coord2>37.06094033407</caom2:coord2>
-                            </caom2:vertex>
-                          </caom2:vertices>
-                        </caom2:polygon>
-                      </caom2:bounds>
+                      <caom2:function>
+                        <caom2:dimension>
+                          <caom2:naxis1>320</caom2:naxis1>
+                          <caom2:naxis2>240</caom2:naxis2>
+                        </caom2:dimension>
+                        <caom2:refCoord>
+                          <caom2:coord1>
+                            <caom2:pix>160.31113831429</caom2:pix>
+                            <caom2:val>197.73157085426</caom2:val>
+                          </caom2:coord1>
+                          <caom2:coord2>
+                            <caom2:pix>122.27086448005</caom2:pix>
+                            <caom2:val>37.059902524831</caom2:val>
+                          </caom2:coord2>
+                        </caom2:refCoord>
+                        <caom2:cd11>-2.7876361280673e-05</caom2:cd11>
+                        <caom2:cd12>9.7814414070342e-09</caom2:cd12>
+                        <caom2:cd21>9.6560989992525e-08</caom2:cd21>
+                        <caom2:cd22>2.7507634868086e-05</caom2:cd22>
+                      </caom2:function>
                     </caom2:axis>
                     <caom2:coordsys>FK5</caom2:coordsys>
                     <caom2:equinox>2000.0</caom2:equinox>
@@ -2338,10 +2194,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-b9ca-18edece0f07b">
+            <caom2:part caom2:id="00000000-0000-0000-b6b8-d43e27b56622">
               <caom2:name>26</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-bdb9-436d48881f32">
+                <caom2:chunk caom2:id="00000000-0000-0000-89fc-8a67a0fda49c">
                   <caom2:naxis>4</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -2357,32 +2213,26 @@
                         <caom2:ctype>DEC--TAN</caom2:ctype>
                         <caom2:cunit>deg</caom2:cunit>
                       </caom2:axis2>
-                      <caom2:bounds>
-                        <caom2:polygon>
-                          <caom2:vertices>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>197.731582185722</caom2:coord1>
-                              <caom2:coord2>37.06094033407</caom2:coord2>
-                            </caom2:vertex>
-                          </caom2:vertices>
-                        </caom2:polygon>
-                      </caom2:bounds>
+                      <caom2:function>
+                        <caom2:dimension>
+                          <caom2:naxis1>320</caom2:naxis1>
+                          <caom2:naxis2>240</caom2:naxis2>
+                        </caom2:dimension>
+                        <caom2:refCoord>
+                          <caom2:coord1>
+                            <caom2:pix>160.31113831429</caom2:pix>
+                            <caom2:val>197.73157085426</caom2:val>
+                          </caom2:coord1>
+                          <caom2:coord2>
+                            <caom2:pix>122.27086448005</caom2:pix>
+                            <caom2:val>37.059902524831</caom2:val>
+                          </caom2:coord2>
+                        </caom2:refCoord>
+                        <caom2:cd11>-2.7876361280673e-05</caom2:cd11>
+                        <caom2:cd12>9.7814414070342e-09</caom2:cd12>
+                        <caom2:cd21>9.6560989992525e-08</caom2:cd21>
+                        <caom2:cd22>2.7507634868086e-05</caom2:cd22>
+                      </caom2:function>
                     </caom2:axis>
                     <caom2:coordsys>FK5</caom2:coordsys>
                     <caom2:equinox>2000.0</caom2:equinox>
@@ -2433,10 +2283,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-95a1-64cb92ee9062">
+            <caom2:part caom2:id="00000000-0000-0000-8811-7528eeab88be">
               <caom2:name>27</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-bd5f-58d1a90bb1e0">
+                <caom2:chunk caom2:id="00000000-0000-0000-929e-c5767d59c611">
                   <caom2:naxis>4</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -2452,32 +2302,26 @@
                         <caom2:ctype>DEC--TAN</caom2:ctype>
                         <caom2:cunit>deg</caom2:cunit>
                       </caom2:axis2>
-                      <caom2:bounds>
-                        <caom2:polygon>
-                          <caom2:vertices>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>197.731582185722</caom2:coord1>
-                              <caom2:coord2>37.06094033407</caom2:coord2>
-                            </caom2:vertex>
-                          </caom2:vertices>
-                        </caom2:polygon>
-                      </caom2:bounds>
+                      <caom2:function>
+                        <caom2:dimension>
+                          <caom2:naxis1>320</caom2:naxis1>
+                          <caom2:naxis2>240</caom2:naxis2>
+                        </caom2:dimension>
+                        <caom2:refCoord>
+                          <caom2:coord1>
+                            <caom2:pix>160.31113831429</caom2:pix>
+                            <caom2:val>197.73157085426</caom2:val>
+                          </caom2:coord1>
+                          <caom2:coord2>
+                            <caom2:pix>122.27086448005</caom2:pix>
+                            <caom2:val>37.059902524831</caom2:val>
+                          </caom2:coord2>
+                        </caom2:refCoord>
+                        <caom2:cd11>-2.7876361280673e-05</caom2:cd11>
+                        <caom2:cd12>9.7814414070342e-09</caom2:cd12>
+                        <caom2:cd21>9.6560989992525e-08</caom2:cd21>
+                        <caom2:cd22>2.7507634868086e-05</caom2:cd22>
+                      </caom2:function>
                     </caom2:axis>
                     <caom2:coordsys>FK5</caom2:coordsys>
                     <caom2:equinox>2000.0</caom2:equinox>
@@ -2528,10 +2372,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-b1f5-ea1d4ccb06f8">
+            <caom2:part caom2:id="00000000-0000-0000-9fbd-389edd7fa5f7">
               <caom2:name>28</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-897a-5bb4f950b6cf">
+                <caom2:chunk caom2:id="00000000-0000-0000-b1a4-414d242bfea9">
                   <caom2:naxis>4</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -2547,32 +2391,26 @@
                         <caom2:ctype>DEC--TAN</caom2:ctype>
                         <caom2:cunit>deg</caom2:cunit>
                       </caom2:axis2>
-                      <caom2:bounds>
-                        <caom2:polygon>
-                          <caom2:vertices>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>197.731582185722</caom2:coord1>
-                              <caom2:coord2>37.06094033407</caom2:coord2>
-                            </caom2:vertex>
-                          </caom2:vertices>
-                        </caom2:polygon>
-                      </caom2:bounds>
+                      <caom2:function>
+                        <caom2:dimension>
+                          <caom2:naxis1>320</caom2:naxis1>
+                          <caom2:naxis2>240</caom2:naxis2>
+                        </caom2:dimension>
+                        <caom2:refCoord>
+                          <caom2:coord1>
+                            <caom2:pix>160.31113831429</caom2:pix>
+                            <caom2:val>197.73157085426</caom2:val>
+                          </caom2:coord1>
+                          <caom2:coord2>
+                            <caom2:pix>122.27086448005</caom2:pix>
+                            <caom2:val>37.059902524831</caom2:val>
+                          </caom2:coord2>
+                        </caom2:refCoord>
+                        <caom2:cd11>-2.7876361280673e-05</caom2:cd11>
+                        <caom2:cd12>9.7814414070342e-09</caom2:cd12>
+                        <caom2:cd21>9.6560989992525e-08</caom2:cd21>
+                        <caom2:cd22>2.7507634868086e-05</caom2:cd22>
+                      </caom2:function>
                     </caom2:axis>
                     <caom2:coordsys>FK5</caom2:coordsys>
                     <caom2:equinox>2000.0</caom2:equinox>
@@ -2623,10 +2461,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-9200-7abaabcab7dc">
+            <caom2:part caom2:id="00000000-0000-0000-9a6f-b7eb6506ad5d">
               <caom2:name>29</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-b818-9ce657c973df">
+                <caom2:chunk caom2:id="00000000-0000-0000-ac3f-b5628088a27a">
                   <caom2:naxis>4</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -2642,32 +2480,26 @@
                         <caom2:ctype>DEC--TAN</caom2:ctype>
                         <caom2:cunit>deg</caom2:cunit>
                       </caom2:axis2>
-                      <caom2:bounds>
-                        <caom2:polygon>
-                          <caom2:vertices>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>197.731582185722</caom2:coord1>
-                              <caom2:coord2>37.06094033407</caom2:coord2>
-                            </caom2:vertex>
-                          </caom2:vertices>
-                        </caom2:polygon>
-                      </caom2:bounds>
+                      <caom2:function>
+                        <caom2:dimension>
+                          <caom2:naxis1>320</caom2:naxis1>
+                          <caom2:naxis2>240</caom2:naxis2>
+                        </caom2:dimension>
+                        <caom2:refCoord>
+                          <caom2:coord1>
+                            <caom2:pix>160.31113831429</caom2:pix>
+                            <caom2:val>197.73157085426</caom2:val>
+                          </caom2:coord1>
+                          <caom2:coord2>
+                            <caom2:pix>122.27086448005</caom2:pix>
+                            <caom2:val>37.059902524831</caom2:val>
+                          </caom2:coord2>
+                        </caom2:refCoord>
+                        <caom2:cd11>-2.7876361280673e-05</caom2:cd11>
+                        <caom2:cd12>9.7814414070342e-09</caom2:cd12>
+                        <caom2:cd21>9.6560989992525e-08</caom2:cd21>
+                        <caom2:cd22>2.7507634868086e-05</caom2:cd22>
+                      </caom2:function>
                     </caom2:axis>
                     <caom2:coordsys>FK5</caom2:coordsys>
                     <caom2:equinox>2000.0</caom2:equinox>
@@ -2718,10 +2550,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-9844-827f8c3bc5d1">
+            <caom2:part caom2:id="00000000-0000-0000-8640-aaa6b1b061c7">
               <caom2:name>30</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-b7b5-ad4336791b51">
+                <caom2:chunk caom2:id="00000000-0000-0000-bb6e-7676dcb9ca36">
                   <caom2:naxis>4</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -2737,32 +2569,26 @@
                         <caom2:ctype>DEC--TAN</caom2:ctype>
                         <caom2:cunit>deg</caom2:cunit>
                       </caom2:axis2>
-                      <caom2:bounds>
-                        <caom2:polygon>
-                          <caom2:vertices>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>197.731582185722</caom2:coord1>
-                              <caom2:coord2>37.06094033407</caom2:coord2>
-                            </caom2:vertex>
-                          </caom2:vertices>
-                        </caom2:polygon>
-                      </caom2:bounds>
+                      <caom2:function>
+                        <caom2:dimension>
+                          <caom2:naxis1>320</caom2:naxis1>
+                          <caom2:naxis2>240</caom2:naxis2>
+                        </caom2:dimension>
+                        <caom2:refCoord>
+                          <caom2:coord1>
+                            <caom2:pix>160.31113831429</caom2:pix>
+                            <caom2:val>197.73157085426</caom2:val>
+                          </caom2:coord1>
+                          <caom2:coord2>
+                            <caom2:pix>122.27086448005</caom2:pix>
+                            <caom2:val>37.059902524831</caom2:val>
+                          </caom2:coord2>
+                        </caom2:refCoord>
+                        <caom2:cd11>-2.7876361280673e-05</caom2:cd11>
+                        <caom2:cd12>9.7814414070342e-09</caom2:cd12>
+                        <caom2:cd21>9.6560989992525e-08</caom2:cd21>
+                        <caom2:cd22>2.7507634868086e-05</caom2:cd22>
+                      </caom2:function>
                     </caom2:axis>
                     <caom2:coordsys>FK5</caom2:coordsys>
                     <caom2:equinox>2000.0</caom2:equinox>
@@ -2813,10 +2639,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-8770-bda9fde3be02">
+            <caom2:part caom2:id="00000000-0000-0000-beac-a0e7cd025034">
               <caom2:name>31</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-aa14-a6aa47b0e8b7">
+                <caom2:chunk caom2:id="00000000-0000-0000-8f6e-9059be52d2f2">
                   <caom2:naxis>4</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -2832,32 +2658,26 @@
                         <caom2:ctype>DEC--TAN</caom2:ctype>
                         <caom2:cunit>deg</caom2:cunit>
                       </caom2:axis2>
-                      <caom2:bounds>
-                        <caom2:polygon>
-                          <caom2:vertices>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>197.731582185722</caom2:coord1>
-                              <caom2:coord2>37.06094033407</caom2:coord2>
-                            </caom2:vertex>
-                          </caom2:vertices>
-                        </caom2:polygon>
-                      </caom2:bounds>
+                      <caom2:function>
+                        <caom2:dimension>
+                          <caom2:naxis1>320</caom2:naxis1>
+                          <caom2:naxis2>240</caom2:naxis2>
+                        </caom2:dimension>
+                        <caom2:refCoord>
+                          <caom2:coord1>
+                            <caom2:pix>160.31113831429</caom2:pix>
+                            <caom2:val>197.73157085426</caom2:val>
+                          </caom2:coord1>
+                          <caom2:coord2>
+                            <caom2:pix>122.27086448005</caom2:pix>
+                            <caom2:val>37.059902524831</caom2:val>
+                          </caom2:coord2>
+                        </caom2:refCoord>
+                        <caom2:cd11>-2.7876361280673e-05</caom2:cd11>
+                        <caom2:cd12>9.7814414070342e-09</caom2:cd12>
+                        <caom2:cd21>9.6560989992525e-08</caom2:cd21>
+                        <caom2:cd22>2.7507634868086e-05</caom2:cd22>
+                      </caom2:function>
                     </caom2:axis>
                     <caom2:coordsys>FK5</caom2:coordsys>
                     <caom2:equinox>2000.0</caom2:equinox>
@@ -2908,10 +2728,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-a78a-274b4fec0894">
+            <caom2:part caom2:id="00000000-0000-0000-8f0a-d529c2cf8cfb">
               <caom2:name>32</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-8a4f-0d3d911f53ce">
+                <caom2:chunk caom2:id="00000000-0000-0000-aaca-b7a0c98e9572">
                   <caom2:naxis>4</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -2927,32 +2747,26 @@
                         <caom2:ctype>DEC--TAN</caom2:ctype>
                         <caom2:cunit>deg</caom2:cunit>
                       </caom2:axis2>
-                      <caom2:bounds>
-                        <caom2:polygon>
-                          <caom2:vertices>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>197.731582185722</caom2:coord1>
-                              <caom2:coord2>37.06094033407</caom2:coord2>
-                            </caom2:vertex>
-                          </caom2:vertices>
-                        </caom2:polygon>
-                      </caom2:bounds>
+                      <caom2:function>
+                        <caom2:dimension>
+                          <caom2:naxis1>320</caom2:naxis1>
+                          <caom2:naxis2>240</caom2:naxis2>
+                        </caom2:dimension>
+                        <caom2:refCoord>
+                          <caom2:coord1>
+                            <caom2:pix>160.31113831429</caom2:pix>
+                            <caom2:val>197.73157085426</caom2:val>
+                          </caom2:coord1>
+                          <caom2:coord2>
+                            <caom2:pix>122.27086448005</caom2:pix>
+                            <caom2:val>37.059902524831</caom2:val>
+                          </caom2:coord2>
+                        </caom2:refCoord>
+                        <caom2:cd11>-2.7876361280673e-05</caom2:cd11>
+                        <caom2:cd12>9.7814414070342e-09</caom2:cd12>
+                        <caom2:cd21>9.6560989992525e-08</caom2:cd21>
+                        <caom2:cd22>2.7507634868086e-05</caom2:cd22>
+                      </caom2:function>
                     </caom2:axis>
                     <caom2:coordsys>FK5</caom2:coordsys>
                     <caom2:equinox>2000.0</caom2:equinox>
@@ -3003,10 +2817,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-a1dc-2b3218f2f3ec">
+            <caom2:part caom2:id="00000000-0000-0000-b2e2-ae802b15d834">
               <caom2:name>33</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-9bd4-f0bca07157dc">
+                <caom2:chunk caom2:id="00000000-0000-0000-b569-85c18692852e">
                   <caom2:naxis>4</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -3022,32 +2836,26 @@
                         <caom2:ctype>DEC--TAN</caom2:ctype>
                         <caom2:cunit>deg</caom2:cunit>
                       </caom2:axis2>
-                      <caom2:bounds>
-                        <caom2:polygon>
-                          <caom2:vertices>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>197.731582185722</caom2:coord1>
-                              <caom2:coord2>37.06094033407</caom2:coord2>
-                            </caom2:vertex>
-                          </caom2:vertices>
-                        </caom2:polygon>
-                      </caom2:bounds>
+                      <caom2:function>
+                        <caom2:dimension>
+                          <caom2:naxis1>320</caom2:naxis1>
+                          <caom2:naxis2>240</caom2:naxis2>
+                        </caom2:dimension>
+                        <caom2:refCoord>
+                          <caom2:coord1>
+                            <caom2:pix>160.31113831429</caom2:pix>
+                            <caom2:val>197.73157085426</caom2:val>
+                          </caom2:coord1>
+                          <caom2:coord2>
+                            <caom2:pix>122.27086448005</caom2:pix>
+                            <caom2:val>37.059902524831</caom2:val>
+                          </caom2:coord2>
+                        </caom2:refCoord>
+                        <caom2:cd11>-2.7876361280673e-05</caom2:cd11>
+                        <caom2:cd12>9.7814414070342e-09</caom2:cd12>
+                        <caom2:cd21>9.6560989992525e-08</caom2:cd21>
+                        <caom2:cd22>2.7507634868086e-05</caom2:cd22>
+                      </caom2:function>
                     </caom2:axis>
                     <caom2:coordsys>FK5</caom2:coordsys>
                     <caom2:equinox>2000.0</caom2:equinox>
@@ -3098,10 +2906,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-97d0-b1093bebead2">
+            <caom2:part caom2:id="00000000-0000-0000-9607-1cb82737e157">
               <caom2:name>34</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-a68c-138a8a330052">
+                <caom2:chunk caom2:id="00000000-0000-0000-aa04-256aa9c01c83">
                   <caom2:naxis>4</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -3117,32 +2925,26 @@
                         <caom2:ctype>DEC--TAN</caom2:ctype>
                         <caom2:cunit>deg</caom2:cunit>
                       </caom2:axis2>
-                      <caom2:bounds>
-                        <caom2:polygon>
-                          <caom2:vertices>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>197.731582185722</caom2:coord1>
-                              <caom2:coord2>37.06094033407</caom2:coord2>
-                            </caom2:vertex>
-                          </caom2:vertices>
-                        </caom2:polygon>
-                      </caom2:bounds>
+                      <caom2:function>
+                        <caom2:dimension>
+                          <caom2:naxis1>320</caom2:naxis1>
+                          <caom2:naxis2>240</caom2:naxis2>
+                        </caom2:dimension>
+                        <caom2:refCoord>
+                          <caom2:coord1>
+                            <caom2:pix>160.31113831429</caom2:pix>
+                            <caom2:val>197.73157085426</caom2:val>
+                          </caom2:coord1>
+                          <caom2:coord2>
+                            <caom2:pix>122.27086448005</caom2:pix>
+                            <caom2:val>37.059902524831</caom2:val>
+                          </caom2:coord2>
+                        </caom2:refCoord>
+                        <caom2:cd11>-2.7876361280673e-05</caom2:cd11>
+                        <caom2:cd12>9.7814414070342e-09</caom2:cd12>
+                        <caom2:cd21>9.6560989992525e-08</caom2:cd21>
+                        <caom2:cd22>2.7507634868086e-05</caom2:cd22>
+                      </caom2:function>
                     </caom2:axis>
                     <caom2:coordsys>FK5</caom2:coordsys>
                     <caom2:equinox>2000.0</caom2:equinox>
@@ -3193,10 +2995,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-9d17-b9f6b97c770f">
+            <caom2:part caom2:id="00000000-0000-0000-8d73-2247f17dc752">
               <caom2:name>35</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-ae9f-3221e792345c">
+                <caom2:chunk caom2:id="00000000-0000-0000-a1ec-9850e6fdfcb0">
                   <caom2:naxis>4</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -3212,32 +3014,26 @@
                         <caom2:ctype>DEC--TAN</caom2:ctype>
                         <caom2:cunit>deg</caom2:cunit>
                       </caom2:axis2>
-                      <caom2:bounds>
-                        <caom2:polygon>
-                          <caom2:vertices>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>197.731582185722</caom2:coord1>
-                              <caom2:coord2>37.06094033407</caom2:coord2>
-                            </caom2:vertex>
-                          </caom2:vertices>
-                        </caom2:polygon>
-                      </caom2:bounds>
+                      <caom2:function>
+                        <caom2:dimension>
+                          <caom2:naxis1>320</caom2:naxis1>
+                          <caom2:naxis2>240</caom2:naxis2>
+                        </caom2:dimension>
+                        <caom2:refCoord>
+                          <caom2:coord1>
+                            <caom2:pix>160.31113831429</caom2:pix>
+                            <caom2:val>197.73157085426</caom2:val>
+                          </caom2:coord1>
+                          <caom2:coord2>
+                            <caom2:pix>122.27086448005</caom2:pix>
+                            <caom2:val>37.059902524831</caom2:val>
+                          </caom2:coord2>
+                        </caom2:refCoord>
+                        <caom2:cd11>-2.7876361280673e-05</caom2:cd11>
+                        <caom2:cd12>9.7814414070342e-09</caom2:cd12>
+                        <caom2:cd21>9.6560989992525e-08</caom2:cd21>
+                        <caom2:cd22>2.7507634868086e-05</caom2:cd22>
+                      </caom2:function>
                     </caom2:axis>
                     <caom2:coordsys>FK5</caom2:coordsys>
                     <caom2:equinox>2000.0</caom2:equinox>
@@ -3288,10 +3084,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-8389-eb234610db11">
+            <caom2:part caom2:id="00000000-0000-0000-867a-ca75cbbc4ef2">
               <caom2:name>36</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-a3ea-d38cb78807f0">
+                <caom2:chunk caom2:id="00000000-0000-0000-9673-c2aa02a370df">
                   <caom2:naxis>4</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -3307,32 +3103,26 @@
                         <caom2:ctype>DEC--TAN</caom2:ctype>
                         <caom2:cunit>deg</caom2:cunit>
                       </caom2:axis2>
-                      <caom2:bounds>
-                        <caom2:polygon>
-                          <caom2:vertices>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>197.731582185722</caom2:coord1>
-                              <caom2:coord2>37.06094033407</caom2:coord2>
-                            </caom2:vertex>
-                          </caom2:vertices>
-                        </caom2:polygon>
-                      </caom2:bounds>
+                      <caom2:function>
+                        <caom2:dimension>
+                          <caom2:naxis1>320</caom2:naxis1>
+                          <caom2:naxis2>240</caom2:naxis2>
+                        </caom2:dimension>
+                        <caom2:refCoord>
+                          <caom2:coord1>
+                            <caom2:pix>160.31113831429</caom2:pix>
+                            <caom2:val>197.73157085426</caom2:val>
+                          </caom2:coord1>
+                          <caom2:coord2>
+                            <caom2:pix>122.27086448005</caom2:pix>
+                            <caom2:val>37.059902524831</caom2:val>
+                          </caom2:coord2>
+                        </caom2:refCoord>
+                        <caom2:cd11>-2.7876361280673e-05</caom2:cd11>
+                        <caom2:cd12>9.7814414070342e-09</caom2:cd12>
+                        <caom2:cd21>9.6560989992525e-08</caom2:cd21>
+                        <caom2:cd22>2.7507634868086e-05</caom2:cd22>
+                      </caom2:function>
                     </caom2:axis>
                     <caom2:coordsys>FK5</caom2:coordsys>
                     <caom2:equinox>2000.0</caom2:equinox>
@@ -3383,10 +3173,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-8206-2e404978bf4b">
+            <caom2:part caom2:id="00000000-0000-0000-bf33-2c1b9e17c74a">
               <caom2:name>37</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-8bce-e530323c8cef">
+                <caom2:chunk caom2:id="00000000-0000-0000-8981-fbaddb290445">
                   <caom2:naxis>4</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -3402,32 +3192,26 @@
                         <caom2:ctype>DEC--TAN</caom2:ctype>
                         <caom2:cunit>deg</caom2:cunit>
                       </caom2:axis2>
-                      <caom2:bounds>
-                        <caom2:polygon>
-                          <caom2:vertices>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>197.731582185722</caom2:coord1>
-                              <caom2:coord2>37.06094033407</caom2:coord2>
-                            </caom2:vertex>
-                          </caom2:vertices>
-                        </caom2:polygon>
-                      </caom2:bounds>
+                      <caom2:function>
+                        <caom2:dimension>
+                          <caom2:naxis1>320</caom2:naxis1>
+                          <caom2:naxis2>240</caom2:naxis2>
+                        </caom2:dimension>
+                        <caom2:refCoord>
+                          <caom2:coord1>
+                            <caom2:pix>160.31113831429</caom2:pix>
+                            <caom2:val>197.73157085426</caom2:val>
+                          </caom2:coord1>
+                          <caom2:coord2>
+                            <caom2:pix>122.27086448005</caom2:pix>
+                            <caom2:val>37.059902524831</caom2:val>
+                          </caom2:coord2>
+                        </caom2:refCoord>
+                        <caom2:cd11>-2.7876361280673e-05</caom2:cd11>
+                        <caom2:cd12>9.7814414070342e-09</caom2:cd12>
+                        <caom2:cd21>9.6560989992525e-08</caom2:cd21>
+                        <caom2:cd22>2.7507634868086e-05</caom2:cd22>
+                      </caom2:function>
                     </caom2:axis>
                     <caom2:coordsys>FK5</caom2:coordsys>
                     <caom2:equinox>2000.0</caom2:equinox>
@@ -3478,10 +3262,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-8488-678424efd0ba">
+            <caom2:part caom2:id="00000000-0000-0000-abe8-cd06833b37a2">
               <caom2:name>38</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-88da-c68c5790ab77">
+                <caom2:chunk caom2:id="00000000-0000-0000-a095-53a328b8ca9c">
                   <caom2:naxis>4</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -3497,32 +3281,26 @@
                         <caom2:ctype>DEC--TAN</caom2:ctype>
                         <caom2:cunit>deg</caom2:cunit>
                       </caom2:axis2>
-                      <caom2:bounds>
-                        <caom2:polygon>
-                          <caom2:vertices>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>197.731582185722</caom2:coord1>
-                              <caom2:coord2>37.06094033407</caom2:coord2>
-                            </caom2:vertex>
-                          </caom2:vertices>
-                        </caom2:polygon>
-                      </caom2:bounds>
+                      <caom2:function>
+                        <caom2:dimension>
+                          <caom2:naxis1>320</caom2:naxis1>
+                          <caom2:naxis2>240</caom2:naxis2>
+                        </caom2:dimension>
+                        <caom2:refCoord>
+                          <caom2:coord1>
+                            <caom2:pix>160.31113831429</caom2:pix>
+                            <caom2:val>197.73157085426</caom2:val>
+                          </caom2:coord1>
+                          <caom2:coord2>
+                            <caom2:pix>122.27086448005</caom2:pix>
+                            <caom2:val>37.059902524831</caom2:val>
+                          </caom2:coord2>
+                        </caom2:refCoord>
+                        <caom2:cd11>-2.7876361280673e-05</caom2:cd11>
+                        <caom2:cd12>9.7814414070342e-09</caom2:cd12>
+                        <caom2:cd21>9.6560989992525e-08</caom2:cd21>
+                        <caom2:cd22>2.7507634868086e-05</caom2:cd22>
+                      </caom2:function>
                     </caom2:axis>
                     <caom2:coordsys>FK5</caom2:coordsys>
                     <caom2:equinox>2000.0</caom2:equinox>
@@ -3573,10 +3351,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-83b4-fe7b080ed664">
+            <caom2:part caom2:id="00000000-0000-0000-9352-a130c7f7fa08">
               <caom2:name>39</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-aff5-269299a79663">
+                <caom2:chunk caom2:id="00000000-0000-0000-84fb-526f31c2ff62">
                   <caom2:naxis>4</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -3592,32 +3370,26 @@
                         <caom2:ctype>DEC--TAN</caom2:ctype>
                         <caom2:cunit>deg</caom2:cunit>
                       </caom2:axis2>
-                      <caom2:bounds>
-                        <caom2:polygon>
-                          <caom2:vertices>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>197.731582185722</caom2:coord1>
-                              <caom2:coord2>37.06094033407</caom2:coord2>
-                            </caom2:vertex>
-                          </caom2:vertices>
-                        </caom2:polygon>
-                      </caom2:bounds>
+                      <caom2:function>
+                        <caom2:dimension>
+                          <caom2:naxis1>320</caom2:naxis1>
+                          <caom2:naxis2>240</caom2:naxis2>
+                        </caom2:dimension>
+                        <caom2:refCoord>
+                          <caom2:coord1>
+                            <caom2:pix>160.31113831429</caom2:pix>
+                            <caom2:val>197.73157085426</caom2:val>
+                          </caom2:coord1>
+                          <caom2:coord2>
+                            <caom2:pix>122.27086448005</caom2:pix>
+                            <caom2:val>37.059902524831</caom2:val>
+                          </caom2:coord2>
+                        </caom2:refCoord>
+                        <caom2:cd11>-2.7876361280673e-05</caom2:cd11>
+                        <caom2:cd12>9.7814414070342e-09</caom2:cd12>
+                        <caom2:cd21>9.6560989992525e-08</caom2:cd21>
+                        <caom2:cd22>2.7507634868086e-05</caom2:cd22>
+                      </caom2:function>
                     </caom2:axis>
                     <caom2:coordsys>FK5</caom2:coordsys>
                     <caom2:equinox>2000.0</caom2:equinox>
@@ -3668,10 +3440,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-8aa6-8f3eea908ec4">
+            <caom2:part caom2:id="00000000-0000-0000-b07c-cf625e085744">
               <caom2:name>40</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-be46-adabfa2e5ade">
+                <caom2:chunk caom2:id="00000000-0000-0000-8d0a-e876acab5a25">
                   <caom2:naxis>4</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -3687,32 +3459,26 @@
                         <caom2:ctype>DEC--TAN</caom2:ctype>
                         <caom2:cunit>deg</caom2:cunit>
                       </caom2:axis2>
-                      <caom2:bounds>
-                        <caom2:polygon>
-                          <caom2:vertices>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>197.731582185722</caom2:coord1>
-                              <caom2:coord2>37.06094033407</caom2:coord2>
-                            </caom2:vertex>
-                          </caom2:vertices>
-                        </caom2:polygon>
-                      </caom2:bounds>
+                      <caom2:function>
+                        <caom2:dimension>
+                          <caom2:naxis1>320</caom2:naxis1>
+                          <caom2:naxis2>240</caom2:naxis2>
+                        </caom2:dimension>
+                        <caom2:refCoord>
+                          <caom2:coord1>
+                            <caom2:pix>160.31113831429</caom2:pix>
+                            <caom2:val>197.73157085426</caom2:val>
+                          </caom2:coord1>
+                          <caom2:coord2>
+                            <caom2:pix>122.27086448005</caom2:pix>
+                            <caom2:val>37.059902524831</caom2:val>
+                          </caom2:coord2>
+                        </caom2:refCoord>
+                        <caom2:cd11>-2.7876361280673e-05</caom2:cd11>
+                        <caom2:cd12>9.7814414070342e-09</caom2:cd12>
+                        <caom2:cd21>9.6560989992525e-08</caom2:cd21>
+                        <caom2:cd22>2.7507634868086e-05</caom2:cd22>
+                      </caom2:function>
                     </caom2:axis>
                     <caom2:coordsys>FK5</caom2:coordsys>
                     <caom2:equinox>2000.0</caom2:equinox>
@@ -3763,10 +3529,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-a7c7-43b4978c94c5">
+            <caom2:part caom2:id="00000000-0000-0000-a275-701f5ebd12e2">
               <caom2:name>41</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-a4cc-460aa73b3f9f">
+                <caom2:chunk caom2:id="00000000-0000-0000-98e8-31eddd832c0a">
                   <caom2:naxis>4</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -3782,32 +3548,26 @@
                         <caom2:ctype>DEC--TAN</caom2:ctype>
                         <caom2:cunit>deg</caom2:cunit>
                       </caom2:axis2>
-                      <caom2:bounds>
-                        <caom2:polygon>
-                          <caom2:vertices>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>38.460940334069996</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>199.131582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>196.331582185722</caom2:coord1>
-                              <caom2:coord2>35.66094033407</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>197.731582185722</caom2:coord1>
-                              <caom2:coord2>37.06094033407</caom2:coord2>
-                            </caom2:vertex>
-                          </caom2:vertices>
-                        </caom2:polygon>
-                      </caom2:bounds>
+                      <caom2:function>
+                        <caom2:dimension>
+                          <caom2:naxis1>320</caom2:naxis1>
+                          <caom2:naxis2>240</caom2:naxis2>
+                        </caom2:dimension>
+                        <caom2:refCoord>
+                          <caom2:coord1>
+                            <caom2:pix>160.31113831429</caom2:pix>
+                            <caom2:val>197.73157085426</caom2:val>
+                          </caom2:coord1>
+                          <caom2:coord2>
+                            <caom2:pix>122.27086448005</caom2:pix>
+                            <caom2:val>37.059902524831</caom2:val>
+                          </caom2:coord2>
+                        </caom2:refCoord>
+                        <caom2:cd11>-2.7876361280673e-05</caom2:cd11>
+                        <caom2:cd12>9.7814414070342e-09</caom2:cd12>
+                        <caom2:cd21>9.6560989992525e-08</caom2:cd21>
+                        <caom2:cd22>2.7507634868086e-05</caom2:cd22>
+                      </caom2:function>
                     </caom2:axis>
                     <caom2:coordsys>FK5</caom2:coordsys>
                     <caom2:equinox>2000.0</caom2:equinox>

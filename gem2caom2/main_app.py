@@ -99,6 +99,7 @@ from caom2 import SpatialWCS, CoordAxis2D, Axis, CoordPolygon2D, ValueCoord2D
 from caom2 import SpectralWCS, CoordAxis1D, CoordFunction1D, RefCoord
 from caom2 import TypedList
 from caom2utils import ObsBlueprint, get_gen_proc_arg_parser, gen_proc
+from caom2utils import WcsParser
 from caom2pipe import manage_composable as mc
 from caom2pipe import astro_composable as ac
 
@@ -563,6 +564,18 @@ def update(observation, **kwargs):
         for p in observation.planes:
             mode = observation.planes[p].data_product_type
             for a in observation.planes[p].artifacts:
+
+                if observation.instrument.name == 'michelle':
+                    # Michelle is a retired visitor instrument.
+                    # Spatial WCS info is in primary header. There
+                    # are a variable number of FITS extensions
+                    # defined by primary keyword NUMEXT; assume the
+                    # same spatial WCS for each for now - it differs
+                    # only slightly because of telescope 'chopping'
+                    # and 'nodding' used in acquisition. DB - 01-18-19
+                    _update_position_michelle(observation.planes[p].artifacts[a],
+                                              headers)
+
                 for part in observation.planes[p].artifacts[a].parts:
 
                     if part == '2' and observation.instrument.name == 'GPI':
@@ -605,7 +618,7 @@ def update(observation, **kwargs):
                             # radius = 5.0 arcseconds, said DB in test data
                             # list of Jan 18/19
                             _update_chunk_position(c, 5.0, header, 'GRACES')
-                        if (observation.instrument.name == 'michelle'):
+                        # if (observation.instrument.name == 'michelle'):
                             # Michelle is a retired visitor instrument.
                             # Spatial WCS info is in primary header. There
                             # are a variable number of FITS extensions
@@ -613,10 +626,12 @@ def update(observation, **kwargs):
                             # same spatial WCS for each for now - it differs
                             # only slightly because of telescope 'chopping'
                             # and 'nodding' used in acquisition. DB - 01-18-19
-                            # radius == 2.8 arcseconds, according to
-                            # Christian Marios via DB 02-07-19
-                            _update_chunk_position(c, 2.8, headers[0],
-                                                   'michelle')
+
+
+                            # # radius == 2.8 arcseconds, according to
+                            # # Christian Marios via DB 02-07-19
+                            # _update_chunk_position(c, 2.8, headers[0],
+                            #                        'michelle')
     except Exception as e:
         logging.error(e)
         tb = traceback.format_exc()
@@ -1096,6 +1111,29 @@ def _update_chunk_position(chunk, radius, header, instrument):
         logging.info('{}: ra or dec missing from JSON.'.format(instrument))
 
     logging.debug('End _update_chunk_position')
+
+
+def _update_position_michelle(artifact, headers):
+    """Make the 0th header spatial WCS the WCS for all the
+    chunks."""
+    primary_header = headers[0]
+
+    # naxis values are only available from extensions
+
+    primary_header['NAXIS1'] = headers[-1].get('NAXIS1')
+    primary_header['NAXIS2'] = headers[-1].get('NAXIS2')
+
+    wcs_parser = WcsParser(primary_header, 'file name', 0)
+    primary_chunk = Chunk()
+    wcs_parser.augment_position(primary_chunk)
+
+    for part in artifact.parts:
+        if part == '0':
+            continue
+        for chunk in artifact.parts[part].chunks:
+            chunk.position = primary_chunk.position
+            chunk.position_axis_1 = 1
+            chunk.position_axis_2 = 2
 
 
 def _build_blueprints(uris, obs_id, file_id):
