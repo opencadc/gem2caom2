@@ -92,18 +92,16 @@ import os
 import sys
 import re
 import traceback
-import requests
-from requests.adapters import HTTPAdapter
-from urllib3 import Retry
 
 from caom2 import Observation, ObservationIntentType, DataProductType
-from caom2 import CalibrationLevel, TargetType, ProductType
+from caom2 import CalibrationLevel, TargetType, ProductType, Chunk
+from caom2 import SpatialWCS, CoordAxis2D, Axis, CoordPolygon2D, ValueCoord2D
 from caom2utils import ObsBlueprint, get_gen_proc_arg_parser, gen_proc
 from caom2pipe import manage_composable as mc
 from caom2pipe import execute_composable as ec
 from caom2pipe import astro_composable as ac
 
-from gem2caom2.external_metadata import gmos_metadata, niri_metadata
+import gem2caom2.external_metadata as em
 from gem2caom2.svofps import filter_metadata
 
 
@@ -115,16 +113,13 @@ APPLICATION = 'gem2caom2'
 COLLECTION = 'GEMINI'
 ARCHIVE = 'GEM'
 SCHEME = 'gemini'
-GEMINI_METADATA_URL = \
-    'https://archive.gemini.edu/jsonsummary/canonical/filepre='
-
-obs_metadata = {}
 
 
 class GemName(ec.StorageName):
     """Naming rules:
-    - support upper-case file name storage, exception for extensions, and
-            upper-case obs id values
+    - support mixed-case file name storage, exception for extensions, and
+            mixed-case obs id values - the case the inputs are provided in are
+            assumed to be correct.
     - support uncompressed files in storage
     """
 
@@ -213,7 +208,9 @@ class GemName(ec.StorageName):
 
     @staticmethod
     def get_file_id(file_name):
-        return GemName.remove_extensions(file_name.lower()).upper()
+        # TODO - how important is the file name case? check with DB.
+        # return GemName.remove_extensions(file_name.lower()).upper()
+        return GemName.remove_extensions(file_name)
 
     @staticmethod
     def remove_extensions(name):
@@ -224,35 +221,6 @@ class GemName(ec.StorageName):
     @staticmethod
     def is_preview(entry):
         return '.jpg' in entry
-
-
-def get_obs_metadata(file_id):
-    """
-    Download the Gemini observation metadata for the given obs_id.
-
-    :param file_id: The file ID
-    :return: Dictionary of observation metadata.
-    """
-    gemini_url = '{}{}'.format(GEMINI_METADATA_URL, file_id)
-
-    # Open the URL and fetch the JSON document for the observation
-    session = requests.Session()
-    retries = 10
-    retry = Retry(total=retries, read=retries, connect=retries,
-                  backoff_factor=0.5)
-    adapter = HTTPAdapter(max_retries=retry)
-    session.mount('http://', adapter)
-    session.mount('https://', adapter)
-    try:
-        response = session.get(gemini_url, timeout=20)
-        metadata = response.json()[0]
-        response.close()
-        logging.error('got obs metdata')
-    except Exception as e:
-        raise mc.CadcException(
-            'Unable to download Gemini observation metadata from {} because {}'
-                .format(gemini_url, str(e)))
-    return metadata
 
 
 def get_niri_filter_name(header):
@@ -270,10 +238,10 @@ def get_niri_filter_name(header):
             if any(x in key for x in filters2ignore):
                 continue
             else:
-                filter = "".join(re.findall(r'\'(.+?)\'', key))
-                filter = filter.replace('_', '-').strip()
-                filter = ''.join('' if ch in '()' else ch for ch in filter)
-                header_filters.append(filter)
+                filtr = "".join(re.findall(r'\'(.+?)\'', header))
+                filtr = filtr.replace('_', '-').strip()
+                filtr = ''.join('' if ch in '()' else ch for ch in filtr)
+                header_filters.append(filtr)
         filters = "&".join(header_filters)
     if filters:
         filters = re.sub(r'&', ' & ', filters)
@@ -281,25 +249,22 @@ def get_niri_filter_name(header):
     return filters
 
 
-def get_energy_metadata():
+def get_energy_metadata(file_id):
     """
     For the given observation retrieve the energy metadata.
 
     :return: Dictionary of energy metadata.
     """
     logging.debug('Begin get_energy_metadata')
-    global obs_metadata
-    instrument = obs_metadata['instrument']
+    instrument = em.om.get('instrument')
     if instrument in ['GMOS-N', 'GMOS-S']:
-        energy_metadata = gmos_metadata(obs_metadata)
+        energy_metadata = em.gmos_metadata()
     elif instrument in ['NIRI']:
-        energy_metadata = niri_metadata(obs_metadata)
-    elif instrument in ['GNIRS']:
-        # TODO
-        energy_metadata = niri_metadata(obs_metadata)
+        energy_metadata = em.niri_metadata(file_id)
     else:
-        raise mc.CadcException(
-            'Do not understand energy for instrument {}'.format(instrument))
+        energy_metadata = {'energy': False}
+        # raise mc.CadcException(
+        #     'Do not understand energy for instrument {}'.format(instrument))
     logging.debug(
         'End get_energy_metadata for instrument {}'.format(instrument))
     return energy_metadata
@@ -315,47 +280,46 @@ def get_chunk_wcs(bp, obs_id, file_id):
     """
     logging.debug('Begin get_chunk_wcs')
     try:
-        global obs_metadata
-        obs_metadata = get_obs_metadata(file_id)
 
         # if types contains 'AZEL_TARGET' do not create spatial WCS
         # types = obs_metadata['types']
         # if 'AZEL_TARGET' not in types:
         #     bp.configure_position_axes((1, 2))
 
-        energy_metadata = get_energy_metadata()
+        energy_metadata = get_energy_metadata(file_id)
 
         # No energy metadata found
         if not energy_metadata['energy']:
-            logging.error('No energy metadata found for {}'.format(obs_id))
+            logging.error('No energy metadata found for '
+                          'obs id {}, file id {}'.format(obs_id, file_id))
             return
 
         bp.configure_energy_axis(4)
-        if obs_metadata['instrument'] in ['NIRI']:
-            bp.set('Chunk.energy.bandpassName', 'get_niri_filter_name(header)')
-            bp.set('Chunk.energy.axis.axis.ctype', 'WAVE')
-            bp.set('Chunk.energy.axis.function.naxis', 1024)
-        else:
-            filter_name = energy_metadata['filter_name']
-            resolving_power = energy_metadata['resolving_power']
-            ctype = energy_metadata['wavelength_type']
-            naxis = energy_metadata['number_pixels']
-            crpix = energy_metadata['reference_pixel']
-            crval = energy_metadata['reference_wavelength']
-            cdelt = energy_metadata['delta']
+        filter_name = mc.response_lookup(energy_metadata, 'filter_name')
+        resolving_power = mc.response_lookup(
+            energy_metadata, 'resolving_power')
+        ctype = mc.response_lookup(energy_metadata, 'wavelength_type')
+        naxis = mc.response_lookup(energy_metadata, 'number_pixels')
+        crpix = mc.response_lookup(energy_metadata, 'reference_pixel')
+        crval = mc.response_lookup(energy_metadata, 'reference_wavelength')
+        cdelt = mc.response_lookup(energy_metadata, 'delta')
 
-            # don't set the cunit since fits2caom2 sets the cunit
-            # based on the ctype.
+        # don't set the cunit since fits2caom2 sets the cunit
+        # based on the ctype.
+        instrument = em.om.get('instrument')
+        if instrument is not None and instrument in ['NIRI']:
+            bp.set('Chunk.energy.bandpassName', 'get_niri_filter_name(header)')
+        else:
             bp.set('Chunk.energy.bandpassName', filter_name)
-            bp.set('Chunk.energy.resolvingPower', resolving_power)
-            bp.set('Chunk.energy.specsys', 'TOPOCENT')
-            bp.set('Chunk.energy.ssysobs', 'TOPOCENT')
-            bp.set('Chunk.energy.ssyssrc', 'TOPOCENT')
-            bp.set('Chunk.energy.axis.axis.ctype', ctype)
-            bp.set('Chunk.energy.axis.function.naxis', naxis)
-            bp.set('Chunk.energy.axis.function.delta', cdelt)
-            bp.set('Chunk.energy.axis.function.refCoord.pix', crpix)
-            bp.set('Chunk.energy.axis.function.refCoord.val', crval)
+        bp.set('Chunk.energy.resolvingPower', resolving_power)
+        bp.set('Chunk.energy.specsys', 'TOPOCENT')
+        bp.set('Chunk.energy.ssysobs', 'TOPOCENT')
+        bp.set('Chunk.energy.ssyssrc', 'TOPOCENT')
+        bp.set('Chunk.energy.axis.axis.ctype', ctype)
+        bp.set('Chunk.energy.axis.function.naxis', naxis)
+        bp.set('Chunk.energy.axis.function.delta', cdelt)
+        bp.set('Chunk.energy.axis.function.refCoord.pix', crpix)
+        bp.set('Chunk.energy.axis.function.refCoord.val', crval)
     except Exception as e:
         logging.error(e)
         raise mc.CadcException(
@@ -383,16 +347,19 @@ def get_time_crval(header):
     :param header: The FITS header for the current extension.
     :return: The Time reference value, or None if none found.
     """
-    dateobs = header.get('DATE-OBS')
-    timeobs = header.get('TIME-OBS')
-    if not dateobs and not timeobs:
+    date_obs = header.get('DATE-OBS')
+    time_obs = header.get('TIME-OBS')
+    if not date_obs and not time_obs:
         return None
-    return ac.get_datetime('{}T{}'.format(dateobs, timeobs))
+    return ac.get_datetime('{}T{}'.format(date_obs, time_obs))
 
 
 def get_calibration_level(header):
-    # TODO
-    return CalibrationLevel.RAW_STANDARD
+    reduction = em.om.get('reduction')
+    result = CalibrationLevel.RAW_STANDARD
+    if reduction is not None and 'PROCESSED_SCIENCE' in reduction:
+        result = CalibrationLevel.CALIBRATED
+    return result
 
 
 def get_art_product_type(header):
@@ -435,8 +402,7 @@ def get_data_product_type(header):
     :param header:  The FITS header for the current extension.
     :return: The Plane DataProductType, or None if not found.
     """
-    global obs_metadata
-    mode = mc.response_lookup(obs_metadata, 'mode')
+    mode = em.om.get('mode')
     obs_type = _get_obs_type(header)
     if ((mode is not None and mode == 'imaging') or
             (obs_type is not None and obs_type == 'MASK')):
@@ -456,6 +422,19 @@ def get_exposure(header):
     return header.get('EXPTIME')
 
 
+def get_meta_release(header):
+    """
+    Determine the metadata release date (Observation and Plane-level).
+
+    :param header:  The FITS header for the current extension.
+    :return: The Observation/Plane release date, or None if not found.
+    """
+    meta_release = header.get('DATE-OBS')
+    if meta_release is None:
+        meta_release = em.om.get('release')
+    return meta_release
+
+
 def get_obs_intent(header):
     """
     Determine the Observation intent.
@@ -463,17 +442,26 @@ def get_obs_intent(header):
     :param header:  The FITS header for the current extension.
     :return: The Observation intent, or None if not found.
     """
+    result = ObservationIntentType.CALIBRATION
+    cal_values = ['GCALflat', 'Bias', 'BIAS', 'Twilight', 'Ar', 'FLAT', 'ARC']
     lookup = _get_obs_class(header)
     if lookup is None:
         object_value = header.get('OBJECT')
-        if object_value in ['GCALflat', 'Bias', 'Twilight', 'Ar']:
-            result = ObservationIntentType.CALIBRATION
-        else:
-            result = ObservationIntentType.SCIENCE
+        if object_value is not None:
+            instrument = header.get('INSTRUME')
+            if instrument is not None and instrument == 'GRACES':
+                obs_type = _get_obs_type(header)
+                if obs_type is not None and obs_type in cal_values:
+                    result = ObservationIntentType.CALIBRATION
+                else:
+                    result = ObservationIntentType.SCIENCE
+            else:
+                if object_value in cal_values:
+                    result = ObservationIntentType.CALIBRATION
+                else:
+                    result = ObservationIntentType.SCIENCE
     elif 'science' in lookup:
         result = ObservationIntentType.SCIENCE
-    else:
-        result = ObservationIntentType.CALIBRATION
     return result
 
 
@@ -486,7 +474,7 @@ def get_obs_type(header):
     """
     result = _get_obs_type(header)
     obs_class = _get_obs_class(header)
-    if obs_class is not None and 'acq' in obs_class:
+    if obs_class is not None and (obs_class == 'acq' or obs_class == 'acqCal'):
         result = 'ACQUISITION'
     return result
 
@@ -498,8 +486,7 @@ def get_target_type(header):
     :param header:  The FITS header for the current extension.
     :return: The Target TargetType, or None if not found.
     """
-    global obs_metadata
-    spectroscopy = mc.response_lookup(obs_metadata, 'spectroscopy')
+    spectroscopy = em.om.get('spectroscopy')
     if spectroscopy:
         return TargetType.OBJECT
     else:
@@ -512,8 +499,7 @@ def _get_obs_class(header):
     metadata."""
     obs_class = header.get('OBSCLASS')
     if obs_class is None:
-        global obs_metadata
-        obs_class = obs_metadata['observation_class']
+        obs_class = em.om.get('observation_class')
     return obs_class
 
 
@@ -523,29 +509,34 @@ def _get_obs_type(header):
     metadata."""
     obs_type = header.get('OBSTYPE')
     if obs_type is None:
-        global obs_metadata
-        obs_type = obs_metadata['observation_type']
+        obs_type = em.om.get('observation_type')
     return obs_type
 
 
-def accumulate_fits_bp(bp, uri, obs_id, file_id):
+def accumulate_fits_bp(bp, obs_id, file_id):
     """Configure the telescope-specific ObsBlueprint at the CAOM model 
     Observation level."""
     logging.debug('Begin accumulate_fits_bp.')
+    em.get_obs_metadata(file_id)
 
     bp.set('Observation.intent', 'get_obs_intent(header)')
     bp.set('Observation.type', 'get_obs_type(header)')
-
-    bp.clear('Observation.metaRelease')
-    bp.add_fits_attribute('Observation.metaRelease', 'DATE-OBS')
-
+    bp.set('Observation.metaRelease', 'get_meta_release(header)')
     bp.set('Observation.target.type', 'get_target_type(header)')
+    # GRACES has entries with RUNID set to non-proposal ID values
+    # so clear the default FITS value lookup
+    bp.clear('Observation.proposal.id')
 
     bp.set('Plane.dataProductType', 'get_data_product_type(header)')
     bp.set('Plane.calibrationLevel', 'get_calibration_level(header)')
+    bp.set('Plane.metaRelease', 'get_meta_release(header)')
 
-    bp.clear('Plane.metaRelease')
-    bp.add_fits_attribute('Plane.metaRelease', 'DATE-OBS')
+    bp.set('Plane.provenance.name', 'Gemini Observatory Data')
+    bp.set('Plane.provenance.project', 'Gemini Archive')
+    bp.add_fits_attribute('Plane.provenance.producer', 'IMAGESWV')
+    bp.set_default('Plane.provenance.producer', 'Gemini Observatory')
+    bp.set('Plane.provenance.reference',
+           'http://archive.gemini.edu/searchform/{}'.format(obs_id))
 
     bp.set('Artifact.productType', 'get_art_product_type(header)')
 
@@ -581,60 +572,106 @@ def update(observation, **kwargs):
     logging.error('Begin update.')
     mc.check_param(observation, Observation)
 
+    headers = None
+    if 'headers' in kwargs:
+        headers = kwargs['headers']
+
+    for p in observation.planes:
+        mode = observation.planes[p].data_product_type
+        for a in observation.planes[p].artifacts:
+            for part in observation.planes[p].artifacts[a].parts:
+                for c in observation.planes[p].artifacts[a].parts[part].chunks:
+                    if observation.instrument.name == 'NIRI':
+                        _update_chunk_energy(c, mode, headers)
+
+                    if (observation.instrument.name == 'GRACES' and
+                            mode == DataProductType.SPECTRUM):
+                        _update_chunk_position(c)
+    logging.error('Done update.')
+    return True
+
+
+def _update_chunk_energy(chunk, mode, headers):
+    """Check that position information has been set appropriately for
+    spectra. Guidance given is it must be a bounds."""
+    logging.debug('Begin _update_chunk_position')
+    mc.check_param(chunk, Chunk)
+
     # No energy information is determined for darks.  The
     # latter are sometimes only identified by a 'blank' filter.  e.g.
     # NIRI 'flats' are sometimes obtained with the filter wheel blocked off.
-    if observation.instrument.name == 'NIRI':
-        for p in observation.planes:
-            mode = p.dataProductType
-            for a in observation.planes[p].artifacts:
-                for part in observation.planes[p].artifacts[a].parts:
-                    for chunk in observation.planes[p].artifacts[a].parts[part]:
-                        bandpass_name = chunk.energy.bandpass_name
-                        if 'blank' in bandpass_name:
-                            chunk.energy = None
-                        else:
-                            cval = 0.0
-                            delta = 0.0
-                            resolving_power = 0.0
-                            filter_md = filter_metadata(
-                                obs_metadata['instrument'], bandpass_name)
-                            if mode == 'imaging':
-                                delta = filter_md['wl_eff_width']
-                                cval = filter_md['wl_eff']
-                                resolving_power = cval/delta
-                                cval /= 1.0e10
-                                delta /= 1.0e10
-                            # elif obs_metadata['mode'] in ('LS', 'spectroscopy'):
-                            #    # this code has to be rewritten for NIRI!!!
-                            #    reference_wavelength = obs_metadata['central_wavelength']
-                            #    nrgdim = int(niri_metadata['naxis2']/bin_y)
 
-                            #    # Ignore energy information if value of 'central_wavelength' = 0.0
-                            #    if reference_wavelength == 0.0 \
-                            #            or obs_metadata['observation_type'] == 'BIAS':
-                            #        metadata['energy'] = False
-                            #        return metadata
+    bandpass_name = chunk.energy.bandpass_name
+    if 'blank' in bandpass_name:
+        chunk.energy = None
+    else:
+        cval = 0.0
+        delta = 0.0
+        resolving_power = 0.0
+        filter_md = filter_metadata(
+            em.om.get('instrument'), bandpass_name)
+        if mode == 'imaging':
+            delta = filter_md['wl_eff_width']
+            cval = filter_md['wl_eff']
+            resolving_power = cval/delta
+            cval /= 1.0e10
+            delta /= 1.0e10
+        # elif obs_metadata['mode'] in ('LS', 'spectroscopy'):
+        #    # this code has to be rewritten for NIRI!!!
+        #    reference_wavelength = obs_metadata['central_wavelength']
+        #    nrgdim = int(niri_metadata['naxis2']/bin_y)
 
-                            #   if 'focus' in fpmask:
-                            #       obstype = 'FOCUS'
-                            #    resolving_power = NIRI_RESOLVING_POWER[bandpassname][fpmask]
-                            #    delta = filter_md['wl_eff_width']/metadata['naxis1']
-                            #    reference_wavelength /= 1.0e6
-                            #    delta /= 1.0e10
+        #    # Ignore energy information if value of 'central_wavelength' = 0.0
+        #    if reference_wavelength == 0.0 \
+        #            or obs_metadata['observation_type'] == 'BIAS':
+        #        metadata['energy'] = False
+        #        return metadata
 
-                            chunk.energy.resolvingPower = resolving_power
-                            chunk.energy.specsys = 'TOPOCENT'
-                            chunk.energy.ssysobs = 'TOPOCENT'
-                            chunk.energy.ssyssrc = 'TOPOCENT'
-                            chunk.energy.axis.axis.ctype = 'WAVE'
-                            chunk.energy.axis.function.naxis = 1024
-                            chunk.energy.axis.function.delta = delta
-                            chunk.energy.axis.function.refCoord.pix = 512.0
-                            chunk.energy.axis.function.refCoord.val = cval
+        #   if 'focus' in fpmask:
+        #       obstype = 'FOCUS'
+        #    resolving_power = NIRI_RESOLVING_POWER[bandpassname][fpmask]
+        #    delta = filter_md['wl_eff_width']/metadata['naxis1']
+        #    reference_wavelength /= 1.0e6
+        #    delta /= 1.0e10
 
-    logging.error('Done update.')
-    return True
+        chunk.energy.resolvingPower = resolving_power
+        chunk.energy.specsys = 'TOPOCENT'
+        chunk.energy.ssysobs = 'TOPOCENT'
+        chunk.energy.ssyssrc = 'TOPOCENT'
+        chunk.energy.axis.axis.ctype = 'WAVE'
+        chunk.energy.axis.function.naxis = 1024
+        chunk.energy.axis.function.delta = delta
+        chunk.energy.axis.function.refCoord.pix = 512.0
+        chunk.energy.axis.function.refCoord.val = cval
+
+
+def _update_chunk_position(chunk):
+    """Check that position information has been set appropriately for
+    GRACES spectra. Guidance given from DB, Jan 18/19 is it must be a
+    bounds."""
+
+    logging.debug('Begin _update_chunk_position')
+    mc.check_param(chunk, Chunk)
+
+    ra = em.om.get('ra')
+    dec = em.om.get('dec')
+
+    if ra is not None and dec is not None:
+        axis1 = Axis(ctype='RA---TAN', cunit=None)
+        axis2 = Axis(ctype='DEC--TAN', cunit=None)
+        polygon = CoordPolygon2D()
+        # radius = 5.0 degrees, said DB in test data list of Jan 18/19
+        for x, y in ([0, 1], [1, 1], [1, 0], [0, 0]):
+            ra_pt = ra - 5.0*(0.5-float(x))
+            dec_pt = dec - 5.0*(0.5-float(y))
+            polygon.vertices.append(ValueCoord2D(ra_pt, dec_pt))
+        polygon.vertices.append(ValueCoord2D(ra, dec))
+        axis = CoordAxis2D(axis1=axis1, axis2=axis2,
+                           error1=None, error2=None,
+                           range=None, bounds=polygon, function=None)
+        chunk.position = SpatialWCS(axis)
+
+    logging.debug('End _update_chunk_position')
 
 
 def _build_blueprints(uris, obs_id, file_id):
@@ -654,7 +691,8 @@ def _build_blueprints(uris, obs_id, file_id):
     for uri in uris:
         blueprint = ObsBlueprint(module=module)
         if not GemName.is_preview(uri):
-            accumulate_fits_bp(blueprint, uri, obs_id, file_id)
+            logging.info('Building blueprint for {}'.format(uri))
+            accumulate_fits_bp(blueprint, obs_id, file_id)
         blueprints[uri] = blueprint
     return blueprints
 
@@ -677,7 +715,10 @@ def _get_uris(args):
 
 def _get_obs_id(args):
     result = None
-    if args.lineage:
+    if args.in_obs_xml:
+        temp = args.in_obs_xml.name.split('/')
+        result = temp[-1].split('.')[0]
+    elif args.lineage:
         for lineage in args.lineage:
             temp = lineage.split('/', 1)
             if temp[1].endswith('.jpg'):

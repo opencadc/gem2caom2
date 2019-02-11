@@ -1,6 +1,6 @@
-Filename: N20150807G0044m.fits.bz2
+Filename: N20150807G0044.fits.bz2
 
-AstroData Types: ['GRACES', 'SPECT', 'PROCESSED_SCIENCE', 'RAW', 'UNPREPARED']
+AstroData Types: ['GRACES', 'SPECT', 'RAW', 'UNPREPARED']
 
 
 --- HDU 0 ---
@@ -32,6 +32,7 @@ PIXSIZE =                 13.5 / Pixel size for both axes (microns)
 AMPLIST = 'a       '           / List of amplifiers for this image              
 CCDSIZE = '[1:2048,1:4608]'    / Detector imaging area size                     
 CCDSEC  = '[1:2048,1:4608]'    / Read out area of the detector (unbinned)       
+DATASEC = '[1:2048,1:4608]'    / Imaging area of the detector                   
 BIASSEC = '[2049:2080,1:4608]' / Overscan (bias) area of the detector           
 MAXLIN  =                65535 / Maximum linearity value (ADU)                  
 SATURATE=                65535 / Saturation value (ADU)                         
@@ -87,83 +88,17 @@ MJDATE  = '57241.340'          /Modified Julian Date at start of observation
 INSTMODE= 'Spectroscopy, star only' /Observing mode                             
 RELEASE = '2017-02-07'         /End of proprietary period YYYY-MM-DD            
 DATALAB = 'GN-2015B-Q-1-12-1003' /DHS data label                                
-COMMENT ----------------------------------------------------                    
-COMMENT | Processed by the CFHT OPERA Open Source Pipeline |                    
-COMMENT ----------------------------------------------------                    
-COMMENT opera-1.0.1225 build date Wed Feb 17 10:15:01 HST 2016                  
-COMMENT Processing Date                                                         
-COMMENT ---------------                                                         
-COMMENT Tue Sep 20 03:59:29 HST 2016                                            
-COMMENT ------------------------------------------------------------------------
-COMMENT 21                                                                      
-SNR22   = '136.31 / 163.82'    / snr per spectral / ccd bin                     
-SNR23   = '259.16 / 311.47'    / snr per spectral / ccd bin                     
-SNR24   = '303.96 / 365.32'    / snr per spectral / ccd bin                     
-SNR25   = '424.06 / 509.66'    / snr per spectral / ccd bin                     
-SNR26   = '448.8 / 539.4'      / snr per spectral / ccd bin                     
-SNR27   = '472.77 / 568.21'    / snr per spectral / ccd bin                     
-SNR28   = '453.59 / 545.15'    / snr per spectral / ccd bin                     
-SNR29   = '472 / 567.28'       / snr per spectral / ccd bin                     
-SNR30   = '475.06 / 570.96'    / snr per spectral / ccd bin                     
-SNR31   = '464.4 / 558.14'     / snr per spectral / ccd bin                     
-SNR32   = '455.63 / 547.6'     / snr per spectral / ccd bin                     
-SNR33   = '419.21 / 503.83'    / snr per spectral / ccd bin                     
-SNR34   = '417.14 / 501.34'    / snr per spectral / ccd bin                     
-SNR35   = '390.44 / 469.25'    / snr per spectral / ccd bin                     
-SNR36   = '362 / 435.07'       / snr per spectral / ccd bin                     
-SNR37   = '347.16 / 417.23'    / snr per spectral / ccd bin                     
-SNR38   = '314.19 / 377.61'    / snr per spectral / ccd bin                     
-SNR39   = '295.91 / 355.64'    / snr per spectral / ccd bin                     
-SNR40   = '283.37 / 340.57'    / snr per spectral / ccd bin                     
-SNR41   = '269.87 / 324.35'    / snr per spectral / ccd bin                     
-SNR42   = '253.37 / 304.51'    / snr per spectral / ccd bin                     
-SNR43   = '240.33 / 288.84'    / snr per spectral / ccd bin                     
-SNR44   = '212.91 / 255.89'    / snr per spectral / ccd bin                     
-SNR45   = '204.64 / 245.94'    / snr per spectral / ccd bin                     
-SNR46   = '192.23 / 231.03'    / snr per spectral / ccd bin                     
-SNR47   = '174.57 / 209.81'    / snr per spectral / ccd bin                     
-SNR48   = '153.77 / 184.81'    / snr per spectral / ccd bin                     
-SNR49   = '135.67 / 163.05'    / snr per spectral / ccd bin                     
-SNR50   = '115.18 / 138.43'    / snr per spectral / ccd bin                     
-SNR51   = '91.341 / 109.78'    / snr per spectral / ccd bin                     
-SNR52   = '72.252 / 86.837'    / snr per spectral / ccd bin                     
-SNR53   = '52.592 / 63.208'    / snr per spectral / ccd bin                     
-SNR54   = '45.054 / 54.149'    / snr per spectral / ccd bin                     
-SNR55   = '34.205 / 41.109'    / snr per spectral / ccd bin                     
-SNR56   = '24.011 / 28.858'    / snr per spectral / ccd bin                     
-HRV     =             -1.81252 / Heliocentric RV correction (km/s)              
-HRVLUNAR=           0.00930156 / lunar component of HRV correction (km/s)       
-HRVORBIT=             -1.93523 / orbital component of HRV correction (km/s)     
-HRVDIURN=             0.113407 / diurnal component of HRV correction (km/s)     
-HJDUTC  =       2457241.845095 / Heliocentric Julian date (UTC) mid-exposure    
-HJDTT   =       2457241.845884 / Heliocentric Julian date (TT) mid-exposure     
-TELLRV  =             0.043537 / telluric RV correction (km/s)                  
-TELLERR =             0.348319 / telluric RV correction error (km/s)            
-REDUCTIO= 'Intensity'          / Type of reduction                              
-COMMENT File contains data used to create Libre-Esprit compatible spectra.      
-COL1    = 'Order   '           / Order number                                   
-COL2    = 'NElements'          / Number of elements in order                    
-COL3    = 'NBeams  '           / Number of beams                                
-COL4    = 'ElementIndex'       / Index of this element                          
-COL5    = 'Wavelength'         / Uncorrected wavelength (nm)                    
-COL6    = 'Tell    '           / Wavelength w/ telluric correction applied (nm) 
-COL7    = 'RVel    '           / Heliocentric wavelength correction (nm)        
-COL8    = 'XCorr   '           / Cross-correlation                              
-COL9    = 'RawFlux '           / Raw flux (electron)                            
-COL10   = 'RawFluxVar'         / Raw flux variance (electron)                   
-COL11   = 'NormalizedFlux'     / Normalized flux                                
-COL12   = 'NormalizedFluxVar'  / Normalized flux variance                       
-COL13   = 'FcalFlux'           / UnNormalized flux (electron)                   
-COL14   = 'FcalFluxVar'        / UnNormalized flux variance (electron)          
 
 --- HDU 1 ---
 XTENSION= 'IMAGE   '           / Image extension                                
-BITPIX  =                  -32 / array data type                                
+BITPIX  =                   16 / array data type                                
 NAXIS   =                    2 / number of array dimensions                     
-NAXIS1  =               194467                                                  
-NAXIS2  =                   14                                                  
+NAXIS1  =                 2080                                                  
+NAXIS2  =                 4640                                                  
 PCOUNT  =                    0 / number of parameters                           
 GCOUNT  =                    1 / number of groups                               
+BSCALE  =                    1                                                  
+BZERO   =                32768                                                  
 EXTNAME = 'SCI     '           / ad4549: added by AstroData                     
 EXTVER  =                    1                                                  
 INHERIT =                    F / No need to inherit global keywords             
@@ -190,6 +125,7 @@ PIXSIZE =                 13.5 / Pixel size for both axes (microns)
 AMPLIST = 'a       '           / List of amplifiers for this image              
 CCDSIZE = '[1:2048,1:4608]'    / Detector imaging area size                     
 CCDSEC  = '[1:2048,1:4608]'    / Read out area of the detector (unbinned)       
+DATASEC = '[1:2048,1:4608]'    / Imaging area of the detector                   
 BIASSEC = '[2049:2080,1:4608]' / Overscan (bias) area of the detector           
 MAXLIN  =                65535 / Maximum linearity value (ADU)                  
 SATURATE=                65535 / Saturation value (ADU)                         
@@ -245,71 +181,3 @@ MJDATE  = '57241.340'          /Modified Julian Date at start of observation
 INSTMODE= 'Spectroscopy, star only' /Observing mode                             
 RELEASE = '2017-02-07'         /End of proprietary period YYYY-MM-DD            
 DATALAB = 'GN-2015B-Q-1-12-1003' /DHS data label                                
-COMMENT ----------------------------------------------------                    
-COMMENT | Processed by the CFHT OPERA Open Source Pipeline |                    
-COMMENT ----------------------------------------------------                    
-COMMENT opera-1.0.1225 build date Wed Feb 17 10:15:01 HST 2016                  
-COMMENT Processing Date                                                         
-COMMENT ---------------                                                         
-COMMENT Tue Sep 20 03:59:29 HST 2016                                            
-COMMENT ------------------------------------------------------------------------
-COMMENT 21                                                                      
-SNR22   = '136.31 / 163.82'    / snr per spectral / ccd bin                     
-SNR23   = '259.16 / 311.47'    / snr per spectral / ccd bin                     
-SNR24   = '303.96 / 365.32'    / snr per spectral / ccd bin                     
-SNR25   = '424.06 / 509.66'    / snr per spectral / ccd bin                     
-SNR26   = '448.8 / 539.4'      / snr per spectral / ccd bin                     
-SNR27   = '472.77 / 568.21'    / snr per spectral / ccd bin                     
-SNR28   = '453.59 / 545.15'    / snr per spectral / ccd bin                     
-SNR29   = '472 / 567.28'       / snr per spectral / ccd bin                     
-SNR30   = '475.06 / 570.96'    / snr per spectral / ccd bin                     
-SNR31   = '464.4 / 558.14'     / snr per spectral / ccd bin                     
-SNR32   = '455.63 / 547.6'     / snr per spectral / ccd bin                     
-SNR33   = '419.21 / 503.83'    / snr per spectral / ccd bin                     
-SNR34   = '417.14 / 501.34'    / snr per spectral / ccd bin                     
-SNR35   = '390.44 / 469.25'    / snr per spectral / ccd bin                     
-SNR36   = '362 / 435.07'       / snr per spectral / ccd bin                     
-SNR37   = '347.16 / 417.23'    / snr per spectral / ccd bin                     
-SNR38   = '314.19 / 377.61'    / snr per spectral / ccd bin                     
-SNR39   = '295.91 / 355.64'    / snr per spectral / ccd bin                     
-SNR40   = '283.37 / 340.57'    / snr per spectral / ccd bin                     
-SNR41   = '269.87 / 324.35'    / snr per spectral / ccd bin                     
-SNR42   = '253.37 / 304.51'    / snr per spectral / ccd bin                     
-SNR43   = '240.33 / 288.84'    / snr per spectral / ccd bin                     
-SNR44   = '212.91 / 255.89'    / snr per spectral / ccd bin                     
-SNR45   = '204.64 / 245.94'    / snr per spectral / ccd bin                     
-SNR46   = '192.23 / 231.03'    / snr per spectral / ccd bin                     
-SNR47   = '174.57 / 209.81'    / snr per spectral / ccd bin                     
-SNR48   = '153.77 / 184.81'    / snr per spectral / ccd bin                     
-SNR49   = '135.67 / 163.05'    / snr per spectral / ccd bin                     
-SNR50   = '115.18 / 138.43'    / snr per spectral / ccd bin                     
-SNR51   = '91.341 / 109.78'    / snr per spectral / ccd bin                     
-SNR52   = '72.252 / 86.837'    / snr per spectral / ccd bin                     
-SNR53   = '52.592 / 63.208'    / snr per spectral / ccd bin                     
-SNR54   = '45.054 / 54.149'    / snr per spectral / ccd bin                     
-SNR55   = '34.205 / 41.109'    / snr per spectral / ccd bin                     
-SNR56   = '24.011 / 28.858'    / snr per spectral / ccd bin                     
-HRV     =             -1.81252 / Heliocentric RV correction (km/s)              
-HRVLUNAR=           0.00930156 / lunar component of HRV correction (km/s)       
-HRVORBIT=             -1.93523 / orbital component of HRV correction (km/s)     
-HRVDIURN=             0.113407 / diurnal component of HRV correction (km/s)     
-HJDUTC  =       2457241.845095 / Heliocentric Julian date (UTC) mid-exposure    
-HJDTT   =       2457241.845884 / Heliocentric Julian date (TT) mid-exposure     
-TELLRV  =             0.043537 / telluric RV correction (km/s)                  
-TELLERR =             0.348319 / telluric RV correction error (km/s)            
-REDUCTIO= 'Intensity'          / Type of reduction                              
-COMMENT File contains data used to create Libre-Esprit compatible spectra.      
-COL1    = 'Order   '           / Order number                                   
-COL2    = 'NElements'          / Number of elements in order                    
-COL3    = 'NBeams  '           / Number of beams                                
-COL4    = 'ElementIndex'       / Index of this element                          
-COL5    = 'Wavelength'         / Uncorrected wavelength (nm)                    
-COL6    = 'Tell    '           / Wavelength w/ telluric correction applied (nm) 
-COL7    = 'RVel    '           / Heliocentric wavelength correction (nm)        
-COL8    = 'XCorr   '           / Cross-correlation                              
-COL9    = 'RawFlux '           / Raw flux (electron)                            
-COL10   = 'RawFluxVar'         / Raw flux variance (electron)                   
-COL11   = 'NormalizedFlux'     / Normalized flux                                
-COL12   = 'NormalizedFluxVar'  / Normalized flux variance                       
-COL13   = 'FcalFlux'           / UnNormalized flux (electron)                   
-COL14   = 'FcalFluxVar'        / UnNormalized flux variance (electron)          

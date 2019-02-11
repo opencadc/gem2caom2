@@ -3,7 +3,7 @@
 # ******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
 # *************  CENTRE CANADIEN DE DONNÉES ASTRONOMIQUES  **************
 #
-#  (c) 2018.                            (c) 2018.
+#  (c) 2019.                            (c) 2019.
 #  Government of Canada                 Gouvernement du Canada
 #  National Research Council            Conseil national de recherches
 #  Ottawa, Canada, K1A 0R6              Ottawa, Canada, K1A 0R6
@@ -66,40 +66,39 @@
 #
 # ***********************************************************************
 #
-from mock import patch
 
-from gem2caom2 import GemName, SCHEME, ARCHIVE
+import logging
 
-
-# @patch('gem2caom2.GemName._get_obs_id')
-# def test_is_valid(mock_obs_id):
-def test_is_valid():
-    mock_obs_id = 'GN-2013B-Q-28-150-002'
-    assert GemName(file_name='anything.fits',
-                   obs_id=mock_obs_id).is_valid()
-    assert GemName(file_name='anything.jpg',
-                   obs_id=mock_obs_id).is_valid()
+from caom2pipe import manage_composable as mc
 
 
-# @patch('gem2caom2.GemName._get_obs_id')
-# def test_storage_name(mock_obs_id):
-def test_storage_name():
-    mock_obs_id = 'GN-2013B-Q-28-150-002'
-    test_sn = GemName(file_name='N20131203S0006i.fits.gz',
-                      obs_id=mock_obs_id)
-    assert test_sn.file_uri == '{}:{}/N20131203S0006i.fits'.format(SCHEME,
-                                                                   ARCHIVE)
-    assert test_sn.file_name == 'N20131203S0006i.fits'
-    assert test_sn.prev == 'N20131203S0006i.jpg'
-    assert test_sn.thumb == 'N20131203S0006i_th.jpg'
-    assert test_sn.compressed_file_name is None
-    assert test_sn.get_file_id(test_sn.file_name) == 'N20131203S0006i'
+class GeminiObsMetadata(object):
+    """A place to hold access to output from a jsonsummary
+    query."""
 
-    test_sn = GemName(file_name='S20060920S0137.jpg',
-                      obs_id=mock_obs_id)
-    assert test_sn.file_uri == '{}:{}/S20060920S0137.jpg'.format(SCHEME,
-                                                                 ARCHIVE)
-    assert test_sn.file_name == 'S20060920S0137.jpg'
-    assert test_sn.prev == 'S20060920S0137.jpg'
-    assert test_sn.thumb == 'S20060920S0137_th.jpg'
-    assert test_sn.compressed_file_name is None
+    def __init__(self, metadata, file_id):
+        self.obs_metadata = metadata
+        self.index = self._get_index(file_id)
+
+    def get(self, lookup):
+        return mc.response_lookup(self.obs_metadata[self.index], lookup)
+
+    def reset_index(self, file_id):
+        self.index = self._get_index(file_id)
+
+    def _get_index(self, file_id):
+        result = -1
+        for index, value in enumerate(self.obs_metadata):
+            indexed_fname = mc.response_lookup(value, 'filename')
+            if indexed_fname is not None:
+                temp = indexed_fname.split('.')[0]
+                logging.error('checking value of {} for file_id {}'.format(temp, file_id))
+                if temp == file_id:
+                    result = index
+                    break
+        if result == -1:
+            # TODO - set obs id?
+            raise mc.CadcException(
+                'Unrecognized file_id {} in obs_id {}'.format(
+                    file_id, ''))
+        return result

@@ -1,4 +1,4 @@
-Filename: N20150807G0044m.fits.bz2
+Filename: N20150807G0044i.fits.bz2
 
 AstroData Types: ['GRACES', 'SPECT', 'PROCESSED_SCIENCE', 'RAW', 'UNPREPARED']
 
@@ -93,7 +93,7 @@ COMMENT ----------------------------------------------------
 COMMENT opera-1.0.1225 build date Wed Feb 17 10:15:01 HST 2016                  
 COMMENT Processing Date                                                         
 COMMENT ---------------                                                         
-COMMENT Tue Sep 20 03:59:29 HST 2016                                            
+COMMENT Tue Sep 20 03:59:24 HST 2016                                            
 COMMENT ------------------------------------------------------------------------
 COMMENT 21                                                                      
 SNR22   = '136.31 / 163.82'    / snr per spectral / ccd bin                     
@@ -140,28 +140,27 @@ HJDTT   =       2457241.845884 / Heliocentric Julian date (TT) mid-exposure
 TELLRV  =             0.043537 / telluric RV correction (km/s)                  
 TELLERR =             0.348319 / telluric RV correction error (km/s)            
 REDUCTIO= 'Intensity'          / Type of reduction                              
-COMMENT File contains data used to create Libre-Esprit compatible spectra.      
-COL1    = 'Order   '           / Order number                                   
-COL2    = 'NElements'          / Number of elements in order                    
-COL3    = 'NBeams  '           / Number of beams                                
-COL4    = 'ElementIndex'       / Index of this element                          
-COL5    = 'Wavelength'         / Uncorrected wavelength (nm)                    
-COL6    = 'Tell    '           / Wavelength w/ telluric correction applied (nm) 
-COL7    = 'RVel    '           / Heliocentric wavelength correction (nm)        
-COL8    = 'XCorr   '           / Cross-correlation                              
-COL9    = 'RawFlux '           / Raw flux (electron)                            
-COL10   = 'RawFluxVar'         / Raw flux variance (electron)                   
-COL11   = 'NormalizedFlux'     / Normalized flux                                
-COL12   = 'NormalizedFluxVar'  / Normalized flux variance                       
-COL13   = 'FcalFlux'           / UnNormalized flux (electron)                   
-COL14   = 'FcalFluxVar'        / UnNormalized flux variance (electron)          
+NORMAL  = '2       '           / Normalized and Un-normalized Data              
+COMMENT File contains automatic wavelength correction and uncorrected data.     
+COL1    = 'Wavelength'         / Normalized                                     
+COL2    = 'Intensity'          / Normalized                                     
+COL3    = 'ErrorBar'           / Normalized                                     
+COL4    = 'Wavelength'         / UnNormalized                                   
+COL5    = 'Intensity'          / UnNormalized                                   
+COL6    = 'ErrorBar'           / UnNormalized                                   
+COL7    = 'Wavelength'         / Normalized, no autowave correction             
+COL8    = 'Intensity'          / Normalized, no autowave correction             
+COL9    = 'ErrorBar'           / Normalized, no autowave correction             
+COL10   = 'Wavelength'         / UnNormalized, no autowave correction           
+COL11   = 'Intensity'          / UnNormalized, no autowave correction           
+COL12   = 'ErrorBar'           / UnNormalized, no autowave correction           
 
 --- HDU 1 ---
 XTENSION= 'IMAGE   '           / Image extension                                
 BITPIX  =                  -32 / array data type                                
 NAXIS   =                    2 / number of array dimensions                     
 NAXIS1  =               194467                                                  
-NAXIS2  =                   14                                                  
+NAXIS2  =                   12                                                  
 PCOUNT  =                    0 / number of parameters                           
 GCOUNT  =                    1 / number of groups                               
 EXTNAME = 'SCI     '           / ad4549: added by AstroData                     
@@ -251,7 +250,7 @@ COMMENT ----------------------------------------------------
 COMMENT opera-1.0.1225 build date Wed Feb 17 10:15:01 HST 2016                  
 COMMENT Processing Date                                                         
 COMMENT ---------------                                                         
-COMMENT Tue Sep 20 03:59:29 HST 2016                                            
+COMMENT Tue Sep 20 03:59:24 HST 2016                                            
 COMMENT ------------------------------------------------------------------------
 COMMENT 21                                                                      
 SNR22   = '136.31 / 163.82'    / snr per spectral / ccd bin                     
@@ -298,18 +297,17 @@ HJDTT   =       2457241.845884 / Heliocentric Julian date (TT) mid-exposure
 TELLRV  =             0.043537 / telluric RV correction (km/s)                  
 TELLERR =             0.348319 / telluric RV correction error (km/s)            
 REDUCTIO= 'Intensity'          / Type of reduction                              
-COMMENT File contains data used to create Libre-Esprit compatible spectra.      
-COL1    = 'Order   '           / Order number                                   
-COL2    = 'NElements'          / Number of elements in order                    
-COL3    = 'NBeams  '           / Number of beams                                
-COL4    = 'ElementIndex'       / Index of this element                          
-COL5    = 'Wavelength'         / Uncorrected wavelength (nm)                    
-COL6    = 'Tell    '           / Wavelength w/ telluric correction applied (nm) 
-COL7    = 'RVel    '           / Heliocentric wavelength correction (nm)        
-COL8    = 'XCorr   '           / Cross-correlation                              
-COL9    = 'RawFlux '           / Raw flux (electron)                            
-COL10   = 'RawFluxVar'         / Raw flux variance (electron)                   
-COL11   = 'NormalizedFlux'     / Normalized flux                                
-COL12   = 'NormalizedFluxVar'  / Normalized flux variance                       
-COL13   = 'FcalFlux'           / UnNormalized flux (electron)                   
-COL14   = 'FcalFluxVar'        / UnNormalized flux variance (electron)          
+NORMAL  = '2       '           / Normalized and Un-normalized Data              
+COMMENT File contains automatic wavelength correction and uncorrected data.     
+COL1    = 'Wavelength'         / Normalized                                     
+COL2    = 'Intensity'          / Normalized                                     
+COL3    = 'ErrorBar'           / Normalized                                     
+COL4    = 'Wavelength'         / UnNormalized                                   
+COL5    = 'Intensity'          / UnNormalized                                   
+COL6    = 'ErrorBar'           / UnNormalized                                   
+COL7    = 'Wavelength'         / Normalized, no autowave correction             
+COL8    = 'Intensity'          / Normalized, no autowave correction             
+COL9    = 'ErrorBar'           / Normalized, no autowave correction             
+COL10   = 'Wavelength'         / UnNormalized, no autowave correction           
+COL11   = 'Intensity'          / UnNormalized, no autowave correction           
+COL12   = 'ErrorBar'           / UnNormalized, no autowave correction           
