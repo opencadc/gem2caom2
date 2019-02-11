@@ -77,6 +77,8 @@ from urllib3 import Retry
 import caom2
 from caom2pipe import manage_composable as mc
 from gem2caom2.svofps import filter_metadata
+from gem2caom2 import gemini_obs_metadata as gom
+
 
 GEMINI_METADATA_URL = \
     'https://archive.gemini.edu/jsonsummary/canonical/filepre='
@@ -104,20 +106,124 @@ GMOS_DISPERSION = {
     'R150': 1.835
 }
 
+# NIRI_RESOLVING_POWER = {
+#     'J': {},
+#     'H': {},
+#     'L': {},
+#     'M': {},
+#     'K': {
+#         'f6-2pix': 1300.0,
+#         'f6-4pix': 780.0,
+#         'f6-6pix': 520.0
+#     }
+# }
+
+# values from
+# https://www.gemini.edu/sciops/instruments/niri/spectroscopy/grisms
 NIRI_RESOLVING_POWER = {
-    'J': {},
-    'H': {},
-    'L': {},
-    'M': {},
+    'J': {
+        'f6-2pix': 770.0,
+        'f6-4pix': 610.0,
+        'f6-6pix': 460.0,
+        'f6-2pixB1': 770.0,
+        'f6-4pixB1': 650.0,
+        'f6-6pixB1': 480.0,
+        'f32-4pix': 1000.0,
+        'f32-6pix': 620.0,  # f32-7pix
+        'f32-9pix': 450.0  # f32-10pix
+    },
+    'H': {
+        'f6-2pix': 1650.0,
+        'f6-4pix': 825.0,
+        'f6-6pix': 520.0,
+        'f6-2pixB1': 1650.0,
+        'f6-4pixB1': 940.0,
+        'f6-6pixB1': 550.0,
+        'f32-4pix': 880.0,
+        'f32-6pix': 630.0,  # f32-7pix
+        'f32-9pix': 500.0  # f32-10pix
+    },
+    'L': {
+        'f6-2pix': 1100.0,
+        'f6-4pix': 690.0,
+        'f6-6pix': 460.0,
+        'f6-2pixB1': 1100.0,
+        'f6-4pixB1': 770.0,
+        'f6-6pixB1': 490.0,
+    },
+    'M': {
+        'f6-2pix': 1100.0,
+        'f6-4pix': 770.0,
+        'f6-6pix': 460.0
+    },
     'K': {
         'f6-2pix': 1300.0,
         'f6-4pix': 780.0,
-        'f6-6pix': 520.0
+        'f6-6pix': 520.0,
+        'f32-4pix': 1280.0,
+        'f32-6pix': 775.0,  # f32-7pix
+        'f32-9pix': 570.0  # f32-10pix
     }
 }
 
+# select filter_id, wavelength_central, wavelength_lower, wavelength_upper
+# from gsa..gsa_filters where instrument = 'NICI'
+# 0 - central
+# 1 - lower
+# 2 - upper
+NICI = {'Br-gamma_G0711': [2.168600, 2.153900, 2.183300],
+        'CH4-H1%L_G0720': [1.628000, 1.619300, 1.636700],
+        'CH4-H1%L_G0732': [1.628000, 1.619300, 1.636700],
+        'CH4-H1%S_G0722': [1.587000, 1.579500, 1.594500],
+        'CH4-H1%S_G0724': [1.587000, 1.579500, 1.594500],
+        'CH4-H1%Sp_G0726': [1.603000, 1.594900, 1.611100],
+        'CH4-H1%Sp_G0728': [1.603000, 1.594900, 1.611100],
+        'CH4-H4%L_G0737': [1.652000, 1.619000, 1.685000],
+        'CH4-H4%L_G0740': [1.652000, 1.619000, 1.685000],
+        'CH4-H4%S_G0742': [1.578000, 1.547000, 1.609000],
+        'CH4-H4%S_G0743': [1.578000, 1.547000, 1.609000],
+        'CH4-H6.5%L_G0714': [1.701000, 1.652400, 1.749600],
+        'CH4-H6.5%S_G0713': [1.596000, 1.537250, 1.654750],
+        'CH4-K5%L_G0748': [2.241000, 2.187500, 2.294500],
+        'CH4-K5%S_G0746': [2.080000, 2.027500, 2.132500],
+        'FeII_G0712': [1.644000, 1.631670, 1.656330],
+        'H2-1-0-S1_G0709': [2.123900, 2.110800, 2.137000],
+        'H20-Ice-L_G0715': [3.090000, 3.020000, 3.150000],
+        'H_G0703': [1.650000, 1.490000, 1.780000],
+        'J_G0702': [1.250000, 1.150000, 1.330000],
+        'K_G0704': [2.200000, 2.030000, 2.360000],
+        'Kcont_G0710': [2.271800, 2.254194, 2.289406],
+        'Kprime_G0706': [2.120000, 1.950000, 2.300000],
+        'Ks_G0705': [2.150000, 1.990000, 2.300000],
+        'Lprime_G0707': [3.780000, 3.430000, 4.130000],
+        'Mprime_G0708': [4.680000, 4.550000, 4.790000]}
+
+PHOENIX = {'2030 (4)': [4.929000, 4.808000, 5.050000],
+           '2030 (9)': [4.929000, 4.808000, 5.050000],
+           '2150 (2)': [4.658500, 4.566000, 4.751000],
+           '2462 (5)': [4.078500, 4.008000, 4.149000],
+           '2734 (4)': [3.670500, 3.610000, 3.731000],
+           '2870 (7)': [3.490500, 3.436000, 3.545000],
+           '3010 (4)': [3.334500, 3.279000, 3.390000],
+           '3100 (11)': [3.240000, 3.180000, 3.300000],
+           '3290 (7)': [3.032500, 2.980000, 3.085000],
+           '4220 (5)': [2.370000, 2.348000, 2.392000],
+           '4308 (6)': [2.322500, 2.296000, 2.349000],
+           '4396 (8)': [2.272500, 2.249000, 2.296000],
+           '4484 (8)': [2.230000, 2.210000, 2.250000],
+           '4578 (6)': [2.185000, 2.160000, 2.210000],
+           '4667 (9)': [2.143000, 2.120000, 2.166000],
+           '4748 (11)': [2.104000, 2.082000, 2.126000],
+           '6073 (10)': [1.647000, 1.632000, 1.662000],
+           '6420 (12)': [1.557500, 1.547000, 1.568000],
+           '7799 (10)': [1.280500, 1.271000, 1.290000],
+           '8265 (13)': [1.204500, 1.196000, 1.213000],
+           '9232 (3)': [1.083000, 1.077000, 1.089000],
+           'L2870 (7)': [3.490500, 3.436000, 3.545000]}
+
 obs_metadata = {}
 om = None
+fm = {}
 
 
 def get_obs_metadata(file_id):
@@ -147,12 +253,27 @@ def get_obs_metadata(file_id):
         raise mc.CadcException(
             'Unable to download Gemini observation metadata from {} because {}'
                 .format(gemini_url, str(e)))
-    import gemini_obs_metadata as gom
     global obs_metadata
     obs_metadata = metadata
     global om
     om = gom.GeminiObsMetadata(metadata, file_id)
     logging.debug('End get_obs_metadata')
+
+
+def get_filter_metadata(instrument, filter_name):
+    """A way to lazily initialize all the filter metadata reads from SVO."""
+    global fm
+    if instrument in fm and filter_name in fm[instrument]:
+        logging.error('only checking once ...')
+        result = fm[instrument][filter_name]
+    else:
+        result = filter_metadata(instrument, filter_name)
+        if instrument in fm:
+            temp = fm[instrument]
+            temp[filter_name] = result
+        else:
+            fm[instrument] = {filter_name: result}
+    return result
 
 
 def gmos_metadata():
@@ -222,90 +343,4 @@ def gmos_metadata():
         metadata['energy'] = False
 
     logging.debug('End gmos_metadata')
-    return metadata
-
-
-def niri_metadata(filename):
-    """
-    Calculate NIRI energy metadata using the Gemini observation metadata.
-    Requires a filter lookup to an external service.
-
-    :param obs_metadata: Dictionary of observation metadata.
-    :return: Dictionary of energy metadata
-    """
-    logging.debug('Begin niri_metadata')
-    metadata = {
-        'energy': True,
-        'energy_band': NIRI_ENERGY_BAND
-    }
-
-    global obs_metadata
-    if obs_metadata['observation_type'] in 'DARK':
-        metadata['energy'] = False
-        return metadata
-
-    # Determine energy metadata for the plane.
-    # No energy information is determined for darks.  The
-    # latter are sometimes only identified by a 'blank' filter.  e.g.
-    # NIRI 'flats' are sometimes obtained with the filter wheel blocked off.
-    # headers = get_fits_headers(obs_metadata['filename'])
-    # header_filters = []
-    # filters2ignore = ['open', 'INVALID', 'PK50', 'pupil']
-    # for header in headers:
-    #     if 'FILTER' in header:
-    #         if any(x in header for x in filters2ignore):
-    #             continue
-    #         else:
-    #             filter = "".join(re.findall(r'\'(.+?)\'', header))
-    #             filter = filter.replace('_', '-').strip()
-    #             filter = ''.join('' if ch in '()' else ch for ch in filter)
-    #             header_filters.append(filter)
-    #     filters = "&".join(header_filters)
-
-    # if obs_metadata['observation_type'] in 'DARK' or 'blank' in filters:
-    #     metadata['energy'] = False
-    #     return metadata
-
-    # reference_wavelength = 0.0
-    # delta = 0.0
-    # resolving_power = 0.0
-    #
-    # filter_md = filter_metadata(obs_metadata['instrument'], filters)
-    # if obs_metadata['mode'] == 'imaging':
-    #
-    #     delta = filter_md['wl_eff_width']
-    #     reference_wavelength = filter_md['wl_eff']
-    #     resolving_power = reference_wavelength/delta
-    #     reference_wavelength /= 1.0e10
-    #     delta /= 1.0e10
-    # elif obs_metadata['mode'] in ('LS', 'spectroscopy'):
-    #    # this code has to be rewritten for NIRI!!!
-    #    reference_wavelength = obs_metadata['central_wavelength']
-    #    nrgdim = int(niri_metadata['naxis2']/bin_y)
-
-    #    # Ignore energy information if value of 'central_wavelength' = 0.0
-    #    if reference_wavelength == 0.0 \
-    #            or obs_metadata['observation_type'] == 'BIAS':
-    #        metadata['energy'] = False
-    #        return metadata
-
-    #   if 'focus' in fpmask:
-    #       obstype = 'FOCUS'
-    #    resolving_power = NIRI_RESOLVING_POWER[bandpassname][fpmask]
-    #    delta = filter_md['wl_eff_width']/metadata['naxis1']
-    #    reference_wavelength /= 1.0e6
-    #    delta /= 1.0e10
-
-    # filters = re.sub(r'&', ' & ', filters)
-    # filters = re.sub(r'-G.{4}(|w)', '', filters)
-    # metadata['filter_name'] = filters
-    # metadata['wavelength_type'] = 'WAVE'
-    # metadata['wavelength_unit'] = 'm'
-    # metadata['number_pixels'] = 1024
-    # metadata['reference_wavelength'] = reference_wavelength
-    # metadata['delta'] = delta
-    # metadata['resolving_power'] = resolving_power
-    # metadata['reference_pixel'] = 512.0
-
-    logging.debug('End niri_metadata')
     return metadata

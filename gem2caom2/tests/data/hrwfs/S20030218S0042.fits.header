@@ -1,0 +1,185 @@
+Filename: S20030218S0042.fits.bz2
+
+AstroData Types: ['HRWFS', 'GEMINI', 'SIDEREAL', 'GEMINI_SOUTH', 'RAW', 'UNPREPARED']
+
+
+--- HDU 0 ---
+SIMPLE  =                    T / Fits standard                                  
+BITPIX  =                   16 / Bits per pixel                                 
+NAXIS   =                    0 / Number of axes                                 
+EXTEND  =                    T / FITS dataset may contain extensions            
+ORIGIN  = 'NOAO-IRAF FITS Image Kernel July 1999' / FITS file originator        
+DATE    = '2003-03-12T19:34:44' / Date FITS file was generated                  
+IRAF-TLM= '23:36:07 (13/02/2003)' / Time of last modification                   
+COMMENT   FITS (Flexible Image Transport System) format defined in Astronomy and
+COMMENT   Astrophysics Supplement Series v44/p363, v44/p371, v73/p359, v73/p365.
+COMMENT   Contact the NASA Science Office of Standards and Technology for the   
+COMMENT   FITS Definition document #100 and other FITS information.             
+INSTRUME= 'hrwfs   '           / Instrument used to acquire data.               
+OBJECT  = 'src17   '           / Object Name                                    
+OBSTYPE = 'OBJECT  '           / Observation type                               
+GEMPRGID= 'GS-2003A-Q-6'       / Gemini Science Program ID                      
+OBSID   = 'GS-2003A-Q-6-1'     / Observation ID / Data label                    
+DATALAB = 'GS-2003A-Q-6-1-002' / Datalabel                                      
+OBSERVER= 'Carrasco,Hynes'     / Observer                                       
+OBSERVAT= 'Gemini-South'       / Observatory                                    
+TELESCOP= 'Gemini-South'       / Telescope                                      
+PARALLAX=                   0. / Parallax of Target                             
+RADVEL  =                   0. / Heliocentric Radial Velocity                   
+EPOCH   =     2003.13092142514 / Epoch for Target coordinates                   
+EQUINOX =                2000. / Equinox for Target coordinates                 
+TRKEQUIN=                2000. / Tracking equinox                               
+SSA     = 'Trancho '           / SSA                                            
+RA      =         105.08383333 / RA of Target                                   
+DEC     =         -11.38066667 / Declination of Target                          
+ELEVATIO=     71.1739430555556 / Current Elevation                              
+AZIMUTH =     3.44089305555556 / Current Azimuth                                
+CRPA    =    -3.05720619174752 / Current Cass Rotator Position Angle            
+HA      = '-00:04:33.01'       / Telescope hour angle                           
+LT      = '21:48:24.6'         / Local time at start of observation             
+TRKFRAME= '        '           / Tracking co-ordinate                           
+DECTRACK=                   0. / Differential tracking rate Dec                 
+TRKEPOCH=                   0. / Differential tracking reference epoch          
+RATRACK =                   0. / Differential tracking rate RA                  
+FRAME   = 'FK5     '           / Target coordinate system                       
+PMDEC   =                   0. / Proper Motion in Declination                   
+PMRA    =                   0. / Proper Motion in RA                            
+WAVELENG=                5000. / Effective Target Wavelength                    
+RAWIQ   = '70-percentile'      / Raw Image Quality                              
+RAWCC   = '20-percentile'      / Raw Cloud Cover                                
+RAWWV   = 'Any     '           / Raw Water Vapour/Transparency                  
+RAWBG   = 'Any     '           / Raw Background                                 
+RAWPIREQ= 'YES     '           / PI Requirements Met                            
+RAWGEMQA= 'USABLE  '           / Gemini Quality Assessment                      
+CGUIDMOD= 'Basic   '           / Driving mode for carousel                      
+UT      = '01:48:25.1'         / Beginning of Observation (UT)                  
+M2BAFFLE= 'VISIBLE '           / Position of M2 baffle                          
+M2CENBAF= 'OPEN    '           / Position of M2 central hole baffle             
+ST      = '06:55:56.6'         / Sidereal time at the start of the exposure     
+XOFFSET =                  -2. / Telescope offset in x in arcsec                
+YOFFSET =                   2. / Telescope offset in y in arcsec                
+RAOFFSET=                  -2. / Telescope offset in RA in arcsec               
+DECOFFSE=                   2. / Telescope offset in DEC in arcsec              
+SFRT2   =               89.998 / Science fold rotation angle (degrees)          
+SFTILT  =                 2.97 / Science fold tilt angle (degrees)              
+SFLINEAR=               -357.4 / Science fold linear position (mm)              
+P2ARA   =         105.19941667 / RA of PWFS2 guide star                         
+P2ARV   =                   0. / PWFS2 Heliocentric Radial Velocity             
+P2AWAVEL=                5000. / PWFS2 Effective Target Wavelength              
+P2ADEC  =         -11.38433333 / Declination of PWFS2 guide star                
+P2AEPOCH=     2003.13092142514 / Epoch for PWFS2 guide star coordinates         
+P2AEQUIN=                2000. / Equinox for PWFS2 guide star coordinates       
+P2AFRAME= 'FK5     '           / PWFS2 Target co-ordinate system                
+P2AOBJEC= 'GSC0538800940'      / Object Name for PWFS 2, Chop A                 
+P2APMDEC=                   0. / PWFS2 Proper Motion in Declination             
+P2APMRA =                   0. / PWFS2 Proper Motion in RA                      
+P2APARAL=                   0. / PWFS2 Parallax of Target                       
+FILTER1 = 'V_G0153 '           / Filter 1 name                                  
+FILTER2 = 'open    '           / Filter 2 name                                  
+ACLENS  = 'AC      '           / AcqCam lens (AC|HRWFS)                         
+FLDSTOP = 'undefined'          / AcqCam field stop (OPEN|FLDSTOP|CAL-SRC)       
+CALSRC  = 'off     '           / AcqCam calibration source (off|on)             
+ACFOCUS =    -1.00582912457912 / AcqCam focus position (mm)                     
+DETTEMP =           -29.486325 / Detector temperature (Celsius)                 
+INPORT  =                   -1 / Number of ISS port where hrwfs was located     
+EXPTIME =          89.99993344 / Total integration time on source               
+DARKTIME=          89.99993344 / Dark time                                      
+CTYPE1  = 'RA---TAN'           / R.A. in tangent plane projection               
+CRPIX1  =             539.8751 / Refpix of first axis                           
+CRVAL1  =     105.084399832688 / RA at Ref pix in decimal degrees               
+CTYPE2  = 'DEC--TAN'           / DEC. in tangent plane projection               
+CRPIX2  =             532.7499 / Refpix of second axis                          
+CRVAL2  =    -11.3812220283281 / DEC at Ref pix in decimal degrees              
+CD1_1   =        -1.048641E-07 / CD matrix                                      
+CD1_2   =         3.303233E-05 / CD matrix                                      
+CD2_1   =         -3.27491E-05 / CD matrix                                      
+CD2_2   =        -1.847661E-07 / CD matrix                                      
+MJD-OBS =      52688.075675652 / MJD of start of obseration                     
+XBIN    =                    1 / Binning factor in X                            
+YBIN    =                    1 / Binning factor in Y                            
+CCDSIZE = '[1:1024,1:1024]'    / CCD size                                       
+CCDSEC  = '[1:1024,1:1024]'    / Original section of the full frame             
+CCDSEC1 = '[1:512,1:1024]'     / Original section of the output1 of the CCD     
+CCDSEC2 = '[513:1024,1:1024]'  / Original section of the output2 of the CCD     
+DATASEC1= '[1:512,1:1024]'     / Current datasection of the output1 of the CCD  
+DATASEC2= '[513:1024,1:1024]'  / Current datasection of the output2 of the CCD  
+BIASSEC1= '[1025:1032,1:1024]' / Current biassection of the output1 of the CCD  
+BIASSEC2= '[1033:1040,1:1024]' / Current biassection of the output2 of the CCD  
+UTSTART = '2003-02-18T01:48:26.113' / UT at observation start                   
+DATE-OBS= '2003-02-18'         / Observation date (UT)                          
+TIME-OBS= '01:48:26.113'       / Beginning of Observation (UT)                  
+DETTYPE = 'CCD47+SDSUII'       / Description of detector array type             
+DETID   = 'xxxxxxxxx'          / Serial Number of the detector chip             
+UTEND   = '2003-02-18T01:49:57.665' / End of Observation (UT)                   
+AIRMASS =                1.056 / Mean airmass for the observation               
+AMSTART =                1.056 / Airmass at start of exposure                   
+AMEND   =                1.056 / Airmass at end of exposure                     
+RELEASE = '2004-08-18'         / End of proprietary period YYYY-MM-DD           
+HISTORY Corrected metadata: automated fixes from PyFITS                         
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+
+--- HDU 1 ---
+XTENSION= 'IMAGE   '           / Image extension                                
+BITPIX  =                   16 / Bits per pixel                                 
+NAXIS   =                    2 / Number of axes                                 
+NAXIS1  =                 1040 / Axis length                                    
+NAXIS2  =                 1024 / Axis length                                    
+PCOUNT  =                    0 / No 'random' parameters                         
+GCOUNT  =                    1 / Only one group                                 
+BSCALE  =           1.000000E0 / REAL = TAPE*BSCALE + BZERO                     
+BZERO   =           3.276800E4 /                                                
+ORIGIN  = 'NOAO-IRAF FITS Image Kernel July 1999' / FITS file originator        
+EXTNAME = 'SCI     '           / Extension name                                 
+EXTVER  =                    1 / Extension version                              
+INHERIT =                    F / Inherits global header                         
+DATE    = '2003-02-18T05:38:13' / Date FITS file was generated                  
+IRAF-TLM= '23:36:07 (16/02/2003)' / Time of last modification                   
+BUNIT   = 'SDSU ADC units'     / Units of data values                           
+UNITS   = 'SDSU ADC units'     / SDSU ADC units                                 
+AXISLAB1= 'Xaxis   '           / Axis label                                     
+AXISLAB2= 'Yaxis   '           / Axis label                                     
+CTYPE1  = 'RA---TAN'           / R.A. in tangent plane projection               
+CRPIX1  =             539.8751 / Refpix of first axis                           
+CRVAL1  =     105.084399832688 / RA at Ref pix in decimal degrees               
+CTYPE2  = 'DEC--TAN'           / DEC. in tangent plane projection               
+CRPIX2  =             532.7499 / Refpix of second axis                          
+CRVAL2  =    -11.3812220283281 / DEC at Ref pix in decimal degrees              
+CD1_1   =        -1.048641E-07 / CD matrix                                      
+CD1_2   =         3.303233E-05 / CD matrix                                      
+CD2_1   =         -3.27491E-05 / CD matrix                                      
+CD2_2   =        -1.847661E-07 / CD matrix                                      
+FRMNAME = 'dataArray'          / Frame Name                                     
+FRAMEID = '0       '           / Frame Id                                       
+DATATYP = 'Intensity'          / Type of data frame                             
+                                                                                
+                                                                                
+                                                                                

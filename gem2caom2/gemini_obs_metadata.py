@@ -70,6 +70,7 @@
 import logging
 
 from caom2pipe import manage_composable as mc
+from gem2caom2.gem_name import GemName
 
 
 class GeminiObsMetadata(object):
@@ -89,16 +90,15 @@ class GeminiObsMetadata(object):
     def _get_index(self, file_id):
         result = -1
         for index, value in enumerate(self.obs_metadata):
-            indexed_fname = mc.response_lookup(value, 'filename')
-            if indexed_fname is not None:
-                temp = indexed_fname.split('.')[0]
-                logging.error('checking value of {} for file_id {}'.format(temp, file_id))
+            indexed_f_name = mc.response_lookup(value, 'filename')
+            if indexed_f_name is not None:
+                temp = GemName.remove_extensions(indexed_f_name)
                 if temp == file_id:
                     result = index
                     break
         if result == -1:
             # TODO - set obs id?
             raise mc.CadcException(
-                'Unrecognized file_id {} in obs_id {}'.format(
+                'JSON Summary: unrecognized file_id {} in obs_id {}'.format(
                     file_id, ''))
         return result

@@ -1,0 +1,146 @@
+Filename: S20030218S0027.fits.bz2
+
+AstroData Types: ['HRWFS', 'GEMINI', 'SIDEREAL', 'GEMINI_SOUTH', 'RAW', 'UNPREPARED']
+
+
+--- HDU 0 ---
+SIMPLE  =                    T / file does conform to FITS standard             
+BITPIX  =                   16 / number of bits per data pixel                  
+NAXIS   =                    0 / number of data axes                            
+EXTEND  =                    T / FITS dataset may contain extensions            
+COMMENT   FITS (Flexible Image Transport System) format defined in Astronomy and
+COMMENT   Astrophysics Supplement Series v44/p363, v44/p371, v73/p359, v73/p365.
+COMMENT   Contact the NASA Science Office of Standards and Technology for the   
+COMMENT   FITS Definition document #100 and other FITS information.             
+INSTRUME= 'hrwfs   '           / Instrument used to acquire data.               
+OBJECT  = 'src17   '           / Object Name                                    
+OBSTYPE = 'OBJECT  '           / Observation type                               
+GEMPRGID= 'GS-2003A-Q-6'       / Gemini Science Program ID                      
+OBSID   = 'GS-2003A-Q-6-1'     / Observation ID / Data label                    
+DATALAB = 'GS-2003A-Q-6-1-002' / Datalabel                                      
+OBSERVER= '        '           / Observer                                       
+OBSERVAT= 'Gemini-South'       / Observatory                                    
+TELESCOP= 'Gemini-South'       / Telescope                                      
+PARALLAX=                   0. / Parallax of Target                             
+RADVEL  =                   0. / Heliocentric Radial Velocity                   
+EPOCH   =     2003.13079969685 / Epoch for Target coordinates                   
+EQUINOX =                2000. / Equinox for Target coordinates                 
+TRKEQUIN=                2000. / Tracking equinox                               
+SSA     = '        '           / SSA                                            
+RA      =            103.82625 / RA of Target                                   
+DEC     =         -18.81666667 / Declination of Target                          
+ELEVATIO=     75.5169083333333 / Current Elevation                              
+AZIMUTH =           40.4534875 / Current Azimuth                                
+CRPA    =     143.661715987571 / Current Cass Rotator Position Angle            
+HA      = '-00:39:37.89'       / Telescope hour angle                           
+LT      = '21:08:24.0'         / Local time at start of observation             
+TRKFRAME= '        '           / Tracking co-ordinate                           
+DECTRACK=                   0. / Differential tracking rate Dec                 
+TRKEPOCH=                   0. / Differential tracking reference epoch          
+RATRACK =                   0. / Differential tracking rate RA                  
+FRAME   = 'FK5     '           / Target coordinate system                       
+PMDEC   =                   0. / Proper Motion in Declination                   
+PMRA    =                   0. / Proper Motion in RA                            
+WAVELENG=                6400. / Effective Target Wavelength                    
+RAWIQ   = 'Any     '           / Raw Image Quality                              
+RAWCC   = 'Any     '           / Raw Cloud Cover                                
+RAWWV   = 'Any     '           / Raw Water Vapour/Transparency                  
+RAWBG   = 'Any     '           / Raw Background                                 
+RAWPIREQ= 'YES     '           / PI Requirements Met                            
+RAWGEMQA= 'USABLE  '           / Gemini Quality Assessment                      
+CGUIDMOD= 'Basic   '           / Driving mode for carousel                      
+UT      = '01:08:24.5'         / Beginning of Observation (UT)                  
+DATE    = '2003-02-18'         / Date of last modification                      
+M2BAFFLE= 'VISIBLE '           / Position of M2 baffle                          
+M2CENBAF= 'OPEN    '           / Position of M2 central hole baffle             
+ST      = '06:15:49.4'         / Sidereal time at the start of the exposure     
+XOFFSET =                  -2. / Telescope offset in x in arcsec                
+YOFFSET =                   2. / Telescope offset in y in arcsec                
+RAOFFSET=                   2. / Telescope offset in RA in arcsec               
+DECOFFSE=                  -2. / Telescope offset in DEC in arcsec              
+SFRT2   =               89.999 / Science fold rotation angle (degrees)          
+SFTILT  =                 2.98 / Science fold tilt angle (degrees)              
+SFLINEAR=              -357.41 / Science fold linear position (mm)              
+P2ARA   =         103.78708333 / RA of PWFS2 guide star                         
+P2ARV   =                   0. / PWFS2 Heliocentric Radial Velocity             
+P2AWAVEL=                6000. / PWFS2 Effective Target Wavelength              
+P2ADEC  =             -18.7275 / Declination of PWFS2 guide star                
+P2AEPOCH=     2003.13079969685 / Epoch for PWFS2 guide star coordinates         
+P2AEQUIN=                2000. / Equinox for PWFS2 guide star coordinates       
+P2AFRAME= 'FK5     '           / PWFS2 Target co-ordinate system                
+P2AOBJEC= 'BD-18_1603'         / Object Name for PWFS 2, Chop A                 
+P2APMDEC=                   0. / PWFS2 Proper Motion in Declination             
+P2APMRA =                   0. / PWFS2 Proper Motion in RA                      
+P2APARAL=                   0. / PWFS2 Parallax of Target                       
+FILTER1 = 'V-green '           / Filter 1 name                                  
+FILTER2 = 'open    '           / Filter 2 name                                  
+ACLENS  = 'AC      '           / AcqCam lens (AC|HRWFS)                         
+FLDSTOP = 'undefined'          / AcqCam field stop (OPEN|FLDSTOP|CAL-SRC)       
+CALSRC  = 'off     '           / AcqCam calibration source (off|on)             
+ACFOCUS =    -1.00575547138047 / AcqCam focus position (mm)                     
+DETTEMP =           -29.548125 / Detector temperature (Celsius)                 
+INPORT  =                   -1 / Number of ISS port where hrwfs was located     
+EXPTIME =           0.99999744 / Total integration time on source               
+DARKTIME=           0.99999744 / Dark time                                      
+CTYPE1  = 'RA---TAN'           / R.A. in tangent plane projection               
+CRPIX1  =             539.8749 / Refpix of first axis                           
+CRVAL1  =     103.825663272009 / RA at Ref pix in decimal degrees               
+CTYPE2  = 'DEC--TAN'           / DEC. in tangent plane projection               
+CRPIX2  =             532.7501 / Refpix of second axis                          
+CRVAL2  =    -18.8161113558994 / DEC at Ref pix in decimal degrees              
+CD1_1   =         1.049833E-07 / CD matrix                                      
+CD1_2   =        -3.303259E-05 / CD matrix                                      
+CD2_1   =         3.274871E-05 / CD matrix                                      
+CD2_2   =         1.845392E-07 / CD matrix                                      
+MJD-OBS =     52688.0478873505 / MJD of start of obseration                     
+XBIN    =                    1 / Binning factor in X                            
+YBIN    =                    1 / Binning factor in Y                            
+CCDSIZE = '[1:1024,1:1024]'    / CCD size                                       
+CCDSEC  = '[1:1024,1:1024]'    / Original section of the full frame             
+CCDSEC1 = '[1:512,1:1024]'     / Original section of the output1 of the CCD     
+CCDSEC2 = '[513:1024,1:1024]'  / Original section of the output2 of the CCD     
+DATASEC1= '[1:512,1:1024]'     / Current datasection of the output1 of the CCD  
+DATASEC2= '[513:1024,1:1024]'  / Current datasection of the output2 of the CCD  
+BIASSEC1= '[1025:1032,1:1024]' / Current biassection of the output1 of the CCD  
+BIASSEC2= '[1033:1040,1:1024]' / Current biassection of the output2 of the CCD  
+UTSTART = '2003-02-18T01:08:25.156' / UT at observation start                   
+DATE-OBS= '2003-02-18'         / Observation date (UT)                          
+TIME-OBS= '01:08:25.156'       / Beginning of Observation (UT)                  
+DETTYPE = 'CCD47+SDSUII'       / Description of detector array type             
+DETID   = 'xxxxxxxxx'          / Serial Number of the detector chip             
+UTEND   = '2003-02-18T01:08:27.665' / End of Observation (UT)                   
+AIRMASS =                1.033 / Mean airmass for the observation               
+AMSTART =                1.033 / Airmass at start of exposure                   
+AMEND   =                1.033 / Airmass at end of exposure                     
+RELEASE = '2010-01-01'                                                          
+HISTORY Corrected metadata: RELEASE                                             
+
+--- HDU 1 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                   16 / number of bits per data pixel                  
+NAXIS   =                    2 / number of data axes                            
+NAXIS1  =                 1040 / length of data axis 1                          
+NAXIS2  =                 1024 / length of data axis 2                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'SCI     '           / ad1406: added by AstroData                     
+EXTVER  =                    1 / ad1410: added by AstroData                     
+BZERO   =                32768 / offset data range to that of unsigned short    
+BSCALE  =                    1 / default scaling factor                         
+BUNIT   = 'SDSU ADC units'     / Units of data values                           
+UNITS   = 'SDSU ADC units'     / SDSU ADC units                                 
+AXISLAB1= 'Xaxis   '           / Axis label                                     
+AXISLAB2= 'Yaxis   '           / Axis label                                     
+CTYPE1  = 'RA---TAN'           / R.A. in tangent plane projection               
+CRPIX1  =             539.8749 / Refpix of first axis                           
+CRVAL1  =     103.825663272009 / RA at Ref pix in decimal degrees               
+CTYPE2  = 'DEC--TAN'           / DEC. in tangent plane projection               
+CRPIX2  =             532.7501 / Refpix of second axis                          
+CRVAL2  =    -18.8161113558994 / DEC at Ref pix in decimal degrees              
+CD1_1   =         1.049833E-07 / CD matrix                                      
+CD1_2   =        -3.303259E-05 / CD matrix                                      
+CD2_1   =         3.274871E-05 / CD matrix                                      
+CD2_2   =         1.845392E-07 / CD matrix                                      
+FRMNAME = 'dataArray'          / Frame Name                                     
+FRAMEID = '0       '           / Frame Id                                       
+DATATYP = 'Intensity'          / Type of data frame                             

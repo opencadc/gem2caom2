@@ -14,6 +14,7 @@
   <caom2:target>
     <caom2:name>GCALflat</caom2:name>
     <caom2:type>field</caom2:type>
+    <caom2:moving>true</caom2:moving>
   </caom2:target>
   <caom2:telescope>
     <caom2:name>Gemini-North</caom2:name>
@@ -133,13 +134,13 @@
                         <caom2:delta>1.15707185533311e-05</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>54903.917013449</caom2:val>
+                          <caom2:val>54903.91623611111</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
                     <caom2:timesys>UTC</caom2:timesys>
-                    <caom2:exposure>0.999710083007812</caom2:exposure>
-                    <caom2:resolution>0.999710083007812</caom2:resolution>
+                    <caom2:exposure>0.9997</caom2:exposure>
+                    <caom2:resolution>0.9997</caom2:resolution>
                   </caom2:time>
                 </caom2:chunk>
               </caom2:chunks>
@@ -223,13 +224,13 @@
                         <caom2:delta>1.15707185533311e-05</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>54903.917013449</caom2:val>
+                          <caom2:val>54903.91623611111</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
                     <caom2:timesys>UTC</caom2:timesys>
-                    <caom2:exposure>0.999710083007812</caom2:exposure>
-                    <caom2:resolution>0.999710083007812</caom2:resolution>
+                    <caom2:exposure>0.9997</caom2:exposure>
+                    <caom2:resolution>0.9997</caom2:resolution>
                   </caom2:time>
                 </caom2:chunk>
               </caom2:chunks>
@@ -313,13 +314,13 @@
                         <caom2:delta>1.15707185533311e-05</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>54903.917013449</caom2:val>
+                          <caom2:val>54903.91623611111</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
                     <caom2:timesys>UTC</caom2:timesys>
-                    <caom2:exposure>0.999710083007812</caom2:exposure>
-                    <caom2:resolution>0.999710083007812</caom2:resolution>
+                    <caom2:exposure>0.9997</caom2:exposure>
+                    <caom2:resolution>0.9997</caom2:resolution>
                   </caom2:time>
                 </caom2:chunk>
               </caom2:chunks>

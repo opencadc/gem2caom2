@@ -96,157 +96,20 @@ import traceback
 from caom2 import Observation, ObservationIntentType, DataProductType
 from caom2 import CalibrationLevel, TargetType, ProductType, Chunk
 from caom2 import SpatialWCS, CoordAxis2D, Axis, CoordPolygon2D, ValueCoord2D
+from caom2 import SpectralWCS, CoordAxis1D, CoordFunction1D, RefCoord
+from caom2 import TypedList
 from caom2utils import ObsBlueprint, get_gen_proc_arg_parser, gen_proc
 from caom2pipe import manage_composable as mc
-from caom2pipe import execute_composable as ec
 from caom2pipe import astro_composable as ac
 
 import gem2caom2.external_metadata as em
-from gem2caom2.svofps import filter_metadata
+from gem2caom2.gem_name import GemName, COLLECTION, ARCHIVE, SCHEME
 
-
-__all__ = ['main_app2', 'update', 'GemName', 'COLLECTION', 'APPLICATION',
-           'SCHEME', 'ARCHIVE']
+__all__ = ['main_app2', 'update', 'COLLECTION', 'APPLICATION', 'SCHEME',
+           'ARCHIVE']
 
 
 APPLICATION = 'gem2caom2'
-COLLECTION = 'GEMINI'
-ARCHIVE = 'GEM'
-SCHEME = 'gemini'
-
-
-class GemName(ec.StorageName):
-    """Naming rules:
-    - support mixed-case file name storage, exception for extensions, and
-            mixed-case obs id values - the case the inputs are provided in are
-            assumed to be correct.
-    - support uncompressed files in storage
-    """
-
-    GEM_NAME_PATTERN = '*'
-
-    def __init__(self, fname_on_disk=None, file_name=None, obs_id=None):
-        if file_name is not None:
-            self.file_id = GemName.get_file_id(file_name)
-            if '.fits' in file_name:
-                self.fname_in_ad = '{}.fits'.format(self.file_id)
-            elif GemName.is_preview(file_name):
-                self.fname_in_ad = '{}.jpg'.format(self.file_id)
-            else:
-                raise mc.CadcException(
-                    'Unrecognized file name format {}'.format(file_name))
-        elif fname_on_disk is not None:
-            self.file_id = GemName.get_file_id(fname_on_disk)
-            if '.fits' in fname_on_disk:
-                self.fname_in_ad = '{}.fits'.format(self.file_id)
-            elif GemName.is_preview(fname_on_disk):
-                self.fname_in_ad = '{}.jpg'.format(self.file_id)
-            else:
-                raise mc.CadcException(
-                    'Unrecognized file name format {}'.format(fname_on_disk))
-        else:
-            raise mc.CadcException('Require file name.')
-        super(GemName, self).__init__(
-            obs_id=None, collection=ARCHIVE,
-            collection_pattern=GemName.GEM_NAME_PATTERN,
-            fname_on_disk=fname_on_disk,
-            scheme=SCHEME)
-        self.obs_id = obs_id
-
-    @property
-    def file_uri(self):
-        return '{}:{}/{}'.format(SCHEME, self.collection, self.file_name)
-
-    @property
-    def file_name(self):
-        return self.fname_in_ad
-
-    @property
-    def compressed_file_name(self):
-        return None
-
-    @property
-    def prev(self):
-        return '{}.jpg'.format(GemName.get_file_id(self.fname_in_ad))
-
-    @property
-    def thumb(self):
-        return '{}_th.jpg'.format(GemName.get_file_id(self.fname_in_ad))
-
-    @property
-    def obs_id(self):
-        return self._obs_id
-
-    @obs_id.setter
-    def obs_id(self, value):
-        self._obs_id = value
-
-    @property
-    def file_id(self):
-        return self._file_id
-
-    @file_id.setter
-    def file_id(self, value):
-        self._file_id = value
-
-    def is_valid(self):
-        return True
-
-    # def _get_obs_id(self):
-    #     if 'TMP' in self.file_uri:
-    #         # TODO for testing only
-    #         with open(self.file_uri) as f:
-    #             headers = f.readlines()
-    #     elif '.fits' in self.file_uri:
-    #         headers = mc.get_cadc_headers(self.file_uri)
-    #     else:
-    #         temp_uri = self.file_uri.replace('.jpg', '.fits')
-    #         headers = mc.get_cadc_headers(temp_uri)
-    #     fits_headers = ac.make_headers_from_string(headers)
-    #     obs_id = fits_headers[0].get('DATALAB')
-    #     return obs_id
-
-    @staticmethod
-    def get_file_id(file_name):
-        # TODO - how important is the file name case? check with DB.
-        # return GemName.remove_extensions(file_name.lower()).upper()
-        return GemName.remove_extensions(file_name)
-
-    @staticmethod
-    def remove_extensions(name):
-        """How to get the file_id from a file_name."""
-        return name.replace('.fits', '').replace('.gz', ''). \
-            replace('.header', '').replace('.jpg', '')
-
-    @staticmethod
-    def is_preview(entry):
-        return '.jpg' in entry
-
-
-def get_niri_filter_name(header):
-    """
-    Create the filter name for NIRI.
-
-    :param header: The FITS header for the current extension.
-    :return: The NIRI filter name, or None if none found.
-    """
-    filters = None
-    header_filters = []
-    filters2ignore = ['open', 'INVALID', 'PK50', 'pupil']
-    for key in header.keys():
-        if 'FILTER' in key:
-            if any(x in key for x in filters2ignore):
-                continue
-            else:
-                filtr = "".join(re.findall(r'\'(.+?)\'', header))
-                filtr = filtr.replace('_', '-').strip()
-                filtr = ''.join('' if ch in '()' else ch for ch in filtr)
-                header_filters.append(filtr)
-        filters = "&".join(header_filters)
-    if filters:
-        filters = re.sub(r'&', ' & ', filters)
-        filters = re.sub(r'-G.{4}(|w)', '', filters)
-    return filters
 
 
 def get_energy_metadata(file_id):
@@ -259,12 +122,8 @@ def get_energy_metadata(file_id):
     instrument = em.om.get('instrument')
     if instrument in ['GMOS-N', 'GMOS-S']:
         energy_metadata = em.gmos_metadata()
-    elif instrument in ['NIRI']:
-        energy_metadata = em.niri_metadata(file_id)
     else:
         energy_metadata = {'energy': False}
-        # raise mc.CadcException(
-        #     'Do not understand energy for instrument {}'.format(instrument))
     logging.debug(
         'End get_energy_metadata for instrument {}'.format(instrument))
     return energy_metadata
@@ -286,14 +145,19 @@ def get_chunk_wcs(bp, obs_id, file_id):
         # if 'AZEL_TARGET' not in types:
         #     bp.configure_position_axes((1, 2))
 
-        energy_metadata = get_energy_metadata(file_id)
+        _get_chunk_energy(bp, obs_id, file_id)
+    except Exception as e:
+        logging.error(e)
+        raise mc.CadcException(
+            'Could not get chunk metadata for {}'.format(obs_id))
+    logging.debug('End get_chunk_wcs')
 
-        # No energy metadata found
-        if not energy_metadata['energy']:
-            logging.error('No energy metadata found for '
-                          'obs id {}, file id {}'.format(obs_id, file_id))
-            return
 
+def _get_chunk_energy(bp, obs_id, file_id):
+    energy_metadata = get_energy_metadata(file_id)
+
+    # No energy metadata found
+    if energy_metadata['energy']:
         bp.configure_energy_axis(4)
         filter_name = mc.response_lookup(energy_metadata, 'filter_name')
         resolving_power = mc.response_lookup(
@@ -320,11 +184,9 @@ def get_chunk_wcs(bp, obs_id, file_id):
         bp.set('Chunk.energy.axis.function.delta', cdelt)
         bp.set('Chunk.energy.axis.function.refCoord.pix', crpix)
         bp.set('Chunk.energy.axis.function.refCoord.val', crval)
-    except Exception as e:
-        logging.error(e)
-        raise mc.CadcException(
-            'Could not get chunk metadata for {}'.format(obs_id))
-    logging.debug('End get_chunk_wcs')
+    # else:
+    #     logging.info('No energy metadata found for '
+    #                  'obs id {}, file id {}'.format(obs_id, file_id))
 
 
 def get_time_delta(header):
@@ -334,24 +196,10 @@ def get_time_delta(header):
     :param header: The FITS header for the current extension.
     :return: The Time delta, or None if none found.
     """
-    exptime = header.get('EXPTIME')
+    exptime = get_exposure(header)
     if exptime is None:
         return None
     return float(exptime) / (24.0 * 3600.0)
-
-
-def get_time_crval(header):
-    """
-    Calculate the Time WCS reference value.
-
-    :param header: The FITS header for the current extension.
-    :return: The Time reference value, or None if none found.
-    """
-    date_obs = header.get('DATE-OBS')
-    time_obs = header.get('TIME-OBS')
-    if not date_obs and not time_obs:
-        return None
-    return ac.get_datetime('{}T{}'.format(date_obs, time_obs))
 
 
 def get_calibration_level(header):
@@ -376,7 +224,7 @@ def get_art_product_type(header):
     obs_type = _get_obs_type(header)
     obs_class = _get_obs_class(header)
 
-    logging.debug('type is {} and class is {}'.format(obs_type, obs_class))
+    # logging.error('type is {} and class is {}'.format(obs_type, obs_class))
     if obs_type is not None and obs_type == 'MASK':
         result = ProductType.AUXILIARY
     elif obs_class is None:
@@ -387,7 +235,32 @@ def get_art_product_type(header):
             else:
                 result = ProductType.SCIENCE
         else:
-            result = ProductType.CALIBRATION
+            instrument = header.get('INSTRUME')
+            if instrument is not None:
+                if instrument == 'PHOENIX':
+                    if _is_phoenix_calibration(header):
+                        result = ProductType.CALIBRATION
+                    else:
+                        result = ProductType.SCIENCE
+                elif instrument == 'OSCIR':
+                    if _is_oscir_calibration(header):
+                        result = ProductType.CALIBRATION
+                    else:
+                        result = ProductType.SCIENCE
+                elif instrument == 'FLAMINGOS':
+                    if _is_flamingos_calibration(header):
+                        result = ProductType.CALIBRATION
+                    else:
+                        result = ProductType.SCIENCE
+                elif instrument == 'Hokupaa+QUIRC':
+                    if _is_hokupaa_calibration(header):
+                        result = ProductType.CALIBRATION
+                    else:
+                        result = ProductType.SCIENCE
+                else:
+                    result = ProductType.CALIBRATION
+            else:
+                result = ProductType.CALIBRATION
     elif obs_class is not None and obs_class == 'science':
         result = ProductType.SCIENCE
     else:
@@ -412,14 +285,31 @@ def get_data_product_type(header):
     return result
 
 
-def get_exposure(header):
+def get_data_release(header):
     """
-    Calculate the exposure time.
+    Determine the plane-level data release date.
 
     :param header:  The FITS header for the current extension.
+    :return: The Plane release date, or None if not found.
+    """
+    # every instrument has a 'release' keyword in the JSON summary
+    # not every instrument (Michelle) has a RELEASE keyword in
+    # the appropriate headers
+    return em.om.get('release')
+
+
+def get_exposure(header):
+    """
+    Calculate the exposure time. EXPTIME in the header is not always the
+    total exposure time for some of the IR instruments.  For these EXPTIME
+    is usually the individual exposure time for each chop/nod and a bunch of
+    chops/nods are executed for one observation.  Gemini correctly
+    allows for this in the json ‘exposure_time’ value.
+
+    :param header:  The FITS header for the current extension (unused).
     :return: The exposure time, or None if not found.
     """
-    return header.get('EXPTIME')
+    return em.om.get('exposure_time')
 
 
 def get_meta_release(header):
@@ -443,18 +333,48 @@ def get_obs_intent(header):
     :return: The Observation intent, or None if not found.
     """
     result = ObservationIntentType.CALIBRATION
-    cal_values = ['GCALflat', 'Bias', 'BIAS', 'Twilight', 'Ar', 'FLAT', 'ARC']
+    cal_values = ['GCALflat', 'Bias', 'BIAS', 'Twilight', 'Ar', 'FLAT', 'ARC',
+                  'Domeflat']
     lookup = _get_obs_class(header)
+    # logging.error('lookup is {}'.format(lookup))
     if lookup is None:
         object_value = header.get('OBJECT')
+        # logging.error('object_value is {}'.format(object_value))
         if object_value is not None:
             instrument = header.get('INSTRUME')
-            if instrument is not None and instrument == 'GRACES':
-                obs_type = _get_obs_type(header)
-                if obs_type is not None and obs_type in cal_values:
-                    result = ObservationIntentType.CALIBRATION
+            # logging.error('instrument is {}'.format(instrument))
+            if (instrument is not None and
+                    instrument in ['GRACES', 'TReCS', 'PHOENIX', 'OSCIR',
+                                   'Hokupaa+QUIRC']):
+                if instrument == 'GRACES':
+                    obs_type = _get_obs_type(header)
+                    if obs_type is not None and obs_type in cal_values:
+                        result = ObservationIntentType.CALIBRATION
+                    else:
+                        result = ObservationIntentType.SCIENCE
+                elif instrument == 'TReCS':
+                    data_label = header.get('DATALAB')
+                    if data_label is not None and '-CAL' in data_label:
+                        result = ObservationIntentType.CALIBRATION
+                elif instrument == 'PHOENIX':
+                    if _is_phoenix_calibration(header):
+                        result = ObservationIntentType.CALIBRATION
+                    else:
+                        result = ObservationIntentType.SCIENCE
+                elif instrument == 'OSCIR':
+                    if _is_oscir_calibration(header):
+                        result = ObservationIntentType.CALIBRATION
+                    else:
+                        result = ObservationIntentType.SCIENCE
+                elif instrument == 'Hokupaa+QUIRC':
+                    if _is_hokupaa_calibration(header):
+                        result = ObservationIntentType.CALIBRATION
+                    else:
+                        result = ObservationIntentType.SCIENCE
                 else:
-                    result = ObservationIntentType.SCIENCE
+                    logging.error(
+                        'get_obs_intent: no handling for {}'.format(
+                            instrument))
             else:
                 if object_value in cal_values:
                     result = ObservationIntentType.CALIBRATION
@@ -479,6 +399,21 @@ def get_obs_type(header):
     return result
 
 
+def get_target_moving(header):
+    """
+    Calculate whether the Target moving.
+    Non-sidereal tracking -> setting moving target to "True"
+
+    :param header:  The FITS header for the current extension.
+    :return: The Target TargetType, or None if not found.
+    """
+    types = em.om.get('types')
+    if 'NON_SIDEREAL' in types:
+        return True
+    else:
+        return None
+
+
 def get_target_type(header):
     """
     Calculate the Target TargetType
@@ -491,6 +426,17 @@ def get_target_type(header):
         return TargetType.OBJECT
     else:
         return TargetType.FIELD
+
+
+def get_time_function_val(header):
+    """
+    Calculate the Chunk Time WCS function value, in 'mjd'.
+
+    :param header:  The FITS header for the current extension (not used).
+    :return: The Time WCS value from JSON Summary Metadata.
+    """
+    time_val = em.om.get('ut_datetime')
+    return ac.get_datetime(time_val)
 
 
 def _get_obs_class(header):
@@ -507,10 +453,43 @@ def _get_obs_type(header):
     """Common location to lookup OBSTYPE from the FITS headers, and if
     it's not present, to lookup observation_type from JSON summary
     metadata."""
-    obs_type = header.get('OBSTYPE')
+    obs_type = em.om.get('observation_type')
     if obs_type is None:
-        obs_type = em.om.get('observation_type')
+        obs_type = header.get('OBSTYPE')
     return obs_type
+
+
+def _is_flamingos_calibration(header):
+    object_value = em.om.get('object')
+    if ('Dark' in object_value or
+        'DARK' in object_value or
+            'Flat' in object_value):
+        return True
+    return False
+
+
+def _is_hokupaa_calibration(header):
+    image_type = header.get('IMAGETYP')
+    # took the list from the AS GEMINI Obs. Type values
+    return image_type in ['DARK', 'BIAS', 'CAL', 'ARC', 'FLAT']
+
+
+def _is_oscir_calibration(header):
+    # TODO - don't know what else to do right now
+    return False
+
+
+def _is_phoenix_calibration(header):
+    object_value = header.get('OBJECT').lower()
+    # logging.error('object_value is {}'.format(object_value))
+    if ('flat ' in object_value or
+        'dark ' in object_value or
+        'arc' in object_value or
+        'comp' in object_value or
+        'lamp' in object_value or
+            'comparison' in object_value):
+        return True
+    return False
 
 
 def accumulate_fits_bp(bp, obs_id, file_id):
@@ -523,6 +502,7 @@ def accumulate_fits_bp(bp, obs_id, file_id):
     bp.set('Observation.type', 'get_obs_type(header)')
     bp.set('Observation.metaRelease', 'get_meta_release(header)')
     bp.set('Observation.target.type', 'get_target_type(header)')
+    bp.set('Observation.target.moving', 'get_target_moving(header)')
     # GRACES has entries with RUNID set to non-proposal ID values
     # so clear the default FITS value lookup
     bp.clear('Observation.proposal.id')
@@ -530,9 +510,11 @@ def accumulate_fits_bp(bp, obs_id, file_id):
     bp.set('Plane.dataProductType', 'get_data_product_type(header)')
     bp.set('Plane.calibrationLevel', 'get_calibration_level(header)')
     bp.set('Plane.metaRelease', 'get_meta_release(header)')
+    bp.set('Plane.dataRelease', 'get_data_release(header)')
 
     bp.set('Plane.provenance.name', 'Gemini Observatory Data')
     bp.set('Plane.provenance.project', 'Gemini Archive')
+    # Add IMAGESWV for GRACES
     bp.add_fits_attribute('Plane.provenance.producer', 'IMAGESWV')
     bp.set_default('Plane.provenance.producer', 'Gemini Observatory')
     bp.set('Plane.provenance.reference',
@@ -556,7 +538,8 @@ def accumulate_fits_bp(bp, obs_id, file_id):
     bp.set('Chunk.time.axis.function.naxis', '1')
     bp.set('Chunk.time.axis.function.delta', 'get_time_delta(header)')
     bp.set('Chunk.time.axis.function.refCoord.pix', '0.5')
-    bp.add_fits_attribute('Chunk.time.axis.function.refCoord.val', 'MJD-OBS')
+    bp.set('Chunk.time.axis.function.refCoord.val',
+           'get_time_function_val(header)')
 
     get_chunk_wcs(bp, obs_id, file_id)
 
@@ -576,79 +559,515 @@ def update(observation, **kwargs):
     if 'headers' in kwargs:
         headers = kwargs['headers']
 
-    for p in observation.planes:
-        mode = observation.planes[p].data_product_type
-        for a in observation.planes[p].artifacts:
-            for part in observation.planes[p].artifacts[a].parts:
-                for c in observation.planes[p].artifacts[a].parts[part].chunks:
-                    if observation.instrument.name == 'NIRI':
-                        _update_chunk_energy(c, mode, headers)
+    try:
+        for p in observation.planes:
+            mode = observation.planes[p].data_product_type
+            for a in observation.planes[p].artifacts:
+                for part in observation.planes[p].artifacts[a].parts:
 
-                    if (observation.instrument.name == 'GRACES' and
-                            mode == DataProductType.SPECTRUM):
-                        _update_chunk_position(c)
+                    if part == '2' and observation.instrument.name == 'GPI':
+                        # GPI datasets have two extensions. First is science
+                        # image (with WCS), second is data quality for each
+                        # pixel (no WCS).
+                        logging.info(
+                            'GPI: Setting chunks to None for part {}'.format(
+                                part))
+                        observation.planes[p].artifacts[a].parts[part].chunks \
+                            = TypedList(Chunk,)
+                        continue
+                    for c in observation.planes[p].artifacts[a].parts[
+                            part].chunks:
+
+                        # energy WCS
+                        if _reset_energy(headers[0].get('DATALAB')):
+                            c.energy = None
+                            c.energy_axis = None
+                        else:
+                            header = headers[int(part)]
+                            if observation.instrument.name == 'NIRI':
+                                _update_chunk_energy_niri(c, header)
+                            elif observation.instrument.name == 'GPI':
+                                _update_chunk_energy_gpi(c, headers[0])
+                            elif observation.instrument.name == 'F2':
+                                _update_chunk_energy_f2(c, headers[0])
+                            elif observation.instrument.name == 'GSAOI':
+                                _update_chunk_energy_gsaoi(c)
+                            elif observation.instrument.name == 'NICI':
+                                _update_chunk_energy_nici(c, header)
+                            elif observation.instrument.name == 'TReCS':
+                                _update_chunk_energy_trecs(c)
+                            elif observation.instrument.name == 'michelle':
+                                _update_chunk_energy_michelle(c)
+
+                        # position WCS
+                        if (observation.instrument.name == 'GRACES' and
+                                mode == DataProductType.SPECTRUM):
+                            # radius = 5.0 arcseconds, said DB in test data
+                            # list of Jan 18/19
+                            _update_chunk_position(c, 5.0, header, 'GRACES')
+                        if (observation.instrument.name == 'michelle'):
+                            # Michelle is a retired visitor instrument.
+                            # Spatial WCS info is in primary header. There
+                            # are a variable number of FITS extensions
+                            # defined by primary keyword NUMEXT; assume the
+                            # same spatial WCS for each for now - it differs
+                            # only slightly because of telescope 'chopping'
+                            # and 'nodding' used in acquisition. DB - 01-18-19
+                            # radius == 2.8 arcseconds, according to
+                            # Christian Marios via DB 02-07-19
+                            _update_chunk_position(c, 2.8, headers[0],
+                                                   'michelle')
+    except Exception as e:
+        logging.error(e)
+        tb = traceback.format_exc()
+        logging.error(tb)
     logging.error('Done update.')
     return True
 
 
-def _update_chunk_energy(chunk, mode, headers):
-    """Check that position information has been set appropriately for
-    spectra. Guidance given is it must be a bounds."""
-    logging.debug('Begin _update_chunk_position')
+def _build_chunk_energy(chunk, n_axis, c_val, delta, filter_name,
+                        resolving_power):
+    # build the CAOM2 structure
+
+    # DB - 02-04-19 - initial pass, do not try to calculate
+    # dispersion, so naxis=1, prefer um as units, strip the bar code
+    # from the filter names
+    chunk.energy_axis = 4
+    axis = Axis(ctype='WAVE', cunit='um')
+    ref_coord = RefCoord(pix=float(n_axis/2.0), val=c_val)
+    # SGo - assume a function until DB says otherwise
+    function = CoordFunction1D(naxis=n_axis,
+                               delta=delta,
+                               ref_coord=ref_coord)
+    coord_axis = CoordAxis1D(axis=axis,
+                             error=None,
+                             range=None,
+                             bounds=None,
+                             function=function)
+    chunk.energy = SpectralWCS(axis=coord_axis,
+                               specsys='TOPOCENT',
+                               ssysobs='TOPOCENT',
+                               ssyssrc='TOPOCENT',
+                               restfrq=None,
+                               restwav=None,
+                               velosys=None,
+                               zsource=None,
+                               velang=None,
+                               bandpass_name=filter_name,
+                               transition=None,
+                               resolving_power=resolving_power)
+
+
+def _update_chunk_energy_niri(chunk, header):
+    """NIRI-specific chunk-level Energy WCS construction."""
+    logging.debug('Begin _update_chunk_energy_niri')
     mc.check_param(chunk, Chunk)
 
     # No energy information is determined for darks.  The
     # latter are sometimes only identified by a 'blank' filter.  e.g.
     # NIRI 'flats' are sometimes obtained with the filter wheel blocked off.
 
-    bandpass_name = chunk.energy.bandpass_name
-    if 'blank' in bandpass_name:
-        chunk.energy = None
+    # The focal_plane_mask has values like f6-2pixBl (2-pixel wide blue slit
+    # used with f/6 camera) or f32-6pix (6-pixel wide slit [centered]
+    # with f/32 camera).   So f#-#pix with or without ‘Bl’.   But there
+    # seems to be some inconsistency in the above web page and actual
+    # slits.  I don’t think there are 7- or 10-pixel slits used with the
+    # f32 camera.  The Gemini archive pull-down menu only gives f32-6pix
+    # and f32-9pix choices.  Assume these refer to the 7 and 10 pixel
+    # slits in the web page. Use the ‘disperser’ value to lookup the
+    # ‘Estimated Resolving Power’ for the slit in the beam given by the
+    # focal_plane_mask value.
+
+    n_axis = 1
+
+    filters = get_filter_name(header)
+    filter_md = em.get_filter_metadata('NIRI', filters)
+    filter_name = em.om.get('filter_name')
+
+    mode = em.om.get('mode')
+    if mode == 'imaging':
+        logging.debug('NIRI: SpectralWCS imaging mode.')
+        c_val, delta, resolving_power = _imaging_energy(filter_md)
+    elif mode in ['LS', 'spectroscopy']:
+        logging.debug('NIRI: SpectralWCS mode {}.'.format(mode))
+        if (chunk.position is not None and chunk.position.axis is not None
+            and chunk.position.axis.function is not None
+            and chunk.position.axis.function.dimension is not None
+                and chunk.position.axis.function.dimension.naxis1 is not None):
+            n_axis = chunk.position.axis.function.dimension.naxis1
+        c_val = filter_md['wl_eff']  # central wavelength
+        delta = filter_md['wl_eff_width'] / n_axis / 1.0e4
+        disperser = em.om.get('disperser')
+        if disperser in ['Jgrism', 'Jgrismf32', 'Hgrism', 'Hgrismf32',
+                         'Kgrism', 'Kgrismf32', 'Lgrism', 'Mgrism']:
+            bandpass_name = disperser[0]
+            f_ratio = em.om.get('focal_plane_mask')
+            logging.debug('Bandpass name is {} f_ratio is {}'.format(
+                bandpass_name, f_ratio))
+            if bandpass_name in em.NIRI_RESOLVING_POWER:
+                resolving_power = \
+                    em.NIRI_RESOLVING_POWER[bandpass_name][f_ratio]
+            else:
+                logging.info('NIRI: No resolving power.')
+                resolving_power = None
+        else:
+            logging.info(
+                'NIRI: Unknown disperser value {}'.format(disperser))
+            resolving_power = None
     else:
-        cval = 0.0
-        delta = 0.0
-        resolving_power = 0.0
-        filter_md = filter_metadata(
-            em.om.get('instrument'), bandpass_name)
-        if mode == 'imaging':
-            delta = filter_md['wl_eff_width']
-            cval = filter_md['wl_eff']
-            resolving_power = cval/delta
-            cval /= 1.0e10
-            delta /= 1.0e10
-        # elif obs_metadata['mode'] in ('LS', 'spectroscopy'):
-        #    # this code has to be rewritten for NIRI!!!
-        #    reference_wavelength = obs_metadata['central_wavelength']
-        #    nrgdim = int(niri_metadata['naxis2']/bin_y)
+        raise mc.CadcException(
+            'NIRI: Do not understand mode {}'.format(mode))
 
-        #    # Ignore energy information if value of 'central_wavelength' = 0.0
-        #    if reference_wavelength == 0.0 \
-        #            or obs_metadata['observation_type'] == 'BIAS':
-        #        metadata['energy'] = False
-        #        return metadata
-
-        #   if 'focus' in fpmask:
-        #       obstype = 'FOCUS'
-        #    resolving_power = NIRI_RESOLVING_POWER[bandpassname][fpmask]
-        #    delta = filter_md['wl_eff_width']/metadata['naxis1']
-        #    reference_wavelength /= 1.0e6
-        #    delta /= 1.0e10
-
-        chunk.energy.resolvingPower = resolving_power
-        chunk.energy.specsys = 'TOPOCENT'
-        chunk.energy.ssysobs = 'TOPOCENT'
-        chunk.energy.ssyssrc = 'TOPOCENT'
-        chunk.energy.axis.axis.ctype = 'WAVE'
-        chunk.energy.axis.function.naxis = 1024
-        chunk.energy.axis.function.delta = delta
-        chunk.energy.axis.function.refCoord.pix = 512.0
-        chunk.energy.axis.function.refCoord.val = cval
+    _build_chunk_energy(chunk, n_axis, c_val, delta, filter_name,
+                        resolving_power)
+    logging.debug('End _update_chunk_energy_niri')
 
 
-def _update_chunk_position(chunk):
-    """Check that position information has been set appropriately for
-    GRACES spectra. Guidance given from DB, Jan 18/19 is it must be a
-    bounds."""
+def _update_chunk_energy_gpi(chunk, header):
+    """NIRI-specific chunk-level Energy WCS construction."""
+    logging.debug('Begin _update_chunk_energy_gpi')
+    mc.check_param(chunk, Chunk)
+
+    n_axis = 1
+
+    filter_name = em.om.get('filter_name')
+    filter_md = em.get_filter_metadata('GPI', filter_name)
+
+    mode = em.om.get('mode')
+    if mode in ['imaging', 'IFP', 'IFS']:
+        logging.debug('SpectralWCS: GPI imaging mode.')
+        c_val, delta, resolving_power = _imaging_energy(filter_md)
+    elif mode in ['LS', 'spectroscopy']:
+        logging.debug('SpectralWCS: GPI LS|Spectroscopy mode.')
+        c_val = 0.0  # TODO
+        delta = filter_md['wl_eff_width'] / n_axis / 1.0e10
+        fp_mask = header.get('FPMASK')
+        bandpass_name = filter_name[0]
+        f_ratio = fp_mask.split('_')[0]
+        logging.debug('Bandpass name is {} f_ratio is {}'.format(
+            bandpass_name, f_ratio))
+        if bandpass_name in em.NIRI_RESOLVING_POWER:
+            resolving_power = \
+                em.NIRI_RESOLVING_POWER[bandpass_name][f_ratio]
+        else:
+            resolving_power = None
+            logging.debug('No resolving power.')
+    else:
+        raise mc.CadcException(
+            'Do not understand mode {}'.format(mode))
+
+    _build_chunk_energy(chunk, n_axis, c_val, delta, filter_name,
+                        resolving_power)
+    logging.debug('End _update_chunk_energy_gpi')
+
+
+def _update_chunk_energy_f2(chunk, header):
+    """NIRI-specific chunk-level Energy WCS construction."""
+    logging.debug('Begin _update_chunk_energy_f2')
+    mc.check_param(chunk, Chunk)
+
+    n_axis = 1
+    filter_name = em.om.get('filter_name')
+    filter_md = em.get_filter_metadata('Flamingos2', filter_name)
+
+    mode = em.om.get('mode')
+    logging.error('mode is {}'.format(mode))
+    if mode in ['imaging', 'IFP', 'IFS']:
+        logging.debug('SpectralWCS: F2 imaging mode.')
+        reference_wavelength, delta, resolving_power = \
+            _imaging_energy(filter_md)
+    elif mode in ['LS', 'spectroscopy', 'MOS']:
+        logging.debug('SpectralWCS: F2 LS|Spectroscopy mode.')
+        fp_mask = header.get('MASKNAME')
+        if mode == 'LS':
+            slit_width = fp_mask[0]
+        else:
+            # DB - 04-04-19 no way to determine slit widths used in
+            # custom mask, so assume 2
+            slit_width = '2'
+        n_axis = 2048
+        delta = filter_md['wl_eff_width'] / n_axis / 1.0e4
+        reference_wavelength = em.om.get('central_wavelength')
+        grism_name = header.get('GRISM')
+        logging.error('grism name is {} fp_mask is {}'.format(grism_name, fp_mask))
+        # lookup values from
+        # https://www.gemini.edu/sciops/instruments/flamingos2/spectroscopy/longslit-spectroscopy
+        lookup = {'1': [1300.0, 3600.0],
+                  '2': [900.0, 2800.0],
+                  '3': [600.0, 1600.0],
+                  '4': [350.0, 1300.0],
+                  '6': [130.0, 1000.0],
+                  '8': [100.0, 750.0]}
+        if grism_name.startswith('R3K_'):
+            resolving_power = lookup[slit_width][1]
+        else:
+            resolving_power = lookup[slit_width][0]
+    else:
+        raise mc.CadcException(
+            'Do not understand mode {}'.format(mode))
+
+    _build_chunk_energy(chunk, n_axis, reference_wavelength, delta,
+                        filter_name, resolving_power)
+    logging.debug('End _update_chunk_energy_f2')
+
+
+def _update_chunk_energy_gsaoi(chunk):
+    """NIRI-specific chunk-level Energy WCS construction."""
+    logging.debug('Begin _update_chunk_energy_gsaoi')
+    mc.check_param(chunk, Chunk)
+
+    n_axis = 1
+    filter_name = em.om.get('filter_name')
+    filter_md = em.get_filter_metadata('GSAOI', filter_name)
+
+    mode = em.om.get('mode')
+    logging.error('mode is {}'.format(mode))
+    if mode == 'imaging':
+        logging.debug('SpectralWCS: GSAOI imaging mode.')
+        reference_wavelength, delta, resolving_power = \
+            _imaging_energy(filter_md)
+    else:
+        raise mc.CadcException(
+            'Do not understand mode {}'.format(mode))
+
+    _build_chunk_energy(chunk, n_axis, reference_wavelength, delta,
+                        filter_name, resolving_power)
+
+    logging.debug('End _update_chunk_energy_gsaoi')
+
+
+# select filter_id, wavelength_central, wavelength_lower, wavelength_upper
+# from gsa..gsa_filters where instrument = 'NICI'
+# 0 - central
+# 1 - lower
+# 2 - upper
+#
+# dict with the barcodes stripped from the names as returned by query
+NICI = {'Br-gamma': [2.168600, 2.153900, 2.183300],
+        'CH4-H1%L': [1.628000, 1.619300, 1.636700],
+        'CH4-H1%S': [1.587000, 1.579500, 1.594500],
+        'CH4-H1%Sp': [1.603000, 1.594900, 1.611100],
+        'CH4-H4%L': [1.652000, 1.619000, 1.685000],
+        'CH4-H4%S': [1.578000, 1.547000, 1.609000],
+        'CH4-H6.5%L': [1.701000, 1.652400, 1.749600],
+        'CH4-H6.5%S': [1.596000, 1.537250, 1.654750],
+        'CH4-K5%L': [2.241000, 2.187500, 2.294500],
+        'CH4-K5%S': [2.080000, 2.027500, 2.132500],
+        'FeII': [1.644000, 1.631670, 1.656330],
+        'H2-1-0-S1': [2.123900, 2.110800, 2.137000],
+        'H20-Ice-L': [3.090000, 3.020000, 3.150000],
+        'H': [1.650000, 1.490000, 1.780000],
+        'J': [1.250000, 1.150000, 1.330000],
+        'K': [2.200000, 2.030000, 2.360000],
+        'Kcont': [2.271800, 2.254194, 2.289406],
+        'Kprime': [2.120000, 1.950000, 2.300000],
+        'Ks': [2.150000, 1.990000, 2.300000],
+        'Lprime': [3.780000, 3.430000, 4.130000],
+        'Mprime': [4.680000, 4.550000, 4.790000]}
+
+
+def _update_chunk_energy_nici(chunk, header):
+    """NICI-specific chunk-level Energy WCS construction."""
+    logging.debug('Begin _update_chunk_energy_nici')
+    mc.check_param(chunk, Chunk)
+
+    n_axis = 1
+    mode = em.om.get('mode')
+    logging.error('mode is {}'.format(mode))
+
+    # use filter names from headers, because there's a different
+    # filter/header, and the JSON summary value obfuscates that
+
+    temp = get_filter_name(header)
+    if '&' in temp:
+        raise mc.CadcException(
+            'Do not understand NICI filter {}'.format(temp))
+    filter_name = temp.split('_G')[0]
+    filter_md = em.get_filter_metadata('NICI', filter_name)
+
+    if mode == 'imaging':
+        logging.debug('SpectralWCS: NICI imaging mode.')
+        if len(filter_md) == 0:
+            if filter_name in NICI:
+                w_max = NICI[filter_name][2]
+                w_min = NICI[filter_name][1]
+                logging.error('NICI max is {} min is {}'.format(w_max, w_min))
+                reference_wavelength = w_min
+                delta = w_max - w_min
+                resolving_power = (w_max + w_min)/(2*delta)
+            else:
+                raise mc.CadcException(
+                    'Unprepared for NICI filter {}'.format(filter_name))
+        else:
+            reference_wavelength, delta, resolving_power = \
+                _imaging_energy(filter_md)
+    else:
+        raise mc.CadcException(
+            'Do not understand NICI mode {}'.format(mode))
+
+    _build_chunk_energy(chunk, n_axis, reference_wavelength, delta,
+                        filter_name, resolving_power)
+
+    logging.debug('End _update_chunk_energy_nici')
+
+
+def _update_chunk_energy_trecs(chunk):
+    """TReCS-specific chunk-level Energy WCS construction."""
+    logging.debug('Begin _update_chunk_energy_trecs')
+    mc.check_param(chunk, Chunk)
+
+    # what filter names look like in Gemini metadata, and what they
+    # look like at the SVO, aren't necessarily the same
+
+    n_axis = 1
+    orig_filter_name = em.om.get('filter_name')
+    filter_name = orig_filter_name
+    temp = filter_name.split('-')
+    if len(temp) > 1:
+        filter_name = temp[0]
+    trecs_repair = {'K': 'k',
+                    'L': 'l',
+                    'M': 'm',
+                    'N': 'n',
+                    'Nprime': 'nprime',
+                    'Qw': 'Qwide',
+                    'NeII_ref2': 'NeII_ref'}
+    if filter_name in trecs_repair:
+        filter_name = trecs_repair[filter_name]
+    logging.error('filter_name is {}'.format(filter_name))
+    filter_md = em.get_filter_metadata('TReCS', filter_name)
+
+    mode = em.om.get('mode')
+    logging.error('mode is {}'.format(mode))
+    if mode in ['imaging', 'IFP', 'IFS']:
+        logging.debug('SpectralWCS: TReCS imaging mode.')
+        reference_wavelength, delta, resolving_power = \
+            _imaging_energy(filter_md)
+    elif mode in ['LS', 'spectroscopy', 'MOS']:
+        logging.debug('SpectralWCS: TReCS LS|Spectroscopy mode.')
+        delta = filter_md['wl_eff_width'] / n_axis / 1.0e4
+        reference_wavelength = em.om.get('central_wavelength')
+    else:
+        raise mc.CadcException(
+            'Do not understand mode {}'.format(mode))
+
+    _build_chunk_energy(chunk, n_axis, reference_wavelength, delta,
+                        orig_filter_name, resolving_power=None)
+    logging.debug('End _update_chunk_energy_trecs')
+
+
+def _update_chunk_energy_michelle(chunk):
+    """Michelle-specific chunk-level Energy WCS construction."""
+    logging.debug('Begin _update_chunk_energy_michelle')
+    mc.check_param(chunk, Chunk)
+
+    # what filter names look like in Gemini metadata, and what they
+    # look like at the SVO, aren't necessarily the same
+
+    n_axis = 1
+    orig_filter_name = em.om.get('filter_name')
+    filter_name = orig_filter_name
+    temp = filter_name.split('-')
+    if len(temp) > 1:
+        filter_name = temp[0]
+
+    michelle_repair = {'I79B10': 'Si1',
+                       'I88B10': 'Si2',
+                       'I97B10': 'Si3',
+                       'I103B10': 'Si4',
+                       'I105B53': 'N',
+                       'I112B21': 'Np',
+                       'I116B9': 'Si5',
+                       'I125B9': 'Si6',
+                       'I185B9': 'Qa',
+                       'I209B42': 'Q'}
+    if filter_name in michelle_repair:
+        filter_name = michelle_repair[filter_name]
+    logging.error('filter_name is {}'.format(filter_name))
+    filter_md = em.get_filter_metadata('michelle', filter_name)
+
+    mode = em.om.get('mode')
+    logging.error('mode is {}'.format(mode))
+    if mode in ['imaging', 'IFP', 'IFS']:
+        logging.debug('michelle: SpectralWCS imaging mode.')
+        reference_wavelength, delta, resolving_power = \
+            _imaging_energy(filter_md)
+    elif mode in ['LS', 'spectroscopy', 'MOS']:
+        logging.debug('michelle: SpectralWCS LS|Spectroscopy mode.')
+        delta = filter_md['wl_eff_width'] / n_axis / 1.0e4
+        reference_wavelength = em.om.get('central_wavelength')
+    else:
+        raise mc.CadcException(
+            'michelle: Do not understand mode {}'.format(mode))
+
+    _build_chunk_energy(chunk, n_axis, reference_wavelength, delta,
+                        orig_filter_name, resolving_power=None)
+    logging.debug('End _update_chunk_energy_michelle')
+
+
+def _reset_energy(data_label):
+    """
+    Return True if there should be no energy WCS information created at
+    the chunk level.
+
+    :param data_label str for useful logging information only.
+    """
+    result = False
+    observation_type = em.om.get('observation_type')
+    om_filter_name = em.om.get('filter_name')
+
+    if ((observation_type is not None and observation_type == 'DARK') or
+        (om_filter_name is not None and ('blank' in om_filter_name or
+         'Blank' in om_filter_name))):
+        logging.info(
+            'No chunk energy for {} obs type {} filter name {}'.format(
+                data_label, observation_type, om_filter_name))
+        result = True
+    return result
+
+
+def _imaging_energy(filter_md):
+    """"""
+    # all the filter units are Angstroms, and the chunk-level energy WCS
+    # unit of choice is 'um', therefore 1.0e4
+    c_val = filter_md['wl_eff'] / 1.0e4
+    delta = filter_md['wl_eff_width'] / 1.0e4
+    resolving_power = c_val / delta
+    return c_val, delta, resolving_power
+
+
+def get_filter_name(header):
+    """
+    Create the filter names.
+
+    :param header: The FITS header for the current extension.
+    :return: The filter names, or None if none found.
+    """
+    filters = None
+    header_filters = []
+
+    # DB - 04-02-19 - strip out anything with 'pupil' as it doesn't affect
+    # energy transmission
+    filters2ignore = ['open', 'invalid', 'pupil']
+    for key in header.keys():
+        if 'FILTER' in key:
+            value = header.get(key).lower()
+            ignore = False
+            for ii in filters2ignore:
+                if ii.startswith(value):
+                    ignore = True
+                    break
+            if ignore:
+                continue
+            else:
+                header_filters.append(header.get(key).strip())
+        filters = '&'.join(header_filters)
+    logging.info('Filters are {}'.format(filters))
+    return filters
+
+
+def _update_chunk_position(chunk, radius, header, instrument):
+    """Set position information."""
 
     logging.debug('Begin _update_chunk_position')
     mc.check_param(chunk, Chunk)
@@ -657,19 +1076,24 @@ def _update_chunk_position(chunk):
     dec = em.om.get('dec')
 
     if ra is not None and dec is not None:
-        axis1 = Axis(ctype='RA---TAN', cunit=None)
-        axis2 = Axis(ctype='DEC--TAN', cunit=None)
+        axis1 = Axis(ctype='RA---TAN', cunit='deg')
+        axis2 = Axis(ctype='DEC--TAN', cunit='deg')
         polygon = CoordPolygon2D()
-        # radius = 5.0 degrees, said DB in test data list of Jan 18/19
         for x, y in ([0, 1], [1, 1], [1, 0], [0, 0]):
-            ra_pt = ra - 5.0*(0.5-float(x))
-            dec_pt = dec - 5.0*(0.5-float(y))
+            ra_pt = ra - radius*(0.5-float(x))
+            dec_pt = dec - radius*(0.5-float(y))
             polygon.vertices.append(ValueCoord2D(ra_pt, dec_pt))
         polygon.vertices.append(ValueCoord2D(ra, dec))
         axis = CoordAxis2D(axis1=axis1, axis2=axis2,
                            error1=None, error2=None,
                            range=None, bounds=polygon, function=None)
         chunk.position = SpatialWCS(axis)
+        chunk.position_axis_1 = 1
+        chunk.position_axis_2 = 2
+        chunk.position.coordsys = header.get('RADECSYS')
+        chunk.position.equinox = header.get('TRKEQUIN')
+    else:
+        logging.info('{}: ra or dec missing from JSON.'.format(instrument))
 
     logging.debug('End _update_chunk_position')
 
