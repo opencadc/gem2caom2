@@ -590,13 +590,13 @@ def update(observation, **kwargs):
                         continue
                     for c in observation.planes[p].artifacts[a].parts[
                             part].chunks:
+                        header = headers[int(part)]
 
                         # energy WCS
                         if _reset_energy(headers[0].get('DATALAB')):
                             c.energy = None
                             c.energy_axis = None
                         else:
-                            header = headers[int(part)]
                             if observation.instrument.name == 'NIRI':
                                 _update_chunk_energy_niri(c, header)
                             elif observation.instrument.name == 'GPI':
@@ -618,26 +618,19 @@ def update(observation, **kwargs):
                             # radius = 5.0 arcseconds, said DB in test data
                             # list of Jan 18/19
                             _update_chunk_position(c, 5.0, header, 'GRACES')
-                        # if (observation.instrument.name == 'michelle'):
-                            # Michelle is a retired visitor instrument.
-                            # Spatial WCS info is in primary header. There
-                            # are a variable number of FITS extensions
-                            # defined by primary keyword NUMEXT; assume the
-                            # same spatial WCS for each for now - it differs
-                            # only slightly because of telescope 'chopping'
-                            # and 'nodding' used in acquisition. DB - 01-18-19
-
-
-                            # # radius == 2.8 arcseconds, according to
-                            # # Christian Marios via DB 02-07-19
-                            # _update_chunk_position(c, 2.8, headers[0],
-                            #                        'michelle')
+                        if (part == '1' and
+                                observation.instrument.name == 'GPI'):
+                            # radius == 2.8 arcseconds, according to
+                            # Christian Marios via DB 02-07-19
+                            _update_chunk_position(c, 2.8, header, 'GPI')
+                            c.position.equinox = headers[0].get('TRKEQUIN')
     except Exception as e:
         logging.error(e)
         tb = traceback.format_exc()
         logging.error(tb)
+        raise e
     logging.error('Done update.')
-    return True
+    return observation
 
 
 def _build_chunk_energy(chunk, n_axis, c_val, delta, filter_name,
@@ -1106,7 +1099,11 @@ def _update_chunk_position(chunk, radius, header, instrument):
         chunk.position_axis_1 = 1
         chunk.position_axis_2 = 2
         chunk.position.coordsys = header.get('RADECSYS')
+        if chunk.position.coordsys is None:
+            chunk.position.coordsys = header.get('RADESYS')
         chunk.position.equinox = header.get('TRKEQUIN')
+        if chunk.position.equinox is None:
+            chunk.position.equinox = header.get('EPOCH')
     else:
         logging.info('{}: ra or dec missing from JSON.'.format(instrument))
 

@@ -1,3 +1,4 @@
+<?xml version='1.0' encoding='UTF-8'?>
 <caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="00000000-0000-0000-884f-0d708041b3f3" caom2:lastModified="2018-11-20T05:50:14.799" caom2:maxLastModified="2018-11-20T05:50:14.799" caom2:metaChecksum="md5:26208dfd8c85b1e316b329ec6c56ff15" caom2:accMetaChecksum="md5:5e2e0808ffbec4203bc1b89e8a304a8f">
   <caom2:collection>GEMINI</caom2:collection>
   <caom2:observationID>GS-CAL20160224-12-017</caom2:observationID>
@@ -48,19 +49,60 @@
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>
           <caom2:contentLength>665345</caom2:contentLength>
-          <caom2:contentChecksum>md5:c9cb6076cea63fd1b0b9c7fd2db114e6</caom2:contentChecksum>
+          <caom2:contentChecksum>md5:a347f2754ff2fd4b6209e7566637efad</caom2:contentChecksum>
           <caom2:parts>
-            <caom2:part caom2:id="00000000-0000-0000-944b-8f37f6f24612">
+            <caom2:part caom2:id="00000000-0000-0000-a7d8-5e72aa754886">
               <caom2:name>0</caom2:name>
               <caom2:chunks/>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-8afc-9ca00f7789dd">
+            <caom2:part caom2:id="00000000-0000-0000-97ef-b5100ebe1928">
               <caom2:name>1</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-8abe-4806b3733023">
+                <caom2:chunk caom2:id="00000000-0000-0000-8ff5-e22e1c8d9243">
                   <caom2:naxis>2</caom2:naxis>
+                  <caom2:positionAxis1>1</caom2:positionAxis1>
+                  <caom2:positionAxis2>2</caom2:positionAxis2>
                   <caom2:energyAxis>4</caom2:energyAxis>
                   <caom2:timeAxis>3</caom2:timeAxis>
+                  <caom2:position>
+                    <caom2:axis>
+                      <caom2:axis1>
+                        <caom2:ctype>RA---TAN</caom2:ctype>
+                        <caom2:cunit>deg</caom2:cunit>
+                      </caom2:axis1>
+                      <caom2:axis2>
+                        <caom2:ctype>DEC--TAN</caom2:ctype>
+                        <caom2:cunit>deg</caom2:cunit>
+                      </caom2:axis2>
+                      <caom2:bounds>
+                        <caom2:polygon>
+                          <caom2:vertices>
+                            <caom2:vertex>
+                              <caom2:coord1>145.6</caom2:coord1>
+                              <caom2:coord2>91.30000000000001</caom2:coord2>
+                            </caom2:vertex>
+                            <caom2:vertex>
+                              <caom2:coord1>148.4</caom2:coord1>
+                              <caom2:coord2>91.30000000000001</caom2:coord2>
+                            </caom2:vertex>
+                            <caom2:vertex>
+                              <caom2:coord1>148.4</caom2:coord1>
+                              <caom2:coord2>88.5</caom2:coord2>
+                            </caom2:vertex>
+                            <caom2:vertex>
+                              <caom2:coord1>145.6</caom2:coord1>
+                              <caom2:coord2>88.5</caom2:coord2>
+                            </caom2:vertex>
+                            <caom2:vertex>
+                              <caom2:coord1>147.0</caom2:coord1>
+                              <caom2:coord2>89.9</caom2:coord2>
+                            </caom2:vertex>
+                          </caom2:vertices>
+                        </caom2:polygon>
+                      </caom2:bounds>
+                    </caom2:axis>
+                    <caom2:equinox>2000.0</caom2:equinox>
+                  </caom2:position>
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
@@ -80,7 +122,7 @@
                     <caom2:ssysobs>TOPOCENT</caom2:ssysobs>
                     <caom2:ssyssrc>TOPOCENT</caom2:ssyssrc>
                     <caom2:bandpassName>H</caom2:bandpassName>
-                    <caom2:resolvingPower>5.8278659871347855</caom2:resolvingPower>
+                    <caom2:resolvingPower>5.827865987134786</caom2:resolvingPower>
                   </caom2:energy>
                   <caom2:time>
                     <caom2:axis>
@@ -108,7 +150,7 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-bcdf-18fc032436ae">
+            <caom2:part caom2:id="00000000-0000-0000-a706-9410b531e29b">
               <caom2:name>2</caom2:name>
               <caom2:chunks/>
             </caom2:part>

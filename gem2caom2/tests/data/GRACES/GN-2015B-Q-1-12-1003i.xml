@@ -134,6 +134,7 @@
                           </caom2:polygon>
                         </caom2:bounds>
                       </caom2:axis>
+                      <caom2:equinox>2000.0</caom2:equinox>
                     </caom2:position>
                     <caom2:time>
                       <caom2:axis>
