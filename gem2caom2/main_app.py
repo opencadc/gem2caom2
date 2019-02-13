@@ -573,8 +573,8 @@ def update(observation, **kwargs):
                     # same spatial WCS for each for now - it differs
                     # only slightly because of telescope 'chopping'
                     # and 'nodding' used in acquisition. DB - 01-18-19
-                    _update_position_michelle(observation.planes[p].artifacts[a],
-                                              headers)
+                    _update_position_michelle(
+                        observation.planes[p].artifacts[a], headers)
 
                 for part in observation.planes[p].artifacts[a].parts:
 
@@ -598,7 +598,8 @@ def update(observation, **kwargs):
                             c.energy_axis = None
                         else:
                             if observation.instrument.name == 'NIRI':
-                                _update_chunk_energy_niri(c, headers[0])
+                                _update_chunk_energy_niri(
+                                    c, headers[0], observation.observation_id)
                             elif observation.instrument.name == 'GPI':
                                 _update_chunk_energy_gpi(c, headers[0])
                             elif observation.instrument.name == 'F2':
@@ -608,7 +609,8 @@ def update(observation, **kwargs):
                             elif observation.instrument.name == 'NICI':
                                 _update_chunk_energy_nici(c, header)
                             elif observation.instrument.name == 'TReCS':
-                                _update_chunk_energy_trecs(c)
+                                _update_chunk_energy_trecs(
+                                    c, header, observation.observation_id)
                             elif observation.instrument.name == 'michelle':
                                 _update_chunk_energy_michelle(c)
 
@@ -666,7 +668,7 @@ def _build_chunk_energy(chunk, n_axis, c_val, delta, filter_name,
                                resolving_power=resolving_power)
 
 
-def _update_chunk_energy_niri(chunk, header):
+def _update_chunk_energy_niri(chunk, header, obs_id):
     """NIRI-specific chunk-level Energy WCS construction."""
     logging.debug('Begin _update_chunk_energy_niri')
     mc.check_param(chunk, Chunk)
@@ -694,10 +696,10 @@ def _update_chunk_energy_niri(chunk, header):
 
     mode = em.om.get('mode')
     if mode == 'imaging':
-        logging.debug('NIRI: SpectralWCS imaging mode.')
+        logging.debug('NIRI: SpectralWCS imaging mode for {}.'.format(obs_id))
         c_val, delta, resolving_power = _imaging_energy(filter_md)
     elif mode in ['LS', 'spectroscopy']:
-        logging.debug('NIRI: SpectralWCS mode {}.'.format(mode))
+        logging.debug('NIRI: SpectralWCS mode {} for {}.'.format(mode, obs_id))
         if (chunk.position is not None and chunk.position.axis is not None
             and chunk.position.axis.function is not None
             and chunk.position.axis.function.dimension is not None
@@ -710,21 +712,22 @@ def _update_chunk_energy_niri(chunk, header):
                          'Kgrism', 'Kgrismf32', 'Lgrism', 'Mgrism']:
             bandpass_name = disperser[0]
             f_ratio = em.om.get('focal_plane_mask')
-            logging.debug('Bandpass name is {} f_ratio is {}'.format(
-                bandpass_name, f_ratio))
+            logging.debug('NIRI: Bandpass name is {} f_ratio is {} for {}'.format(
+                bandpass_name, f_ratio, obs_id))
             if bandpass_name in em.NIRI_RESOLVING_POWER:
                 resolving_power = \
                     em.NIRI_RESOLVING_POWER[bandpass_name][f_ratio]
             else:
-                logging.info('NIRI: No resolving power.')
+                logging.info('NIRI: No resolving power for {}.'.format(obs_id))
                 resolving_power = None
         else:
             logging.info(
-                'NIRI: Unknown disperser value {}'.format(disperser))
+                'NIRI: Unknown disperser value {} for {}'.format(disperser,
+                                                                 obs_id))
             resolving_power = None
     else:
         raise mc.CadcException(
-            'NIRI: Do not understand mode {}'.format(mode))
+            'NIRI: Do not understand mode {} for {}'.format(mode, obs_id))
 
     _build_chunk_energy(chunk, n_axis, c_val, delta, filter_name,
                         resolving_power)
@@ -919,20 +922,25 @@ def _update_chunk_energy_nici(chunk, header):
     logging.debug('End _update_chunk_energy_nici')
 
 
-def _update_chunk_energy_trecs(chunk):
+def _update_chunk_energy_trecs(chunk, header, obs_id):
     """TReCS-specific chunk-level Energy WCS construction."""
     logging.debug('Begin _update_chunk_energy_trecs')
     mc.check_param(chunk, Chunk)
 
-    # what filter names look like in Gemini metadata, and what they
-    # look like at the SVO, aren't necessarily the same
+    # Look at the json ‘disperser’ value.  If = LowRes-20" then
+    # resolving power = 80.  If LowRes-10" then resolving poewr = 100.
+    # There was a high-res mode but perhaps never used.  Again,
+    # naxis = NAXIS1 header value and other wcs info as above for NIRI.  But
+    # might take some string manipulation to match filter names with SVO
+    # filters.
 
-    n_axis = 1
     orig_filter_name = em.om.get('filter_name')
     filter_name = orig_filter_name
     temp = filter_name.split('-')
     if len(temp) > 1:
         filter_name = temp[0]
+    # what filter names look like in Gemini metadata, and what they
+    # look like at the SVO, aren't necessarily the same
     trecs_repair = {'K': 'k',
                     'L': 'l',
                     'M': 'm',
@@ -942,25 +950,34 @@ def _update_chunk_energy_trecs(chunk):
                     'NeII_ref2': 'NeII_ref'}
     if filter_name in trecs_repair:
         filter_name = trecs_repair[filter_name]
-    logging.error('filter_name is {}'.format(filter_name))
+    logging.debug('TReCS: filter_name is {} for {}'.format(filter_name, obs_id))
     filter_md = em.get_filter_metadata('TReCS', filter_name)
 
+    resolving_power = None
     mode = em.om.get('mode')
     logging.error('mode is {}'.format(mode))
     if mode in ['imaging', 'IFP', 'IFS']:
+        n_axis = 1
         logging.debug('SpectralWCS: TReCS imaging mode.')
         reference_wavelength, delta, resolving_power = \
             _imaging_energy(filter_md)
     elif mode in ['LS', 'spectroscopy', 'MOS']:
         logging.debug('SpectralWCS: TReCS LS|Spectroscopy mode.')
+        n_axis = header.get('NAXIS1')
         delta = filter_md['wl_eff_width'] / n_axis / 1.0e4
         reference_wavelength = em.om.get('central_wavelength')
+        disperser = em.om.get('disperser')
+        if disperser is not None:
+            if disperser == 'LowRes-20':
+                resolving_power = 80.0
+            elif disperser == 'LowRes-10':
+                resolving_power = 100.0
     else:
         raise mc.CadcException(
             'Do not understand mode {}'.format(mode))
 
     _build_chunk_energy(chunk, n_axis, reference_wavelength, delta,
-                        orig_filter_name, resolving_power=None)
+                        orig_filter_name, resolving_power)
     logging.debug('End _update_chunk_energy_trecs')
 
 
