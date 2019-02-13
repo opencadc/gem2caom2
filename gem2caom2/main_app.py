@@ -598,7 +598,7 @@ def update(observation, **kwargs):
                             c.energy_axis = None
                         else:
                             if observation.instrument.name == 'NIRI':
-                                _update_chunk_energy_niri(c, header)
+                                _update_chunk_energy_niri(c, headers[0])
                             elif observation.instrument.name == 'GPI':
                                 _update_chunk_energy_gpi(c, headers[0])
                             elif observation.instrument.name == 'F2':
@@ -628,7 +628,7 @@ def update(observation, **kwargs):
         logging.error(e)
         tb = traceback.format_exc()
         logging.error(tb)
-        raise e
+        return None
     logging.error('Done update.')
     return observation
 
