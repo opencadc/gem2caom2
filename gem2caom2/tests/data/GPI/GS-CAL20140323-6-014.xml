@@ -51,14 +51,14 @@
           <caom2:contentLength>665345</caom2:contentLength>
           <caom2:contentChecksum>md5:a347f2754ff2fd4b6209e7566637efad</caom2:contentChecksum>
           <caom2:parts>
-            <caom2:part caom2:id="00000000-0000-0000-bff2-0d38cb68ad9d">
+            <caom2:part caom2:id="00000000-0000-0000-aa04-cf49c0e9b213">
               <caom2:name>0</caom2:name>
               <caom2:chunks/>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-b3ac-797e12f128f6">
+            <caom2:part caom2:id="00000000-0000-0000-95e1-01315a390813">
               <caom2:name>1</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-8ac3-95672c9d3964">
+                <caom2:chunk caom2:id="00000000-0000-0000-8cd2-db662a8fe330">
                   <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -78,20 +78,20 @@
                         <caom2:polygon>
                           <caom2:vertices>
                             <caom2:vertex>
-                              <caom2:coord1>145.59999898953</caom2:coord1>
-                              <caom2:coord2>91.29980285056301</caom2:coord2>
+                              <caom2:coord1>146.99961010064112</caom2:coord1>
+                              <caom2:coord2>89.9001917394519</caom2:coord2>
                             </caom2:vertex>
                             <caom2:vertex>
-                              <caom2:coord1>148.39999898953002</caom2:coord1>
-                              <caom2:coord2>91.29980285056301</caom2:coord2>
+                              <caom2:coord1>147.0003878784189</caom2:coord1>
+                              <caom2:coord2>89.9001917394519</caom2:coord2>
                             </caom2:vertex>
                             <caom2:vertex>
-                              <caom2:coord1>148.39999898953002</caom2:coord1>
-                              <caom2:coord2>88.499802850563</caom2:coord2>
+                              <caom2:coord1>147.0003878784189</caom2:coord1>
+                              <caom2:coord2>89.89941396167411</caom2:coord2>
                             </caom2:vertex>
                             <caom2:vertex>
-                              <caom2:coord1>145.59999898953</caom2:coord1>
-                              <caom2:coord2>88.499802850563</caom2:coord2>
+                              <caom2:coord1>146.99961010064112</caom2:coord1>
+                              <caom2:coord2>89.89941396167411</caom2:coord2>
                             </caom2:vertex>
                             <caom2:vertex>
                               <caom2:coord1>146.99999898953</caom2:coord1>
@@ -151,7 +151,7 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-8a7d-9e98ceff1ad6">
+            <caom2:part caom2:id="00000000-0000-0000-8897-5e769a76b15e">
               <caom2:name>2</caom2:name>
               <caom2:chunks/>
             </caom2:part>

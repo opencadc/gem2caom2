@@ -583,8 +583,8 @@ def update(observation, **kwargs):
                         # image (with WCS), second is data quality for each
                         # pixel (no WCS).
                         logging.info(
-                            'GPI: Setting chunks to None for part {}'.format(
-                                part))
+                            'GPI: Setting chunks to None for part {} for {}'.format(
+                                part, observation.observation_id))
                         observation.planes[p].artifacts[a].parts[part].chunks \
                             = TypedList(Chunk,)
                         continue
@@ -1075,13 +1075,17 @@ def get_filter_name(header):
 
 
 def _update_chunk_position(chunk, radius, header, instrument):
-    """Set position information."""
+    """Set position information as a Bounds Polygon around a point, with
+    a given radius.
+
+    :param radius in arc seconds"""
 
     logging.debug('Begin _update_chunk_position')
     mc.check_param(chunk, Chunk)
 
     ra = em.om.get('ra')
     dec = em.om.get('dec')
+    radius = radius/3600.0  # units of ra and dec are degrees, radius is "
 
     if ra is not None and dec is not None:
         axis1 = Axis(ctype='RA---TAN', cunit='deg')
