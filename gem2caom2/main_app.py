@@ -566,7 +566,8 @@ def update(observation, **kwargs):
             for a in observation.planes[p].artifacts:
 
                 if (observation.instrument.name == 'michelle' or
-                        observation.instrument.name == 'TReCS'):
+                        observation.instrument.name == 'TReCS' or
+                        observation.instrument.name == 'NIFS'):
                     # Michelle is a retired visitor instrument.
                     # Spatial WCS info is in primary header. There
                     # are a variable number of FITS extensions
@@ -574,6 +575,9 @@ def update(observation, **kwargs):
                     # same spatial WCS for each for now - it differs
                     # only slightly because of telescope 'chopping'
                     # and 'nodding' used in acquisition. DB - 01-18-19
+                    #
+                    # DB - 01-18-19 - NIFS has no WCS info in extension; use
+                    # primary header
                     _update_position_from_zeroth_header(
                         observation.planes[p].artifacts[a], headers,
                         observation.observation_id)
@@ -615,7 +619,11 @@ def update(observation, **kwargs):
                                 _update_chunk_energy_trecs(
                                     c, header, observation.observation_id)
                             elif observation.instrument.name == 'michelle':
-                                _update_chunk_energy_michelle(c)
+                                _update_chunk_energy_michelle(
+                                    c, observation.observation_id)
+                            elif observation.instrument.name == 'NIFS':
+                                _update_chunk_energy_nifs(
+                                    c, header, observation.observation_id)
 
                         # position WCS
                         if (observation.instrument.name == 'GRACES' and
@@ -926,8 +934,13 @@ def _update_chunk_energy_nici(chunk, header, obs_id):
     # chunks.  Pat says in this case nothing will be put in the bandpass
     # name for the plane.  Add code to combine the two chunk bandpass names
     # to create a plane bandpass name only for this instrument
+    #
+    # DB - 14-02-19 value looks clearer (as two filters) with a space on
+    # both sides of the ‘+’.
+    
+    temp = em.om.get('filter_name')
     _build_chunk_energy(chunk, n_axis, reference_wavelength, delta,
-                        em.om.get('filter_name'), resolving_power)
+                        temp.replace('+', ' + '), resolving_power)
 
     logging.debug('End _update_chunk_energy_nici')
 
@@ -990,7 +1003,7 @@ def _update_chunk_energy_trecs(chunk, header, obs_id):
     logging.debug('End _update_chunk_energy_trecs')
 
 
-def _update_chunk_energy_michelle(chunk):
+def _update_chunk_energy_michelle(chunk, obs_id):
     """Michelle-specific chunk-level Energy WCS construction."""
     logging.debug('Begin _update_chunk_energy_michelle')
     mc.check_param(chunk, Chunk)
@@ -1017,26 +1030,116 @@ def _update_chunk_energy_michelle(chunk):
                        'I209B42': 'Q'}
     if filter_name in michelle_repair:
         filter_name = michelle_repair[filter_name]
-    logging.error('filter_name is {}'.format(filter_name))
     filter_md = em.get_filter_metadata('michelle', filter_name)
 
     mode = em.om.get('mode')
-    logging.error('mode is {}'.format(mode))
+    logging.debug('michelle: mode is {}, filter_name is {}, for {}'.format(
+        mode, filter_name, obs_id))
     if mode in ['imaging', 'IFP', 'IFS']:
-        logging.debug('michelle: SpectralWCS imaging mode.')
+        logging.debug(
+            'michelle: SpectralWCS imaging mode for {}.'.format(obs_id))
         reference_wavelength, delta, resolving_power = \
             _imaging_energy(filter_md)
     elif mode in ['LS', 'spectroscopy', 'MOS']:
-        logging.debug('michelle: SpectralWCS LS|Spectroscopy mode.')
+        logging.debug(
+            'michelle: SpectralWCS LS|Spectroscopy mode for {}.'.format(
+                obs_id))
         delta = filter_md['wl_eff_width'] / n_axis / 1.0e4
         reference_wavelength = em.om.get('central_wavelength')
     else:
         raise mc.CadcException(
-            'michelle: Do not understand mode {}'.format(mode))
+            'michelle: Do not understand mode {} for {}'.format(mode, obs_id))
 
     _build_chunk_energy(chunk, n_axis, reference_wavelength, delta,
                         orig_filter_name, resolving_power=None)
     logging.debug('End _update_chunk_energy_michelle')
+
+
+def _update_chunk_energy_nifs(chunk, header, obs_id):
+    """NIFS-specific chunk-level Spectral WCS construction."""
+    logging.debug('Begin _update_chunk_energy_nifs')
+    mc.check_param(chunk, Chunk)
+
+    # Imaging: treated as for other instruments.
+    #
+    # Spectroscopy:
+    #
+    # Need grating name from json ‘disperser’ value
+    # Need central wavelength from json ‘central_wavelength’ value
+    # Need filter name from json ‘filter’ value
+    # Need header NAXIS1 value in extension for number of pixels in
+    # dispersion direction
+    #
+    # Then the top table on this page to create a lookup for
+    # upper/lower wavelength values and spectral resolution for
+    # the given grating/filter combination:
+    # https://www.gemini.edu/sciops/instruments/nifs/ifu-spectroscopy/gratings.
+    #
+    # cdelta will be as for other instruments (upper - lower)/naxis
+
+    # Use the filter names WITHOUT the ‘_298K’ suffix (since those are for
+    # the cold filters at operating temperature).
+
+    # key = grating name
+    # key = associated filter
+    # 0 = Central Wavelength (microns),
+    # 1, 2 = Spectral Range,
+    # 3 = Spectral Resolution,
+    # 4 = Velocity Resolution (km/s)
+
+    # From the second table:
+    # Table 2: The NIFS gratings can be tuned to different central
+    # wavelengths. The short and long limits of the possible tuned
+    # central wavelengths and the associated filters required are:
+    # Grating, Name, Short Wavelength Limit (microns), Long Wavelength Limit (microns)	Short Wavelength Filter	Long Wavelength Filter
+    # Z	0.94	1.16	ZJ	ZJ
+    # J	1.14	1.36	ZJ	JH
+    # H	1.48	1.82	JH	HK
+    # K	1.98	2.41	HK	HK
+
+    nifs_lookup = {'Z':       {'ZJ': [1.05, 0.94, 1.15, 4990.0, 60.1]},
+                   'J':       {'ZJ': [1.25, 1.15, 1.33, 6040.0, 49.6]},
+                   'H':       {'JH': [1.65, 1.49, 1.80, 5290.0, 56.8]},
+                   'K':       {'HK': [2.20, 1.99, 2.40, 5290.0, 56.7]},
+                   'K_Short': {'HK': [2.20, 1.98, 2.41, None, None]},
+                   'K_Long':  {'HK': [2.20, 1.98, 2.41, None, None]}}
+
+    filter_name = em.om.get('filter_name')
+    filter_md = em.get_filter_metadata('NIFS', filter_name)
+
+    spectroscopy = em.om.get('spectroscopy')
+    logging.debug('NIFS: spectroscopy is {}, filter is {} for {}'.format(
+        spectroscopy, filter_name, obs_id))
+    if spectroscopy is not None:
+        if spectroscopy:
+            logging.debug('NIFS: spectroscopy for {}.'.format(obs_id))
+            n_axis = header.get('NAXIS1')
+            reference_wavelength = em.om.get('central_wavelength')
+            grating = em.om.get('disperser')
+            if grating in nifs_lookup:
+                if filter_name in nifs_lookup[grating]:
+                    wl_min = nifs_lookup[grating][filter_name][1]
+                    wl_max = nifs_lookup[grating][filter_name][2]
+                    delta = (wl_max - wl_min) / n_axis
+                    resolving_power = nifs_lookup[grating][filter_name][3]
+                else:
+                    raise mc.CadcException('NIFS: mystery filter_name {} for {}'.format(
+                        filter_name, obs_id))
+            else:
+                raise mc.CadcException(
+                    'NIFS: mystery grating {} for {}'.format(grating, obs_id))
+        else:
+            logging.debug('NIFS: imaging for {}.'.format(obs_id))
+            n_axis = 1
+            reference_wavelength, delta, resolving_power = \
+                _imaging_energy(filter_md)
+    else:
+        raise mc.CadcException(
+            'NIFS: No spectroscopy information for {}'.format(obs_id))
+
+    _build_chunk_energy(chunk, n_axis, reference_wavelength, delta,
+                        filter_name, resolving_power)
+    logging.debug('End _update_chunk_energy_nifs')
 
 
 def _reset_energy(data_label):

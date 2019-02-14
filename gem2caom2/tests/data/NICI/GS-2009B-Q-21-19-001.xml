@@ -114,7 +114,7 @@
                     <caom2:specsys>TOPOCENT</caom2:specsys>
                     <caom2:ssysobs>TOPOCENT</caom2:ssysobs>
                     <caom2:ssyssrc>TOPOCENT</caom2:ssyssrc>
-                    <caom2:bandpassName>Kprime+H2-1-0-S1</caom2:bandpassName>
+                    <caom2:bandpassName>Kprime + H2-1-0-S1</caom2:bandpassName>
                     <caom2:resolvingPower>6.071428571428574</caom2:resolvingPower>
                   </caom2:energy>
                   <caom2:time>
@@ -203,7 +203,7 @@
                     <caom2:specsys>TOPOCENT</caom2:specsys>
                     <caom2:ssysobs>TOPOCENT</caom2:ssysobs>
                     <caom2:ssyssrc>TOPOCENT</caom2:ssyssrc>
-                    <caom2:bandpassName>Kprime+H2-1-0-S1</caom2:bandpassName>
+                    <caom2:bandpassName>Kprime + H2-1-0-S1</caom2:bandpassName>
                     <caom2:resolvingPower>81.06488549618251</caom2:resolvingPower>
                   </caom2:energy>
                   <caom2:time>

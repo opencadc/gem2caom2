@@ -13,6 +13,7 @@
   <caom2:target>
     <caom2:name>Dark</caom2:name>
     <caom2:type>object</caom2:type>
+    <caom2:moving>true</caom2:moving>
   </caom2:target>
   <caom2:telescope>
     <caom2:name>Gemini-North</caom2:name>
@@ -58,7 +59,43 @@
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-8b12-1abcaf8da702">
                   <caom2:naxis>2</caom2:naxis>
+                  <caom2:positionAxis1>1</caom2:positionAxis1>
+                  <caom2:positionAxis2>2</caom2:positionAxis2>
                   <caom2:timeAxis>3</caom2:timeAxis>
+                  <caom2:position>
+                    <caom2:axis>
+                      <caom2:axis1>
+                        <caom2:ctype>RA---TAN</caom2:ctype>
+                        <caom2:cunit>deg</caom2:cunit>
+                      </caom2:axis1>
+                      <caom2:axis2>
+                        <caom2:ctype>DEC--TAN</caom2:ctype>
+                        <caom2:cunit>deg</caom2:cunit>
+                      </caom2:axis2>
+                      <caom2:function>
+                        <caom2:dimension>
+                          <caom2:naxis1>2048</caom2:naxis1>
+                          <caom2:naxis2>2048</caom2:naxis2>
+                        </caom2:dimension>
+                        <caom2:refCoord>
+                          <caom2:coord1>
+                            <caom2:pix>15.0</caom2:pix>
+                            <caom2:val>107.153193</caom2:val>
+                          </caom2:coord1>
+                          <caom2:coord2>
+                            <caom2:pix>34.000111</caom2:pix>
+                            <caom2:val>19.86111</caom2:val>
+                          </caom2:coord2>
+                        </caom2:refCoord>
+                        <caom2:cd11>4.7e-05</caom2:cd11>
+                        <caom2:cd12>1e-06</caom2:cd12>
+                        <caom2:cd21>-1e-06</caom2:cd21>
+                        <caom2:cd22>1.9e-05</caom2:cd22>
+                      </caom2:function>
+                    </caom2:axis>
+                    <caom2:coordsys>FK5</caom2:coordsys>
+                    <caom2:equinox>2000.0</caom2:equinox>
+                  </caom2:position>
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
@@ -74,7 +111,7 @@
                         <caom2:delta>0.000694444444444444</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>0.0</caom2:val>
+                          <caom2:val>57668.68359027777</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
