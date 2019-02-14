@@ -106,7 +106,7 @@
                         <caom2:delta>0.151089625479</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>1.24869357833</caom2:val>
+                          <caom2:val>1.1731487655905</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -114,7 +114,7 @@
                     <caom2:ssysobs>TOPOCENT</caom2:ssysobs>
                     <caom2:ssyssrc>TOPOCENT</caom2:ssyssrc>
                     <caom2:bandpassName>J</caom2:bandpassName>
-                    <caom2:resolvingPower>8.264588480984463</caom2:resolvingPower>
+                    <caom2:resolvingPower>7.764588480984462</caom2:resolvingPower>
                   </caom2:energy>
                   <caom2:time>
                     <caom2:axis>
