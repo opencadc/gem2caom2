@@ -565,7 +565,8 @@ def update(observation, **kwargs):
             mode = observation.planes[p].data_product_type
             for a in observation.planes[p].artifacts:
 
-                if observation.instrument.name == 'michelle':
+                if (observation.instrument.name == 'michelle' or
+                        observation.instrument.name == 'TReCS'):
                     # Michelle is a retired visitor instrument.
                     # Spatial WCS info is in primary header. There
                     # are a variable number of FITS extensions
@@ -573,8 +574,9 @@ def update(observation, **kwargs):
                     # same spatial WCS for each for now - it differs
                     # only slightly because of telescope 'chopping'
                     # and 'nodding' used in acquisition. DB - 01-18-19
-                    _update_position_michelle(observation.planes[p].artifacts[a],
-                                              headers)
+                    _update_position_from_zeroth_header(
+                        observation.planes[p].artifacts[a], headers,
+                        observation.observation_id)
 
                 for part in observation.planes[p].artifacts[a].parts:
 
@@ -583,22 +585,23 @@ def update(observation, **kwargs):
                         # image (with WCS), second is data quality for each
                         # pixel (no WCS).
                         logging.info(
-                            'GPI: Setting chunks to None for part {}'.format(
-                                part))
+                            'GPI: Setting chunks to None for part {} for {}'.format(
+                                part, observation.observation_id))
                         observation.planes[p].artifacts[a].parts[part].chunks \
                             = TypedList(Chunk,)
                         continue
                     for c in observation.planes[p].artifacts[a].parts[
                             part].chunks:
+                        header = headers[int(part)]
 
                         # energy WCS
                         if _reset_energy(headers[0].get('DATALAB')):
                             c.energy = None
                             c.energy_axis = None
                         else:
-                            header = headers[int(part)]
                             if observation.instrument.name == 'NIRI':
-                                _update_chunk_energy_niri(c, header)
+                                _update_chunk_energy_niri(
+                                    c, headers[0], observation.observation_id)
                             elif observation.instrument.name == 'GPI':
                                 _update_chunk_energy_gpi(c, headers[0])
                             elif observation.instrument.name == 'F2':
@@ -608,7 +611,8 @@ def update(observation, **kwargs):
                             elif observation.instrument.name == 'NICI':
                                 _update_chunk_energy_nici(c, header)
                             elif observation.instrument.name == 'TReCS':
-                                _update_chunk_energy_trecs(c)
+                                _update_chunk_energy_trecs(
+                                    c, header, observation.observation_id)
                             elif observation.instrument.name == 'michelle':
                                 _update_chunk_energy_michelle(c)
 
@@ -618,26 +622,19 @@ def update(observation, **kwargs):
                             # radius = 5.0 arcseconds, said DB in test data
                             # list of Jan 18/19
                             _update_chunk_position(c, 5.0, header, 'GRACES')
-                        # if (observation.instrument.name == 'michelle'):
-                            # Michelle is a retired visitor instrument.
-                            # Spatial WCS info is in primary header. There
-                            # are a variable number of FITS extensions
-                            # defined by primary keyword NUMEXT; assume the
-                            # same spatial WCS for each for now - it differs
-                            # only slightly because of telescope 'chopping'
-                            # and 'nodding' used in acquisition. DB - 01-18-19
-
-
-                            # # radius == 2.8 arcseconds, according to
-                            # # Christian Marios via DB 02-07-19
-                            # _update_chunk_position(c, 2.8, headers[0],
-                            #                        'michelle')
+                        if (part == '1' and
+                                observation.instrument.name == 'GPI'):
+                            # radius == 2.8 arcseconds, according to
+                            # Christian Marios via DB 02-07-19
+                            _update_chunk_position(c, 2.8, header, 'GPI')
+                            c.position.equinox = headers[0].get('TRKEQUIN')
     except Exception as e:
         logging.error(e)
         tb = traceback.format_exc()
         logging.error(tb)
+        return None
     logging.error('Done update.')
-    return True
+    return observation
 
 
 def _build_chunk_energy(chunk, n_axis, c_val, delta, filter_name,
@@ -645,7 +642,7 @@ def _build_chunk_energy(chunk, n_axis, c_val, delta, filter_name,
     # build the CAOM2 structure
 
     # DB - 02-04-19 - initial pass, do not try to calculate
-    # dispersion, so naxis=1, prefer um as units, strip the bar code
+    # dispersion, so prefer um as units, strip the bar code
     # from the filter names
     chunk.energy_axis = 4
     axis = Axis(ctype='WAVE', cunit='um')
@@ -673,7 +670,7 @@ def _build_chunk_energy(chunk, n_axis, c_val, delta, filter_name,
                                resolving_power=resolving_power)
 
 
-def _update_chunk_energy_niri(chunk, header):
+def _update_chunk_energy_niri(chunk, header, obs_id):
     """NIRI-specific chunk-level Energy WCS construction."""
     logging.debug('Begin _update_chunk_energy_niri')
     mc.check_param(chunk, Chunk)
@@ -701,37 +698,38 @@ def _update_chunk_energy_niri(chunk, header):
 
     mode = em.om.get('mode')
     if mode == 'imaging':
-        logging.debug('NIRI: SpectralWCS imaging mode.')
+        logging.debug('NIRI: SpectralWCS imaging mode for {}.'.format(obs_id))
         c_val, delta, resolving_power = _imaging_energy(filter_md)
     elif mode in ['LS', 'spectroscopy']:
-        logging.debug('NIRI: SpectralWCS mode {}.'.format(mode))
+        logging.debug('NIRI: SpectralWCS mode {} for {}.'.format(mode, obs_id))
         if (chunk.position is not None and chunk.position.axis is not None
             and chunk.position.axis.function is not None
             and chunk.position.axis.function.dimension is not None
                 and chunk.position.axis.function.dimension.naxis1 is not None):
             n_axis = chunk.position.axis.function.dimension.naxis1
-        c_val = filter_md['wl_eff']  # central wavelength
+        c_val = filter_md['wl_min']  # minimum wavelength
         delta = filter_md['wl_eff_width'] / n_axis / 1.0e4
         disperser = em.om.get('disperser')
         if disperser in ['Jgrism', 'Jgrismf32', 'Hgrism', 'Hgrismf32',
                          'Kgrism', 'Kgrismf32', 'Lgrism', 'Mgrism']:
             bandpass_name = disperser[0]
             f_ratio = em.om.get('focal_plane_mask')
-            logging.debug('Bandpass name is {} f_ratio is {}'.format(
-                bandpass_name, f_ratio))
+            logging.debug('NIRI: Bandpass name is {} f_ratio is {} for {}'.format(
+                bandpass_name, f_ratio, obs_id))
             if bandpass_name in em.NIRI_RESOLVING_POWER:
                 resolving_power = \
                     em.NIRI_RESOLVING_POWER[bandpass_name][f_ratio]
             else:
-                logging.info('NIRI: No resolving power.')
+                logging.info('NIRI: No resolving power for {}.'.format(obs_id))
                 resolving_power = None
         else:
             logging.info(
-                'NIRI: Unknown disperser value {}'.format(disperser))
+                'NIRI: Unknown disperser value {} for {}'.format(disperser,
+                                                                 obs_id))
             resolving_power = None
     else:
         raise mc.CadcException(
-            'NIRI: Do not understand mode {}'.format(mode))
+            'NIRI: Do not understand mode {} for {}'.format(mode, obs_id))
 
     _build_chunk_energy(chunk, n_axis, c_val, delta, filter_name,
                         resolving_power)
@@ -926,20 +924,25 @@ def _update_chunk_energy_nici(chunk, header):
     logging.debug('End _update_chunk_energy_nici')
 
 
-def _update_chunk_energy_trecs(chunk):
+def _update_chunk_energy_trecs(chunk, header, obs_id):
     """TReCS-specific chunk-level Energy WCS construction."""
     logging.debug('Begin _update_chunk_energy_trecs')
     mc.check_param(chunk, Chunk)
 
-    # what filter names look like in Gemini metadata, and what they
-    # look like at the SVO, aren't necessarily the same
+    # Look at the json ‘disperser’ value.  If = LowRes-20" then
+    # resolving power = 80.  If LowRes-10" then resolving poewr = 100.
+    # There was a high-res mode but perhaps never used.  Again,
+    # naxis = NAXIS1 header value and other wcs info as above for NIRI.  But
+    # might take some string manipulation to match filter names with SVO
+    # filters.
 
-    n_axis = 1
     orig_filter_name = em.om.get('filter_name')
     filter_name = orig_filter_name
     temp = filter_name.split('-')
     if len(temp) > 1:
         filter_name = temp[0]
+    # what filter names look like in Gemini metadata, and what they
+    # look like at the SVO, aren't necessarily the same
     trecs_repair = {'K': 'k',
                     'L': 'l',
                     'M': 'm',
@@ -949,25 +952,33 @@ def _update_chunk_energy_trecs(chunk):
                     'NeII_ref2': 'NeII_ref'}
     if filter_name in trecs_repair:
         filter_name = trecs_repair[filter_name]
-    logging.error('filter_name is {}'.format(filter_name))
+    logging.debug('TReCS: filter_name is {} for {}'.format(filter_name, obs_id))
     filter_md = em.get_filter_metadata('TReCS', filter_name)
 
+    resolving_power = None
     mode = em.om.get('mode')
-    logging.error('mode is {}'.format(mode))
     if mode in ['imaging', 'IFP', 'IFS']:
-        logging.debug('SpectralWCS: TReCS imaging mode.')
+        logging.debug('TRECS: imaging mode for {}.'.format(obs_id))
+        n_axis = 1
         reference_wavelength, delta, resolving_power = \
             _imaging_energy(filter_md)
     elif mode in ['LS', 'spectroscopy', 'MOS']:
-        logging.debug('SpectralWCS: TReCS LS|Spectroscopy mode.')
+        logging.debug('TReCS: LS|Spectroscopy mode for {}.'.format(obs_id))
+        n_axis = header.get('NAXIS1')
         delta = filter_md['wl_eff_width'] / n_axis / 1.0e4
         reference_wavelength = em.om.get('central_wavelength')
+        disperser = em.om.get('disperser')
+        if disperser is not None:
+            if disperser == 'LowRes-20':
+                resolving_power = 80.0
+            elif disperser == 'LowRes-10':
+                resolving_power = 100.0
     else:
         raise mc.CadcException(
-            'Do not understand mode {}'.format(mode))
+            'Do not understand mode {} for {}'.format(mode, obs_id))
 
     _build_chunk_energy(chunk, n_axis, reference_wavelength, delta,
-                        orig_filter_name, resolving_power=None)
+                        orig_filter_name, resolving_power)
     logging.debug('End _update_chunk_energy_trecs')
 
 
@@ -1045,7 +1056,23 @@ def _imaging_energy(filter_md):
     """"""
     # all the filter units are Angstroms, and the chunk-level energy WCS
     # unit of choice is 'um', therefore 1.0e4
-    c_val = filter_md['wl_eff'] / 1.0e4
+
+    # NAXIS = 1
+    # CTYPE = ‘WAVE’
+    # CUNIT = ‘um’
+    # CRPIX = NAXIS / 2.0
+    # CRVAL = wl_min
+    # CDELT = wl_max - wl_min
+    # resolving power = (wl_max  + wl_min)/(2*CDELT)
+    # bandpass_name = filter name
+    # CDELT is the SVO’s effective width, W_effective in their tables which
+    # corresponds more or less to wl_max - wl_min.
+
+    # CRPIX values should all be 0.5 for imaging spectral WCS as long as
+    # you use the lower wavelength boundary of the filter for the
+    # corresponding CRVAL. DB - 02-13-19
+
+    c_val = filter_md['wl_min'] / 1.0e4
     delta = filter_md['wl_eff_width'] / 1.0e4
     resolving_power = c_val / delta
     return c_val, delta, resolving_power
@@ -1082,13 +1109,17 @@ def get_filter_name(header):
 
 
 def _update_chunk_position(chunk, radius, header, instrument):
-    """Set position information."""
+    """Set position information as a Bounds Polygon around a point, with
+    a given radius.
+
+    :param radius in arc seconds"""
 
     logging.debug('Begin _update_chunk_position')
     mc.check_param(chunk, Chunk)
 
     ra = em.om.get('ra')
     dec = em.om.get('dec')
+    radius = radius/3600.0  # units of ra and dec are degrees, radius is "
 
     if ra is not None and dec is not None:
         axis1 = Axis(ctype='RA---TAN', cunit='deg')
@@ -1106,14 +1137,18 @@ def _update_chunk_position(chunk, radius, header, instrument):
         chunk.position_axis_1 = 1
         chunk.position_axis_2 = 2
         chunk.position.coordsys = header.get('RADECSYS')
+        if chunk.position.coordsys is None:
+            chunk.position.coordsys = header.get('RADESYS')
         chunk.position.equinox = header.get('TRKEQUIN')
+        if chunk.position.equinox is None:
+            chunk.position.equinox = header.get('EPOCH')
     else:
         logging.info('{}: ra or dec missing from JSON.'.format(instrument))
 
     logging.debug('End _update_chunk_position')
 
 
-def _update_position_michelle(artifact, headers):
+def _update_position_from_zeroth_header(artifact, headers, log_id):
     """Make the 0th header spatial WCS the WCS for all the
     chunks."""
     primary_header = headers[0]
@@ -1131,9 +1166,10 @@ def _update_position_michelle(artifact, headers):
         if part == '0':
             continue
         for chunk in artifact.parts[part].chunks:
-            chunk.position = primary_chunk.position
-            chunk.position_axis_1 = 1
-            chunk.position_axis_2 = 2
+            if primary_chunk.position is not None:
+                chunk.position = primary_chunk.position
+                chunk.position_axis_1 = 1
+                chunk.position_axis_2 = 2
 
 
 def _build_blueprints(uris, obs_id, file_id):

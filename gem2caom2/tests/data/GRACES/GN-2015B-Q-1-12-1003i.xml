@@ -111,20 +111,20 @@
                           <caom2:polygon>
                             <caom2:vertices>
                               <caom2:vertex>
-                                <caom2:coord1>298.46708</caom2:coord1>
-                                <caom2:coord2>25.833889</caom2:coord2>
+                                <caom2:coord1>300.9663855555556</caom2:coord1>
+                                <caom2:coord2>23.334583444444444</caom2:coord2>
                               </caom2:vertex>
                               <caom2:vertex>
-                                <caom2:coord1>303.46708</caom2:coord1>
-                                <caom2:coord2>25.833889</caom2:coord2>
+                                <caom2:coord1>300.96777444444444</caom2:coord1>
+                                <caom2:coord2>23.334583444444444</caom2:coord2>
                               </caom2:vertex>
                               <caom2:vertex>
-                                <caom2:coord1>303.46708</caom2:coord1>
-                                <caom2:coord2>20.833889</caom2:coord2>
+                                <caom2:coord1>300.96777444444444</caom2:coord1>
+                                <caom2:coord2>23.333194555555554</caom2:coord2>
                               </caom2:vertex>
                               <caom2:vertex>
-                                <caom2:coord1>298.46708</caom2:coord1>
-                                <caom2:coord2>20.833889</caom2:coord2>
+                                <caom2:coord1>300.9663855555556</caom2:coord1>
+                                <caom2:coord2>23.333194555555554</caom2:coord2>
                               </caom2:vertex>
                               <caom2:vertex>
                                 <caom2:coord1>300.96708</caom2:coord1>
@@ -134,6 +134,7 @@
                           </caom2:polygon>
                         </caom2:bounds>
                       </caom2:axis>
+                      <caom2:equinox>2000.0</caom2:equinox>
                     </caom2:position>
                     <caom2:time>
                       <caom2:axis>

@@ -54,12 +54,8 @@
               <caom2:name>0</caom2:name>
               <caom2:chunks/>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-ae12-7c0836c1d5ae">
-              <caom2:name>1</caom2:name>
-              <caom2:chunks/>
-            </caom2:part>
             <caom2:part caom2:id="00000000-0000-0000-982f-921c1e6fac0e">
-              <caom2:name>2</caom2:name>
+              <caom2:name>1</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-9c10-8851cfb9c963">
                   <caom2:naxis>4</caom2:naxis>
@@ -148,7 +144,7 @@
               </caom2:chunks>
             </caom2:part>
             <caom2:part caom2:id="00000000-0000-0000-8a04-7ae7eb070595">
-              <caom2:name>3</caom2:name>
+              <caom2:name>2</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-9087-011b40ed00e8">
                   <caom2:naxis>4</caom2:naxis>
@@ -237,7 +233,7 @@
               </caom2:chunks>
             </caom2:part>
             <caom2:part caom2:id="00000000-0000-0000-a7be-074934ecc0e3">
-              <caom2:name>4</caom2:name>
+              <caom2:name>3</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-a94f-1ba567cdcc4a">
                   <caom2:naxis>4</caom2:naxis>
@@ -326,7 +322,7 @@
               </caom2:chunks>
             </caom2:part>
             <caom2:part caom2:id="00000000-0000-0000-899d-62ff9c4da298">
-              <caom2:name>5</caom2:name>
+              <caom2:name>4</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-8423-c6a1c2d2cd13">
                   <caom2:naxis>4</caom2:naxis>
@@ -415,7 +411,7 @@
               </caom2:chunks>
             </caom2:part>
             <caom2:part caom2:id="00000000-0000-0000-b27c-6aa778899af4">
-              <caom2:name>6</caom2:name>
+              <caom2:name>5</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-aa5e-daaf2d086d47">
                   <caom2:naxis>4</caom2:naxis>
@@ -504,7 +500,7 @@
               </caom2:chunks>
             </caom2:part>
             <caom2:part caom2:id="00000000-0000-0000-92e3-bdbb1749b6bc">
-              <caom2:name>7</caom2:name>
+              <caom2:name>6</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-a6cf-0e8715752923">
                   <caom2:naxis>4</caom2:naxis>
@@ -593,7 +589,7 @@
               </caom2:chunks>
             </caom2:part>
             <caom2:part caom2:id="00000000-0000-0000-bfec-7ae25fb35a53">
-              <caom2:name>8</caom2:name>
+              <caom2:name>7</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-83b7-1f6a2a523260">
                   <caom2:naxis>4</caom2:naxis>
@@ -682,7 +678,7 @@
               </caom2:chunks>
             </caom2:part>
             <caom2:part caom2:id="00000000-0000-0000-9109-54819441717f">
-              <caom2:name>9</caom2:name>
+              <caom2:name>8</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-a549-c526a6260120">
                   <caom2:naxis>4</caom2:naxis>

@@ -1,3 +1,4 @@
+<?xml version='1.0' encoding='UTF-8'?>
 <caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="00000000-0000-0000-8240-f80322ad04a2" caom2:lastModified="2018-10-08T21:01:18.739" caom2:maxLastModified="2018-10-08T21:01:21.704" caom2:metaChecksum="md5:f34208a5dda741742a636764e74c6132" caom2:accMetaChecksum="md5:c9823e9af25508f6942bd6bf2bc150c8">
   <caom2:collection>GEMINI</caom2:collection>
   <caom2:observationID>GN-2015B-Q-1-12-1003</caom2:observationID>
@@ -24,8 +25,8 @@
     <caom2:name>GRACES</caom2:name>
     <caom2:keywords>
       <caom2:keyword>star</caom2:keyword>
-      <caom2:keyword>only</caom2:keyword>
       <caom2:keyword>Spectroscopy,</caom2:keyword>
+      <caom2:keyword>only</caom2:keyword>
     </caom2:keywords>
   </caom2:instrument>
   <caom2:planes>
@@ -64,105 +65,106 @@
         </caom2:artifact>
       </caom2:artifacts>
     </caom2:plane>
-    <caom2:plane caom2:id="00000000-0000-0000-8057-e985de30cf3f" caom2:lastModified="2018-10-08T21:01:21.704" caom2:maxLastModified="2018-10-08T21:01:21.704" caom2:metaChecksum="md5:da2575ae90b8f5024bb338a7ee3c8d88" caom2:accMetaChecksum="md5:c67df9a37437746216cee0fc5ccb37eb">
-        <caom2:productID>intensity</caom2:productID>
-        <caom2:metaRelease>2017-02-07T00:00:00.000</caom2:metaRelease>
-        <caom2:dataRelease>2017-02-07T00:00:00.000</caom2:dataRelease>
-        <caom2:dataProductType>spectrum</caom2:dataProductType>
-        <caom2:calibrationLevel>2</caom2:calibrationLevel>
-        <caom2:provenance>
-          <caom2:name>Gemini Observatory Data</caom2:name>
-          <caom2:project>Gemini Archive</caom2:project>
-          <caom2:producer>CFHT DetCom v3.60.15 (Apr 23 2015)</caom2:producer>
-          <caom2:reference>http://archive.gemini.edu/searchform/GN-2015B-Q-1-12-1003</caom2:reference>
-        </caom2:provenance>
-        <caom2:artifacts>
-          <caom2:artifact caom2:id="00000000-0000-0000-9d48-0fb7b3bcd252">
-            <caom2:uri>gemini:GEM/N20150807G0044m.fits</caom2:uri>
-            <caom2:productType>science</caom2:productType>
-            <caom2:releaseType>data</caom2:releaseType>
-            <caom2:contentType>application/fits</caom2:contentType>
-            <caom2:contentLength>665345</caom2:contentLength>
-            <caom2:contentChecksum>md5:md5:a347f2754ff2fd4b6209e7566637efad</caom2:contentChecksum>
-            <caom2:parts>
-              <caom2:part caom2:id="00000000-0000-0000-9e23-4929e4ac01c1">
-                <caom2:name>0</caom2:name>
-                <caom2:chunks/>
-              </caom2:part>
-              <caom2:part caom2:id="00000000-0000-0000-861f-b73a30e06932">
-                <caom2:name>1</caom2:name>
-                <caom2:chunks>
-                  <caom2:chunk caom2:id="00000000-0000-0000-b798-ba31c90baeaf">
-                    <caom2:naxis>2</caom2:naxis>
-                    <caom2:positionAxis1>1</caom2:positionAxis1>
-                    <caom2:positionAxis2>2</caom2:positionAxis2>
-                    <caom2:timeAxis>3</caom2:timeAxis>
-                    <caom2:position>
+    <caom2:plane caom2:id="00000000-0000-0000-8d39-438d0518a48c">
+      <caom2:productID>intensity</caom2:productID>
+      <caom2:metaRelease>2017-02-07T00:00:00.000</caom2:metaRelease>
+      <caom2:dataRelease>2017-02-07T00:00:00.000</caom2:dataRelease>
+      <caom2:dataProductType>spectrum</caom2:dataProductType>
+      <caom2:calibrationLevel>2</caom2:calibrationLevel>
+      <caom2:provenance>
+        <caom2:name>Gemini Observatory Data</caom2:name>
+        <caom2:project>Gemini Archive</caom2:project>
+        <caom2:producer>CFHT DetCom v3.60.15 (Apr 23 2015)</caom2:producer>
+        <caom2:reference>http://archive.gemini.edu/searchform/GN-2015B-Q-1-12-1003</caom2:reference>
+      </caom2:provenance>
+      <caom2:artifacts>
+        <caom2:artifact caom2:id="00000000-0000-0000-9fdc-bf08d505c3bd">
+          <caom2:uri>gemini:GEM/N20150807G0044m.fits</caom2:uri>
+          <caom2:productType>science</caom2:productType>
+          <caom2:releaseType>data</caom2:releaseType>
+          <caom2:contentType>application/fits</caom2:contentType>
+          <caom2:contentLength>665345</caom2:contentLength>
+          <caom2:contentChecksum>md5:a347f2754ff2fd4b6209e7566637efad</caom2:contentChecksum>
+          <caom2:parts>
+            <caom2:part caom2:id="00000000-0000-0000-8ce5-acd669035403">
+              <caom2:name>0</caom2:name>
+              <caom2:chunks/>
+            </caom2:part>
+            <caom2:part caom2:id="00000000-0000-0000-b496-156e77728742">
+              <caom2:name>1</caom2:name>
+              <caom2:chunks>
+                <caom2:chunk caom2:id="00000000-0000-0000-b175-ff60faabfc86">
+                  <caom2:naxis>2</caom2:naxis>
+                  <caom2:positionAxis1>1</caom2:positionAxis1>
+                  <caom2:positionAxis2>2</caom2:positionAxis2>
+                  <caom2:timeAxis>3</caom2:timeAxis>
+                  <caom2:position>
+                    <caom2:axis>
+                      <caom2:axis1>
+                        <caom2:ctype>RA---TAN</caom2:ctype>
+                        <caom2:cunit>deg</caom2:cunit>
+                      </caom2:axis1>
+                      <caom2:axis2>
+                        <caom2:ctype>DEC--TAN</caom2:ctype>
+                        <caom2:cunit>deg</caom2:cunit>
+                      </caom2:axis2>
+                      <caom2:bounds>
+                        <caom2:polygon>
+                          <caom2:vertices>
+                            <caom2:vertex>
+                              <caom2:coord1>300.9663855555556</caom2:coord1>
+                              <caom2:coord2>23.334583444444444</caom2:coord2>
+                            </caom2:vertex>
+                            <caom2:vertex>
+                              <caom2:coord1>300.96777444444444</caom2:coord1>
+                              <caom2:coord2>23.334583444444444</caom2:coord2>
+                            </caom2:vertex>
+                            <caom2:vertex>
+                              <caom2:coord1>300.96777444444444</caom2:coord1>
+                              <caom2:coord2>23.333194555555554</caom2:coord2>
+                            </caom2:vertex>
+                            <caom2:vertex>
+                              <caom2:coord1>300.9663855555556</caom2:coord1>
+                              <caom2:coord2>23.333194555555554</caom2:coord2>
+                            </caom2:vertex>
+                            <caom2:vertex>
+                              <caom2:coord1>300.96708</caom2:coord1>
+                              <caom2:coord2>23.333889</caom2:coord2>
+                            </caom2:vertex>
+                          </caom2:vertices>
+                        </caom2:polygon>
+                      </caom2:bounds>
+                    </caom2:axis>
+                    <caom2:equinox>2000.0</caom2:equinox>
+                  </caom2:position>
+                  <caom2:time>
+                    <caom2:axis>
                       <caom2:axis>
-                        <caom2:axis1>
-                          <caom2:ctype>RA---TAN</caom2:ctype>
-                          <caom2:cunit>deg</caom2:cunit>
-                        </caom2:axis1>
-                        <caom2:axis2>
-                          <caom2:ctype>DEC--TAN</caom2:ctype>
-                          <caom2:cunit>deg</caom2:cunit>
-                        </caom2:axis2>
-                        <caom2:bounds>
-                          <caom2:polygon>
-                            <caom2:vertices>
-                              <caom2:vertex>
-                                <caom2:coord1>298.46708</caom2:coord1>
-                                <caom2:coord2>25.833889</caom2:coord2>
-                              </caom2:vertex>
-                              <caom2:vertex>
-                                <caom2:coord1>303.46708</caom2:coord1>
-                                <caom2:coord2>25.833889</caom2:coord2>
-                              </caom2:vertex>
-                              <caom2:vertex>
-                                <caom2:coord1>303.46708</caom2:coord1>
-                                <caom2:coord2>20.833889</caom2:coord2>
-                              </caom2:vertex>
-                              <caom2:vertex>
-                                <caom2:coord1>298.46708</caom2:coord1>
-                                <caom2:coord2>20.833889</caom2:coord2>
-                              </caom2:vertex>
-                              <caom2:vertex>
-                                <caom2:coord1>300.96708</caom2:coord1>
-                                <caom2:coord2>23.333889</caom2:coord2>
-                              </caom2:vertex>
-                            </caom2:vertices>
-                          </caom2:polygon>
-                        </caom2:bounds>
+                        <caom2:ctype>TIME</caom2:ctype>
+                        <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
-                    </caom2:position>
-                    <caom2:time>
-                      <caom2:axis>
-                        <caom2:axis>
-                          <caom2:ctype>TIME</caom2:ctype>
-                          <caom2:cunit>d</caom2:cunit>
-                        </caom2:axis>
-                        <caom2:error>
-                          <caom2:syser>1e-07</caom2:syser>
-                          <caom2:rnder>1e-07</caom2:rnder>
-                        </caom2:error>
-                        <caom2:function>
-                          <caom2:naxis>1</caom2:naxis>
-                          <caom2:delta>0.001157407407407407</caom2:delta>
-                          <caom2:refCoord>
-                            <caom2:pix>0.5</caom2:pix>
-                            <caom2:val>57241.34136574074</caom2:val>
-                          </caom2:refCoord>
-                        </caom2:function>
-                      </caom2:axis>
-                      <caom2:timesys>UTC</caom2:timesys>
-                      <caom2:exposure>100.0</caom2:exposure>
-                      <caom2:resolution>100.0</caom2:resolution>
-                    </caom2:time>
-                  </caom2:chunk>
-                </caom2:chunks>
-              </caom2:part>
-            </caom2:parts>
-          </caom2:artifact>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
+                      <caom2:function>
+                        <caom2:naxis>1</caom2:naxis>
+                        <caom2:delta>0.001157407407407407</caom2:delta>
+                        <caom2:refCoord>
+                          <caom2:pix>0.5</caom2:pix>
+                          <caom2:val>57241.34136574074</caom2:val>
+                        </caom2:refCoord>
+                      </caom2:function>
+                    </caom2:axis>
+                    <caom2:timesys>UTC</caom2:timesys>
+                    <caom2:exposure>100.0</caom2:exposure>
+                    <caom2:resolution>100.0</caom2:resolution>
+                  </caom2:time>
+                </caom2:chunk>
+              </caom2:chunks>
+            </caom2:part>
+          </caom2:parts>
+        </caom2:artifact>
       </caom2:artifacts>
     </caom2:plane>
   </caom2:planes>

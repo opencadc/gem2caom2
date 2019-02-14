@@ -54,12 +54,8 @@
               <caom2:name>0</caom2:name>
               <caom2:chunks/>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-b9cd-cef1f3c82ac2">
-              <caom2:name>1</caom2:name>
-              <caom2:chunks/>
-            </caom2:part>
             <caom2:part caom2:id="00000000-0000-0000-9fed-6923139c106f">
-              <caom2:name>2</caom2:name>
+              <caom2:name>1</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-90e5-1b7611751252">
                   <caom2:naxis>4</caom2:naxis>
@@ -112,7 +108,7 @@
                         <caom2:delta>1.05100618896</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>11.646055944899999</caom2:val>
+                          <caom2:val>11.12055285042</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
