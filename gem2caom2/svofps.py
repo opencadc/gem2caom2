@@ -124,7 +124,7 @@ def filter_metadata(instrument, filters):
 
     try:
         filter_md = {}
-        filter_names = filters.split('&')
+        filter_names = filters.split('+')
         # use detector maximums as defaults
         w_min = 0.0
         wl_min = 0.0

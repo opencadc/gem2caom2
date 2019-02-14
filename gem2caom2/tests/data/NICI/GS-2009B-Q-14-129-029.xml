@@ -113,7 +113,7 @@
                     <caom2:specsys>TOPOCENT</caom2:specsys>
                     <caom2:ssysobs>TOPOCENT</caom2:ssysobs>
                     <caom2:ssyssrc>TOPOCENT</caom2:ssyssrc>
-                    <caom2:bandpassName>CH4-H4%L</caom2:bandpassName>
+                    <caom2:bandpassName>CH4-H4L+CH4-H4S</caom2:bandpassName>
                     <caom2:resolvingPower>25.03030303030301</caom2:resolvingPower>
                   </caom2:energy>
                   <caom2:time>
@@ -202,7 +202,7 @@
                     <caom2:specsys>TOPOCENT</caom2:specsys>
                     <caom2:ssysobs>TOPOCENT</caom2:ssysobs>
                     <caom2:ssyssrc>TOPOCENT</caom2:ssyssrc>
-                    <caom2:bandpassName>CH4-H4%S</caom2:bandpassName>
+                    <caom2:bandpassName>CH4-H4L+CH4-H4S</caom2:bandpassName>
                     <caom2:resolvingPower>25.451612903225783</caom2:resolvingPower>
                   </caom2:energy>
                   <caom2:time>

@@ -326,7 +326,7 @@ def gmos_metadata():
         reference_wavelength /= 1.0e6
         delta /= 1.0e10
 
-    filter_name = re.sub(r'&', ' & ', obs_metadata['filter_name'])
+    filter_name = re.sub(r'\+', ' + ', obs_metadata['filter_name'])
     metadata['filter_name'] = filter_name
     metadata['wavelength_type'] = 'WAVE'
     # metadata['wavelength_unit'] = 'm'

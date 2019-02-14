@@ -609,7 +609,8 @@ def update(observation, **kwargs):
                             elif observation.instrument.name == 'GSAOI':
                                 _update_chunk_energy_gsaoi(c)
                             elif observation.instrument.name == 'NICI':
-                                _update_chunk_energy_nici(c, header)
+                                _update_chunk_energy_nici(
+                                    c, header, observation.observation_id)
                             elif observation.instrument.name == 'TReCS':
                                 _update_chunk_energy_trecs(
                                     c, header, observation.observation_id)
@@ -695,6 +696,8 @@ def _update_chunk_energy_niri(chunk, header, obs_id):
     filters = get_filter_name(header)
     filter_md = em.get_filter_metadata('NIRI', filters)
     filter_name = em.om.get('filter_name')
+
+    logging.error('filters {} filter_name {}'.format(filters, filter_name))
 
     mode = em.om.get('mode')
     if mode == 'imaging':
@@ -879,7 +882,7 @@ NICI = {'Br-gamma': [2.168600, 2.153900, 2.183300],
         'Mprime': [4.680000, 4.550000, 4.790000]}
 
 
-def _update_chunk_energy_nici(chunk, header):
+def _update_chunk_energy_nici(chunk, header, obs_id):
     """NICI-specific chunk-level Energy WCS construction."""
     logging.debug('Begin _update_chunk_energy_nici')
     mc.check_param(chunk, Chunk)
@@ -892,14 +895,14 @@ def _update_chunk_energy_nici(chunk, header):
     # filter/header, and the JSON summary value obfuscates that
 
     temp = get_filter_name(header)
-    if '&' in temp:
+    if '+' in temp:
         raise mc.CadcException(
-            'Do not understand NICI filter {}'.format(temp))
+            'NICI: Do not understand filter {} for {}'.format(temp, obs_id))
     filter_name = temp.split('_G')[0]
     filter_md = em.get_filter_metadata('NICI', filter_name)
 
     if mode == 'imaging':
-        logging.debug('SpectralWCS: NICI imaging mode.')
+        logging.debug('NICI: SpectralWCS imaging mode for {}.'.format(obs_id))
         if len(filter_md) == 0:
             if filter_name in NICI:
                 w_max = NICI[filter_name][2]
@@ -910,16 +913,21 @@ def _update_chunk_energy_nici(chunk, header):
                 resolving_power = (w_max + w_min)/(2*delta)
             else:
                 raise mc.CadcException(
-                    'Unprepared for NICI filter {}'.format(filter_name))
+                    'NICI: Unprepared for filter {} from {}'.format(
+                        filter_name, obs_id))
         else:
             reference_wavelength, delta, resolving_power = \
                 _imaging_energy(filter_md)
     else:
         raise mc.CadcException(
-            'Do not understand NICI mode {}'.format(mode))
+            'NICI: Do not understand mode {} from {}'.format(mode, obs_id))
 
+    # NICI has two different bandpass names (most of the time) in its two
+    # chunks.  Pat says in this case nothing will be put in the bandpass
+    # name for the plane.  Add code to combine the two chunk bandpass names
+    # to create a plane bandpass name only for this instrument
     _build_chunk_energy(chunk, n_axis, reference_wavelength, delta,
-                        filter_name, resolving_power)
+                        em.om.get('filter_name'), resolving_power)
 
     logging.debug('End _update_chunk_energy_nici')
 
@@ -1103,7 +1111,7 @@ def get_filter_name(header):
                 continue
             else:
                 header_filters.append(header.get(key).strip())
-        filters = '&'.join(header_filters)
+        filters = '+'.join(header_filters)
     logging.info('Filters are {}'.format(filters))
     return filters
 
