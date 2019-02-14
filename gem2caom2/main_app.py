@@ -565,7 +565,8 @@ def update(observation, **kwargs):
             mode = observation.planes[p].data_product_type
             for a in observation.planes[p].artifacts:
 
-                if observation.instrument.name == 'michelle':
+                if (observation.instrument.name == 'michelle' or
+                        observation.instrument.name == 'TReCS'):
                     # Michelle is a retired visitor instrument.
                     # Spatial WCS info is in primary header. There
                     # are a variable number of FITS extensions
@@ -573,8 +574,9 @@ def update(observation, **kwargs):
                     # same spatial WCS for each for now - it differs
                     # only slightly because of telescope 'chopping'
                     # and 'nodding' used in acquisition. DB - 01-18-19
-                    _update_position_michelle(
-                        observation.planes[p].artifacts[a], headers)
+                    _update_position_from_zeroth_header(
+                        observation.planes[p].artifacts[a], headers,
+                        observation.observation_id)
 
                 for part in observation.planes[p].artifacts[a].parts:
 
@@ -640,7 +642,7 @@ def _build_chunk_energy(chunk, n_axis, c_val, delta, filter_name,
     # build the CAOM2 structure
 
     # DB - 02-04-19 - initial pass, do not try to calculate
-    # dispersion, so naxis=1, prefer um as units, strip the bar code
+    # dispersion, so prefer um as units, strip the bar code
     # from the filter names
     chunk.energy_axis = 4
     axis = Axis(ctype='WAVE', cunit='um')
@@ -705,7 +707,7 @@ def _update_chunk_energy_niri(chunk, header, obs_id):
             and chunk.position.axis.function.dimension is not None
                 and chunk.position.axis.function.dimension.naxis1 is not None):
             n_axis = chunk.position.axis.function.dimension.naxis1
-        c_val = filter_md['wl_eff']  # central wavelength
+        c_val = filter_md['wl_min']  # minimum wavelength
         delta = filter_md['wl_eff_width'] / n_axis / 1.0e4
         disperser = em.om.get('disperser')
         if disperser in ['Jgrism', 'Jgrismf32', 'Hgrism', 'Hgrismf32',
@@ -955,14 +957,13 @@ def _update_chunk_energy_trecs(chunk, header, obs_id):
 
     resolving_power = None
     mode = em.om.get('mode')
-    logging.error('mode is {}'.format(mode))
     if mode in ['imaging', 'IFP', 'IFS']:
+        logging.debug('TRECS: imaging mode for {}.'.format(obs_id))
         n_axis = 1
-        logging.debug('SpectralWCS: TReCS imaging mode.')
         reference_wavelength, delta, resolving_power = \
             _imaging_energy(filter_md)
     elif mode in ['LS', 'spectroscopy', 'MOS']:
-        logging.debug('SpectralWCS: TReCS LS|Spectroscopy mode.')
+        logging.debug('TReCS: LS|Spectroscopy mode for {}.'.format(obs_id))
         n_axis = header.get('NAXIS1')
         delta = filter_md['wl_eff_width'] / n_axis / 1.0e4
         reference_wavelength = em.om.get('central_wavelength')
@@ -974,7 +975,7 @@ def _update_chunk_energy_trecs(chunk, header, obs_id):
                 resolving_power = 100.0
     else:
         raise mc.CadcException(
-            'Do not understand mode {}'.format(mode))
+            'Do not understand mode {} for {}'.format(mode, obs_id))
 
     _build_chunk_energy(chunk, n_axis, reference_wavelength, delta,
                         orig_filter_name, resolving_power)
@@ -1055,7 +1056,23 @@ def _imaging_energy(filter_md):
     """"""
     # all the filter units are Angstroms, and the chunk-level energy WCS
     # unit of choice is 'um', therefore 1.0e4
-    c_val = filter_md['wl_eff'] / 1.0e4
+
+    # NAXIS = 1
+    # CTYPE = ‘WAVE’
+    # CUNIT = ‘um’
+    # CRPIX = NAXIS / 2.0
+    # CRVAL = wl_min
+    # CDELT = wl_max - wl_min
+    # resolving power = (wl_max  + wl_min)/(2*CDELT)
+    # bandpass_name = filter name
+    # CDELT is the SVO’s effective width, W_effective in their tables which
+    # corresponds more or less to wl_max - wl_min.
+
+    # CRPIX values should all be 0.5 for imaging spectral WCS as long as
+    # you use the lower wavelength boundary of the filter for the
+    # corresponding CRVAL. DB - 02-13-19
+
+    c_val = filter_md['wl_min'] / 1.0e4
     delta = filter_md['wl_eff_width'] / 1.0e4
     resolving_power = c_val / delta
     return c_val, delta, resolving_power
@@ -1131,7 +1148,7 @@ def _update_chunk_position(chunk, radius, header, instrument):
     logging.debug('End _update_chunk_position')
 
 
-def _update_position_michelle(artifact, headers):
+def _update_position_from_zeroth_header(artifact, headers, log_id):
     """Make the 0th header spatial WCS the WCS for all the
     chunks."""
     primary_header = headers[0]
@@ -1149,9 +1166,10 @@ def _update_position_michelle(artifact, headers):
         if part == '0':
             continue
         for chunk in artifact.parts[part].chunks:
-            chunk.position = primary_chunk.position
-            chunk.position_axis_1 = 1
-            chunk.position_axis_2 = 2
+            if primary_chunk.position is not None:
+                chunk.position = primary_chunk.position
+                chunk.position_axis_1 = 1
+                chunk.position_axis_2 = 2
 
 
 def _build_blueprints(uris, obs_id, file_id):
