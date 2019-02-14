@@ -54,12 +54,8 @@
               <caom2:name>0</caom2:name>
               <caom2:chunks/>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-bb84-55e8f11b3e16">
-              <caom2:name>1</caom2:name>
-              <caom2:chunks/>
-            </caom2:part>
             <caom2:part caom2:id="00000000-0000-0000-972d-724e00c04af6">
-              <caom2:name>2</caom2:name>
+              <caom2:name>1</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-8f82-e87781a85997">
                   <caom2:naxis>4</caom2:naxis>
