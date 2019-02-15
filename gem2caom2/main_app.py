@@ -567,7 +567,8 @@ def update(observation, **kwargs):
 
                 if (observation.instrument.name == 'michelle' or
                         observation.instrument.name == 'TReCS' or
-                        observation.instrument.name == 'NIFS'):
+                        observation.instrument.name == 'NIFS' or
+                        observation.instrument.name == 'GNIRS'):
                     # Michelle is a retired visitor instrument.
                     # Spatial WCS info is in primary header. There
                     # are a variable number of FITS extensions
@@ -577,6 +578,7 @@ def update(observation, **kwargs):
                     # and 'nodding' used in acquisition. DB - 01-18-19
                     #
                     # DB - 01-18-19 - NIFS has no WCS info in extension; use
+                    # primary header, GNIRS has no WCS info in extension; use
                     # primary header
                     _update_position_from_zeroth_header(
                         observation.planes[p].artifacts[a], headers,
