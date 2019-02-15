@@ -624,6 +624,8 @@ def update(observation, **kwargs):
                             elif observation.instrument.name == 'NIFS':
                                 _update_chunk_energy_nifs(
                                     c, header, observation.observation_id)
+                            elif observation.instrument.name == 'GNIRS':
+                                _update_chunk_energy_gnirs(c, header)
 
                         # position WCS
                         if (observation.instrument.name == 'GRACES' and
@@ -1140,6 +1142,97 @@ def _update_chunk_energy_nifs(chunk, header, obs_id):
     _build_chunk_energy(chunk, n_axis, reference_wavelength, delta,
                         filter_name, resolving_power)
     logging.debug('End _update_chunk_energy_nifs')
+
+
+def _update_chunk_energy_gnirs(chunk, header):
+    """GNIRS-specific chunk-level Energy WCS construction."""
+    logging.debug('Begin _update_chunk_energy_gnirs')
+    mc.check_param(chunk, Chunk)
+
+    n_axis = header.get('NAXIS2')
+    filter_name = em.om.get('filter_name')
+    spectroscopy = em.om.get('spectroscopy')
+    # spectroscopy mode
+    if spectroscopy:
+        logging.debug('gnirs: SpectralWCS Spectroscopy mode.')
+        reference_wavelength = em.om.get('central_wavelength')
+        disperser = em.om.get('disperser')
+        if 'XD' in disperser:
+            logging.debug('gnirs: cross dispersed mode.')
+            # https://www.gemini.edu/sciops/instruments/gnirs/spectroscopy/
+            # crossdispersed-xd-spectroscopy/xd-prisms
+            xd_mode = {'SB+SXD': [0.9, 2.5],
+                       'LB+LXD': [0.9, 2.5],
+                       'LB+SXD': [1.2, 2.5]}
+            bounds = None
+            coverage = disperser[-3:]
+            camera = em.om.get('camera')
+            if camera.startswith('Short'):
+                bounds = xd_mode['{}+{}'.format('SB', coverage)]
+            elif camera.startswith('Long'):
+                bounds = xd_mode['{}+{}'.format('LB', coverage)]
+            if not bounds:
+                raise mc.CadcException(
+                    'gnirs: Do not understand xd mode {} {}'
+                        .format(camera, coverage))
+
+        else:
+            logging.debug('gnirs: long slit mode.')
+            # https://www.gemini.edu/sciops/instruments/gnirs/spectroscopy
+            long_slit_mode = {'11': {'X': [1.03, 1.17],
+                                     'J': [1.17, 1.37],
+                                     'H': [1.47, 1.80],
+                                     'K': [1.91, 2.49],
+                                     'L': [2.80, 4.20],
+                                     'M': [4.40, 6.00]},
+                              '32': {'X': [1.03, 1.17],
+                                     'J': [1.17, 1.37],
+                                     'H': [1.49, 1.80],
+                                     'K': [1.91, 2.49],
+                                     'L': [2.80, 4.20],
+                                     'M': [4.40, 6.00]},
+                              '111': {'X': [1.03, 1.17],
+                                      'J': [1.17, 1.37],
+                                      'H': [1.49, 1.80],
+                                      'K': [1.91, 2.49],
+                                      'L': [2.80, 4.20],
+                                      'M': [4.40, 6.00]}}
+            bandpass = filter_name[0]
+            grating = disperser.split('_')[0]
+            bounds = long_slit_mode[grating][bandpass]
+            if not bounds:
+                raise mc.CadcException(
+                    'gnirs: Do not understand long slit mode with {} {}'
+                        .format(bandpass, bounds))
+
+        delta = (bounds[1] - bounds[0]) / n_axis
+
+    # imaging mode
+    else:
+        logging.debug('gnirs: SpectralWCS imaging mode.')
+        # https://www.gemini.edu/sciops/instruments/gnirs/imaging
+        imaging = {'Y': [0.97, 1.07],
+                   'J': [1.17, 1.33],
+                   'J order blocking)': [1.17, 1.37],
+                   'H': [1.49, 1.80],
+                   'K': [2.03, 2.37],
+                   'K order blocking': [1.90, 2.49],
+                   'H2': [2.105, 2.137],
+                   'PAH': [3.27, 3.32]}
+
+        if len(filter_name) == 1 or filter_name is 'H2' or filter_name is 'PAH':
+            bandpass = filter_name
+        else:
+            bandpass = filter_name[0]
+
+        bounds = imaging[bandpass]
+
+        reference_wavelength = bounds[0]
+        delta = (bounds[1] - bounds[0]) / n_axis
+
+    _build_chunk_energy(chunk, n_axis, reference_wavelength, delta,
+                        filter_name, resolving_power=None)
+    logging.debug('End _update_chunk_energy_gnirs')
 
 
 def _reset_energy(data_label):
