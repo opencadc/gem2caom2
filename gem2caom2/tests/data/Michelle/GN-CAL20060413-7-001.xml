@@ -105,10 +105,10 @@
                       </caom2:axis>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.05100618896</caom2:delta>
+                        <caom2:delta>1.11</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>11.12055285042</caom2:val>
+                          <caom2:val>11.14</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>

@@ -103,7 +103,7 @@
                       </caom2:axis>
                       <caom2:function>
                         <caom2:naxis>2048</caom2:naxis>
-                        <caom2:delta>0.00035147182537109375</caom2:delta>
+                        <caom2:delta>0.00040777592981152343</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>1024.0</caom2:pix>
                           <caom2:val>1.4</caom2:val>

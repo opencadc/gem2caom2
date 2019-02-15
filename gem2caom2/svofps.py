@@ -214,8 +214,14 @@ def filter_metadata(instrument, filters):
                         .format(url, error_message))
                     continue
 
-                wl_width = votable.get_field_by_id('WidthEff').value
-                wl_eff = votable.get_field_by_id('WavelengthEff').value
+                # DB - 14-04-19 After discussion with a few others use the
+                # wavelength lookup values “WavelengthCen” and “FWHM” returned
+                # from the SVO. Looking at some of the IR filters
+                # use the more common “WavelengthCen” and “FWHM” values that
+                # the service offers.
+
+                wl_width = votable.get_field_by_id('FWHM').value
+                wl_eff = votable.get_field_by_id('WavelengthCen').value
                 w_min = wl_eff - wl_width/2.0
                 w_max = wl_eff + wl_width/2.0
 

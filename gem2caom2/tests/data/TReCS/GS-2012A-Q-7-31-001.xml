@@ -105,7 +105,7 @@
                       </caom2:axis>
                       <caom2:function>
                         <caom2:naxis>320</caom2:naxis>
-                        <caom2:delta>0.014843947587375</caom2:delta>
+                        <caom2:delta>0.01636692721375</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>160.0</caom2:pix>
                           <caom2:val>10.5</caom2:val>
@@ -195,7 +195,7 @@
                       </caom2:axis>
                       <caom2:function>
                         <caom2:naxis>320</caom2:naxis>
-                        <caom2:delta>0.014843947587375</caom2:delta>
+                        <caom2:delta>0.01636692721375</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>160.0</caom2:pix>
                           <caom2:val>10.5</caom2:val>
@@ -285,7 +285,7 @@
                       </caom2:axis>
                       <caom2:function>
                         <caom2:naxis>320</caom2:naxis>
-                        <caom2:delta>0.014843947587375</caom2:delta>
+                        <caom2:delta>0.01636692721375</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>160.0</caom2:pix>
                           <caom2:val>10.5</caom2:val>
@@ -375,7 +375,7 @@
                       </caom2:axis>
                       <caom2:function>
                         <caom2:naxis>320</caom2:naxis>
-                        <caom2:delta>0.014843947587375</caom2:delta>
+                        <caom2:delta>0.01636692721375</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>160.0</caom2:pix>
                           <caom2:val>10.5</caom2:val>
@@ -465,7 +465,7 @@
                       </caom2:axis>
                       <caom2:function>
                         <caom2:naxis>320</caom2:naxis>
-                        <caom2:delta>0.014843947587375</caom2:delta>
+                        <caom2:delta>0.01636692721375</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>160.0</caom2:pix>
                           <caom2:val>10.5</caom2:val>
@@ -555,7 +555,7 @@
                       </caom2:axis>
                       <caom2:function>
                         <caom2:naxis>320</caom2:naxis>
-                        <caom2:delta>0.014843947587375</caom2:delta>
+                        <caom2:delta>0.01636692721375</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>160.0</caom2:pix>
                           <caom2:val>10.5</caom2:val>
@@ -645,7 +645,7 @@
                       </caom2:axis>
                       <caom2:function>
                         <caom2:naxis>320</caom2:naxis>
-                        <caom2:delta>0.014843947587375</caom2:delta>
+                        <caom2:delta>0.01636692721375</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>160.0</caom2:pix>
                           <caom2:val>10.5</caom2:val>
@@ -735,7 +735,7 @@
                       </caom2:axis>
                       <caom2:function>
                         <caom2:naxis>320</caom2:naxis>
-                        <caom2:delta>0.014843947587375</caom2:delta>
+                        <caom2:delta>0.01636692721375</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>160.0</caom2:pix>
                           <caom2:val>10.5</caom2:val>
@@ -825,7 +825,7 @@
                       </caom2:axis>
                       <caom2:function>
                         <caom2:naxis>320</caom2:naxis>
-                        <caom2:delta>0.014843947587375</caom2:delta>
+                        <caom2:delta>0.01636692721375</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>160.0</caom2:pix>
                           <caom2:val>10.5</caom2:val>
@@ -915,7 +915,7 @@
                       </caom2:axis>
                       <caom2:function>
                         <caom2:naxis>320</caom2:naxis>
-                        <caom2:delta>0.014843947587375</caom2:delta>
+                        <caom2:delta>0.01636692721375</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>160.0</caom2:pix>
                           <caom2:val>10.5</caom2:val>
@@ -1005,7 +1005,7 @@
                       </caom2:axis>
                       <caom2:function>
                         <caom2:naxis>320</caom2:naxis>
-                        <caom2:delta>0.014843947587375</caom2:delta>
+                        <caom2:delta>0.01636692721375</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>160.0</caom2:pix>
                           <caom2:val>10.5</caom2:val>
@@ -1095,7 +1095,7 @@
                       </caom2:axis>
                       <caom2:function>
                         <caom2:naxis>320</caom2:naxis>
-                        <caom2:delta>0.014843947587375</caom2:delta>
+                        <caom2:delta>0.01636692721375</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>160.0</caom2:pix>
                           <caom2:val>10.5</caom2:val>
@@ -1185,7 +1185,7 @@
                       </caom2:axis>
                       <caom2:function>
                         <caom2:naxis>320</caom2:naxis>
-                        <caom2:delta>0.014843947587375</caom2:delta>
+                        <caom2:delta>0.01636692721375</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>160.0</caom2:pix>
                           <caom2:val>10.5</caom2:val>
@@ -1275,7 +1275,7 @@
                       </caom2:axis>
                       <caom2:function>
                         <caom2:naxis>320</caom2:naxis>
-                        <caom2:delta>0.014843947587375</caom2:delta>
+                        <caom2:delta>0.01636692721375</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>160.0</caom2:pix>
                           <caom2:val>10.5</caom2:val>
@@ -1365,7 +1365,7 @@
                       </caom2:axis>
                       <caom2:function>
                         <caom2:naxis>320</caom2:naxis>
-                        <caom2:delta>0.014843947587375</caom2:delta>
+                        <caom2:delta>0.01636692721375</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>160.0</caom2:pix>
                           <caom2:val>10.5</caom2:val>
@@ -1455,7 +1455,7 @@
                       </caom2:axis>
                       <caom2:function>
                         <caom2:naxis>320</caom2:naxis>
-                        <caom2:delta>0.014843947587375</caom2:delta>
+                        <caom2:delta>0.01636692721375</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>160.0</caom2:pix>
                           <caom2:val>10.5</caom2:val>
@@ -1545,7 +1545,7 @@
                       </caom2:axis>
                       <caom2:function>
                         <caom2:naxis>320</caom2:naxis>
-                        <caom2:delta>0.014843947587375</caom2:delta>
+                        <caom2:delta>0.01636692721375</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>160.0</caom2:pix>
                           <caom2:val>10.5</caom2:val>
