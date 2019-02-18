@@ -1237,6 +1237,88 @@ def _update_chunk_energy_gnirs(chunk, header):
     logging.debug('End _update_chunk_energy_gnirs')
 
 
+# select filter_id, wavelength_central, wavelength_lower, wavelength_upper
+# from gsa..gsa_filters where instrument = 'NICI'
+# 0 - central
+# 1 - lower
+# 2 - upper
+#
+# dict with the filter wheels stripped from the names as returned by query
+PHOENIX = {'2030': [4.929000, 4.808000, 5.050000],
+           '2150': [4.658500, 4.566000, 4.751000],
+           '2462': [4.078500, 4.008000, 4.149000],
+           '2734': [3.670500, 3.610000, 3.731000],
+           '2870': [3.490500, 3.436000, 3.545000],
+           '3010': [3.334500, 3.279000, 3.390000],
+           '3100': [3.240000, 3.180000, 3.300000],
+           '3290': [3.032500, 2.980000, 3.085000],
+           '4220': [2.370000, 2.348000, 2.392000],
+           '4308': [2.322500, 2.296000, 2.349000],
+           '4396': [2.272500, 2.249000, 2.296000],
+           '4484': [2.230000, 2.210000, 2.250000],
+           '4578': [2.185000, 2.160000, 2.210000],
+           '4667': [2.143000, 2.120000, 2.166000],
+           '4748': [2.104000, 2.082000, 2.126000],
+           '6073': [1.647000, 1.632000, 1.662000],
+           '6420': [1.557500, 1.547000, 1.568000],
+           '7799': [1.280500, 1.271000, 1.290000],
+           '8265': [1.204500, 1.196000, 1.213000],
+           '9232': [1.083000, 1.077000, 1.089000],
+           'L2870': [3.490500, 3.436000, 3.545000]}
+
+
+def _update_chunk_energy_phoenix(chunk, header, obs_id):
+    """Phoenix-specific chunk-level Energy WCS construction."""
+    logging.debug('Begin _update_chunk_energy_phoenix')
+    mc.check_param(chunk, Chunk)
+
+    # I forgot what we used for NAXIS for TReCS (i.e. NAXIS1 or 2
+    # value).  Looks like you’ll have to look at the header FILT_POS
+    # value to determine the filter since it’s not in json metadata.
+    # Phoenix should be the same but uses NAXIS2 for the length of
+    # the dispersion axis.  Note that the parenthetical numbers
+    # after the Phoenix filter names (in the header) indicates the
+    # filter wheel slot the filter is in and may occasionally change
+    # so should be disregarded.
+
+    orig_filter_name = em.om.get('filter_name')
+    filter_name = orig_filter_name
+    temp = filter_name.split('-')
+    if len(temp) > 1:
+        filter_name = temp[0]
+
+    logging.debug('Phoenix: filter_name is {} for {}'.format(filter_name, obs_id))
+    filter_md = em.get_filter_metadata('TReCS', filter_name)
+
+    resolving_power = None
+    spectroscopy = em.om.get('spectroscopy')
+    if spectroscopy is None:
+        raise mc.CadcException(
+            'Phoenix: Spectroscopy undefined for {}'.format(obs_id))
+    else:
+        if spectroscopy:
+            logging.debug('Phoenix: LS|Spectroscopy mode for {}.'.format(obs_id))
+            n_axis = header.get('NAXIS2')
+            if filter_name in PHOENIX:
+                w_max = PHOENIX[filter_name][2]
+                w_min = PHOENIX[filter_name][1]
+                delta = filter_md['wl_eff_width'] / n_axis / 1.0e4
+                reference_wavelength = em.om.get('central_wavelength')
+            else:
+                raise mc.CadcException(
+                    'Phoenix: mystery filter name {} for {}'.format(filter_name,
+                                                                    obs_id))
+        else:
+            logging.debug('Phoenix: imaging mode for {}.'.format(obs_id))
+            n_axis = 1
+            reference_wavelength, delta, resolving_power = \
+                _imaging_energy(filter_md)
+
+    _build_chunk_energy(chunk, n_axis, reference_wavelength, delta,
+                        orig_filter_name, resolving_power)
+    logging.debug('End _update_chunk_energy_phoenix')
+
+
 def _reset_energy(data_label):
     """
     Return True if there should be no energy WCS information created at
