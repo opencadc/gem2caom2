@@ -565,10 +565,8 @@ def update(observation, **kwargs):
             mode = observation.planes[p].data_product_type
             for a in observation.planes[p].artifacts:
 
-                if (observation.instrument.name == 'michelle' or
-                        observation.instrument.name == 'TReCS' or
-                        observation.instrument.name == 'NIFS' or
-                        observation.instrument.name == 'GNIRS'):
+                if (observation.instrument.name in
+                        ['michelle', 'TReCS', 'NIFS', 'GNIRS']):
                     # Michelle is a retired visitor instrument.
                     # Spatial WCS info is in primary header. There
                     # are a variable number of FITS extensions
@@ -631,6 +629,13 @@ def update(observation, **kwargs):
                             elif observation.instrument.name == 'PHOENIX':
                                 _update_chunk_energy_phoenix(
                                     c, header, observation.observation_id)
+                            elif observation.instrument.name == 'FLAMINGOS':
+                                _update_chunk_energy_flamingos(
+                                    c, header, observation.observation_id)
+                            # elif observation.instrument.name == 'hrwfs':
+                            #     _update_chunk_energy_hrwfs(
+                            #         c, header, observation.observation_id)
+
 
                         # position WCS
                         if (observation.instrument.name == 'GRACES' and
@@ -1339,6 +1344,35 @@ def _update_chunk_energy_phoenix(chunk, header, obs_id):
     _build_chunk_energy(chunk, n_axis, reference_wavelength, delta,
                         filter_name, resolving_power)
     logging.debug('End _update_chunk_energy_phoenix')
+
+
+def _update_chunk_energy_flamingos(chunk, header, obs_id):
+    """Flamingos-specific chunk-level Energy WCS construction."""
+    logging.debug('Begin _update_chunk_energy_flamingos')
+    mc.check_param(chunk, Chunk)
+
+    n_axis = 1
+
+    filter_name = get_filter_name(header, 'FILTER')
+    filter_md = em.get_filter_metadata('Flamingos', filter_name)
+
+    spectroscopy = em.om.get('spectroscopy')
+    if spectroscopy is None:
+        raise mc.CadcException(
+            'Flamingos: Spectroscopy undefined for {}'.format(obs_id))
+    if spectroscopy:
+        raise mc.CadcException(
+            'Flamingos: Do not understand spectroscopy for {}'.format(obs_id))
+    else:
+        logging.debug(
+            'Flamingos Spectral WCS imaging mode for {}.'.format(obs_id))
+        reference_wavelength, delta, resolving_power = \
+            _imaging_energy(filter_md)
+
+    _build_chunk_energy(chunk, n_axis, reference_wavelength, delta,
+                        filter_name, resolving_power)
+
+    logging.debug('End _update_chunk_energy_flamingos')
 
 
 def _reset_energy(data_label):

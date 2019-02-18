@@ -78,7 +78,7 @@ from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 
 SVO_URL = 'http://svo2.cab.inta-csic.es/svo/theory/fps/fps.php?ID=Gemini/'
-
+SVO_KPNO_URL = 'http://svo2.cab.inta-csic.es/svo/theory/fps/fps.php?ID=KPNO/'
 
 def get_votable(url):
     """
@@ -197,7 +197,10 @@ def filter_metadata(instrument, filters):
                         continue
 
                 filter_id = "{}.{}".format(instrument, filter_name)
-                url = "{}{}".format(SVO_URL, filter_id)
+                if instrument == 'Flamingos':
+                    url = "{}{}".format(SVO_KPNO_URL, filter_id)
+                else:
+                    url = "{}{}".format(SVO_URL, filter_id)
 
                 # Open the URL and fetch the VOTable document.
                 # Some Gemini filters in SVO filter database have bandpass info
