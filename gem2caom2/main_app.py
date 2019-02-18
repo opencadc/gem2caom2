@@ -628,6 +628,9 @@ def update(observation, **kwargs):
                                     c, header, observation.observation_id)
                             elif observation.instrument.name == 'GNIRS':
                                 _update_chunk_energy_gnirs(c, header)
+                            elif observation.instrument.name == 'PHOENIX':
+                                _update_chunk_energy_phoenix(
+                                    c, header, observation.observation_id)
 
                         # position WCS
                         if (observation.instrument.name == 'GRACES' and
@@ -641,6 +644,8 @@ def update(observation, **kwargs):
                             # Christian Marios via DB 02-07-19
                             _update_chunk_position(c, 2.8, header, 'GPI')
                             c.position.equinox = headers[0].get('TRKEQUIN')
+                        if observation.instrument.name == 'PHOENIX':
+                            _update_chunk_position(c, 5.0, header, 'PHOENIX')
     except Exception as e:
         logging.error(e)
         tb = traceback.format_exc()
@@ -669,6 +674,7 @@ def _build_chunk_energy(chunk, n_axis, c_val, delta, filter_name,
                              range=None,
                              bounds=None,
                              function=function)
+    bandpass_name = None if len(filter_name) == 0 else filter_name
     chunk.energy = SpectralWCS(axis=coord_axis,
                                specsys='TOPOCENT',
                                ssysobs='TOPOCENT',
@@ -678,7 +684,7 @@ def _build_chunk_energy(chunk, n_axis, c_val, delta, filter_name,
                                velosys=None,
                                zsource=None,
                                velang=None,
-                               bandpass_name=filter_name,
+                               bandpass_name=bandpass_name,
                                transition=None,
                                resolving_power=resolving_power)
 
@@ -919,7 +925,6 @@ def _update_chunk_energy_nici(chunk, header, obs_id):
             if filter_name in NICI:
                 w_max = NICI[filter_name][2]
                 w_min = NICI[filter_name][1]
-                logging.error('NICI max is {} min is {}'.format(w_max, w_min))
                 reference_wavelength = w_min
                 delta = w_max - w_min
                 resolving_power = (w_max + w_min)/(2*delta)
@@ -1275,20 +1280,19 @@ def _update_chunk_energy_phoenix(chunk, header, obs_id):
     # I forgot what we used for NAXIS for TReCS (i.e. NAXIS1 or 2
     # value).  Looks like you’ll have to look at the header FILT_POS
     # value to determine the filter since it’s not in json metadata.
-    # Phoenix should be the same but uses NAXIS2 for the length of
-    # the dispersion axis.  Note that the parenthetical numbers
+    # DB - 12-02-19 - Phoenix should be the same but uses NAXIS2 for the
+    # length of the dispersion axis.
+
+    # DB - 12-02-19 - Note that the parenthetical numbers
     # after the Phoenix filter names (in the header) indicates the
     # filter wheel slot the filter is in and may occasionally change
     # so should be disregarded.
+    filter_name = get_filter_name(header, 'FILT_POS')
+    if len(filter_name) > 0:
+        filter_name = filter_name.split()[0]
 
-    orig_filter_name = em.om.get('filter_name')
-    filter_name = orig_filter_name
-    temp = filter_name.split('-')
-    if len(temp) > 1:
-        filter_name = temp[0]
-
-    logging.debug('Phoenix: filter_name is {} for {}'.format(filter_name, obs_id))
-    filter_md = em.get_filter_metadata('TReCS', filter_name)
+    logging.debug(
+        'Phoenix: filter_name is {} for {}'.format(filter_name, obs_id))
 
     resolving_power = None
     spectroscopy = em.om.get('spectroscopy')
@@ -1297,25 +1301,43 @@ def _update_chunk_energy_phoenix(chunk, header, obs_id):
             'Phoenix: Spectroscopy undefined for {}'.format(obs_id))
     else:
         if spectroscopy:
-            logging.debug('Phoenix: LS|Spectroscopy mode for {}.'.format(obs_id))
+            logging.debug(
+                'Phoenix: LS|Spectroscopy mode for {}.'.format(obs_id))
             n_axis = header.get('NAXIS2')
             if filter_name in PHOENIX:
                 w_max = PHOENIX[filter_name][2]
                 w_min = PHOENIX[filter_name][1]
-                delta = filter_md['wl_eff_width'] / n_axis / 1.0e4
-                reference_wavelength = em.om.get('central_wavelength')
+                delta = (w_min + w_max) / n_axis / 1.0e4
+                reference_wavelength = PHOENIX[filter_name][0]
+            elif len(filter_name) == 0:
+                w_max = 100000.0
+                w_min = 0.0
+                delta = (w_min + w_max) / n_axis / 1.0e4
+                reference_wavelength = (w_max + w_min)/2.0
             else:
                 raise mc.CadcException(
-                    'Phoenix: mystery filter name {} for {}'.format(filter_name,
-                                                                    obs_id))
+                    'Phoenix: mystery filter name {} for {}'.format(
+                        filter_name, obs_id))
         else:
             logging.debug('Phoenix: imaging mode for {}.'.format(obs_id))
             n_axis = 1
+            if filter_name in PHOENIX:
+                w_max = PHOENIX[filter_name][2]
+                w_min = PHOENIX[filter_name][1]
+            elif len(filter_name) == 0:
+                w_max = 100000.0
+                w_min = 0.0
+            else:
+                raise mc.CadcException(
+                    'Phoenix: mystery filter name {} for {}'.format(
+                        filter_name, obs_id))
+            filter_md = {'wl_min': w_min,
+                         'wl_eff_width': w_max - w_min}
             reference_wavelength, delta, resolving_power = \
                 _imaging_energy(filter_md)
 
     _build_chunk_energy(chunk, n_axis, reference_wavelength, delta,
-                        orig_filter_name, resolving_power)
+                        filter_name, resolving_power)
     logging.debug('End _update_chunk_energy_phoenix')
 
 
@@ -1366,7 +1388,7 @@ def _imaging_energy(filter_md):
     return c_val, delta, resolving_power
 
 
-def get_filter_name(header):
+def get_filter_name(header, lookup='FILTER'):
     """
     Create the filter names.
 
@@ -1380,11 +1402,11 @@ def get_filter_name(header):
     # energy transmission
     filters2ignore = ['open', 'invalid', 'pupil']
     for key in header.keys():
-        if 'FILTER' in key:
+        if lookup in key:
             value = header.get(key).lower()
             ignore = False
             for ii in filters2ignore:
-                if ii.startswith(value):
+                if ii.startswith(value) or value.startswith(ii):
                     ignore = True
                     break
             if ignore:
