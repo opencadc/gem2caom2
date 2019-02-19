@@ -136,6 +136,8 @@ Again, likely not since Gemini displays results with 'hrwfs' from the header.
    1. flat:   GS-2006A-DD-1-1-0073
    1. arc:    GS-2003B-Q-51-27-0073
    1. dark:   GS-2006A-C-10-1-0258
+   1. GS-2002A-DD-1-17-0171:  DARK because VIEW_POS contains ‘dark’, even though ‘object’ is ‘gcal 6420’
+   1. GS-CAL20020512-9-0277:  also a dark because json ‘object’ is ‘dark (gcal4618)’.
 1. Very early instruments:
    1. Hokupa'a + QUIRC, OSCIR and Flamignos were among the first instruments used on Gemini.  All were visitor instruments.  For OSCIR and Hokupa'a + QUIRC there is no spatial WCS in the headers.  For OSCIR the (non-standard) OBS_TYPE keyword is always 'object' and the filter name appears to be frequently missing. Flamingos also suffers from the incorrect use of the non-standard OBS_TYPE keyword, and Hokupa'a + QUIRC often does as well. For the latter they use IMAGETYP as the keyword but I see only 'dark' and 'object' values.  Gemini metadata also does not tell us what the observing mode is for any of these (imaging vs. spectroscopy).  
    1. Note: it is always imaging for Hokupa'a + QUIRC so that could be hardcoded.  I've given only one sample file for OSCIR/Flamingos since we can't distinguish between different observation types.  Gemini metadata does NOT include the filter name for any of these instruments, although this appears to be available in the Hokupa'a+QUIRC 'FILTER' keyword.  
