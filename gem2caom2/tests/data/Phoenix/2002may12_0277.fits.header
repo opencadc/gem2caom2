@@ -1,0 +1,146 @@
+Filename: 2002may12_0277.fits.bz2
+
+AstroData Types: ['GEMINI', 'PHOENIX', 'GEMINI_SOUTH', 'SPECT', 'RAW', 'UNPREPARED']
+
+
+--- HDU 0 ---
+SIMPLE  =                    T / conforms to FITS standard                      
+BITPIX  =                    8 / array data type                                
+NAXIS   =                    0 / number of array dimensions                     
+EXTEND  =                    T                                                  
+ORIGIN  = 'NOAO-IRAF FITS Image Kernel July 2003' / FITS file originator        
+DATE    = '2010-04-30T17:03:40' / Date FITS file was generated                  
+IRAF-TLM= '2010-04-30T17:03:40' / Time of last modification                     
+CHANNEL = 'only              '  /                                               
+INSTRUME= 'PHOENIX           '  /                                               
+OBJECT  = 'dark (gcal4618)'    /                                                
+COADDS  =                    1  /  No. internal coadds                          
+INT_S   =             2.000000  /  Exposure time                                
+EXPTIME =             2.000000  /  Exp.time (usual)                             
+MODE    = 'stare             '  /                                               
+LNRS    =                    1  /  Low noise reads                              
+UCODE   = 'PHaladII_12_11    '  /  Detector microcode                           
+IMAGETYP= 'object            '  /                                               
+OFFSET  = '22.1697 north 14.5172 west                                          '
+COMMENT = 'none              '  /                                               
+OBSERVER= 'Rodgers,Geballe,Ridgeway' / Observer(s)                              
+DETECTOR= 'ALAD256x1024      '  /                                               
+RA      = '14:58:31.822      '  /                                               
+DEC     = '-43:07:59.11      '  /                                               
+EPOCH   =          2002.359253  /                                               
+UT      = '07:22:58.4        '  /  Gemini UTC                                   
+UTDATE  = '2002-05-12        '  /  Gemini UTCDATE                               
+LST     = '17:59:36.0        '  /                                               
+HA      =             3.015200  /                                               
+ZD      =            37.868900  /                                               
+AIRMASS =             1.266000  /                                               
+FOCUS   =            -0.364000  /                                               
+RECID   = 'gscp8m.20020512.072258.308                                          '
+FILT_POS= 'open (1)          '  /                                               
+LYOT_POS= '8m_2.5 (4)        '  /                                               
+CVF_POS = '4578 (6)          '  /                                               
+SLIT_POS= '54u_1.9-2.8 (3)   '  /                                               
+VIEW_POS= 'open (-152993)    '  /                                               
+GRAT_POS= 'encoder -7226     '  /                                               
+FOC_POS = '245.6             '  /                                               
+COVR_POS= 'open              '  /                                               
+OBSERVAT= 'Gemini-South'                                                        
+TELESCOP= 'Gemini-South'                                                        
+SSA     = 'Cox     '           / SSA                                            
+OBSID   = 'GS-CAL20020512-9'   / Observation ID                                 
+DATALAB = 'GS-CAL20020512-9-0277' / Data Label                                  
+GEMPRGID= 'GS-CAL20020512'     / Gemini Science Program ID                      
+RAWBG   = 'Any     '           / Raw Background                                 
+RAWCC   = 'Any     '           / Raw Cloud Cover                                
+RAWIQ   = 'Any     '           / Raw Image Quality                              
+RAWWV   = 'Any     '           / Raw Water Vapour/Transparency                  
+RAWGEMOA= 'Unknown           '  /                                               
+RAWPIREQ= 'UNKNOWN '           / PI Requirements Met                            
+RAWGEMQA= 'USABLE  '           / Gemini Quality Assessment                      
+RELEASE = '2002-05-12'         / End of proprietary period YYYY-MM-DD           
+EQUINOX =                2000. /                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+
+--- HDU 1 ---
+XTENSION= 'IMAGE   '           / Image extension                                
+BITPIX  =                  -32 / array data type                                
+NAXIS   =                    2 / number of array dimensions                     
+NAXIS1  =                  256                                                  
+NAXIS2  =                 1024                                                  
+PCOUNT  =                    0 / number of parameters                           
+GCOUNT  =                    1 / number of groups                               
+EXTNAME = 'SCI     '           / ad4549: added by AstroData                     
+EXTVER  =                    1                                                  
+ORIGIN  = 'NOAO-IRAF FITS Image Kernel July 2003' / FITS file originator        
+DATE    = '2010-04-30T17:03:40' / Date FITS file was generated                  
+IRAF-TLM= '2010-04-30T17:03:40' / Time of last modification                     
+CHANNEL = 'only              '  /                                               
+INSTRUME= 'PHOENIX           '  /                                               
+OBJECT  = 'dark (gcal4618)'    /                                                
+COADDS  =                    1  /  No. internal coadds                          
+INT_S   =             2.000000  /  Exposure time                                
+EXPTIME =             2.000000  /  Exp.time (usual)                             
+MODE    = 'stare             '  /                                               
+LNRS    =                    1  /  Low noise reads                              
+UCODE   = 'PHaladII_12_11    '  /  Detector microcode                           
+IMAGETYP= 'object            '  /                                               
+OFFSET  = '22.1697 north 14.5172 west                                          '
+COMMENT = 'none              '  /                                               
+OBSERVER= 'Rodgers,Geballe,Ridgeway' / Observer(s)                              
+DETECTOR= 'ALAD256x1024      '  /                                               
+RA      = '14:58:31.822      '  /                                               
+DEC     = '-43:07:59.11      '  /                                               
+EPOCH   =          2002.359253  /                                               
+UT      = '07:22:58.4        '  /  Gemini UTC                                   
+UTDATE  = '2002-05-12        '  /  Gemini UTCDATE                               
+LST     = '17:59:36.0        '  /                                               
+HA      =             3.015200  /                                               
+ZD      =            37.868900  /                                               
+AIRMASS =             1.266000  /                                               
+FOCUS   =            -0.364000  /                                               
+RECID   = 'gscp8m.20020512.072258.308                                          '
+FILT_POS= 'open (1)          '  /                                               
+LYOT_POS= '8m_2.5 (4)        '  /                                               
+CVF_POS = '4578 (6)          '  /                                               
+SLIT_POS= '54u_1.9-2.8 (3)   '  /                                               
+VIEW_POS= 'open (-152993)    '  /                                               
+GRAT_POS= 'encoder -7226     '  /                                               
+FOC_POS = '245.6             '  /                                               
+COVR_POS= 'open              '  /                                               
+OBSERVAT= 'Gemini-South'                                                        
+TELESCOP= 'Gemini-South'                                                        
+SSA     = 'Cox     '           / SSA                                            
+OBSID   = 'GS-CAL20020512-9'   / Observation ID                                 
+DATALAB = 'GS-CAL20020512-9-0277' / Data Label                                  
+GEMPRGID= 'GS-CAL20020512'     / Gemini Science Program ID                      
+RAWBG   = 'Any     '           / Raw Background                                 
+RAWCC   = 'Any     '           / Raw Cloud Cover                                
+RAWIQ   = 'Any     '           / Raw Image Quality                              
+RAWWV   = 'Any     '           / Raw Water Vapour/Transparency                  
+RAWGEMOA= 'Unknown           '  /                                               
+RAWPIREQ= 'UNKNOWN '           / PI Requirements Met                            
+RAWGEMQA= 'USABLE  '           / Gemini Quality Assessment                      
+RELEASE = '2002-05-12'         / End of proprietary period YYYY-MM-DD           
+EQUINOX =                2000. /                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                

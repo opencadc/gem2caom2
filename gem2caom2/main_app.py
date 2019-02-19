@@ -463,6 +463,9 @@ def get_obs_type(header):
     obs_class = _get_obs_class(header)
     if obs_class is not None and (obs_class == 'acq' or obs_class == 'acqCal'):
         result = 'ACQUISITION'
+    instrument = em.om.get('instrument')
+    if instrument == 'PHOENIX':
+        result = _get_phoenix_obs_type(header)
     return result
 
 
@@ -607,6 +610,40 @@ def _get_flamingos_mode(header):
         elif 'dark' in object_value:
             obs_type = 'DARK'
     return data_type, obs_type
+
+
+def _get_phoenix_obs_type(header):
+    # DB - 18-02-19 - make PHOENIX searches more useful by making estimated
+    # guesses at observation type
+    #
+    # Looking at a few random nights it looks like a reasonable way to
+    # determine if an observation is a FLAT is to look for ‘flat’ (any
+    # case combination) in the json ‘object’ value or ‘gcal’ or ‘GCAL’.
+    # But if ‘gcal’ AND ‘dark’ are in the ‘object’ string it’s a DARK.
+    # (see below)
+
+    # Ditto for an ARC if json ‘object’ contains the string ‘arc’
+
+    # It’s a DARK obs type if the value of FITS header VIEW_POS contains
+    # the string ‘dark’ OR if ‘dark’ is in json ‘object’ string.
+    # (There appear to be cases where darks are taken with the
+    # VIEW_POS = open.)  When it’s a dark do NOT generate WCS for energy
+    # since the filter is often ‘open’ and energy info isn’t important for
+    # DARK exposures.
+
+    result = None
+    object_value = em.om.get('object').lower()
+    view_pos = header.get('VIEW_POS')
+    if 'flat' in object_value:
+        result = 'FLAT'
+    elif ('dark' in object_value or
+          (view_pos is not None and 'dark' in view_pos)):
+        result = 'DARK'
+    elif 'gcal' in object_value:
+        result = 'FLAT'
+    elif 'arc' in object_value:
+        result = 'ARC'
+    return result
 
 
 def _is_flamingos_calibration(header):
@@ -792,7 +829,8 @@ def update(observation, **kwargs):
                         header = headers[int(part)]
 
                         # energy WCS
-                        if _reset_energy(headers[0].get('DATALAB')):
+                        if _reset_energy(observation.type,
+                                         headers[0].get('DATALAB')):
                             c.energy = None
                             c.energy_axis = None
                         else:
@@ -1588,20 +1626,20 @@ def _update_chunk_energy_flamingos(chunk, header, data_product_type, obs_id):
     logging.debug('End _update_chunk_energy_flamingos')
 
 
-def _reset_energy(data_label):
+def _reset_energy(observation_type, data_label):
     """
     Return True if there should be no energy WCS information created at
     the chunk level.
 
+    :param observation_type from the parent observation.
     :param data_label str for useful logging information only.
     """
     result = False
-    observation_type = em.om.get('observation_type')
     om_filter_name = em.om.get('filter_name')
 
     if ((observation_type is not None and observation_type == 'DARK') or
         (om_filter_name is not None and ('blank' in om_filter_name or
-         'Blank' in om_filter_name))):
+                                         'Blank' in om_filter_name))):
         logging.info(
             'No chunk energy for {} obs type {} filter name {}'.format(
                 data_label, observation_type, om_filter_name))
