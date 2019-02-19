@@ -1,4 +1,5 @@
-<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="00000000-0000-0000-990b-c766cbe387ea" caom2:lastModified="2018-10-10T02:09:52.897" caom2:maxLastModified="2018-10-10T02:09:52.897" caom2:metaChecksum="md5:f0722478e3a6ded04addb30a06ebb1d9" caom2:accMetaChecksum="md5:d52622b476f40a18796ae360c48b3254">
+<?xml version='1.0' encoding='UTF-8'?>
+<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="00000000-0000-0000-990b-c766cbe387ea" caom2:lastModified="2019-02-18T21:43:31.142" caom2:maxLastModified="2019-02-18T21:43:31.142" caom2:metaChecksum="md5:10e5cfc20718f7bf173f488839587398" caom2:accMetaChecksum="md5:e7cf654e7f3204c50ef9c405e2663faf">
   <caom2:collection>GEMINI</caom2:collection>
   <caom2:observationID>GS-2002B-DD-2-6-0230</caom2:observationID>
   <caom2:metaRelease>2002-09-04T00:00:00.000</caom2:metaRelease>
@@ -23,7 +24,7 @@
     <caom2:name>FLAMINGOS</caom2:name>
   </caom2:instrument>
   <caom2:planes>
-    <caom2:plane caom2:id="00000000-0000-0000-b17b-8c01d28c8691" caom2:lastModified="2018-10-10T02:09:52.897" caom2:maxLastModified="2018-10-10T02:09:52.897" caom2:metaChecksum="md5:d55f43ae2066bb628e6113fef9b47431" caom2:accMetaChecksum="md5:246c48fac33e5290941f69e1846b201b">
+    <caom2:plane caom2:id="00000000-0000-0000-b17b-8c01d28c8691" caom2:lastModified="2019-02-18T21:43:31.142" caom2:maxLastModified="2019-02-18T21:43:31.142" caom2:metaChecksum="md5:700713f9015d756d282300d9f1dec40c" caom2:accMetaChecksum="md5:caa1432889cee773551c0b637037f70c">
       <caom2:productID>GS-2002B-DD-2-6-0230</caom2:productID>
       <caom2:metaRelease>2002-09-04T00:00:00.000</caom2:metaRelease>
       <caom2:dataRelease>2004-03-04T00:00:00.000</caom2:dataRelease>
@@ -35,27 +36,111 @@
         <caom2:producer>Gemini-South</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/GS-2002B-DD-2-6-0230</caom2:reference>
       </caom2:provenance>
-      <caom2:position/>
-      <caom2:energy/>
-      <caom2:time/>
+      <caom2:position>
+        <caom2:bounds xsi:type="caom2:Polygon">
+          <caom2:points>
+            <caom2:point>
+              <caom2:cval1>85.44546349567544</caom2:cval1>
+              <caom2:cval2>-1.8686314618120008</caom2:cval2>
+            </caom2:point>
+            <caom2:point>
+              <caom2:cval1>85.44546405972909</caom2:cval1>
+              <caom2:cval2>-1.9128682563147237</caom2:cval2>
+            </caom2:point>
+            <caom2:point>
+              <caom2:cval1>85.40120260027093</caom2:cval1>
+              <caom2:cval2>-1.9128682563147237</caom2:cval2>
+            </caom2:point>
+            <caom2:point>
+              <caom2:cval1>85.40120316432453</caom2:cval1>
+              <caom2:cval2>-1.8686314618120008</caom2:cval2>
+            </caom2:point>
+          </caom2:points>
+          <caom2:samples>
+            <caom2:vertices>
+              <caom2:vertex>
+                <caom2:cval1>85.44546405972908</caom2:cval1>
+                <caom2:cval2>-1.9128682563147161</caom2:cval2>
+                <caom2:type>2</caom2:type>
+              </caom2:vertex>
+              <caom2:vertex>
+                <caom2:cval1>85.40120260027093</caom2:cval1>
+                <caom2:cval2>-1.9128682563147161</caom2:cval2>
+                <caom2:type>1</caom2:type>
+              </caom2:vertex>
+              <caom2:vertex>
+                <caom2:cval1>85.40120316432456</caom2:cval1>
+                <caom2:cval2>-1.8686314618119997</caom2:cval2>
+                <caom2:type>1</caom2:type>
+              </caom2:vertex>
+              <caom2:vertex>
+                <caom2:cval1>85.44546349567545</caom2:cval1>
+                <caom2:cval2>-1.8686314618119997</caom2:cval2>
+                <caom2:type>1</caom2:type>
+              </caom2:vertex>
+              <caom2:vertex>
+                <caom2:cval1>0.0</caom2:cval1>
+                <caom2:cval2>0.0</caom2:cval2>
+                <caom2:type>0</caom2:type>
+              </caom2:vertex>
+            </caom2:vertices>
+          </caom2:samples>
+        </caom2:bounds>
+        <caom2:dimension>
+          <caom2:naxis1>2048</caom2:naxis1>
+          <caom2:naxis2>2048</caom2:naxis2>
+        </caom2:dimension>
+        <caom2:sampleSize>0.07776</caom2:sampleSize>
+      </caom2:position>
+      <caom2:energy>
+        <caom2:bounds>
+          <caom2:lower>2.029435483870935e-06</caom2:lower>
+          <caom2:upper>2.365220588235265e-06</caom2:upper>
+          <caom2:samples>
+            <caom2:sample>
+              <caom2:lower>2.029435483870935e-06</caom2:lower>
+              <caom2:upper>2.365220588235265e-06</caom2:upper>
+            </caom2:sample>
+          </caom2:samples>
+        </caom2:bounds>
+        <caom2:dimension>1</caom2:dimension>
+        <caom2:resolvingPower>6.043852027661653</caom2:resolvingPower>
+        <caom2:sampleSize>3.3578510436433004e-07</caom2:sampleSize>
+        <caom2:bandpassName>K</caom2:bandpassName>
+        <caom2:emBand>Infrared</caom2:emBand>
+      </caom2:energy>
+      <caom2:time>
+        <caom2:bounds>
+          <caom2:lower>52521.0</caom2:lower>
+          <caom2:upper>52522.0</caom2:upper>
+          <caom2:samples>
+            <caom2:sample>
+              <caom2:lower>52521.0</caom2:lower>
+              <caom2:upper>52522.0</caom2:upper>
+            </caom2:sample>
+          </caom2:samples>
+        </caom2:bounds>
+        <caom2:dimension>1</caom2:dimension>
+        <caom2:sampleSize>1.0</caom2:sampleSize>
+      </caom2:time>
       <caom2:polarization/>
       <caom2:artifacts>
-        <caom2:artifact caom2:id="00000000-0000-0000-8a6c-cde0d6f544da" caom2:lastModified="2018-10-10T02:09:52.897" caom2:maxLastModified="2018-10-10T02:09:52.897" caom2:metaChecksum="md5:f1341a3d38b4bf70491ac9abbcfc0a6f" caom2:accMetaChecksum="md5:5de831b5d856566fc562491bbaaafe45">
+        <caom2:artifact caom2:id="00000000-0000-0000-8a6c-cde0d6f544da" caom2:lastModified="2019-02-18T21:43:31.142" caom2:maxLastModified="2019-02-18T21:43:31.142" caom2:metaChecksum="md5:58645ddfd8a3b594b5e76a7aaa3e3ee1" caom2:accMetaChecksum="md5:7406b505510fd141ebf3052c8ff73ad5">
           <caom2:uri>gemini:GEM/02sep04.0230.fits</caom2:uri>
           <caom2:productType>science</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>
           <caom2:contentLength>665345</caom2:contentLength>
-          <caom2:contentChecksum>md5:723889cabca75a737ac6e2f718db1582</caom2:contentChecksum>
+          <caom2:contentChecksum>md5:a347f2754ff2fd4b6209e7566637efad</caom2:contentChecksum>
           <caom2:parts>
-            <caom2:part caom2:id="00000000-0000-0000-b542-80c101b54739">
+            <caom2:part caom2:id="00000000-0000-0000-b0f7-be1c32bcad97">
               <caom2:name>0</caom2:name>
               <caom2:chunks/>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-baaf-4dd54d041490">
+            <caom2:part caom2:id="00000000-0000-0000-90f0-806fe4a46cd7" caom2:lastModified="2019-02-18T21:43:31.142" caom2:maxLastModified="2019-02-18T21:43:31.142" caom2:metaChecksum="md5:0542dffd2cbf1f716a0419475187fc8a" caom2:accMetaChecksum="md5:ba501a1a3562b7494121459e0d58bd3b">
               <caom2:name>1</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-8538-23e38907a1d1">
+                <caom2:chunk caom2:id="00000000-0000-0000-a57f-9eae6b3e382e" caom2:lastModified="2019-02-18T21:43:31.142" caom2:maxLastModified="2019-02-18T21:43:31.142" caom2:metaChecksum="md5:ad1386c32a32deaf07d86badf7c458ec" caom2:accMetaChecksum="md5:4819713c6738eab8b566c362ad0d106f">
                   <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>

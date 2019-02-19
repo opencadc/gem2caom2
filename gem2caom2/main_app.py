@@ -109,6 +109,16 @@ from gem2caom2.gem_name import GemName, COLLECTION, ARCHIVE, SCHEME
 __all__ = ['main_app2', 'update', 'COLLECTION', 'APPLICATION', 'SCHEME',
            'ARCHIVE']
 
+# TODO LIST:
+#
+# PI information
+# fix phoenix spatial
+# spectroscopy check
+# flamingos
+# hrwfs
+# hokupaa
+# oscir
+# bHROS
 
 APPLICATION = 'gem2caom2'
 # GPI radius == 2.8 arcseconds, according to Christian Marois via DB 02-07-19
@@ -304,13 +314,20 @@ def get_data_product_type(header):
     :param header:  The FITS header for the current extension.
     :return: The Plane DataProductType, or None if not found.
     """
-    mode = em.om.get('mode')
-    obs_type = _get_obs_type(header)
-    if ((mode is not None and mode == 'imaging') or
-            (obs_type is not None and obs_type == 'MASK')):
-        result = DataProductType.IMAGE
+    instrument = em.om.get('instrument')
+    if instrument == 'FLAMINGOS':
+        result, ignore = _get_flamingos_mode(header)
     else:
-        result = DataProductType.SPECTRUM
+        mode = em.om.get('mode')
+        obs_type = _get_obs_type(header)
+        if mode is None:
+            raise mc.CadcException('No mode information found for {}'.format(
+                em.om.get('filename')))
+        elif ((mode is not None and mode == 'imaging') or
+              (obs_type is not None and obs_type == 'MASK')):
+            result = DataProductType.IMAGE
+        else:
+            result = DataProductType.SPECTRUM
     return result
 
 
@@ -356,7 +373,9 @@ def get_meta_release(header):
 
 def get_naxis2_phoenix(header):
     """Over-ride the NAXIS2 length, but preserve the original value for
-    use later by Spectral WCS computations."""
+    use later by Spectral WCS computations. This only works because the
+    blueprint applies the functions before it sets the over-ride values in
+    the headers."""
     global phoenix_spectral_axis
     phoenix_spectral_axis = header.get('NAXIS2')
     return 1
@@ -472,8 +491,19 @@ def get_time_function_val(header):
     :param header:  The FITS header for the current extension (not used).
     :return: The Time WCS value from JSON Summary Metadata.
     """
-    time_val = em.om.get('ut_datetime')
-    return ac.get_datetime(time_val)
+    instrument = em.om.get('instrument')
+    if instrument == 'FLAMINGOS':
+        # Another FLAMINGOS correction needed:  DATE-OBS in header and
+        # json doesn’t include the time  but sets it to 00:00:00.  You have
+        # two choices:  concatenate DATE-OBS and UTC header values to the
+        # standard form “2002-11-06T07:06:00.3” and use as you use json
+        # value for computing temporal WCS data or, for FLAMINGOS only,
+        # use the MJD header value in the header as the CRVAL for time.
+        time_val = header.get('MJD')
+    else:
+        time_string = em.om.get('ut_datetime')
+        time_val = ac.get_datetime(time_string)
+    return time_val
 
 
 def _get_obs_class(header):
@@ -494,6 +524,67 @@ def _get_obs_type(header):
     if obs_type is None:
         obs_type = header.get('OBSTYPE')
     return obs_type
+
+
+def _get_flamingos_mode(header):
+    # DB - 18-02-19
+    # Determine mode from DECKER and GRISM keywords:
+    #
+    # If DECKER = imaging
+    # observing mode = imaging
+    # else if DECKER = mos or slit
+    # if GRISM contains the string ‘open’
+    # observation mode = imaging and observation type = ACQUISITION
+    # else if GRISM contains the string ‘dark’
+    # observation mode = spectroscopy and observation type = DARK
+    # else
+    # observation mode = spectroscopy
+    # else
+    # error? DECKER might also be ‘dark’ at times in which case
+    # observation type = dark and observation mode can be either
+    # spectroscopy or imaging but I haven’t found an example yet.
+    #
+    # As indicated above in if/else code, if GRISM  keyword
+    # contains substring ‘dark’ then that is another way to
+    # identify a dark observation.
+    decker = header.get('DECKER')
+    data_type = DataProductType.SPECTRUM
+    obs_type = None
+    if decker is not None:
+        if decker == 'imaging':
+            data_type = DataProductType.IMAGE
+        elif decker in ['mos', 'slit']:
+            grism = header.get('GRISM')
+            if grism is not None:
+                if 'open' in grism:
+                    data_type = DataProductType.IMAGE
+                    obs_type = 'ACQUISITION'
+                elif 'dark' in grism:
+                    data_type = DataProductType.SPECTRUM
+                    obs_type = 'DARK'
+    else:
+        raise mc.CadcException('No mode information found for {}'.format(
+            em.om.get('filename')))
+    if obs_type is None:
+        # DB - Also, since I’ve found FLAMINGOS spectra if OBJECT keyword or
+        # json value contains ‘arc’ (any case) then it’s an ARC observation
+        # type
+        #
+        # For FLAMINGOS since OBS_TYPE seems to always be st to ‘Object’
+        # could in principal look at the OBJECT keyword value or json value:
+        # if it contains ‘flat’ as a substring (any case) then set
+        # observation type to ‘flat’.  Ditto for ‘dark’
+        object_value = em.om.get('object')
+        if object_value is None:
+            object_value = header.get('OBJECT')
+        object_value = object_value.lower()
+        if 'arc' in object_value:
+            obs_type = 'ARC'
+        elif 'flat' in object_value:
+            obs_type = 'FLAT'
+        elif 'dark' in object_value:
+            obs_type = 'DARK'
+    return data_type, obs_type
 
 
 def _is_flamingos_calibration(header):
@@ -714,7 +805,13 @@ def update(observation, **kwargs):
                                     c, header, observation.observation_id)
                             elif observation.instrument.name == 'FLAMINGOS':
                                 _update_chunk_energy_flamingos(
-                                    c, header, observation.observation_id)
+                                    c, header,
+                                    observation.planes[p].data_product_type,
+                                    observation.observation_id)
+                                ignore, obs_type = _get_flamingos_mode(header)
+                                if (obs_type is not None and
+                                        observation.type is None):
+                                    observation.type = obs_type
                             # elif observation.instrument.name == 'hrwfs':
                             #     _update_chunk_energy_hrwfs(
                             #         c, header, observation.observation_id)
@@ -1421,32 +1518,54 @@ def _update_chunk_energy_phoenix(chunk, header, obs_id):
     logging.debug('End _update_chunk_energy_phoenix')
 
 
-def _update_chunk_energy_flamingos(chunk, header, obs_id):
+def _update_chunk_energy_flamingos(chunk, header, data_product_type, obs_id):
     """Flamingos-specific chunk-level Energy WCS construction."""
     logging.debug('Begin _update_chunk_energy_flamingos')
     mc.check_param(chunk, Chunk)
 
-    n_axis = 1
+    # DB - 18-02-19 - FLAMINGOS spectral WCS should be similar to what was
+    # done for NIRI.  Use NAXIS1 keyword value to determine number of
+    # pixels.  The GRISM and FILTER keywords give the same filter ID.
+    # The SVO filter information for KPNO/Flamingos has a blue leak in the
+    # JK blocking filter which give too large a spectral range.  Can you
+    # instead hard code min/max wavelengths using the top two lines in
+    # this table 7:
+    # http://www-kpno.kpno.noao.edu/manuals/flmn/flmn.user.html#flamspec.
+    # Use these for min/max wavelengths and use the average as the ‘central’
+    # wavelength.  Spectral resolution is fixed at about 1300 for both grisms.
+
+    # spectral wcs units are microns, values from Table 7 are angstroms
+    lookup = {'JH': [8910, 18514],
+              'HK': [10347, 27588]}
 
     filter_name = get_filter_name(header, 'FILTER')
-    filter_md = em.get_filter_metadata('Flamingos', filter_name)
-
-    spectroscopy = em.om.get('spectroscopy')
-    if spectroscopy is None:
-        raise mc.CadcException(
-            'Flamingos: Spectroscopy undefined for {}'.format(obs_id))
-    if spectroscopy:
-        raise mc.CadcException(
-            'Flamingos: Do not understand spectroscopy for {}'.format(obs_id))
+    if filter_name in ['JH', 'HK']:
+        filter_md = {'wl_min': lookup[filter_name][0] / 1.0e4,
+                     'wl_eff_width': (lookup[filter_name][1] -
+                                      lookup[filter_name][0]) / 1.0e4}
+        resolving_power = 1300.0 / 1.0e4
     else:
+        filter_md = em.get_filter_metadata('Flamingos', filter_name)
+        resolving_power = None
+
+    if data_product_type == DataProductType.SPECTRUM:
+        logging.debug('Flamingos: SpectralWCS for {}.'.format(obs_id))
+        n_axis = header.get('NAXIS1')
+        reference_wavelength = float(filter_md['wl_min'])  # minimum wavelength
+        delta = filter_md['wl_eff_width'] / n_axis
+    elif data_product_type == DataProductType.IMAGE:
         logging.debug(
-            'Flamingos Spectral WCS imaging mode for {}.'.format(obs_id))
+            'Flamingos: SpectralWCS imaging mode for {}.'.format(obs_id))
+        n_axis = 1
         reference_wavelength, delta, resolving_power = \
             _imaging_energy(filter_md)
+    else:
+        raise mc.CadcException(
+            'Flamingos: mystery data product type {} for {}'.format(
+                data_product_type, obs_id))
 
     _build_chunk_energy(chunk, n_axis, reference_wavelength, delta,
                         filter_name, resolving_power)
-
     logging.debug('End _update_chunk_energy_flamingos')
 
 
