@@ -1,0 +1,432 @@
+Filename: 02nov12.0455.fits.bz2
+
+AstroData Types: ['GEMINI', 'FLAMINGOS', 'GEMINI_SOUTH', 'RAW', 'UNPREPARED']
+
+
+--- HDU 0 ---
+SIMPLE  =                    T / conforms to FITS standard                      
+BITPIX  =                    8 / array data type                                
+NAXIS   =                    0 / number of array dimensions                     
+EXTEND  =                    T                                                  
+ORIGIN  = 'Gemini-South'       / FITS file originator                           
+DATE    = '2002-11-13T15:48:34' / Date FITS file was generated                  
+IRAF-TLM= '06:48:15 (12/11/2002)' / Time of last modification                   
+OBJECT  = 'Dark    '           / Name of the object observed                    
+COM0    = '------------------' / Line break                                     
+FILEBASE= '02nov12'                      / Filename template                    
+FILENAME= '02nov12.0455.fits'                      / Filename of original file  
+ORIG_DIR= '/data0/flamobs/2002nov12/'                / Abs path to write data to
+INSTRUME= 'FLAMINGOS         ' / Instrument Name                                
+COM1    = '------------------' / Line break                                     
+COM2    = 'GEMINI_INFO       ' / Gemini TCS provided info follows               
+AIRMASS =                1.000 / Airmass of Object at start of exposure         
+AZIMUTH = '+90:00:00.51      ' / Azimuth (deg:min:sec) at start                 
+AZERROR = '-190:58:42.04     ' / Azimuth error (deg:min:sec) at start           
+BEAM    = 'A                 ' / Nod beam                                       
+DATALAB = 'GS-CAL20021112-26-0455' / Data Label                                 
+EL      = '+90:03:01.03      ' / Elevation (deg:min:sec) at start               
+ELERROR = '-69:46:04.47      ' / Elevation error (deg:min:sec) at start         
+TELFOCUS=               -0.354 / Focus Position Absolute (mm) at start          
+FRAMEPA = 'FK5               ' / Reference frame of instrument PA               
+GEMPRGID= 'GS-CAL20021112'     / Gemini Science Program ID                      
+HA      =               5.1541 / Hour Angle at start of exposure                
+HUMID   =                 30.0 / Humidity (% rel) at start of exposure          
+INSTRAA =               359.80 / Instrument alignment angle (deg)               
+INSTRPA =                84.00 / Instrument PA (deg)                            
+LOCTIME = '05:42:47.4        ' / Local time (hh:mm:ss.s)                        
+LST     = '08:25:14.3        ' / Siderial Time at start of observation          
+MJD     = 52590.40471606829669 / Modified Julian Date                           
+OBSID   = 'GS-CAL20021112-26'  / Observation ID                                 
+OBSERVAT= 'Gemini-South'                                                        
+OBSERVER= 'Ledlow,Stern,Raines' / Observer(s)                                   
+DEC_OFF =               -1.570 / Offset in Dec from base (arcsec)               
+RA_OFF  =              -15.788 / Offset in RA from base  (arcsec)               
+PIXSCALE= 'test              ' / Plate scale at detector; arcsec/pixel          
+RAWBG   = '50-percentile'      / Raw Background                                 
+RAWCC   = '50-percentile'      / Raw Cloud Cover                                
+RAWIQ   = '50-percentile'      / Raw Image Quality                              
+RAWGEMQA= 'USABLE  '           / Gemini Quality Assessment                      
+RAWPIREQ= 'UNKNOWN '           / PI Requirements Met                            
+RAWWV   = 'UNKNOWN '           / Raw Water Vapour/Transparency                  
+ROTATOR =               -0.000 / Rotator mechanical angle (deg)                 
+ROTERROR=                0.000 / Rotator mechanical angle error (deg)           
+SSA     = 'Prado   '           / SSA                                            
+RA_BASE =          48.96683333 / Target's Base RA  (deg)                        
+DEC_BASE=         -19.11238889 / Target's Base DEC (deg)                        
+EPOCH   =  2002.86331053346589 / Target's Epoch (years)                         
+EQUINOX =  2000.00000000000000 / Target's equinox (years)                       
+TARGFRM = 'FK5               ' / Target's coord frame (FK4;FK5;AAPT;AZEL_TOPO)  
+TARGSYS = 'FK5               ' / Target's FITS coord frame (FK4;FK5;GAPPT)      
+TELESCOP= 'Gemini-South'                                                        
+RA_TEL  = '03:15:51.191      ' / Telescope's RA  pointing origin (hh:mm:ss.ss)  
+DEC_TEL = '-19:06:48.48      ' / Telescope's Dec pointing origin (hh:mm:ss.ss)  
+USRFOC  =               -0.125 / User's offset from nominal focus (mm)          
+UTC     = '09:42:47.4        ' / UTC time at start of exposure (hh:mm:ss.s)     
+UTCDATE = '2002-11-12        ' / UTC date from tcs at start of exposure         
+DATE-OBS= '2002-11-12        ' / UTC Date (yyyy-mm-dd) Recommend END of Night   
+ZD      =              -0.0503 / Zenith Distance at start of exposure (deg)     
+COM_A   = 'WCS INFO'           / Info for wcs in ds9                            
+COM_AA  = '------------------' / Line break                                     
+CTYPE1  = 'RA---TAN'           / X-axis type                                    
+CTYPE2  = 'DEC--TAN'           / Y-axis type                                    
+CRVAL1  =          48.96683333 / Reference pixel value                          
+CRVAL2  =         -19.11238889 / Reference pixel value                          
+CRPIX1  =               1024.5 / Reference pixel                                
+CRPIX2  =               1024.5 / Reference pixel                                
+CDELT1  =           -0.0000216 / Plate scale degrees/pixel                      
+CDELT2  =            0.0000216 / Plate scale degrees/pixel                      
+CROTA1  =            -84.00000 / Rotation in degrees                            
+COM3    = '------------------' / Line break                                     
+COM4    = 'FLAMINGOS_INFO    ' / Flamingos info follows                         
+UCODE   = 'Beta 2.00_f.07    ' / Version of controller code                     
+BIAS    =                1.000 / Bias (1.0 = imaging; 0.75 = spectroscopy)      
+EXP_TIME=                  300 / Exposure time  (integer sec=2 or >=2 + 2*nread)
+USE_MST =                    1 / Switch between msec and sec timer at MSTBREAK  
+MSTBREAK=                   60 / Time (sec) where switch from msec to sec timer 
+NREADS  =                    1 / # of nondestructive reads per endpt: 1 or >= 3 
+CYCLETYP=                   40 / MCE4 cycle type; 40=CDS; 42=multiple reads     
+COADDS  =                    1 / Number of COADDs in image (1 supported)        
+TAKECNT =                    1 / Number of frames expected by frame grabber (1) 
+COM5    = '------------------' / Line break                                     
+OBS_TYPE= 'Object'             / Object Flat Dark Lamp Slit Mos Linearity       
+OBS_MODE= 'stare             ' / Mode of observation                            
+COM6    = '--Named Positions-' / Line break                                     
+DECKER  = 'imaging           ' / dark imaging slit mos                          
+MOS     = 'imaging           ' / B D F H K L M N O P Q imaging                  
+SLIT    = 'imaging           ' / 9pix-J 2pix-C 3pix-R 6pix-A 12pix-E 20px-G open
+FILTER  = 'J                 ' / J H K HK JH KS                                 
+LYOT    = 'Hartmann1         ' / Hartmann1 Hartmann2 open gem mmt 4m 2.1m       
+GRISM   = 'true_dark         ' / open1 JH true-dark open2 HK                    
+MOS_NAME= 'open                                     ' / Selected Mos plate name 
+COM7    = '------------------' / Line break                                     
+POS_A   =                 2270 / Motor a = Decker   target numerical position   
+POS_B   =                    0 / Motor b = Mos/Slit target numerical position   
+POS_C   =                    0 / Motor c = Filter   target numerical position   
+POS_D   =                   11 / Motor d = Lyot     target numerical position   
+POS_E   =                  500 / Motor e = Grism    target numerical position   
+COM8    = '------------------' / Line break                                     
+HT_0    =                    1 / Home type motor a (0=near; 1=limit)            
+HT_1    =                    0 / Home type motor b (0=near; 1=limit)            
+HT_2    =                    1 / Home type motor c (0=near; 1=limit)            
+HT_3    =                    1 / Home type motor d (0=near; 1=limit)            
+HT_4    =                    1 / Home type motor e (0=near; 1=limit)            
+COM9    = '---Output Info----' / Line break                                     
+USE_TCS =                    1 / Put tcs info into header;0=no;1=yes            
+DISP_DS9=                    0 / Display image directlyto ds9;0=no;1=yes        
+DISPDS92=                    1 / Better way to display image; 0=no; 1=yes       
+JPEG    =                    0 / Write a jpeg in addition to fits?;0=no;1=yes   
+PNG     =                    0 / Write a png  in addition to fits?;0=no;1=yes   
+UNLOCK  =                    1 / Write an unlock file when done?;  0=no;1=yes   
+PAD_DATA=                    1 / 0=no 1=pad images to 5826 records plus header  
+COM10   = 'Image Dither Info-' / Line break                                     
+DPATTERN= 'pat_2x2           ' / Dither pattern name                            
+D_SCALE =                  0.5 / Dither pattern additional scale factor         
+D_RPTPOS=                    1 / Number of times to repeat each dither position 
+D_RPTPAT=                    3 / Number of times to repeat entire pattern       
+XOFFSET =                    0 / Offset wrt first position of dither pattern    
+YOFFSET =                    0 / Offset wrt first position of dither pattern    
+STARTPOS=                    1 / Position in pattern to start at; 0=first pos.  
+NOD_SKY =                    1 / 0=source only, 1=object-sky nod                
+THROW   =                    0 / Radial length to other nod beam                
+THROW_PA=                    0 / PA of other beam for nodding -180 to +180      
+USENUDGE=                    1 / Nudge pointing center on pattern repeats       
+NUDGESIZ=                    3 / Radial size of nudge, random direction         
+COM11   = '-Mos Dither Info--' / Line break                                     
+M_RPTPAT=                    1 / Number of time to repeat MOS ABBA observation  
+M_THROW =                   30 / Distance (arcsec) between MOS A and B beams    
+M_NDGSZ =                  0.5 / Extra offset of ABBA when repeating pattern    
+USEMNUDG=                    0 / Nudge Mos Dither pattern on pattern repeats    
+CHIP-PA =                    0 / Chip position angle on sky (deg) for ROT_PA=0  
+ROT_PA  =                  180 / Telescope Rotator angle (deg)                  
+SLIT-CPA=                 0.00 / Slit position angle on chip (deg)              
+COM12   = '------------------' / User comment                                   
+TIME    = '02:57:43          ' / Time from Flamingos computer                   
+WEATHER1=                    1 / 1=photometric; 2=thin cirrus; 3=broken cloud;  
+WEATHER2= '------------------' / 4=overcast;    5=snowing;     6=fog;           
+WIND    =                    1 / 1=calm; 2=low; 3=moderate; 4=high; 5=closed    
+COM13   = '---Detector Info--' / Line break                                     
+DETECTOR= 'Hawaii-2 Science  ' / Detector Identification                        
+DETSER  = 'Serial Number 43  ' / Rockwell Serial Number                         
+DETID   = '9-321L  '           / Rockwell Detector ID Number                    
+MUXID   = 'L3W1D3  '           / Rockwell Multiplexer ID Number                 
+DETINSTA= '2002-09-12'         / Date of first cooldown                         
+ACOMMENT= 'test    '           / User comment                                   
+BCOMMENT= 'test'               / User comment                                   
+CCOMMENT= 'test'               / User comment                                   
+DCOMMENT= 'test'               / User comment                                   
+ECOMMENT= 'test'               / User comment                                   
+FCOMMENT= 'test'               / User comment                                   
+GCOMMENT= 'test'               / User comment                                   
+HCOMMENT= 'test'               / User comment                                   
+ICOMMENT= 'test'               / User comment                                   
+JCOMMENT= 'test'               / User comment                                   
+KCOMMENT= 'test'               / User comment                                   
+LCOMMENT= 'test'               / User comment                                   
+MCOMMENT= 'test'               / User comment                                   
+NCOMMENT= 'test'               / User comment                                   
+OCOMMENT= 'test'               / User comment                                   
+PCOMMENT= 'test'               / User comment                                   
+QCOMMENT= 'test'               / User comment                                   
+RCOMMENT= 'test'               / User comment                                   
+SCOMMENT= 'test'               / User comment                                   
+TCOMMENT= 'test'               / User comment                                   
+UCOMMENT= 'test'               / User comment                                   
+VCOMMENT= 'test'               / User comment                                   
+WCOMMENT= 'test'               / User comment                                   
+XCOMMENT= 'test'               / User comment                                   
+YCOMMENT= 'test'               / User comment                                   
+ZCOMMENT= 'test'               / User comment                                   
+AACOMMEN= 'test'               / User comment                                   
+BBCOMMEN= 'test'               / User comment                                   
+CCOMMENT= 'test'               / User comment                                   
+DDCOMMEN= 'test'               / User comment                                   
+EECOMMEN= 'test'               / User comment                                   
+RELEASE = '2002-11-12'         / End of proprietary period YYYY-MM-DD           
+HISTORY Corrected metadata: automated fixes from PyFITS                         
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+
+--- HDU 1 ---
+XTENSION= 'IMAGE   '           / Image extension                                
+BITPIX  =                   32 / array data type                                
+NAXIS   =                    2 / number of array dimensions                     
+NAXIS1  =                 2048                                                  
+NAXIS2  =                 2048                                                  
+PCOUNT  =                    0 / number of parameters                           
+GCOUNT  =                    1 / number of groups                               
+EXTNAME = 'SCI     '           / ad4549: added by AstroData                     
+EXTVER  =                    1                                                  
+ORIGIN  = 'Gemini-South'       / FITS file originator                           
+DATE    = '2002-11-13T15:48:34' / Date FITS file was generated                  
+IRAF-TLM= '06:48:15 (12/11/2002)' / Time of last modification                   
+OBJECT  = 'Dark    '           / Name of the object observed                    
+COM0    = '------------------' / Line break                                     
+FILEBASE= '02nov12'                      / Filename template                    
+FILENAME= '02nov12.0455.fits'                      / Filename of original file  
+ORIG_DIR= '/data0/flamobs/2002nov12/'                / Abs path to write data to
+INSTRUME= 'FLAMINGOS         ' / Instrument Name                                
+COM1    = '------------------' / Line break                                     
+COM2    = 'GEMINI_INFO       ' / Gemini TCS provided info follows               
+AIRMASS =                1.000 / Airmass of Object at start of exposure         
+AZIMUTH = '+90:00:00.51      ' / Azimuth (deg:min:sec) at start                 
+AZERROR = '-190:58:42.04     ' / Azimuth error (deg:min:sec) at start           
+BEAM    = 'A                 ' / Nod beam                                       
+DATALAB = 'GS-CAL20021112-26-0455' / Data Label                                 
+EL      = '+90:03:01.03      ' / Elevation (deg:min:sec) at start               
+ELERROR = '-69:46:04.47      ' / Elevation error (deg:min:sec) at start         
+TELFOCUS=               -0.354 / Focus Position Absolute (mm) at start          
+FRAMEPA = 'FK5               ' / Reference frame of instrument PA               
+GEMPRGID= 'GS-CAL20021112'     / Gemini Science Program ID                      
+HA      =               5.1541 / Hour Angle at start of exposure                
+HUMID   =                 30.0 / Humidity (% rel) at start of exposure          
+INSTRAA =               359.80 / Instrument alignment angle (deg)               
+INSTRPA =                84.00 / Instrument PA (deg)                            
+LOCTIME = '05:42:47.4        ' / Local time (hh:mm:ss.s)                        
+LST     = '08:25:14.3        ' / Siderial Time at start of observation          
+MJD     = 52590.40471606829669 / Modified Julian Date                           
+OBSID   = 'GS-CAL20021112-26'  / Observation ID                                 
+OBSERVAT= 'Gemini-South'                                                        
+OBSERVER= 'Ledlow,Stern,Raines' / Observer(s)                                   
+DEC_OFF =               -1.570 / Offset in Dec from base (arcsec)               
+RA_OFF  =              -15.788 / Offset in RA from base  (arcsec)               
+PIXSCALE= 'test              ' / Plate scale at detector; arcsec/pixel          
+RAWBG   = '50-percentile'      / Raw Background                                 
+RAWCC   = '50-percentile'      / Raw Cloud Cover                                
+RAWIQ   = '50-percentile'      / Raw Image Quality                              
+RAWGEMQA= 'USABLE  '           / Gemini Quality Assessment                      
+RAWPIREQ= 'UNKNOWN '           / PI Requirements Met                            
+RAWWV   = 'UNKNOWN '           / Raw Water Vapour/Transparency                  
+ROTATOR =               -0.000 / Rotator mechanical angle (deg)                 
+ROTERROR=                0.000 / Rotator mechanical angle error (deg)           
+SSA     = 'Prado   '           / SSA                                            
+RA_BASE =          48.96683333 / Target's Base RA  (deg)                        
+DEC_BASE=         -19.11238889 / Target's Base DEC (deg)                        
+EPOCH   =  2002.86331053346589 / Target's Epoch (years)                         
+EQUINOX =  2000.00000000000000 / Target's equinox (years)                       
+TARGFRM = 'FK5               ' / Target's coord frame (FK4;FK5;AAPT;AZEL_TOPO)  
+TARGSYS = 'FK5               ' / Target's FITS coord frame (FK4;FK5;GAPPT)      
+TELESCOP= 'Gemini-South'                                                        
+RA_TEL  = '03:15:51.191      ' / Telescope's RA  pointing origin (hh:mm:ss.ss)  
+DEC_TEL = '-19:06:48.48      ' / Telescope's Dec pointing origin (hh:mm:ss.ss)  
+USRFOC  =               -0.125 / User's offset from nominal focus (mm)          
+UTC     = '09:42:47.4        ' / UTC time at start of exposure (hh:mm:ss.s)     
+UTCDATE = '2002-11-12        ' / UTC date from tcs at start of exposure         
+DATE-OBS= '2002-11-12        ' / UTC Date (yyyy-mm-dd) Recommend END of Night   
+ZD      =              -0.0503 / Zenith Distance at start of exposure (deg)     
+COM_A   = 'WCS INFO'           / Info for wcs in ds9                            
+COM_AA  = '------------------' / Line break                                     
+CTYPE1  = 'RA---TAN'           / X-axis type                                    
+CTYPE2  = 'DEC--TAN'           / Y-axis type                                    
+CRVAL1  =          48.96683333 / Reference pixel value                          
+CRVAL2  =         -19.11238889 / Reference pixel value                          
+CRPIX1  =               1024.5 / Reference pixel                                
+CRPIX2  =               1024.5 / Reference pixel                                
+CDELT1  =           -0.0000216 / Plate scale degrees/pixel                      
+CDELT2  =            0.0000216 / Plate scale degrees/pixel                      
+CROTA1  =            -84.00000 / Rotation in degrees                            
+COM3    = '------------------' / Line break                                     
+COM4    = 'FLAMINGOS_INFO    ' / Flamingos info follows                         
+UCODE   = 'Beta 2.00_f.07    ' / Version of controller code                     
+BIAS    =                1.000 / Bias (1.0 = imaging; 0.75 = spectroscopy)      
+EXP_TIME=                  300 / Exposure time  (integer sec=2 or >=2 + 2*nread)
+USE_MST =                    1 / Switch between msec and sec timer at MSTBREAK  
+MSTBREAK=                   60 / Time (sec) where switch from msec to sec timer 
+NREADS  =                    1 / # of nondestructive reads per endpt: 1 or >= 3 
+CYCLETYP=                   40 / MCE4 cycle type; 40=CDS; 42=multiple reads     
+COADDS  =                    1 / Number of COADDs in image (1 supported)        
+TAKECNT =                    1 / Number of frames expected by frame grabber (1) 
+COM5    = '------------------' / Line break                                     
+OBS_TYPE= 'Object'             / Object Flat Dark Lamp Slit Mos Linearity       
+OBS_MODE= 'stare             ' / Mode of observation                            
+COM6    = '--Named Positions-' / Line break                                     
+DECKER  = 'imaging           ' / dark imaging slit mos                          
+MOS     = 'imaging           ' / B D F H K L M N O P Q imaging                  
+SLIT    = 'imaging           ' / 9pix-J 2pix-C 3pix-R 6pix-A 12pix-E 20px-G open
+FILTER  = 'J                 ' / J H K HK JH KS                                 
+LYOT    = 'Hartmann1         ' / Hartmann1 Hartmann2 open gem mmt 4m 2.1m       
+GRISM   = 'true_dark         ' / open1 JH true-dark open2 HK                    
+MOS_NAME= 'open                                     ' / Selected Mos plate name 
+COM7    = '------------------' / Line break                                     
+POS_A   =                 2270 / Motor a = Decker   target numerical position   
+POS_B   =                    0 / Motor b = Mos/Slit target numerical position   
+POS_C   =                    0 / Motor c = Filter   target numerical position   
+POS_D   =                   11 / Motor d = Lyot     target numerical position   
+POS_E   =                  500 / Motor e = Grism    target numerical position   
+COM8    = '------------------' / Line break                                     
+HT_0    =                    1 / Home type motor a (0=near; 1=limit)            
+HT_1    =                    0 / Home type motor b (0=near; 1=limit)            
+HT_2    =                    1 / Home type motor c (0=near; 1=limit)            
+HT_3    =                    1 / Home type motor d (0=near; 1=limit)            
+HT_4    =                    1 / Home type motor e (0=near; 1=limit)            
+COM9    = '---Output Info----' / Line break                                     
+USE_TCS =                    1 / Put tcs info into header;0=no;1=yes            
+DISP_DS9=                    0 / Display image directlyto ds9;0=no;1=yes        
+DISPDS92=                    1 / Better way to display image; 0=no; 1=yes       
+JPEG    =                    0 / Write a jpeg in addition to fits?;0=no;1=yes   
+PNG     =                    0 / Write a png  in addition to fits?;0=no;1=yes   
+UNLOCK  =                    1 / Write an unlock file when done?;  0=no;1=yes   
+PAD_DATA=                    1 / 0=no 1=pad images to 5826 records plus header  
+COM10   = 'Image Dither Info-' / Line break                                     
+DPATTERN= 'pat_2x2           ' / Dither pattern name                            
+D_SCALE =                  0.5 / Dither pattern additional scale factor         
+D_RPTPOS=                    1 / Number of times to repeat each dither position 
+D_RPTPAT=                    3 / Number of times to repeat entire pattern       
+XOFFSET =                    0 / Offset wrt first position of dither pattern    
+YOFFSET =                    0 / Offset wrt first position of dither pattern    
+STARTPOS=                    1 / Position in pattern to start at; 0=first pos.  
+NOD_SKY =                    1 / 0=source only, 1=object-sky nod                
+THROW   =                    0 / Radial length to other nod beam                
+THROW_PA=                    0 / PA of other beam for nodding -180 to +180      
+USENUDGE=                    1 / Nudge pointing center on pattern repeats       
+NUDGESIZ=                    3 / Radial size of nudge, random direction         
+COM11   = '-Mos Dither Info--' / Line break                                     
+M_RPTPAT=                    1 / Number of time to repeat MOS ABBA observation  
+M_THROW =                   30 / Distance (arcsec) between MOS A and B beams    
+M_NDGSZ =                  0.5 / Extra offset of ABBA when repeating pattern    
+USEMNUDG=                    0 / Nudge Mos Dither pattern on pattern repeats    
+CHIP-PA =                    0 / Chip position angle on sky (deg) for ROT_PA=0  
+ROT_PA  =                  180 / Telescope Rotator angle (deg)                  
+SLIT-CPA=                 0.00 / Slit position angle on chip (deg)              
+COM12   = '------------------' / User comment                                   
+TIME    = '02:57:43          ' / Time from Flamingos computer                   
+WEATHER1=                    1 / 1=photometric; 2=thin cirrus; 3=broken cloud;  
+WEATHER2= '------------------' / 4=overcast;    5=snowing;     6=fog;           
+WIND    =                    1 / 1=calm; 2=low; 3=moderate; 4=high; 5=closed    
+COM13   = '---Detector Info--' / Line break                                     
+DETECTOR= 'Hawaii-2 Science  ' / Detector Identification                        
+DETSER  = 'Serial Number 43  ' / Rockwell Serial Number                         
+DETID   = '9-321L  '           / Rockwell Detector ID Number                    
+MUXID   = 'L3W1D3  '           / Rockwell Multiplexer ID Number                 
+DETINSTA= '2002-09-12'         / Date of first cooldown                         
+ACOMMENT= 'test    '           / User comment                                   
+BCOMMENT= 'test'               / User comment                                   
+CCOMMENT= 'test'               / User comment                                   
+DCOMMENT= 'test'               / User comment                                   
+ECOMMENT= 'test'               / User comment                                   
+FCOMMENT= 'test'               / User comment                                   
+GCOMMENT= 'test'               / User comment                                   
+HCOMMENT= 'test'               / User comment                                   
+ICOMMENT= 'test'               / User comment                                   
+JCOMMENT= 'test'               / User comment                                   
+KCOMMENT= 'test'               / User comment                                   
+LCOMMENT= 'test'               / User comment                                   
+MCOMMENT= 'test'               / User comment                                   
+NCOMMENT= 'test'               / User comment                                   
+OCOMMENT= 'test'               / User comment                                   
+PCOMMENT= 'test'               / User comment                                   
+QCOMMENT= 'test'               / User comment                                   
+RCOMMENT= 'test'               / User comment                                   
+SCOMMENT= 'test'               / User comment                                   
+TCOMMENT= 'test'               / User comment                                   
+UCOMMENT= 'test'               / User comment                                   
+VCOMMENT= 'test'               / User comment                                   
+WCOMMENT= 'test'               / User comment                                   
+XCOMMENT= 'test'               / User comment                                   
+YCOMMENT= 'test'               / User comment                                   
+ZCOMMENT= 'test'               / User comment                                   
+AACOMMEN= 'test'               / User comment                                   
+BBCOMMEN= 'test'               / User comment                                   
+CCOMMENT= 'test'               / User comment                                   
+DDCOMMEN= 'test'               / User comment                                   
+EECOMMEN= 'test'               / User comment                                   
+RELEASE = '2002-11-12'         / End of proprietary period YYYY-MM-DD           
+HISTORY Corrected metadata: automated fixes from PyFITS                         
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
