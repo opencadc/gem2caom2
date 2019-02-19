@@ -88,6 +88,7 @@ can retrieve the observation ID value from the headers for a file.
 """
 import importlib
 import logging
+import math
 import os
 import sys
 import re
@@ -879,6 +880,9 @@ def update(observation, **kwargs):
                             # equinox information only available from the
                             # 0th header
                             c.position.equinox = headers[0].get('TRKEQUIN')
+                        if observation.instrument.name == 'FLAMINGOS':
+                            _update_chunk_position_flamingos(
+                                c, header, observation.observation_id)
     except Exception as e:
         logging.error(e)
         tb = traceback.format_exc()
@@ -947,9 +951,6 @@ def _update_chunk_energy_niri(chunk, header, obs_id):
     filters = get_filter_name(header)
     filter_md = em.get_filter_metadata('NIRI', filters)
     filter_name = em.om.get('filter_name')
-
-    logging.error('filters {} filter_name {}'.format(filters, filter_name))
-
     mode = em.om.get('mode')
     if mode == 'imaging':
         logging.debug('NIRI: SpectralWCS imaging mode for {}.'.format(obs_id))
@@ -1631,7 +1632,7 @@ def _reset_energy(observation_type, data_label):
     Return True if there should be no energy WCS information created at
     the chunk level.
 
-    :param observation_type from the parent observation.
+    :param observation_type from the parent Observation instance.
     :param data_label str for useful logging information only.
     """
     result = False
@@ -1725,6 +1726,39 @@ def _update_position_from_zeroth_header(artifact, headers, log_id):
                 chunk.position = primary_chunk.position
                 chunk.position_axis_1 = 1
                 chunk.position_axis_2 = 2
+
+
+def _update_chunk_position_flamingos(chunk, header, obs_id):
+    # DB - I see nothing in astropy that will do a transformation from crota
+    # form to CD matrix, but this is it:
+
+    # cd1_1 = cdelt1 * cos (crota1)
+    # cd1_2 = -cdelt2 * sin (crota1)
+    # cd2_1 = cdelt1 * sin (crota1)
+    # cd2_2 = cdelt2 * cos (crota1)
+
+    # Note that there is not a crota2 keyword (it would have the same value
+    # as crota1 if it existed)
+    if (chunk is not None and chunk.position is not None and
+            chunk.position.axis is not None and
+            chunk.position.axis.function is not None):
+        c_delt1 = header.get('CDELT1')
+        c_delt2 = header.get('CDELT2')
+        c_rota1 = header.get('CROTA1')
+        if c_delt1 is not None and c_delt2 is not None and c_rota1 is not None:
+            chunk.position.axis.function.cd11 = c_delt1 * math.cos(c_rota1)
+            chunk.position.axis.function.cd12 = -c_delt2 * math.sin(c_rota1)
+            chunk.position.axis.function.cd21 = c_delt1 * math.sin(c_rota1)
+            chunk.position.axis.function.cd22 = c_delt2 * math.cos(c_rota1)
+        else:
+            logging.info(
+                'FLAMINGOS: Missing spatial wcs inputs for {}'.format(obs_id))
+            chunk.position.axis.function.cd11 = None
+            chunk.position.axis.function.cd12 = None
+            chunk.position.axis.function.cd21 = None
+            chunk.position.axis.function.cd22 = None
+    else:
+        logging.info('FLAMINGOS: Missing spatial wcs for {}'.format(obs_id))
 
 
 def _build_blueprints(uris, obs_id, file_id):

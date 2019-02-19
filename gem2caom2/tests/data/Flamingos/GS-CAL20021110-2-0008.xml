@@ -88,10 +88,10 @@
                             <caom2:val>0.91480556</caom2:val>
                           </caom2:coord2>
                         </caom2:refCoord>
-                        <caom2:cd11>-2.16e-05</caom2:cd11>
-                        <caom2:cd12>-0.34</caom2:cd12>
-                        <caom2:cd21>0.0</caom2:cd21>
-                        <caom2:cd22>2.16e-05</caom2:cd22>
+                        <caom2:cd11>-2.036350077541228e-05</caom2:cd11>
+                        <caom2:cd12>7.203321190241591e-06</caom2:cd12>
+                        <caom2:cd21>7.203321190241591e-06</caom2:cd21>
+                        <caom2:cd22>2.036350077541228e-05</caom2:cd22>
                       </caom2:function>
                     </caom2:axis>
                     <caom2:coordsys>FK5</caom2:coordsys>
