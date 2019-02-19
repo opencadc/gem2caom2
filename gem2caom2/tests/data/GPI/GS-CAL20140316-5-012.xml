@@ -74,32 +74,26 @@
                         <caom2:ctype>DEC--TAN</caom2:ctype>
                         <caom2:cunit>deg</caom2:cunit>
                       </caom2:axis2>
-                      <caom2:bounds>
-                        <caom2:polygon>
-                          <caom2:vertices>
-                            <caom2:vertex>
-                              <caom2:coord1>283.8144378437871</caom2:coord1>
-                              <caom2:coord2>89.90016713368689</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>283.8152156215649</caom2:coord1>
-                              <caom2:coord2>89.90016713368689</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>283.8152156215649</caom2:coord1>
-                              <caom2:coord2>89.89938935590911</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>283.8144378437871</caom2:coord1>
-                              <caom2:coord2>89.89938935590911</caom2:coord2>
-                            </caom2:vertex>
-                            <caom2:vertex>
-                              <caom2:coord1>283.814826732676</caom2:coord1>
-                              <caom2:coord2>89.899778244798</caom2:coord2>
-                            </caom2:vertex>
-                          </caom2:vertices>
-                        </caom2:polygon>
-                      </caom2:bounds>
+                      <caom2:function>
+                        <caom2:dimension>
+                          <caom2:naxis1>1</caom2:naxis1>
+                          <caom2:naxis2>1</caom2:naxis2>
+                        </caom2:dimension>
+                        <caom2:refCoord>
+                          <caom2:coord1>
+                            <caom2:pix>1.0</caom2:pix>
+                            <caom2:val>35.35257770422876</caom2:val>
+                          </caom2:coord1>
+                          <caom2:coord2>
+                            <caom2:pix>1.0</caom2:pix>
+                            <caom2:val>59.72033985935448</caom2:val>
+                          </caom2:coord2>
+                        </caom2:refCoord>
+                        <caom2:cd11>0.000777777777777777</caom2:cd11>
+                        <caom2:cd12>0.01262826504381613</caom2:cd12>
+                        <caom2:cd21>0.02057673545734739</caom2:cd21>
+                        <caom2:cd22>0.000777777777777777</caom2:cd22>
+                      </caom2:function>
                     </caom2:axis>
                     <caom2:coordsys>FK5</caom2:coordsys>
                     <caom2:equinox>2000.0</caom2:equinox>

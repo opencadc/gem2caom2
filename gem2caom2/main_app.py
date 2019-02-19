@@ -111,6 +111,14 @@ __all__ = ['main_app2', 'update', 'COLLECTION', 'APPLICATION', 'SCHEME',
 
 
 APPLICATION = 'gem2caom2'
+# GPI radius == 2.8 arcseconds, according to Christian Marois via DB 02-07-19
+# DB - 18-02-19 - Replace “5.0” for “2.8" for GPI field of view.
+# NOTE:  To be more accurate for GRACES this size could be reduced
+# from 5" to 1.2" since that’s the size of the fibre.
+RADIUS_LOOKUP = {'GPI': 2.8 / 3600.0,  # units are arcseconds
+                 'GRACES': 1.2 / 3600.0,
+                 'PHOENIX': 5.0 / 3600.0}
+phoenix_spectral_axis = 1024
 
 
 def get_energy_metadata(file_id):
@@ -269,6 +277,26 @@ def get_art_product_type(header):
     return result
 
 
+def get_cd11(header):
+    cdelt1 = header.get('CDELT1')
+    if cdelt1 is None:
+        instrument = em.om.get('instrument')
+        result = RADIUS_LOOKUP[instrument]
+    else:
+        result = cdelt1
+    return result
+
+
+def get_cd22(header):
+    cdelt2 = header.get('CDELT2')
+    if cdelt2 is None:
+        instrument = em.om.get('instrument')
+        result = RADIUS_LOOKUP[instrument]
+    else:
+        result = cdelt2
+    return result
+
+
 def get_data_product_type(header):
     """
     Calculate the Plane DataProductType.
@@ -324,6 +352,14 @@ def get_meta_release(header):
     if meta_release is None:
         meta_release = em.om.get('release')
     return meta_release
+
+
+def get_naxis2_phoenix(header):
+    """Over-ride the NAXIS2 length, but preserve the original value for
+    use later by Spectral WCS computations."""
+    global phoenix_spectral_axis
+    phoenix_spectral_axis = header.get('NAXIS2')
+    return 1
 
 
 def get_obs_intent(header):
@@ -524,6 +560,53 @@ def accumulate_fits_bp(bp, obs_id, file_id):
     bp.set('Artifact.productType', 'get_art_product_type(header)')
 
     bp.configure_position_axes((1, 2))
+
+    instrument = em.om.get('instrument')
+    mode = em.om.get('mode')
+    if (instrument in ['GPI', 'PHOENIX'] or
+            (instrument == 'GRACES' and mode is not None and
+                mode != 'imaging')):
+        # DB - 18-02-19 - for hard-coded field of views use:
+        # CRVAL1  = RA value from json or header (degrees
+        # CRVAL2  = Dec value from json or header (degrees)
+        # CDELT1  = 5.0/3600.0 (Plate scale along axis1 in degrees/pixel
+        #           for 5" size)
+        # CDELT2  = 5.0/3600.0
+        # CROTA1  = 0.0 / Rotation in degrees
+        # NAXIS1 = 1
+        # NAXIS2 = 1
+        # CRPIX1 = 1.0
+        # CRPIX2 = 1.0
+        # CTYPE1 = RA---TAN
+        # CTYPE2 = DEC--TAN
+        #
+        # May be slightly different for Phoenix if headers give the width
+        # and rotation of the slit.  i.e CDELT1 and 2 may be different and
+        # CROTA1 non-zero.
+
+        bp.set('Chunk.position.axis.axis1.ctype', 'RA---TAN')
+        bp.set('Chunk.position.axis.axis2.ctype', 'DEC--TAN')
+        bp.set('Chunk.position.axis.axis1.cunit', 'deg')
+        bp.set('Chunk.position.axis.axis2.cunit', 'deg')
+        bp.set('Chunk.position.axis.function.dimension.naxis1', '1')
+        bp.set('Chunk.position.axis.function.dimension.naxis2', '1')
+        bp.set('Chunk.position.axis.function.refCoord.coord1.pix', '1.0')
+        bp.set('Chunk.position.axis.function.refCoord.coord2.pix', '1.0')
+        bp.clear('Chunk.position.axis.function.refCoord.coord1.val')
+        bp.add_fits_attribute(
+            'Chunk.position.axis.function.refCoord.coord1.val', 'RA')
+        bp.clear('Chunk.position.axis.function.refCoord.coord2.val')
+        bp.add_fits_attribute(
+            'Chunk.position.axis.function.refCoord.coord2.val', 'DEC')
+        bp.set('Chunk.position.axis.function.cd11', 'get_cd11(header)')
+        bp.set('Chunk.position.axis.function.cd22', 'get_cd22(header)')
+        bp.set_default('Chunk.position.axis.function.cd12', '0.0')
+        bp.set_default('Chunk.position.axis.function.cd21', '0.0')
+
+        if instrument == 'PHOENIX':
+            bp.set('Chunk.position.axis.function.dimension.naxis2',
+                   'get_naxis2_phoenix(header)')
+
     bp.configure_time_axis(3)
 
     # The Chunk time metadata is calculated using keywords from the
@@ -636,21 +719,12 @@ def update(observation, **kwargs):
                             #     _update_chunk_energy_hrwfs(
                             #         c, header, observation.observation_id)
 
-
                         # position WCS
-                        if (observation.instrument.name == 'GRACES' and
-                                mode == DataProductType.SPECTRUM):
-                            # radius = 5.0 arcseconds, said DB in test data
-                            # list of Jan 18/19
-                            _update_chunk_position(c, 5.0, header, 'GRACES')
                         if (part == '1' and
                                 observation.instrument.name == 'GPI'):
-                            # radius == 2.8 arcseconds, according to
-                            # Christian Marios via DB 02-07-19
-                            _update_chunk_position(c, 2.8, header, 'GPI')
+                            # equinox information only available from the
+                            # 0th header
                             c.position.equinox = headers[0].get('TRKEQUIN')
-                        if observation.instrument.name == 'PHOENIX':
-                            _update_chunk_position(c, 5.0, header, 'PHOENIX')
     except Exception as e:
         logging.error(e)
         tb = traceback.format_exc()
@@ -1308,7 +1382,8 @@ def _update_chunk_energy_phoenix(chunk, header, obs_id):
         if spectroscopy:
             logging.debug(
                 'Phoenix: LS|Spectroscopy mode for {}.'.format(obs_id))
-            n_axis = header.get('NAXIS2')
+            global phoenix_spectral_axis
+            n_axis = phoenix_spectral_axis
             if filter_name in PHOENIX:
                 w_max = PHOENIX[filter_name][2]
                 w_min = PHOENIX[filter_name][1]
@@ -1450,46 +1525,6 @@ def get_filter_name(header, lookup='FILTER'):
         filters = '+'.join(header_filters)
     logging.info('Filters are {}'.format(filters))
     return filters
-
-
-def _update_chunk_position(chunk, radius, header, instrument):
-    """Set position information as a Bounds Polygon around a point, with
-    a given radius.
-
-    :param radius in arc seconds"""
-
-    logging.debug('Begin _update_chunk_position')
-    mc.check_param(chunk, Chunk)
-
-    ra = em.om.get('ra')
-    dec = em.om.get('dec')
-    radius = radius/3600.0  # units of ra and dec are degrees, radius is "
-
-    if ra is not None and dec is not None:
-        axis1 = Axis(ctype='RA---TAN', cunit='deg')
-        axis2 = Axis(ctype='DEC--TAN', cunit='deg')
-        polygon = CoordPolygon2D()
-        for x, y in ([0, 1], [1, 1], [1, 0], [0, 0]):
-            ra_pt = ra - radius*(0.5-float(x))
-            dec_pt = dec - radius*(0.5-float(y))
-            polygon.vertices.append(ValueCoord2D(ra_pt, dec_pt))
-        polygon.vertices.append(ValueCoord2D(ra, dec))
-        axis = CoordAxis2D(axis1=axis1, axis2=axis2,
-                           error1=None, error2=None,
-                           range=None, bounds=polygon, function=None)
-        chunk.position = SpatialWCS(axis)
-        chunk.position_axis_1 = 1
-        chunk.position_axis_2 = 2
-        chunk.position.coordsys = header.get('RADECSYS')
-        if chunk.position.coordsys is None:
-            chunk.position.coordsys = header.get('RADESYS')
-        chunk.position.equinox = header.get('TRKEQUIN')
-        if chunk.position.equinox is None:
-            chunk.position.equinox = header.get('EPOCH')
-    else:
-        logging.info('{}: ra or dec missing from JSON.'.format(instrument))
-
-    logging.debug('End _update_chunk_position')
 
 
 def _update_position_from_zeroth_header(artifact, headers, log_id):
