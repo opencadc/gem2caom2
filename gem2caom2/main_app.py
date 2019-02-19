@@ -1366,8 +1366,9 @@ def _update_chunk_energy_nifs(chunk, header, obs_id):
                     delta = (wl_max - wl_min) / n_axis
                     resolving_power = nifs_lookup[grating][filter_name][3]
                 else:
-                    raise mc.CadcException('NIFS: mystery filter_name {} for {}'.format(
-                        filter_name, obs_id))
+                    raise mc.CadcException(
+                        'NIFS: mystery filter_name {} for {}'.format(
+                            filter_name, obs_id))
             else:
                 raise mc.CadcException(
                     'NIFS: mystery grating {} for {}'.format(grating, obs_id))
@@ -1542,12 +1543,12 @@ def _update_chunk_energy_phoenix(chunk, header, obs_id):
             if filter_name in PHOENIX:
                 w_max = PHOENIX[filter_name][2]
                 w_min = PHOENIX[filter_name][1]
-                delta = (w_min + w_max) / n_axis / 1.0e4
+                delta = (w_max - w_min) / n_axis
                 reference_wavelength = PHOENIX[filter_name][0]
             elif len(filter_name) == 0:
                 w_max = 100000.0
                 w_min = 0.0
-                delta = (w_min + w_max) / n_axis / 1.0e4
+                delta = (w_max - w_min) / n_axis
                 reference_wavelength = (w_max + w_min)/2.0
             else:
                 raise mc.CadcException(
