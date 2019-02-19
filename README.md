@@ -142,8 +142,26 @@ Again, likely not since Gemini displays results with 'hrwfs' from the header.
    1. Since FILTER is in the Hokupa'a + QUIRC header you might be able to use the SVO's 'generic' filters to determine energy information:  http://svo2.cab.inta-csic.es/svo/theory/fps/index.php?mode=browse&gname=Generic&gname2=Johnson_UBVRIJHKL
 1. OSCIR imaging/spectroscopy??:
    1. object: GS-2001B-Q-31-9-007
-1. Flamingos Imaging/Spectroscopy??
+1. Flamingos Imaging
+   Flamingos Imaging:
    1. object: GS-2002B-DD-2-6-0230
+   1. object: GS-2002B-Q-5-20-0205
+   1. object: GS-2002A-Q-13-2-0186
+   1. flat:     GS-CAL20020707-8-0034
+   1. dark:    GS-CAL20020707-9-0040
+   1. object: GS-2002B-DD-2-6-0230
+1. FLAMINGOS long-slit spectra:
+   1. object: GS-2002A-Q-7-1-0071
+   1. object: GS-2002B-DS-1-46-0031 (sample acquisition observation -> image)
+   1. object: GS-2002B-DS-1-46-0042 (resulting spectrum)
+   1. arc:    GS-CAL20020625-11-0121
+   1. flat:    GS-CAL20020625-10-0115
+1. FLAMINGOS multi-object spectra:
+   1. object: GS-2002B-DS-1-31-0072
+   1. object: GS-2002B-DS-1-41-0011 (sample acquisition observation -> image)
+   1. object: GS-2002B-DS-1-41-0016 (spectrum of above standard star)
+   1. flat: GS-CAL20021105-1-0001
+   1. flat: GS-CAL20021112-3-0024
 1. Hokupa'a + QUIRC imaging:
    1. object: GN-2002A-DD-1-319-591
    1. dark:   GN-CAL20020424-1-007
