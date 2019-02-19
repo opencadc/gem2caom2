@@ -236,6 +236,24 @@ LOOKUP = {
     'r01dec05_007': ['GS-2001B-Q-31-9-007', 'OSCIR'],
     # Flamingos
     '02sep04.0230': ['GS-2002B-DD-2-6-0230', 'Flamingos'],
+    '02jul07.0186': ['GS-2002A-Q-13-2-0186', 'Flamingos'],
+    '02jun25.0071': ['GS-2002A-Q-7-1-0071', 'Flamingos'],
+    '02nov05.0072': ['GS-2002B-DS-1-31-0072', 'Flamingos'],
+    '02nov05.0011': ['GS-2002B-DS-1-41-0011', 'Flamingos'],
+    '02nov05.0016': ['GS-2002B-DS-1-41-0016', 'Flamingos'],
+    '02nov06.0031': ['GS-2002B-DS-1-46-0031', 'Flamingos'],
+    '02nov06.0042': ['GS-2002B-DS-1-46-0042', 'Flamingos'],
+    '02oct30.0205': ['GS-2002B-Q-5-20-0205', 'Flamingos'],
+    '02jun25.0115': ['GS-CAL20020625-10-0115', 'Flamingos'],
+    '02jun25.0121': ['GS-CAL20020625-11-0121', 'Flamingos'],
+    '02jul07.0034': ['GS-CAL20020707-8-0034', 'Flamingos'],
+    '02jul07.0040': ['GS-CAL20020707-9-0040', 'Flamingos'],
+    '02nov05.0001': ['GS-CAL20021105-1-0001', 'Flamingos'],
+    '02nov12.0024': ['GS-CAL20021112-3-0024', 'Flamingos'],
+    '02nov12.0043': ['GS-CAL20021112-4-0043', 'Flamingos'],
+    '02nov10.0008': ['GS-CAL20021110-2-0008', 'Flamingos'],
+    '02nov10.0174': ['GS-CAL20021110-6-0174', 'Flamingos'],
+    '02nov12.0455': ['GS-CAL20021112-26-0455', 'Flamingos'],
     # HOKUPAA
     '2002APR23_591': ['GN-2002A-DD-1-319-591', 'HOKUPAA'],
     '2002APR24_007': ['GN-CAL20020424-1-007', 'HOKUPAA'],
@@ -251,7 +269,7 @@ def pytest_generate_tests(metafunc):
         #            'NICI', 'Michelle', 'TReCS', 'bHROS', 'hrwfs', 'Phoenix',
         #            'OSCIR', 'Flamingos', 'HOKUPAA', 'NIRI']:
         # for ii in ['Michelle', 'GRACES']:
-        # for ii in ['hrwfs']:
+        # for ii in ['Phoenix']:
         for ii in ['GMOS', 'NIRI', 'GPI', 'F2', 'GSAOI', 'NICI', 'TReCS',
                    'Michelle', 'GRACES', 'NIFS', 'GNIRS', 'Phoenix',
                    'Flamingos']:

@@ -344,6 +344,17 @@ def get_data_release(header):
     return em.om.get('release')
 
 
+def get_dec(header):
+    """
+    Get the declination. Rely on the JSON metadata, because it's all in
+    the same units (degrees).
+
+    :param header:  The FITS header for the current extension.
+    :return: declination, or None if not found.
+    """
+    return em.om.get('dec')
+
+
 def get_exposure(header):
     """
     Calculate the exposure time. EXPTIME in the header is not always the
@@ -453,6 +464,17 @@ def get_obs_type(header):
     if obs_class is not None and (obs_class == 'acq' or obs_class == 'acqCal'):
         result = 'ACQUISITION'
     return result
+
+
+def get_ra(header):
+    """
+    Get the right ascension. Rely on the JSON metadata, because it's all in
+    the same units (degrees).
+
+    :param header:  The FITS header for the current extension.
+    :return: ra, or None if not found.
+    """
+    return em.om.get('ra')
 
 
 def get_target_moving(header):
@@ -683,12 +705,10 @@ def accumulate_fits_bp(bp, obs_id, file_id):
         bp.set('Chunk.position.axis.function.dimension.naxis2', '1')
         bp.set('Chunk.position.axis.function.refCoord.coord1.pix', '1.0')
         bp.set('Chunk.position.axis.function.refCoord.coord2.pix', '1.0')
-        bp.clear('Chunk.position.axis.function.refCoord.coord1.val')
-        bp.add_fits_attribute(
-            'Chunk.position.axis.function.refCoord.coord1.val', 'RA')
-        bp.clear('Chunk.position.axis.function.refCoord.coord2.val')
-        bp.add_fits_attribute(
-            'Chunk.position.axis.function.refCoord.coord2.val', 'DEC')
+        bp.set('Chunk.position.axis.function.refCoord.coord1.val',
+               'get_ra(header)')
+        bp.set('Chunk.position.axis.function.refCoord.coord2.val',
+               'get_dec(header)')
         bp.set('Chunk.position.axis.function.cd11', 'get_cd11(header)')
         bp.set('Chunk.position.axis.function.cd22', 'get_cd22(header)')
         bp.set_default('Chunk.position.axis.function.cd12', '0.0')
@@ -736,7 +756,6 @@ def update(observation, **kwargs):
 
     try:
         for p in observation.planes:
-            mode = observation.planes[p].data_product_type
             for a in observation.planes[p].artifacts:
 
                 if (observation.instrument.name in
