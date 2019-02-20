@@ -94,9 +94,11 @@ import sys
 import re
 import traceback
 
+from astropy import units
+from astropy.coordinates import SkyCoord
+
 from caom2 import Observation, ObservationIntentType, DataProductType
-from caom2 import CalibrationLevel, TargetType, ProductType, Chunk
-from caom2 import SpatialWCS, CoordAxis2D, Axis, CoordPolygon2D, ValueCoord2D
+from caom2 import CalibrationLevel, TargetType, ProductType, Chunk, Axis
 from caom2 import SpectralWCS, CoordAxis1D, CoordFunction1D, RefCoord
 from caom2 import TypedList
 from caom2utils import ObsBlueprint, get_gen_proc_arg_parser, gen_proc
@@ -113,10 +115,7 @@ __all__ = ['main_app2', 'update', 'COLLECTION', 'APPLICATION', 'SCHEME',
 # TODO LIST:
 #
 # PI information
-# fix phoenix spatial
 # spectroscopy check
-# flamingos
-# hrwfs
 # hokupaa
 # oscir
 # bHROS
@@ -130,6 +129,8 @@ RADIUS_LOOKUP = {'GPI': 2.8 / 3600.0,  # units are arcseconds
                  'GRACES': 1.2 / 3600.0,
                  'PHOENIX': 5.0 / 3600.0}
 phoenix_spectral_axis = 1024
+
+HOKUPAA = 'Hokupaa+QUIRC'
 
 
 def get_energy_metadata(file_id):
@@ -289,22 +290,54 @@ def get_art_product_type(header):
 
 
 def get_cd11(header):
-    cdelt1 = header.get('CDELT1')
-    if cdelt1 is None:
-        instrument = em.om.get('instrument')
-        result = RADIUS_LOOKUP[instrument]
+    instrument = em.om.get('instrument')
+    if instrument == HOKUPAA:
+        result = _get_pix_scale(header)
     else:
-        result = cdelt1
+        cdelt1 = header.get('CDELT1')
+        if cdelt1 is None:
+            result = RADIUS_LOOKUP[instrument]
+        else:
+            result = cdelt1
     return result
 
 
 def get_cd22(header):
-    cdelt2 = header.get('CDELT2')
-    if cdelt2 is None:
-        instrument = em.om.get('instrument')
-        result = RADIUS_LOOKUP[instrument]
+    instrument = em.om.get('instrument')
+    if instrument == HOKUPAA:
+        result = _get_pix_scale(header)
     else:
-        result = cdelt2
+        cdelt2 = header.get('CDELT2')
+        if cdelt2 is None:
+            result = RADIUS_LOOKUP[instrument]
+        else:
+            result = cdelt2
+    return result
+
+
+def get_crpix1(header):
+    instrument = em.om.get('instrument')
+    if instrument == HOKUPAA:
+        crpix1 = header.get('CRPIX1')
+        if crpix1 is None:
+            result = None
+        else:
+            result = crpix1 / 2.0
+    else:
+        result = 1.0
+    return result
+
+
+def get_crpix2(header):
+    instrument = em.om.get('instrument')
+    if instrument == HOKUPAA:
+        crpix2 = header.get('CRPIX2')
+        if crpix2 is None:
+            result = None
+        else:
+            result = crpix2 / 2.0
+    else:
+        result = 1.0
     return result
 
 
@@ -353,7 +386,13 @@ def get_dec(header):
     :param header:  The FITS header for the current extension.
     :return: declination, or None if not found.
     """
-    return em.om.get('dec')
+    instrument = em.om.get('instrument')
+    if instrument == HOKUPAA:
+        ra, dec = _get_sky_coord(header)
+        result = dec
+    else:
+        result = em.om.get('dec')
+    return result
 
 
 def get_exposure(header):
@@ -467,6 +506,9 @@ def get_obs_type(header):
     instrument = em.om.get('instrument')
     if instrument == 'PHOENIX':
         result = _get_phoenix_obs_type(header)
+    elif instrument == HOKUPAA:
+        # DB - 01-18-19 Use IMAGETYP as the keyword
+        result = header.get('IMAGETYP')
     return result
 
 
@@ -478,7 +520,13 @@ def get_ra(header):
     :param header:  The FITS header for the current extension.
     :return: ra, or None if not found.
     """
-    return em.om.get('ra')
+    instrument = em.om.get('instrument')
+    if instrument == HOKUPAA:
+        ra, dec = _get_sky_coord(header)
+        result = ra
+    else:
+        result = em.om.get('ra')
+    return result
 
 
 def get_target_moving(header):
@@ -552,6 +600,15 @@ def _get_obs_type(header):
     return obs_type
 
 
+def _get_pix_scale(header):
+    pix_scale = header.get('PIXSCALE')
+    if pix_scale is None:
+        result = None
+    else:
+        result = pix_scale / 3600.0
+    return result
+
+
 def _get_flamingos_mode(header):
     # DB - 18-02-19
     # Determine mode from DECKER and GRISM keywords:
@@ -611,6 +668,20 @@ def _get_flamingos_mode(header):
         elif 'dark' in object_value:
             obs_type = 'DARK'
     return data_type, obs_type
+
+
+def _get_sky_coord(header):
+    ra_hours = header.get('RA')
+    dec_hours = header.get('DEC')
+    if ra_hours is None or dec_hours is None:
+        ra_deg = None
+        dec_deg = None
+    else:
+        result = SkyCoord('{} {}'.format(ra_hours, dec_hours),
+                          unit=(units.hourangle, units.deg))
+        ra_deg = result.ra.degree
+        dec_deg = result.dec.degree
+    return ra_deg, dec_deg
 
 
 def _get_phoenix_obs_type(header):
@@ -714,7 +785,7 @@ def accumulate_fits_bp(bp, obs_id, file_id):
 
     instrument = em.om.get('instrument')
     mode = em.om.get('mode')
-    if (instrument in ['GPI', 'PHOENIX'] or
+    if (instrument in ['GPI', 'PHOENIX', HOKUPAA] or
             (instrument == 'GRACES' and mode is not None and
                 mode != 'imaging')):
         # DB - 18-02-19 - for hard-coded field of views use:
@@ -735,14 +806,27 @@ def accumulate_fits_bp(bp, obs_id, file_id):
         # and rotation of the slit.  i.e CDELT1 and 2 may be different and
         # CROTA1 non-zero.
 
+        # DB - Hokupa'a+QUIRC
+        # This is an imager, so not a single big pixel.  So build a CD matrix
+        # (ignoring any possible camera rotation to start - not sure it can
+        # be determined).  Use RA/Dec in header for CRVALs (no json values
+        # returned I think) but you have to convert these from HH:MM:SS etc.
+        # format to degrees.  CRPIX1/2 = NAXIS1/2 divided by 2.  PIXSCALE in
+        # header (both primary and extension) give plate scale that is
+        # fixed at 0.01998 arcsec/pixel.
+        # CD1_1 = CD2_2 = PIXSCALE/3600.0 (to convert to degrees).
+        # CD1_2 = CD2_1 = 0.0.
+
         bp.set('Chunk.position.axis.axis1.ctype', 'RA---TAN')
         bp.set('Chunk.position.axis.axis2.ctype', 'DEC--TAN')
         bp.set('Chunk.position.axis.axis1.cunit', 'deg')
         bp.set('Chunk.position.axis.axis2.cunit', 'deg')
         bp.set('Chunk.position.axis.function.dimension.naxis1', '1')
         bp.set('Chunk.position.axis.function.dimension.naxis2', '1')
-        bp.set('Chunk.position.axis.function.refCoord.coord1.pix', '1.0')
-        bp.set('Chunk.position.axis.function.refCoord.coord2.pix', '1.0')
+        bp.set('Chunk.position.axis.function.refCoord.coord1.pix',
+               'get_crpix1(header)')
+        bp.set('Chunk.position.axis.function.refCoord.coord2.pix',
+               'get_crpix2(header)')
         bp.set('Chunk.position.axis.function.refCoord.coord1.val',
                'get_ra(header)')
         bp.set('Chunk.position.axis.function.refCoord.coord2.val',
@@ -873,6 +957,11 @@ def update(observation, **kwargs):
                             elif observation.instrument.name == 'hrwfs':
                                 _update_chunk_energy_hrwfs(
                                     c, headers[0],
+                                    observation.planes[p].data_product_type,
+                                    observation.observation_id)
+                            elif observation.instrument.name == HOKUPAA:
+                                _update_chunk_energy_hokupaa(
+                                    c, header,
                                     observation.planes[p].data_product_type,
                                     observation.observation_id)
 
@@ -1634,9 +1723,16 @@ def _update_chunk_energy_hrwfs(chunk, header, data_product_type, obs_id):
     """hrwfs-specific chunk-level Energy WCS construction."""
     # DB - hrwfs/acqcam isn't anything different from, for example, GMOS
     # imaging
-
     logging.debug('Begin _update_chunk_energy_hrwfs')
     mc.check_param(chunk, Chunk)
+
+    # “ND” in the filter name means ‘neutral density’.  Ignore any of these
+    # as they have no impact on the transmitted wavelengths - I think #159
+    # was the only one delivered according to
+    # http://www.gemini.edu/sciops/telescope/acqcam/acqFilterList.html.
+    # Acqcam/hrwfs was used mainly to look for rapid variability in
+    # bright, stellar objects that were really too bright for an 8'
+    # telescope and would have saturated the detector without an ND filter.
 
     filter_name = get_filter_name(header)
     telescope = header.get('OBSERVAT')
@@ -1651,16 +1747,15 @@ def _update_chunk_energy_hrwfs(chunk, header, data_product_type, obs_id):
 
     filter_names = ''
     for ii in filter_name.split('+'):
-        logging.error(ii)
-        if ii[0] == 'N':
-            continue  # TODO confirm from DB
+        if ii.startswith('ND'):
+            continue
         filter_names += ii[0]
     filter_md = em.get_filter_metadata(instrument, filter_names)
     if data_product_type == DataProductType.SPECTRUM:
         raise mc.CadcException(
             'hrwfs: No SpectralWCS spectroscopy support for {}'.format(obs_id))
     elif data_product_type == DataProductType.IMAGE:
-        logging.error(
+        logging.debug(
             'hrwfs: SpectralWCS imaging mode for {}.'.format(obs_id))
         n_axis = 1
         reference_wavelength, delta, resolving_power = \
@@ -1673,6 +1768,65 @@ def _update_chunk_energy_hrwfs(chunk, header, data_product_type, obs_id):
     _build_chunk_energy(chunk, n_axis, reference_wavelength, delta,
                         filter_name, resolving_power)
     logging.debug('End _update_chunk_energy_hrwfs')
+
+
+def _update_chunk_energy_hokupaa(chunk, header, data_product_type, obs_id):
+    """hokupaa-specific chunk-level Energy WCS construction."""
+    logging.debug('Begin _update_chunk_energy_hrwfs')
+    mc.check_param(chunk, Chunk)
+
+    # DB - 18-01-19 - Note: it is always imaging for Hokupa'a + QUIRC so that
+    # could be hardcoded.
+
+    # DB - 20-02-19 - This page has a table of QUIRC (the camera part of
+    # Hokupa’a + QUIRC) filter names and bandpasses (in microns).
+    # Use this as a lookup for central wavelengths and bandpass
+    # http://www.gemini.edu/sciops/instruments/uhaos/uhaosQuirc.html
+
+    filter_name = get_filter_name(header)
+    # J+CO is "Dark Position", units are microns
+    # 0 - central wavelength
+    # 1 - bandpass
+    hokupaa_lookup = {'J': [1.25, 0.171],
+                      'H': [1.65, 0.296],
+                      'K': [2.2, 0.336],
+                      'K\'': [2.12, 0.41],
+                      'H+K notch': [1.8, 0.7],
+                      'methane low': [1.56, 120.0],
+                      'methane high': [1.71, 120.0],
+                      'FeII': [1.65, 170.0],
+                      'HeI': [2.06, 30.0],
+                      '1-0 S(1) H2': [2.12, 23.0],
+                      'H Br(gamma)': [2.166, 150.0],
+                      'K-continuum': [2.26, 60.0],
+                      'CO': [2.29, 20.0]
+                      }
+
+    if filter_name not in hokupaa_lookup:
+        raise mc.CadcException(
+            'hokupaa: Myster filter {} for {}'.format(filter_name, obs_id))
+    if data_product_type == DataProductType.SPECTRUM:
+        raise mc.CadcException(
+            'hokupaa: No SpectralWCS spectroscopy support for {}'.format(
+                obs_id))
+    elif data_product_type == DataProductType.IMAGE:
+        logging.debug(
+            'hokupaa: SpectralWCS imaging mode for {}.'.format(obs_id))
+        n_axis = 1
+        wl_min = (hokupaa_lookup[filter_name][0] -
+                  hokupaa_lookup[filter_name][1] / 2.0)
+        filter_md = {'wl_min': wl_min,
+                     'wl_eff_width': hokupaa_lookup[filter_name][1]}
+        reference_wavelength, delta, resolving_power = \
+            _imaging_energy(filter_md)
+    else:
+        raise mc.CadcException(
+            'hokupaa: mystery data product type {} for {}'.format(
+                data_product_type, obs_id))
+
+    _build_chunk_energy(chunk, n_axis, reference_wavelength, delta,
+                        filter_name, resolving_power)
+    logging.debug('End _update_chunk_energy_hokupaa')
 
 
 def _reset_energy(observation_type, data_label):
@@ -1714,7 +1868,7 @@ def _imaging_energy(filter_md):
 
     # CRPIX values should all be 0.5 for imaging spectral WCS as long as
     # you use the lower wavelength boundary of the filter for the
-    # corresponding CRVAL. DB - 02-13-19
+    # corresponding CRVAL. DB - 13-02-19
 
     c_val = filter_md['wl_min'] / 1.0e4
     delta = filter_md['wl_eff_width'] / 1.0e4
@@ -1727,6 +1881,7 @@ def get_filter_name(header, lookup='FILTER'):
     Create the filter names.
 
     :param header: The FITS header for the current extension.
+    :param lookup: The keyword to look for in the FITS header.
     :return: The filter names, or None if none found.
     """
     filters = None
