@@ -632,7 +632,7 @@ def _get_phoenix_obs_type(header):
     # since the filter is often ‘open’ and energy info isn’t important for
     # DARK exposures.
 
-    result = None
+    result = 'OBJECT'
     object_value = em.om.get('object').lower()
     view_pos = header.get('VIEW_POS')
     if 'flat' in object_value:
