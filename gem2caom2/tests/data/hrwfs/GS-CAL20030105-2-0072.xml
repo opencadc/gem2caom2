@@ -13,6 +13,7 @@
   <caom2:target>
     <caom2:name>Darks</caom2:name>
     <caom2:type>field</caom2:type>
+    <caom2:moving>true</caom2:moving>
   </caom2:target>
   <caom2:telescope>
     <caom2:name>Gemini-South</caom2:name>
@@ -109,7 +110,7 @@
                         <caom2:delta>0.000347222222222222</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>0.0</caom2:val>
+                          <caom2:val>52643.93092835648</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>

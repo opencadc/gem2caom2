@@ -870,9 +870,11 @@ def update(observation, **kwargs):
                                 if (obs_type is not None and
                                         observation.type is None):
                                     observation.type = obs_type
-                            # elif observation.instrument.name == 'hrwfs':
-                            #     _update_chunk_energy_hrwfs(
-                            #         c, header, observation.observation_id)
+                            elif observation.instrument.name == 'hrwfs':
+                                _update_chunk_energy_hrwfs(
+                                    c, headers[0],
+                                    observation.planes[p].data_product_type,
+                                    observation.observation_id)
 
                         # position WCS
                         if (part == '1' and
@@ -1626,6 +1628,51 @@ def _update_chunk_energy_flamingos(chunk, header, data_product_type, obs_id):
     _build_chunk_energy(chunk, n_axis, reference_wavelength, delta,
                         filter_name, resolving_power)
     logging.debug('End _update_chunk_energy_flamingos')
+
+
+def _update_chunk_energy_hrwfs(chunk, header, data_product_type, obs_id):
+    """hrwfs-specific chunk-level Energy WCS construction."""
+    # DB - hrwfs/acqcam isn't anything different from, for example, GMOS
+    # imaging
+
+    logging.debug('Begin _update_chunk_energy_hrwfs')
+    mc.check_param(chunk, Chunk)
+
+    filter_name = get_filter_name(header)
+    telescope = header.get('OBSERVAT')
+    if telescope is not None:
+        if 'Gemini-South' == telescope:
+            instrument = 'AcqCam-S'
+        else:
+            instrument = 'AcqCam-N'
+    else:
+        raise mc.CadcException(
+            'hrwfs: No observatory information for {}'.format(obs_id))
+
+    filter_names = ''
+    for ii in filter_name.split('+'):
+        logging.error(ii)
+        if ii[0] == 'N':
+            continue  # TODO confirm from DB
+        filter_names += ii[0]
+    filter_md = em.get_filter_metadata(instrument, filter_names)
+    if data_product_type == DataProductType.SPECTRUM:
+        raise mc.CadcException(
+            'hrwfs: No SpectralWCS spectroscopy support for {}'.format(obs_id))
+    elif data_product_type == DataProductType.IMAGE:
+        logging.error(
+            'hrwfs: SpectralWCS imaging mode for {}.'.format(obs_id))
+        n_axis = 1
+        reference_wavelength, delta, resolving_power = \
+            _imaging_energy(filter_md)
+    else:
+        raise mc.CadcException(
+            'hrwfs: mystery data product type {} for {}'.format(
+                data_product_type, obs_id))
+
+    _build_chunk_energy(chunk, n_axis, reference_wavelength, delta,
+                        filter_name, resolving_power)
+    logging.debug('End _update_chunk_energy_hrwfs')
 
 
 def _reset_energy(observation_type, data_label):
