@@ -1700,15 +1700,16 @@ def _update_chunk_energy_flamingos(chunk, header, data_product_type, obs_id):
     # Use these for min/max wavelengths and use the average as the ‘central’
     # wavelength.  Spectral resolution is fixed at about 1300 for both grisms.
 
-    # spectral wcs units are microns, values from Table 7 are angstroms
+    # spectral wcs units are microns, values from Table 7 are angstroms.
+    # The conversion is taken care of in _imaging_energy.
     lookup = {'JH': [8910, 18514],
               'HK': [10347, 27588]}
 
     filter_name = get_filter_name(header, 'FILTER')
     if filter_name in ['JH', 'HK']:
-        filter_md = {'wl_min': lookup[filter_name][0] / 1.0e4,
+        filter_md = {'wl_min': lookup[filter_name][0],
                      'wl_eff_width': (lookup[filter_name][1] -
-                                      lookup[filter_name][0]) / 1.0e4}
+                                      lookup[filter_name][0])}
         resolving_power = 1300.0 / 1.0e4
     else:
         filter_md = em.get_filter_metadata('Flamingos', filter_name)
@@ -1717,8 +1718,8 @@ def _update_chunk_energy_flamingos(chunk, header, data_product_type, obs_id):
     if data_product_type == DataProductType.SPECTRUM:
         logging.debug('Flamingos: SpectralWCS for {}.'.format(obs_id))
         n_axis = header.get('NAXIS1')
-        reference_wavelength = float(filter_md['wl_min'])  # minimum wavelength
-        delta = filter_md['wl_eff_width'] / n_axis
+        reference_wavelength = filter_md['wl_min'] / 1.0e4 # minimum wavelength
+        delta = filter_md['wl_eff_width'] / n_axis / 1.0e4
     elif data_product_type == DataProductType.IMAGE:
         logging.debug(
             'Flamingos: SpectralWCS imaging mode for {}.'.format(obs_id))
