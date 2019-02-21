@@ -833,79 +833,12 @@ def accumulate_fits_bp(bp, obs_id, file_id):
 
     bp.set('Artifact.productType', 'get_art_product_type(header)')
 
-    bp.configure_position_axes((1, 2))
-
     instrument = em.om.get('instrument')
     mode = em.om.get('mode')
-    if (instrument in ['GPI', 'PHOENIX', HOKUPAA, 'OSCIR', 'bHROS'] or
+    if not (instrument in ['GPI', 'PHOENIX', HOKUPAA, 'OSCIR', 'bHROS'] or
             (instrument == 'GRACES' and mode is not None and
                 mode != 'imaging')):
-        # DB - 18-02-19 - for hard-coded field of views use:
-        # CRVAL1  = RA value from json or header (degrees
-        # CRVAL2  = Dec value from json or header (degrees)
-        # CDELT1  = 5.0/3600.0 (Plate scale along axis1 in degrees/pixel
-        #           for 5" size)
-        # CDELT2  = 5.0/3600.0
-        # CROTA1  = 0.0 / Rotation in degrees
-        # NAXIS1 = 1
-        # NAXIS2 = 1
-        # CRPIX1 = 1.0
-        # CRPIX2 = 1.0
-        # CTYPE1 = RA---TAN
-        # CTYPE2 = DEC--TAN
-        #
-        # May be slightly different for Phoenix if headers give the width
-        # and rotation of the slit.  i.e CDELT1 and 2 may be different and
-        # CROTA1 non-zero.
-
-        # DB - Hokupa'a+QUIRC
-        # This is an imager, so not a single big pixel.  So build a CD matrix
-        # (ignoring any possible camera rotation to start - not sure it can
-        # be determined).  Use RA/Dec in header for CRVALs (no json values
-        # returned I think) but you have to convert these from HH:MM:SS etc.
-        # format to degrees.  CRPIX1/2 = NAXIS1/2 divided by 2.  PIXSCALE in
-        # header (both primary and extension) give plate scale that is
-        # fixed at 0.01998 arcsec/pixel.
-        # CD1_1 = CD2_2 = PIXSCALE/3600.0 (to convert to degrees).
-        # CD1_2 = CD2_1 = 0.0.
-
-        # DB - 20-02-19 - OSCIR
-        # NAXIS1/2 give number of pixels so CRPIX1/2 = NAXIS1/2 divided by 2.
-        # json RA/Dec are bogus.  Need to use RA_TEL and DEC_TEL and convert
-        # to degrees and use these for CRVAL1/2 values.  (RA_BASE and DEC_BASE
-        # values in degrees don’t quite agree with RA_TEL and DEC_TEL...)
-        # Use PIXSCALE= ‘0.089’ value to build CD matrix.
-        # So same as for Hokupa’a:  CD1_1 = CD2_2 = PIXSCALE/3600.0.
-        # CD1_2 = CD2_1 = 0.0
-
-        bp.set('Chunk.position.axis.axis1.ctype', 'RA---TAN')
-        bp.set('Chunk.position.axis.axis2.ctype', 'DEC--TAN')
-        bp.set('Chunk.position.axis.axis1.cunit', 'deg')
-        bp.set('Chunk.position.axis.axis2.cunit', 'deg')
-        bp.set('Chunk.position.axis.function.dimension.naxis1', '1')
-        bp.set('Chunk.position.axis.function.dimension.naxis2', '1')
-        bp.set('Chunk.position.axis.function.refCoord.coord1.pix',
-               'get_crpix1(header)')
-        bp.set('Chunk.position.axis.function.refCoord.coord2.pix',
-               'get_crpix2(header)')
-        bp.set('Chunk.position.axis.function.refCoord.coord1.val',
-               'get_ra(header)')
-        bp.set('Chunk.position.axis.function.refCoord.coord2.val',
-               'get_dec(header)')
-        bp.set('Chunk.position.axis.function.cd11', 'get_cd11(header)')
-        bp.set('Chunk.position.axis.function.cd22', 'get_cd22(header)')
-        bp.set_default('Chunk.position.axis.function.cd12', '0.0')
-        bp.set_default('Chunk.position.axis.function.cd21', '0.0')
-
-        if instrument == 'PHOENIX':
-            bp.set('Chunk.position.axis.function.dimension.naxis2',
-                   'get_naxis2_phoenix(header)')
-        elif instrument == 'bHROS':
-            bp.set('Chunk.position.axis.function.dimension.naxis2',
-                   'get_naxis2_bhros(header)')
-
-        # OSCIR
-        bp.add_fits_attribute('Chunk.position.coordsys', 'FRAMEPA')
+        bp.configure_position_axes((1, 2))
 
     bp.configure_time_axis(3)
 
@@ -1048,12 +981,15 @@ def update(observation, **kwargs):
                                 # equinox information only available from the
                                 # 0th header
                                 c.position.equinox = headers[0].get('TRKEQUIN')
-                            elif observation.instrument.name == 'OSCIR':
-                                c.position.equinox = \
-                                    float(headers[0].get('EQUINOX'))
                         if observation.instrument.name == 'FLAMINGOS':
                             _update_chunk_position_flamingos(
                                 c, header, observation.observation_id)
+
+                        _update_chunk_position(
+                            c, header, observation.instrument.name,
+                            em.om.get('mode'), int(part),
+                            observation.observation_id)
+
     except Exception as e:
         logging.error(e)
         tb = traceback.format_exc()
@@ -2147,6 +2083,90 @@ def _update_chunk_position_flamingos(chunk, header, obs_id):
             chunk.position.axis.function.cd22 = None
     else:
         logging.info('FLAMINGOS: Missing spatial wcs for {}'.format(obs_id))
+
+
+def _update_chunk_position(chunk, header, instrument, mode, extension, obs_id):
+    logging.debug('Begin _update_chunk_position')
+    mc.check_param(chunk, Chunk)
+
+    if extension == 0:
+        logging.debug('No Spatial WCS for part 0 instrument {} for {}'.format(
+            instrument, obs_id))
+        return
+
+    if (instrument in ['GPI', 'PHOENIX', HOKUPAA, 'OSCIR', 'bHROS'] or
+        (instrument == 'GRACES' and mode is not None and
+         mode != 'imaging')):
+
+        # DB - 18-02-19 - for hard-coded field of views use:
+        # CRVAL1  = RA value from json or header (degrees
+        # CRVAL2  = Dec value from json or header (degrees)
+        # CDELT1  = 5.0/3600.0 (Plate scale along axis1 in degrees/pixel
+        #           for 5" size)
+        # CDELT2  = 5.0/3600.0
+        # CROTA1  = 0.0 / Rotation in degrees
+        # NAXIS1 = 1
+        # NAXIS2 = 1
+        # CRPIX1 = 1.0
+        # CRPIX2 = 1.0
+        # CTYPE1 = RA---TAN
+        # CTYPE2 = DEC--TAN
+        #
+        # May be slightly different for Phoenix if headers give the width
+        # and rotation of the slit.  i.e CDELT1 and 2 may be different and
+        # CROTA1 non-zero.
+        #
+        # DB - Hokupa'a+QUIRC
+        # This is an imager, so not a single big pixel.  So build a CD matrix
+        # (ignoring any possible camera rotation to start - not sure it can
+        # be determined).  Use RA/Dec in header for CRVALs (no json values
+        # returned I think) but you have to convert these from HH:MM:SS etc.
+        # format to degrees.  CRPIX1/2 = NAXIS1/2 divided by 2.  PIXSCALE in
+        # header (both primary and extension) give plate scale that is
+        # fixed at 0.01998 arcsec/pixel.
+        # CD1_1 = CD2_2 = PIXSCALE/3600.0 (to convert to degrees).
+        # CD1_2 = CD2_1 = 0.0.
+        #
+        # DB - 20-02-19 - OSCIR
+        # NAXIS1/2 give number of pixels so CRPIX1/2 = NAXIS1/2 divided by 2.
+        # json RA/Dec are bogus.  Need to use RA_TEL and DEC_TEL and convert
+        # to degrees and use these for CRVAL1/2 values.  (RA_BASE and DEC_BASE
+        # values in degrees don’t quite agree with RA_TEL and DEC_TEL...)
+        # Use PIXSCALE= ‘0.089’ value to build CD matrix.
+        # So same as for Hokupa’a:  CD1_1 = CD2_2 = PIXSCALE/3600.0.
+        # CD1_2 = CD2_1 = 0.0
+
+        header['CTYPE1'] = 'RA---TAN'
+        header['CTYPE2'] = 'DEC--TAN'
+        header['CUNIT1'] = 'deg'
+        header['CUNIT2'] = 'deg'
+        header['CRVAL1'] = get_ra(header)
+        header['CRVAL2'] = get_dec(header)
+        header['CDELT1'] = RADIUS_LOOKUP[instrument]
+        header['CDELT2'] = RADIUS_LOOKUP[instrument]
+        header['CROTA1'] = 0.0
+        if instrument != 'OSCIR':
+            header['NAXIS1'] = 1
+            header['NAXIS2'] = 1
+        header['CRPIX1'] = get_crpix1(header)
+        header['CRPIX2'] = get_crpix2(header)
+        header['CD1_1'] = get_cd11(header)
+        header['CD1_2'] = 0.0
+        header['CD2_1'] = 0.0
+        header['CD2_2'] = get_cd22(header)
+
+        wcs_parser = WcsParser(header, 'obs id', extension)
+        if chunk is None:
+            chunk = Chunk()
+        wcs_parser.augment_position(chunk)
+        chunk.position_axis_1 = 1
+        chunk.position_axis_2 = 2
+
+        if instrument == 'OSCIR':
+            chunk.position.coordsys = header.get('FRAMEPA')
+            chunk.position.equinox = float(header.get('EQUINOX'))
+
+    logging.debug('End _update_chunk_position')
 
 
 def _build_blueprints(uris, obs_id, file_id):
