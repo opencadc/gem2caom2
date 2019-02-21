@@ -116,7 +116,6 @@ __all__ = ['main_app2', 'update', 'COLLECTION', 'APPLICATION', 'SCHEME',
 #
 # PI information
 # spectroscopy check
-# hokupaa
 # oscir
 # bHROS
 
@@ -125,10 +124,16 @@ APPLICATION = 'gem2caom2'
 # DB - 18-02-19 - Replace “5.0” for “2.8" for GPI field of view.
 # NOTE:  To be more accurate for GRACES this size could be reduced
 # from 5" to 1.2" since that’s the size of the fibre.
+# OSCIR - http://www.gemini.edu/sciops/instruments/oscir/oscirIndex.html
+# bHROS - DB - 20-02-19 - bHROS ‘bounding box’ is only 0.9".
+#                         A very small fibre.
 RADIUS_LOOKUP = {'GPI': 2.8 / 3600.0,  # units are arcseconds
                  'GRACES': 1.2 / 3600.0,
-                 'PHOENIX': 5.0 / 3600.0}
+                 'PHOENIX': 5.0 / 3600.0,
+                 'OSCIR': 11.0 / 3600.0,
+                 'bHROS': 0.9 / 3600.0}
 phoenix_spectral_axis = 1024
+bhros_spectral_axis = 4608
 
 HOKUPAA = 'Hokupaa+QUIRC'
 
@@ -293,6 +298,8 @@ def get_cd11(header):
     instrument = em.om.get('instrument')
     if instrument == HOKUPAA:
         result = _get_pix_scale(header)
+    elif instrument == 'OSCIR':
+        result = 0.0890 / 3600.0
     else:
         cdelt1 = header.get('CDELT1')
         if cdelt1 is None:
@@ -306,6 +313,8 @@ def get_cd22(header):
     instrument = em.om.get('instrument')
     if instrument == HOKUPAA:
         result = _get_pix_scale(header)
+    elif instrument == 'OSCIR':
+        result = 0.0890 / 3600.0
     else:
         cdelt2 = header.get('CDELT2')
         if cdelt2 is None:
@@ -323,6 +332,12 @@ def get_crpix1(header):
             result = None
         else:
             result = crpix1 / 2.0
+    elif instrument == 'OSCIR':
+        naxis1 = header.get('NAXIS1')
+        if naxis1 is None:
+            result = None
+        else:
+            result = naxis1 / 2.0
     else:
         result = 1.0
     return result
@@ -336,6 +351,12 @@ def get_crpix2(header):
             result = None
         else:
             result = crpix2 / 2.0
+    elif instrument == 'OSCIR':
+        naxis2 = header.get('NAXIS2')
+        if naxis2 is None:
+            result = None
+        else:
+            result = naxis2 / 2.0
     else:
         result = 1.0
     return result
@@ -388,8 +409,13 @@ def get_dec(header):
     """
     instrument = em.om.get('instrument')
     if instrument == HOKUPAA:
-        ra, dec = _get_sky_coord(header)
+        ra, dec = _get_sky_coord(header, 'RA', 'DEC')
         result = dec
+    elif instrument == 'OSCIR':
+        ra, dec = _get_sky_coord(header, 'RA_TEL', 'DEC_TEL')
+        result = dec
+    elif instrument == 'bHROS':  # ra/dec not in json
+        result = header.get('DEC')
     else:
         result = em.om.get('dec')
     return result
@@ -406,7 +432,13 @@ def get_exposure(header):
     :param header:  The FITS header for the current extension (unused).
     :return: The exposure time, or None if not found.
     """
-    return em.om.get('exposure_time')
+    result = em.om.get('exposure_time')
+    instrument = em.om.get('instrument')
+    if instrument == 'OSCIR':
+        # DB - 20-02-19 - json ‘exposure_time’ is in minutes, so multiple
+        # by 60.0.
+        result = result * 60.0
+    return result
 
 
 def get_meta_release(header):
@@ -420,6 +452,16 @@ def get_meta_release(header):
     if meta_release is None:
         meta_release = em.om.get('release')
     return meta_release
+
+
+def get_naxis2_bhros(header):
+    """Over-ride the NAXIS2 length, but preserve the original value for
+    use later by Spectral WCS computations. This only works because the
+    blueprint applies the functions before it sets the over-ride values in
+    the headers."""
+    global bhros_spectral_axis
+    bhros_spectral_axis = header.get('NAXIS2')
+    return 1
 
 
 def get_naxis2_phoenix(header):
@@ -522,8 +564,13 @@ def get_ra(header):
     """
     instrument = em.om.get('instrument')
     if instrument == HOKUPAA:
-        ra, dec = _get_sky_coord(header)
+        ra, dec = _get_sky_coord(header, 'RA', 'DEC')
         result = ra
+    elif instrument == 'OSCIR':
+        ra, dec = _get_sky_coord(header, 'RA_TEL', 'DEC_TEL')
+        result = ra
+    elif instrument == 'bHROS':
+        result = header.get('RA')  # ra/dec not in json
     else:
         result = em.om.get('ra')
     return result
@@ -566,13 +613,18 @@ def get_time_function_val(header):
     :return: The Time WCS value from JSON Summary Metadata.
     """
     instrument = em.om.get('instrument')
-    if instrument == 'FLAMINGOS':
+    if instrument in ['FLAMINGOS', 'OSCIR']:
         # Another FLAMINGOS correction needed:  DATE-OBS in header and
         # json doesn’t include the time  but sets it to 00:00:00.  You have
         # two choices:  concatenate DATE-OBS and UTC header values to the
         # standard form “2002-11-06T07:06:00.3” and use as you use json
         # value for computing temporal WCS data or, for FLAMINGOS only,
         # use the MJD header value in the header as the CRVAL for time.
+
+        # DB - 20-02-19 - OSCIR json ‘ut_datetime’ is not correct.  Must
+        # concatenate DATE-OBS and UTC1 values and convert to MJD as usual
+        # or use MJD directly (seems to be correct starting MJD)
+
         time_val = header.get('MJD')
     else:
         time_string = em.om.get('ut_datetime')
@@ -670,9 +722,9 @@ def _get_flamingos_mode(header):
     return data_type, obs_type
 
 
-def _get_sky_coord(header):
-    ra_hours = header.get('RA')
-    dec_hours = header.get('DEC')
+def _get_sky_coord(header, ra_key, dec_key):
+    ra_hours = header.get(ra_key)
+    dec_hours = header.get(dec_key)
     if ra_hours is None or dec_hours is None:
         ra_deg = None
         dec_deg = None
@@ -785,7 +837,7 @@ def accumulate_fits_bp(bp, obs_id, file_id):
 
     instrument = em.om.get('instrument')
     mode = em.om.get('mode')
-    if (instrument in ['GPI', 'PHOENIX', HOKUPAA] or
+    if (instrument in ['GPI', 'PHOENIX', HOKUPAA, 'OSCIR', 'bHROS'] or
             (instrument == 'GRACES' and mode is not None and
                 mode != 'imaging')):
         # DB - 18-02-19 - for hard-coded field of views use:
@@ -817,6 +869,15 @@ def accumulate_fits_bp(bp, obs_id, file_id):
         # CD1_1 = CD2_2 = PIXSCALE/3600.0 (to convert to degrees).
         # CD1_2 = CD2_1 = 0.0.
 
+        # DB - 20-02-19 - OSCIR
+        # NAXIS1/2 give number of pixels so CRPIX1/2 = NAXIS1/2 divided by 2.
+        # json RA/Dec are bogus.  Need to use RA_TEL and DEC_TEL and convert
+        # to degrees and use these for CRVAL1/2 values.  (RA_BASE and DEC_BASE
+        # values in degrees don’t quite agree with RA_TEL and DEC_TEL...)
+        # Use PIXSCALE= ‘0.089’ value to build CD matrix.
+        # So same as for Hokupa’a:  CD1_1 = CD2_2 = PIXSCALE/3600.0.
+        # CD1_2 = CD2_1 = 0.0
+
         bp.set('Chunk.position.axis.axis1.ctype', 'RA---TAN')
         bp.set('Chunk.position.axis.axis2.ctype', 'DEC--TAN')
         bp.set('Chunk.position.axis.axis1.cunit', 'deg')
@@ -839,6 +900,12 @@ def accumulate_fits_bp(bp, obs_id, file_id):
         if instrument == 'PHOENIX':
             bp.set('Chunk.position.axis.function.dimension.naxis2',
                    'get_naxis2_phoenix(header)')
+        elif instrument == 'bHROS':
+            bp.set('Chunk.position.axis.function.dimension.naxis2',
+                   'get_naxis2_bhros(header)')
+
+        # OSCIR
+        bp.add_fits_attribute('Chunk.position.coordsys', 'FRAMEPA')
 
     bp.configure_time_axis(3)
 
@@ -869,7 +936,7 @@ def update(observation, **kwargs):
 
     :param observation A CAOM Observation model instance.
     :param **kwargs Everything else."""
-    logging.error('Begin update.')
+    logging.debug('Begin update.')
     mc.check_param(observation, Observation)
 
     headers = None
@@ -964,13 +1031,26 @@ def update(observation, **kwargs):
                                     c, header,
                                     observation.planes[p].data_product_type,
                                     observation.observation_id)
+                            elif observation.instrument.name == 'OSCIR':
+                                _update_chunk_energy_oscir(
+                                    c, header,
+                                    observation.planes[p].data_product_type,
+                                    observation.observation_id)
+                            elif observation.instrument.name == 'bHROS':
+                                _update_chunk_energy_bhros(
+                                    c, header,
+                                    observation.planes[p].data_product_type,
+                                    observation.observation_id)
 
                         # position WCS
-                        if (part == '1' and
-                                observation.instrument.name == 'GPI'):
-                            # equinox information only available from the
-                            # 0th header
-                            c.position.equinox = headers[0].get('TRKEQUIN')
+                        if part == '1':
+                            if observation.instrument.name in ['GPI', 'bHROS']:
+                                # equinox information only available from the
+                                # 0th header
+                                c.position.equinox = headers[0].get('TRKEQUIN')
+                            elif observation.instrument.name == 'OSCIR':
+                                c.position.equinox = \
+                                    float(headers[0].get('EQUINOX'))
                         if observation.instrument.name == 'FLAMINGOS':
                             _update_chunk_position_flamingos(
                                 c, header, observation.observation_id)
@@ -979,7 +1059,7 @@ def update(observation, **kwargs):
         tb = traceback.format_exc()
         logging.error(tb)
         return None
-    logging.error('Done update.')
+    logging.debug('Done update.')
     return observation
 
 
@@ -1772,7 +1852,7 @@ def _update_chunk_energy_hrwfs(chunk, header, data_product_type, obs_id):
 
 def _update_chunk_energy_hokupaa(chunk, header, data_product_type, obs_id):
     """hokupaa-specific chunk-level Energy WCS construction."""
-    logging.debug('Begin _update_chunk_energy_hrwfs')
+    logging.debug('Begin _update_chunk_energy_hokupaa')
     mc.check_param(chunk, Chunk)
 
     # DB - 18-01-19 - Note: it is always imaging for Hokupa'a + QUIRC so that
@@ -1815,8 +1895,8 @@ def _update_chunk_energy_hokupaa(chunk, header, data_product_type, obs_id):
         n_axis = 1
         wl_min = (hokupaa_lookup[filter_name][0] -
                   hokupaa_lookup[filter_name][1] / 2.0)
-        filter_md = {'wl_min': wl_min,
-                     'wl_eff_width': hokupaa_lookup[filter_name][1]}
+        filter_md = {'wl_min': wl_min * 1.0e4,
+                     'wl_eff_width': hokupaa_lookup[filter_name][1] * 1.0e4}
         reference_wavelength, delta, resolving_power = \
             _imaging_energy(filter_md)
     else:
@@ -1827,6 +1907,111 @@ def _update_chunk_energy_hokupaa(chunk, header, data_product_type, obs_id):
     _build_chunk_energy(chunk, n_axis, reference_wavelength, delta,
                         filter_name, resolving_power)
     logging.debug('End _update_chunk_energy_hokupaa')
+
+
+def _update_chunk_energy_oscir(chunk, header, data_product_type, obs_id):
+    """oscir-specific chunk-level Energy WCS construction."""
+    logging.debug('Begin _update_chunk_energy_oscir')
+    mc.check_param(chunk, Chunk)
+
+    # Filter info here:
+    # http://www.gemini.edu/sciops/instruments/oscir/oscirFilterList.html
+    # No filter provided in json; use FILTER keyword.
+    # e.g. ‘S_12.5 (-11775)’ = ‘12.5’ in table.
+    # It looks like only the 'r' files have filter ids.
+
+    # 0 - central wavelenth
+    # 1 - bandpass
+    oscir_lookup = {'7.9': [7.91, 0.755],
+                    '8.8': [8.81, 0.871],
+                    '9.8': [9.80, 0.952],
+                    '10.3': [10.27, 1.103],
+                    '11.7': [11.70, 1.110],
+                    '12.5': [12.49, 1.156],
+                    'N': [10.75, 5.230],
+                    'IHW': [18.17, 1.651],
+                    'Q3': [20.8, 1.650]}
+
+    temp = get_filter_name(header)
+    if temp is None:
+        raise mc.CadcException(
+            'oscir: No FILTER keyword for {}'.format(obs_id))
+    filter_name = temp.split('_')[0]
+    if filter_name not in oscir_lookup:
+        raise mc.CadcException(
+            'oscir: Mystery FILTER keyword {} for {}'.format(
+                filter_name, obs_id))
+    if data_product_type == DataProductType.SPECTRUM:
+        raise mc.CadcException(
+            'oscir: No SpectralWCS spectroscopy support for {}'.format(
+                obs_id))
+    elif data_product_type == DataProductType.IMAGE:
+        logging.debug(
+            'oscir: SpectralWCS imaging mode for {}.'.format(obs_id))
+        n_axis = 1
+        wl_min = (oscir_lookup[filter_name][0] -
+                  oscir_lookup[filter_name][1] / 2.0)
+        filter_md = {'wl_min': wl_min * 1.0e4,
+                     'wl_eff_width': oscir_lookup[filter_name][1] * 1.0e4}
+        reference_wavelength, delta, resolving_power = \
+            _imaging_energy(filter_md)
+    else:
+        raise mc.CadcException(
+            'oscir: mystery data product type {} for {}'.format(
+                data_product_type, obs_id))
+
+    _build_chunk_energy(chunk, n_axis, reference_wavelength, delta,
+                        filter_name='', resolving_power=resolving_power)
+    logging.debug('End _update_chunk_energy_oscir')
+
+
+def _update_chunk_energy_bhros(chunk, header, data_product_type, obs_id):
+    """bhros-specific chunk-level Energy WCS construction."""
+    logging.debug('Begin _update_chunk_energy_bhros')
+    mc.check_param(chunk, Chunk)
+    # DB - 20-02-19 - There were bHROS filters but I don’t think they were
+    # used during the very limited lifetime of the instrument.  No info
+    # in the headers either.
+    #
+    # bHROS spectral resolution should be approximately 150,000/x-binning
+    # value. json returns a “detector_binning”: “1x1" value where the 1x1
+    # indicates no binning in x or y (for this example).  Could be 2x1,
+    # 4x2, etc.  Binning is determined from header keyword:
+    # CCDSUM  = ‘1 1     ’           / CCD pixel summing
+    #
+    # The approximate central wavelength is json ‘central_wavelength’ value.
+    # Unfortunately the wavelength coverage is not straightforward.
+    # See http://www.gemini.edu/sciops/instruments/hros/hrosDispersion.html.
+    # The CCD did not cover the entire spectrum so only a subset of the
+    # entire optical spectral region was observed.
+
+    # Use central wavelength in microns and +/- 0.2 microns as a better
+    # guess-timate rather than imply that entire spectrum is present.
+
+    if data_product_type == DataProductType.SPECTRUM:
+        logging.debug('bhros: SpectralWCS spectroscopy for {}.'.format(obs_id))
+        global bhros_spectral_axis
+        n_axis = bhros_spectral_axis
+        central_wavelength = em.om.get('central_wavelength')
+        reference_wavelength = central_wavelength - 0.2
+        delta = (central_wavelength + 0.2 + 0.2) / n_axis
+        resolving_power = 150000.0
+        ccd_sum = header.get('CCDSUM')
+        if ccd_sum is not None:
+            temp = float(ccd_sum.split()[1])
+            resolving_power = 150000.0 / temp
+    elif data_product_type == DataProductType.IMAGE:
+        raise mc.CadcException(
+            'bhros: No SpectralWCS image support for {}'.format(
+                obs_id))
+    else:
+        raise mc.CadcException(
+            'bhros: mystery data product type {} for {}'.format(
+                data_product_type, obs_id))
+
+    _build_chunk_energy(chunk, n_axis, reference_wavelength, delta,
+                        filter_name='', resolving_power=resolving_power)
+    logging.debug('End _update_chunk_energy_bhros')
 
 
 def _reset_energy(observation_type, data_label):
