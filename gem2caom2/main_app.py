@@ -125,15 +125,16 @@ APPLICATION = 'gem2caom2'
 # OSCIR - http://www.gemini.edu/sciops/instruments/oscir/oscirIndex.html
 # bHROS - DB - 20-02-19 - bHROS ‘bounding box’ is only 0.9".
 #                         A very small fibre.
+# HOKUPAA - http://www.gemini.edu/sciops/instruments/uhaos/uhaosIndex.html
+HOKUPAA = 'Hokupaa+QUIRC'
 RADIUS_LOOKUP = {'GPI': 2.8 / 3600.0,  # units are arcseconds
                  'GRACES': 1.2 / 3600.0,
                  'PHOENIX': 5.0 / 3600.0,
                  'OSCIR': 11.0 / 3600.0,
+                 HOKUPAA: 4.0 / 3600.0,
                  'bHROS': 0.9 / 3600.0}
 phoenix_spectral_axis = 1024
 bhros_spectral_axis = 4608
-
-HOKUPAA = 'Hokupaa+QUIRC'
 
 
 def get_energy_metadata(file_id):
@@ -276,7 +277,7 @@ def get_art_product_type(header):
                         result = ProductType.CALIBRATION
                     else:
                         result = ProductType.SCIENCE
-                elif instrument == 'Hokupaa+QUIRC':
+                elif instrument == HOKUPAA:
                     if _is_hokupaa_calibration(header):
                         result = ProductType.CALIBRATION
                     else:
@@ -492,7 +493,7 @@ def get_obs_intent(header):
             # logging.error('instrument is {}'.format(instrument))
             if (instrument is not None and
                     instrument in ['GRACES', 'TReCS', 'PHOENIX', 'OSCIR',
-                                   'Hokupaa+QUIRC']):
+                                   HOKUPAA]):
                 if instrument == 'GRACES':
                     obs_type = _get_obs_type(header)
                     if obs_type is not None and obs_type in cal_values:
@@ -513,7 +514,7 @@ def get_obs_intent(header):
                         result = ObservationIntentType.CALIBRATION
                     else:
                         result = ObservationIntentType.SCIENCE
-                elif instrument == 'Hokupaa+QUIRC':
+                elif instrument == HOKUPAA:
                     if _is_hokupaa_calibration(header):
                         result = ObservationIntentType.CALIBRATION
                     else:
@@ -569,6 +570,7 @@ def get_ra(header):
         result = ra
     elif instrument == 'bHROS':
         result = header.get('RA')  # ra/dec not in json
+        logging.error('getting ra from here {}'.format(result))
     else:
         result = em.om.get('ra')
     return result
@@ -974,8 +976,15 @@ def update(observation, **kwargs):
                                     observation.observation_id)
 
                         # position WCS
+                        _update_chunk_position(
+                            c, header, observation.instrument.name,
+                            em.om.get('mode'), int(part),
+                            observation.observation_id)
+                        _update_chunk_position_bhros(
+                            c, headers[0], observation.instrument.name,
+                            int(part), observation.observation_id)
                         if part == '1':
-                            if observation.instrument.name in ['GPI', 'bHROS']:
+                            if observation.instrument.name == 'GPI':
                                 # equinox information only available from the
                                 # 0th header
                                 c.position.equinox = headers[0].get('TRKEQUIN')
@@ -983,10 +992,6 @@ def update(observation, **kwargs):
                             _update_chunk_position_flamingos(
                                 c, header, observation.observation_id)
 
-                        _update_chunk_position(
-                            c, header, observation.instrument.name,
-                            em.om.get('mode'), int(part),
-                            observation.observation_id)
 
         program = em.get_pi_metadata(observation.proposal.id)
         if program is not None:
@@ -2098,7 +2103,7 @@ def _update_chunk_position(chunk, header, instrument, mode, extension, obs_id):
             instrument, obs_id))
         return
 
-    if (instrument in ['GPI', 'PHOENIX', HOKUPAA, 'OSCIR', 'bHROS'] or
+    if (instrument in ['GPI', 'PHOENIX', HOKUPAA, 'OSCIR'] or
         (instrument == 'GRACES' and mode is not None and
          mode != 'imaging')):
 
@@ -2171,6 +2176,44 @@ def _update_chunk_position(chunk, header, instrument, mode, extension, obs_id):
             chunk.position.equinox = float(header.get('EQUINOX'))
 
     logging.debug('End _update_chunk_position')
+
+
+def _update_chunk_position_bhros(chunk, header, instrument, extension, obs_id):
+    logging.error('Begin _update_chunk_position_bhros {}'.format(extension))
+    mc.check_param(chunk, Chunk)
+
+    if instrument == 'bHROS':
+        logging.error('instrument is {}'.format(instrument))
+        header['CTYPE1'] = 'RA---TAN'
+        header['CTYPE2'] = 'DEC--TAN'
+        header['CUNIT1'] = 'deg'
+        header['CUNIT2'] = 'deg'
+        header['CRVAL1'] = get_ra(header)
+        header['CRVAL2'] = get_dec(header)
+        header['CDELT1'] = RADIUS_LOOKUP[instrument]
+        header['CDELT2'] = RADIUS_LOOKUP[instrument]
+        header['CROTA1'] = 0.0
+        if instrument != 'OSCIR':
+            header['NAXIS1'] = 1
+            header['NAXIS2'] = 1
+        header['CRPIX1'] = get_crpix1(header)
+        header['CRPIX2'] = get_crpix2(header)
+        header['CD1_1'] = get_cd11(header)
+        header['CD1_2'] = 0.0
+        header['CD2_1'] = 0.0
+        header['CD2_2'] = get_cd22(header)
+
+        wcs_parser = WcsParser(header, 'obs id', 0)
+        if chunk is None:
+            chunk = Chunk()
+        wcs_parser.augment_position(chunk)
+        chunk.position_axis_1 = 1
+        chunk.position_axis_2 = 2
+
+        chunk.position.coordsys = header.get('TRKFRAME')
+        chunk.position.equinox = float(header.get('TRKEQUIN'))
+
+    logging.debug('End _update_chunk_position_bhros')
 
 
 def _build_blueprints(uris, obs_id, file_id):

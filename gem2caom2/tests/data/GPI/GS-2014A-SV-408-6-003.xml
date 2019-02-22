@@ -10,6 +10,8 @@
   <caom2:intent>science</caom2:intent>
   <caom2:proposal>
     <caom2:id>GS-2014A-SV-408</caom2:id>
+    <caom2:pi>Raghvendra Sahai</caom2:pi>
+    <caom2:title>Caught in the Act: Imaging the central disk and outflow in V Hya, an AGB star in transition to a bipolar nebula</caom2:title>
   </caom2:proposal>
   <caom2:target>
     <caom2:name>V Hya</caom2:name>
@@ -89,8 +91,8 @@
                           </caom2:coord2>
                         </caom2:refCoord>
                         <caom2:cd11>0.000777777777777777</caom2:cd11>
-                        <caom2:cd12>-0.01757718361219885</caom2:cd12>
-                        <caom2:cd21>-0.001171655445218</caom2:cd21>
+                        <caom2:cd12>0.0</caom2:cd12>
+                        <caom2:cd21>0.0</caom2:cd21>
                         <caom2:cd22>0.000777777777777777</caom2:cd22>
                       </caom2:function>
                     </caom2:axis>

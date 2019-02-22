@@ -90,8 +90,8 @@
                           </caom2:coord2>
                         </caom2:refCoord>
                         <caom2:cd11>0.000777777777777777</caom2:cd11>
-                        <caom2:cd12>-0.01955672131049902</caom2:cd12>
-                        <caom2:cd21>-0.00410718700477</caom2:cd21>
+                        <caom2:cd12>0.0</caom2:cd12>
+                        <caom2:cd21>0.0</caom2:cd21>
                         <caom2:cd22>0.000777777777777777</caom2:cd22>
                       </caom2:function>
                     </caom2:axis>
