@@ -267,7 +267,7 @@ def pytest_generate_tests(metafunc):
 
         file_list = []
         # for root, dirs, files in os.walk(TESTDATA_DIR):
-        # for ii in ['TReCS']:
+        # for ii in ['Flamingos']:
         for ii in ['GMOS', 'NIRI', 'GPI', 'F2', 'GSAOI', 'NICI', 'TReCS',
                    'Michelle', 'GRACES', 'NIFS', 'GNIRS', 'Phoenix',
                    'Flamingos', 'hrwfs', 'HOKUPAA', 'OSCIR', 'bHROS']:

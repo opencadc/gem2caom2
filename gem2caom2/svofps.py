@@ -236,8 +236,6 @@ def filter_metadata(instrument, filters):
                 width_min = wl_width
 
         if filter_name_found:
-            filter_md['wl_min'] = w_min
-            filter_md['wl_max'] = w_max
             filter_md['wl_eff_width'] = wl_width
             filter_md['wl_eff'] = wl_eff
         logging.info('Filter(s): {}  MD: {}'.format(filter_names, filter_md))

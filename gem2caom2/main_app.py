@@ -1056,17 +1056,16 @@ def _update_chunk_energy_niri(chunk, header, obs_id):
     # ‘Estimated Resolving Power’ for the slit in the beam given by the
     # focal_plane_mask value.
 
-    n_axis = 1
-
     filters = get_filter_name(header)
     filter_md = em.get_filter_metadata('NIRI', filters)
     filter_name = em.om.get('filter_name')
     mode = em.om.get('mode')
     if mode == 'imaging':
         logging.debug('NIRI: SpectralWCS imaging mode for {}.'.format(obs_id))
-        c_val, delta, resolving_power = _imaging_energy(filter_md)
+        c_val, delta, resolving_power, n_axis = _imaging_energy(filter_md)
     elif mode in ['LS', 'spectroscopy']:
         logging.debug('NIRI: SpectralWCS mode {} for {}.'.format(mode, obs_id))
+        n_axis = 1
         if (chunk.position is not None and chunk.position.axis is not None
             and chunk.position.axis.function is not None
             and chunk.position.axis.function.dimension is not None
@@ -1106,17 +1105,16 @@ def _update_chunk_energy_gpi(chunk, header):
     logging.debug('Begin _update_chunk_energy_gpi')
     mc.check_param(chunk, Chunk)
 
-    n_axis = 1
-
     filter_name = em.om.get('filter_name')
     filter_md = em.get_filter_metadata('GPI', filter_name)
 
     mode = em.om.get('mode')
     if mode in ['imaging', 'IFP', 'IFS']:
         logging.debug('SpectralWCS: GPI imaging mode.')
-        c_val, delta, resolving_power = _imaging_energy(filter_md)
+        c_val, delta, resolving_power, n_axis = _imaging_energy(filter_md)
     elif mode in ['LS', 'spectroscopy']:
         logging.debug('SpectralWCS: GPI LS|Spectroscopy mode.')
+        n_axis = 1
         c_val = 0.0  # TODO
         delta = filter_md['wl_eff_width'] / n_axis / 1.0e10
         fp_mask = header.get('FPMASK')
@@ -1144,7 +1142,6 @@ def _update_chunk_energy_f2(chunk, header):
     logging.debug('Begin _update_chunk_energy_f2')
     mc.check_param(chunk, Chunk)
 
-    n_axis = 1
     filter_name = em.om.get('filter_name')
     filter_md = em.get_filter_metadata('Flamingos2', filter_name)
 
@@ -1152,7 +1149,7 @@ def _update_chunk_energy_f2(chunk, header):
     logging.error('mode is {}'.format(mode))
     if mode in ['imaging', 'IFP', 'IFS']:
         logging.debug('SpectralWCS: F2 imaging mode.')
-        reference_wavelength, delta, resolving_power = \
+        reference_wavelength, delta, resolving_power, n_axis = \
             _imaging_energy(filter_md)
     elif mode in ['LS', 'spectroscopy', 'MOS']:
         logging.debug('SpectralWCS: F2 LS|Spectroscopy mode.')
@@ -1194,7 +1191,6 @@ def _update_chunk_energy_gsaoi(chunk):
     logging.debug('Begin _update_chunk_energy_gsaoi')
     mc.check_param(chunk, Chunk)
 
-    n_axis = 1
     filter_name = em.om.get('filter_name')
     filter_md = em.get_filter_metadata('GSAOI', filter_name)
 
@@ -1202,7 +1198,7 @@ def _update_chunk_energy_gsaoi(chunk):
     logging.error('mode is {}'.format(mode))
     if mode == 'imaging':
         logging.debug('SpectralWCS: GSAOI imaging mode.')
-        reference_wavelength, delta, resolving_power = \
+        reference_wavelength, delta, resolving_power, n_axis = \
             _imaging_energy(filter_md)
     else:
         raise mc.CadcException(
@@ -1249,7 +1245,6 @@ def _update_chunk_energy_nici(chunk, header, obs_id):
     logging.debug('Begin _update_chunk_energy_nici')
     mc.check_param(chunk, Chunk)
 
-    n_axis = 1
     mode = em.om.get('mode')
     logging.error('mode is {}'.format(mode))
 
@@ -1267,9 +1262,10 @@ def _update_chunk_energy_nici(chunk, header, obs_id):
         logging.debug('NICI: SpectralWCS imaging mode for {}.'.format(obs_id))
         if len(filter_md) == 0:
             if filter_name in NICI:
+                n_axis = 1
                 w_max = NICI[filter_name][2]
                 w_min = NICI[filter_name][1]
-                reference_wavelength = w_min
+                reference_wavelength = NICI[filter_name][0]
                 delta = w_max - w_min
                 resolving_power = (w_max + w_min)/(2*delta)
             else:
@@ -1277,7 +1273,7 @@ def _update_chunk_energy_nici(chunk, header, obs_id):
                     'NICI: Unprepared for filter {} from {}'.format(
                         filter_name, obs_id))
         else:
-            reference_wavelength, delta, resolving_power = \
+            reference_wavelength, delta, resolving_power, n_axis = \
                 _imaging_energy(filter_md)
     else:
         raise mc.CadcException(
@@ -1333,8 +1329,7 @@ def _update_chunk_energy_trecs(chunk, header, obs_id):
     mode = em.om.get('mode')
     if mode in ['imaging', 'IFP', 'IFS']:
         logging.debug('TRECS: imaging mode for {}.'.format(obs_id))
-        n_axis = 1
-        reference_wavelength, delta, resolving_power = \
+        reference_wavelength, delta, resolving_power, n_axis = \
             _imaging_energy(filter_md)
     elif mode in ['LS', 'spectroscopy', 'MOS']:
         logging.debug('TReCS: LS|Spectroscopy mode for {}.'.format(obs_id))
@@ -1364,7 +1359,6 @@ def _update_chunk_energy_michelle(chunk, obs_id):
     # what filter names look like in Gemini metadata, and what they
     # look like at the SVO, aren't necessarily the same
 
-    n_axis = 1
     orig_filter_name = em.om.get('filter_name')
     filter_name = orig_filter_name
     temp = filter_name.split('-')
@@ -1391,12 +1385,13 @@ def _update_chunk_energy_michelle(chunk, obs_id):
     if mode in ['imaging', 'IFP', 'IFS']:
         logging.debug(
             'michelle: SpectralWCS imaging mode for {}.'.format(obs_id))
-        reference_wavelength, delta, resolving_power = \
+        reference_wavelength, delta, resolving_power, n_axis = \
             _imaging_energy(filter_md)
     elif mode in ['LS', 'spectroscopy', 'MOS']:
         logging.debug(
             'michelle: SpectralWCS LS|Spectroscopy mode for {}.'.format(
                 obs_id))
+        n_axis = 1
         delta = filter_md['wl_eff_width'] / n_axis / 1.0e4
         reference_wavelength = em.om.get('central_wavelength')
     else:
@@ -1483,9 +1478,9 @@ def _update_chunk_energy_nifs(chunk, header, obs_id):
                 raise mc.CadcException(
                     'NIFS: mystery grating {} for {}'.format(grating, obs_id))
         else:
+            # TODO - should this check nifs_lookup as well?
             logging.debug('NIFS: imaging for {}.'.format(obs_id))
-            n_axis = 1
-            reference_wavelength, delta, resolving_power = \
+            reference_wavelength, delta, resolving_power, n_axis = \
                 _imaging_energy(filter_md)
     else:
         raise mc.CadcException(
@@ -1666,7 +1661,6 @@ def _update_chunk_energy_phoenix(chunk, header, obs_id):
                         filter_name, obs_id))
         else:
             logging.debug('Phoenix: imaging mode for {}.'.format(obs_id))
-            n_axis = 1
             if filter_name in PHOENIX:
                 w_max = PHOENIX[filter_name][2]
                 w_min = PHOENIX[filter_name][1]
@@ -1677,9 +1671,9 @@ def _update_chunk_energy_phoenix(chunk, header, obs_id):
                 raise mc.CadcException(
                     'Phoenix: mystery filter name {} for {}'.format(
                         filter_name, obs_id))
-            filter_md = {'wl_min': w_min,
+            filter_md = {'wl_eff': PHOENIX[filter_name][0],
                          'wl_eff_width': w_max - w_min}
-            reference_wavelength, delta, resolving_power = \
+            reference_wavelength, delta, resolving_power, n_axis = \
                 _imaging_energy(filter_md)
 
     _build_chunk_energy(chunk, n_axis, reference_wavelength, delta,
@@ -1705,14 +1699,17 @@ def _update_chunk_energy_flamingos(chunk, header, data_product_type, obs_id):
 
     # spectral wcs units are microns, values from Table 7 are angstroms.
     # The conversion is taken care of in _imaging_energy.
-    lookup = {'JH': [8910, 18514],
+    # 0 = wl min
+    # 1 = wl max
+    # 2 = central wavelength
+    # 3 = FWHM
+    lookup = {'JH': [8910, 18514, 1.45, 0.95],  # TODO central wavelength = 1.45 um, FWHM = 0.95 um
               'HK': [10347, 27588]}
 
-    filter_name = get_filter_name(header, 'FILTER')
+    filter_name = get_filter_name(header)
     if filter_name in ['JH', 'HK']:
-        filter_md = {'wl_min': lookup[filter_name][0],
-                     'wl_eff_width': (lookup[filter_name][1] -
-                                      lookup[filter_name][0])}
+        filter_md = {'wl_eff': lookup[filter_name][2],
+                     'wl_eff_width': lookup[filter_name][3]}
         resolving_power = 1300.0 / 1.0e4
     else:
         filter_md = em.get_filter_metadata('Flamingos', filter_name)
@@ -1721,13 +1718,12 @@ def _update_chunk_energy_flamingos(chunk, header, data_product_type, obs_id):
     if data_product_type == DataProductType.SPECTRUM:
         logging.debug('Flamingos: SpectralWCS for {}.'.format(obs_id))
         n_axis = header.get('NAXIS1')
-        reference_wavelength = filter_md['wl_min'] / 1.0e4 # minimum wavelength
+        reference_wavelength = filter_md['wl_min'] / 1.0e4  # minimum wavelength
         delta = filter_md['wl_eff_width'] / n_axis / 1.0e4
     elif data_product_type == DataProductType.IMAGE:
         logging.debug(
             'Flamingos: SpectralWCS imaging mode for {}.'.format(obs_id))
-        n_axis = 1
-        reference_wavelength, delta, resolving_power = \
+        reference_wavelength, delta, resolving_power, n_axis = \
             _imaging_energy(filter_md)
     else:
         raise mc.CadcException(
@@ -1771,14 +1767,14 @@ def _update_chunk_energy_hrwfs(chunk, header, data_product_type, obs_id):
             continue
         filter_names += ii[0]
     filter_md = em.get_filter_metadata(instrument, filter_names)
+
     if data_product_type == DataProductType.SPECTRUM:
         raise mc.CadcException(
             'hrwfs: No SpectralWCS spectroscopy support for {}'.format(obs_id))
     elif data_product_type == DataProductType.IMAGE:
         logging.debug(
             'hrwfs: SpectralWCS imaging mode for {}.'.format(obs_id))
-        n_axis = 1
-        reference_wavelength, delta, resolving_power = \
+        reference_wavelength, delta, resolving_power, n_axis = \
             _imaging_energy(filter_md)
     else:
         raise mc.CadcException(
@@ -1832,12 +1828,9 @@ def _update_chunk_energy_hokupaa(chunk, header, data_product_type, obs_id):
     elif data_product_type == DataProductType.IMAGE:
         logging.debug(
             'hokupaa: SpectralWCS imaging mode for {}.'.format(obs_id))
-        n_axis = 1
-        wl_min = (hokupaa_lookup[filter_name][0] -
-                  hokupaa_lookup[filter_name][1] / 2.0)
-        filter_md = {'wl_min': wl_min * 1.0e4,
+        filter_md = {'wl_eff': hokupaa_lookup[filter_name][0] * 1.0e4,
                      'wl_eff_width': hokupaa_lookup[filter_name][1] * 1.0e4}
-        reference_wavelength, delta, resolving_power = \
+        reference_wavelength, delta, resolving_power, n_axis = \
             _imaging_energy(filter_md)
     else:
         raise mc.CadcException(
@@ -1888,12 +1881,9 @@ def _update_chunk_energy_oscir(chunk, header, data_product_type, obs_id):
     elif data_product_type == DataProductType.IMAGE:
         logging.debug(
             'oscir: SpectralWCS imaging mode for {}.'.format(obs_id))
-        n_axis = 1
-        wl_min = (oscir_lookup[filter_name][0] -
-                  oscir_lookup[filter_name][1] / 2.0)
-        filter_md = {'wl_min': wl_min * 1.0e4,
+        filter_md = {'wl_min': oscir_lookup[filter_name][0] * 1.0e4,
                      'wl_eff_width': oscir_lookup[filter_name][1] * 1.0e4}
-        reference_wavelength, delta, resolving_power = \
+        reference_wavelength, delta, resolving_power, n_axis = \
             _imaging_energy(filter_md)
     else:
         raise mc.CadcException(
@@ -1977,28 +1967,61 @@ def _reset_energy(observation_type, data_label):
 
 def _imaging_energy(filter_md):
     """"""
-    # all the filter units are Angstroms, and the chunk-level energy WCS
+    # optical filter units are Angstroms, and the chunk-level energy WCS
     # unit of choice is 'um', therefore 1.0e4
 
     # NAXIS = 1
     # CTYPE = ‘WAVE’
     # CUNIT = ‘um’
-    # CRPIX = NAXIS / 2.0
-    # CRVAL = wl_min
-    # CDELT = wl_max - wl_min
+    # CRPIX = NAXIS
+    # CRVAL = central_wavelength
+    # CDELT = FWHM
     # resolving power = (wl_max  + wl_min)/(2*CDELT)
     # bandpass_name = filter name
-    # CDELT is the SVO’s effective width, W_effective in their tables which
-    # corresponds more or less to wl_max - wl_min.
+    # CDELT is the SVO’s FWHM in their tables which corresponds more or less
+    # to wl_max - wl_min.
 
-    # CRPIX values should all be 0.5 for imaging spectral WCS as long as
-    # you use the lower wavelength boundary of the filter for the
-    # corresponding CRVAL. DB - 13-02-19
+    # CRPIX values should all be 1.0 for imaging spectral WCS as long as
+    # you use the central wavelength of the filter for the corresponding
+    # CRVAL. DB - 21-02-19
 
-    c_val = filter_md['wl_min'] / 1.0e4
+    cr_pix = 1
+    cr_val = filter_md['wl_min'] / 1.0e4
     delta = filter_md['wl_eff_width'] / 1.0e4
-    resolving_power = c_val / delta
-    return c_val, delta, resolving_power
+    resolving_power = cr_val / delta
+    return cr_val, delta, resolving_power, cr_pix
+
+
+def _imaging_energy_2(filter_md, obs_id):
+    """"""
+    # optical filter units are Angstroms, and the chunk-level energy WCS
+    # unit of choice is 'um', therefore 1.0e4
+
+    # NAXIS = 1
+    # CTYPE = ‘WAVE’
+    # CUNIT = ‘um’
+    # CRPIX = NAXIS
+    # CRVAL = central_wavelength
+    # CDELT = FWHM
+    # resolving power = (wl_max  + wl_min)/(2*CDELT)
+    # bandpass_name = filter name
+    # CDELT is the SVO’s FWHM in their tables which corresponds more or less
+    # to wl_max - wl_min.
+
+    # CRPIX values should all be 1.0 for imaging spectral WCS as long as
+    # you use the central wavelength of the filter for the corresponding
+    # CRVAL. DB - 21-02-19
+
+    cr_pix = 1
+    cr_val = em.om.get('central_wavelength')
+    if cr_val is None:
+        raise mc.CadcException(
+            'No central_wavelength defined for {}'.format(obs_id))
+
+    # c_val = filter_md['wl_min'] / 1.0e4
+    delta = filter_md['wl_eff_width'] / 1.0e4
+    resolving_power = cr_val / delta
+    return cr_pix, cr_val, delta, resolving_power
 
 
 def get_filter_name(header, lookup='FILTER'):
