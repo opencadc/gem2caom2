@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GS-2015A-Q-63</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-2015A-Q-63</h1>
+
+<table>
+ <tr><td>Title:<td>The Milky Way nuclear star cluster as a benchmark for the structure and build-up of galactic nuclei</tr>
+ <tr><td>PI:<td>Anja Feldmeier</tr>
+ <tr><td>Co-I(s):<td> Nadine Neumayer,  Tim de Zeeuw,  Hagai Perets,  Alessandra Mastrobuono-Battisti,  Rainer Schoedel,  Anil Seth,  Harald Kuntschner,  Michael Hilker,  Nora Luetzgendorf,  Markus Kissler-Patig,  Jakob Walcher</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+The center of the Milky Way is a unique laboratory to study the structure and build-up of galactic nuclei. Like most galaxies, the Milky Way hosts a nuclear star cluster, which dominates the central Galactic potential out to r~30 pc. Despite intense study of the supermassive black hole and the central parsec of the Galaxy, the kinematics and star formation history of the nuclear cluster remain poorly known. We propose to remedy this situation using Flamingos-2 in a drift scan to create an integral field spectroscopic map of the central ~2 x 60pc of our Galaxy. The derived kinematics and stellar population analysis will be used to understand the history of gas accretion and star formation in the center of the Milky Way. Thus we can trace the build-up of the nuclear star cluster by infalling, dissolving star clusters. The proposed observation will be the largest and so far only continuous spectroscopic data set of the Milky Way nuclear star cluster. 
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GN-2009A-Q-21</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GN-2009A-Q-21</h1>
+
+<table>
+ <tr><td>Title:<td>Spectroscopy of Giant Arcs Behind the Strongest Lenses in the Universe</tr>
+ <tr><td>PI:<td>Joseph F Hennawi</tr>
+ <tr><td>Co-I(s):<td> Michael Gladders,  Masamune Oguri,  Benjamin Koester,  Matt Bayliss,  Hakon Dahle,  Priya Natarajan</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+We have conducted a deep ($\mu_g \lesssim 24$) imaging survey using
+  the WIYN 4-m telescope, the UH 88-inch telescope, and the 2.5m
+  Nordic Optical Telescope (NOT) to search for giant arcs behind the
+  richest clusters identified in the Gpc$^3$ volume of the SDSS.  By
+  imaging nearly 500 massive clusters, this ongoing survey has
+  uncovered some of the most dramatic examples of gravitational
+  lensing ever discovered, similar to `poster-children' like Abell
+  1689 and CL0024$+$1654. We propose to use GMOS on Gemini-North and
+  the Blue Channel Spectrograph on the MMT to determine arc redshifts
+  in these new lenses.  When combined with our GMOS data from a
+  similar program in 2008A, this proposal will result in a sample of
+  $60$ gravitationally lensed galaxies behind $\sim 25$ clusters.
+  These arc redshifts pinpoint the mass of dark matter interior to the
+  Einstein radius in the cluster core ($R &lt; 200\hkpc$, comoving). The
+  larger scale ($R \sim 1-5\hMpc$) weak lensing shear has been
+  measured for more than half of our targets from deep imaging at NOT,
+  WIYN, Subaru, and using archival data from HST.  GMOS arc redshifts
+  combined with weak and strong lensing will allow us to measure the
+  density profile of dark matter halos on scales $200\hkpc &lt; R &lt;
+  5\hMpc$ for the statistical sample of lensing clusters, providing a
+  powerful test of the $\Lambda$CDM paradigm.
+</div>
+
+
+<h2>Publications using this program's data</h2>
+<ul>
+<li>
+<a href="/searchform/publication=2011ApJ...727L..26B" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2011ApJ...727L..26B/abstract" target="_blank">[ADS]</a> The Redshift Distribution of Giant Arcs in the Sloan Giant Arcs Survey
+<li>
+<a href="/searchform/publication=2011ApJS..193....8B" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2011ApJS..193....8B/abstract" target="_blank">[ADS]</a> Gemini/GMOS Spectroscopy of 26 Strong-lensing-selected Galaxy Cluster Cores
+<li>
+<a href="/searchform/publication=2012ApJ...744..156B" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2012ApJ...744..156B/abstract" target="_blank">[ADS]</a> Broadband Photometry of 105 Giant Arcs: Redshift Constraints and Implications for Giant Arc Statistics
+<li>
+<a href="/searchform/publication=2012ApJ...755...73W" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2012ApJ...755...73W/abstract" target="_blank">[ADS]</a> Constraints on the Low-mass End of the Mass-Metallicity Relation at z = 1-2 from Lensed Galaxies
+<li>
+<a href="/searchform/publication=2012MNRAS.420.3213O" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2012MNRAS.420.3213O/abstract" target="_blank">[ADS]</a> Combined strong and weak lensing analysis of 28 clusters from the Sloan Giant Arcs Survey
+<li>
+<a href="/searchform/publication=2014ApJ...783...41B" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2014ApJ...783...41B/abstract" target="_blank">[ADS]</a> Line-of-sight Structure toward Strong Lensing Galaxy Clusters
+</ul>
+
+
+</body>
+</html>

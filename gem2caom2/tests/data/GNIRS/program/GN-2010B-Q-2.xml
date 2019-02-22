@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GN-2010B-Q-2</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GN-2010B-Q-2</h1>
+
+<table>
+ <tr><td>Title:<td>Infrared monitoring of the expanding envelope of Be stars II</tr>
+ <tr><td>PI:<td>Maria Laura Arias</tr>
+ <tr><td>Co-I(s):<td> Anahi Granada,  Lydia Cidale</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+
+Be stars are early-type rapid rotators with emission lines originated in a circumstellar envelope. The line variability observed in these stars can be explained with different envelope models. Our aim is to study the structure and evolution of the circumstellar matter close to the central star by means of IR spectroscopy. Due to the sensitivity of hydrogen IR lines to changes in the physical properties of their forming regions, these lines are useful to study the presence of high temperature regions and high density structures. In fact we have found that the inner part of the circumstellar envelope around Be stars contributes to their IR emission. From the study of the intensity of IR hydrogen lines, we classified a sample of 20 Be stars in different categories, objects belonging to each group seem to have line forming regions with the same physical conditions. Thus, we expect to perform new NIRI observations of four objects which we have already observed with the same instrument configuration, in order to broaden our understanding on the evolution of innermost circumstellar environment of Be stars, which could be understood in terms of the ejection of an optically thick disk that expands and becomes optically thin.  
+
+</div>
+
+
+
+</body>
+</html>

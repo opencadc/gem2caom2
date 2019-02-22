@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GS-2005B-Q-10</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-2005B-Q-10</h1>
+
+<table>
+ <tr><td>Title:<td>High spatial resolution mid-infrared observations of Local Universe Luminous Infrared Galaxies</tr>
+ <tr><td>PI:<td>Chris Packham</tr>
+ <tr><td>Co-I(s):<td> Almudena Alonso-Herrero,  Luis Colina,  James Radomski,  Tanio Diaz-Santos</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+Recent {\it Spitzer} cosmological surveys have demonstrated that the majority of IR-selected galaxies at $z&lt;1$ are in the LIRG class 
+($L_{\rm IR}=L[8-1000\mu {\rm m}] = 10^{11}-10^{12} 
+L_\odot$) and that LIRGs make a significant contribution 
+to the IR galaxy population at $1&lt;z&lt;2$. We propose to obtain T-ReCS $N$-band broad-band imaging and low resolution $10\,\mu$m spectroscopy of a sample of four low-$z$ LIRGs. These galaxies are part of a complete volume ($v&lt;5200\,$km s$^{-1}$) limited sample of LIRGs for which we have obtained {\it HST}/NICMOS images to identify star clusters and H\,{\sc ii} regions. The sample covers different morphologies and a range of IR luminosities. The combination of high spatial resolution ($\simeq 0.25\arcsec$) mid-IR imaging and spectroscopy uniquely afforded by 8\,m class telescopes, and NICMOS observations will allow us to peer for the first time into the dust-enshrouded nuclear regions of LIRGs with the appropriate
+spatial resolution ($89-135\,$pc). Our goals are: (1) to identify heavily obscured AGN, not detected
+in the optical and near-IR, (2) to establish the properties of the nuclear
+starbursts as well as  circumnuclear dusty H\,{\sc ii} regions,  (3)
+to investigate the nature of the dominant energy source (AGN vs stellar
+emission), and (4)  to produce local templates to be compared with the high-redshift bright-IR sources currently being observed by {\it Spitzer}.
+</div>
+
+
+<h2>Publications using this program's data</h2>
+<ul>
+<li>
+<a href="/searchform/publication=2006ApJ...652L..83A" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2006ApJ...652L..83A/abstract" target="_blank">[ADS]</a> High Spatial Resolution T-ReCS Mid-Infrared Imaging of Luminous Infrared Galaxies
+<li>
+<a href="/searchform/publication=2008ApJ...685..211D" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2008ApJ...685..211D/abstract" target="_blank">[ADS]</a> Understanding the 8 &mu;m versus Pa&alpha; Relationship on Subarcsecond Scales in Luminous Infrared Galaxies
+<li>
+<a href="/searchform/publication=2010ApJ...711..328D" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2010ApJ...711..328D/abstract" target="_blank">[ADS]</a> A High Spatial Resolution Mid-Infrared Spectroscopic Study of the Nuclei and Star-Forming Regions in Luminous Infrared Galaxies
+<li>
+<a href="/searchform/publication=2013A&A...553A..35G" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2013A&A...553A..35G/abstract" target="_blank">[ADS]</a> Dust in active galactic nuclei. Mid-infrared T-ReCS/Gemini spectra using the new RedCan pipeline
+<li>
+<a href="/searchform/publication=2014ApJ...780...86E" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2014ApJ...780...86E/abstract" target="_blank">[ADS]</a> Nuclear Star Formation Activity and Black Hole Accretion in Nearby Seyfert Galaxies
+<li>
+<a href="/searchform/publication=2014MNRAS.439.1648A" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2014MNRAS.439.1648A/abstract" target="_blank">[ADS]</a> The subarcsecond mid-infrared view of local active galactic nuclei - I. The N- and Q-band imaging atlas
+<li>
+<a href="/searchform/publication=2015ApJ...803...57I" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2015ApJ...803...57I/abstract" target="_blank">[ADS]</a> The Differences in the Torus Geometry between Hidden and Non-hidden Broad Line Active Galactic Nuclei
+<li>
+<a href="/searchform/publication=2015A&A...578A..74G" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2015A&A...578A..74G/abstract" target="_blank">[ADS]</a> Nuclear obscuration in LINERs. Clues from Spitzer/IRS spectra on the Compton thickness and the existence of the dusty torus
+<li>
+<a href="/searchform/publication=2015ApJ...805..162O" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2015ApJ...805..162O/abstract" target="_blank">[ADS]</a> Infrared and X-Ray Evidence of an AGN in the NGC 3256 Southern Nucleus
+</ul>
+
+
+</body>
+</html>

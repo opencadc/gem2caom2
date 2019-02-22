@@ -9,6 +9,8 @@
   <caom2:intent>science</caom2:intent>
   <caom2:proposal>
     <caom2:id>GS-2013A-Q-21</caom2:id>
+    <caom2:pi>Markus Janson</caom2:pi>
+    <caom2:title>Proper motion follow-up of young planet and brown dwarf candidates in Sco-Cen</caom2:title>
   </caom2:proposal>
   <caom2:target>
     <caom2:name>HIP 70149</caom2:name>

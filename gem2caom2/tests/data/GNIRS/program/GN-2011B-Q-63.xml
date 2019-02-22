@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GN-2011B-Q-63</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GN-2011B-Q-63</h1>
+
+<table>
+ <tr><td>Title:<td>Searching for Carbon Star Signatures in Early-Type Galaxies</tr>
+ <tr><td>PI:<td>Richard McDermid</tr>
+ <tr><td>Co-I(s):<td> Tom Geballe,  Harald Kuntschner,  Claudia Maraston</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+The existence of young (&lt;1Gyr) and forming stars found in many early-type galaxies (ETGs) reveal the importance of recent dissipation in their evolution. Distinguishing the processes which produce these young populations requires characterising their mass, distribution and dynamics. We propose to do this by searching for carbon-star signatures in ETGs with young stellar populations and ongoing star-formation, thus isolating a unique spectral tracer of 0.3-2Gyr stars in these composite-population systems. Using GNIRS, we will obtain high-quality K-band long-slit spectroscopy of three 'young' galaxies and one 'old' galaxy, to empirically trace the effect of young stars on their infrared spectra, and test for the presence of carbon stars, as expected from population models. The selected galaxies have excellent supporting data, including optical integral-field spectroscopy, interferometric CO maps, and Spitzer photometry, combining to make these the best known ETGs for this pilot investigation, such that even failing to detect carbon stars places important constraints on understanding the infrared spectral properties of young populations - important for studying galaxies at high redshift. From this 'best case' pilot study, we will assess the feasibility of reliably disentangling young and old stars in composite systems, allowing their properties to be better understood.
+</div>
+
+
+
+</body>
+</html>

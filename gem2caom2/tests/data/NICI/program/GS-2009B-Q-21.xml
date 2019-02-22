@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GS-2009B-Q-21</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-2009B-Q-21</h1>
+
+<table>
+ <tr><td>Title:<td>Titan methane weather at Equinox: \\ Seasonal climate change and surface geology</tr>
+ <tr><td>PI:<td>Henry Roe</tr>
+ <tr><td>Co-I(s):<td> Emily Schaller,  Michael Brown,  Chadwick Trujillo</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+Previously in this program we discovered Titan's mid-latitude clouds
+  (Roe et al.\ 2005a) and that their locations are controlled by
+  surface processes, possibly including cryovolcanoes, geysering,
+  and/or the opening of surface cracks (Roe et al.\ 2005b).
+We observed a massive storm engulfing the south pole
+(Schaller et al.\ 2006a) and found a near-disappearance of south
+polar cloud activity as the season moved further into southern summer
+(Schaller et al.\ 2006B).  In the most recent observing season
+we discovered clouds in the north polar region that are formed
+via lake-effect processes (Brown et al.\ 2008) and observed a tropical
+storm that induced Rossby-wave clouds in the south polar region
+(Schaller et al.\ 2009).
+Observing Titan's clouds requires only a small amount (20-25 min) of
+large (8-10 meter) adaptive optics telescope time and queued Gemini
+observations are uniquely suited to this observing program. 
+As Titan's Northern spring season commences (August 2009), 
+continued observations are required to monitor
+the advance of the planetary scale monsoon, driving new clouds
+in the northern and southern polar regions, and 
+ identify and monitor regions of active surface geology.
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GS-2009A-Q-30</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-2009A-Q-30</h1>
+
+<table>
+ <tr><td>Title:<td>The XCS/DXS search for the highest redshift galaxy clusters</tr>
+ <tr><td>PI:<td>John Stott</tr>
+ <tr><td>Co-I(s):<td> Chris  Collins,  Adam Stanford,  Alastair Edge,  Matt Hilton,  Kathy Romer,  Mark Swinbank,  Chris Miller,  Bob Mann,  Ed  Lloyd-Davies,  Bob Nichol,  Andrew Liddle</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+We select the highest redshift galaxy clusters by combining X-ray and near-infrared observations from the XMM Cluster Survey and UKIDSS Deep eXtragalactic Survey respectively (DXS). Having access to both of these rich datasets provides us with a unique opportunity to select galaxy clusters in the redshift range 1&lt;z&lt;2. This proposal builds on our recent successful follow-up of UKIDSS near-infrared selected and XCS X-ray selected clusters. The former yielding 11 0.8&lt;z&lt;1.3 clusters including the discovery of a massive supercluster at z=0.9 while the latter discovered the most distant X-ray cluster (XMMXCSJ2215, z=1.46). By combining our near-infrared and X-ray selection we will discover the highest redshift galaxy clusters yet known, significantly increasing the number of clusters above z=1 and pushing out beyond z=1.5. This will provide ourselves and others with the tools to test hierarchical build up of the most massive structures in the Universe and the evolution of their component galaxies.  
+
+</div>
+
+
+
+</body>
+</html>

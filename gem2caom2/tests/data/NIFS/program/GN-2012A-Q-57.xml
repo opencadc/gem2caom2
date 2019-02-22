@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GN-2012A-Q-57</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GN-2012A-Q-57</h1>
+
+<table>
+ <tr><td>Title:<td>The Co-Evolution of Supermassive Black Holes and Galaxies probed with NIFS</tr>
+ <tr><td>PI:<td>Rogemar A. Riffel</tr>
+ <tr><td>Co-I(s):<td> Thaisa  Storchi-Bergmann,  Astor Joao  Schonell Junior</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+Theoretical studies attribute a fundamental role for nuclear supermassive black holes, and the feedback they generate, in the evolution of galaxies. A number of prescriptions for the physical processes involved have been assumed in order to reproduce the MBH-sigma relation. However, these prescriptions are not well constrained and are sometimes even at odds with observations. We propose to constrain the relevant physical processes in a systematic way using integral field spectroscopic observations in the near-IR with the instrument NIFS+ALTAIR of a well-defined sample of 22 active galactic nuclei (AGN). Our previous studies of individual AGN have allowed us to reach the most efficient observational design - spectroscopy covering the J and K bands - as well as the best techniques of analysis, to quantify the feeding (inflows) and feedback (outflows) processes. Our goal is to obtain NIFS J and K-band observations of the unobserved 11 galaxies of the sample. The total sample covers a range of AGN power, so that, in the near future, besides homogeneously quantifying the feeding and feedback processes, we will be able to correlate them to the AGN power. For the next semester, we propose such observations of the galaxies NGC3393, NGC5347 and  and NGC5548.
+</div>
+
+
+<h2>Publications using this program's data</h2>
+<ul>
+<li>
+<a href="/searchform/publication=2017MNRAS.464.1771S" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2017MNRAS.464.1771S/abstract" target="_blank">[ADS]</a> Feeding versus feedback in active galactic nuclei from near-infrared integral field spectroscopy – XII. NGC 5548
+<li>
+<a href="/searchform/publication=2017MNRAS.470..992R" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2017MNRAS.470..992R/abstract" target="_blank">[ADS]</a> Gemini NIFS survey of feeding and feedback processes in nearby active galaxies - I. Stellar kinematics
+</ul>
+
+
+</body>
+</html>

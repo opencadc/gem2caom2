@@ -10,6 +10,8 @@
   <caom2:intent>calibration</caom2:intent>
   <caom2:proposal>
     <caom2:id>GN-2010B-C-3</caom2:id>
+    <caom2:pi>Suklima Guha Niyogi</caom2:pi>
+    <caom2:title>Testing dust condensation hypotheses using Gemini Michelle spatially?resolved spectroscopy of O-rich AGB stars.</caom2:title>
   </caom2:proposal>
   <caom2:target>
     <caom2:name>GCALflat</caom2:name>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GN-2015A-C-4</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GN-2015A-C-4</h1>
+
+<table>
+ <tr><td>Title:<td>Elementary Abundances of Planetary Systems</tr>
+ <tr><td>PI:<td>Caitlin Griffith</tr>
+ <tr><td>Co-I(s):<td> Verne Smith,  Mark Swain,  Katia Cunha,  Panayotis Lavvas,  Johanna Teske,  Robert Zellem,  Kyle Pearson,  Gregory Henry</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+Close-orbiting Hot Jupiter exoplanets were not predicted because the ices needed to build their large cores would have accreted in the outer stellar system where temperatures are cool enough for ices to condense. Their existence suggests more substantial planet migration than indicated in the Solar System, or perhaps different formation mechanisms. To probe the formation environment of Hot Jupiters, we propose measurements of the elemental abundances of oxygen and carbon, which derive from icy (H2O, C02 and CO) planetismals that condensed in different parts of the disk, through a coordinated ground-based and space-based study. We target the exoplanet XO-2b, which has an ideal reference star (the host star's binary companion of similar stellar type and brightness), allowing us to remove atmospheric effects from the ground-based measurements. We measure XO-2b's water bands with HST/WFC3 1.1-1.7 micron spectra, which enables a retrieval of CO from the already measured Spitzer transit and eclipse photometry. Simultaneous Gemini optical measurements constrain XO-2b's 10-bar radius and the cloud coverage, thereby decreasing uncertainties in retrieved water abundances from current values of a factor of 100 to our expected uncertainty of a factor of 3 in the derived abundance. The aim of this study is to derive strategies for measuring accurate exoplanetary compositions, as needed to pursue statistically significant studies. 
+</div>
+
+
+
+</body>
+</html>

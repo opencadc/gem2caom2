@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GS-2006B-Q-47</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-2006B-Q-47</h1>
+
+<table>
+ <tr><td>Title:<td>Lithium Isotopes and Solid Body Accretion in Stars with Planets</tr>
+ <tr><td>PI:<td>Katia Cunha</tr>
+ <tr><td>Co-I(s):<td> Verne  Smith,  Ramiro de la Reza,  Francisco Araujo,  Luan Ghezzi</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+We request Gemini-S/bHROS time to observe a sample of stars with planets to test whether there has been
+accretion of material as a result of planet formation.
+The rare lithium isotope, Li-6, is completely destroyed during the formation and pre-main sequence evolution of solar
+type stars having metallicities greater than about 1/30th solar. It is fully preserved, however, in low-mass brown-dwarfs and
+planets. Lithium's more robust isotope Li-7, is preserved to some degree in most solar-type stars. As almost all of the
+currently known stars with planets are solar types (i.e., spectral types F,G, or K) with near solar metallicities, no Li-6 should be
+present in any of those stars. Contrary to this picture, Li-6 has been detected in a planet-hosting F-dwarf by Israelian et al. (2003).
+This detection indicates  that solid material from a protoplanetary disk was accreted into the thin surface convection zone of the
+planet hosting star and preserved after this star had settled onto the main sequence. Lithium-6 is thus a strategic probe of the dynamic
+interactions between stars and their surrounding protoplanetary disks or retinue of planetesimals or planets.
+We propose to bring the combination of light-gathering power and spectral resolution of Gemini-S plus bHROS to
+conduct the most sensitive search  yet for Li-6 in a sample of stars with planets.
+</div>
+
+
+<h2>Publications using this program's data</h2>
+<ul>
+<li>
+<a href="/searchform/publication=2009ApJ...698..451G" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2009ApJ...698..451G/abstract" target="_blank">[ADS]</a> Measurements of the Isotopic Ratio <SUP>6</SUP>Li/<SUP>7</SUP>Li in Stars with Planets
+</ul>
+
+
+</body>
+</html>

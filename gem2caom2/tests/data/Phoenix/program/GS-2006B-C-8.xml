@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GS-2006B-C-8</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-2006B-C-8</h1>
+
+<table>
+ <tr><td>Title:<td>Magnetic Fields on the Pre-Main Sequence Stars in the ONC</tr>
+ <tr><td>PI:<td>Christopher M Johns-Krull</tr>
+ <tr><td>Co-I(s):<td> Hao Yang</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+We will use Phoenix on Gemini South to obtain high resolution K band spectra of a sample of 22 low mass
+young stars in the Orion Nebula Cluster. These data will be used to measure the magnetic field properties on
+these stars which in turn will be used to test magnetospheric accretion models in young stars, turbulet dynamo models, and the role primordial magnetic fields play
+in the magnetic properties of young stars.
+</div>
+
+
+<h2>Publications using this program's data</h2>
+<ul>
+<li>
+<a href="/searchform/publication=2011ApJ...729...83Y" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2011ApJ...729...83Y/abstract" target="_blank">[ADS]</a> Magnetic Field Measurements of T Tauri Stars in the Orion Nebula Cluster
+</ul>
+
+
+</body>
+</html>

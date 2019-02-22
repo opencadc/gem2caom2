@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GN-2009B-C-1</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GN-2009B-C-1</h1>
+
+<table>
+ <tr><td>Title:<td>PAH Formation around Carbon Stars and the Limit of the Hot Companion</tr>
+ <tr><td>PI:<td>Daniel Caputo</tr>
+ <tr><td>Co-I(s):<td> Angela Speck,  Kevin Volk,  Mike Barlow,  Geoff Clayton</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+The Unidentified Infrared Bands (UIBs), believed to be due to PAHs, often dominate Spitzer mid-IR images of galaxies. Carbon stars (C-stars) are frequently cited as the source of PAHs, although only a very small number of C-stars, all with hot companions, have been shown to exhibit UIBs. We propose to obtain Michelle mid-IR narrow-band imaging and R=200 long-slit spectra of eight C-stars with companions ranging from A- to K-type, which could show spatially resolved UIB emission. We have had success with a previous program wherein the 11.3 UIB was found for the first time around SZ Sgr, which were not detected by ISO. With this data we will be able to determine whether UIBs are associated with all binary C-stars with hot companions, or whether a further criterion is needed. The spectro-imaging of C-stars whose companions have differing separations and effective temperatures will allow us to determine how the UIB emission depends on the intensity and hardness of the UV irradiation. This, together with the observed band ratios, can diagnose whether the PAHs are small or large and help discriminate between competing PAH formation hypotheses.
+</div>
+
+
+
+</body>
+</html>

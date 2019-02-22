@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GN-2006A-Q-58</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GN-2006A-Q-58</h1>
+
+<table>
+ <tr><td>Title:<td>Dissecting the Bow Shock of a High Velocity Star: Echelle Spectroscopy of IRS8</tr>
+ <tr><td>PI:<td>R. Scott Fisher</tr>
+ <tr><td>Co-I(s):<td> Jean-Rene Roy,  Tom Geballe,  Kevin Volk,  Doug Simons</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+Here we propose the first sub-arcsecond high spectral resolution mid-IR spectroscopy of the galactic center source IRS8. Building upon the discovery work of Geballe et al. (2004) the proposed observations will extend our understanding of this enigmatic object by providing kinematic information about the gas in the bow shock associated with IRS8. Our proposed "image slicing" spectroscopy with MICHELLE will allow us to dissect the bow shock into 0.3" spectra throughout the ~10" x 10" IRS8 region. The proposed echelle observations complement previously obtained TReCS imaging of the source as the former deal exclusively with gas dynamics while the latter study the size and composition of the dust grains in the vicinity of IRS8. This program is ideally suited for Gemini North and MICHELLE as it takes full advantage of the infrared optimization of the telescope and the high spectral resolution capability of the instrument. We request a total of 5.5 hours to complete this extensive study of a unique object in the galactic center. 
+</div>
+
+
+
+</body>
+</html>

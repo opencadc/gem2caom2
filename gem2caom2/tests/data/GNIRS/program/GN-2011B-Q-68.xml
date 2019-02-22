@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GN-2011B-Q-68</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GN-2011B-Q-68</h1>
+
+<table>
+ <tr><td>Title:<td>Near-Infrared Spectroscopic Followup of Type Ia Supernovae in the Hubble Flow</tr>
+ <tr><td>PI:<td>Mark M Phillips</tr>
+ <tr><td>Co-I(s):<td> Eric Hsiao,  Chris Burns,  Wendy Freedman,  Eric Persson,  Maximilian Stritzinger,  Nicholas Suntzeff</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+The Carnegie Supernova 
+Project~II (CSP~II) is an NSF-funded, 5-year program to obtain optical and near-IR (NIR) 
+observations of 100--150 Type~Ia supernovae (SNe~Ia) located in the smooth Hubble flow
+($0.03 &lt; z &lt; 0.08$).
+The main emphasis of the CSP~II is to obtain NIR light curves in order to 
+achieve a distance precision of 1$-$2\%, as well as to build 
+a definitive low-$z$ reference for future rest infrared observations of SNe~Ia 
+at high-$z$ with next-generation dark energy experiments such as WFIRST. 
+A key ingredient to realizing these
+goals is the measurement of NIR $K$ corrections as a function of light curve
+phase and shape, which to date are only poorly 
+understood. 
+We therefore request 100 hours of ToO time 
+over 5 years with GNIRS on Gemini North to obtain multi-epoch NIR spectroscopy
+for $\sim$25 of the SNe to be observed by the CSP~II.  In this first proposal, we ask for 
+a total of 10~hours to obtain spectra at two different phases of 2--3 SNe.
+</div>
+
+
+<h2>Publications using this program's data</h2>
+<ul>
+<li>
+<a href="/searchform/publication=2013ApJ...766...72H" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2013ApJ...766...72H/abstract" target="_blank">[ADS]</a> The Earliest Near-infrared Time-series Spectroscopy of a Type Ia Supernova
+<li>
+<a href="/searchform/publication=2015MNRAS.454.2549B" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2015MNRAS.454.2549B/abstract" target="_blank">[ADS]</a> Spectral models for early time SN 2011fe observations
+</ul>
+
+
+</body>
+</html>

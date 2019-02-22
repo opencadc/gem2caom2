@@ -9,6 +9,8 @@
   <caom2:intent>calibration</caom2:intent>
   <caom2:proposal>
     <caom2:id>GS-2013B-DD-1</caom2:id>
+    <caom2:pi>Rodrigo Carrasco</caom2:pi>
+    <caom2:title>Gemini Frontier Fields campaign</caom2:title>
   </caom2:proposal>
   <caom2:target>
     <caom2:name>MACSJ 0416.1-2403</caom2:name>

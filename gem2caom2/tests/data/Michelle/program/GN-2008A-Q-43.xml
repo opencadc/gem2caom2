@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GN-2008A-Q-43</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GN-2008A-Q-43</h1>
+
+<table>
+ <tr><td>Title:<td>The mid-IR emission of low-luminosity AGN, and the origin of the torus</tr>
+ <tr><td>PI:<td>Rachel Mason</tr>
+ <tr><td>Co-I(s):<td> Almudena Alonso Herrero,  Luis Colina,  Moshe Elitzur,  Nancy Levenson,  Chris Packham,  James Radomski,  Pat Roche</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+We propose Michelle imaging of nearby LINER galaxies to search for signatures of dusty tori in their nuclei. Models which propose that the torus originates in a dusty accretion disk wind predict that low-luminosity objects such as AGN-LINERs will not harbour tori, because the mass accretion rates onto these nuclei cannot power optically thick dusty outflows. To test this prediction we will search for MIR emission from dust in close proximity to and reprocessing radiation from the AGN, and compare the IR luminosities and SEDs with our clumpy torus models and with Seyfert SEDs. IR emission comparable to the models and to higher-luminosity AGN would indicate significant torus emission, contrary to the disk wind model, whereas much lower luminosities would agree well with the disk wind model's predictions. The spatial resolution attainable in ground-based MIR images, combined with archival HST NIR data, is necessary to ensure that measurements of the SED of the putative tori are not compromised by extended emission from stars, gas and dust not directly associated with the torus.
+
+
+
+
+
+
+
+
+</div>
+
+
+<h2>Publications using this program's data</h2>
+<ul>
+<li>
+<a href="/searchform/publication=2012AJ....144...11M" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2012AJ....144...11M/abstract" target="_blank">[ADS]</a> The Nuclear Infrared Emission of Low-luminosity Active Galactic Nuclei
+<li>
+<a href="/searchform/publication=2014MNRAS.439.1648A" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2014MNRAS.439.1648A/abstract" target="_blank">[ADS]</a> The subarcsecond mid-infrared view of local active galactic nuclei - I. The N- and Q-band imaging atlas
+<li>
+<a href="/searchform/publication=2015A&A...578A..74G" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2015A&A...578A..74G/abstract" target="_blank">[ADS]</a> Nuclear obscuration in LINERs. Clues from Spitzer/IRS spectra on the Compton thickness and the existence of the dusty torus
+</ul>
+
+
+</body>
+</html>

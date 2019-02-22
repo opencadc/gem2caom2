@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GN-2015B-Q-1</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GN-2015B-Q-1</h1>
+
+<table>
+ <tr><td>Title:<td>Radial velocity confirmation of an exoplanet candidate around an evolved compact binary</tr>
+ <tr><td>PI:<td>Leonardo A. Almeida</tr>
+ <tr><td>Co-I(s):<td> Francisco Jablonski,  Hugues Sana,  Eder Martioli</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+In the last years some close post-common-envelope eclipsing binaries have been found to show cyclic eclipse timing variations. This effect is usually interpreted either as the gravitational interaction among circumbinary planets and the host binary -- known as light-travel-time effect, or as the quadrupole-moment variations in one magnetic active component -- known as Applegate mechanism. In the first case, the planets must either survived the evolution of the host binary or they have been formed as a consequence of its evolution. In the second case, the orbital variation is the result of the coupling between the binary orbit and changes in the shape of a magnetically active component. Here, we propose, for the first time, to detect by radial velocity method the circumbinary planet candidates around the evolved binary KIC09472174 using GRACES/GEMINI and solve the light-travel-time effect versus Applegate mechanism puzzle. 
+</div>
+
+
+
+</body>
+</html>

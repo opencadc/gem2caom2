@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GN-2007A-C-11</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GN-2007A-C-11</h1>
+
+<table>
+ <tr><td>Title:<td>Photoevaporation of Proto-planetary Disks</tr>
+ <tr><td>PI:<td>Gregory Herczeg</tr>
+ <tr><td>Co-I(s):<td> Lynne Hillenbrand,  Ilaria Pascucci,  Joan Najita</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+We propose to obtain moderate resolution MICHELLE spectra to survey [Ne II] emission from classical T 
+Tauri stars. We will follow up the survey on our last night with high-resolution spectra of the brightest 
+sources to measure the line width and velocity. This program will help to identify the location of the [Ne II] 
+emission from classical T Tauri stars. We speculate that this line probes the photoevaporation of 
+protoplanetary disks.
+
+</div>
+
+
+<h2>Publications using this program's data</h2>
+<ul>
+<li>
+<a href="/searchform/publication=2007ApJ...670..509H" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2007ApJ...670..509H/abstract" target="_blank">[ADS]</a> High-Resolution Spectroscopy of [Ne II] Emission from TW Hydrae
+</ul>
+
+
+</body>
+</html>

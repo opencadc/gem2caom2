@@ -116,8 +116,6 @@ __all__ = ['main_app2', 'update', 'COLLECTION', 'APPLICATION', 'SCHEME',
 #
 # PI information
 # spectroscopy check
-# oscir
-# bHROS
 
 APPLICATION = 'gem2caom2'
 # GPI radius == 2.8 arcseconds, according to Christian Marois via DB 02-07-19
@@ -989,6 +987,11 @@ def update(observation, **kwargs):
                             c, header, observation.instrument.name,
                             em.om.get('mode'), int(part),
                             observation.observation_id)
+
+        program = em.get_pi_metadata(observation.proposal.id)
+        if program is not None:
+            observation.proposal.pi_name = program['pi_name']
+            observation.proposal.title = program['title']
 
     except Exception as e:
         logging.error(e)

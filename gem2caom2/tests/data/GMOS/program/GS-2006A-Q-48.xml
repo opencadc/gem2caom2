@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GS-2006A-Q-48</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-2006A-Q-48</h1>
+
+<table>
+ <tr><td>Title:<td>Star Formation in Cooling Core Clusters</tr>
+ <tr><td>PI:<td>Louise Edwards</tr>
+ <tr><td>Co-I(s):<td> Carmelle Robert</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+ Is the excess blue emission often seen in cooling flow
+    (CF) clusters due to the CF phenomenon, or is there another
+    environmental or nuclear process at work in these galaxies? We
+    propose to localize and characterize the young stellar populations
+    in central galaxies of CF clusters. In 2005, we obtained excellent data for 5
+    clusters which confirmed that the technical aspects of the project are feasible. We propose here to add to the work of the previous
+    semesters by collecting a sample of clusters, including critically important controls, which will be large enough for us to obtain
+    information on the evolution of the central galaxy in relation to
+    the CF, the central AGN,  and the role of galaxy-galaxy interactions within the
+    cluster.
+
+</div>
+
+
+<h2>Publications using this program's data</h2>
+<ul>
+<li>
+<a href="/searchform/publication=2009MNRAS.396.1953E" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2009MNRAS.396.1953E/abstract" target="_blank">[ADS]</a> The diverse nature of optical emission lines in brightest cluster galaxies: IFU observations of the central kiloparsec
+<li>
+<a href="/searchform/publication=2012MNRAS.421.3409H" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2012MNRAS.421.3409H/abstract" target="_blank">[ADS]</a> The relation between line emission and brightest cluster galaxies in three exceptional clusters: evidence for gas cooling from the intracluster medium
+</ul>
+
+
+</body>
+</html>

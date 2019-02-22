@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GN-2011A-Q-31</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GN-2011A-Q-31</h1>
+
+<table>
+ <tr><td>Title:<td>Searching for Future Type Ibc Supernova Progenitors in the Whirlpool Galaxy (M51)</tr>
+ <tr><td>PI:<td>Joanne Bibby</tr>
+ <tr><td>Co-I(s):<td> Michael Shara,  Paul Crowther,  Anthony F.J.  Moffat</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+We propose GMOS-N multi-object spectroscopy of the nearby star-forming galaxy M51. Recent narrow-band HeII imaging, using the new filters available on Gemini/GMOS, have revealed over 900 Wolf-Rayet (WR) candidate regions. Follow-up spectroscopy will enable us to determine the WR subtype of the candidates (WN or WC), while the measured line fluxes will reveal the number of WR stars present. The availability of high-resolution HST imaging of M51 represents a unique opportunity to refine the position of the WR stars based on the offsets of WR candidates from nearby point sources. The Whirlpool galaxy (M51), combined with a companion Gemini-South proposal, will provide the final spectroscopy for our ground-based survey of WR stars with a view to identifying a future progenitor of a Type Ibc core-collapse supernova (ccSN). Until a supernova occurs the spectroscopic observations will allow us to investigate the distribution of WN and WC stars relative to the light of the host galaxy. If the distributions of the WN and WC stars are in good agreement with the fractional distribution of Type Ib and Ic ccSN relative to the light distribution of the host galaxy, then this would support suggestions that WR stars are progenitors of Type Ibc ccSN. 
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GN-2011A-Q-53</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GN-2011A-Q-53</h1>
+
+<table>
+ <tr><td>Title:<td>A Long Multiwavelength Study of GRS 1915+105:\\Accretion/Ejection Physics of the Disk Wind and\\Synchrotron Jet</tr>
+ <tr><td>PI:<td>Joseph Neilsen</tr>
+ <tr><td>Co-I(s):<td> Julia C Lee,  Ron Remillard,  Mark Reid,  Farid Rahoui</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+We propose one night of near-infrared monitoring of GRS 1915+105 with NIRI on Gemini-North for a targeted study of strong multiwavelength variability. In such a state, where periodic ejections and short-lived jets abound, our proposed observation will reveal the missing link between the disk-jet connection and highly ionized accretion disk winds. This observation, already approved through the Chandra Cycle 12 review process, will be complemented by high time- and spectral-resolution monitoring with Chandra and the EVLA, two of the world's premier X-ray and radio facilities, to make the first-ever direct measurement of jet-disk-wind interactions on timescales possibly as short as 10 seconds. This will be one of the most sensitive and highest-resolution multiwavelength campaigns on this enigmatic black hole to date.
+</div>
+
+
+
+</body>
+</html>

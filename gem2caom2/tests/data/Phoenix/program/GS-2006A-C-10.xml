@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GS-2006A-C-10</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-2006A-C-10</h1>
+
+<table>
+ <tr><td>Title:<td>Phoenix Observations of CH4, HCN and CO in the Planet Formation Zone</tr>
+ <tr><td>PI:<td>Adwin Boogert</tr>
+ <tr><td>Co-I(s):<td> Geoff Blake,  Ken Hinkle</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+The structure and composition of envelopes and disks surrounding
+protostars are key factors in planet and comet formation.  The region
+at 1-10s of AU is of particular interest, but often highly obscured in
+young systems and therefore not accessible at optical
+wavelengths. High resolution infrared spectroscopy provides a powerful
+probe of the gas and dust close to young stars, however. Indeed, in
+our large 4.7 um CO survey of protostars line widths of several 10s of
+km/s have been observed both in emission and absorption. These
+velocities tie the gas to the inner few AU of the disk/envelope.  We
+propose to follow up on this survey and observe the fundamental C-H
+stretching bands of HCN at 3.1 um and CH4 at 3.3 um using the R=60,000
+(5 km/s) mode of Phoenix at Gemini-South. As gas and dust travel
+toward the protostar, CH4 will first sublimate from icy grain mantles
+and is expected to 'burn' rapidly into CO.  However, at high pressures
+and moderate temperatures CO can be converted back into CH4, and the
+CH4/CO abundance ratio may thus be a unique tracer of protoplanetary
+condensations within disks.  On the other hand, HCN is a tracer of
+high temperature `hot core'-type chemistry in the very inner regions
+of protostellar disks.  At high spectral resolution provided by
+Phoenix, the line profiles will localize the absorbing/emitting
+regions, and thus the disk composition in the potential planet
+formation zone.
+
+</div>
+
+
+<h2>Publications using this program's data</h2>
+<ul>
+<li>
+<a href="/searchform/publication=2007ApJ...655L.105S" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2007ApJ...655L.105S/abstract" target="_blank">[ADS]</a> Molecular Gas in the Inner 1 AU of the TW Hya and GM Aur Transitional Disks
+<li>
+<a href="/searchform/publication=2009ApJ...699..330S" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2009ApJ...699..330S/abstract" target="_blank">[ADS]</a> High-resolution 5 &mu;m Spectroscopy of Transitional Disks
+<li>
+<a href="/searchform/publication=2011ApJ...743..112S" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2011ApJ...743..112S/abstract" target="_blank">[ADS]</a> CO Rovibrational Emission as a Probe of Inner Disk Structure
+</ul>
+
+
+</body>
+</html>

@@ -9,6 +9,8 @@
   <caom2:intent>calibration</caom2:intent>
   <caom2:proposal>
     <caom2:id>GN-2016B-Q-27</caom2:id>
+    <caom2:pi>Michihiro Takami</caom2:pi>
+    <caom2:title>Understanding the Mechanism of Jet Launching in Active Young Stars</caom2:title>
   </caom2:proposal>
   <caom2:target>
     <caom2:name>Dark</caom2:name>

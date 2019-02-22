@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GN-2015A-C-2</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GN-2015A-C-2</h1>
+
+<table>
+ <tr><td>Title:<td>Spatially Resolving the Circumgalactic Medium at z=0.2-0.9</tr>
+ <tr><td>PI:<td>Michelle Wilson</tr>
+ <tr><td>Co-I(s):<td> Fakhri Zahedy,  Hsiao-Wen Chen,  Ann Zabludoff</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+Our understanding of gas accretion and expulsion, which govern galaxy mass growth and metal distribution throughout the Universe, is limited by difficulties in observing gas around distant galaxies. Metal absorption lines in a QSO’s spectrum offer an effective means of characterizing chemically-enriched gas around foreground galaxies, but the single sightline limits constraints on small-scale structure and radial distribution of the halo gas. We propose a new approach: using lensed multiply-imaged QSOs to survey the MgII, MgI, and FeII gas around galaxies at 0.2 &lt; z &lt; 0.9. We have identified eight gravitational lens systems for probing 23 different sightlines through 38 galaxy halos. When stacked into composite group and field galaxy halos, these sightlines provide comprehensive radial coverage over 50-200 kpc with resolutions down to &lt;10 kpc and &lt;10 km/s, dramatically improving on past studies. We follow-up known foreground galaxies with an absorption-line search, removing the uncertainty unknown distances between absorbing gas and their host galaxies provides. Our pilot study of one system has already revealed inflowing gas streams or tidal material around two galaxies (Chen et al. 2014). Here we propose Gemini/GMOS observations to identify potential absorber galaxies in three more fields and characterize their environments. 
+</div>
+
+
+
+</body>
+</html>

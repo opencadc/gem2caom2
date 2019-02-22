@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GN-2015B-Q-34</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GN-2015B-Q-34</h1>
+
+<table>
+ <tr><td>Title:<td>Measuring star formation in red spirals with Paschen-Alpha</tr>
+ <tr><td>PI:<td>Christian Wolf</tr>
+ <tr><td>Co-I(s):<td> Alfonso Aragon-Salamanca,  Klaus Meisenheimer,  Asmus Boehm,  Sarah Sweet,  David Block</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+Star formation rates in cluster spirals are debated, as H-alpha and FIR provide very different estimates. Two ways to reconcile them are: H-alpha underestimates SFR due to dust extinction, or FIR overestimates SFR as dust is heated by older stars. We propose a new diagnostic to resolve the debate, the Pa-alpha line. We will thus clarify whether the SF decline in cluster spirals occurs quickly or slowly and test scenarios for transforming spirals into S0s. 
+</div>
+
+
+
+</body>
+</html>

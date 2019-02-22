@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GS-2013A-Q-21</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-2013A-Q-21</h1>
+
+<table>
+ <tr><td>Title:<td>Proper motion follow-up of young planet and brown dwarf candidates in Sco-Cen</tr>
+ <tr><td>PI:<td>Markus Janson</tr>
+ <tr><td>Co-I(s):<td> John Gizis,  Mariangela Bonavita,  David Lafrenière,  Ray Jayawardhana</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+In previous surveys of the young Sco-Cen region, we and others have discovered a number of substellar companions with separations of up to several hundreds of AU, some of which have mass ratios to the primary star of only 1%. Such properties challenge both star and planet formation mechanisms. Motivated by this issue, we started a NICI survey of a larger sample of stars in Sco-Cen in 2011A (GS-2011Q-44). In total, 138 stars have been observed in the survey, with 55 detected candidates having been followed up in 2012A to test for common proper motion. We have already confirmed and published 3 new substellar companions from this survey. We now propose to perform the final follow-up efforts by observing 11 remaining targets. With a minor requirement of 2.2 hours, these observations will finalize the survey, potentially yield the widest, youngest, and lowest-mass planetary systems ever imaged directly, and provide key insights to the formation and early evolution of planets. 
+</div>
+
+
+<h2>Publications using this program's data</h2>
+<ul>
+<li>
+<a href="/searchform/publication=2013ApJ...773..170J" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2013ApJ...773..170J/abstract" target="_blank">[ADS]</a> A Multiplicity Census of Intermediate-mass Stars in Scorpius-Centaurus
+</ul>
+
+
+</body>
+</html>

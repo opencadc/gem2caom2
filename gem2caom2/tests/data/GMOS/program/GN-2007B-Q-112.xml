@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GN-2007B-Q-112</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GN-2007B-Q-112</h1>
+
+<table>
+ <tr><td>Title:<td>Investigating the Halo of M33</tr>
+ <tr><td>PI:<td>Tammy Smecker-Hane</tr>
+ <tr><td>Co-I(s):<td> Michael Hood,  Annette Ferguson,  Michael Irwin</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+We propose a spectroscopic investigation of individual red giant branch stars in the outer halo of the spiral galaxy M33 at a radius of 13 kpc (for comparison, M33's disk scale length is 1.4 kpc).  We will quantify the halo's kinematics and chemical abundances to constrain the evolution of this unique, late-type, bulgeless disk galaxy. These data will provide important tests of sophisticated cosmological simulations of galaxy formation. We will use GMOS to obtain multi-slit spectra of approximately 30 targets that we know are red giant stars in M33 rather than foreground Milky Way dwarfs based on our prior photometric survey. Radial velocities derived by correlating with standard stars will have random errors of approximately 5 km/s and chemical abundances derived from the strengths of the near-infrared Ca II triplet absorption lines will have random errors of approximately 0.2 dex.
+
+</div>
+
+
+
+</body>
+</html>

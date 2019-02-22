@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GS-2012A-Q-7</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-2012A-Q-7</h1>
+
+<table>
+ <tr><td>Title:<td>On the Nature and Distribution of Dusty Material in Active Galactic Nucleus</tr>
+ <tr><td>PI:<td>Dinalva Sales</tr>
+ <tr><td>Co-I(s):<td> Claudia Winge,  Miriani Pastoriza,  Rogerio Riffel</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+We propose to use the Gemini mid infrared (Mid-IR) spatial resolution to obtain unique T-ReCS LowN long-slit spectroscopy of the Active Galactic Nucleus (AGNs) galaxies NGC5236 and NGC6300  to study the nature and distribution of the dusty material associated with the inner regions of the objects and to check if silicate absorption observed in Compton-thick galaxies is actually connected with the dusty toroidal structure required by unified model for AGNs. The selected objects are near enough to obtain, for the first time, Mid-IR 1D spectra with spatial resolution lower than 8pc/pix and enough off-nucleus signal to allow for a proper evaluation of the host galaxy contribution in the central region. The AGN uncontaminated from host galaxy emission Mid-IR 1D spectra will be compared with theoretical clumpy torus spectral energy distributions (SEDs), that will help to set constrains on the physical properties of the putative torus required by the AGN unified model, such as: geometry and size, as well as the distribution and physical properties of the dust grains.
+</div>
+
+
+<h2>Publications using this program's data</h2>
+<ul>
+<li>
+<a href="/searchform/publication=2014MNRAS.438.3434R" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2014MNRAS.438.3434R/abstract" target="_blank">[ADS]</a> A mid-IR comparative analysis of the Seyfert galaxies NGC 7213 and NGC 1386
+</ul>
+
+
+</body>
+</html>

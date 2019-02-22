@@ -74,6 +74,8 @@ import requests
 from requests.adapters import HTTPAdapter
 from urllib3 import Retry
 
+from bs4 import BeautifulSoup
+
 import caom2
 from caom2pipe import manage_composable as mc
 from gem2caom2.svofps import filter_metadata
@@ -105,18 +107,6 @@ GMOS_DISPERSION = {
     'R400': 0.705,
     'R150': 1.835
 }
-
-# NIRI_RESOLVING_POWER = {
-#     'J': {},
-#     'H': {},
-#     'L': {},
-#     'M': {},
-#     'K': {
-#         'f6-2pix': 1300.0,
-#         'f6-4pix': 780.0,
-#         'f6-6pix': 520.0
-#     }
-# }
 
 # values from
 # https://www.gemini.edu/sciops/instruments/niri/spectroscopy/grisms
@@ -222,7 +212,6 @@ def get_obs_metadata(file_id):
         response = session.get(gemini_url, timeout=20)
         metadata = response.json()[0]
         response.close()
-        logging.error('got obs metdata')
     except Exception as e:
         raise mc.CadcException(
             'Unable to download Gemini observation metadata from {} because {}'
@@ -234,11 +223,42 @@ def get_obs_metadata(file_id):
     logging.debug('End get_obs_metadata')
 
 
+def get_pi_metadata(program_id):
+    program_url = 'https://archive.gemini.edu/programinfo/' + program_id
+
+    # Open the URL and fetch the JSON document for the observation
+    session = requests.Session()
+    retries = 10
+    retry = Retry(total=retries, read=retries, connect=retries,
+                  backoff_factor=0.5)
+    adapter = HTTPAdapter(max_retries=retry)
+    session.mount('http://', adapter)
+    session.mount('https://', adapter)
+    try:
+        response = session.get(program_url, timeout=20)
+        xml_metadata = response.text
+        response.close()
+        logging.error('got pi metdata')
+    except Exception as e:
+        raise mc.CadcException(
+            'Unable to download Gemini observation metadata from {} because {}'
+                .format(program_url, str(e)))
+    metadata = None
+    soup = BeautifulSoup(xml_metadata, 'lxml')
+    tds = soup.find_all('td')
+    if len(tds) > 0:
+        title = tds[1].contents[0].replace('\n', ' ')
+        pi_name = tds[3].contents[0]
+        metadata = {'title': title,
+                    'pi_name': pi_name}
+    logging.debug('End get_obs_metadata')
+    return metadata
+
+
 def get_filter_metadata(instrument, filter_name):
     """A way to lazily initialize all the filter metadata reads from SVO."""
     global fm
     if instrument in fm and filter_name in fm[instrument]:
-        logging.error('only checking once ...')
         result = fm[instrument][filter_name]
     else:
         result = filter_metadata(instrument, filter_name)

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GS-2009B-Q-14</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-2009B-Q-14</h1>
+
+<table>
+ <tr><td>Title:<td>A NICI Search of Jupiter-like Planets Around HR 8799 and Young and Nearby Stars.</tr>
+ <tr><td>PI:<td>Christian Marois</tr>
+ <tr><td>Co-I(s):<td> Bruce Macintosh,  Jean-Rene Roy,  Jennifer Patience,  Travis Barman,  Ben Zuckerman,  Inseok Song,  David Lafreniere,  Rene Doyon</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+Following our discovery of the HR 8799 3-planet system at Gemini, we propose to use the simultaneous methane on/off imaging capabilities of NICI to constrain the presence of methane in the planets of this system. We also propose to pursue, with NICI, our ongoing volume-limited (&lt;55 pc) deep AO/ADI A- &amp; F-type star IDPS survey in the South and to acquire new unpublished southern young &amp; close FGKM stars. The main goal of this proposal is to improve the number of observed stars of all spectral types to achieve a survey of ~250 stars (including the GDPS sample) and to derive new and improved statistics on the frequency of planet around star of various masses. We will have, for the first time, a broader picture of the population of massive planets at large semi-major axes around a wide range of stellar mass.
+</div>
+
+
+<h2>Publications using this program's data</h2>
+<ul>
+<li>
+<a href="/searchform/publication=2011ApJ...733...65B" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2011ApJ...733...65B/abstract" target="_blank">[ADS]</a> Clouds and Chemistry in the Atmosphere of Extrasolar Planet HR8799b
+<li>
+<a href="/searchform/publication=2016A&A...594A..63G" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2016A&A...594A..63G/abstract" target="_blank">[ADS]</a> The International Deep Planet Survey. II. The frequency of directly imaged giant exoplanets with stellar mass
+</ul>
+
+
+</body>
+</html>

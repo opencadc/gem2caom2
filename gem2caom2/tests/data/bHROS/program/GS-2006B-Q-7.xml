@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GS-2006B-Q-7</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-2006B-Q-7</h1>
+
+<table>
+ <tr><td>Title:<td>Fundamental physics with the brightest southern QSO at redshift &gt; 1</tr>
+ <tr><td>PI:<td>Michael Murphy</tr>
+ <tr><td>Co-I(s):<td> John Webb,  Robert Carswell</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+QSO absorbers are precise probes of variations in the fine-structure
+constant, alpha. While Keck/HIRES spectra suggest a varying alpha,
+other groups claim smaller VLT/UVES samples support no
+variation. Varying-alpha estimates from single, high S/N absorbers
+allow critical assessment of analysis methods and possible systematic
+errors. The z_abs=1.1508 absorber towards HE0515-4414 (the brightest
+southern QSO at z&gt;1) is almost ideal for this. However, its unusual
+complexity has severely affected 3 groups' attempts to fit multiple
+velocity-component model absorption profiles, invalidating their
+varying-alpha constraints. We propose to triple the UVES spectral
+resolution with bHROS which, combined with S/N=50 per spectral pixel,
+will allow unambiguous determination of the absorption velocity
+structure. bHROS's wavelength stability will then provide the
+tightest, most robust single-absorber bound on varying-alpha. bHROS
+will also strongly limit any departure of the Mg &amp; C isotopic
+abundances from terrestrial values in this absorber.
+</div>
+
+
+
+</body>
+</html>

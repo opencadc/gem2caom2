@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GS-2005A-Q-15</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-2005A-Q-15</h1>
+
+<table>
+ <tr><td>Title:<td>Gemini/Magellan coordinated baseline and follow-up observations to the  Deep Impact Mission: Pristine cometary material as a glimpse back in time to  the beginning of the Solar System!</tr>
+ <tr><td>PI:<td>James De Buizer</tr>
+ <tr><td>Co-I(s):<td> Dave Osip,  Sue Lederer,  Joanna Thomas-Osip</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+We propose to combine a suite of visible, near-IR and thermal-IR instruments at the Gemini and Magellan telescopes in Chile to establish a baseline and then observe the consequences when the Deep Impact Mission fires a 370kg bullet  to penetrate the mantle of comet P/Tempel 1 on 04 July 2005. We request the use of T-ReCS on Gemini South to obtain thermal infrared imaging and spectroscopy of the comet simultaneously with narrowband optical continuum and near infrared imaging.  Taken together this data will allow us to model the physical and chemical characteristics of the subsurface material freshly excavated by the Deep Impact projectile. We will determine or constrain the composition, albedo, size distribution, and production rate, for the dust and water ice particles in the coma prior to the mission impact and then compare these same properties at two epochs (4 rotations and 8 rotations after impact) following the excavation of the impact crater. This investigation will thus provide a detailed characterization of pristine cometary material dating back to the origins of our solar system.
+
+
+</div>
+
+
+
+</body>
+</html>

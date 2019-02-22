@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GS-2016A-C-1</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-2016A-C-1</h1>
+
+<table>
+ <tr><td>Title:<td>Project SUNBIRD: Supernovae UNmasked By Infra-Red Detection</tr>
+ <tr><td>PI:<td>Erik Kool</tr>
+ <tr><td>Co-I(s):<td> Rubina Kotak,  Erkki Kankare,  Stuart Ryder,  Seppo Mattila,  Petri Vaisanen,  Richard McDermid,  Almudena Alonso-Herrero,  Andreas Efstathiou,  Jari Kotilainen,  Miguel Perez-Torres,  Sarah Sweet,  Zara Randriamanakoto</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+The fraction of supernovae missed in optical surveys due to extinction and intrinsic faintness is as much as 50%. We have pioneered the use of Laser Guide Star Adaptive Optics on Gemini to reveal a previously hidden population of core-collapse supernovae in Luminous Infra-Red Galaxies (LIRGs). To measure the fraction of heavily obscured supernovae, high-precision infrared observations are essential. The SUNBIRD (Supernovae UNmasked By Infra-Red Detection) project aims to monitor 18 LIRGs with Gemini South through 2016, and in combination with Keck to increase the sample of obscured supernovae by at least a factor of 5. In just our first observing block in March 2015 we discovered 2 supernovae. The data on the LIRGs themselves will be of immense value to the community for understanding the dusty, starbursting galaxies at high redshift. 
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GS-2013B-Q-26</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-2013B-Q-26</h1>
+
+<table>
+ <tr><td>Title:<td>MCAO Astrometry of WISE Y dwarfs</tr>
+ <tr><td>PI:<td>Chris Tinney</tr>
+ <tr><td>Co-I(s):<td> Chris Gelino,  Jackie Faherty,  Daniela Opitz</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+The NASA WISE satellite has delivered an unparalleled harvest of new ultra-cool Y-type brown dwarfs. It has more than fulfilled its key goal of detecting the coldest of brown dwarfs, at effective temperatures of less than 500K. We propose to exploit the capabilities of the Gemini MCAO system to obtain diffraction- limited, wide-field data on these targets for both measurements of their binary fraction and astrometric measurements of their distances. 
+</div>
+
+
+<h2>Publications using this program's data</h2>
+<ul>
+<li>
+<a href="/searchform/publication=2016ApJ...819...17O" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2016ApJ...819...17O/abstract" target="_blank">[ADS]</a> Searching for Binary Y Dwarfs with the Gemini Multi-conjugate Adaptive Optics System (GeMS)
+</ul>
+
+
+</body>
+</html>

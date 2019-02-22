@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GS-2013B-DD-1</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-2013B-DD-1</h1>
+
+<table>
+ <tr><td>Title:<td>Gemini Frontier Fields campaign</tr>
+ <tr><td>PI:<td>Rodrigo Carrasco</tr>
+ <tr><td>Co-I(s):<td> Peter Pessev,  Vincent Garrel,  Claudia Winge,  Benoit Neichel,  Fabrice Vidal</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+As part of the Hubble Space Telescope Frontier Fields program, images of two galaxy clusters will be obtained with GeMS and GSAOI. Images of Abell 2744 and MACSJ0416.1-2403 in the K-band will be obtained. Gemini is planning to obtain approximately 5 hours on-source integration of each field, reaching an estimated (point-source) sensitivity of 26.3 AB mag (24.4 Vega) in K-band. These data will be immediately accessible in the Gemini Science Archive with no proprietary period, and we will also produce reduced images for the community after the observations are complete. 
+</div>
+
+
+<h2>Publications using this program's data</h2>
+<ul>
+<li>
+<a href="/searchform/publication=2015MNRAS.450.3032M" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2015MNRAS.450.3032M/abstract" target="_blank">[ADS]</a> New redshift z ≃ 9 galaxies in the Hubble Frontier Fields: implications for early evolution of the UV luminosity density
+<li>
+<a href="/searchform/publication=2015ApJS..217...33S" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2015ApJS..217...33S/abstract" target="_blank">[ADS]</a> Gemini Frontier Fields: Wide-field Adaptive Optics Ks-band Imaging of the Galaxy Clusters MACS J0416.1-2403 and Abell 2744
+</ul>
+
+
+</body>
+</html>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GS-2018A-FT-101</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-2018A-FT-101</h1>
+
+<table>
+ <tr><td>Title:<td>An observational test of gravitational instability for forming multiple massive substellar companions</tr>
+ <tr><td>PI:<td>Stanimir Metchev</tr>
+ <tr><td>Co-I(s):<td> Stefan Brems,  Sebastian Bruzzone,  Ralf Launhardt,  Andreas Quirrenbach,  Sasha Quanz</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+We seek GPI H-band polarimetric observations of HD 101412: a disk-hosting Herbig B9/A0 star around which we have discovered two likely brown dwarf companions.  The companions were detected in the course of the VLT ISPY coronagraphic survey of young stars with disks.  At an age of only 2 Myr, the entire system is expected to be at the stage of active planet - or low-mass companion - formation.  The proposed GPI polarimetric observations will detect and resolve the disk in dust-scattered light, and may reveal dynamical interactions between the disk and the companions.  We will thus observationally test whether multiple companions more massive than planets can also form through gravitational instability in a disk. 
+</div>
+
+
+
+</body>
+</html>

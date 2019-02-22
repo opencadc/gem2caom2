@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GN-2016A-Q-35</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GN-2016A-Q-35</h1>
+
+<table>
+ <tr><td>Title:<td>Black Holes in the Smallest Galaxies</tr>
+ <tr><td>PI:<td>Patrick Cote</tr>
+ <tr><td>Co-I(s):<td> Smriti Mahajan,  Michael Drinkwater,  Eric Peng,  Holger Baumgardt,  Joel Pfeffer</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+A supermassive black hole was recently discovered in an ultracompact dwarf galaxy using Gemini/NIFS observations. This finding supports our model that ultracompact dwarf galaxies form by the disruption of normal dwarf galaxies. We now propose a second, equally important, test of the model by observing normal dwarf galaxies to see if their nuclei also contain supermassive black holes. Our observations will also help test black hole scaling relations in the dwarf galaxy regime. 
+</div>
+
+
+
+</body>
+</html>

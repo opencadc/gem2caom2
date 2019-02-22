@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GS-2006A-DD-1</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-2006A-DD-1</h1>
+
+<table>
+ <tr><td>Title:<td>Phoenix NGSC support time</tr>
+ <tr><td>PI:<td>Verne Smith</tr>
+ <tr><td>Co-I(s):<td></tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+This is the programme assigned for the NGSC support time of Phoenix classical
+</div>
+
+
+<h2>Publications using this program's data</h2>
+<ul>
+<li>
+<a href="/searchform/publication=2015AJ....150...48F" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2015AJ....150...48F/abstract" target="_blank">[ADS]</a> Infrared Spectroscopy of Symbiotic Stars. X. Orbits for Three S-type Systems: V1044 Centauri, Hen 3-1213, and SS 73-96
+<li>
+<a href="/searchform/publication=2017AJ....153...35F" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2017AJ....153...35F/abstract" target="_blank">[ADS]</a> Infrared Spectroscopy of Symbiotic Stars. XI. Orbits for Southern S-type Systems: Hen 3-461, SY Mus, Hen 3-828, AND AR Pav
+</ul>
+
+
+</body>
+</html>

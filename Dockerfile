@@ -7,7 +7,7 @@ RUN pip install astropy && pip install numpy && \
 
 RUN pip install cadcdata && pip install caom2repo && \
         pip install PyYAML && pip install vos && \
-        pip install caom2
+        pip install caom2 && pip install bs4
 
 RUN pip install pytest && pip install mock && pip install flake8 && \
         pip install funcsigs && pip install xml-compare && \

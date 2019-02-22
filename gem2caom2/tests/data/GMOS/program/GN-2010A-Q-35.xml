@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GN-2010A-Q-35</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GN-2010A-Q-35</h1>
+
+<table>
+ <tr><td>Title:<td>Deep Spectroscopy of a Sample of local Obscured AGN</tr>
+ <tr><td>PI:<td>Ezequiel Treister</tr>
+ <tr><td>Co-I(s):<td> Kevin Schawinski,  Meg Urry,  Marc Sarzi</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+Recent observational work on AGN host galaxies has complicated our understanding of the galaxy-black hole connection. In particular, the concentration of AGN host galaxies at intermediat optical colors in the "green valley" challenges the picture presented by theorists wherein powerful AGN phases are responsible for the shutdown of star formation. However, broadband photometry is insufficient to disentangle physical parameters such as age, metallicity and dust. We therefore propose to observe a sample of local obscured AGN detected in hard X-rays by Swift using the Burst Alert Telescope (BAT, 14-195 keV) with GMOS in long-slit mode to measure stellar absorption indices to perform a detailed analysis of their host galaxy stellar populations and star formation history. Obscured AGN are ideally suited for this study as the nuclear obscuration extinguishes virtually all of the radiative output of the AGN central engine at optical wavelengths.
+</div>
+
+
+<h2>Publications using this program's data</h2>
+<ul>
+<li>
+<a href="/searchform/publication=2015MNRAS.454.3622B" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2015MNRAS.454.3622B/abstract" target="_blank">[ADS]</a> BAT AGN spectroscopic survey-II. X-ray emission and high-ionization optical emission lines
+<li>
+<a href="/searchform/publication=2017MNRAS.464.1466O" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2017MNRAS.464.1466O/abstract" target="_blank">[ADS]</a> BAT AGN Spectroscopic Survey - III. An observed link between AGN Eddington ratio and narrow-emission-line ratios
+</ul>
+
+
+</body>
+</html>

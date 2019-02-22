@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GN-2012B-Q-73</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GN-2012B-Q-73</h1>
+
+<table>
+ <tr><td>Title:<td>Studying the Nature of Very Low Luminosity Objects (VeLLOs)</tr>
+ <tr><td>PI:<td>Tien-Hao Hsieh</tr>
+ <tr><td>Co-I(s):<td> Shih-Ping Lai,  Ren-Shiang Sung</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+We propose to use Gemini-North to observe five VeLLOs and LLOs which are the faintest YSOs with internal luminosity L$_{int} &lt;$ 0.2 L$_{\odot}$. The low luminosity of VeLLOs and LLOs is interpreted as that they are protostars with very low mass, at an extremely early evolutionary stage and/or in a quiescent accretion status. Therefore, estimating the mass, age and accretion luminosity of VeLLOs will be a great advantage in our understanding of their nature. With infrared spectrum, we can fit the spectral type of a YSO, and thus derive the veiling parameter (r$_{\lambda}$=F$_{ex,\lambda}$/F$_{*,\lambda}$) and environmental extinction. Therefore, by comparing to evolutionary tracks from theoretical models at H-R diagram, the mass, age and accretion luminosity of protostars are estimable. NIFS provides us high sensitivity imaging and spectroscopy to study faint sources like VeLLOs and LLOs. Here we propose to use NIFS to observe five VeLLOs and LLOs which are relatively bright in near infrared, our proposed observations will enhance our understanding of VeLLOs and LLOs. 
+</div>
+
+
+
+</body>
+</html>

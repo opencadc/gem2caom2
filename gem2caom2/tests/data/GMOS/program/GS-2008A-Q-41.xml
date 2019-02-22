@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GS-2008A-Q-41</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-2008A-Q-41</h1>
+
+<table>
+ <tr><td>Title:<td>GMOS Spectroscopy of Cluster Galaxies 24 $\mu$m Sources</tr>
+ <tr><td>PI:<td>Rose Finn</tr>
+ <tr><td>Co-I(s):<td> Greg Rudnick,  Vandana Desai,  Dennis Zaritsky,  Bianca Poggianti,  Bo Milvang-Jensen</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+We have deep Spitzer/MIPS 24\micron \ observations for 17 galaxy clusters
+at $0.4 &lt; z &lt; 0.8$.  Our cluster sample is drawn from the ESO Distant Cluster Survey,
+and not only spans an important range of velocity
+dispersions not represented in other surveys, but also benefits from a
+wealth of ancillary data.
+Because our MIPS imaging provides dust-obscured star-formation rates
+down to 2~$h_{70}^{-2}~\rm M_\odot~yr^{-1}$, we are in a position to significantly
+increase the census of star-forming galaxies in dense environments at
+$0.4 &lt; z &lt; 0.8$.  However, to maximize the
+scientific return of the Spitzer data, we need to confirm cluster membership
+of the 24\micron \ sources.  The available photometric redshifts,
+accurate to $\Delta z = \pm 0.1$, are too crude. 
+We therefore request Gemini/GMOS-S time
+to complete spectroscopy for all $R&lt; 23$ MIPS sources.
+Our spectroscopy is designed to detect [O~II] emission from star-forming cluster galaxies,
+and we expect to detect $35\pm 11$ cluster galaxies per field,
+yielding a total sample size of $600 \pm 200$ galaxies for the 17 clusters. 
+Our immediate science goals include 1) a measurement of the cluster
+infrared luminosity function, for comparison with measurements made in
+both the coeval field and in local clusters, and 2) an investigation
+of the role of cluster 24\micron \ sources in the build up of the red
+sequence.
+</div>
+
+
+<h2>Publications using this program's data</h2>
+<ul>
+<li>
+<a href="/searchform/publication=2014A&A...561A.112G" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2014A&A...561A.112G/abstract" target="_blank">[ADS]</a> Structure and substructure analysis of DAFT/FADA galaxy clusters in the [0.4-0.9] redshift range
+</ul>
+
+
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GN-2012B-Q-51</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GN-2012B-Q-51</h1>
+
+<table>
+ <tr><td>Title:<td>Examining Massive Black Holes in Small, High-Dispersion Galaxies</tr>
+ <tr><td>PI:<td>Jonelle Walsh</tr>
+ <tr><td>Co-I(s):<td> Kayhan Gultekin,  Douglas Richstone,  Remco Van Den Bosch,  Karl Gebhardt</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+Correlations linking the mass of the black hole ($M_\mathrm{BH}$) in the centers of galaxies to bulge properties have been clearly established over the past decade. However, there remain major open questions concerning the sparsely populated upper end of the $M_\mathrm{BH}$ distribution. From our spectroscopic survey of 600 galaxies, we have selected two that have the most extreme characteristics. With stellar velocity dispersions of $\sigma_\star &gt; 330$ km s$^{-1}$, Mrk 1216 and NGC 1271 could host some of the most massive black holes known. These galaxies are rapidly rotating, very compact, and have surprisingly small luminosities ($L_\mathrm{bul}$) for their large dispersions, in sharp contrast to the objects typically found at the upper end of the $M_\mathrm{BH}$ $-$ bulge relations. Virial mass estimates place these objects a factor of $\sim$4 and $\sim$50 above the $M_\mathrm{BH} - \sigma_\star$ and $M_\mathrm{BH} - L_\mathrm{bul}$ relations, respectively. With AO-assisted NIFS observations, we will carry out a stellar dynamical mass measurement of the black hole in each of the galaxies to better understand the poorly characterized high end of the relationships. 
+</div>
+
+
+<h2>Publications using this program's data</h2>
+<ul>
+<li>
+<a href="/searchform/publication=2015ApJ...808..183W" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2015ApJ...808..183W/abstract" target="_blank">[ADS]</a> The Black Hole in the Compact, High-dispersion Galaxy NGC 1271
+</ul>
+
+
+</body>
+</html>

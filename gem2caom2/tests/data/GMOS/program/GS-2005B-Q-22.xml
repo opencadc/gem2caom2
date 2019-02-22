@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GS-2005B-Q-22</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-2005B-Q-22</h1>
+
+<table>
+ <tr><td>Title:<td>A GMOS-IFU survey of E/S0 galaxies in the Fornax cluster</tr>
+ <tr><td>PI:<td>Roger Davies</tr>
+ <tr><td>Co-I(s):<td> Harald Kuntschner,  Bryan Miller,  Bettina Gerken,  Andres Jordan,  Leopoldo Infante,  John Blakeslee,  Patrick Cote,  Tim de Zeeuw,  Richard McDermid,  Michele Cappellari,  Davor Krajnovic</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+The GMOS-IFU offers the unique capability to spectroscopically map the two-dimensional kinematics of stars and gas in the cores of nearby early-type galaxies at superb spatial sampling. We propose to continue a very successful Gemini SV program and observe a complete sample of 14 E/S0 galaxies in the Fornax cluster. The extensive data reduction, analysis and modelling machinery we have developed in the context of the northern SAURON IFU survey, together with our experience from the GMOS SV run, will allow us to date the last episode of star formation in the core, measure the M/L ratio, compare the kinematics of the gas and stars and ultimately combine our knowledge of the populations and dynamics to deduce the assembly history. This program is supported by existing long-slit spectra of the galaxies we propose to observe.
+
+
+</div>
+
+
+<h2>Publications using this program's data</h2>
+<ul>
+<li>
+<a href="/searchform/publication=2013A&A...552A.106C" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2013A&A...552A.106C/abstract" target="_blank">[ADS]</a> The distance to NGC 1316 (Fornax A): yet another curious case
+</ul>
+
+
+</body>
+</html>

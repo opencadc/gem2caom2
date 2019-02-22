@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GS-2012B-SV-499</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-2012B-SV-499</h1>
+
+<table>
+ <tr><td>Title:<td>GeMS/GSAOI Commissioning Data</tr>
+ <tr><td>PI:<td>The GeMS/GSAOI Commissioning Team</tr>
+ <tr><td>Co-I(s):<td> The GeMS/GSAOI Commissioning Team</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+The data released under this programme was taken as part of the GeMS/GSAOI commissioning process. These observations were not obtained with science goals in mind, but the datasets have been evaluated and considered to be of science value. 
+</div>
+
+
+<h2>Publications using this program's data</h2>
+<ul>
+<li>
+<a href="/searchform/publication=2016MNRAS.456.2126S" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2016MNRAS.456.2126S/abstract" target="_blank">[ADS]</a> GeMs/GSAOI observations of La Serena 94: an old and far open cluster inside the solar circle
+</ul>
+
+
+</body>
+</html>

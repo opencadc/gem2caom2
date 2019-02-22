@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GS-2017B-Q-18</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-2017B-Q-18</h1>
+
+<table>
+ <tr><td>Title:<td>Nature of High-Redshift Dust-Obscured Galaxies in the ADF-S</tr>
+ <tr><td>PI:<td>Woong-Seob Jeong</tr>
+ <tr><td>Co-I(s):<td> Taehyun Kim,  Ho Seong Hwang,  Jeonghyun Pyo,  Hyun Jong Seo,  Minjin Kim,  Kyeongyeon Ko,  Sam Kim,  Sung-Joon Park,  Daeseong Park,  Seong Jin Kim</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+We propose NIR spectroscopic observations of candidates of Dust-Obscured Galaxies (DOGs) discovered in the ADF-S (AKARI Deep Field - South) to reveal the evolution of massive galaxies at z~2. All DOG samples in this proposal have far-IR/submm counterparts and they are optically identified with KMTNet (Korea Microlensing Telescope Network). We aim to detect the redshifted H-alpha of our samples together with possible other lines, which enables us to know the exact redshifts of DOGs as well as the properties of dust around DOGs. The long-slit spectroscopy with Gemini FLAMINGOS-2 can identify the H-alpha emissions from the DOGs at z~2. We propose to obtain deep long-slit spectroscpy of 9 targets that currently have no H-alpha detection from ground and space. These data set will provides us unique information such as their exact redshifts, their line widths and the dust obscurations at z~2. 
+</div>
+
+
+
+</body>
+</html>

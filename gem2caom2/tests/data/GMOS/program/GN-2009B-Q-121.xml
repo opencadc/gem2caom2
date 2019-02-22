@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GN-2009B-Q-121</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GN-2009B-Q-121</h1>
+
+<table>
+ <tr><td>Title:<td>The broad double-peaked Halpha profiles of the nuclei of low-luminosity AGN</tr>
+ <tr><td>PI:<td>Rodrigo Nemmen</tr>
+ <tr><td>Co-I(s):<td> Thaisa Storchi-Bergmann,  Michael Eracleous,  Claudia Winge,  Jaderson Schimoia</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+In November 1991, we observed, for the first time, a broad (FWHM about 10000 km/s) double-peaked Halpha emission line from the unresolved nucleus of the galaxy NGC 1097. As we concluded that this emission was the signature of an accretion event onto the central supermassive black hole, we have followed its evolution observing its profile for 10 yrs. During this period the profile showed significant variability, allowing us to constrain the mass of the black hole and to obtain parameters of the accretion disk, such as inner and outer radii and its emissivity. Five other LINERs have been observed to display broad double-peaked Halpha emission since the observations of NGC 1097. The luminosities and black hole masses of these other LINERs are very similar to NGC 1097's, suggesting that these objects should have similar variability. We propose to observe the double-peaked Halpha profile of these five LINERs using the the long-slit mode of GMOS-N, as an opportunity to constrain scenarios for the evolution of their accretion disks. This proposal is adequate for poor weather, because the nuclei of these galaxies are bright and we are interested only in relative flux spectroscopy.
+</div>
+
+
+
+</body>
+</html>

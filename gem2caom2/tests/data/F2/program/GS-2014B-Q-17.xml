@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GS-2014B-Q-17</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-2014B-Q-17</h1>
+
+<table>
+ <tr><td>Title:<td>Exploring the 300K Brown Dwarfs</tr>
+ <tr><td>PI:<td>Sandy Leggett</tr>
+ <tr><td>Co-I(s):<td> Caroline Morley,  Didier Saumon,  Mark Marley</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+We request telescope time to obtain near-IR data for the two lowest- luminosity Y dwarfs  known,  WISE 0350-56 and WISE 0535-75, with  T_eff ~ 300K. These are the first non-solar system objects predicted to have significant water clouds, which may herald a new spectral class. This is a new regime where atmospheres become similar to those of the solar system planets, and where only limited testing of  models has been possible.  Combining the proposed FLAMINGOS-2 1-1.7 micron spectrum and H-band photometry with existing 1 micron, 3-5 micron and 12 micron photometry, and trigonometric parallaxes, will enable our group to carry out an in-depth study of this new frontier of brown dwarf / exoplanet science, a  region where water clouds form, and the atmosphere is a balmy 80 degrees Fahrenheit. 
+</div>
+
+
+<h2>Publications using this program's data</h2>
+<ul>
+<li>
+<a href="/searchform/publication=2015ApJ...799...37L" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2015ApJ...799...37L/abstract" target="_blank">[ADS]</a> Near-infrared Photometry of Y Dwarfs: Low Ammonia Abundance and the Onset of Water Clouds
+<li>
+<a href="/searchform/publication=2016ApJ...824....2L" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2016ApJ...824....2L/abstract" target="_blank">[ADS]</a> Near-infrared Spectroscopy of the Y0 WISEP J173835.52+273258.9 and the Y1 WISE J035000.32–565830.2: The Importance of Non-equilibrium Chemistry
+</ul>
+
+
+</body>
+</html>

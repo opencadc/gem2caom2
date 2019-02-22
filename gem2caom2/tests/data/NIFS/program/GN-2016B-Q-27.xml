@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GN-2016B-Q-27</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GN-2016B-Q-27</h1>
+
+<table>
+ <tr><td>Title:<td>Understanding the Mechanism of Jet Launching in Active Young Stars</tr>
+ <tr><td>PI:<td>Michihiro Takami</tr>
+ <tr><td>Co-I(s):<td> Roberto Galvan-Madrid,  Wen-Ping Chen,  Hauyu Liu,  Nadine Manset,  Jennifer Karr,  Marc White,  Tracy Beck,  Christian Schneider,  Hsien Shang,  Misato Fukagawa,  Konstantin Grankin,  Tae-Soo Pyo,  Hans Moritz Guenther</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+Understanding the mechanisms of mass accretion and jet ejection is one of the key issues of star formation theories. However, observational studies are hampered by the limited angular resolutions of current telescopes, which are not sufficient to resolve structure and kinematics in the jet launching region. We are therefore pursuing an alternative approach to tackle this important issue: long-term monitoring of mass accretion and jet ejection for active young stars. Our observations since 2010 include (1) IFU imaging spectroscopy of extended jets using Gemini-NIFS, (2) optical high-resolution spectroscopy using CFHT-ESPaDOnS to observe gas kinematics very close to the star (&lt;&lt;1 AU), and (3) optical and near-IR photometry with ~1 m telescopes to monitor changes in mass accretion rates with high time resolution. The continuation of these observations for the next few years will allow us to investigate the time correlation between jet ejection and mass accretion onto the star, and therefore their physical link and the driving mechanism of the jet. We therefore request NIFS time for 16B, 17B, 18B and 19B through the Subaru/Gemini time exchange program to complete our study. 
+</div>
+
+
+
+</body>
+</html>

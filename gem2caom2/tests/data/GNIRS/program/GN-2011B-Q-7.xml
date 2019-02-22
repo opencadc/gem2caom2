@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GN-2011B-Q-7</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GN-2011B-Q-7</h1>
+
+<table>
+ <tr><td>Title:<td>Northern Hemisphere Follow-up Observations of WISE Brown Dwarf Candidates</tr>
+ <tr><td>PI:<td>Michael Cushing</tr>
+ <tr><td>Co-I(s):<td> J Davy Kirkpatrick,  Amy Mainzer,  Michael Skrutskie,  Roger Griffith,  Christopher Gelino</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+Despite the spectacular success of wide-field sky surveys (2MASS, SDSS,
+and UKIDSS) in uncovering a large population of brown dwarfs in the
+solar neighborhood, a gap of nearly 400 K remains between the coolest
+spectroscopically confirmed brown dwarfs (\teff $\sim$500 K) and Jupiter 
+(\teff$\sim$128 K). Yet it is exactly these cold, low-mass brown dwarfs that are
+essential to measuring the functional form of the low-mass mass function
+and the lower mass limit of star formation, two critical constraints on
+theories of star formation. With atmospheric conditions similar to those
+of giant planets, cold brown dwarfs are also excellent proxies with
+which to test the ultracool model atmospheres that are critical to our
+understanding of exoplanets. One of the primary science goals of the
+Wide-field Infrared Survey Explorer (WISE), a NASA mission that recently
+completed a survey of the entire sky at four mid-infrared wavelengths,
+is to discover a large population of these cool brown dwarfs. As part of
+a larger follow-up campaign that involves both ground- and space-based
+observatories, we propose to obtain Gemini/NIRI $J$ and $H$ band imaging
+of 17 candidates with only upper limits ($J&gt; $19) and Gemini/GNIRS 1$-$2.5 
+$\mu$m spectra of 9  cool brown dwarf candidates.
+</div>
+
+
+
+</body>
+</html>

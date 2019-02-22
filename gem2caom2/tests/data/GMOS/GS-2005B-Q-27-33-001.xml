@@ -9,6 +9,8 @@
   <caom2:intent>calibration</caom2:intent>
   <caom2:proposal>
     <caom2:id>GS-2005B-Q-27</caom2:id>
+    <caom2:pi>Michael Hudson</caom2:pi>
+    <caom2:title>"Downsizing" in our neighbourhood: Ages of faint red galaxies in clusters</caom2:title>
   </caom2:proposal>
   <caom2:target>
     <caom2:name>Twilight</caom2:name>

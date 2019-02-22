@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GN-2010B-C-3</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GN-2010B-C-3</h1>
+
+<table>
+ <tr><td>Title:<td>Testing dust condensation hypotheses using Gemini Michelle spatially?resolved spectroscopy of O-rich AGB stars.</tr>
+ <tr><td>PI:<td>Suklima Guha Niyogi</tr>
+ <tr><td>Co-I(s):<td> Angela  Speck,  Kevin Volk</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+We request Michelle time to observe 9 oxygen-rich asymptotic giant branch (AGB) stars. Our recent study of O-rich AGB star, T Cep suggests that dust are "crystalline" in nature and dominated by iron-rich silicates minerals. Both of these findings contradict the currently favored dust formation hypotheses. Our target objects are nearby and the dust shells should be spatially resolved. Spatially resolved spectroscopy will allow us to observe where within the dust shell different minerals can form. Spatial resolution is necessary in order to understand the dust condensation sequence, which in turn allow us to test theories that link pulsation, stellar variability and dust formation. Spatial resolution is essential to determine the true carrier of observed spectral features around O-rich AGB stars. Using spatially resolved spectroscopy we will observe how the dust features changes with distance from central star. In this way we will be able to test dust condensation hypotheses and gain a better understanding of the formation mechanisms of dust around O-rich AGB stars.
+</div>
+
+
+
+</body>
+</html>

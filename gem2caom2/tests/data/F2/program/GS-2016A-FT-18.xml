@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GS-2016A-FT-18</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-2016A-FT-18</h1>
+
+<table>
+ <tr><td>Title:<td>VVV-J144321.0-611753.9, the first galaxy cluster discovered in the VVV survey?</tr>
+ <tr><td>PI:<td>María Victoria Alonso</tr>
+ <tr><td>Co-I(s):<td> Laura Baravalle,  Carlos Valotto,  Jose Luis Nilo Castellon,  Dante Minniti,  Rodolfo Barba,  Sebastian Gurovich,  Jorge Diaz</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+The presence of the Milky Way has been the main obstacle in the study of extragalactic sources in that direction. Using NIR photometry given by the VISTA Variables in the Vía Láctea (VVV), we have found a cluster candidate based on Color-Magnitude Diagrams and the Red Cluster Sequence (RCS). This cluster candidate is located in the Tile d015 and it is composed of at least 23 galaxies with magnitudes between 14 &lt; Ks &lt; 17 mag. We ask for telescope time to obtain redshifts for the brightest objects to determine the nature of the system, its redshift and membership. With the spectroscopic data obtained with FT we are able to have publishable results in a short time. 
+</div>
+
+
+
+</body>
+</html>

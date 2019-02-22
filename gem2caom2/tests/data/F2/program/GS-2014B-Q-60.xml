@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GS-2014B-Q-60</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-2014B-Q-60</h1>
+
+<table>
+ <tr><td>Title:<td>Confirming a substellar companion candidate around a neutron star</tr>
+ <tr><td>PI:<td>Bettina Posselt</tr>
+ <tr><td>Co-I(s):<td> Kevin Luhman</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+In a search for substellar companions around young neutron stars, we found an indication for a very faint near-infrared source at the position of the isolated neutron star RXJ0806.4-4123. The suspected near-IR source cannot be the neutron star itself because the latter is much too faint to be detected. Recent Herschel 160 microm observations of the field point to an additional dusty belt around the neutron star. The outer location of the dusty belt could be explained by the presence of a substellar companion around the neutron star. We propose deeper near-infrared observations with FLAMINGOS-2 to confirm that the near-infrared source is real. The observation could provide the first direct detection of a substellar companion around a neutron star. However, even a non-detection would be interesting to constrain evolution models of the dusty belt around the neutron star. 
+</div>
+
+
+<h2>Publications using this program's data</h2>
+<ul>
+<li>
+<a href="/searchform/publication=2016AN....337..576P" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2016AN....337..576P/abstract" target="_blank">[ADS]</a> Gemini J-band observations of RX J0806.4-4123
+</ul>
+
+
+</body>
+</html>

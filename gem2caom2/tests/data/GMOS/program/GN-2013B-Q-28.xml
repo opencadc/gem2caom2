@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GN-2013B-Q-28</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GN-2013B-Q-28</h1>
+
+<table>
+ <tr><td>Title:<td>Chromospheric Activity in Old Open Clusters: NGC 188</tr>
+ <tr><td>PI:<td>Diego Lorenzo de Oliveira</tr>
+ <tr><td>Co-I(s):<td> Gustavo Porto de Mello,  Ricardo Schiavon</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+Open clusters (OC) are interesting targets for the study of chromospheric activity and its connection to structural stellar properties since their members have similar age and surface chemical composition, enabling the study of direct dependencies with age and metallicity. Furthermore, such systems enable the concurrent investigation of the influence of cycle modulation in the estimated chromospheric ages, besides structural trends of activity with stellar mass, evolutionary state and other fundamental stellar parameters. Spectroscopic observations aimed at determining chromospheric activity levels of member stars of distant and old open clusters members remain quite scarce. We plan to observe with GMOS a sample of main sequence and subgiant stars in very old NGC 188 OC (7 Gyr), extending the determination of its chromospheric activity level to stars with mass between 0.9 and 1.15 solar masses. From the distribution of activity level derived for NGC 188, we will estimate the mean level of chromospheric activity and uncertainties related to activity fluctuations linked to stellar cycles in different classes of stars (main-sequence and subgiant). We will build a new age calibration well tied to the influence of both metallicity and mass, allowing in principle the dating of thousands of stars in the solar neighborhood. 
+</div>
+
+
+<h2>Publications using this program's data</h2>
+<ul>
+<li>
+<a href="/searchform/publication=2016A&A...594L...3L" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2016A&A...594L...3L/abstract" target="_blank">[ADS]</a> The age-mass-metallicity-activity relation for solar-type stars: comparisons with asteroseismology and the NGC 188 open cluster
+</ul>
+
+
+</body>
+</html>

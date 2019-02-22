@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GS-2015A-Q-60</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-2015A-Q-60</h1>
+
+<table>
+ <tr><td>Title:<td>Spectroscopic confirmation of brown dwarfs and isolated giant planet analogs in nearby, young moving groups</tr>
+ <tr><td>PI:<td>Jonathan Gagné</tr>
+ <tr><td>Co-I(s):<td> Marie-Ève Naud,  René Doyon,  David Lafrenière,  Étienne Artigau,  Lison Malo</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+Extending the current census of young nearby associations toward lower masses is essential to study the IMF down to substellar masses and understand the evolution and atmospheres of young brown dwarfs. Based on the proper motions and photometric properties of a large sample of red stars derived from a correlation of 2MASS with WISE, we identified 400 highly probable late-type members of several young, nearby associations. As the youth of such objects should be apparent from several spectroscopic features, we propose to use F2 to confirm the youth, and thus membership, of 20 of our last M7 - L6 candidates observable with F2 this semester that were not followed yet. This program will provide the best and most complete census of young brown dwarfs, down to the planetary-mass regime,  providing an important constraint to the IMF of young associations. The young sub-stellar objects unveiled by this program will also provide high-quality template spectra as benchmarks for atmosphere models. 
+</div>
+
+
+<h2>Publications using this program's data</h2>
+<ul>
+<li>
+<a href="/searchform/publication=2015ApJS..219...33G" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2015ApJS..219...33G/abstract" target="_blank">[ADS]</a> BANYAN. VII. A New Population of Young Substellar Candidate Members of Nearby Moving Groups from the BASS Survey
+<li>
+<a href="/searchform/publication=2017ApJS..228...18G" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2017ApJS..228...18G/abstract" target="_blank">[ADS]</a> BANYAN. IX. The Initial Mass Function and Planetary-mass Object Space Density of the TW HYA Association
+</ul>
+
+
+</body>
+</html>

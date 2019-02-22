@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GS-2014A-SV-408</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-2014A-SV-408</h1>
+
+<table>
+ <tr><td>Title:<td>Caught in the Act: Imaging the central disk and outflow in V Hya, an AGB star in transition to a bipolar nebula</tr>
+ <tr><td>PI:<td>Raghvendra Sahai</tr>
+ <tr><td>Co-I(s):<td> Mark Morris,  Kenneth Hinkle,  Richard Joyce</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+The carbon star V Hydra is experiencing heavy mass loss as it undergoes the transition from AGB star to a bipolar pre-planetary nebula. V Hya is possibly the earliest object known in this brief phase, which is so short that few nearby stars are likely to be caught in the act. Using STIS/HST we discovered a high velocity (&gt;200 km/s) blob that was ejected only a few years ago from near (&lt;0.3 arcsec) the star. We found time-variable high-velocity absorption features in the CO 4.6 micron vibration-rotation lines from a multi-epoch study - modelling shows that these are produced in compact clumps of outflowing gas with significant temperature gradients. Millimeter wave interferometry with 3.5 arcsec resolution shows that the high-velocity outflow is collimated and bipolar. The STIS data and recent mid-infrared interferometry also suggest the presence of a small (&lt;0.55 arcsec size) circumstellar disk. We now propose to use GPI to peer as closely as possible into the central regions of this prototypical object where the bipolar outflow is being established, and directly resolve the structure, inclination and orientation of the disk inferred from the optical and mid-IR studies. 
+</div>
+
+
+
+</body>
+</html>

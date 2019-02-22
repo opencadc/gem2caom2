@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GS-2013B-Q-61</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-2013B-Q-61</h1>
+
+<table>
+ <tr><td>Title:<td>The GeMS/GSAOI Galactic Globular Cluster Survey (G4CS)</tr>
+ <tr><td>PI:<td>Thomas H. Puzia</tr>
+ <tr><td>Co-I(s):<td> Matthew Taylor,  Bryan Miller,  Paul Goudfrooij,  Sibilla Perina,  Rodrigo Carrasco,  Peter Pessev,  Aaron Dotter,  Ata Sarajedini,  Mirko Simunovic</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+Galactic globular cluster are crucial laboratories and benchmarks for our understanding of the nearby and distant universe. We will use the GeMS/GSAOI instrument to obtain deep zJHK photometry of all Milky Way globular clusters that were previously observed by the HST/ACS Galactic Globular Cluster Survey in optical filters and that are accessible to GSAOI in period 2013B. With these data we will i) study the morphology of near-IR CMDs and determine the internal consistency of model CMD predictions for various zJHK filter combinations and test the influence of molecular absorption band variations on theoretical isochrone predictions in the near-IR using abundance measurments from high-resolution spectroscopy, ii) derive absolute GC ages with %-level accuracy and corresponding metallicities with uncertainties Delta(Z)~0.1 dex, iii) search for correlations between GC stellar population parameters with global GC properties, such as structural parameters, orbital parameters including 3-D location in the Milky Way, chemical variance of their constituent stellar populations, and iv) use the combined optical/near-IR CMDs to investigate the internal consistency and calibration of various stellar evolution models. 
+</div>
+
+
+
+</body>
+</html>

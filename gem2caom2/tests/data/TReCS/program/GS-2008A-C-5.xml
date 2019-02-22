@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GS-2008A-C-5</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-2008A-C-5</h1>
+
+<table>
+ <tr><td>Title:<td>Dust in Debris Disk Candidates found by AKARI (Southern Sources)</tr>
+ <tr><td>PI:<td>Hideaki Fujiwara</tr>
+ <tr><td>Co-I(s):<td> Daisuke Ishihara,  Hirokazu Kataza,  Hiroshi Murakami,  Takao Nakagawa,  Keigo Enya,  Takanori Hirao,  Misato Fukagawa,  Takafumi Ootsubo,  Takuya Hiroshima,  Yoshiko Okamoto,  Takashi Onaka,  Munetaka Ueno,  Glenn White,  Jonathan Marshall</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+It is very important to investigate the properties and spatial distribution of dust in debris disks to discuss the planet
+formation process. We have found 9 new debris disk candidates that show large 18 micron excess from the AKARI/IRC
+mid-infrared all-sky survey data. Here we propose mid-infrared follow-up observations with high spatial resolution to
+reveal detailed spatial distribution and properties of the dust in the debris disks candidates with Subaru/COMICS and
+Gemini/T-ReCS. Our proposed observations are (1) mid-infrared multicolor imaging at 10-25 micron region and (2) 10 micron 
+spectroscopy. By the imaging observations, we investigate dust temparetures and spatial distributions of dust disk from
+the obtained mid-infrared spectral energy distributions and spatially resolved thermal emission from the disks. By the
+spectroscopic observations, we also investigate dust properties, which may provide us some hints about the origin of dust
+in debris disks.
+</div>
+
+
+<h2>Publications using this program's data</h2>
+<ul>
+<li>
+<a href="/searchform/publication=2009ApJ...695L..88F" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2009ApJ...695L..88F/abstract" target="_blank">[ADS]</a> Hot Debris Dust Around HD 106797
+<li>
+<a href="/searchform/publication=2013A&A...550A..45F" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2013A&A...550A..45F/abstract" target="_blank">[ADS]</a> AKARI/IRC 18 &mu;m survey of warm debris disks
+</ul>
+
+
+</body>
+</html>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GS-2017A-Q-28</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-2017A-Q-28</h1>
+
+<table>
+ <tr><td>Title:<td>Probing the halo gas around submillimeter galaxies: new testbed for the enrichment of the circumgalactic medium</tr>
+ <tr><td>PI:<td>Scott Chapman</tr>
+ <tr><td>Co-I(s):<td> Tracy Webb,  Kevin Lacaille,  Ian Smail,  Rob Ivison,  Anneya Golob,  James Simpson,  Alice Danielson,  Mike Zemcov,  Paul van der Werf,  thomas greve,  Douglas Scott,  Daniel Cunningham,  Chris Willott,  Jim Dunlop,  Duncan Farrah,  Mark Swinbank,  Andrew Blain,  Mark Halpern,  Kaja Rottermund</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+We propose to obtain GMOS-S spectra on a sample of 12 selected background quasars and Flamingos2 observations on 18 foreground SMGs/DSFGs. The proposed observations aim to assemble the 1st statistical sample of z&gt;2 background quasar and foreground SMG/dusty star-forming galaxy (DSFG) pairs to study the circumgalactic medium (CGM) around SMGs/DSFGs. Our goal is to 1) derive the covering fraction of CIV and Lyalpha absorbers around SMGs/DSFGs and compare the results to those of LBGs and quasars, extending the measurement of HI and metal covering factor to a new region of parameter space, and 2) to measure the equivalent width of Lyalpha and metal lines, and derive the neutral hydrogen abundances and metallicity, which will be critical to provide new tests for simulations in which stellar feedback drives the properties of the CGM in massive halos. 
+</div>
+
+
+
+</body>
+</html>

@@ -9,6 +9,8 @@
   <caom2:intent>calibration</caom2:intent>
   <caom2:proposal>
     <caom2:id>GS-2017B-Q-45</caom2:id>
+    <caom2:pi>Yongjung Kim</caom2:pi>
+    <caom2:title>Black Hole Mass Estimation of Faint Quasars at z~5: Could there be high redshift quasars with low Eddington ratio?</caom2:title>
   </caom2:proposal>
   <caom2:target>
     <caom2:name>GCALflat</caom2:name>

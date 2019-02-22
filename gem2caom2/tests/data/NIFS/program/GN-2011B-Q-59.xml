@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GN-2011B-Q-59</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GN-2011B-Q-59</h1>
+
+<table>
+ <tr><td>Title:<td>Seasonal changes in Uranus' atmosphere</tr>
+ <tr><td>PI:<td>Patrick Irwin</tr>
+ <tr><td>Co-I(s):<td> Leigh Fletcher,  Glenn Orton,  Nicholas Teanby,  Dane Tice,  Jane Hurley,  Gary Davis</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+Uranus passed through its northern spring equinox in December 2007. Uranus' circulation and cloud structure has changed rapidly during this period due to changes in solar energy deposition as the northern hemisphere emerged into sunlight. Observations with UKIRT in 2006, 2007 and 2008 detected a clear change of the latitudinal and vertical cloud structure during this period, but the spatial resolution was limited by atmospheric seeing and the achievable S/N from a 3.8m telescope was only ~10 at some wavelengths. Observations made in 2009 and 2010  with Gemini North at high spatial resolution  (with adaptive optics) and high sensitivity have greatly improved our determination of Uranus' changing  horizontal and vertical cloud structrure and have showed that Uranus' appearance has changed still further.  Uranus' atmosphere is clearly continuing to evolve in response to the changing solar energy deposition during this time and we here request time on Gemini North to extend this unique time series. These data will enable us to explore a further year's evolution of Uranus' rapidly changing atmosphere with Gemini's high spatial and spectral resolution.
+</div>
+
+
+
+</body>
+</html>

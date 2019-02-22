@@ -9,6 +9,8 @@
   <caom2:intent>science</caom2:intent>
   <caom2:proposal>
     <caom2:id>GS-2017A-Q-28</caom2:id>
+    <caom2:pi>Scott Chapman</caom2:pi>
+    <caom2:title>Probing the halo gas around submillimeter galaxies: new testbed for the enrichment of the circumgalactic medium</caom2:title>
   </caom2:proposal>
   <caom2:target>
     <caom2:name>sdss10</caom2:name>

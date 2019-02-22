@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GN-2012A-Q-2</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GN-2012A-Q-2</h1>
+
+<table>
+ <tr><td>Title:<td>Near-Infrared Integral Field Spectroscopy of an AGN Pair in a Nearby Spiral Galaxy</tr>
+ <tr><td>PI:<td>Junfeng Wang</tr>
+ <tr><td>Co-I(s):<td> Rachel Mason,  Guiseppe Fabbiano,  Guido Risaliti,  Martin Elvis</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+High spatial resolution Chandra X-ray image has recently revealed that the
+central region of the Seyfert 2 galaxy NGC 3393 contains a close pair
+of obscured AGNs. However, the host galaxy does not exhibit the disrupted morphology and vigorous star
+formation seen in NGC 6240, another double AGN. NGC 3393 therefore resembles a merging scenario with a
+smaller companion - the minor merger evolution that has long been
+sought for.  We propose to perform spatially resolved, integral
+field K-band spectroscopic observations of NGC 3393 with Gemini+NIFS and the laser guide star system. We will measure the relative velocities and masses of the two nuclei,
+and the gas/stellar dynamics in this rare and important merging
+system, which will provide clues on the geometry and stage of the
+merger process.
+
+</div>
+
+
+
+</body>
+</html>

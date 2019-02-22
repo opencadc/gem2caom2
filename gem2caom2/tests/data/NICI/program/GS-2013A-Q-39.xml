@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GS-2013A-Q-39</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-2013A-Q-39</h1>
+
+<table>
+ <tr><td>Title:<td>An Efficient Search for Young Wide Planetary-Mass Companions</tr>
+ <tr><td>PI:<td>Brendan Bowler</tr>
+ <tr><td>Co-I(s):<td> Michael Liu,  Zahed Wahhaj,  Adam Kraus,  Michael Ireland</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+A handful of planetary-mass objects ($&lt;$13~$M_\mathrm{Jup}$) have recently been found around young stars at large separations ($\sim$100--500 AU).  The nature of these companions is unclear as core accretion and disk instability have difficulty forming planets on these wide orbits, while cloud collapse models do not produce such extreme binaries.  Moreover, there are few observational constraints on the occurrence rate and demographics of these objects, making any comparison to theory difficult.  We propose to finish a large but fast direct imaging search begun in 2011-A for planetary-mass companions on wide orbits around stars in the 1--10~Myr Sco-Oph complex using the unique dual-channel imager NICI on Gemini South.  The extreme youth of our targets allows us to achieve detection limits of $\sim$2--5~$M_\mathrm{Jup}$ between 100-500 AU.  Based on results from previous smaller surveys, we expect to discover several new planetary-mass companions, thereby increasing the size of this population by a factor of 50-100\%.  Ongoing and future direct imaging searches will mostly be blind to this population of giant planets because of their limited field of views, so our survey probes a range of parameter space that will remain unique for the foreseeable future.  Finally, regardless of their origin these objects will be beneficial for spectroscopic studies of low-temperature, low-gravity objects. 
+</div>
+
+
+
+</body>
+</html>

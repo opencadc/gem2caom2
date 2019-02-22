@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GS-2005B-Q-27</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-2005B-Q-27</h1>
+
+<table>
+ <tr><td>Title:<td>"Downsizing" in our neighbourhood: Ages of faint red galaxies in clusters</tr>
+ <tr><td>PI:<td>Michael Hudson</tr>
+ <tr><td>Co-I(s):<td> Russell Smith</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+Red galaxies contain most of the stellar mass in the Universe, and yet their star formation histories remain poorly understood. Hierarchical models of galaxy formation suggest that the mean ages of red galaxies should be roughly independent of mass.  In contrast, absorption line studies find that the mean age of the red population strongly decreases with decreasing mass. This agrees with studies of red galaxies at high redshift in which the largest systems are composed of old stars, whereas the star formation activity takes place in increasingly smaller systems at later times, a "downsizing" trend which should continue to the present day. What is less clear is the range of ages of the faint red population. Existing data based on 4m class telescopes are of too low S/N to measure ages of individual galaxies. Here we propose high S/N observations of faint cluster red sequence galaxies in order to characterize the distribution of ages and metallicities at the faint end of the red sequence.
+
+</div>
+
+
+
+</body>
+</html>
