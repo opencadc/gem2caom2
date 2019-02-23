@@ -136,8 +136,22 @@ def filter_metadata(instrument, filters):
 
         filter_name_found = True
 
+        # 0 = min
+        # 1 = max
+        # units are Angstroms?
+        lookup = {'GG455': [4600.0, 11000.0],
+                  'OG515': [5200.0, 11000.0],
+                  'RG610': [6150.0, 11000.0],
+                  'RG780': [780.0, 11000.0],
+                  }
+
         for index in filter_names:
             filter_name = index.strip()
+            if filter_name in lookup:
+                w_min = lookup[filter_name][0]
+                w_max = lookup[filter_name][1]
+                wl_width = w_max - w_min
+                wl_eff = (w_max + w_min)/2.0
             if 'Hartmann' in filter_name:
                 continue
             if filter_name == 'open':
@@ -146,26 +160,6 @@ def filter_metadata(instrument, filters):
                     w_max = 11000.0
                     wl_width = w_max - w_min
                     wl_eff = (w_max + w_min)/2.0
-            elif filter_name == 'GG455':
-                w_min = 4600.0
-                w_max = 11000.0
-                wl_width = w_max - w_min
-                wl_eff = (w_max + w_min)/2.0
-            elif filter_name == 'OG515':
-                w_min = 5200.0
-                w_max = 11000.0
-                wl_width = w_max - w_min
-                wl_eff = (w_max + w_min)/2.0
-            elif filter_name == 'RG610':
-                w_min = 6150.0
-                w_max = 11000.0
-                wl_width = w_max - w_min
-                wl_eff = (w_max + w_min)/2.0
-            elif filter_name == 'RG780':
-                w_min = 780.0
-                w_max = 11000.0
-                wl_width = w_max - w_min
-                wl_eff = (w_max + w_min)/2.0
             else:
                 if instrument == 'F2':
                     instrument = 'Flamingos2'
@@ -186,7 +180,6 @@ def filter_metadata(instrument, filters):
                                    '': 'ED299',
                                    'CH4-H1L': 'ED381',
                                    'CH4-H1L_2': 'ED283'}
-                # S20100228S0275 CH4-H1%Sp_G0728
                     if filter_name in nici_rename:
                         temp = nici_rename[filter_name]
                         filter_name = temp
@@ -236,8 +229,6 @@ def filter_metadata(instrument, filters):
                 width_min = wl_width
 
         if filter_name_found:
-            filter_md['wl_min'] = w_min
-            filter_md['wl_max'] = w_max
             filter_md['wl_eff_width'] = wl_width
             filter_md['wl_eff'] = wl_eff
         logging.info('Filter(s): {}  MD: {}'.format(filter_names, filter_md))

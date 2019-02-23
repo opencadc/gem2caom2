@@ -30,7 +30,7 @@
       <caom2:productID>GS-2018A-FT-101-5-043</caom2:productID>
       <caom2:metaRelease>2018-03-13T00:00:00.000</caom2:metaRelease>
       <caom2:dataRelease>2018-09-13T00:00:00.000</caom2:dataRelease>
-      <caom2:dataProductType>spectrum</caom2:dataProductType>
+      <caom2:dataProductType>image</caom2:dataProductType>
       <caom2:calibrationLevel>1</caom2:calibrationLevel>
       <caom2:provenance>
         <caom2:name>Gemini Observatory Data</caom2:name>
@@ -38,10 +38,6 @@
         <caom2:producer>Gemini Observatory</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/GS-2018A-FT-101-5-043</caom2:reference>
       </caom2:provenance>
-      <caom2:position/>
-      <caom2:energy/>
-      <caom2:time/>
-      <caom2:polarization/>
       <caom2:artifacts>
         <caom2:artifact caom2:id="00000000-0000-0000-a5a3-c30e7bd55c07" caom2:lastModified="2018-11-25T17:04:47.409" caom2:maxLastModified="2018-11-25T17:04:47.409" caom2:metaChecksum="md5:316ed485c08493047e101708574632dc" caom2:accMetaChecksum="md5:bea7be8f61607ba9fa078a7d9f5c7875">
           <caom2:uri>gemini:GEM/S20180313S0108.fits</caom2:uri>
@@ -76,23 +72,23 @@
                       </caom2:axis2>
                       <caom2:function>
                         <caom2:dimension>
-                          <caom2:naxis1>1</caom2:naxis1>
-                          <caom2:naxis2>1</caom2:naxis2>
+                          <caom2:naxis1>2048</caom2:naxis1>
+                          <caom2:naxis2>2048</caom2:naxis2>
                         </caom2:dimension>
                         <caom2:refCoord>
                           <caom2:coord1>
-                            <caom2:pix>1.0</caom2:pix>
+                            <caom2:pix>1024.0</caom2:pix>
                             <caom2:val>174.935214099761</caom2:val>
                           </caom2:coord1>
                           <caom2:coord2>
-                            <caom2:pix>1.0</caom2:pix>
+                            <caom2:pix>1024.0</caom2:pix>
                             <caom2:val>-60.174387635052</caom2:val>
                           </caom2:coord2>
                         </caom2:refCoord>
-                        <caom2:cd11>0.000777777777777777</caom2:cd11>
+                        <caom2:cd11>3.79774305555555e-07</caom2:cd11>
                         <caom2:cd12>0.0</caom2:cd12>
                         <caom2:cd21>0.0</caom2:cd21>
-                        <caom2:cd22>0.000777777777777777</caom2:cd22>
+                        <caom2:cd22>3.79774305555555e-07</caom2:cd22>
                       </caom2:function>
                     </caom2:axis>
                     <caom2:coordsys>FK5</caom2:coordsys>

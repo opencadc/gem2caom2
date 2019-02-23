@@ -86,7 +86,7 @@ An application to generate CAOM2 Observations from FITS file headers.
    1. dark:   GS-CAL20150410-1-007
    1. flat:   GS-CAL20140323-6-014
    1. arc:    GS-CAL20160224-12-017
-1. GPI spectroscopy:
+1. GPI integral field spectra:
    1. object: GS-2014A-SV-408-6-003
    1. dark:   GS-CAL20140320-7-011
    1. flat:   GS-CAL20140315-4-004

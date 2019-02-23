@@ -38,10 +38,6 @@
         <caom2:producer>Gemini Observatory</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/GS-CAL20160224-12-017</caom2:reference>
       </caom2:provenance>
-      <caom2:position/>
-      <caom2:energy/>
-      <caom2:time/>
-      <caom2:polarization/>
       <caom2:artifacts>
         <caom2:artifact caom2:id="00000000-0000-0000-9025-37b01862cd1b" caom2:lastModified="2018-11-20T05:50:14.799" caom2:maxLastModified="2018-11-20T05:50:14.799" caom2:metaChecksum="md5:75c01fd38ac31ccfeec63c24a9ea0053" caom2:accMetaChecksum="md5:3d2bbe13b47217cc98fb8894f4ad54c8">
           <caom2:uri>gemini:GEM/S20160224S0323.fits</caom2:uri>
@@ -76,26 +72,25 @@
                       </caom2:axis2>
                       <caom2:function>
                         <caom2:dimension>
-                          <caom2:naxis1>1</caom2:naxis1>
-                          <caom2:naxis2>1</caom2:naxis2>
+                          <caom2:naxis1>2048</caom2:naxis1>
+                          <caom2:naxis2>2048</caom2:naxis2>
                         </caom2:dimension>
                         <caom2:refCoord>
                           <caom2:coord1>
-                            <caom2:pix>1.0</caom2:pix>
+                            <caom2:pix>1024.0</caom2:pix>
                             <caom2:val>147.0</caom2:val>
                           </caom2:coord1>
                           <caom2:coord2>
-                            <caom2:pix>1.0</caom2:pix>
+                            <caom2:pix>1024.0</caom2:pix>
                             <caom2:val>89.9</caom2:val>
                           </caom2:coord2>
                         </caom2:refCoord>
-                        <caom2:cd11>0.000777777777777777</caom2:cd11>
+                        <caom2:cd11>3.79774305555555e-07</caom2:cd11>
                         <caom2:cd12>0.0</caom2:cd12>
                         <caom2:cd21>0.0</caom2:cd21>
-                        <caom2:cd22>0.000777777777777777</caom2:cd22>
+                        <caom2:cd22>3.79774305555555e-07</caom2:cd22>
                       </caom2:function>
                     </caom2:axis>
-                    <caom2:coordsys>ICRS</caom2:coordsys>
                     <caom2:equinox>2000.0</caom2:equinox>
                   </caom2:position>
                   <caom2:energy>

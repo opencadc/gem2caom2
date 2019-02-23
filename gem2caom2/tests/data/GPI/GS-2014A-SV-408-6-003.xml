@@ -39,10 +39,6 @@
         <caom2:producer>Gemini Observatory</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/GS-2014A-SV-408-6-003</caom2:reference>
       </caom2:provenance>
-      <caom2:position/>
-      <caom2:energy/>
-      <caom2:time/>
-      <caom2:polarization/>
       <caom2:artifacts>
         <caom2:artifact caom2:id="00000000-0000-0000-af12-118e4d5185f6" caom2:lastModified="2018-10-13T01:09:46.165" caom2:maxLastModified="2018-10-13T01:09:46.165" caom2:metaChecksum="md5:0685a98f14bf83eb5fded47857a330dc" caom2:accMetaChecksum="md5:a5142cb02b3056b89bf15010cbee3996">
           <caom2:uri>gemini:GEM/S20140422S0167.fits</caom2:uri>
@@ -77,23 +73,23 @@
                       </caom2:axis2>
                       <caom2:function>
                         <caom2:dimension>
-                          <caom2:naxis1>1</caom2:naxis1>
-                          <caom2:naxis2>1</caom2:naxis2>
+                          <caom2:naxis1>2048</caom2:naxis1>
+                          <caom2:naxis2>2048</caom2:naxis2>
                         </caom2:dimension>
                         <caom2:refCoord>
                           <caom2:coord1>
-                            <caom2:pix>1.0</caom2:pix>
+                            <caom2:pix>1024.0</caom2:pix>
                             <caom2:val>162.905193616985</caom2:val>
                           </caom2:coord1>
                           <caom2:coord2>
-                            <caom2:pix>1.0</caom2:pix>
+                            <caom2:pix>1024.0</caom2:pix>
                             <caom2:val>-21.250079751254</caom2:val>
                           </caom2:coord2>
                         </caom2:refCoord>
-                        <caom2:cd11>0.000777777777777777</caom2:cd11>
+                        <caom2:cd11>3.79774305555555e-07</caom2:cd11>
                         <caom2:cd12>0.0</caom2:cd12>
                         <caom2:cd21>0.0</caom2:cd21>
-                        <caom2:cd22>0.000777777777777777</caom2:cd22>
+                        <caom2:cd22>3.79774305555555e-07</caom2:cd22>
                       </caom2:function>
                     </caom2:axis>
                     <caom2:coordsys>FK5</caom2:coordsys>
@@ -106,10 +102,10 @@
                         <caom2:cunit>um</caom2:cunit>
                       </caom2:axis>
                       <caom2:function>
-                        <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>0.29848158452267</caom2:delta>
+                        <caom2:naxis>2048</caom2:naxis>
+                        <caom2:delta>0.017</caom2:delta>
                         <caom2:refCoord>
-                          <caom2:pix>0.5</caom2:pix>
+                          <caom2:pix>1024.0</caom2:pix>
                           <caom2:val>1.6444094349464997</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
@@ -118,7 +114,7 @@
                     <caom2:ssysobs>TOPOCENT</caom2:ssysobs>
                     <caom2:ssyssrc>TOPOCENT</caom2:ssyssrc>
                     <caom2:bandpassName>H</caom2:bandpassName>
-                    <caom2:resolvingPower>5.5092492140720495</caom2:resolvingPower>
+                    <caom2:resolvingPower>2.5</caom2:resolvingPower>
                   </caom2:energy>
                   <caom2:time>
                     <caom2:axis>

@@ -37,10 +37,6 @@
         <caom2:producer>Gemini Observatory</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/GS-CAL20140320-7-011</caom2:reference>
       </caom2:provenance>
-      <caom2:position/>
-      <caom2:energy/>
-      <caom2:time/>
-      <caom2:polarization/>
       <caom2:artifacts>
         <caom2:artifact caom2:id="00000000-0000-0000-b70f-aa04871a3dc1" caom2:lastModified="2018-10-12T17:36:54.646" caom2:maxLastModified="2018-10-12T17:36:54.646" caom2:metaChecksum="md5:ba5e83a3cd3cc762b9abb43244dacbf9" caom2:accMetaChecksum="md5:816b7f17b7d54698d4c74f135a6036e2">
           <caom2:uri>gemini:GEM/S20140321S0011.fits</caom2:uri>
@@ -74,23 +70,23 @@
                       </caom2:axis2>
                       <caom2:function>
                         <caom2:dimension>
-                          <caom2:naxis1>1</caom2:naxis1>
-                          <caom2:naxis2>1</caom2:naxis2>
+                          <caom2:naxis1>2048</caom2:naxis1>
+                          <caom2:naxis2>2048</caom2:naxis2>
                         </caom2:dimension>
                         <caom2:refCoord>
                           <caom2:coord1>
-                            <caom2:pix>1.0</caom2:pix>
+                            <caom2:pix>1024.0</caom2:pix>
                             <caom2:val>1.748</caom2:val>
                           </caom2:coord1>
                           <caom2:coord2>
-                            <caom2:pix>1.0</caom2:pix>
+                            <caom2:pix>1024.0</caom2:pix>
                             <caom2:val>-40.414</caom2:val>
                           </caom2:coord2>
                         </caom2:refCoord>
-                        <caom2:cd11>0.000777777777777777</caom2:cd11>
+                        <caom2:cd11>3.79774305555555e-07</caom2:cd11>
                         <caom2:cd12>0.0</caom2:cd12>
                         <caom2:cd21>0.0</caom2:cd21>
-                        <caom2:cd22>0.000777777777777777</caom2:cd22>
+                        <caom2:cd22>3.79774305555555e-07</caom2:cd22>
                       </caom2:function>
                     </caom2:axis>
                     <caom2:coordsys>FK5</caom2:coordsys>

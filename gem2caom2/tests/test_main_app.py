@@ -267,7 +267,7 @@ def pytest_generate_tests(metafunc):
 
         file_list = []
         # for root, dirs, files in os.walk(TESTDATA_DIR):
-        # for ii in ['Flamingos']:
+        # for ii in ['GPI']:
         for ii in ['GMOS', 'NIRI', 'GPI', 'F2', 'GSAOI', 'NICI', 'TReCS',
                    'Michelle', 'GRACES', 'NIFS', 'GNIRS', 'Phoenix',
                    'Flamingos', 'hrwfs', 'HOKUPAA', 'OSCIR', 'bHROS']:
@@ -369,6 +369,9 @@ def test_main_app(test_name):
         program_id = ''
         gemini_pi_mock.return_value = get_pi_metadata(program_id)
         svofps_mock.side_effect = mock_get_votable
+
+        if os.path.exists(actual_fqn):
+            os.remove(actual_fqn)
 
         sys.argv = \
             ('{} --verbose --no_validate --local {} '
