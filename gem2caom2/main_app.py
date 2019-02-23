@@ -135,6 +135,7 @@ RADIUS_LOOKUP = {'GPI': 2.8 / 3600.0,  # units are arcseconds
                  'bHROS': 0.9 / 3600.0}
 phoenix_spectral_axis = 1024
 bhros_spectral_axis = 4608
+graces_spectral_axis = 4640
 
 
 def get_energy_metadata(file_id):
@@ -470,6 +471,16 @@ def get_naxis2_phoenix(header):
     the headers."""
     global phoenix_spectral_axis
     phoenix_spectral_axis = header.get('NAXIS2')
+    return 1
+
+
+def get_naxis2_graces(header):
+    """Over-ride the NAXIS2 length, but preserve the original value for
+    use later by Spectral WCS computations. This only works because the
+    blueprint applies the functions before it sets the over-ride values in
+    the headers."""
+    global graces_spectral_axis
+    graces_spectral_axis = header.get('NAXIS2')
     return 1
 
 
@@ -974,6 +985,11 @@ def update(observation, **kwargs):
                                     c, header,
                                     observation.planes[p].data_product_type,
                                     observation.observation_id)
+                            elif observation.instrument.name == 'GRACES':
+                                _update_chunk_energy_graces(
+                                    c, header,
+                                    observation.planes[p].data_product_type,
+                                    observation.observation_id)
 
                         # position WCS
                         _update_chunk_position(
@@ -1274,7 +1290,7 @@ def _update_chunk_energy_nici(chunk, header, obs_id):
             if filter_name in NICI:
                 w_max = NICI[filter_name][2]
                 w_min = NICI[filter_name][1]
-                reference_wavelength = w_min
+                reference_wavelength = NICI[filter_name][0]
                 delta = w_max - w_min
                 resolving_power = (w_max + w_min)/(2*delta)
             else:
@@ -1567,6 +1583,7 @@ def _update_chunk_energy_gnirs(chunk, header):
     # imaging mode
     else:
         logging.debug('gnirs: SpectralWCS imaging mode.')
+        n_axis = 1
         # https://www.gemini.edu/sciops/instruments/gnirs/imaging
         imaging = {'Y': [0.97, 1.07],
                    'J': [1.17, 1.33],
@@ -1675,14 +1692,16 @@ def _update_chunk_energy_phoenix(chunk, header, obs_id):
             if filter_name in PHOENIX:
                 w_max = PHOENIX[filter_name][2]
                 w_min = PHOENIX[filter_name][1]
+                w_eff = PHOENIX[filter_name][0]
             elif len(filter_name) == 0:
                 w_max = 100000.0
                 w_min = 0.0
+                w_eff = (w_max - w_min) / 2.0
             else:
                 raise mc.CadcException(
                     'Phoenix: mystery filter name {} for {}'.format(
                         filter_name, obs_id))
-            filter_md = {'wl_min': w_min,
+            filter_md = {'wl_eff': w_eff,
                          'wl_eff_width': w_max - w_min}
             reference_wavelength, delta, resolving_power = \
                 _imaging_energy(filter_md)
@@ -1710,14 +1729,18 @@ def _update_chunk_energy_flamingos(chunk, header, data_product_type, obs_id):
 
     # spectral wcs units are microns, values from Table 7 are angstroms.
     # The conversion is taken care of in _imaging_energy.
-    lookup = {'JH': [8910, 18514],
-              'HK': [10347, 27588]}
+
+    # DB - 21-02-19 - JH central=1.45um, FWHM=0.95 um
+    # 0 = central wavelength
+    # 1 = FWHM
+    lookup = {'JH': [1.45, 18514],
+              # HK min = 1.0347, max = 2.7588
+              'HK': [(2.7588 - 1.0347) / 2.0, (2.7588 - 1.0347)]}
 
     filter_name = get_filter_name(header, 'FILTER')
     if filter_name in ['JH', 'HK']:
-        filter_md = {'wl_min': lookup[filter_name][0],
-                     'wl_eff_width': (lookup[filter_name][1] -
-                                      lookup[filter_name][0])}
+        filter_md = {'wl_eff': lookup[filter_name][0],
+                     'wl_eff_width': lookup[filter_name][1]}
         resolving_power = 1300.0 / 1.0e4
     else:
         filter_md = em.get_filter_metadata('Flamingos', filter_name)
@@ -1726,7 +1749,7 @@ def _update_chunk_energy_flamingos(chunk, header, data_product_type, obs_id):
     if data_product_type == DataProductType.SPECTRUM:
         logging.debug('Flamingos: SpectralWCS for {}.'.format(obs_id))
         n_axis = header.get('NAXIS1')
-        reference_wavelength = filter_md['wl_min'] / 1.0e4 # minimum wavelength
+        reference_wavelength = filter_md['wl_eff'] / 1.0e4  # minimum wavelength
         delta = filter_md['wl_eff_width'] / n_axis / 1.0e4
     elif data_product_type == DataProductType.IMAGE:
         logging.debug(
@@ -1838,9 +1861,7 @@ def _update_chunk_energy_hokupaa(chunk, header, data_product_type, obs_id):
         logging.debug(
             'hokupaa: SpectralWCS imaging mode for {}.'.format(obs_id))
         n_axis = 1
-        wl_min = (hokupaa_lookup[filter_name][0] -
-                  hokupaa_lookup[filter_name][1] / 2.0)
-        filter_md = {'wl_min': wl_min * 1.0e4,
+        filter_md = {'wl_eff': hokupaa_lookup[filter_name][0] * 1.0e4,
                      'wl_eff_width': hokupaa_lookup[filter_name][1] * 1.0e4}
         reference_wavelength, delta, resolving_power = \
             _imaging_energy(filter_md)
@@ -1894,9 +1915,7 @@ def _update_chunk_energy_oscir(chunk, header, data_product_type, obs_id):
         logging.debug(
             'oscir: SpectralWCS imaging mode for {}.'.format(obs_id))
         n_axis = 1
-        wl_min = (oscir_lookup[filter_name][0] -
-                  oscir_lookup[filter_name][1] / 2.0)
-        filter_md = {'wl_min': wl_min * 1.0e4,
+        filter_md = {'wl_eff': oscir_lookup[filter_name][0] * 1.0e4,
                      'wl_eff_width': oscir_lookup[filter_name][1] * 1.0e4}
         reference_wavelength, delta, resolving_power = \
             _imaging_energy(filter_md)
@@ -1937,9 +1956,9 @@ def _update_chunk_energy_bhros(chunk, header, data_product_type, obs_id):
         logging.debug('bhros: SpectralWCS spectroscopy for {}.'.format(obs_id))
         global bhros_spectral_axis
         n_axis = bhros_spectral_axis
-        central_wavelength = em.om.get('central_wavelength')
-        reference_wavelength = central_wavelength - 0.2
-        delta = (central_wavelength + 0.2 + 0.2) / n_axis
+        reference_wavelength = em.om.get('central_wavelength')
+        delta = ((reference_wavelength + 0.2) -
+                 ( reference_wavelength - 0.2)) / n_axis
         resolving_power = 150000.0
         ccd_sum = header.get('CCDSUM')
         if ccd_sum is not None:
@@ -1957,6 +1976,44 @@ def _update_chunk_energy_bhros(chunk, header, data_product_type, obs_id):
     _build_chunk_energy(chunk, n_axis, reference_wavelength, delta,
                         filter_name='', resolving_power=resolving_power)
     logging.debug('End _update_chunk_energy_bhros')
+
+
+def _update_chunk_energy_graces(chunk, header, data_product_type, obs_id):
+    """bhros-specific chunk-level Energy WCS construction."""
+    logging.debug('Begin _update_chunk_energy_graces')
+    mc.check_param(chunk, Chunk)
+
+    # DB - 22-02-19  Axis 2 is the spectral axis.   Resolution is
+    # 67,500 divided by second number in json ‘detector_binning’
+    # value of ‘N x N’.  The central wavelength in json
+    # is always set to 0.7 microns and range is from about 0.4 to
+    # 1.0 microns.  So use 0.7 as the crval, crpix = naxis2/2.0 and
+    # delta = (1.0 - 0.4)/naxis2.  Just a kludge to get spectral
+    # range correct for an echelle spectrograph.
+
+    if data_product_type == DataProductType.SPECTRUM:
+        logging.debug('graces: SpectralWCS spectroscopy for {}.'.format(obs_id))
+        global graces_spectral_axis
+        n_axis = graces_spectral_axis
+        reference_wavelength = em.om.get('central_wavelength')
+        delta = (1.0 - 0.4) / n_axis
+        ccd_sum = em.om.get('detector_binning')
+        resolving_power = 67500.0
+        if ccd_sum is not None:
+            temp = float(ccd_sum.split('x')[1])
+            resolving_power = 67500.0 / temp
+    elif data_product_type == DataProductType.IMAGE:
+        raise mc.CadcException(
+            'graces: No SpectralWCS image support for {}'.format(
+                obs_id))
+    else:
+        raise mc.CadcException(
+            'graces: mystery data product type {} for {}'.format(
+                data_product_type, obs_id))
+
+    _build_chunk_energy(chunk, n_axis, reference_wavelength, delta,
+                        filter_name='', resolving_power=resolving_power)
+    logging.debug('End _update_chunk_energy_graces')
 
 
 def _reset_energy(observation_type, data_label):
@@ -2000,7 +2057,7 @@ def _imaging_energy(filter_md):
     # you use the lower wavelength boundary of the filter for the
     # corresponding CRVAL. DB - 13-02-19
 
-    c_val = filter_md['wl_min'] / 1.0e4
+    c_val = filter_md['wl_eff'] / 1.0e4
     delta = filter_md['wl_eff_width'] / 1.0e4
     resolving_power = c_val / delta
     return c_val, delta, resolving_power
@@ -2164,7 +2221,7 @@ def _update_chunk_position(chunk, header, instrument, mode, extension, obs_id):
         header['CD2_1'] = 0.0
         header['CD2_2'] = get_cd22(header)
 
-        wcs_parser = WcsParser(header, 'obs id', extension)
+        wcs_parser = WcsParser(header, obs_id, extension)
         if chunk is None:
             chunk = Chunk()
         wcs_parser.augment_position(chunk)
@@ -2203,7 +2260,7 @@ def _update_chunk_position_bhros(chunk, header, instrument, extension, obs_id):
         header['CD2_1'] = 0.0
         header['CD2_2'] = get_cd22(header)
 
-        wcs_parser = WcsParser(header, 'obs id', 0)
+        wcs_parser = WcsParser(header, obs_id, 0)
         if chunk is None:
             chunk = Chunk()
         wcs_parser.augment_position(chunk)

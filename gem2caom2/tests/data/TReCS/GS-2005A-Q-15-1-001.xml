@@ -110,7 +110,7 @@
                         <caom2:delta>1.16072002231</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>11.073353365345001</caom2:val>
+                          <caom2:val>11.6537133765</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -118,7 +118,7 @@
                     <caom2:ssysobs>TOPOCENT</caom2:ssysobs>
                     <caom2:ssyssrc>TOPOCENT</caom2:ssyssrc>
                     <caom2:bandpassName>Si5-11.7um</caom2:bandpassName>
-                    <caom2:resolvingPower>9.540072672570457</caom2:resolvingPower>
+                    <caom2:resolvingPower>10.040072672570455</caom2:resolvingPower>
                   </caom2:energy>
                   <caom2:time>
                     <caom2:axis>
@@ -200,7 +200,7 @@
                         <caom2:delta>1.16072002231</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>11.073353365345001</caom2:val>
+                          <caom2:val>11.6537133765</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -208,7 +208,7 @@
                     <caom2:ssysobs>TOPOCENT</caom2:ssysobs>
                     <caom2:ssyssrc>TOPOCENT</caom2:ssyssrc>
                     <caom2:bandpassName>Si5-11.7um</caom2:bandpassName>
-                    <caom2:resolvingPower>9.540072672570457</caom2:resolvingPower>
+                    <caom2:resolvingPower>10.040072672570455</caom2:resolvingPower>
                   </caom2:energy>
                   <caom2:time>
                     <caom2:axis>
@@ -290,7 +290,7 @@
                         <caom2:delta>1.16072002231</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>11.073353365345001</caom2:val>
+                          <caom2:val>11.6537133765</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -298,7 +298,7 @@
                     <caom2:ssysobs>TOPOCENT</caom2:ssysobs>
                     <caom2:ssyssrc>TOPOCENT</caom2:ssyssrc>
                     <caom2:bandpassName>Si5-11.7um</caom2:bandpassName>
-                    <caom2:resolvingPower>9.540072672570457</caom2:resolvingPower>
+                    <caom2:resolvingPower>10.040072672570455</caom2:resolvingPower>
                   </caom2:energy>
                   <caom2:time>
                     <caom2:axis>
@@ -380,7 +380,7 @@
                         <caom2:delta>1.16072002231</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>11.073353365345001</caom2:val>
+                          <caom2:val>11.6537133765</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -388,7 +388,7 @@
                     <caom2:ssysobs>TOPOCENT</caom2:ssysobs>
                     <caom2:ssyssrc>TOPOCENT</caom2:ssyssrc>
                     <caom2:bandpassName>Si5-11.7um</caom2:bandpassName>
-                    <caom2:resolvingPower>9.540072672570457</caom2:resolvingPower>
+                    <caom2:resolvingPower>10.040072672570455</caom2:resolvingPower>
                   </caom2:energy>
                   <caom2:time>
                     <caom2:axis>
@@ -470,7 +470,7 @@
                         <caom2:delta>1.16072002231</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>11.073353365345001</caom2:val>
+                          <caom2:val>11.6537133765</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -478,7 +478,7 @@
                     <caom2:ssysobs>TOPOCENT</caom2:ssysobs>
                     <caom2:ssyssrc>TOPOCENT</caom2:ssyssrc>
                     <caom2:bandpassName>Si5-11.7um</caom2:bandpassName>
-                    <caom2:resolvingPower>9.540072672570457</caom2:resolvingPower>
+                    <caom2:resolvingPower>10.040072672570455</caom2:resolvingPower>
                   </caom2:energy>
                   <caom2:time>
                     <caom2:axis>
@@ -560,7 +560,7 @@
                         <caom2:delta>1.16072002231</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>11.073353365345001</caom2:val>
+                          <caom2:val>11.6537133765</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -568,7 +568,7 @@
                     <caom2:ssysobs>TOPOCENT</caom2:ssysobs>
                     <caom2:ssyssrc>TOPOCENT</caom2:ssyssrc>
                     <caom2:bandpassName>Si5-11.7um</caom2:bandpassName>
-                    <caom2:resolvingPower>9.540072672570457</caom2:resolvingPower>
+                    <caom2:resolvingPower>10.040072672570455</caom2:resolvingPower>
                   </caom2:energy>
                   <caom2:time>
                     <caom2:axis>
@@ -650,7 +650,7 @@
                         <caom2:delta>1.16072002231</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>11.073353365345001</caom2:val>
+                          <caom2:val>11.6537133765</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -658,7 +658,7 @@
                     <caom2:ssysobs>TOPOCENT</caom2:ssysobs>
                     <caom2:ssyssrc>TOPOCENT</caom2:ssyssrc>
                     <caom2:bandpassName>Si5-11.7um</caom2:bandpassName>
-                    <caom2:resolvingPower>9.540072672570457</caom2:resolvingPower>
+                    <caom2:resolvingPower>10.040072672570455</caom2:resolvingPower>
                   </caom2:energy>
                   <caom2:time>
                     <caom2:axis>
@@ -740,7 +740,7 @@
                         <caom2:delta>1.16072002231</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>11.073353365345001</caom2:val>
+                          <caom2:val>11.6537133765</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -748,7 +748,7 @@
                     <caom2:ssysobs>TOPOCENT</caom2:ssysobs>
                     <caom2:ssyssrc>TOPOCENT</caom2:ssyssrc>
                     <caom2:bandpassName>Si5-11.7um</caom2:bandpassName>
-                    <caom2:resolvingPower>9.540072672570457</caom2:resolvingPower>
+                    <caom2:resolvingPower>10.040072672570455</caom2:resolvingPower>
                   </caom2:energy>
                   <caom2:time>
                     <caom2:axis>
@@ -830,7 +830,7 @@
                         <caom2:delta>1.16072002231</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>11.073353365345001</caom2:val>
+                          <caom2:val>11.6537133765</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -838,7 +838,7 @@
                     <caom2:ssysobs>TOPOCENT</caom2:ssysobs>
                     <caom2:ssyssrc>TOPOCENT</caom2:ssyssrc>
                     <caom2:bandpassName>Si5-11.7um</caom2:bandpassName>
-                    <caom2:resolvingPower>9.540072672570457</caom2:resolvingPower>
+                    <caom2:resolvingPower>10.040072672570455</caom2:resolvingPower>
                   </caom2:energy>
                   <caom2:time>
                     <caom2:axis>
@@ -866,10 +866,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-b44d-b760a986ce93">
+            <caom2:part caom2:id="00000000-0000-0000-a3ec-7cea8b4a08d5">
               <caom2:name>10</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-9722-0a8a3cf427a1">
+                <caom2:chunk caom2:id="00000000-0000-0000-ad62-f318bbfa01eb">
                   <caom2:naxis>4</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -920,7 +920,7 @@
                         <caom2:delta>1.16072002231</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>11.073353365345001</caom2:val>
+                          <caom2:val>11.6537133765</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -928,7 +928,7 @@
                     <caom2:ssysobs>TOPOCENT</caom2:ssysobs>
                     <caom2:ssyssrc>TOPOCENT</caom2:ssyssrc>
                     <caom2:bandpassName>Si5-11.7um</caom2:bandpassName>
-                    <caom2:resolvingPower>9.540072672570457</caom2:resolvingPower>
+                    <caom2:resolvingPower>10.040072672570455</caom2:resolvingPower>
                   </caom2:energy>
                   <caom2:time>
                     <caom2:axis>

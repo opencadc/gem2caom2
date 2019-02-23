@@ -166,7 +166,6 @@ LOOKUP = {
     'S20080526S0024': ['GS-2008A-Q-41-26-013', 'GMOS', 'GS-2008A-Q-41'],
     'S20090620S0145': ['GS-2009A-Q-30-6-007', 'GMOS', 'GS-2009A-Q-30'],
     'S20060125S0027': ['GS-CAL20060125-1-002', 'GMOS', 'GS-CAL20060125'],
-    'S20181023S0087': ['GS-CAL20181023-5-001', 'GMOS', 'GS-CAL20181023'],
     # GNIRS
     'N20100915S0167': ['GN-2010B-Q-2-44-003', 'GNIRS', 'GN-2010B-Q-2'],
     'N20100722S0185': ['GN-2010B-SV-142-10-007', 'GNIRS', 'GN-2010B-SV-142'],
@@ -202,6 +201,7 @@ LOOKUP = {
     'S20140113S0167': ['GS-2013B-Q-61-8-008', 'GSAOI', 'GS-2013B-Q-61'],
     'S20130201S0246': ['GS-CAL20130201-3-017', 'GSAOI', 'GS-CAL20130201'],
     'S20140109S0210': ['GS-CAL20140109-3-009', 'GSAOI', 'GS-CAL20140109'],
+    'S20181023S0087': ['GS-CAL20181023-5-001', 'GSAOI', 'GS-CAL20181023'],
     # HOKUPAA
     '2002APR23_591': ['GN-2002A-DD-1-319-591', 'HOKUPAA', 'GN-2002A-DD-1'],
     '2002APR24_007': ['GN-CAL20020424-1-007', 'HOKUPAA', 'GN-CAL20020424'],
@@ -267,7 +267,7 @@ def pytest_generate_tests(metafunc):
 
         file_list = []
         # for root, dirs, files in os.walk(TESTDATA_DIR):
-        # for ii in ['TReCS']:
+        # for ii in ['Flamingos']:
         for ii in ['GMOS', 'NIRI', 'GPI', 'F2', 'GSAOI', 'NICI', 'TReCS',
                    'Michelle', 'GRACES', 'NIFS', 'GNIRS', 'Phoenix',
                    'Flamingos', 'hrwfs', 'HOKUPAA', 'OSCIR', 'bHROS']:

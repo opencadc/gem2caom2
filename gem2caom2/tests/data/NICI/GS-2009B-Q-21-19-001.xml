@@ -109,7 +109,7 @@
                         <caom2:delta>0.34999999999999987</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>1.95</caom2:val>
+                          <caom2:val>2.12</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -198,7 +198,7 @@
                         <caom2:delta>0.026200000000000223</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>2.1108</caom2:val>
+                          <caom2:val>2.1239</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>

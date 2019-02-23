@@ -108,7 +108,7 @@
                         <caom2:delta>0.31072342665897</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>1.992007908910315</caom2:val>
+                          <caom2:val>2.1473696222398</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -116,7 +116,7 @@
                     <caom2:ssysobs>TOPOCENT</caom2:ssysobs>
                     <caom2:ssyssrc>TOPOCENT</caom2:ssyssrc>
                     <caom2:bandpassName>Kshort</caom2:bandpassName>
-                    <caom2:resolvingPower>6.410871334450796</caom2:resolvingPower>
+                    <caom2:resolvingPower>6.910871334450795</caom2:resolvingPower>
                   </caom2:energy>
                   <caom2:time>
                     <caom2:axis>
@@ -197,7 +197,7 @@
                         <caom2:delta>0.31072342665897</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>1.992007908910315</caom2:val>
+                          <caom2:val>2.1473696222398</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -205,7 +205,7 @@
                     <caom2:ssysobs>TOPOCENT</caom2:ssysobs>
                     <caom2:ssyssrc>TOPOCENT</caom2:ssyssrc>
                     <caom2:bandpassName>Kshort</caom2:bandpassName>
-                    <caom2:resolvingPower>6.410871334450796</caom2:resolvingPower>
+                    <caom2:resolvingPower>6.910871334450795</caom2:resolvingPower>
                   </caom2:energy>
                   <caom2:time>
                     <caom2:axis>
@@ -286,7 +286,7 @@
                         <caom2:delta>0.31072342665897</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>1.992007908910315</caom2:val>
+                          <caom2:val>2.1473696222398</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -294,7 +294,7 @@
                     <caom2:ssysobs>TOPOCENT</caom2:ssysobs>
                     <caom2:ssyssrc>TOPOCENT</caom2:ssyssrc>
                     <caom2:bandpassName>Kshort</caom2:bandpassName>
-                    <caom2:resolvingPower>6.410871334450796</caom2:resolvingPower>
+                    <caom2:resolvingPower>6.910871334450795</caom2:resolvingPower>
                   </caom2:energy>
                   <caom2:time>
                     <caom2:axis>
@@ -375,7 +375,7 @@
                         <caom2:delta>0.31072342665897</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>1.992007908910315</caom2:val>
+                          <caom2:val>2.1473696222398</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -383,7 +383,7 @@
                     <caom2:ssysobs>TOPOCENT</caom2:ssysobs>
                     <caom2:ssyssrc>TOPOCENT</caom2:ssyssrc>
                     <caom2:bandpassName>Kshort</caom2:bandpassName>
-                    <caom2:resolvingPower>6.410871334450796</caom2:resolvingPower>
+                    <caom2:resolvingPower>6.910871334450795</caom2:resolvingPower>
                   </caom2:energy>
                   <caom2:time>
                     <caom2:axis>
