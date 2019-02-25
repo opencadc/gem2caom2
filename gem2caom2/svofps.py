@@ -138,7 +138,7 @@ def filter_metadata(instrument, filters):
 
         # 0 = min
         # 1 = max
-        # units are Angstroms?
+        # units are Angstroms
         lookup = {'GG455': [4600.0, 11000.0],
                   'OG515': [5200.0, 11000.0],
                   'RG610': [6150.0, 11000.0],

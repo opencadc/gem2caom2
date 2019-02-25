@@ -1148,15 +1148,16 @@ def _update_chunk_energy_niri(chunk, data_product_type, obs_id, filter_name):
             and chunk.position.axis.function.dimension is not None
                 and chunk.position.axis.function.dimension.naxis1 is not None):
             n_axis = chunk.position.axis.function.dimension.naxis1
-        c_val = filter_md['wl_eff']  # central wavelength
+        c_val = filter_md['wl_eff'] / 1.0e4  # central wavelength
         delta = filter_md['wl_eff_width'] / n_axis / 1.0e4
         disperser = em.om.get('disperser')
         if disperser in ['Jgrism', 'Jgrismf32', 'Hgrism', 'Hgrismf32',
                          'Kgrism', 'Kgrismf32', 'Lgrism', 'Mgrism']:
             bandpass_name = disperser[0]
             f_ratio = em.om.get('focal_plane_mask')
-            logging.debug('NIRI: Bandpass name is {} f_ratio is {} for {}'.format(
-                bandpass_name, f_ratio, obs_id))
+            logging.debug(
+                'NIRI: Bandpass name is {} f_ratio is {} for {}'.format(
+                    bandpass_name, f_ratio, obs_id))
             if bandpass_name in em.NIRI_RESOLVING_POWER:
                 resolving_power = \
                     em.NIRI_RESOLVING_POWER[bandpass_name][f_ratio]
@@ -1165,7 +1166,7 @@ def _update_chunk_energy_niri(chunk, data_product_type, obs_id, filter_name):
                 resolving_power = None
         else:
             logging.info(
-                'NIRI: Unknown disperser value {} for {}'.format(disperser,
+                'NIRI: Mystery disperser value {} for {}'.format(disperser,
                                                                  obs_id))
             resolving_power = None
     else:
@@ -1194,11 +1195,10 @@ def _update_chunk_energy_gpi(chunk, data_product_type, obs_id, filter_name):
     # cdelt = is approximately constant 0.017 (microns/pixel - from data
     # reduction manual)
     #
-    # Need to hardcode the resolution from values in top table on this page:
+    # Need to hard-code the resolution from values in top table on this page:
     # https://www.gemini.edu/sciops/instruments/gpi/observing-modes-metamodes.
     # Use mean of column 4 range.  e.g. for H filter use 46.5
     # units are microns
-
     gpi_lookup = {'Y': (36 - 34) / 2.0,
                   'J': (39 - 35) / 2.0,
                   'H': (49 - 44) / 2.0,
@@ -1256,7 +1256,8 @@ def _update_chunk_energy_f2(chunk, header, data_product_type, obs_id, filter_nam
         delta = filter_md['wl_eff_width'] / n_axis / 1.0e4
         reference_wavelength = em.om.get('central_wavelength')
         grism_name = header.get('GRISM')
-        logging.error('grism name is {} fp_mask is {}'.format(grism_name, fp_mask))
+        logging.debug(
+            'F2: grism name is {} fp_mask is {}'.format(grism_name, fp_mask))
         # lookup values from
         # https://www.gemini.edu/sciops/instruments/flamingos2/spectroscopy/longslit-spectroscopy
         lookup = {'1': [1300.0, 3600.0],
@@ -1308,6 +1309,7 @@ def _update_chunk_energy_gsaoi(chunk, data_product_type, obs_id, filter_name):
 # 2 - upper
 #
 # dict with the barcodes stripped from the names as returned by query
+# DB - 22-02-19 - units are microns
 NICI = {'Br-gamma': [2.168600, 2.153900, 2.183300],
         'CH4-H1%L': [1.628000, 1.619300, 1.636700],
         'CH4-H1%S': [1.587000, 1.579500, 1.594500],
@@ -1342,7 +1344,7 @@ def _update_chunk_energy_nici(chunk, data_product_type, obs_id, filter_name):
     if data_product_type == DataProductType.IMAGE:
         logging.debug('NICI: SpectralWCS imaging mode for {}.'.format(obs_id))
         if len(filter_md) == 0:
-            w_max = 100000.0
+            w_max = 10.0
             w_min = 0.0
             for ii in filter_name.split('+'):
                 if ii in NICI:
@@ -1478,14 +1480,16 @@ def _update_chunk_energy_michelle(chunk, data_product_type, obs_id, filter_name)
         reference_wavelength = em.om.get('central_wavelength')
     else:
         raise mc.CadcException(
-            'michelle: Do not understand mode {} for {}'.format(mode, obs_id))
+            'michelle: Do not understand DataProductType {} for {}'.format(
+                data_product_type, obs_id))
 
     _build_chunk_energy(chunk, n_axis, reference_wavelength, delta,
                         orig_filter_name, resolving_power=None)
     logging.debug('End _update_chunk_energy_michelle')
 
 
-def _update_chunk_energy_nifs(chunk, header, data_product_type, obs_id, filter_name):
+def _update_chunk_energy_nifs(chunk, header, data_product_type, obs_id,
+                              filter_name):
     """NIFS-specific chunk-level Spectral WCS construction."""
     logging.debug('Begin _update_chunk_energy_nifs')
     mc.check_param(chunk, Chunk)
@@ -1567,7 +1571,8 @@ def _update_chunk_energy_nifs(chunk, header, data_product_type, obs_id, filter_n
     logging.debug('End _update_chunk_energy_nifs')
 
 
-def _update_chunk_energy_gnirs(chunk, header, data_product_type, obs_id, filter_name):
+def _update_chunk_energy_gnirs(chunk, header, data_product_type, obs_id,
+                               filter_name):
     """GNIRS-specific chunk-level Energy WCS construction."""
     logging.debug('Begin _update_chunk_energy_gnirs')
     mc.check_param(chunk, Chunk)
@@ -1720,7 +1725,7 @@ def _update_chunk_energy_phoenix(chunk, data_product_type, obs_id, filter_name):
             delta = (w_max - w_min) / n_axis
             reference_wavelength = PHOENIX[filter_name][0]
         elif len(filter_name) == 0:
-            w_max = 100000.0
+            w_max = 10.0
             w_min = 0.0
             delta = (w_max - w_min) / n_axis
             reference_wavelength = (w_max + w_min)/2.0
@@ -1735,15 +1740,15 @@ def _update_chunk_energy_phoenix(chunk, data_product_type, obs_id, filter_name):
             w_min = PHOENIX[filter_name][1]
             w_eff = PHOENIX[filter_name][0]
         elif len(filter_name) == 0:
-            w_max = 100000.0
+            w_max = 10.0
             w_min = 0.0
             w_eff = (w_max - w_min) / 2.0
         else:
             raise mc.CadcException(
                 'Phoenix: mystery filter name {} for {}'.format(
                     filter_name, obs_id))
-        filter_md = {'wl_eff': w_eff,
-                     'wl_eff_width': w_max - w_min}
+        filter_md = {'wl_eff': w_eff * 1.0e4,
+                     'wl_eff_width': (w_max - w_min) * 1.0e4}
         reference_wavelength, delta, resolving_power, n_axis = \
             _imaging_energy(filter_md)
     else:
@@ -1775,17 +1780,17 @@ def _update_chunk_energy_flamingos(chunk, header, data_product_type, obs_id, fil
     # spectral wcs units are microns, values from Table 7 are angstroms.
     # The conversion is taken care of in _imaging_energy.
 
-    # DB - 21-02-19 - JH central=1.45um, FWHM=0.95 um
+    # DB - 21-02-19 - JH central=1.45 um, FWHM=0.95 um
     # 0 = central wavelength
     # 1 = FWHM
-    lookup = {'JH': [1.45, 18514],
+    lookup = {'JH': [1.45, 0.95],
               # HK min = 1.0347, max = 2.7588
               'HK': [(2.7588 - 1.0347) / 2.0, (2.7588 - 1.0347)]}
 
     if filter_name in ['JH', 'HK']:
-        filter_md = {'wl_eff': lookup[filter_name][0],
-                     'wl_eff_width': lookup[filter_name][1]}
-        resolving_power = 1300.0 / 1.0e4
+        filter_md = {'wl_eff': lookup[filter_name][0] * 1.0e4,
+                     'wl_eff_width': lookup[filter_name][1] * 1.0e4}
+        resolving_power = 1300.0
     else:
         filter_md = em.get_filter_metadata('Flamingos', filter_name)
         resolving_power = None
@@ -1805,6 +1810,7 @@ def _update_chunk_energy_flamingos(chunk, header, data_product_type, obs_id, fil
             'Flamingos: mystery data product type {} for {}'.format(
                 data_product_type, obs_id))
 
+    logging.error('delta is {}'.format(delta))
     _build_chunk_energy(chunk, n_axis, reference_wavelength, delta,
                         filter_name, resolving_power)
     logging.debug('End _update_chunk_energy_flamingos')
@@ -1894,11 +1900,7 @@ def _update_chunk_energy_hokupaa(chunk, data_product_type, obs_id, filter_name):
     if filter_name not in hokupaa_lookup:
         raise mc.CadcException(
             'hokupaa: Mystery filter {} for {}'.format(filter_name, obs_id))
-    if data_product_type == DataProductType.SPECTRUM:
-        raise mc.CadcException(
-            'hokupaa: No SpectralWCS spectroscopy support for {}'.format(
-                obs_id))
-    elif data_product_type == DataProductType.IMAGE:
+    if data_product_type == DataProductType.IMAGE:
         logging.debug(
             'hokupaa: SpectralWCS imaging mode for {}.'.format(obs_id))
         filter_md = {'wl_eff': hokupaa_lookup[filter_name][0] * 1.0e4,
@@ -1928,6 +1930,7 @@ def _update_chunk_energy_oscir(chunk, data_product_type, obs_id, filter_name):
 
     # 0 - central wavelenth
     # 1 - bandpass
+    # units are microns
     oscir_lookup = {'7.9': [7.91, 0.755],
                     '8.8': [8.81, 0.871],
                     '9.8': [9.80, 0.952],
@@ -1961,7 +1964,7 @@ def _update_chunk_energy_oscir(chunk, data_product_type, obs_id, filter_name):
                 data_product_type, obs_id))
 
     _build_chunk_energy(chunk, n_axis, reference_wavelength, delta,
-                        filter_name='', resolving_power=resolving_power)
+                        filter_name, resolving_power=resolving_power)
     logging.debug('End _update_chunk_energy_oscir')
 
 

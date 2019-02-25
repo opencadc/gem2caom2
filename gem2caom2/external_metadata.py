@@ -110,6 +110,7 @@ GMOS_DISPERSION = {
 
 # values from
 # https://www.gemini.edu/sciops/instruments/niri/spectroscopy/grisms
+# units are? page is in microns
 NIRI_RESOLVING_POWER = {
     'J': {
         'f6-2pix': 770.0,
