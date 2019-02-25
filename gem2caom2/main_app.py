@@ -953,58 +953,66 @@ def update(observation, **kwargs):
                             c.energy = None
                             c.energy_axis = None
                         else:
+                            filter_name = get_filter_name(
+                                headers[0], header, observation.observation_id,
+                                observation.instrument.name)
                             if observation.instrument.name == 'NIRI':
                                 _update_chunk_energy_niri(
-                                    c, headers[0], observation.observation_id)
+                                    c, observation.planes[p].data_product_type,
+                                    observation.observation_id, filter_name)
                             elif observation.instrument.name == 'GPI':
                                 _update_chunk_energy_gpi(
-                                    c, headers[0],
-                                    observation.planes[p].data_product_type,
-                                    observation.observation_id)
+                                    c, observation.planes[p].data_product_type,
+                                    observation.observation_id, filter_name)
                             elif observation.instrument.name == 'F2':
                                 _update_chunk_energy_f2(
                                     c, headers[0],
                                     observation.planes[p].data_product_type,
-                                    observation.observation_id)
+                                    observation.observation_id,
+                                    filter_name)
                             elif observation.instrument.name == 'GSAOI':
                                 _update_chunk_energy_gsaoi(
                                     c, observation.planes[p].data_product_type,
-                                    observation.observation_id)
+                                    observation.observation_id,
+                                    filter_name)
                             elif observation.instrument.name == 'NICI':
                                 _update_chunk_energy_nici(
-                                    c, header,
-                                    observation.planes[p].data_product_type,
-                                    observation.observation_id)
+                                    c, observation.planes[p].data_product_type,
+                                    observation.observation_id, filter_name)
                             elif observation.instrument.name == 'TReCS':
                                 _update_chunk_energy_trecs(
                                     c, header,
                                     observation.planes[p].data_product_type,
-                                    observation.observation_id)
+                                    observation.observation_id,
+                                    filter_name)
                             elif observation.instrument.name == 'michelle':
                                 _update_chunk_energy_michelle(
                                     c,
                                     observation.planes[p].data_product_type,
-                                    observation.observation_id)
+                                    observation.observation_id,
+                                    filter_name)
                             elif observation.instrument.name == 'NIFS':
                                 _update_chunk_energy_nifs(
                                     c, header,
                                     observation.planes[p].data_product_type,
-                                    observation.observation_id)
+                                    observation.observation_id,
+                                    filter_name)
                             elif observation.instrument.name == 'GNIRS':
                                 _update_chunk_energy_gnirs(
                                     c, header,
                                     observation.planes[p].data_product_type,
-                                    observation.observation_id)
+                                    observation.observation_id,
+                                    filter_name)
                             elif observation.instrument.name == 'PHOENIX':
                                 _update_chunk_energy_phoenix(
-                                    c, header,
-                                    observation.planes[p].data_product_type,
-                                    observation.observation_id)
+                                    c, observation.planes[p].data_product_type,
+                                    observation.observation_id, filter_name)
                             elif observation.instrument.name == 'FLAMINGOS':
                                 _update_chunk_energy_flamingos(
                                     c, header,
                                     observation.planes[p].data_product_type,
-                                    observation.observation_id)
+                                    observation.observation_id,
+                                    filter_name)
                                 ignore, obs_type = _get_flamingos_mode(header)
                                 if (obs_type is not None and
                                         observation.type is None):
@@ -1013,17 +1021,16 @@ def update(observation, **kwargs):
                                 _update_chunk_energy_hrwfs(
                                     c, headers[0],
                                     observation.planes[p].data_product_type,
-                                    observation.observation_id)
+                                    observation.observation_id,
+                                    filter_name)
                             elif observation.instrument.name == HOKUPAA:
                                 _update_chunk_energy_hokupaa(
-                                    c, header,
-                                    observation.planes[p].data_product_type,
-                                    observation.observation_id)
+                                    c, observation.planes[p].data_product_type,
+                                    observation.observation_id, filter_name)
                             elif observation.instrument.name == 'OSCIR':
                                 _update_chunk_energy_oscir(
-                                    c, header,
-                                    observation.planes[p].data_product_type,
-                                    observation.observation_id)
+                                    c, observation.planes[p].data_product_type,
+                                    observation.observation_id, filter_name)
                             elif observation.instrument.name == 'bHROS':
                                 _update_chunk_energy_bhros(
                                     c, header,
@@ -1031,14 +1038,14 @@ def update(observation, **kwargs):
                                     observation.observation_id)
                             elif observation.instrument.name == 'GRACES':
                                 _update_chunk_energy_graces(
-                                    c, header,
-                                    observation.planes[p].data_product_type,
+                                    c, observation.planes[p].data_product_type,
                                     observation.observation_id)
                             elif observation.instrument.name == 'GPI':
                                 _update_chunk_energy_gpi(
                                     c, header,
                                     observation.planes[p].data_product_type,
-                                    observation.observation_id)
+                                    observation.observation_id,
+                                    filter_name)
 
                         # position WCS
                         _update_chunk_position(
@@ -1108,7 +1115,7 @@ def _build_chunk_energy(chunk, n_axis, c_val, delta, filter_name,
                                resolving_power=resolving_power)
 
 
-def _update_chunk_energy_niri(chunk, header, obs_id):
+def _update_chunk_energy_niri(chunk, data_product_type, obs_id, filter_name):
     """NIRI-specific chunk-level Energy WCS construction."""
     logging.debug('Begin _update_chunk_energy_niri')
     mc.check_param(chunk, Chunk)
@@ -1128,15 +1135,13 @@ def _update_chunk_energy_niri(chunk, header, obs_id):
     # ‘Estimated Resolving Power’ for the slit in the beam given by the
     # focal_plane_mask value.
 
-    filters = get_filter_name(header)
-    filter_md = em.get_filter_metadata('NIRI', filters)
+    filter_md = em.get_filter_metadata('NIRI', filter_name)
     filter_name = em.om.get('filter_name')
-    mode = em.om.get('mode')
-    if mode == 'imaging':
-        logging.debug('NIRI: SpectralWCS imaging mode for {}.'.format(obs_id))
+    if data_product_type == DataProductType.IMAGE:
+        logging.debug('NIRI: SpectralWCS imaging for {}.'.format(obs_id))
         c_val, delta, resolving_power, n_axis = _imaging_energy(filter_md)
-    elif mode in ['LS', 'spectroscopy']:
-        logging.debug('NIRI: SpectralWCS mode {} for {}.'.format(mode, obs_id))
+    elif data_product_type == DataProductType.SPECTRUM:
+        logging.debug('NIRI: SpectralWCS spectroscopy for {}.'.format(obs_id))
         n_axis = 1
         if (chunk.position is not None and chunk.position.axis is not None
             and chunk.position.axis.function is not None
@@ -1165,14 +1170,14 @@ def _update_chunk_energy_niri(chunk, header, obs_id):
             resolving_power = None
     else:
         raise mc.CadcException(
-            'NIRI: Do not understand mode {} for {}'.format(mode, obs_id))
+            'NIRI: Do not understand mode {} for {}'.format(data_product_type, obs_id))
 
     _build_chunk_energy(chunk, n_axis, c_val, delta, filter_name,
                         resolving_power)
     logging.debug('End _update_chunk_energy_niri')
 
 
-def _update_chunk_energy_gpi(chunk, header, data_product_type, obs_id):
+def _update_chunk_energy_gpi(chunk, data_product_type, obs_id, filter_name):
     """GPI-specific chunk-level Energy WCS construction."""
     logging.debug('Begin _update_chunk_energy_gpi')
     mc.check_param(chunk, Chunk)
@@ -1200,10 +1205,7 @@ def _update_chunk_energy_gpi(chunk, header, data_product_type, obs_id):
                   'K1': (70 - 62) / 2.0,
                   'K2': (83 - 75) / 2.0}
 
-    filter_name = em.om.get('filter_name')
     filter_md = em.get_filter_metadata('GPI', filter_name)
-
-    logging.error('filter name is {}'.format(filter_name))
     if data_product_type == DataProductType.IMAGE:
         logging.debug('GPI: SpectralWCS imaging mode for {}.'.format(obs_id))
         c_val, delta, resolving_power, n_axis = _imaging_energy(filter_md)
@@ -1230,14 +1232,12 @@ def _update_chunk_energy_gpi(chunk, header, data_product_type, obs_id):
     logging.debug('End _update_chunk_energy_gpi')
 
 
-def _update_chunk_energy_f2(chunk, header, data_product_type, obs_id):
+def _update_chunk_energy_f2(chunk, header, data_product_type, obs_id, filter_name):
     """NIRI-specific chunk-level Energy WCS construction."""
     logging.debug('Begin _update_chunk_energy_f2')
     mc.check_param(chunk, Chunk)
 
-    filter_name = em.om.get('filter_name')
     filter_md = em.get_filter_metadata('Flamingos2', filter_name)
-
     if data_product_type == DataProductType.IMAGE:
         logging.debug('SpectralWCS: F2 imaging mode.')
         reference_wavelength, delta, resolving_power, n_axis = \
@@ -1279,12 +1279,11 @@ def _update_chunk_energy_f2(chunk, header, data_product_type, obs_id):
     logging.debug('End _update_chunk_energy_f2')
 
 
-def _update_chunk_energy_gsaoi(chunk, data_product_type, obs_id):
+def _update_chunk_energy_gsaoi(chunk, data_product_type, obs_id, filter_name):
     """NIRI-specific chunk-level Energy WCS construction."""
     logging.debug('Begin _update_chunk_energy_gsaoi')
     mc.check_param(chunk, Chunk)
 
-    filter_name = em.om.get('filter_name')
     filter_md = em.get_filter_metadata('GSAOI', filter_name)
 
     if data_product_type == DataProductType.IMAGE:
@@ -1332,59 +1331,57 @@ NICI = {'Br-gamma': [2.168600, 2.153900, 2.183300],
         'Mprime': [4.680000, 4.550000, 4.790000]}
 
 
-def _update_chunk_energy_nici(chunk, header, data_product_type, obs_id):
+def _update_chunk_energy_nici(chunk, data_product_type, obs_id, filter_name):
     """NICI-specific chunk-level Energy WCS construction."""
     logging.debug('Begin _update_chunk_energy_nici')
     mc.check_param(chunk, Chunk)
 
-    # use filter names from headers, because there's a different
-    # filter/header, and the JSON summary value obfuscates that
-
-    temp = get_filter_name(header)
-    if '+' in temp:
-        raise mc.CadcException(
-            'NICI: Do not understand filter {} for {}'.format(temp, obs_id))
-    filter_name = temp.split('_G')[0]
+    filter_name = filter_name.split('_G')[0]
     filter_md = em.get_filter_metadata('NICI', filter_name)
 
     if data_product_type == DataProductType.IMAGE:
         logging.debug('NICI: SpectralWCS imaging mode for {}.'.format(obs_id))
         if len(filter_md) == 0:
-            n_axis = 1
-            if filter_name in NICI:
-                w_max = NICI[filter_name][2]
-                w_min = NICI[filter_name][1]
-                reference_wavelength = NICI[filter_name][0]
-                delta = w_max - w_min
-                resolving_power = (w_max + w_min)/(2*delta)
-            else:
-                raise mc.CadcException(
-                    'NICI: Unprepared for filter {} from {}'.format(
-                        filter_name, obs_id))
-        else:
-            reference_wavelength, delta, resolving_power, n_axis = \
-                _imaging_energy(filter_md)
+            w_max = 100000.0
+            w_min = 0.0
+            for ii in filter_name.split('+'):
+                if ii in NICI:
+                    wl_max = NICI[ii][2]
+                    wl_min = NICI[ii][1]
+                else:
+                    raise mc.CadcException(
+                        'NICI: Unprepared for filter {} from {}'.format(
+                            filter_name, obs_id))
+                if wl_max < w_max:
+                    w_max = wl_max
+                if wl_min > w_min:
+                    w_min = wl_min
+            delta = w_max - w_min
+            resolving_power = (w_max + w_min) / (2 * delta)
+            filter_md = {'wl_eff_width': delta * 1.0e4,
+                         'wl_eff': ((w_max + w_min) / 2.0) * 1.0e4}
+        reference_wavelength, delta, resolving_power, n_axis = \
+            _imaging_energy(filter_md)
+        temp = em.om.get('filter_name')
+
+        # NICI has two different bandpass names (most of the time) in its two
+        # chunks.  Pat says in this case nothing will be put in the bandpass
+        # name for the plane.  Add code to combine the two chunk bandpass names
+        # to create a plane bandpass name only for this instrument
+        #
+        # DB - 14-02-19 value looks clearer (as two filters) with a space on
+        # both sides of the ‘+’.
+        _build_chunk_energy(chunk, n_axis, reference_wavelength, delta,
+                            temp.replace('+', ' + '), resolving_power)
     else:
         raise mc.CadcException(
             'NICI: Do not understand DataProductType {} from {}'.format(
                 data_product_type, obs_id))
 
-    # NICI has two different bandpass names (most of the time) in its two
-    # chunks.  Pat says in this case nothing will be put in the bandpass
-    # name for the plane.  Add code to combine the two chunk bandpass names
-    # to create a plane bandpass name only for this instrument
-    #
-    # DB - 14-02-19 value looks clearer (as two filters) with a space on
-    # both sides of the ‘+’.
-    
-    temp = em.om.get('filter_name')
-    _build_chunk_energy(chunk, n_axis, reference_wavelength, delta,
-                        temp.replace('+', ' + '), resolving_power)
-
     logging.debug('End _update_chunk_energy_nici')
 
 
-def _update_chunk_energy_trecs(chunk, header, data_product_type, obs_id):
+def _update_chunk_energy_trecs(chunk, header, data_product_type, obs_id, filter_name):
     """TReCS-specific chunk-level Energy WCS construction."""
     logging.debug('Begin _update_chunk_energy_trecs')
     mc.check_param(chunk, Chunk)
@@ -1396,8 +1393,7 @@ def _update_chunk_energy_trecs(chunk, header, data_product_type, obs_id):
     # might take some string manipulation to match filter names with SVO
     # filters.
 
-    orig_filter_name = em.om.get('filter_name')
-    filter_name = orig_filter_name
+    orig_filter_name = filter_name
     temp = filter_name.split('-')
     if len(temp) > 1:
         filter_name = temp[0]
@@ -1441,7 +1437,7 @@ def _update_chunk_energy_trecs(chunk, header, data_product_type, obs_id):
     logging.debug('End _update_chunk_energy_trecs')
 
 
-def _update_chunk_energy_michelle(chunk, data_product_type, obs_id):
+def _update_chunk_energy_michelle(chunk, data_product_type, obs_id, filter_name):
     """Michelle-specific chunk-level Energy WCS construction."""
     logging.debug('Begin _update_chunk_energy_michelle')
     mc.check_param(chunk, Chunk)
@@ -1449,8 +1445,7 @@ def _update_chunk_energy_michelle(chunk, data_product_type, obs_id):
     # what filter names look like in Gemini metadata, and what they
     # look like at the SVO, aren't necessarily the same
 
-    orig_filter_name = em.om.get('filter_name')
-    filter_name = orig_filter_name
+    orig_filter_name = filter_name
     temp = filter_name.split('-')
     if len(temp) > 1:
         filter_name = temp[0]
@@ -1490,7 +1485,7 @@ def _update_chunk_energy_michelle(chunk, data_product_type, obs_id):
     logging.debug('End _update_chunk_energy_michelle')
 
 
-def _update_chunk_energy_nifs(chunk, header, data_product_type, obs_id):
+def _update_chunk_energy_nifs(chunk, header, data_product_type, obs_id, filter_name):
     """NIFS-specific chunk-level Spectral WCS construction."""
     logging.debug('Begin _update_chunk_energy_nifs')
     mc.check_param(chunk, Chunk)
@@ -1539,7 +1534,6 @@ def _update_chunk_energy_nifs(chunk, header, data_product_type, obs_id):
                    'K_Short': {'HK': [2.20, 1.98, 2.41, None, None]},
                    'K_Long':  {'HK': [2.20, 1.98, 2.41, None, None]}}
 
-    filter_name = em.om.get('filter_name')
     filter_md = em.get_filter_metadata('NIFS', filter_name)
 
     if data_product_type == DataProductType.SPECTRUM:
@@ -1573,13 +1567,12 @@ def _update_chunk_energy_nifs(chunk, header, data_product_type, obs_id):
     logging.debug('End _update_chunk_energy_nifs')
 
 
-def _update_chunk_energy_gnirs(chunk, header, data_product_type, obs_id):
+def _update_chunk_energy_gnirs(chunk, header, data_product_type, obs_id, filter_name):
     """GNIRS-specific chunk-level Energy WCS construction."""
     logging.debug('Begin _update_chunk_energy_gnirs')
     mc.check_param(chunk, Chunk)
 
     n_axis = header.get('NAXIS2')
-    filter_name = em.om.get('filter_name')
     if data_product_type == DataProductType.SPECTRUM:
         logging.debug('gnirs: SpectralWCS Spectroscopy mode.')
         reference_wavelength = em.om.get('central_wavelength')
@@ -1671,6 +1664,8 @@ def _update_chunk_energy_gnirs(chunk, header, data_product_type, obs_id):
 # 1 - lower
 # 2 - upper
 #
+# units are microns
+#
 # dict with the filter wheels stripped from the names as returned by query
 PHOENIX = {'2030': [4.929000, 4.808000, 5.050000],
            '2150': [4.658500, 4.566000, 4.751000],
@@ -1695,22 +1690,18 @@ PHOENIX = {'2030': [4.929000, 4.808000, 5.050000],
            'L2870': [3.490500, 3.436000, 3.545000]}
 
 
-def _update_chunk_energy_phoenix(chunk, header, data_product_type, obs_id):
+def _update_chunk_energy_phoenix(chunk, data_product_type, obs_id, filter_name):
     """Phoenix-specific chunk-level Energy WCS construction."""
     logging.debug('Begin _update_chunk_energy_phoenix')
     mc.check_param(chunk, Chunk)
 
-    # I forgot what we used for NAXIS for TReCS (i.e. NAXIS1 or 2
-    # value).  Looks like you’ll have to look at the header FILT_POS
-    # value to determine the filter since it’s not in json metadata.
-    # DB - 12-02-19 - Phoenix should be the same but uses NAXIS2 for the
-    # length of the dispersion axis.
+    # DB - 12-02-19 - Phoenix should be the same as TReCS but uses NAXIS2 for
+    # the length of the dispersion axis.
 
     # DB - 12-02-19 - Note that the parenthetical numbers
     # after the Phoenix filter names (in the header) indicates the
     # filter wheel slot the filter is in and may occasionally change
     # so should be disregarded.
-    filter_name = get_filter_name(header, 'FILT_POS')
     if len(filter_name) > 0:
         filter_name = filter_name.split()[0]
 
@@ -1765,7 +1756,7 @@ def _update_chunk_energy_phoenix(chunk, header, data_product_type, obs_id):
     logging.debug('End _update_chunk_energy_phoenix')
 
 
-def _update_chunk_energy_flamingos(chunk, header, data_product_type, obs_id):
+def _update_chunk_energy_flamingos(chunk, header, data_product_type, obs_id, filter_name):
     """Flamingos-specific chunk-level Energy WCS construction."""
     logging.debug('Begin _update_chunk_energy_flamingos')
     mc.check_param(chunk, Chunk)
@@ -1791,7 +1782,6 @@ def _update_chunk_energy_flamingos(chunk, header, data_product_type, obs_id):
               # HK min = 1.0347, max = 2.7588
               'HK': [(2.7588 - 1.0347) / 2.0, (2.7588 - 1.0347)]}
 
-    filter_name = get_filter_name(header, 'FILTER')
     if filter_name in ['JH', 'HK']:
         filter_md = {'wl_eff': lookup[filter_name][0],
                      'wl_eff_width': lookup[filter_name][1]}
@@ -1820,7 +1810,7 @@ def _update_chunk_energy_flamingos(chunk, header, data_product_type, obs_id):
     logging.debug('End _update_chunk_energy_flamingos')
 
 
-def _update_chunk_energy_hrwfs(chunk, header, data_product_type, obs_id):
+def _update_chunk_energy_hrwfs(chunk, header, data_product_type, obs_id, filter_name):
     """hrwfs-specific chunk-level Energy WCS construction."""
     # DB - hrwfs/acqcam isn't anything different from, for example, GMOS
     # imaging
@@ -1835,7 +1825,6 @@ def _update_chunk_energy_hrwfs(chunk, header, data_product_type, obs_id):
     # bright, stellar objects that were really too bright for an 8'
     # telescope and would have saturated the detector without an ND filter.
 
-    filter_name = get_filter_name(header)
     telescope = header.get('OBSERVAT')
     if telescope is not None:
         if 'Gemini-South' == telescope:
@@ -1847,10 +1836,11 @@ def _update_chunk_energy_hrwfs(chunk, header, data_product_type, obs_id):
             'hrwfs: No observatory information for {}'.format(obs_id))
 
     filter_names = ''
-    for ii in filter_name.split('+'):
-        if ii.startswith('ND'):
-            continue
-        filter_names += ii[0]
+    if len(filter_name) > 0:
+        for ii in filter_name.split('+'):
+            if ii.startswith('ND'):
+                continue
+            filter_names += ii[0]
     filter_md = em.get_filter_metadata(instrument, filter_names)
     if data_product_type == DataProductType.SPECTRUM:
         raise mc.CadcException(
@@ -1870,7 +1860,7 @@ def _update_chunk_energy_hrwfs(chunk, header, data_product_type, obs_id):
     logging.debug('End _update_chunk_energy_hrwfs')
 
 
-def _update_chunk_energy_hokupaa(chunk, header, data_product_type, obs_id):
+def _update_chunk_energy_hokupaa(chunk, data_product_type, obs_id, filter_name):
     """hokupaa-specific chunk-level Energy WCS construction."""
     logging.debug('Begin _update_chunk_energy_hokupaa')
     mc.check_param(chunk, Chunk)
@@ -1883,7 +1873,6 @@ def _update_chunk_energy_hokupaa(chunk, header, data_product_type, obs_id):
     # Use this as a lookup for central wavelengths and bandpass
     # http://www.gemini.edu/sciops/instruments/uhaos/uhaosQuirc.html
 
-    filter_name = get_filter_name(header)
     # J+CO is "Dark Position", units are microns
     # 0 - central wavelength
     # 1 - bandpass
@@ -1926,7 +1915,7 @@ def _update_chunk_energy_hokupaa(chunk, header, data_product_type, obs_id):
     logging.debug('End _update_chunk_energy_hokupaa')
 
 
-def _update_chunk_energy_oscir(chunk, header, data_product_type, obs_id):
+def _update_chunk_energy_oscir(chunk, data_product_type, obs_id, filter_name):
     """oscir-specific chunk-level Energy WCS construction."""
     logging.debug('Begin _update_chunk_energy_oscir')
     mc.check_param(chunk, Chunk)
@@ -1949,10 +1938,7 @@ def _update_chunk_energy_oscir(chunk, header, data_product_type, obs_id):
                     'IHW': [18.17, 1.651],
                     'Q3': [20.8, 1.650]}
 
-    temp = get_filter_name(header)
-    if temp is None:
-        raise mc.CadcException(
-            'oscir: No FILTER keyword for {}'.format(obs_id))
+    temp = filter_name
     filter_name = temp.split('_')[0]
     if filter_name not in oscir_lookup:
         raise mc.CadcException(
@@ -2028,7 +2014,7 @@ def _update_chunk_energy_bhros(chunk, header, data_product_type, obs_id):
     logging.debug('End _update_chunk_energy_bhros')
 
 
-def _update_chunk_energy_graces(chunk, header, data_product_type, obs_id):
+def _update_chunk_energy_graces(chunk, data_product_type, obs_id):
     """bhros-specific chunk-level Energy WCS construction."""
     logging.debug('Begin _update_chunk_energy_graces')
     mc.check_param(chunk, Chunk)
@@ -2114,35 +2100,60 @@ def _imaging_energy(filter_md):
     return c_val, delta, resolving_power, n_axis
 
 
-def get_filter_name(header, lookup='FILTER'):
+def get_filter_name(primary_header, header, obs_id, instrument=None):
     """
     Create the filter names.
 
     :param header: The FITS header for the current extension.
-    :param lookup: The keyword to look for in the FITS header.
+    :param instrument: For instrument-specific behaviour.
     :return: The filter names, or None if none found.
     """
-    filters = None
+    if instrument == 'GRACES':
+        # filter name not used in spectral WCS calculation
+        return None
+
     header_filters = []
 
-    # DB - 04-02-19 - strip out anything with 'pupil' as it doesn't affect
-    # energy transmission
-    filters2ignore = ['open', 'invalid', 'pupil']
-    for key in header.keys():
-        if lookup in key:
-            value = header.get(key).lower()
-            ignore = False
-            for ii in filters2ignore:
-                if ii.startswith(value) or value.startswith(ii):
-                    ignore = True
-                    break
-            if ignore:
-                continue
-            else:
-                header_filters.append(header.get(key).strip())
-        filters = '+'.join(header_filters)
-    logging.info('Filters are {}'.format(filters))
-    return filters
+    filter_name = None
+    #
+    # NIRI - prefer header keywords
+    #
+    # NICI - use filter names from headers, because there's a different
+    # filter/header, and the JSON summary value obfuscates that
+    #
+    if instrument not in ['NIRI', 'NICI']:
+        filter_name = em.om.get('filter_name')
+    if (filter_name is None or
+            (filter_name is not None and len(filter_name.strip()) == 0)):
+        # DB - 04-02-19 - strip out anything with 'pupil' as it doesn't affect
+        # energy transmission
+        filters2ignore = ['open', 'invalid', 'pupil']
+        lookup = 'FILTER'
+        if instrument == 'PHOENIX':
+            lookup = 'FILT_POS'
+            search_header = header
+        elif instrument == 'NICI':
+            search_header = header
+        else:
+            search_header = primary_header
+        for key in search_header.keys():
+            if lookup in key:
+                value = search_header.get(key).lower()
+                ignore = False
+                for ii in filters2ignore:
+                    if ii.startswith(value) or value.startswith(ii):
+                        ignore = True
+                        break
+                if ignore:
+                    continue
+                else:
+                    header_filters.append(search_header.get(key).strip())
+            filter_name = '+'.join(header_filters)
+    logging.info(
+        'Filter names are {} for instrument {} in {}'.format(filter_name,
+                                                             instrument,
+                                                             obs_id))
+    return filter_name
 
 
 def _update_position_from_zeroth_header(artifact, headers, log_id):
