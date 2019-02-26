@@ -73,12 +73,12 @@ import re
 
 import requests
 from astropy.io.votable import parse_single_table
-from caom2pipe import manage_composable as mc
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 
 SVO_URL = 'http://svo2.cab.inta-csic.es/svo/theory/fps/fps.php?ID=Gemini/'
 SVO_KPNO_URL = 'http://svo2.cab.inta-csic.es/svo/theory/fps/fps.php?ID=KPNO/'
+
 
 def get_votable(url):
     """
@@ -228,13 +228,94 @@ def filter_metadata(instrument, filters):
             if wl_width < width_min:
                 width_min = wl_width
 
+        fm = FilterMetadata(instrument)
         if filter_name_found:
-            filter_md['wl_eff_width'] = wl_width
-            filter_md['wl_eff'] = wl_eff
+            fm.central_wl = wl_eff / 1.0e4
+            fm.bandpass = wl_width / 1.0e4
         logging.info('Filter(s): {}  MD: {}'.format(filter_names, filter_md))
-        return filter_md
+        return fm
     except Exception as e:
         logging.error(e)
         import traceback
         tb = traceback.format_exc()
         logging.error(tb)
+
+
+class FilterMetadata(object):
+
+    # DB - 22-02-19
+    # For imaging energy WCS, use standard imaging algorithm. i.e central
+    # wavelength, bandpass from SVO filter, and
+    # resolution = central_wavelength/bandpass
+
+    # Choose this representation because CRPIX values should all be 1.0
+    # for imaging spectral WCS as long as you use the central wavelength
+    # of the filter for the corresponding CRVAL. DB - 13-02-19
+
+    # CRVAL == central_wl
+    # bandpass == delta without the NAXIS adjustment
+    # CDELT == delta
+
+    # naxis changes with each observation, central wavelength and
+    # bandpass change with the hardware
+
+    def __init__(self, instrument=None, delta=None):
+        self.central_wl = None
+        self.bandpass = None
+        self.resolving_power = None
+        self.delta = delta
+        self.instrument = instrument
+
+    @property
+    def central_wl(self):
+        """Central wavelength for a filter."""
+        return self._central_wl
+
+    @central_wl.setter
+    def central_wl(self, value):
+        self._central_wl = value
+
+    @property
+    def bandpass(self):
+        """Width of a filter."""
+        return self._bandpass
+
+    @bandpass.setter
+    def bandpass(self, value):
+        self._bandpass = value
+
+    def get_delta(self, n_axis):
+        """Delta for a filter - adjusted for naxis."""
+        if self.delta is None:
+            return self._bandpass / n_axis
+        else:
+            return self.delta
+
+    @property
+    def resolving_power(self):
+        if self.instrument in ['Phoenix', 'GNIRS', 'michelle']:
+            return None
+        elif self._resolving_power is None:
+            if self.instrument in ['NIFS', 'NIRI']:
+                return None
+            else:
+                return self.central_wl / self.bandpass
+        else:
+            return self._resolving_power
+
+    @resolving_power.setter
+    def resolving_power(self, value):
+        self._resolving_power = value
+
+    def adjust_bandpass(self, variance):
+        self.bandpass = ((self.central_wl + variance) -
+                         (self.central_wl - variance))
+
+    def set_bandpass(self, w_max, w_min):
+        self.bandpass = (w_max - w_min)
+
+    def set_central_wl(self, w_max, w_min):
+        self.central_wl = (w_max + w_min) / 2.0
+
+    def set_resolving_power(self, w_max, w_min):
+        self.resolving_power = (w_max + w_min) / (2 * self.bandpass)

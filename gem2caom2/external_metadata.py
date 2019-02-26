@@ -302,11 +302,11 @@ def gmos_metadata():
         filter_md = filter_metadata(obs_metadata['instrument'],
                                     obs_metadata['filter_name'])
 
-        delta = filter_md['wl_eff_width']
-        reference_wavelength = filter_md['wl_eff']
+        delta = filter_md.bandpass
+        reference_wavelength = filter_md.central_wl
         resolving_power = reference_wavelength/delta
-        reference_wavelength /= 1.0e10
-        delta /= 1.0e10
+        reference_wavelength /= 1.0e6
+        delta /= 1.0e6
     elif obs_metadata['mode'] in ('LS', 'spectroscopy', 'MOS'):
         reference_wavelength = obs_metadata['central_wavelength']
 
