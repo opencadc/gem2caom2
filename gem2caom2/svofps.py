@@ -123,7 +123,6 @@ def filter_metadata(instrument, filters):
     """
 
     try:
-        filter_md = {}
         filter_names = filters.split('+')
         # use detector maximums as defaults
         w_min = 0.0
@@ -134,7 +133,7 @@ def filter_metadata(instrument, filters):
         wl_width = wl_max - wl_min
         wl_eff = (wl_max + wl_min)/2.0
 
-        filter_name_found = True
+        # filter_name_found = True
 
         # 0 = min
         # 1 = max
@@ -161,34 +160,6 @@ def filter_metadata(instrument, filters):
                     wl_width = w_max - w_min
                     wl_eff = (w_max + w_min)/2.0
             else:
-                if instrument == 'F2':
-                    instrument = 'Flamingos2'
-                if instrument == 'NIRI':
-                    filter_name = re.sub(r'con', 'cont', filter_name)
-                    filter_name = re.sub(r'_', '-', filter_name)
-                    # SVO filter service has renamed some Gemini NIRI filters...
-                    if filter_name == 'H2v=2-1s1-G0220':
-                        filter_name = 'H2S1v2-1-G0220'
-                    if (filter_name == 'H2v=1-0s1-G0216' or
-                            filter_name == 'H2v=1-0S1-G0216'):
-                        filter_name = 'H2S1v1-0-G0216'
-                if instrument == 'NICI':
-                    nici_rename = {'CH4-H4S': 'ED451',
-                                   'CH4-H4L': 'ED449',
-                                   'CH4-H1S': 'ED286',
-                                   'CH4-H1Sp': 'ED379',
-                                   '': 'ED299',
-                                   'CH4-H1L': 'ED381',
-                                   'CH4-H1L_2': 'ED283'}
-                    if filter_name in nici_rename:
-                        temp = nici_rename[filter_name]
-                        filter_name = temp
-                    else:
-                        filter_name_found = False
-                        logging.info(
-                            'NICI filter {} not at SVO.'.format(filter_name))
-                        continue
-
                 filter_id = "{}.{}".format(instrument, filter_name)
                 if instrument == 'Flamingos':
                     url = "{}{}".format(SVO_KPNO_URL, filter_id)
@@ -229,10 +200,12 @@ def filter_metadata(instrument, filters):
                 width_min = wl_width
 
         fm = FilterMetadata(instrument)
-        if filter_name_found:
-            fm.central_wl = wl_eff / 1.0e4
-            fm.bandpass = wl_width / 1.0e4
-        logging.info('Filter(s): {}  MD: {}'.format(filter_names, filter_md))
+        # if filter_name_found:
+        fm.central_wl = wl_eff / 1.0e4
+        fm.bandpass = wl_width / 1.0e4
+        logging.info(
+            'Filter(s): {}  MD: {}, {}'.format(filter_names, fm.central_wl,
+                                               fm.bandpass))
         return fm
     except Exception as e:
         logging.error(e)
@@ -263,8 +236,8 @@ class FilterMetadata(object):
     # CTYPE = ‘WAVE’
     # CUNIT = ‘um’
     # CRPIX = NAXIS / 2.0
-    # CRVAL = wl_min
-    # CDELT = wl_max - wl_min
+    # CRVAL = wl_eff
+    # CDELT = (wl_max - wl_min) / n_axis
     # resolving power = (wl_max  + wl_min)/(2*CDELT)
     # bandpass_name = filter name
     # CDELT is the SVO’s effective width, W_effective in their tables which
@@ -314,7 +287,9 @@ class FilterMetadata(object):
             if self.instrument in ['NIFS', 'NIRI']:
                 return None
             else:
-                return self.central_wl / self.bandpass
+                # return self.central_wl / self.bandpass
+                self.adjust_resolving_power()
+                return self._resolving_power
         else:
             return self._resolving_power
 
@@ -334,3 +309,6 @@ class FilterMetadata(object):
 
     def set_resolving_power(self, w_max, w_min):
         self.resolving_power = (w_max + w_min) / (2 * self.bandpass)
+
+    def adjust_resolving_power(self):
+        self.resolving_power = self.central_wl / self.bandpass
