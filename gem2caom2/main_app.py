@@ -227,9 +227,7 @@ def get_time_delta(header):
     exptime = get_exposure(header)
     if exptime is None:
         return None
-    result = float(exptime) / (24.0 * 3600.0)
-    logging.error('result is {}'.format(result))
-    return result
+    return float(exptime) / (24.0 * 3600.0)
 
 
 def get_calibration_level(header):
@@ -759,6 +757,9 @@ def _get_flamingos_mode(header):
             obs_type = 'FLAT'
         elif 'dark' in object_value:
             obs_type = 'DARK'
+        else:
+            # DB - 27-02-19 - Default to 'OBJECT'
+            obs_type = 'OBJECT'
     return data_type, obs_type
 
 
@@ -1031,7 +1032,7 @@ def update(observation, **kwargs):
                                     observation.type = obs_type
                             elif instrument == em.Inst.HRWFS:
                                 _update_chunk_energy_hrwfs(
-                                    c, headers[0],
+                                    c,
                                     observation.planes[p].data_product_type,
                                     observation.observation_id,
                                     filter_name)
@@ -1734,20 +1735,19 @@ def _update_chunk_energy_flamingos(chunk, header, data_product_type, obs_id, fil
     # 0 = central wavelength
     # 1 = FWHM
     lookup = {'JH': [1.45, 0.95],
-              'HK': [(2.7588 - 1.0347) / 2.0, (2.7588 - 1.0347)]}
+              'HK': [(2.7588 + 1.0347) / 2.0, (2.7588 - 1.0347)]}
 
     fm = FilterMetadata()
     if filter_name in ['JH', 'HK']:
         fm.central_wl = lookup[filter_name][0]
         fm.bandpass = lookup[filter_name][1]
-        fm.resolving_power = 1300.0
     else:
         fm = em.get_filter_metadata(em.Inst.FLAMINGOS, filter_name)
-        fm.resolving_power = None
 
     if data_product_type == DataProductType.SPECTRUM:
         logging.debug('Flamingos: SpectralWCS for {}.'.format(obs_id))
         n_axis = header.get('NAXIS1')
+        fm.resolving_power = 1300.0
     elif data_product_type == DataProductType.IMAGE:
         logging.debug(
             'Flamingos: SpectralWCS imaging mode for {}.'.format(obs_id))
@@ -1761,7 +1761,7 @@ def _update_chunk_energy_flamingos(chunk, header, data_product_type, obs_id, fil
     logging.debug('End _update_chunk_energy_flamingos')
 
 
-def _update_chunk_energy_hrwfs(chunk, header, data_product_type, obs_id, filter_name):
+def _update_chunk_energy_hrwfs(chunk, data_product_type, obs_id, filter_name):
     """hrwfs-specific chunk-level Energy WCS construction."""
     # DB - hrwfs/acqcam isn't anything different from, for example, GMOS
     # imaging
