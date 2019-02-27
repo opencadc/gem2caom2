@@ -72,8 +72,7 @@ import os
 from caom2 import Observation, ProductType, ReleaseType
 from caom2pipe import execute_composable as ec
 from caom2pipe import manage_composable as mc
-from gem2caom2 import ARCHIVE
-from gem2caom2.gem_name import GemName
+from gem2caom2.gem_name import GemName, ARCHIVE
 
 __all__ = ['visit']
 

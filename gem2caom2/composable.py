@@ -72,9 +72,9 @@ import tempfile
 
 from caom2pipe import execute_composable as ec
 from caom2pipe import manage_composable as mc
-from gem2caom2 import APPLICATION, COLLECTION, ARCHIVE
+from gem2caom2 import APPLICATION
 from gem2caom2 import preview_augmentation
-from gem2caom2.gem_name import GemName
+from gem2caom2.gem_name import GemName, COLLECTION, ARCHIVE
 
 
 meta_visitors = [preview_augmentation]

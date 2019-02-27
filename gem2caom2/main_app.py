@@ -94,6 +94,7 @@ import sys
 import re
 import traceback
 
+from enum import Enum
 from astropy import units
 from astropy.coordinates import SkyCoord
 
@@ -110,8 +111,7 @@ import gem2caom2.external_metadata as em
 from gem2caom2.gem_name import GemName, COLLECTION, ARCHIVE, SCHEME
 from gem2caom2.svofps import FilterMetadata
 
-__all__ = ['main_app2', 'update', 'COLLECTION', 'APPLICATION', 'SCHEME',
-           'ARCHIVE']
+__all__ = ['main_app2', 'update', 'APPLICATION']
 
 # TODO LIST:
 #
@@ -119,6 +119,35 @@ __all__ = ['main_app2', 'update', 'COLLECTION', 'APPLICATION', 'SCHEME',
 # spectroscopy check
 
 APPLICATION = 'gem2caom2'
+phoenix_spectral_axis = 1024
+bhros_spectral_axis = 4608
+graces_spectral_axis = 4640
+gpi_spectral_axis = 2048
+
+
+class Inst(Enum):
+
+    BHROS = 'bHROS'
+    F2 = 'F2'
+    FLAMINGOS = 'FLAMINGOS'
+    GMOS = 'GMOS'
+    GMOSN = 'GMOS-N'
+    GMOSS = 'GMOS-S'
+    GNIRS = 'GNIRS'
+    GPI = 'GPI'
+    GRACES = 'GRACES'
+    GSAOI = 'GSAOI'
+    HOKUPAA = 'Hokupaa+QUIRC'
+    HRWFS = 'hrwfs'
+    MICHELLE = 'michelle'
+    NICI = 'NICI'
+    NIFS = 'NIFS'
+    OSCIR = 'OSCIR'
+    PHOENIX = 'PHOENIX'
+    TRECS = 'TReCS'
+    NIRI = 'NIRI'
+
+
 # GPI radius == 2.8 arcseconds, according to Christian Marois via DB 02-07-19
 # DB - 18-02-19 - Replace “5.0” for “2.8" for GPI field of view.
 # NOTE:  To be more accurate for GRACES this size could be reduced
@@ -127,17 +156,12 @@ APPLICATION = 'gem2caom2'
 # bHROS - DB - 20-02-19 - bHROS ‘bounding box’ is only 0.9".
 #                         A very small fibre.
 # HOKUPAA - http://www.gemini.edu/sciops/instruments/uhaos/uhaosIndex.html
-HOKUPAA = 'Hokupaa+QUIRC'
-RADIUS_LOOKUP = {'GPI': 2.8 / 3600.0,  # units are arcseconds
-                 'GRACES': 1.2 / 3600.0,
-                 'PHOENIX': 5.0 / 3600.0,
-                 'OSCIR': 11.0 / 3600.0,
-                 HOKUPAA: 4.0 / 3600.0,
-                 'bHROS': 0.9 / 3600.0}
-phoenix_spectral_axis = 1024
-bhros_spectral_axis = 4608
-graces_spectral_axis = 4640
-gpi_spectral_axis = 2048
+RADIUS_LOOKUP = {Inst.GPI: 2.8 / 3600.0,  # units are arcseconds
+                 Inst.GRACES: 1.2 / 3600.0,
+                 Inst.PHOENIX: 5.0 / 3600.0,
+                 Inst.OSCIR: 11.0 / 3600.0,
+                 Inst.HOKUPAA: 4.0 / 3600.0,
+                 Inst.BHROS: 0.9 / 3600.0}
 
 
 def get_energy_metadata(file_id):
@@ -147,8 +171,8 @@ def get_energy_metadata(file_id):
     :return: Dictionary of energy metadata.
     """
     logging.debug('Begin get_energy_metadata')
-    instrument = em.om.get('instrument')
-    if instrument in ['GMOS-N', 'GMOS-S']:
+    instrument = _get_instrument()
+    if instrument in [Inst.GMOS, Inst.GMOSN, Inst.GMOSS]:
         energy_metadata = em.gmos_metadata()
     else:
         energy_metadata = {'energy': False}
@@ -198,8 +222,8 @@ def _get_chunk_energy(bp, obs_id, file_id):
 
         # don't set the cunit since fits2caom2 sets the cunit
         # based on the ctype.
-        instrument = em.om.get('instrument')
-        if instrument is not None and instrument in ['NIRI']:
+        instrument = _get_instrument()
+        if instrument is not None and instrument == Inst.NIRI:
             bp.set('Chunk.energy.bandpassName', 'get_niri_filter_name(header)')
         else:
             bp.set('Chunk.energy.bandpassName', filter_name)
@@ -263,24 +287,24 @@ def get_art_product_type(header):
             else:
                 result = ProductType.SCIENCE
         else:
-            instrument = header.get('INSTRUME')
+            instrument = Inst(header.get('INSTRUME'))
             if instrument is not None:
-                if instrument == 'PHOENIX':
+                if instrument == Inst.PHOENIX:
                     if _is_phoenix_calibration(header):
                         result = ProductType.CALIBRATION
                     else:
                         result = ProductType.SCIENCE
-                elif instrument == 'OSCIR':
+                elif instrument == Inst.OSCIR:
                     if _is_oscir_calibration(header):
                         result = ProductType.CALIBRATION
                     else:
                         result = ProductType.SCIENCE
-                elif instrument == 'FLAMINGOS':
+                elif instrument == Inst.FLAMINGOS:
                     if _is_flamingos_calibration(header):
                         result = ProductType.CALIBRATION
                     else:
                         result = ProductType.SCIENCE
-                elif instrument == HOKUPAA:
+                elif instrument == Inst.HOKUPAA:
                     if _is_hokupaa_calibration(header):
                         result = ProductType.CALIBRATION
                     else:
@@ -297,12 +321,12 @@ def get_art_product_type(header):
 
 
 def get_cd11(header):
-    instrument = em.om.get('instrument')
-    if instrument == HOKUPAA:
+    instrument = _get_instrument()
+    if instrument == Inst.HOKUPAA:
         result = _get_pix_scale(header)
-    elif instrument == 'OSCIR':
+    elif instrument == Inst.OSCIR:
         result = 0.0890 / 3600.0
-    elif instrument == 'GPI':
+    elif instrument == Inst.GPI:
         # FOV is 2.8" x 2.8" on each side or 2.8/3600.0 degrees
         # cd1_1 = 2.8/(3600.0 * naxis1)
         result = 2.8 / (3600.0 * header.get('NAXIS1'))
@@ -316,12 +340,12 @@ def get_cd11(header):
 
 
 def get_cd22(header):
-    instrument = em.om.get('instrument')
-    if instrument == HOKUPAA:
+    instrument = _get_instrument()
+    if instrument == Inst.HOKUPAA:
         result = _get_pix_scale(header)
-    elif instrument == 'OSCIR':
+    elif instrument == Inst.OSCIR:
         result = 0.0890 / 3600.0
-    elif instrument == 'GPI':
+    elif instrument == Inst.GPI:
         # FOV is 2.8" x 2.8" on each side or 2.8/3600.0 degrees
         # cd2_2 = 2.8/(3600.0 * naxis2)
         result = 2.8 / (3600.0 * header.get('NAXIS2'))
@@ -335,14 +359,14 @@ def get_cd22(header):
 
 
 def get_crpix1(header):
-    instrument = em.om.get('instrument')
-    if instrument == HOKUPAA:
+    instrument = _get_instrument()
+    if instrument == Inst.HOKUPAA:
         crpix1 = header.get('CRPIX1')
         if crpix1 is None:
             result = None
         else:
             result = crpix1 / 2.0
-    elif instrument in ['OSCIR', 'GPI']:
+    elif instrument in [Inst.OSCIR, Inst.GPI]:
         naxis1 = header.get('NAXIS1')
         if naxis1 is None:
             result = None
@@ -354,14 +378,14 @@ def get_crpix1(header):
 
 
 def get_crpix2(header):
-    instrument = em.om.get('instrument')
-    if instrument == HOKUPAA:
+    instrument = _get_instrument()
+    if instrument == Inst.HOKUPAA:
         crpix2 = header.get('CRPIX2')
         if crpix2 is None:
             result = None
         else:
             result = crpix2 / 2.0
-    elif instrument in ['OSCIR', 'GPI']:
+    elif instrument in [Inst.OSCIR, Inst.GPI]:
         naxis2 = header.get('NAXIS2')
         if naxis2 is None:
             result = None
@@ -379,8 +403,8 @@ def get_data_product_type(header):
     :param header:  The FITS header for the current extension.
     :return: The Plane DataProductType, or None if not found.
     """
-    instrument = em.om.get('instrument')
-    if instrument == 'FLAMINGOS':
+    instrument = _get_instrument()
+    if instrument == Inst.FLAMINGOS:
         result, ignore = _get_flamingos_mode(header)
     else:
         mode = em.om.get('mode')
@@ -388,7 +412,7 @@ def get_data_product_type(header):
         if mode is None:
             raise mc.CadcException('No mode information found for {}'.format(
                 em.om.get('filename')))
-        elif instrument == 'GPI':
+        elif instrument == Inst.GPI:
             logging.error('mode is {}'.format(mode))
             # DB - 22-02-19 FOR GPI only:  To determine if the data type
             # is an ‘image’ or ‘spectrum’:
@@ -431,14 +455,14 @@ def get_dec(header):
     :param header:  The FITS header for the current extension.
     :return: declination, or None if not found.
     """
-    instrument = em.om.get('instrument')
-    if instrument == HOKUPAA:
+    instrument = _get_instrument()
+    if instrument == Inst.HOKUPAA:
         ra, dec = _get_sky_coord(header, 'RA', 'DEC')
         result = dec
-    elif instrument == 'OSCIR':
+    elif instrument == Inst.OSCIR:
         ra, dec = _get_sky_coord(header, 'RA_TEL', 'DEC_TEL')
         result = dec
-    elif instrument == 'bHROS':  # ra/dec not in json
+    elif instrument == Inst.BHROS:  # ra/dec not in json
         result = header.get('DEC')
     else:
         result = em.om.get('dec')
@@ -457,8 +481,8 @@ def get_exposure(header):
     :return: The exposure time, or None if not found.
     """
     result = em.om.get('exposure_time')
-    instrument = em.om.get('instrument')
-    if instrument == 'OSCIR':
+    instrument = _get_instrument()
+    if instrument == Inst.OSCIR:
         # DB - 20-02-19 - json ‘exposure_time’ is in minutes, so multiple
         # by 60.0.
         result = result * 60.0
@@ -524,32 +548,32 @@ def get_obs_intent(header):
         object_value = header.get('OBJECT')
         # logging.error('object_value is {}'.format(object_value))
         if object_value is not None:
-            instrument = header.get('INSTRUME')
+            instrument = Inst(header.get('INSTRUME'))
             # logging.error('instrument is {}'.format(instrument))
             if (instrument is not None and
-                    instrument in ['GRACES', 'TReCS', 'PHOENIX', 'OSCIR',
-                                   HOKUPAA]):
-                if instrument == 'GRACES':
+                    instrument in [Inst.GRACES, Inst.TRECS, Inst.PHOENIX,
+                                   Inst.OSCIR, Inst.HOKUPAA]):
+                if instrument == Inst.GRACES:
                     obs_type = _get_obs_type(header)
                     if obs_type is not None and obs_type in cal_values:
                         result = ObservationIntentType.CALIBRATION
                     else:
                         result = ObservationIntentType.SCIENCE
-                elif instrument == 'TReCS':
+                elif instrument == Inst.TRECS:
                     data_label = header.get('DATALAB')
                     if data_label is not None and '-CAL' in data_label:
                         result = ObservationIntentType.CALIBRATION
-                elif instrument == 'PHOENIX':
+                elif instrument == Inst.PHOENIX:
                     if _is_phoenix_calibration(header):
                         result = ObservationIntentType.CALIBRATION
                     else:
                         result = ObservationIntentType.SCIENCE
-                elif instrument == 'OSCIR':
+                elif instrument == Inst.OSCIR:
                     if _is_oscir_calibration(header):
                         result = ObservationIntentType.CALIBRATION
                     else:
                         result = ObservationIntentType.SCIENCE
-                elif instrument == HOKUPAA:
+                elif instrument == Inst.HOKUPAA:
                     if _is_hokupaa_calibration(header):
                         result = ObservationIntentType.CALIBRATION
                     else:
@@ -579,10 +603,10 @@ def get_obs_type(header):
     obs_class = _get_obs_class(header)
     if obs_class is not None and (obs_class == 'acq' or obs_class == 'acqCal'):
         result = 'ACQUISITION'
-    instrument = em.om.get('instrument')
-    if instrument == 'PHOENIX':
+    instrument = _get_instrument()
+    if instrument == Inst.PHOENIX:
         result = _get_phoenix_obs_type(header)
-    elif instrument == HOKUPAA:
+    elif instrument == Inst.HOKUPAA:
         # DB - 01-18-19 Use IMAGETYP as the keyword
         result = header.get('IMAGETYP')
     return result
@@ -596,14 +620,14 @@ def get_ra(header):
     :param header:  The FITS header for the current extension.
     :return: ra, or None if not found.
     """
-    instrument = em.om.get('instrument')
-    if instrument == HOKUPAA:
+    instrument = _get_instrument()
+    if instrument == Inst.HOKUPAA:
         ra, dec = _get_sky_coord(header, 'RA', 'DEC')
         result = ra
-    elif instrument == 'OSCIR':
+    elif instrument == Inst.OSCIR:
         ra, dec = _get_sky_coord(header, 'RA_TEL', 'DEC_TEL')
         result = ra
-    elif instrument == 'bHROS':
+    elif instrument == Inst.BHROS:
         result = header.get('RA')  # ra/dec not in json
         logging.error('getting ra from here {}'.format(result))
     else:
@@ -647,8 +671,8 @@ def get_time_function_val(header):
     :param header:  The FITS header for the current extension (not used).
     :return: The Time WCS value from JSON Summary Metadata.
     """
-    instrument = em.om.get('instrument')
-    if instrument in ['FLAMINGOS', 'OSCIR']:
+    instrument = _get_instrument()
+    if instrument in [Inst.FLAMINGOS, Inst.OSCIR]:
         # Another FLAMINGOS correction needed:  DATE-OBS in header and
         # json doesn’t include the time  but sets it to 00:00:00.  You have
         # two choices:  concatenate DATE-OBS and UTC header values to the
@@ -757,6 +781,10 @@ def _get_flamingos_mode(header):
     return data_type, obs_type
 
 
+def _get_instrument():
+    return Inst(em.om.get('instrument'))
+
+
 def _get_sky_coord(header, ra_key, dec_key):
     ra_hours = header.get(ra_key)
     dec_hours = header.get(dec_key)
@@ -827,7 +855,6 @@ def _is_oscir_calibration(header):
 
 def _is_phoenix_calibration(header):
     object_value = header.get('OBJECT').lower()
-    # logging.error('object_value is {}'.format(object_value))
     if ('flat ' in object_value or
         'dark ' in object_value or
         'arc' in object_value or
@@ -868,10 +895,11 @@ def accumulate_fits_bp(bp, obs_id, file_id):
 
     bp.set('Artifact.productType', 'get_art_product_type(header)')
 
-    instrument = em.om.get('instrument')
+    instrument = _get_instrument()
     mode = em.om.get('mode')
-    if not (instrument in ['GPI', 'PHOENIX', HOKUPAA, 'OSCIR', 'bHROS'] or
-            (instrument == 'GRACES' and mode is not None and
+    if not (instrument in [Inst.GPI, Inst.PHOENIX, Inst.HOKUPAA, Inst.OSCIR,
+                           Inst.BHROS] or
+            (instrument == Inst.GRACES and mode is not None and
                 mode != 'imaging')):
         bp.configure_position_axes((1, 2))
 
@@ -915,8 +943,9 @@ def update(observation, **kwargs):
         for p in observation.planes:
             for a in observation.planes[p].artifacts:
 
-                if (observation.instrument.name in
-                        ['michelle', 'TReCS', 'NIFS', 'GNIRS']):
+                instrument = Inst(observation.instrument.name)
+                if (instrument in
+                        [Inst.MICHELLE, Inst.TRECS, Inst.NIFS, Inst.GNIRS]):
                     # Michelle is a retired visitor instrument.
                     # Spatial WCS info is in primary header. There
                     # are a variable number of FITS extensions
@@ -934,7 +963,7 @@ def update(observation, **kwargs):
 
                 for part in observation.planes[p].artifacts[a].parts:
 
-                    if part == '2' and observation.instrument.name == 'GPI':
+                    if part == '2' and instrument == Inst.GPI:
                         # GPI datasets have two extensions. First is science
                         # image (with WCS), second is data quality for each
                         # pixel (no WCS).
@@ -956,59 +985,59 @@ def update(observation, **kwargs):
                         else:
                             filter_name = get_filter_name(
                                 headers[0], header, observation.observation_id,
-                                observation.instrument.name)
-                            if observation.instrument.name == 'NIRI':
+                                instrument)
+                            if instrument == Inst.NIRI:
                                 _update_chunk_energy_niri(
                                     c, observation.planes[p].data_product_type,
                                     observation.observation_id, filter_name)
-                            elif observation.instrument.name == 'GPI':
+                            elif instrument == Inst.GPI:
                                 _update_chunk_energy_gpi(
                                     c, observation.planes[p].data_product_type,
                                     observation.observation_id, filter_name)
-                            elif observation.instrument.name == 'F2':
+                            elif instrument == Inst.F2:
                                 _update_chunk_energy_f2(
                                     c, headers[0],
                                     observation.planes[p].data_product_type,
                                     observation.observation_id,
                                     filter_name)
-                            elif observation.instrument.name == 'GSAOI':
+                            elif instrument == Inst.GSAOI:
                                 _update_chunk_energy_gsaoi(
                                     c, observation.planes[p].data_product_type,
                                     observation.observation_id,
                                     filter_name)
-                            elif observation.instrument.name == 'NICI':
+                            elif instrument == Inst.NICI:
                                 _update_chunk_energy_nici(
                                     c, observation.planes[p].data_product_type,
                                     observation.observation_id, filter_name)
-                            elif observation.instrument.name == 'TReCS':
+                            elif instrument == Inst.TRECS:
                                 _update_chunk_energy_trecs(
                                     c, header,
                                     observation.planes[p].data_product_type,
                                     observation.observation_id,
                                     filter_name)
-                            elif observation.instrument.name == 'michelle':
+                            elif instrument == Inst.MICHELLE:
                                 _update_chunk_energy_michelle(
                                     c,
                                     observation.planes[p].data_product_type,
                                     observation.observation_id,
                                     filter_name)
-                            elif observation.instrument.name == 'NIFS':
+                            elif instrument == Inst.NIFS:
                                 _update_chunk_energy_nifs(
                                     c, header,
                                     observation.planes[p].data_product_type,
                                     observation.observation_id,
                                     filter_name)
-                            elif observation.instrument.name == 'GNIRS':
+                            elif instrument == Inst.GNIRS:
                                 _update_chunk_energy_gnirs(
                                     c, header,
                                     observation.planes[p].data_product_type,
                                     observation.observation_id,
                                     filter_name)
-                            elif observation.instrument.name == 'PHOENIX':
+                            elif instrument == Inst.PHOENIX:
                                 _update_chunk_energy_phoenix(
                                     c, observation.planes[p].data_product_type,
                                     observation.observation_id, filter_name)
-                            elif observation.instrument.name == 'FLAMINGOS':
+                            elif instrument == Inst.FLAMINGOS:
                                 _update_chunk_energy_flamingos(
                                     c, header,
                                     observation.planes[p].data_product_type,
@@ -1018,30 +1047,30 @@ def update(observation, **kwargs):
                                 if (obs_type is not None and
                                         observation.type is None):
                                     observation.type = obs_type
-                            elif observation.instrument.name == 'hrwfs':
+                            elif instrument == Inst.HRWFS:
                                 _update_chunk_energy_hrwfs(
                                     c, headers[0],
                                     observation.planes[p].data_product_type,
                                     observation.observation_id,
                                     filter_name)
-                            elif observation.instrument.name == HOKUPAA:
+                            elif instrument == Inst.HOKUPAA:
                                 _update_chunk_energy_hokupaa(
                                     c, observation.planes[p].data_product_type,
                                     observation.observation_id, filter_name)
-                            elif observation.instrument.name == 'OSCIR':
+                            elif instrument == Inst.OSCIR:
                                 _update_chunk_energy_oscir(
                                     c, observation.planes[p].data_product_type,
                                     observation.observation_id, filter_name)
-                            elif observation.instrument.name == 'bHROS':
+                            elif instrument == Inst.BHROS:
                                 _update_chunk_energy_bhros(
                                     c, header,
                                     observation.planes[p].data_product_type,
                                     observation.observation_id)
-                            elif observation.instrument.name == 'GRACES':
+                            elif instrument == Inst.GRACES:
                                 _update_chunk_energy_graces(
                                     c, observation.planes[p].data_product_type,
                                     observation.observation_id)
-                            elif observation.instrument.name == 'GPI':
+                            elif instrument == Inst.GPI:
                                 _update_chunk_energy_gpi(
                                     c, header,
                                     observation.planes[p].data_product_type,
@@ -1050,22 +1079,22 @@ def update(observation, **kwargs):
 
                         # position WCS
                         _update_chunk_position(
-                            c, header, observation.instrument.name,
+                            c, header, instrument,
                             em.om.get('mode'), int(part),
                             observation.observation_id)
-                        if observation.instrument.name == 'bHROS':
+                        if instrument == Inst.BHROS:
                             _update_chunk_position_bhros(
-                                c, headers[0], observation.instrument.name,
+                                c, headers[0], instrument,
                                 int(part), observation.observation_id)
-                        if observation.instrument.name == 'GPI':
+                        if instrument == Inst.GPI:
                             _update_chunk_position_gpi(
                                 c, headers, observation.observation_id)
                         if part == '1':
-                            if observation.instrument.name == 'GPI':
+                            if instrument == Inst.GPI:
                                 # equinox information only available from the
                                 # 0th header
                                 c.position.equinox = headers[0].get('TRKEQUIN')
-                        if observation.instrument.name == 'FLAMINGOS':
+                        if instrument == Inst.FLAMINGOS:
                             _update_chunk_position_flamingos(
                                 c, header, observation.observation_id)
 
@@ -1749,7 +1778,7 @@ def _update_chunk_energy_flamingos(chunk, header, data_product_type, obs_id, fil
     # wavelength.  Spectral resolution is fixed at about 1300 for both grisms.
 
     # spectral wcs units are microns, values from Table 7 are angstroms.
-    # The conversion is taken care of in _imaging_energy.
+    # The conversion is here.
 
     # DB - 21-02-19 - JH central=1.45 um, FWHM=0.95 um
     # 0 = central wavelength
@@ -2018,33 +2047,6 @@ def _reset_energy(observation_type, data_label):
     return result
 
 
-def _imaging_energy(filter_md):
-    """"""
-    # all the filter units are Angstroms, and the chunk-level energy WCS
-    # unit of choice is 'um', therefore 1.0e4
-
-    # NAXIS = 1
-    # CTYPE = ‘WAVE’
-    # CUNIT = ‘um’
-    # CRPIX = NAXIS / 2.0
-    # CRVAL = wl_min
-    # CDELT = wl_max - wl_min
-    # resolving power = (wl_max  + wl_min)/(2*CDELT)
-    # bandpass_name = filter name
-    # CDELT is the SVO’s effective width, W_effective in their tables which
-    # corresponds more or less to wl_max - wl_min.
-
-    # CRPIX values should all be 1.0 for imaging spectral WCS as long as
-    # you use the central wavelength of the filter for the
-    # corresponding CRVAL. DB - 13-02-19
-
-    n_axis = 1
-    c_val = filter_md['wl_eff'] / 1.0e4
-    delta = filter_md['wl_eff_width'] / 1.0e4
-    resolving_power = c_val / delta
-    return c_val, delta, resolving_power, n_axis
-
-
 def get_filter_name(primary_header, header, obs_id, instrument=None):
     """
     Create the filter names.
@@ -2056,7 +2058,7 @@ def get_filter_name(primary_header, header, obs_id, instrument=None):
     :param instrument: For instrument-specific behaviour.
     :return: The filter names, or None if none found.
     """
-    if instrument == 'GRACES':
+    if instrument == Inst.GRACES:
         # filter name not used in spectral WCS calculation
         return None
 
@@ -2069,7 +2071,7 @@ def get_filter_name(primary_header, header, obs_id, instrument=None):
     # NICI - use filter names from headers, because there's a different
     # filter/header, and the JSON summary value obfuscates that
     #
-    if instrument not in ['NIRI', 'NICI']:
+    if instrument not in [Inst.NIRI, Inst.NICI]:
         filter_name = em.om.get('filter_name')
     if (filter_name is None or
             (filter_name is not None and len(filter_name.strip()) == 0)):
@@ -2077,10 +2079,10 @@ def get_filter_name(primary_header, header, obs_id, instrument=None):
         # energy transmission
         filters2ignore = ['open', 'invalid', 'pupil']
         lookup = 'FILTER'
-        if instrument == 'PHOENIX':
+        if instrument == Inst.PHOENIX:
             lookup = 'FILT_POS'
             search_header = header
-        elif instrument == 'NICI':
+        elif instrument == Inst.NICI:
             search_header = header
         else:
             search_header = primary_header
@@ -2170,8 +2172,8 @@ def _update_chunk_position(chunk, header, instrument, mode, extension, obs_id):
             instrument, obs_id))
         return
 
-    if (instrument in ['PHOENIX', HOKUPAA, 'OSCIR'] or
-        (instrument == 'GRACES' and mode is not None and
+    if (instrument in [Inst.PHOENIX, Inst.HOKUPAA, Inst.OSCIR] or
+        (instrument == Inst.GRACES and mode is not None and
          mode != 'imaging')):
 
         # DB - 18-02-19 - for hard-coded field of views use:
@@ -2221,7 +2223,7 @@ def _update_chunk_position(chunk, header, instrument, mode, extension, obs_id):
         header['CDELT1'] = RADIUS_LOOKUP[instrument]
         header['CDELT2'] = RADIUS_LOOKUP[instrument]
         header['CROTA1'] = 0.0
-        if instrument != 'OSCIR':
+        if instrument != Inst.OSCIR:
             header['NAXIS1'] = 1
             header['NAXIS2'] = 1
         header['CRPIX1'] = get_crpix1(header)
@@ -2238,7 +2240,7 @@ def _update_chunk_position(chunk, header, instrument, mode, extension, obs_id):
         chunk.position_axis_1 = 1
         chunk.position_axis_2 = 2
 
-        if instrument == 'OSCIR':
+        if instrument == Inst.OSCIR:
             chunk.position.coordsys = header.get('FRAMEPA')
             chunk.position.equinox = float(header.get('EQUINOX'))
 
@@ -2249,7 +2251,7 @@ def _update_chunk_position_bhros(chunk, header, instrument, extension, obs_id):
     logging.error('Begin _update_chunk_position_bhros {}'.format(extension))
     mc.check_param(chunk, Chunk)
 
-    if instrument == 'bHROS':
+    if instrument == Inst.BHROS:
         logging.error('instrument is {}'.format(instrument))
         header['CTYPE1'] = 'RA---TAN'
         header['CTYPE2'] = 'DEC--TAN'

@@ -259,6 +259,21 @@ class FilterMetadata(object):
     # naxis changes with each observation, central wavelength and
     # bandpass change with the hardware
 
+    # NAXIS = 1
+    # CTYPE = ‘WAVE’
+    # CUNIT = ‘um’
+    # CRPIX = NAXIS / 2.0
+    # CRVAL = wl_min
+    # CDELT = wl_max - wl_min
+    # resolving power = (wl_max  + wl_min)/(2*CDELT)
+    # bandpass_name = filter name
+    # CDELT is the SVO’s effective width, W_effective in their tables which
+    # corresponds more or less to wl_max - wl_min.
+
+    # CRPIX values should all be 1.0 for imaging spectral WCS as long as
+    # you use the central wavelength of the filter for the
+    # corresponding CRVAL. DB - 13-02-19
+
     def __init__(self, instrument=None, delta=None):
         self.central_wl = None
         self.bandpass = None
