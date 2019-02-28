@@ -119,6 +119,7 @@ LOOKUP = {
     'S20171123S0216': ['GS-2017B-Q-18-96-006', 'F2', 'GS-2017B-Q-18'],
     'S20171123S0166': ['GS-2017B-Q-45-156-079', 'F2', 'GS-2017B-Q-45'],
     'S20181230S0026': ['GS-2018B-SV-301-144-020', 'F2', 'GS-2018B-SV-301'],
+    'S20170905S0318': ['GS-2017A-Q-58-66-027', 'F2', 'GS-2017A-Q-58'],
     # Flamingos
     '02jul07.0186': ['GS-2002A-Q-13-2-0186', 'Flamingos', 'GS-2002A-Q-13'],
     '02jun25.0071': ['GS-2002A-Q-7-1-0071', 'Flamingos', 'GS-2002A-Q-7'],
@@ -267,10 +268,10 @@ def pytest_generate_tests(metafunc):
 
         file_list = []
         # for root, dirs, files in os.walk(TESTDATA_DIR):
-        # for ii in ['GPI']:
-        for ii in ['GMOS', 'NIRI', 'GPI', 'F2', 'GSAOI', 'NICI', 'TReCS',
-                   'Michelle', 'GRACES', 'NIFS', 'GNIRS', 'Phoenix',
-                   'Flamingos', 'hrwfs', 'HOKUPAA', 'OSCIR', 'bHROS']:
+        for ii in ['F2']:
+        # for ii in ['GMOS', 'NIRI', 'GPI', 'F2', 'GSAOI', 'NICI', 'TReCS',
+        #            'Michelle', 'GRACES', 'NIFS', 'GNIRS', 'Phoenix',
+        #            'Flamingos', 'hrwfs', 'HOKUPAA', 'OSCIR', 'bHROS']:
             for root, dirs, files in os.walk('{}/{}'.format(TEST_DATA_DIR, ii)):
                 for file in files:
                     if file.endswith(".header"):

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GS-2017A-Q-58</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-2017A-Q-58</h1>
+
+<table>
+ <tr><td>Title:<td>Wide orbit Exoplanet search with InfraRed Direct imaging</tr>
+ <tr><td>PI:<td>Frederique Baron</tr>
+ <tr><td>Co-I(s):<td> Marie-Ève Naud,  René Doyon,  Lison Malo,  Loic Albert,  Julien Rameau,  David Lafreniere,  Étienne Artigau</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+What does the emission spectrum of a young Jupiter-like planet look like? We do not really know as we are just barely beginning to uncover these objects, which are indeed within our reach. Arguably, the most useful Jupiter-like planet would be one that is bound to a star of known age, distance and metallicity but which has an orbit large enough that it can be studied as an "isolated" object. We are currently gathering a large dataset to try to identify such objects through deep [3.6] and [4.5] imaging from SPITZER and deep seeing-limited J and z imaging of all 181 young (&lt;120 Myr) systems within 70pc of the Sun, which will reveal distant planetary companions through their distinctively red z-J and [4.5]-[3.6] colors. This program has been going on since 2014B, data for the 168 targets observed to date meet our science requirements and demonstrates that few false positives are expected for the entire survey. The present proposal targets 11 candidates to obtain astrometric follow-up observations and 7 SPITZER candidates to obtain optical photometry. This survey will provide a unique sample of benchmark objects useful for all ongoing and future high-contrast imaging searches of exoplanets. 
+</div>
+
+
+
+</body>
+</html>
