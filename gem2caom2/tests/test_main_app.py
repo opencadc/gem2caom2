@@ -69,7 +69,6 @@
 import json
 import logging
 import pytest
-import tempfile
 
 
 from astropy.io.votable import parse_single_table
@@ -78,7 +77,6 @@ import gem2caom2.external_metadata as em
 
 from gem2caom2 import main_app2, APPLICATION, ARCHIVE, SCHEME
 from gem2caom2 import gemini_obs_metadata as gom
-from gem2caom2.svofps import get_votable
 from caom2.diff import get_differences
 from caom2pipe import manage_composable as mc
 
@@ -268,7 +266,7 @@ def pytest_generate_tests(metafunc):
 
         file_list = []
         # for root, dirs, files in os.walk(TESTDATA_DIR):
-        for ii in ['F2']:
+        for ii in ['NIRI']:
         # for ii in ['GMOS', 'NIRI', 'GPI', 'F2', 'GSAOI', 'NICI', 'TReCS',
         #            'Michelle', 'GRACES', 'NIFS', 'GNIRS', 'Phoenix',
         #            'Flamingos', 'hrwfs', 'HOKUPAA', 'OSCIR', 'bHROS']:
@@ -278,7 +276,7 @@ def pytest_generate_tests(metafunc):
                         file_list.append(os.path.join(root, file))
 
         # metafunc.parametrize('test_name',
-        # ['{}/GRACES/N20150807G0044.fits.header'.format(TESTDATA_DIR)])
+        # ['{}/GRACES/N20150807G0044.fits.header'.format(TEST_DATA_DIR)])
         # metafunc.parametrize('test_name', file_list[8:])
         metafunc.parametrize('test_name', file_list)
 
@@ -292,7 +290,6 @@ def test_main_app(test_name):
     lineage = _get_lineage(dirname, basename, product_id, file_id)
     input_file = '{}.in.xml'.format(obs_id)
     actual_fqn = _get_actual_file_name(dirname, product_id, file_id, obs_id)
-    logging.error(test_name)
 
     local = _get_local(test_name)
     plugin = PLUGIN
@@ -300,7 +297,7 @@ def test_main_app(test_name):
     with patch('caom2utils.fits2caom2.CadcDataClient') as data_client_mock, \
         patch('gem2caom2.external_metadata.get_obs_metadata') as gemini_client_mock, \
         patch('gem2caom2.external_metadata.get_pi_metadata') as gemini_pi_mock, \
-        patch('gem2caom2.svofps.get_votable') as svofps_mock:
+            patch('gem2caom2.svofps.get_vo_table') as svofps_mock:
 
         def get_file_info(archive, file_id):
             if '_prev' in file_id:
@@ -360,7 +357,7 @@ def test_main_app(test_name):
                     '{}/votable/{}.xml'.format(TEST_DATA_DIR, filter_name))
                 return votable, None
             except Exception as e:
-                logging.error('get_votable failure for url {}'.format(url))
+                logging.error('get_vo_table failure for url {}'.format(url))
                 logging.error(e)
                 return None, None
 

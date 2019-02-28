@@ -107,11 +107,11 @@
                       <caom2:range>
                         <caom2:start>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>0.9824374478729999</caom2:val>
+                          <caom2:val>0.969636363633</caom2:val>
                         </caom2:start>
                         <caom2:end>
                           <caom2:pix>1.5</caom2:pix>
-                          <caom2:val>1.8175625521269998</caom2:val>
+                          <caom2:val>1.8047614678869999</caom2:val>
                         </caom2:end>
                       </caom2:range>
                     </caom2:axis>

@@ -69,7 +69,6 @@
 
 import io
 import logging
-import re
 
 import requests
 from astropy.io.votable import parse_single_table
@@ -80,7 +79,7 @@ SVO_URL = 'http://svo2.cab.inta-csic.es/svo/theory/fps/fps.php?ID=Gemini/'
 SVO_KPNO_URL = 'http://svo2.cab.inta-csic.es/svo/theory/fps/fps.php?ID=KPNO/'
 
 
-def get_votable(url):
+def get_vo_table(url):
     """
     Download the VOTable XML for the given url and return a astropy.io.votable
     object.
@@ -119,78 +118,56 @@ def filter_metadata(instrument, filters):
 
     :param instrument: The instrument name.
     :param filters: The filter name.
-    :return: Energy metadata dictionary.
+    :return: FilterMetadata instance, or None, if there's no SVO information
+        for the filter.
     """
 
     try:
         filter_names = filters.split('+')
         # use detector maximums as defaults
-        w_min = 0.0
         wl_min = 0.0
-        w_max = 100000.0
         wl_max = 100000.0
         width_min = 100000.0
         wl_width = wl_max - wl_min
         wl_eff = (wl_max + wl_min)/2.0
 
-        # filter_name_found = True
-
-        # 0 = min
-        # 1 = max
-        # units are Angstroms
-        lookup = {'GG455': [4600.0, 11000.0],
-                  'OG515': [5200.0, 11000.0],
-                  'RG610': [6150.0, 11000.0],
-                  'RG780': [780.0, 11000.0],
-                  }
+        # does the filter exist at SVO?
+        filter_name_found = False
 
         for index in filter_names:
             filter_name = index.strip()
-            if filter_name in lookup:
-                w_min = lookup[filter_name][0]
-                w_max = lookup[filter_name][1]
-                wl_width = w_max - w_min
-                wl_eff = (w_max + w_min)/2.0
-            if 'Hartmann' in filter_name:
-                continue
-            if filter_name == 'open':
-                if 'GMOS' in instrument:
-                    w_min = 3500.0
-                    w_max = 11000.0
-                    wl_width = w_max - w_min
-                    wl_eff = (w_max + w_min)/2.0
+            filter_id = "{}.{}".format(instrument, filter_name)
+            if instrument == 'Flamingos':
+                url = "{}{}".format(SVO_KPNO_URL, filter_id)
             else:
-                filter_id = "{}.{}".format(instrument, filter_name)
-                if instrument == 'Flamingos':
-                    url = "{}{}".format(SVO_KPNO_URL, filter_id)
-                else:
-                    url = "{}{}".format(SVO_URL, filter_id)
+                url = "{}{}".format(SVO_URL, filter_id)
 
-                # Open the URL and fetch the VOTable document.
-                # Some Gemini filters in SVO filter database have bandpass info
-                # only for 'w'arm filters.  First check for filter without 'w'
-                # appended to the ID (which I assume means bandpass is for cold
-                # filter), then search for 'w' if nothing is found...
-                votable, error_message = get_votable(url)
-                if not votable:
-                    url += 'w'
-                    votable, error_message = get_votable(url)
-                if not votable:
-                    logging.error(
-                        'Unable to download SVO filter data from {} because {}'
-                        .format(url, error_message))
-                    continue
+            # Open the URL and fetch the VOTable document.
+            # Some Gemini filters in SVO filter database have bandpass info
+            # only for 'w'arm filters.  First check for filter without 'w'
+            # appended to the ID (which I assume means bandpass is for cold
+            # filter), then search for 'w' if nothing is found...
+            votable, error_message = get_vo_table(url)
+            if not votable:
+                url += 'w'
+                votable, error_message = get_vo_table(url)
+            if not votable:
+                logging.error(
+                    'Unable to download SVO filter data from {} because {}'
+                    .format(url, error_message))
+                continue
 
-                # DB - 14-04-19 After discussion with a few others use the
-                # wavelength lookup values “WavelengthCen” and “FWHM” returned
-                # from the SVO. Looking at some of the IR filters
-                # use the more common “WavelengthCen” and “FWHM” values that
-                # the service offers.
+            # DB - 14-04-19 After discussion with a few others use the
+            # wavelength lookup values “WavelengthCen” and “FWHM” returned
+            # from the SVO. Looking at some of the IR filters
+            # use the more common “WavelengthCen” and “FWHM” values that
+            # the service offers.
 
-                wl_width = votable.get_field_by_id('FWHM').value
-                wl_eff = votable.get_field_by_id('WavelengthCen').value
-                w_min = wl_eff - wl_width/2.0
-                w_max = wl_eff + wl_width/2.0
+            filter_name_found = True
+            wl_width = votable.get_field_by_id('FWHM').value
+            wl_eff = votable.get_field_by_id('WavelengthCen').value
+            w_min = wl_eff - wl_width/2.0
+            w_max = wl_eff + wl_width/2.0
 
             if w_min > wl_min:
                 wl_min = w_min
@@ -199,13 +176,18 @@ def filter_metadata(instrument, filters):
             if wl_width < width_min:
                 width_min = wl_width
 
-        fm = FilterMetadata(instrument)
-        fm.central_wl = wl_eff / 1.0e4
-        fm.bandpass = wl_width / 1.0e4
-        logging.info(
-            'Filter(s): {}  MD: {}, {}'.format(filter_names, fm.central_wl,
-                                               fm.bandpass))
-        return fm
+        if filter_name_found:
+            fm = FilterMetadata(instrument)
+            # SVO filter units are angstroms, Gemini CAOM2 spectral wcs is
+            # microns
+            fm.central_wl = wl_eff / 1.0e4
+            fm.bandpass = wl_width / 1.0e4
+            logging.info(
+                'Filter(s): {}  MD: {}, {}'.format(filter_names, fm.central_wl,
+                                                   fm.bandpass))
+            return fm
+        else:
+            return None
     except Exception as e:
         logging.error(e)
         import traceback
@@ -271,7 +253,6 @@ class FilterMetadata(object):
             if self.instrument in ['NIFS', 'NIRI']:
                 return None
             else:
-                # return self.central_wl / self.bandpass
                 self.adjust_resolving_power()
                 return self._resolving_power
         else:

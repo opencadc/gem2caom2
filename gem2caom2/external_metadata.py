@@ -77,7 +77,6 @@ from urllib3 import Retry
 
 from bs4 import BeautifulSoup
 
-import caom2
 from caom2pipe import manage_composable as mc
 from gem2caom2.svofps import filter_metadata
 from gem2caom2 import gemini_obs_metadata as gom
@@ -86,28 +85,6 @@ from gem2caom2 import gemini_obs_metadata as gom
 GEMINI_METADATA_URL = \
     'https://archive.gemini.edu/jsonsummary/canonical/filepre='
 GEMINI_FITS_HEADER_URL = 'https://archive.gemini.edu/fullheader/'
-
-GMOS_ENERGY_BAND = caom2.EnergyBand['OPTICAL']
-NIRI_ENERGY_BAND = caom2.EnergyBand['INFRARED']
-
-GMOS_RESOLVING_POWER = {
-    'B1200': 3744.0,
-    'R831': 4396.0,
-    'B600': 1688.0,
-    'R600': 3744.0,
-    'R400': 1918.0,
-    'R150': 631.0
-}
-
-# Angstroms/pixel
-GMOS_DISPERSION = {
-    'B1200': 0.245,
-    'R831': 0.36,
-    'B600': 0.475,
-    'R600': 0.495,
-    'R400': 0.705,
-    'R150': 1.835
-}
 
 # values from
 # https://www.gemini.edu/sciops/instruments/niri/spectroscopy/grisms
@@ -157,35 +134,6 @@ NIRI_RESOLVING_POWER = {
         'f32-9pix': 570.0  # f32-10pix
     }
 }
-
-# select filter_id, wavelength_central, wavelength_lower, wavelength_upper
-# from gsa..gsa_filters where instrument = 'NICI'
-# 0 - central
-# 1 - lower
-# 2 - upper
-
-PHOENIX = {'2030 (4)': [4.929000, 4.808000, 5.050000],
-           '2030 (9)': [4.929000, 4.808000, 5.050000],
-           '2150 (2)': [4.658500, 4.566000, 4.751000],
-           '2462 (5)': [4.078500, 4.008000, 4.149000],
-           '2734 (4)': [3.670500, 3.610000, 3.731000],
-           '2870 (7)': [3.490500, 3.436000, 3.545000],
-           '3010 (4)': [3.334500, 3.279000, 3.390000],
-           '3100 (11)': [3.240000, 3.180000, 3.300000],
-           '3290 (7)': [3.032500, 2.980000, 3.085000],
-           '4220 (5)': [2.370000, 2.348000, 2.392000],
-           '4308 (6)': [2.322500, 2.296000, 2.349000],
-           '4396 (8)': [2.272500, 2.249000, 2.296000],
-           '4484 (8)': [2.230000, 2.210000, 2.250000],
-           '4578 (6)': [2.185000, 2.160000, 2.210000],
-           '4667 (9)': [2.143000, 2.120000, 2.166000],
-           '4748 (11)': [2.104000, 2.082000, 2.126000],
-           '6073 (10)': [1.647000, 1.632000, 1.662000],
-           '6420 (12)': [1.557500, 1.547000, 1.568000],
-           '7799 (10)': [1.280500, 1.271000, 1.290000],
-           '8265 (13)': [1.204500, 1.196000, 1.213000],
-           '9232 (3)': [1.083000, 1.077000, 1.089000],
-           'L2870 (7)': [3.490500, 3.436000, 3.545000]}
 
 obs_metadata = {}
 om = None
@@ -412,73 +360,3 @@ def _repair_filter_name_for_svo(instrument, filter_names):
         return '+'.join(i for i in result)
     else:
         return None
-
-
-def gmos_metadata():
-    """
-    Calculate GMOS energy metadata using the Gemini observation metadata.
-    Imaging observations require a filter lookup to an external service.
-
-    :param obs_metadata: Dictionary of observation metadata.
-    :return: Dictionary of energy metadata
-    """
-    logging.debug('Begin gmos_metadata')
-    metadata = {
-        'energy': True,
-        'energy_band': GMOS_ENERGY_BAND
-    }
-
-    # Determine energy metadata for the plane.
-    # No energy information is determined for biases or darks.  The
-    # latter are sometimes only identified by a 'blank' filter.  e.g.
-    # NIRI 'flats' are sometimes obtained with the filter wheel blocked off.
-    global obs_metadata
-    if obs_metadata['observation_type'] in ('BIAS', 'DARK'):
-        metadata['energy'] = False
-        return metadata
-
-    reference_wavelength = 0.0
-    delta = 0.0
-    resolving_power = 0.0
-
-    if obs_metadata['mode'] == 'imaging':
-        filter_md = filter_metadata(obs_metadata['instrument'],
-                                    obs_metadata['filter_name'])
-
-        delta = filter_md.bandpass
-        reference_wavelength = filter_md.central_wl
-        resolving_power = reference_wavelength/delta
-        reference_wavelength /= 1.0e6
-        delta /= 1.0e6
-    elif obs_metadata['mode'] in ('LS', 'spectroscopy', 'MOS'):
-        reference_wavelength = obs_metadata['central_wavelength']
-
-        # Ignore energy information if value of 'central_wavelength' = 0.0
-        if reference_wavelength == 0.0:
-            metadata['energy'] = False
-            return metadata
-
-        resolving_power = GMOS_RESOLVING_POWER[obs_metadata['disperser']]
-        delta = GMOS_DISPERSION[obs_metadata['disperser']]
-
-        reference_wavelength /= 1.0e6
-        delta /= 1.0e10
-
-    filter_name = re.sub(r'\+', ' + ', obs_metadata['filter_name'])
-    metadata['filter_name'] = filter_name
-    metadata['wavelength_type'] = 'WAVE'
-    # metadata['wavelength_unit'] = 'm'
-    metadata['number_pixels'] = 1
-    metadata['reference_wavelength'] = reference_wavelength
-    metadata['delta'] = delta
-    metadata['resolving_power'] = resolving_power
-    metadata['reference_pixel'] = 1.0
-
-    # On occasion (e.g. Moon observations) two filters with
-    # inconsistent passbands result in negative r.  e.g. RG610 + g
-    # Skip energy metadata in this case.
-    if metadata['resolving_power'] < 0:
-        metadata['energy'] = False
-
-    logging.debug('End gmos_metadata')
-    return metadata

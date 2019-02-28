@@ -1,3 +1,4 @@
+<?xml version='1.0' encoding='UTF-8'?>
 <caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="00000000-0000-0000-8d65-cb11ee941479" caom2:lastModified="2018-11-03T23:09:30.993" caom2:maxLastModified="2018-11-03T23:09:30.993" caom2:metaChecksum="md5:9f81da0577b61d7ca8864941500d3035" caom2:accMetaChecksum="md5:9ff22c74bc200b2edc6c8f3a7760d880">
   <caom2:collection>GEMINI</caom2:collection>
   <caom2:observationID>GS-2009A-Q-30-6-007</caom2:observationID>
