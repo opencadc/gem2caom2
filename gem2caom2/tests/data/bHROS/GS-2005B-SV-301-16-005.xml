@@ -1,7 +1,8 @@
+<?xml version='1.0' encoding='UTF-8'?>
 <caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="00000000-0000-0000-b2ec-6d8cb5d3b8b1" caom2:lastModified="2018-11-16T11:17:13.459" caom2:maxLastModified="2018-11-16T11:17:13.459" caom2:metaChecksum="md5:4352438e636ab12e70361a766099e659" caom2:accMetaChecksum="md5:dad6e7cec015a658ce84e3be3e657c2c">
   <caom2:collection>GEMINI</caom2:collection>
   <caom2:observationID>GS-2005B-SV-301-16-005</caom2:observationID>
-  <caom2:metaRelease>2005-08-25T00:00:00.0000</caom2:metaRelease>
+  <caom2:metaRelease>2005-08-25T00:00:00.000</caom2:metaRelease>
   <caom2:algorithm>
     <caom2:name>exposure</caom2:name>
   </caom2:algorithm>
@@ -104,14 +105,16 @@
                         <caom2:ctype>WAVE</caom2:ctype>
                         <caom2:cunit>um</caom2:cunit>
                       </caom2:axis>
-                      <caom2:function>
-                        <caom2:naxis>4608</caom2:naxis>
-                        <caom2:delta>8.680555555555557e-05</caom2:delta>
-                        <caom2:refCoord>
-                          <caom2:pix>2304.0</caom2:pix>
-                          <caom2:val>0.7049</caom2:val>
-                        </caom2:refCoord>
-                      </caom2:function>
+                      <caom2:range>
+                        <caom2:start>
+                          <caom2:pix>0.5</caom2:pix>
+                          <caom2:val>0.5048999999999999</caom2:val>
+                        </caom2:start>
+                        <caom2:end>
+                          <caom2:pix>1.5</caom2:pix>
+                          <caom2:val>0.9049</caom2:val>
+                        </caom2:end>
+                      </caom2:range>
                     </caom2:axis>
                     <caom2:specsys>TOPOCENT</caom2:specsys>
                     <caom2:ssysobs>TOPOCENT</caom2:ssysobs>

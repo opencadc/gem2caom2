@@ -1,3 +1,4 @@
+<?xml version='1.0' encoding='UTF-8'?>
 <caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="00000000-0000-0000-b582-41514a099426" caom2:lastModified="2018-10-11T20:57:16.617" caom2:maxLastModified="2018-10-11T20:57:16.617" caom2:metaChecksum="md5:9dfd63496c63a097320d51db2c4bedf3" caom2:accMetaChecksum="md5:677a381d4bdb163790d23b1afda34d0d">
   <caom2:collection>GEMINI</caom2:collection>
   <caom2:observationID>GS-CAL20140109-3-009</caom2:observationID>
@@ -102,14 +103,16 @@
                         <caom2:ctype>WAVE</caom2:ctype>
                         <caom2:cunit>um</caom2:cunit>
                       </caom2:axis>
-                      <caom2:function>
-                        <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>0.16433605821768002</caom2:delta>
-                        <caom2:refCoord>
+                      <caom2:range>
+                        <caom2:start>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>1.0122223017525</caom2:val>
-                        </caom2:refCoord>
-                      </caom2:function>
+                          <caom2:val>0.93005427264366</caom2:val>
+                        </caom2:start>
+                        <caom2:end>
+                          <caom2:pix>1.5</caom2:pix>
+                          <caom2:val>1.09439033086134</caom2:val>
+                        </caom2:end>
+                      </caom2:range>
                     </caom2:axis>
                     <caom2:specsys>TOPOCENT</caom2:specsys>
                     <caom2:ssysobs>TOPOCENT</caom2:ssysobs>
@@ -191,14 +194,16 @@
                         <caom2:ctype>WAVE</caom2:ctype>
                         <caom2:cunit>um</caom2:cunit>
                       </caom2:axis>
-                      <caom2:function>
-                        <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>0.16433605821768002</caom2:delta>
-                        <caom2:refCoord>
+                      <caom2:range>
+                        <caom2:start>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>1.0122223017525</caom2:val>
-                        </caom2:refCoord>
-                      </caom2:function>
+                          <caom2:val>0.93005427264366</caom2:val>
+                        </caom2:start>
+                        <caom2:end>
+                          <caom2:pix>1.5</caom2:pix>
+                          <caom2:val>1.09439033086134</caom2:val>
+                        </caom2:end>
+                      </caom2:range>
                     </caom2:axis>
                     <caom2:specsys>TOPOCENT</caom2:specsys>
                     <caom2:ssysobs>TOPOCENT</caom2:ssysobs>
@@ -280,14 +285,16 @@
                         <caom2:ctype>WAVE</caom2:ctype>
                         <caom2:cunit>um</caom2:cunit>
                       </caom2:axis>
-                      <caom2:function>
-                        <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>0.16433605821768002</caom2:delta>
-                        <caom2:refCoord>
+                      <caom2:range>
+                        <caom2:start>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>1.0122223017525</caom2:val>
-                        </caom2:refCoord>
-                      </caom2:function>
+                          <caom2:val>0.93005427264366</caom2:val>
+                        </caom2:start>
+                        <caom2:end>
+                          <caom2:pix>1.5</caom2:pix>
+                          <caom2:val>1.09439033086134</caom2:val>
+                        </caom2:end>
+                      </caom2:range>
                     </caom2:axis>
                     <caom2:specsys>TOPOCENT</caom2:specsys>
                     <caom2:ssysobs>TOPOCENT</caom2:ssysobs>
@@ -369,14 +376,16 @@
                         <caom2:ctype>WAVE</caom2:ctype>
                         <caom2:cunit>um</caom2:cunit>
                       </caom2:axis>
-                      <caom2:function>
-                        <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>0.16433605821768002</caom2:delta>
-                        <caom2:refCoord>
+                      <caom2:range>
+                        <caom2:start>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>1.0122223017525</caom2:val>
-                        </caom2:refCoord>
-                      </caom2:function>
+                          <caom2:val>0.93005427264366</caom2:val>
+                        </caom2:start>
+                        <caom2:end>
+                          <caom2:pix>1.5</caom2:pix>
+                          <caom2:val>1.09439033086134</caom2:val>
+                        </caom2:end>
+                      </caom2:range>
                     </caom2:axis>
                     <caom2:specsys>TOPOCENT</caom2:specsys>
                     <caom2:ssysobs>TOPOCENT</caom2:ssysobs>

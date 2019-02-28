@@ -1,3 +1,4 @@
+<?xml version='1.0' encoding='UTF-8'?>
 <caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="00000000-0000-0000-8fba-e32d6220288f" caom2:lastModified="2018-10-29T18:08:50.861" caom2:maxLastModified="2018-10-29T18:08:50.861" caom2:metaChecksum="md5:17e92240f9f43bcf365cf822eea05e53" caom2:accMetaChecksum="md5:83f4e1a0e4599cbafe4a9cf5bd42426f">
   <caom2:collection>GEMINI</caom2:collection>
   <caom2:observationID>GN-2010B-SV-142-10-007</caom2:observationID>
@@ -104,14 +105,16 @@
                         <caom2:ctype>WAVE</caom2:ctype>
                         <caom2:cunit>um</caom2:cunit>
                       </caom2:axis>
-                      <caom2:function>
-                        <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>0.16000000000000014</caom2:delta>
-                        <caom2:refCoord>
+                      <caom2:range>
+                        <caom2:start>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>1.17</caom2:val>
-                        </caom2:refCoord>
-                      </caom2:function>
+                          <caom2:val>1.0899999999999999</caom2:val>
+                        </caom2:start>
+                        <caom2:end>
+                          <caom2:pix>1.5</caom2:pix>
+                          <caom2:val>1.25</caom2:val>
+                        </caom2:end>
+                      </caom2:range>
                     </caom2:axis>
                     <caom2:specsys>TOPOCENT</caom2:specsys>
                     <caom2:ssysobs>TOPOCENT</caom2:ssysobs>

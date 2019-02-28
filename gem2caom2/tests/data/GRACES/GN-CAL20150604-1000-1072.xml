@@ -1,3 +1,4 @@
+<?xml version='1.0' encoding='UTF-8'?>
 <caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="00000000-0000-0000-a529-51bb70f0953e" caom2:lastModified="2018-10-06T18:46:56.173" caom2:maxLastModified="2018-10-06T18:46:56.173" caom2:metaChecksum="md5:2f2d08ede0346f6fcc7cc6a8d088f1af" caom2:accMetaChecksum="md5:15ca7cadee60c7bd32776d593063928c">
   <caom2:collection>GEMINI</caom2:collection>
   <caom2:observationID>GN-CAL20150604-1000-1072</caom2:observationID>
@@ -23,8 +24,8 @@
   <caom2:instrument>
     <caom2:name>GRACES</caom2:name>
     <caom2:keywords>
-      <caom2:keyword>Spectroscopy,</caom2:keyword>
       <caom2:keyword>star+sky</caom2:keyword>
+      <caom2:keyword>Spectroscopy,</caom2:keyword>
     </caom2:keywords>
   </caom2:instrument>
   <caom2:planes>
@@ -106,14 +107,16 @@
                         <caom2:ctype>WAVE</caom2:ctype>
                         <caom2:cunit>um</caom2:cunit>
                       </caom2:axis>
-                      <caom2:function>
-                        <caom2:naxis>4640</caom2:naxis>
-                        <caom2:delta>0.0001293103448275862</caom2:delta>
-                        <caom2:refCoord>
-                          <caom2:pix>2320.0</caom2:pix>
-                          <caom2:val>0.7</caom2:val>
-                        </caom2:refCoord>
-                      </caom2:function>
+                      <caom2:range>
+                        <caom2:start>
+                          <caom2:pix>0.5</caom2:pix>
+                          <caom2:val>0.4</caom2:val>
+                        </caom2:start>
+                        <caom2:end>
+                          <caom2:pix>1.5</caom2:pix>
+                          <caom2:val>1.0</caom2:val>
+                        </caom2:end>
+                      </caom2:range>
                     </caom2:axis>
                     <caom2:specsys>TOPOCENT</caom2:specsys>
                     <caom2:ssysobs>TOPOCENT</caom2:ssysobs>

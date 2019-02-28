@@ -332,6 +332,8 @@ def _repair_filter_name_for_svo(instrument, filter_names):
     as the instrument names used by the SVO Filter service. Correlate
     the two here.
 
+    DB - 02-04-19 - strip the bar code from the filter names
+
     :param instrument what repairs to apply
     :param filter_names the Gemini version, which may include multiple names
         separated by '+'

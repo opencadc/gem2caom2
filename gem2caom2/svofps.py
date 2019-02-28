@@ -200,7 +200,6 @@ def filter_metadata(instrument, filters):
                 width_min = wl_width
 
         fm = FilterMetadata(instrument)
-        # if filter_name_found:
         fm.central_wl = wl_eff / 1.0e4
         fm.bandpass = wl_width / 1.0e4
         logging.info(
@@ -215,43 +214,35 @@ def filter_metadata(instrument, filters):
 
 
 class FilterMetadata(object):
+    # DB - 27-02-19
+    # I’ve approached Gemini spectra like I have for DAO but the header
+    # content for DAO spectra permits an accurate estimate of the upper/lower
+    # wavelengths (a few % accuracy, at least for data from the last decade
+    # or so).  It’s more a ‘ballpark’ estimate for Gemini even for simple
+    # long-slit instruments like PHOENIX and NIRI.  And this approach isn’t
+    # very consistent for spectrographs like GRACES or bHROS or GPI.  e.g.
+    # for GRACES the WCS I’ve built  suggests that the full spectral range
+    # is covered from one end of the detector to the other but in reality
+    # there are perhaps 40 individual spectral orders stacked one above
+    # the other each covering a few % of the full wavelength range with a
+    # bit of overlap between successive orders.  I’ve never actually tried
+    # to do a spectral cutout but the returned cutouts for unprocessed
+    # GRACES data wouldn’t be valid.
+    #
+    # Just talked with Chris briefly as well.  For consistency and to avoid
+    # misleading users it’s likely best to use the ‘range’ approach.
+    #
+    # microns for the units, not nm.  And second line would be something like:
+    #
+    # axis.range = CoordRange1D(RefCoord(0.5,crval1),
+    #                           RefCoord(1.5,(crval1+bandpass)))
+    #
+    # and crval1 is the lower wavelength.
 
-    # DB - 22-02-19
-    # For imaging energy WCS, use standard imaging algorithm. i.e central
-    # wavelength, bandpass from SVO filter, and
-    # resolution = central_wavelength/bandpass
-
-    # Choose this representation because CRPIX values should all be 1.0
-    # for imaging spectral WCS as long as you use the central wavelength
-    # of the filter for the corresponding CRVAL. DB - 13-02-19
-
-    # CRVAL == central_wl
-    # bandpass == delta without the NAXIS adjustment
-    # CDELT == delta
-
-    # naxis changes with each observation, central wavelength and
-    # bandpass change with the hardware
-
-    # NAXIS = 1
-    # CTYPE = ‘WAVE’
-    # CUNIT = ‘um’
-    # CRPIX = NAXIS / 2.0
-    # CRVAL = wl_eff
-    # CDELT = (wl_max - wl_min) / n_axis
-    # resolving power = (wl_max  + wl_min)/(2*CDELT)
-    # bandpass_name = filter name
-    # CDELT is the SVO’s effective width, W_effective in their tables which
-    # corresponds more or less to wl_max - wl_min.
-
-    # CRPIX values should all be 1.0 for imaging spectral WCS as long as
-    # you use the central wavelength of the filter for the
-    # corresponding CRVAL. DB - 13-02-19
-
-    def __init__(self, instrument=None, delta=None):
+    def __init__(self, instrument=None):
         self.central_wl = None
         self.bandpass = None
         self.resolving_power = None
-        self.delta = delta
         self.instrument = instrument
 
     @property
@@ -271,13 +262,6 @@ class FilterMetadata(object):
     @bandpass.setter
     def bandpass(self, value):
         self._bandpass = value
-
-    def get_delta(self, n_axis):
-        """Delta for a filter - adjusted for naxis."""
-        if self.delta is None:
-            return self._bandpass / n_axis
-        else:
-            return self.delta
 
     @property
     def resolving_power(self):
