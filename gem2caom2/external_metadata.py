@@ -67,7 +67,6 @@
 # ***********************************************************************
 #
 
-# import os
 import logging
 import re
 import requests
@@ -85,55 +84,6 @@ from gem2caom2 import gemini_obs_metadata as gom
 GEMINI_METADATA_URL = \
     'https://archive.gemini.edu/jsonsummary/canonical/filepre='
 GEMINI_FITS_HEADER_URL = 'https://archive.gemini.edu/fullheader/'
-
-# values from
-# https://www.gemini.edu/sciops/instruments/niri/spectroscopy/grisms
-# units are? page is in microns
-NIRI_RESOLVING_POWER = {
-    'J': {
-        'f6-2pix': 770.0,
-        'f6-4pix': 610.0,
-        'f6-6pix': 460.0,
-        'f6-2pixB1': 770.0,
-        'f6-4pixB1': 650.0,
-        'f6-6pixB1': 480.0,
-        'f32-4pix': 1000.0,
-        'f32-6pix': 620.0,  # f32-7pix
-        'f32-9pix': 450.0  # f32-10pix
-    },
-    'H': {
-        'f6-2pix': 1650.0,
-        'f6-4pix': 825.0,
-        'f6-6pix': 520.0,
-        'f6-2pixB1': 1650.0,
-        'f6-4pixB1': 940.0,
-        'f6-6pixB1': 550.0,
-        'f32-4pix': 880.0,
-        'f32-6pix': 630.0,  # f32-7pix
-        'f32-9pix': 500.0  # f32-10pix
-    },
-    'L': {
-        'f6-2pix': 1100.0,
-        'f6-4pix': 690.0,
-        'f6-6pix': 460.0,
-        'f6-2pixB1': 1100.0,
-        'f6-4pixB1': 770.0,
-        'f6-6pixB1': 490.0,
-    },
-    'M': {
-        'f6-2pix': 1100.0,
-        'f6-4pix': 770.0,
-        'f6-6pix': 460.0
-    },
-    'K': {
-        'f6-2pix': 1300.0,
-        'f6-4pix': 780.0,
-        'f6-6pix': 520.0,
-        'f32-4pix': 1280.0,
-        'f32-6pix': 775.0,  # f32-7pix
-        'f32-9pix': 570.0  # f32-10pix
-    }
-}
 
 obs_metadata = {}
 om = None
@@ -277,7 +227,7 @@ def _repair_instrument_name_for_svo(instrument):
 def _repair_filter_name_for_svo(instrument, filter_names):
     """
     Filter names from JSON/headers are not necessarily the same
-    as the instrument names used by the SVO Filter service. Correlate
+    as the filter names used by the SVO Filter service. Correlate
     the two here.
 
     DB - 02-04-19 - strip the bar code from the filter names

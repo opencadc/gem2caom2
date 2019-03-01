@@ -834,7 +834,7 @@ def update(observation, **kwargs):
                 for part in observation.planes[p].artifacts[a].parts:
 
                     if part == '2' and instrument == em.Inst.GPI:
-                        # GPI datasets have two extensions. First is science
+                        # GPI data sets have two extensions. First is science
                         # image (with WCS), second is data quality for each
                         # pixel (no WCS).
                         logging.info(
@@ -869,9 +869,10 @@ def update(observation, **kwargs):
                                     observation.planes[p].data_product_type,
                                     observation.observation_id,
                                     filter_name)
-                            elif instrument == em.Inst.GSAOI:
-                                _update_chunk_energy_gsaoi(
-                                    c, observation.planes[p].data_product_type,
+                            elif instrument in [em.Inst.GSAOI, em.Inst.HRWFS]:
+                                _update_chunk_energy_general(
+                                    c, instrument, [DataProductType.IMAGE],
+                                    observation.planes[p].data_product_type,
                                     observation.observation_id,
                                     filter_name)
                             elif instrument == em.Inst.NICI:
@@ -880,26 +881,25 @@ def update(observation, **kwargs):
                                     observation.observation_id, filter_name)
                             elif instrument == em.Inst.TRECS:
                                 _update_chunk_energy_trecs(
-                                    c, header,
-                                    observation.planes[p].data_product_type,
+                                    c, observation.planes[p].data_product_type,
                                     observation.observation_id,
                                     filter_name)
                             elif instrument == em.Inst.MICHELLE:
-                                _update_chunk_energy_michelle(
-                                    c,
+                                _update_chunk_energy_general(
+                                    c, instrument,
+                                    [DataProductType.IMAGE,
+                                     DataProductType.SPECTRUM],
                                     observation.planes[p].data_product_type,
                                     observation.observation_id,
                                     filter_name)
                             elif instrument == em.Inst.NIFS:
                                 _update_chunk_energy_nifs(
-                                    c, header,
-                                    observation.planes[p].data_product_type,
+                                    c, observation.planes[p].data_product_type,
                                     observation.observation_id,
                                     filter_name)
                             elif instrument == em.Inst.GNIRS:
                                 _update_chunk_energy_gnirs(
-                                    c, header,
-                                    observation.planes[p].data_product_type,
+                                    c, observation.planes[p].data_product_type,
                                     observation.observation_id,
                                     filter_name)
                             elif instrument == em.Inst.PHOENIX:
@@ -915,12 +915,6 @@ def update(observation, **kwargs):
                                 if (obs_type is not None and
                                         observation.type is None):
                                     observation.type = obs_type
-                            elif instrument == em.Inst.HRWFS:
-                                _update_chunk_energy_hrwfs(
-                                    c,
-                                    observation.planes[p].data_product_type,
-                                    observation.observation_id,
-                                    filter_name)
                             elif instrument == em.Inst.HOKUPAA:
                                 _update_chunk_energy_hokupaa(
                                     c, observation.planes[p].data_product_type,
@@ -946,23 +940,27 @@ def update(observation, **kwargs):
                                     instrument)
 
                         # position WCS
-                        _update_chunk_position(
-                            c, header, instrument,
-                            em.om.get('mode'), int(part),
-                            observation.observation_id)
-                        if instrument == em.Inst.BHROS:
-                            _update_chunk_position_bhros(
+                        mode = em.om.get('mode')
+                        if (instrument in [em.Inst.PHOENIX, em.Inst.HOKUPAA,
+                                           em.Inst.OSCIR] or
+                                (instrument == em.Inst.GRACES and
+                                 mode is not None and mode != 'imaging')):
+                            _update_chunk_position(
+                                c, header, instrument, int(part),
+                                observation.observation_id)
+                        elif instrument == em.Inst.BHROS:
+                            _update_chunk_position(
                                 c, headers[0], instrument,
                                 int(part), observation.observation_id)
-                        if instrument == em.Inst.GPI:
-                            _update_chunk_position_gpi(
-                                c, headers, observation.observation_id)
-                        if part == '1':
-                            if instrument == em.Inst.GPI:
-                                # equinox information only available from the
+                        elif instrument == em.Inst.GPI:
+                            _update_chunk_position(
+                                c, headers[1], instrument, int(part),
+                                observation.observation_id)
+                            if part == '1':
+                                # equinox information only available from
                                 # 0th header
                                 c.position.equinox = headers[0].get('TRKEQUIN')
-                        if instrument == em.Inst.FLAMINGOS:
+                        elif instrument == em.Inst.FLAMINGOS:
                             _update_chunk_position_flamingos(
                                 c, header, observation.observation_id)
 
@@ -1012,6 +1010,56 @@ def _build_chunk_energy(chunk, filter_name, fm):
     chunk.energy_axis = 4
 
 
+# values from
+# https://www.gemini.edu/sciops/instruments/niri/spectroscopy/grisms
+# units are? page is in microns
+NIRI_RESOLVING_POWER = {
+    'J': {
+        'f6-2pix': 770.0,
+        'f6-4pix': 610.0,
+        'f6-6pix': 460.0,
+        'f6-2pixB1': 770.0,
+        'f6-4pixB1': 650.0,
+        'f6-6pixB1': 480.0,
+        'f32-4pix': 1000.0,
+        'f32-6pix': 620.0,  # f32-7pix
+        'f32-9pix': 450.0  # f32-10pix
+    },
+    'H': {
+        'f6-2pix': 1650.0,
+        'f6-4pix': 825.0,
+        'f6-6pix': 520.0,
+        'f6-2pixB1': 1650.0,
+        'f6-4pixB1': 940.0,
+        'f6-6pixB1': 550.0,
+        'f32-4pix': 880.0,
+        'f32-6pix': 630.0,  # f32-7pix
+        'f32-9pix': 500.0  # f32-10pix
+    },
+    'L': {
+        'f6-2pix': 1100.0,
+        'f6-4pix': 690.0,
+        'f6-6pix': 460.0,
+        'f6-2pixB1': 1100.0,
+        'f6-4pixB1': 770.0,
+        'f6-6pixB1': 490.0,
+    },
+    'M': {
+        'f6-2pix': 1100.0,
+        'f6-4pix': 770.0,
+        'f6-6pix': 460.0
+    },
+    'K': {
+        'f6-2pix': 1300.0,
+        'f6-4pix': 780.0,
+        'f6-6pix': 520.0,
+        'f32-4pix': 1280.0,
+        'f32-6pix': 775.0,  # f32-7pix
+        'f32-9pix': 570.0  # f32-10pix
+    }
+}
+
+
 def _update_chunk_energy_niri(chunk, data_product_type, obs_id, filter_name):
     """NIRI-specific chunk-level Energy WCS construction."""
     logging.debug('Begin _update_chunk_energy_niri')
@@ -1031,6 +1079,8 @@ def _update_chunk_energy_niri(chunk, data_product_type, obs_id, filter_name):
     # slits in the web page. Use the ‘disperser’ value to lookup the
     # ‘Estimated Resolving Power’ for the slit in the beam given by the
     # focal_plane_mask value.
+
+    # https://www.gemini.edu/sciops/instruments/niri/spectroscopy/blocking-filters
 
     filter_md = em.get_filter_metadata(em.Inst.NIRI, filter_name)
     if filter_md is None:
@@ -1055,9 +1105,9 @@ def _update_chunk_energy_niri(chunk, data_product_type, obs_id, filter_name):
             logging.debug(
                 'NIRI: Bandpass name is {} f_ratio is {} for {}'.format(
                     bandpass_name, f_ratio, obs_id))
-            if bandpass_name in em.NIRI_RESOLVING_POWER:
+            if bandpass_name in NIRI_RESOLVING_POWER:
                 fm.resolving_power = \
-                    em.NIRI_RESOLVING_POWER[bandpass_name][f_ratio]
+                    NIRI_RESOLVING_POWER[bandpass_name][f_ratio]
             else:
                 logging.info('NIRI: No resolving power for {}.'.format(obs_id))
         else:
@@ -1103,7 +1153,6 @@ def _update_chunk_energy_gpi(chunk, data_product_type, obs_id, filter_name):
     elif data_product_type == DataProductType.SPECTRUM:
         logging.debug(
             'GPI: SpectralWCS Spectroscopy mode for {}.'.format(obs_id))
-        global gpi_spectral_axis
         fm = FilterMetadata()
         fm.central_wl = filter_md.central_wl
         fm.bandpass = filter_md.bandpass
@@ -1168,22 +1217,23 @@ def _update_chunk_energy_f2(chunk, header, data_product_type, obs_id, filter_nam
     logging.debug('End _update_chunk_energy_f2')
 
 
-def _update_chunk_energy_gsaoi(chunk, data_product_type, obs_id, filter_name):
-    """NIRI-specific chunk-level Energy WCS construction."""
-    logging.debug('Begin _update_chunk_energy_gsaoi')
+def _update_chunk_energy_general(chunk, instrument, allowable_types,
+                                 data_product_type, obs_id, filter_name):
+    """General chunk-level Energy WCS construction."""
+    logging.debug('Begin _update_chunk_energy_{}'.format(instrument))
     mc.check_param(chunk, Chunk)
 
-    filter_md = em.get_filter_metadata(em.Inst.GSAOI, filter_name)
-
-    if data_product_type == DataProductType.IMAGE:
-        logging.debug('SpectralWCS: GSAOI imaging mode.')
+    if data_product_type in allowable_types:
+        logging.debug('{} Spectral WCS {} mode.'.format(instrument,
+                                                        data_product_type))
+        filter_md = em.get_filter_metadata(instrument, filter_name)
         _build_chunk_energy(chunk, filter_name, filter_md)
     else:
         raise mc.CadcException(
-            'Do not understand DataProductType {} for {}'.format(
-                data_product_type, obs_id))
+            '{} no Spectral WCS support when DataProductType {} for {}'.format(
+                instrument, data_product_type, obs_id))
 
-    logging.debug('End _update_chunk_energy_gsaoi')
+    logging.debug('End _update_chunk_energy_{}'.format(instrument))
 
 
 # select filter_id, wavelength_central, wavelength_lower, wavelength_upper
@@ -1261,13 +1311,13 @@ def _update_chunk_energy_nici(chunk, data_product_type, obs_id, filter_name):
     logging.debug('End _update_chunk_energy_nici')
 
 
-def _update_chunk_energy_trecs(chunk, header, data_product_type, obs_id, filter_name):
+def _update_chunk_energy_trecs(chunk, data_product_type, obs_id, filter_name):
     """TReCS-specific chunk-level Energy WCS construction."""
     logging.debug('Begin _update_chunk_energy_trecs')
     mc.check_param(chunk, Chunk)
 
     # Look at the json ‘disperser’ value.  If = LowRes-20" then
-    # resolving power = 80.  If LowRes-10" then resolving poewr = 100.
+    # resolving power = 80.  If LowRes-10" then resolving power = 100.
     # There was a high-res mode but perhaps never used.  Again,
     # naxis = NAXIS1 header value and other wcs info as above for NIRI.  But
     # might take some string manipulation to match filter names with SVO
@@ -1277,55 +1327,24 @@ def _update_chunk_energy_trecs(chunk, header, data_product_type, obs_id, filter_
 
     if data_product_type == DataProductType.IMAGE:
         logging.debug('TRECS: imaging mode for {}.'.format(obs_id))
-        fm = filter_md
     elif data_product_type == DataProductType.SPECTRUM:
         logging.debug('TReCS: LS|Spectroscopy mode for {}.'.format(obs_id))
-        fm = FilterMetadata()
-        fm.central_wl = em.om.get('central_wavelength')
-        fm.bandpass = filter_md.bandpass
         disperser = em.om.get('disperser')
         if disperser is not None:
             if disperser == 'LowRes-20':
-                fm.resolving_power = 80.0
+                filter_md.resolving_power = 80.0
             elif disperser == 'LowRes-10':
-                fm.resolving_power = 100.0
+                filter_md.resolving_power = 100.0
     else:
         raise mc.CadcException(
             'Do not understand mode {} for {}'.format(data_product_type,
                                                       obs_id))
 
-    _build_chunk_energy(chunk, filter_name, fm)
+    _build_chunk_energy(chunk, filter_name, filter_md)
     logging.debug('End _update_chunk_energy_trecs')
 
 
-def _update_chunk_energy_michelle(chunk, data_product_type, obs_id, filter_name):
-    """Michelle-specific chunk-level Energy WCS construction."""
-    logging.debug('Begin _update_chunk_energy_michelle')
-    mc.check_param(chunk, Chunk)
-
-    filter_md = em.get_filter_metadata(em.Inst.MICHELLE, filter_name)
-    if data_product_type == DataProductType.IMAGE:
-        logging.debug(
-            'michelle: SpectralWCS imaging mode for {}.'.format(obs_id))
-        fm = filter_md
-    elif data_product_type == DataProductType.SPECTRUM:
-        logging.debug(
-            'michelle: SpectralWCS LS|Spectroscopy mode for {}.'.format(
-                obs_id))
-        fm = FilterMetadata('michelle')
-        fm.central_wl = em.om.get('central_wavelength')
-        fm.bandpass = filter_md.bandpass
-    else:
-        raise mc.CadcException(
-            'michelle: Do not understand DataProductType {} for {}'.format(
-                data_product_type, obs_id))
-
-    _build_chunk_energy(chunk, filter_name, fm)
-    logging.debug('End _update_chunk_energy_michelle')
-
-
-def _update_chunk_energy_nifs(chunk, header, data_product_type, obs_id,
-                              filter_name):
+def _update_chunk_energy_nifs(chunk, data_product_type, obs_id, filter_name):
     """NIFS-specific chunk-level Spectral WCS construction."""
     logging.debug('Begin _update_chunk_energy_nifs')
     mc.check_param(chunk, Chunk)
@@ -1403,8 +1422,7 @@ def _update_chunk_energy_nifs(chunk, header, data_product_type, obs_id,
     logging.debug('End _update_chunk_energy_nifs')
 
 
-def _update_chunk_energy_gnirs(chunk, header, data_product_type, obs_id,
-                               filter_name):
+def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name):
     """GNIRS-specific chunk-level Energy WCS construction."""
     logging.debug('Begin _update_chunk_energy_gnirs')
     mc.check_param(chunk, Chunk)
@@ -1417,6 +1435,7 @@ def _update_chunk_energy_gnirs(chunk, header, data_product_type, obs_id,
         if 'XD' in disperser:
             logging.debug('gnirs: cross dispersed mode.')
             # https://www.gemini.edu/sciops/instruments/gnirs/spectroscopy/
+            # crossdispersed-xd-spectroscopy/xd-prisms
             # crossdispersed-xd-spectroscopy/xd-prisms
             xd_mode = {'SB+SXD': [0.9, 2.5],
                        'LB+LXD': [0.9, 2.5],
@@ -1613,26 +1632,6 @@ def _update_chunk_energy_flamingos(chunk, data_product_type, obs_id, filter_name
 
     _build_chunk_energy(chunk, filter_name, fm)
     logging.debug('End _update_chunk_energy_flamingos')
-
-
-def _update_chunk_energy_hrwfs(chunk, data_product_type, obs_id, filter_name):
-    """hrwfs-specific chunk-level Energy WCS construction."""
-    # DB - hrwfs/acqcam isn't anything different from, for example, GMOS
-    # imaging
-    logging.debug('Begin _update_chunk_energy_hrwfs')
-    mc.check_param(chunk, Chunk)
-
-    filter_md = em.get_filter_metadata(em.Inst.HRWFS, filter_name)
-    if data_product_type == DataProductType.IMAGE:
-        logging.debug(
-            'hrwfs: SpectralWCS imaging mode for {}.'.format(obs_id))
-        _build_chunk_energy(chunk, filter_name, filter_md)
-    else:
-        raise mc.CadcException(
-            'hrwfs: mystery data product type {} for {}'.format(
-                data_product_type, obs_id))
-
-    logging.debug('End _update_chunk_energy_hrwfs')
 
 
 def _update_chunk_energy_hokupaa(chunk, data_product_type, obs_id, filter_name):
@@ -1965,7 +1964,7 @@ def _update_position_from_zeroth_header(artifact, headers, log_id):
     primary_header['NAXIS1'] = headers[-1].get('NAXIS1')
     primary_header['NAXIS2'] = headers[-1].get('NAXIS2')
 
-    wcs_parser = WcsParser(primary_header, 'file name', 0)
+    wcs_parser = WcsParser(primary_header, log_id, 0)
     primary_chunk = Chunk()
     wcs_parser.augment_position(primary_chunk)
 
@@ -2012,132 +2011,49 @@ def _update_chunk_position_flamingos(chunk, header, obs_id):
         logging.info('FLAMINGOS: Missing spatial wcs for {}'.format(obs_id))
 
 
-def _update_chunk_position(chunk, header, instrument, mode, extension, obs_id):
+def _update_chunk_position(chunk, header, instrument, extension, obs_id):
     logging.debug('Begin _update_chunk_position')
     mc.check_param(chunk, Chunk)
 
-    if extension == 0:
-        logging.debug('No Spatial WCS for part 0 instrument {} for {}'.format(
-            instrument, obs_id))
-        return
-
-    if (instrument in [em.Inst.PHOENIX, em.Inst.HOKUPAA, em.Inst.OSCIR] or
-        (instrument == em.Inst.GRACES and mode is not None and
-         mode != 'imaging')):
-
-        # DB - 18-02-19 - for hard-coded field of views use:
-        # CRVAL1  = RA value from json or header (degrees
-        # CRVAL2  = Dec value from json or header (degrees)
-        # CDELT1  = 5.0/3600.0 (Plate scale along axis1 in degrees/pixel
-        #           for 5" size)
-        # CDELT2  = 5.0/3600.0
-        # CROTA1  = 0.0 / Rotation in degrees
-        # NAXIS1 = 1
-        # NAXIS2 = 1
-        # CRPIX1 = 1.0
-        # CRPIX2 = 1.0
-        # CTYPE1 = RA---TAN
-        # CTYPE2 = DEC--TAN
-        #
-        # May be slightly different for Phoenix if headers give the width
-        # and rotation of the slit.  i.e CDELT1 and 2 may be different and
-        # CROTA1 non-zero.
-        #
-        # DB - Hokupa'a+QUIRC
-        # This is an imager, so not a single big pixel.  So build a CD matrix
-        # (ignoring any possible camera rotation to start - not sure it can
-        # be determined).  Use RA/Dec in header for CRVALs (no json values
-        # returned I think) but you have to convert these from HH:MM:SS etc.
-        # format to degrees.  CRPIX1/2 = NAXIS1/2 divided by 2.  PIXSCALE in
-        # header (both primary and extension) give plate scale that is
-        # fixed at 0.01998 arcsec/pixel.
-        # CD1_1 = CD2_2 = PIXSCALE/3600.0 (to convert to degrees).
-        # CD1_2 = CD2_1 = 0.0.
-        #
-        # DB - 20-02-19 - OSCIR
-        # NAXIS1/2 give number of pixels so CRPIX1/2 = NAXIS1/2 divided by 2.
-        # json RA/Dec are bogus.  Need to use RA_TEL and DEC_TEL and convert
-        # to degrees and use these for CRVAL1/2 values.  (RA_BASE and DEC_BASE
-        # values in degrees don’t quite agree with RA_TEL and DEC_TEL...)
-        # Use PIXSCALE= ‘0.089’ value to build CD matrix.
-        # So same as for Hokupa’a:  CD1_1 = CD2_2 = PIXSCALE/3600.0.
-        # CD1_2 = CD2_1 = 0.0
-
-        header['CTYPE1'] = 'RA---TAN'
-        header['CTYPE2'] = 'DEC--TAN'
-        header['CUNIT1'] = 'deg'
-        header['CUNIT2'] = 'deg'
-        header['CRVAL1'] = get_ra(header)
-        header['CRVAL2'] = get_dec(header)
-        header['CDELT1'] = RADIUS_LOOKUP[instrument]
-        header['CDELT2'] = RADIUS_LOOKUP[instrument]
-        header['CROTA1'] = 0.0
-        if instrument != em.Inst.OSCIR:
-            header['NAXIS1'] = 1
-            header['NAXIS2'] = 1
-        header['CRPIX1'] = get_crpix1(header)
-        header['CRPIX2'] = get_crpix2(header)
-        header['CD1_1'] = get_cd11(header)
-        header['CD1_2'] = 0.0
-        header['CD2_1'] = 0.0
-        header['CD2_2'] = get_cd22(header)
-
-        wcs_parser = WcsParser(header, obs_id, extension)
-        if chunk is None:
-            chunk = Chunk()
-        wcs_parser.augment_position(chunk)
-        chunk.position_axis_1 = 1
-        chunk.position_axis_2 = 2
-
-        if instrument == em.Inst.OSCIR:
-            chunk.position.coordsys = header.get('FRAMEPA')
-            chunk.position.equinox = float(header.get('EQUINOX'))
-
-    logging.debug('End _update_chunk_position')
-
-
-def _update_chunk_position_bhros(chunk, header, instrument, extension, obs_id):
-    logging.error('Begin _update_chunk_position_bhros {}'.format(extension))
-    mc.check_param(chunk, Chunk)
-
-    if instrument == em.Inst.BHROS:
-        logging.error('instrument is {}'.format(instrument))
-        header['CTYPE1'] = 'RA---TAN'
-        header['CTYPE2'] = 'DEC--TAN'
-        header['CUNIT1'] = 'deg'
-        header['CUNIT2'] = 'deg'
-        header['CRVAL1'] = get_ra(header)
-        header['CRVAL2'] = get_dec(header)
-        header['CDELT1'] = RADIUS_LOOKUP[instrument]
-        header['CDELT2'] = RADIUS_LOOKUP[instrument]
-        header['CROTA1'] = 0.0
-        header['NAXIS1'] = 1
-        header['NAXIS2'] = 1
-        header['CRPIX1'] = get_crpix1(header)
-        header['CRPIX2'] = get_crpix2(header)
-        header['CD1_1'] = get_cd11(header)
-        header['CD1_2'] = 0.0
-        header['CD2_1'] = 0.0
-        header['CD2_2'] = get_cd22(header)
-
-        wcs_parser = WcsParser(header, obs_id, 0)
-        if chunk is None:
-            chunk = Chunk()
-        wcs_parser.augment_position(chunk)
-        chunk.position_axis_1 = 1
-        chunk.position_axis_2 = 2
-
-        chunk.position.coordsys = header.get('TRKFRAME')
-        chunk.position.equinox = float(header.get('TRKEQUIN'))
-
-    logging.debug('End _update_chunk_position_bhros')
-
-
-def _update_chunk_position_gpi(chunk, headers, obs_id):
-    logging.error('Begin _update_chunk_position_gpi {}'.format(obs_id))
-    mc.check_param(chunk, Chunk)
-
-    # DB - 22-02-19
+    # DB - 18-02-19 - for hard-coded field of views use:
+    # CRVAL1  = RA value from json or header (degrees
+    # CRVAL2  = Dec value from json or header (degrees)
+    # CDELT1  = 5.0/3600.0 (Plate scale along axis1 in degrees/pixel
+    #           for 5" size)
+    # CDELT2  = 5.0/3600.0
+    # CROTA1  = 0.0 / Rotation in degrees
+    # NAXIS1 = 1
+    # NAXIS2 = 1
+    # CRPIX1 = 1.0
+    # CRPIX2 = 1.0
+    # CTYPE1 = RA---TAN
+    # CTYPE2 = DEC--TAN
+    #
+    # May be slightly different for Phoenix if headers give the width
+    # and rotation of the slit.  i.e CDELT1 and 2 may be different and
+    # CROTA1 non-zero.
+    #
+    # DB - Hokupa'a+QUIRC
+    # This is an imager, so not a single big pixel.  So build a CD matrix
+    # (ignoring any possible camera rotation to start - not sure it can
+    # be determined).  Use RA/Dec in header for CRVALs (no json values
+    # returned I think) but you have to convert these from HH:MM:SS etc.
+    # format to degrees.  CRPIX1/2 = NAXIS1/2 divided by 2.  PIXSCALE in
+    # header (both primary and extension) give plate scale that is
+    # fixed at 0.01998 arcsec/pixel.
+    # CD1_1 = CD2_2 = PIXSCALE/3600.0 (to convert to degrees).
+    # CD1_2 = CD2_1 = 0.0.
+    #
+    # DB - 20-02-19 - OSCIR
+    # NAXIS1/2 give number of pixels so CRPIX1/2 = NAXIS1/2 divided by 2.
+    # json RA/Dec are bogus.  Need to use RA_TEL and DEC_TEL and convert
+    # to degrees and use these for CRVAL1/2 values.  (RA_BASE and DEC_BASE
+    # values in degrees don’t quite agree with RA_TEL and DEC_TEL...)
+    # Use PIXSCALE= ‘0.089’ value to build CD matrix.
+    # So same as for Hokupa’a:  CD1_1 = CD2_2 = PIXSCALE/3600.0.
+    # CD1_2 = CD2_1 = 0.0
+    #
+    # DB - 22-02-19 - GPI
     # WCS info is garbage in header, so for spatial WCS (for both image and
     # spectrum):
     #
@@ -2153,14 +2069,19 @@ def _update_chunk_position_gpi(chunk, headers, obs_id):
     # cd2_2 = 2.8/(3600.0 * naxis2)
     # cd1_2 = cd2_1 = 0.0 since we don’t know rotation value
 
-    # make header[1] spatial WCS coherent
-    header = headers[1]
     header['CTYPE1'] = 'RA---TAN'
     header['CTYPE2'] = 'DEC--TAN'
     header['CUNIT1'] = 'deg'
     header['CUNIT2'] = 'deg'
     header['CRVAL1'] = get_ra(header)
     header['CRVAL2'] = get_dec(header)
+    if instrument != em.Inst.GPI:
+        header['CDELT1'] = RADIUS_LOOKUP[instrument]
+        header['CDELT2'] = RADIUS_LOOKUP[instrument]
+        header['CROTA1'] = 0.0
+    if instrument not in [em.Inst.OSCIR, em.Inst.GPI]:
+        header['NAXIS1'] = 1
+        header['NAXIS2'] = 1
     header['CRPIX1'] = get_crpix1(header)
     header['CRPIX2'] = get_crpix2(header)
     header['CD1_1'] = get_cd11(header)
@@ -2168,19 +2089,23 @@ def _update_chunk_position_gpi(chunk, headers, obs_id):
     header['CD2_1'] = 0.0
     header['CD2_2'] = get_cd22(header)
 
-    wcs_parser = WcsParser(header, obs_id, 0)
+    wcs_parser = WcsParser(header, obs_id, extension)
     if chunk is None:
         chunk = Chunk()
     wcs_parser.augment_position(chunk)
     chunk.position_axis_1 = 1
     chunk.position_axis_2 = 2
 
-    chunk.position.coordsys = header.get('RADESYS')
-    equinox = float(headers[0].get('EQUINOX'))
-    if equinox > 0.0:
-        chunk.position.equinox = equinox
+    if instrument == em.Inst.OSCIR:
+        chunk.position.coordsys = header.get('FRAMEPA')
+        chunk.position.equinox = float(header.get('EQUINOX'))
+    elif instrument == em.Inst.BHROS:
+        chunk.position.coordsys = header.get('TRKFRAME')
+        chunk.position.equinox = float(header.get('TRKEQUIN'))
+    elif instrument == em.Inst.GPI:
+        chunk.position.coordsys = header.get('RADESYS')
 
-    logging.debug('End _update_chunk_position_gpi')
+    logging.debug('End _update_chunk_position')
 
 
 def _update_chunk_time_f2(chunk, obs_id):
