@@ -7,7 +7,7 @@
     <caom2:name>exposure</caom2:name>
   </caom2:algorithm>
   <caom2:type>FLAT</caom2:type>
-  <caom2:intent>science</caom2:intent>
+  <caom2:intent>calibration</caom2:intent>
   <caom2:proposal>
     <caom2:id>GS-CAL20021112</caom2:id>
   </caom2:proposal>
@@ -44,7 +44,7 @@
       <caom2:artifacts>
         <caom2:artifact caom2:id="00000000-0000-0000-86de-3e599d48c230" caom2:lastModified="2018-10-10T06:00:58.597" caom2:maxLastModified="2018-10-10T06:00:58.597" caom2:metaChecksum="md5:2086ff3fb5a2fe1b976294eee8d87836" caom2:accMetaChecksum="md5:1ee72059af8f6a6b8974db130cafbffe">
           <caom2:uri>gemini:GEM/02nov12.0024.fits</caom2:uri>
-          <caom2:productType>science</caom2:productType>
+          <caom2:productType>calibration</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>
           <caom2:contentLength>665345</caom2:contentLength>

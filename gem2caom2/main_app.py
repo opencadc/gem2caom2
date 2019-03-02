@@ -195,7 +195,7 @@ def get_art_product_type(header):
                     else:
                         result = ProductType.SCIENCE
                 elif instrument == em.Inst.FLAMINGOS:
-                    if _is_flamingos_calibration(header):
+                    if _is_flamingos_calibration():
                         result = ProductType.CALIBRATION
                     else:
                         result = ProductType.SCIENCE
@@ -408,51 +408,54 @@ def get_obs_intent(header):
     :return: The Observation intent, or None if not found.
     """
     result = ObservationIntentType.CALIBRATION
-    cal_values = ['GCALflat', 'Bias', 'BIAS', 'Twilight', 'Ar', 'FLAT', 'ARC',
-                  'Domeflat']
+    cal_values = ['GCALflat', 'Bias', 'BIAS', 'Twilight', 'Ar', 'FLAT',
+                  'flat', 'ARC', 'Domeflat', 'DARK', 'dark']
+    dl = header.get('DATALAB')
     lookup = _get_obs_class(header)
-    # logging.error('lookup is {}'.format(lookup))
+    logging.debug('observation_class is {} for {}'.format(lookup, dl))
     if lookup is None:
-        object_value = header.get('OBJECT')
-        # logging.error('object_value is {}'.format(object_value))
-        if object_value is not None:
-            instrument = em.Inst(header.get('INSTRUME'))
-            # logging.error('instrument is {}'.format(instrument))
-            if (instrument is not None and
-                    instrument in [em.Inst.GRACES, em.Inst.TRECS, em.Inst.PHOENIX,
-                                   em.Inst.OSCIR, em.Inst.HOKUPAA]):
-                if instrument == em.Inst.GRACES:
-                    obs_type = _get_obs_type(header)
-                    if obs_type is not None and obs_type in cal_values:
+        type_lookup = _get_obs_type(header)
+        logging.debug('observation_type is {} for {}'.format(type_lookup, dl))
+        if type_lookup is None:
+            data_label = em.om.get('data_label')
+            logging.debug('data_label is {}'.format(data_label))
+            if (data_label is None or
+                    (data_label is not None and '-CAL' not in data_label)):
+                object_value = header.get('OBJECT')
+                logging.debug(
+                    'object_value is {} for {}'.format(object_value, dl))
+                if object_value is not None:
+                    if object_value in cal_values:
                         result = ObservationIntentType.CALIBRATION
                     else:
-                        result = ObservationIntentType.SCIENCE
-                elif instrument == em.Inst.TRECS:
-                    data_label = header.get('DATALAB')
-                    if data_label is not None and '-CAL' in data_label:
-                        result = ObservationIntentType.CALIBRATION
-                elif instrument == em.Inst.PHOENIX:
-                    if _is_phoenix_calibration(header):
-                        result = ObservationIntentType.CALIBRATION
-                    else:
-                        result = ObservationIntentType.SCIENCE
-                elif instrument == em.Inst.OSCIR:
-                    if _is_oscir_calibration(header):
-                        result = ObservationIntentType.CALIBRATION
-                    else:
-                        result = ObservationIntentType.SCIENCE
-                elif instrument == em.Inst.HOKUPAA:
-                    if _is_hokupaa_calibration(header):
-                        result = ObservationIntentType.CALIBRATION
-                    else:
-                        result = ObservationIntentType.SCIENCE
-                else:
-                    logging.error(
-                        'get_obs_intent: no handling for {}'.format(
-                            instrument))
+                        # check that an individual cal value is not part of
+                        # the object_value
+                        cal_value_found = False
+                        for ii in cal_values:
+                            if ii in object_value:
+                                result = ObservationIntentType.CALIBRATION
+                                cal_value_found = True
+                                break
+                        if not cal_value_found:
+                            result = ObservationIntentType.SCIENCE
             else:
-                if object_value in cal_values:
+                if '-CAL' in data_label:
                     result = ObservationIntentType.CALIBRATION
+                else:
+                    result = ObservationIntentType.SCIENCE
+        else:
+            if type_lookup in cal_values:
+                result = ObservationIntentType.CALIBRATION
+            else:
+                instrument = em.Inst(header.get('INSTRUME'))
+                logging.error('instrument is {}'.format(instrument))
+                if instrument is not None:
+                    if instrument == em.Inst.TRECS:
+                        data_label = header.get('DATALAB')
+                        if data_label is not None and '-CAL' in data_label:
+                            result = ObservationIntentType.CALIBRATION
+                    else:
+                        result = ObservationIntentType.SCIENCE
                 else:
                     result = ObservationIntentType.SCIENCE
     elif 'science' in lookup:
@@ -704,11 +707,20 @@ def _get_phoenix_obs_type(header):
     return result
 
 
-def _is_flamingos_calibration(header):
+def _is_flamingos_calibration():
+    # DB - 28-02-19
+    # Another relatively minor thing for FLAMINGOS:  get_obs_intent likely
+    # has to have FLAMINGOS added to it.  If obs_type is DARK, ACQUISIITON,
+    # FLAT or ARC then the intent is calibration, otherwise science.
+    # cal_values should have those obs_type values in it as well.
+    # So if ‘CAL’ is not in the data_label and obs_type is not in cal_values
+    # then it’s science.
     object_value = em.om.get('object')
-    if ('Dark' in object_value or
-        'DARK' in object_value or
-            'Flat' in object_value):
+    for ii in ['Dark', 'DARK', 'Arc', 'flat', 'Flat', 'Acq', 'acq']:
+        if ii in object_value:
+            return True
+    data_label = em.om.get('data_label')
+    if data_label is not None and 'CAL' in data_label:
         return True
     return False
 

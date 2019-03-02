@@ -266,10 +266,10 @@ def pytest_generate_tests(metafunc):
 
         file_list = []
         # for root, dirs, files in os.walk(TESTDATA_DIR):
-        for ii in ['NIRI']:
-        # for ii in ['GMOS', 'NIRI', 'GPI', 'F2', 'GSAOI', 'NICI', 'TReCS',
-        #            'Michelle', 'GRACES', 'NIFS', 'GNIRS', 'Phoenix',
-        #            'Flamingos', 'hrwfs', 'HOKUPAA', 'OSCIR', 'bHROS']:
+        # for ii in ['TReCS']:
+        for ii in ['GMOS', 'NIRI', 'GPI', 'F2', 'GSAOI', 'NICI', 'TReCS',
+                   'Michelle', 'GRACES', 'NIFS', 'GNIRS', 'Phoenix',
+                   'Flamingos', 'hrwfs', 'HOKUPAA', 'OSCIR', 'bHROS']:
             for root, dirs, files in os.walk('{}/{}'.format(TEST_DATA_DIR, ii)):
                 for file in files:
                     if file.endswith(".header"):
@@ -434,8 +434,10 @@ def _get_lineage(dirname, basename, product_id, file_id):
 
 
 def _get_product_id(file_id):
-    if file_id == 'N20150807G0044m' or file_id == 'N20150807G0044i':
+    if file_id == 'N20150807G0044m':
         product_id = 'intensity'
+    elif file_id == 'N20150807G0044i':
+        product_id = 'norm_intensity'
     else:
         product_id = LOOKUP[file_id][0]
     return product_id
