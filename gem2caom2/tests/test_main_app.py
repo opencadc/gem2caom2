@@ -243,6 +243,11 @@ LOOKUP = {
     'N20150404S0872': ['GN-2015A-C-1-27-001', 'NIRI', 'GN-2015A-C-1'],
     'N20150405S0028': ['GN-2015A-C-1-27-071', 'NIRI', 'GN-2015A-C-1'],
     'N20151129S0307': ['GN-2015B-Q-34-55-040', 'NIRI', 'GN-2015B-Q-34'],
+    'N20090105S0057': ['GN-2008B-C-3-2-009', 'NIRI', 'GN-2008B-C-3'],
+    'N20090105S0060': ['GN-2008B-C-3-2-012', 'NIRI', 'GN-2008B-C-3'],
+    'N20090918S0386': ['GN-2009B-Q-52-332-011', 'NIRI', 'GN-20009B-Q-52'],
+    'N20100620S0126': ['GN-2010A-Q-44-175-015', 'NIRI', 'GN-2009B-Q-44'],
+    'N20120118S0441': ['GN-2011B-Q-28-10-002', 'NIRI', 'GN-2011B-Q-28'],
     # OSCIR
     'r01dec05_007': ['GS-2001B-Q-31-9-007', 'OSCIR', 'GS-2001B-Q-31'],
     # Phoenix
@@ -266,10 +271,10 @@ def pytest_generate_tests(metafunc):
 
         file_list = []
         # for root, dirs, files in os.walk(TESTDATA_DIR):
-        # for ii in ['TReCS']:
-        for ii in ['GMOS', 'NIRI', 'GPI', 'F2', 'GSAOI', 'NICI', 'TReCS',
-                   'Michelle', 'GRACES', 'NIFS', 'GNIRS', 'Phoenix',
-                   'Flamingos', 'hrwfs', 'HOKUPAA', 'OSCIR', 'bHROS']:
+        for ii in ['NIRI']:
+        # for ii in ['GMOS', 'NIRI', 'GPI', 'F2', 'GSAOI', 'NICI', 'TReCS',
+        #            'Michelle', 'GRACES', 'NIFS', 'GNIRS', 'Phoenix',
+        #            'Flamingos', 'hrwfs', 'HOKUPAA', 'OSCIR', 'bHROS']:
             for root, dirs, files in os.walk('{}/{}'.format(TEST_DATA_DIR, ii)):
                 for file in files:
                     if file.endswith(".header"):

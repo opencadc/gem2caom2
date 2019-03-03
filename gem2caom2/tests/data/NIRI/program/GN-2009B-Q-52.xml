@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GN-2009B-Q-52</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GN-2009B-Q-52</h1>
+
+<table>
+ <tr><td>Title:<td>Uranus Cloud Structure after 2007 equinox - NIFS and NIRI</tr>
+ <tr><td>PI:<td>Patrick Irwin</tr>
+ <tr><td>Co-I(s):<td> Nicholas Teanby,  Gary Davis,  Glenn Orton,  Leigh Fletcher</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+Uranus passed through its northern spring equinox in December 2007. Uranus' circulation and cloud structure was expected to change rapidly during this period due to changes in solar energy deposition as the northern hemisphere emerged into sunlight. Observations with UKIRT in 2006, 2007 and 2008 detected a clear change of the latitudinal and vertical cloud structure during this period, but the spatial resolution was limited by atmospheric seeing and the S/N achievable from a 3.8m telescope was only ~10 at some wavelengths. We request time on Gemini North to extend this unique time series of measurements of Uranus' rapidly changing atmosphere into 2009, but with much better resolution and sensitivity. In particular, very high spatial resolution adaptive optics IFU observations of Uranus' limb darkening at different wavelengths will enable us to constrain the vertical profiles of aerosols far more precisely than has been possible previously.
+</div>
+
+
+<h2>Publications using this program's data</h2>
+<ul>
+<li>
+<a href="/searchform/publication=2011Icar..212..339I" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2011Icar..212..339I/abstract" target="_blank">[ADS]</a> Uranus' cloud structure and seasonal variability from Gemini-North and UKIRT observations
+<li>
+<a href="/searchform/publication=2012Icar..218...47I" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2012Icar..218...47I/abstract" target="_blank">[ADS]</a> Further seasonal changes in Uranus' cloud structure observed by Gemini-North and UKIRT
+<li>
+<a href="/searchform/publication=2012Icar..220..369I" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2012Icar..220..369I/abstract" target="_blank">[ADS]</a> The application of new methane line absorption data to Gemini-N/NIFS and KPNO/FTS observations of Uranus' near-infrared spectrum
+<li>
+<a href="/searchform/publication=2013Icar..223..684T" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2013Icar..223..684T/abstract" target="_blank">[ADS]</a> Uranus' cloud particle properties and latitudinal methane variation from IRTF SpeX observations
+</ul>
+
+
+</body>
+</html>
