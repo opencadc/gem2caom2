@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GN-2006A-C-11</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GN-2006A-C-11</h1>
+
+<table>
+ <tr><td>Title:<td>NIFS 2006A Guaranteed Time</tr>
+ <tr><td>PI:<td>Peter McGregor</tr>
+ <tr><td>Co-I(s):<td> Peter McGregor,  Tracy Beck,  Sylvie Beaulieu,  Robert Blum,  Peter McGregor,  Thaisa Storchi-Bergmann,  Michael Dopita,  Andrew Wilson,  Matt O'Dowd</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+NGC 5102 is a nearby (3.4 Mpc) gas-rich post-starburst SO galaxy with a bright stellar nucleus that is unresolved with HST. Our long-slit optical spectra (resolution 4 A) and HST images show a dramatic change in stellar population over the inner few arcsec. The optical light of the nucleus is dominated by A-type stars. This kind of nucleus, with its very recent massive star formation, is an excellent candidate location for a growing black hole. We propose to observe the kinematics of the stellar population around the nucleus with NIFS+ALTAIR/NGS, to place 
+stringent limits on the enclosed dynamical mass within a radius of a few parsecs.
+
+//  Embedded Star Clusters in Galactic Giant H II Regions  //
+W43 is an obscured giant H II region in the vicinity of the Galactic center. At its core is a super-star cluster that is similar in many ways to the massive super-star clusters formed during galaxy mergers, such as those in NGC 4038/9 (the Antennae). Knowledge of the mass function of stars formed during these intense starbursts is key to understanding the impact of mergers on galaxy evolution. Only the super-star clusters in our own galaxy system are close enough to study individual stars and hence directly determine the stellar initial mass function. We propose to use NIFS+ALTAIR/LGS to perform a detailed investigation of the stellar content of the embedded cluster at the core of W43.
+
+//   The Launch Mechanism of Young Stellar Object Jets   //
+
+NIFS+ALTAIR/NGS will be used to study three active T Tauri stars that possess emission-line micro-jets within ~ 1" of the star. NIFS has similar spatial and spectral resolution to STIS on HST. STIS has revealed tantalising evidence at optical wavelengths in DG Tau and RW Aur of rotation of the jet about the outflow axis. If confirmed, this is a strong indication that T Tauri star outflows are launched from their circumstellar disks by magnetocentrifugal forces. Near-infrared spectra recorded with NIFS will be less affected by extinction than the STIS data. Emission lines of [Fe II] in the J and H bands and H_2 in the K band will probe shock structures in the
+inner jets.
+
+//   What Powers Activity in the Cores of Seyfert Galaxies?   ///
+
+The near-infrared region contains several spectral features that by virtue of their low excitation can be excited by either star formation or AGN activity. We will use high resolution 2D spatial information, in addition to excitation and velocity data, to explore the origins of the [Fe II] and H_2 emission in Seyfert galaxies in which the radio emission is spatially resolved on arcsecond scales. These features can arise in shocks associated with the radio jet, or by X-ray photoionization from the AGN. Radial velocity dispersion profiles of the circumnuclear stellar population measured from 2.3 micron CO absorption bands will be used to constrain the central black hole mass. 
+
+//   Studies of the Nearest Powerful Radio Galaxy - Cygnus A   //
+
+The nearby galaxy Cygnus A (z=0.056) is the most powerful radio galaxy to a redshift of z=1 (Stockton &amp; Ridgway 1996). High
+spatial resolution studies of its core region using adaptive optics and near-infrared integral field spectroscopy will reveal how powerful radio jets interact with the dense circumnuclear interstellar medium and how circumnuclear gas is excited. Gas dynamics revealed with 2D imaging spectroscopy of H I Pa emission will be used to infer the central black hole mass. The nature of the "second nucleus" seen in previous AO imaging (Canalizo et al. 2003) will be tested with high spatial resolution spectroscopy.
+
+//   High-Mass Protostar Environments - K3-50A   //
+
+K3-50A is an ultracompact H II region with a diameter of 2" at a distance of 8.7 kpc. Its luminosity of 2.1X10^6 Lsun suggests that it is powered by either a single ZAMS O5 star, or some larger number of less massive stars. Recent K-band speckle interferometry of K3-50A resolves the central 1"x1" region into at least 7 point-like objects. Overall they follow a cone-shaped nebulosity that is aligned with a CO outflow. NIFS imaging spectroscopy will reveal whether these are stars comprising part of a exciting star cluster, or whether they are the clumpy surface of an outflow cavity. More generally, multiple less massive star may commonly excite ultracompact H II regions, instead of single extremely massive stars.
+
+//   Gravitationally Lensed Quasars as Probes of AGN Emission-Line Regions and Black Hole Masses   //
+
+We are developing a new method to image the continuum and broad emission line regions (BELRs) of gravitationally-lensed quasars. The method is based on differential microlensing of different-sized emitting regions for each of the macro-images in a multiply-imaged quasar. Numerical modelling determines a statistical estimate of the sizes of the BELRs in several lines and the continuum. We are also able to measure the relative spatial locations of the BELRs and their covering factors. We require a sample of 15-20 lenses. The program has begun with GMOS imaging from Gemini North and Gemini South. We propose here to explore the potential of expanding the program to NIFS+ALTAIR NIR integral-field spectroscopy.
+
+</div>
+
+
+<h2>Publications using this program's data</h2>
+<ul>
+<li>
+<a href="/searchform/publication=2008AJ....135.1708B" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2008AJ....135.1708B/abstract" target="_blank">[ADS]</a> The Ionizing Stars of the Galactic Ultra-Compact H II Region G45.45+0.06
+<li>
+<a href="/searchform/publication=2009AJ....138..489B" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2009AJ....138..489B/abstract" target="_blank">[ADS]</a> High Angular Resolution Imaging Spectroscopy of the Galactic Ultracompact H II Region K3-50A
+<li>
+<a href="/searchform/publication=2016ApJ...817....2W" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2016ApJ...817....2W/abstract" target="_blank">[ADS]</a> A 5 x 109 Msun Black Hole in NGC 1277 from Adaptive Optics Spectroscopy
+</ul>
+
+
+</body>
+</html>

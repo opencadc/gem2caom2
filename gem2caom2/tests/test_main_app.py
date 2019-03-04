@@ -234,6 +234,7 @@ LOOKUP = {
     'N20120909S0132': ['GN-2012B-Q-73-172-002', 'NIFS', 'GN-2012B-Q-73'],
     'N20160426S0092': ['GN-2016A-Q-35-107-001', 'NIFS', 'GN-2016A-Q-35'],
     'N20161007S0382': ['GN-2016B-Q-27-31-007', 'NIFS', 'GN-2016B-Q-27'],
+    'N20060723S0132': ['GN-2006A-C-11-670-006', 'NIFS', 'GN-2006A-C-11'],
     # NIRI
     'N20020405S0044': ['GN-2002A-C-4-2-001', 'NIRI', ''],
     'N20020620S0021': ['GN-2002A-C-5-1-001', 'NIRI', 'GN-2002A-C-5'],
@@ -271,7 +272,7 @@ def pytest_generate_tests(metafunc):
 
         file_list = []
         # for root, dirs, files in os.walk(TESTDATA_DIR):
-        for ii in ['NIRI']:
+        for ii in ['NIFS']:
         # for ii in ['GMOS', 'NIRI', 'GPI', 'F2', 'GSAOI', 'NICI', 'TReCS',
         #            'Michelle', 'GRACES', 'NIFS', 'GNIRS', 'Phoenix',
         #            'Flamingos', 'hrwfs', 'HOKUPAA', 'OSCIR', 'bHROS']:

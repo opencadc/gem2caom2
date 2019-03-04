@@ -55,6 +55,7 @@ An application to generate CAOM2 Observations from FITS file headers.
    1. flat:   GN-2012A-Q-57-151-005
    1. flat:   GN-2011B-Q-59-70-016 (Ronchi flat)
    1. arc:    GN-2012A-Q-2-22-007
+   1. image:  GN-2006A-C-11-670-006
 1. GSAOI imaging:
    1. object: GS-2013B-Q-61-8-008
    1. object: GS-2012B-SV-499-21-002

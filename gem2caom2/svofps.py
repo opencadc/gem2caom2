@@ -250,7 +250,7 @@ class FilterMetadata(object):
         if self.instrument in ['Phoenix', 'michelle']:
             return None
         elif self._resolving_power is None:
-            if self.instrument in ['NIFS', 'NIRI']:
+            if self.instrument is 'NIRI':
                 return None
             else:
                 self.adjust_resolving_power()

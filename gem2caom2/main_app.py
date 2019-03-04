@@ -1398,12 +1398,18 @@ def _update_chunk_energy_nifs(chunk, data_product_type, obs_id, filter_name):
     # H	1.48	1.82	JH	HK
     # K	1.98	2.41	HK	HK
 
+    # DB - 01-03-19
+    # NIFS:  this apparently uses ‘K_Short’ and ‘K_Long’ gratings (in json
+    # ‘disperser’) that I think are the same as the other K grating but tuned
+    # (rotated) to different wavelengths than normal.  So these should use
+    # the same resolution values as the K grating lookup.
+
     nifs_lookup = {'Z':       {'ZJ': [1.05, 0.94, 1.15, 4990.0, 60.1]},
                    'J':       {'ZJ': [1.25, 1.15, 1.33, 6040.0, 49.6]},
                    'H':       {'JH': [1.65, 1.49, 1.80, 5290.0, 56.8]},
                    'K':       {'HK': [2.20, 1.99, 2.40, 5290.0, 56.7]},
-                   'K_Short': {'HK': [2.20, 1.98, 2.41, None, None]},
-                   'K_Long':  {'HK': [2.20, 1.98, 2.41, None, None]}}
+                   'K_Short': {'HK': [2.20, 1.98, 2.41, 5290.0, 56.7]},
+                   'K_Long':  {'HK': [2.20, 1.98, 2.41, 5290.0, 56.7]}}
 
     fm = em.get_filter_metadata(em.Inst.NIFS, filter_name)
 
@@ -1426,6 +1432,9 @@ def _update_chunk_energy_nifs(chunk, data_product_type, obs_id, filter_name):
                 'NIFS: mystery grating {} for {}'.format(grating, obs_id))
     elif data_product_type == DataProductType.IMAGE:
         logging.debug('NIFS: imaging for {}.'.format(obs_id))
+        # DB - 01-03-19
+        # NIFS images should just use the standard imaging procedure for
+        # resolution (central_wavelength/bandpass).
     else:
         raise mc.CadcException(
             'NIFS: No spectroscopy information for {}'.format(obs_id))
