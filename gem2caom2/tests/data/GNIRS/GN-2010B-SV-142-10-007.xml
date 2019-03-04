@@ -108,11 +108,11 @@
                       <caom2:range>
                         <caom2:start>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>1.0899999999999999</caom2:val>
+                          <caom2:val>1.17</caom2:val>
                         </caom2:start>
                         <caom2:end>
                           <caom2:pix>1.5</caom2:pix>
-                          <caom2:val>1.25</caom2:val>
+                          <caom2:val>1.33</caom2:val>
                         </caom2:end>
                       </caom2:range>
                     </caom2:axis>
@@ -120,6 +120,7 @@
                     <caom2:ssysobs>TOPOCENT</caom2:ssysobs>
                     <caom2:ssyssrc>TOPOCENT</caom2:ssyssrc>
                     <caom2:bandpassName>J</caom2:bandpassName>
+                    <caom2:resolvingPower>7.812499999999993</caom2:resolvingPower>
                   </caom2:energy>
                   <caom2:time>
                     <caom2:axis>

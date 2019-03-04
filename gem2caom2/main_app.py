@@ -1439,52 +1439,146 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name):
     logging.debug('Begin _update_chunk_energy_gnirs')
     mc.check_param(chunk, Chunk)
 
+    # DB - 07-02-19
+    # Spectroscopy:
+    #
+    # a) long-slit
+    #
+    # (Note: spatial WCS info is in the primary header for GNIRS apparently)
+    #
+    # https://www.gemini.edu/sciops/instruments/gnirs/spectroscopy is the
+    # relevant web page.  Grating, Order-Band, Blocking Filter Range and the
+    # two Resolving Power columns (one for each camera) are the important
+    # columns.
+    #
+    # Need to know:
+    #
+    # grating: from json ‘disperser’ (need 10, 32 or 111 numbers only)
+    # Note: if disperser contains string “XD” then the spectrum is cross
+    # dispersed.  See b) below.
+    #
+    # filter: from json ‘filter_name’
+    # camera: Short or Long substring from json ‘camera’ value (i.e. “Blue”
+    # or “Red” aren’t important)
+    # central wavelength: from json ‘central_wavelength’
+    # NAXIS2 extension header value
+    #
+    # crval = central_wavelength
+    #
+    # use ‘Blocking Filter Range’ for the appropriate filter
+    # (e.g. X, J, H...) to determine min/max wavelengths as the rough
+    # estimate of the wavelength coverage.
+
+    # b) cross-dispersed (when ‘disperser’ contains ‘?XD’ string)
+    #
+    # Wavelength ranges given here:
+    # https://www.gemini.edu/sciops/instruments/gnirs/spectroscopy/crossdispersed-xd-spectroscopy/xd-prisms
+    #
+    # You need the ‘Short’ or ‘Long’ from the json ‘camera’ value and the
+    # ‘SXD’ or ‘LXD’ from the ‘disperser’ value to look up the coverage.
+    #
+    # Imaging:
+    #
+    # Not done very often.  Filter info is here:
+    # https://www.gemini.edu/sciops/instruments/gnirs/imaging.  For filter
+    # ID’s I think json ‘filter_name’ value of J_(order_5) corresponds to
+    # “J (order blocking)” in this table.  ‘filter_name’ value of J
+    # corresponds to “J (Mauna Kea)“.
+
+    # DB - 01-03-19
+    # Resolution is in the last two columns of the table here, a different
+    # value for each grating/filter combination as well as camera value:
+    # https://www.gemini.edu/sciops/instruments/gnirs/spectroscopy.
+    # Add that resolution for each grating/filter (and camera) combination
+    # sort of as \for the bandpasses.  Already know the grating value.
+    # Then, for both long-slit and cross-dispersed spectroscopy need to look
+    # at json ‘camera’ (or header CAMERA) value (does it contain ‘short’ or
+    # ‘long’) and the json focal_plane_mask value (or SLIT header value;
+    # you need only the numeric value at the start of the string).  The
+    # camera value tells you which column to look under for the resolution.
+    # The best estimate of the resolution, R, is then given by:
+    #
+    # R = 0.3 x tabulated value / slit width  (for ‘short’ camera observations)
+    # R = 0.1 x tabulated value / slit width  (for ‘long’ camera observations)
+    #
+    # i.e. the resolution gets lower when a wider slit is in place
+    # (the tabulated values are for 0.3" and 0.1" slits for the short/long
+    # cameras respectively, hence the numbers in the start of each equation).
+    # Basically the camera is producing an image of the slit at each
+    # wavelength but if the slit is wider the dispersed image is also wider
+    # and so different colours are blended together more so the resolution
+    # gets worse as you open up the slit (but you get more light through a
+    # wider slit so it’s a compromise between throughput and spectral
+    # resolution).
+
     fm = FilterMetadata('GNIRS')
     if data_product_type == DataProductType.SPECTRUM:
-        logging.debug('gnirs: SpectralWCS Spectroscopy mode.')
+        logging.debug(
+            'gnirs: SpectralWCS Spectroscopy mode for {}.'.format(obs_id))
         fm.central_wl = em.om.get('central_wavelength')
         disperser = em.om.get('disperser')
         if 'XD' in disperser:
-            logging.debug('gnirs: cross dispersed mode.')
+            logging.error('gnirs: cross dispersed mode.')
             # https://www.gemini.edu/sciops/instruments/gnirs/spectroscopy/
             # crossdispersed-xd-spectroscopy/xd-prisms
-            # crossdispersed-xd-spectroscopy/xd-prisms
-            xd_mode = {'SB+SXD': [0.9, 2.5],
-                       'LB+LXD': [0.9, 2.5],
-                       'LB+SXD': [1.2, 2.5]}
-            bounds = None
+            # 0 = lower
+            # 1 = upper
+            # 2 = spectral resolution with 2-pix wide slit
+            xd_mode = {'SB+SXD': [0.9, 2.5, 2.0],
+                       'LB+LXD': [0.9, 2.5, 2.3],
+                       'LB+SXD': [1.2, 2.5, 2.5]}
+            lookup = None
             coverage = disperser[-3:]
             camera = em.om.get('camera')
             if camera.startswith('Short'):
-                bounds = xd_mode['{}+{}'.format('SB', coverage)]
+                lookup = '{}+{}'.format('SB', coverage)
             elif camera.startswith('Long'):
-                bounds = xd_mode['{}+{}'.format('LB', coverage)]
-            if not bounds:
+                lookup = '{}+{}'.format('LB', coverage)
+            if lookup is None:
                 raise mc.CadcException(
                     'gnirs: Do not understand xd mode {} {}'
                         .format(camera, coverage))
+            bounds = xd_mode[lookup]
+
+            focal_plane_mask = em.om.get('focal_plane_mask')
+            slit_width = 1.0
+            if 'arcsec' in focal_plane_mask:
+                slit_width = float(focal_plane_mask.split('arcsec')[0])
+            if camera.startswith('Long'):
+                fm.resolving_power = _calc_gnirs_resolving_power(
+                    0.1, xd_mode[lookup][2], slit_width)
+            elif camera.startswith('Short'):
+                fm.resolving_power = _calc_gnirs_resolving_power(
+                    0.3, xd_mode[lookup][2], slit_width)
 
         else:
-            logging.debug('gnirs: long slit mode.')
+            logging.debug('gnirs: long slit mode for {}.'.format(obs_id))
             # https://www.gemini.edu/sciops/instruments/gnirs/spectroscopy
-            long_slit_mode = {'11': {'X': [1.03, 1.17],
-                                     'J': [1.17, 1.37],
-                                     'H': [1.47, 1.80],
-                                     'K': [1.91, 2.49],
-                                     'L': [2.80, 4.20],
-                                     'M': [4.40, 6.00]},
-                              '32': {'X': [1.03, 1.17],
-                                     'J': [1.17, 1.37],
-                                     'H': [1.49, 1.80],
-                                     'K': [1.91, 2.49],
-                                     'L': [2.80, 4.20],
-                                     'M': [4.40, 6.00]},
-                              '111': {'X': [1.03, 1.17],
-                                      'J': [1.17, 1.37],
-                                      'H': [1.49, 1.80],
-                                      'K': [1.91, 2.49],
-                                      'L': [2.80, 4.20],
-                                      'M': [4.40, 6.00]}}
+            # 0 - min wavelength
+            # 1 - max wavelength
+            # 2 - 'short' camera resolution
+            # 3 - 'long' camera resolution
+            # 4 - Since November 2012 and for the cross-dispersed mode with
+            # the 2 pix wide slit only resolving powers are somewhat lower, as
+            # follows: X-1400; J-1400, H-1400; K-1300
+            long_slit_mode = {'11': {'X': [1.03, 1.17, 570, 2100],
+                                     'J': [1.17, 1.37, 570, 1600],
+                                     'H': [1.47, 1.80, 570, 1700],
+                                     'K': [1.91, 2.49, 570, 1700],
+                                     'L': [2.80, 4.20, 570, 1800],
+                                     'M': [4.40, 6.00, 570, 1200]},
+                              '32': {'X': [1.03, 1.17, 1700, 5100, 1400],
+                                     'J': [1.17, 1.37, 1600, 4800, 1400],
+                                     'H': [1.49, 1.80, 1700, 5100, 1400],
+                                     'K': [1.91, 2.49, 1700, 5100, 1300],
+                                     'L': [2.80, 4.20, 1800, 5400, 1800],
+                                     'M': [4.40, 6.00, 1240, 3700, 1240]},
+                              '111': {'X': [1.03, 1.17, 6600, 17800],
+                                      'J': [1.17, 1.37, 7200, 17000],
+                                      'H': [1.49, 1.80, 5900, 17800],
+                                      'K': [1.91, 2.49, 5900, 17800],
+                                      'L': [2.80, 4.20, 6400, 19000],
+                                      'M': [4.40, 6.00, 4300, 12800]}}
             bandpass = filter_name[0]
             grating = disperser.split('_')[0]
             bounds = long_slit_mode[grating][bandpass]
@@ -1492,12 +1586,34 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name):
                 raise mc.CadcException(
                     'gnirs: Do not understand long slit mode with {} {}'
                         .format(bandpass, bounds))
+            camera = em.om.get('camera')
+            focal_plane_mask = em.om.get('focal_plane_mask')
+            slit_width = 1.0
+            if 'arcsec' in focal_plane_mask:
+                slit_width = float(focal_plane_mask.split('arcsec')[0])
+            if camera.startswith('Long'):
+                fm.resolving_power = _calc_gnirs_resolving_power(
+                    0.1, long_slit_mode[grating][bandpass][2], slit_width)
+            elif camera.startswith('Short'):
+                date_time = ac.get_datetime(em.om.get('ut_datetime'))
+                if date_time > ac.get_datetime('2012-11-01T00:00:00'):
+                    fm.resolving_power = _calc_gnirs_resolving_power(
+                        0.3, long_slit_mode[grating][bandpass][4], slit_width)
+                else:
+                    fm.resolving_power = _calc_gnirs_resolving_power(
+                        0.3, long_slit_mode[grating][bandpass][3], slit_width)
+            else:
+                raise mc.CadcException(
+                    'GNIRS: Mystery camera value {} for {}'.format(camera,
+                                                                   obs_id))
 
         fm.set_bandpass(bounds[1], bounds[0])
 
     elif data_product_type == DataProductType.IMAGE:
-        logging.debug('gnirs: SpectralWCS imaging mode.')
+        logging.debug('gnirs: SpectralWCS imaging mode for {}.'.format(obs_id))
         # https://www.gemini.edu/sciops/instruments/gnirs/imaging
+        # 0 - min wavelength
+        # 1 - max wavelength
         imaging = {'Y': [0.97, 1.07],
                    'J': [1.17, 1.33],
                    'J order blocking)': [1.17, 1.37],
@@ -1514,7 +1630,7 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name):
 
         bounds = imaging[bandpass]
 
-        fm.central_wl = bounds[0]
+        fm.set_central_wl(bounds[1], bounds[0])
         fm.set_bandpass(bounds[1], bounds[0])
     else:
         raise mc.CadcException(
@@ -1522,6 +1638,10 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name):
                 data_product_type, obs_id))
     _build_chunk_energy(chunk, filter_name, fm)
     logging.debug('End _update_chunk_energy_gnirs')
+
+
+def _calc_gnirs_resolving_power(ratio, initial_value, slit_width):
+    return ratio * initial_value / slit_width
 
 
 # select filter_id, wavelength_central, wavelength_lower, wavelength_upper
