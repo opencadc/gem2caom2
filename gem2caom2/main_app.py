@@ -881,10 +881,15 @@ def update(observation, **kwargs):
                                     observation.planes[p].data_product_type,
                                     observation.observation_id,
                                     filter_name)
-                            elif instrument in [em.Inst.GSAOI, em.Inst.HRWFS]:
+                            elif instrument == em.Inst.GSAOI:
                                 _update_chunk_energy_general(
                                     c, instrument, [DataProductType.IMAGE],
                                     observation.planes[p].data_product_type,
+                                    observation.observation_id,
+                                    filter_name)
+                            elif instrument == em.Inst.HRWFS:
+                                _update_chunk_energy_hrwfs(
+                                    c, observation.planes[p].data_product_type,
                                     observation.observation_id,
                                     filter_name)
                             elif instrument == em.Inst.NICI:
@@ -897,11 +902,8 @@ def update(observation, **kwargs):
                                     observation.observation_id,
                                     filter_name)
                             elif instrument == em.Inst.MICHELLE:
-                                _update_chunk_energy_general(
-                                    c, instrument,
-                                    [DataProductType.IMAGE,
-                                     DataProductType.SPECTRUM],
-                                    observation.planes[p].data_product_type,
+                                _update_chunk_energy_michelle(
+                                    c, observation.planes[p].data_product_type,
                                     observation.observation_id,
                                     filter_name)
                             elif instrument == em.Inst.NIFS:
@@ -1248,6 +1250,79 @@ def _update_chunk_energy_general(chunk, instrument, allowable_types,
     logging.debug('End _update_chunk_energy_{}'.format(instrument))
 
 
+def _update_chunk_energy_hrwfs(chunk, data_product_type, obs_id, filter_name):
+    """General chunk-level Energy WCS construction."""
+    logging.debug('Begin _update_chunk_energy_hrwfs')
+    mc.check_param(chunk, Chunk)
+
+    if data_product_type == DataProductType.IMAGE:
+        logging.debug('hrwfs Spectral WCS {} mode.'.format(data_product_type))
+        filter_md = em.get_filter_metadata(em.Inst.HRWFS, filter_name)
+        temp = []
+        for ii in filter_name.split('+'):
+            temp.append(ii.split('_')[0])
+        filter_name = '+'.join(i for i in temp)
+        _build_chunk_energy(chunk, filter_name, filter_md)
+    else:
+        raise mc.CadcException(
+            'hrwfs no Spectral WCS support when DataProductType {} for {}'.format(
+                data_product_type, obs_id))
+
+    logging.debug('End _update_chunk_energy_hrwfs')
+
+
+def _update_chunk_energy_michelle(chunk, data_product_type, obs_id,
+                                  filter_name):
+    """General chunk-level Energy WCS construction."""
+    logging.debug('Begin _update_chunk_energy_michelle')
+    mc.check_param(chunk, Chunk)
+
+    # DB - 01-03-19
+    #
+    # no resolution for imaging mode
+    #
+    # Michelle spectroscopy:
+    # json ‘disperser’, e.g. LowN, MedN1, MedN2, LowQ, Echelle
+    # json ‘focal_plane_mask’, e.g. 2_pixels (need the ‘2’)
+    #
+    # Disp.    R    final R as function of slit width
+    # --------------------------------------------------
+    # LowN    200    R x 2/slit width
+    # LowQ    110    R x 3/slit width
+    # MedN1    1000    R x 2/slit width
+    # MedN2    3000    R x 2/slit width
+    # Echelle    30000    R x 2/slit width (very approximate)
+
+    # 0 = R
+    # 1 = ratio for slit width
+    lookup = {'LowN': [200, 2.0],
+              'LowQ': [110, 3.0],
+              'MedN1': [1000, 2.0],
+              'MedN2': [3000, 2.0],
+              'Echelle': [30000, 2.0]
+              }
+
+    if data_product_type in [DataProductType.IMAGE, DataProductType.SPECTRUM]:
+        logging.debug(
+            'michelle: Spectral WCS {} mode.'.format(data_product_type))
+        filter_md = em.get_filter_metadata(em.Inst.MICHELLE, filter_name)
+        if data_product_type == DataProductType.SPECTRUM:
+            disperser = em.om.get('disperser')
+            focal_plane_mask = em.om.get('focal_plane_mask')
+            slit_width = float(focal_plane_mask.split('_')[0])
+            logging.error('disperser is {} focal_plane_mask is {}'.format(disperser, focal_plane_mask))
+            filter_md.resolving_power = \
+                lookup[disperser][0] * lookup[disperser][1] / slit_width
+            logging.error('resolving power is {}'.format(filter_md.resolving_power))
+        _build_chunk_energy(chunk, filter_name, filter_md)
+    else:
+        raise mc.CadcException(
+            'michelle: no Spectral WCS support when DataProductType {} for '
+            '{}'.format(data_product_type, obs_id))
+
+    logging.debug('End _update_chunk_energy_michelle')
+
+
 # select filter_id, wavelength_central, wavelength_lower, wavelength_upper
 # from gsa..gsa_filters where instrument = 'NICI'
 # 0 - central
@@ -1533,9 +1608,11 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name):
             # 0 = lower
             # 1 = upper
             # 2 = spectral resolution with 2-pix wide slit
-            xd_mode = {'SB+SXD': [0.9, 2.5, 2.0],
-                       'LB+LXD': [0.9, 2.5, 2.3],
-                       'LB+SXD': [1.2, 2.5, 2.5]}
+            # DB - 04-03-19 - Change the last number in each row to 1800.0
+            # since the resolving power is the same for all 3 cases
+            xd_mode = {'SB+SXD': [0.9, 2.5, 1800.0],
+                       'LB+LXD': [0.9, 2.5, 1800.0],
+                       'LB+SXD': [1.2, 2.5, 1800.0]}
             lookup = None
             coverage = disperser[-3:]
             camera = em.om.get('camera')

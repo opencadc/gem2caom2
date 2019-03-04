@@ -116,7 +116,7 @@
                     <caom2:specsys>TOPOCENT</caom2:specsys>
                     <caom2:ssysobs>TOPOCENT</caom2:ssysobs>
                     <caom2:ssyssrc>TOPOCENT</caom2:ssyssrc>
-                    <caom2:bandpassName>V_G0153</caom2:bandpassName>
+                    <caom2:bandpassName>V</caom2:bandpassName>
                     <caom2:resolvingPower>4.265393483426581</caom2:resolvingPower>
                   </caom2:energy>
                   <caom2:time>
