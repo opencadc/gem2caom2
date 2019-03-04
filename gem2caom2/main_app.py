@@ -409,7 +409,7 @@ def get_obs_intent(header):
     """
     result = ObservationIntentType.CALIBRATION
     cal_values = ['GCALflat', 'Bias', 'BIAS', 'Twilight', 'Ar', 'FLAT',
-                  'flat', 'ARC', 'Domeflat', 'DARK', 'dark']
+                  'flat', 'ARC', 'Domeflat', 'DARK', 'dark', 'gcal']
     dl = header.get('DATALAB')
     lookup = _get_obs_class(header)
     logging.debug('observation_class is {} for {}'.format(lookup, dl))
