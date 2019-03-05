@@ -119,7 +119,6 @@ __all__ = ['main_app2', 'update', 'APPLICATION']
 
 APPLICATION = 'gem2caom2'
 
-
 # GPI radius == 2.8 arcseconds, according to Christian Marois via DB 02-07-19
 # DB - 18-02-19 - Replace “5.0” for “2.8" for GPI field of view.
 # NOTE:  To be more accurate for GRACES this size could be reduced
@@ -739,10 +738,10 @@ def _is_oscir_calibration(header):
 def _is_phoenix_calibration(header):
     object_value = header.get('OBJECT').lower()
     if ('flat ' in object_value or
-        'dark ' in object_value or
-        'arc' in object_value or
-        'comp' in object_value or
-        'lamp' in object_value or
+            'dark ' in object_value or
+            'arc' in object_value or
+            'comp' in object_value or
+            'lamp' in object_value or
             'comparison' in object_value):
         return True
     return False
@@ -783,7 +782,7 @@ def accumulate_fits_bp(bp, obs_id, file_id):
     if not (instrument in [em.Inst.GPI, em.Inst.PHOENIX, em.Inst.HOKUPAA,
                            em.Inst.OSCIR, em.Inst.BHROS] or
             (instrument == em.Inst.GRACES and mode is not None and
-                mode != 'imaging')):
+             mode != 'imaging')):
         bp.configure_position_axes((1, 2))
 
     bp.configure_time_axis(3)
@@ -853,10 +852,10 @@ def update(observation, **kwargs):
                             'GPI: Setting chunks to None for part {} for {}'.format(
                                 part, observation.observation_id))
                         observation.planes[p].artifacts[a].parts[part].chunks \
-                            = TypedList(Chunk,)
+                            = TypedList(Chunk, )
                         continue
                     for c in observation.planes[p].artifacts[a].parts[
-                            part].chunks:
+                        part].chunks:
                         header = headers[int(part)]
 
                         # energy WCS
@@ -987,6 +986,23 @@ def update(observation, **kwargs):
             observation.proposal.pi_name = program['pi_name']
             observation.proposal.title = program['title']
 
+    # DB - 04-03-19  TODO
+    # Example of GMOS composites:  any datasets with datalabels like
+    # GS-CAL20190301-4-046-g-bias, GS-CAL20181219-4-021-g-flat and
+    # GS-CAL20130103-3-001-rg-fringe are composite processed bias/flat/fringe
+    # images.  Corresponding file names are gS20190301S0556_bias.fits,
+    # gS20181219S0216_flat.fits, and rgS20130103S0098_FRINGE.fits.
+    # (With some naming inconsistencies perhaps.)   It also won’t always be
+    # possible to determine the members since the information isn’t always in
+    # the headers.
+    # GMOS:  I don’t think there are any GMOS processed science observations
+    # that are ‘composites’ but there will be some images with one or two
+    # processed planes.  e.g. datalable GS-2010A-Q-36-5-246-rg, file name
+    # rgS20100212S0301.fits.  Basically any Gemini image with a ‘-[a-z|A-Z]’
+    # suffix to the datalabel is a processed dataset.
+    #
+    # File names can have a suffix AND a prefix.
+
     except Exception as e:
         logging.error('Error {} for {}'.format(e, observation.observation_id))
         tb = traceback.format_exc()
@@ -997,7 +1013,6 @@ def update(observation, **kwargs):
 
 
 def _build_chunk_energy(chunk, filter_name, fm):
-
     # If n_axis=1 (as I guess it will be for all but processes GRACES
     # spectra now?) that means crpix=0.5 and the corresponding crval would
     # central_wl - bandpass/2.0 (i.e. the minimum wavelength).   It is fine
@@ -1130,7 +1145,8 @@ def _update_chunk_energy_niri(chunk, data_product_type, obs_id, filter_name):
                                                                  obs_id))
     else:
         raise mc.CadcException(
-            'NIRI: Do not understand mode {} for {}'.format(data_product_type, obs_id))
+            'NIRI: Do not understand mode {} for {}'.format(data_product_type,
+                                                            obs_id))
 
     _build_chunk_energy(chunk, filter_name, fm)
     logging.debug('End _update_chunk_energy_niri')
@@ -1185,7 +1201,8 @@ def _update_chunk_energy_gpi(chunk, data_product_type, obs_id, filter_name):
     logging.debug('End _update_chunk_energy_gpi')
 
 
-def _update_chunk_energy_f2(chunk, header, data_product_type, obs_id, filter_name):
+def _update_chunk_energy_f2(chunk, header, data_product_type, obs_id,
+                            filter_name):
     """NIRI-specific chunk-level Energy WCS construction."""
     logging.debug('Begin _update_chunk_energy_f2')
     mc.check_param(chunk, Chunk)
@@ -1310,10 +1327,12 @@ def _update_chunk_energy_michelle(chunk, data_product_type, obs_id,
             disperser = em.om.get('disperser')
             focal_plane_mask = em.om.get('focal_plane_mask')
             slit_width = float(focal_plane_mask.split('_')[0])
-            logging.error('disperser is {} focal_plane_mask is {}'.format(disperser, focal_plane_mask))
+            if disperser not in lookup:
+                raise mc.CadcException(
+                    'michelle: Mystery disperser {} for {}'.format(disperser,
+                                                                   obs_id))
             filter_md.resolving_power = \
                 lookup[disperser][0] * lookup[disperser][1] / slit_width
-            logging.error('resolving power is {}'.format(filter_md.resolving_power))
         _build_chunk_energy(chunk, filter_name, filter_md)
     else:
         raise mc.CadcException(
@@ -1479,12 +1498,12 @@ def _update_chunk_energy_nifs(chunk, data_product_type, obs_id, filter_name):
     # (rotated) to different wavelengths than normal.  So these should use
     # the same resolution values as the K grating lookup.
 
-    nifs_lookup = {'Z':       {'ZJ': [1.05, 0.94, 1.15, 4990.0, 60.1]},
-                   'J':       {'ZJ': [1.25, 1.15, 1.33, 6040.0, 49.6]},
-                   'H':       {'JH': [1.65, 1.49, 1.80, 5290.0, 56.8]},
-                   'K':       {'HK': [2.20, 1.99, 2.40, 5290.0, 56.7]},
+    nifs_lookup = {'Z': {'ZJ': [1.05, 0.94, 1.15, 4990.0, 60.1]},
+                   'J': {'ZJ': [1.25, 1.15, 1.33, 6040.0, 49.6]},
+                   'H': {'JH': [1.65, 1.49, 1.80, 5290.0, 56.8]},
+                   'K': {'HK': [2.20, 1.99, 2.40, 5290.0, 56.7]},
                    'K_Short': {'HK': [2.20, 1.98, 2.41, 5290.0, 56.7]},
-                   'K_Long':  {'HK': [2.20, 1.98, 2.41, 5290.0, 56.7]}}
+                   'K_Long': {'HK': [2.20, 1.98, 2.41, 5290.0, 56.7]}}
 
     fm = em.get_filter_metadata(em.Inst.NIFS, filter_name)
 
@@ -1595,14 +1614,72 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name):
     # wider slit so it’s a compromise between throughput and spectral
     # resolution).
 
+    # long slit mode information source:
+    # https://www.gemini.edu/sciops/instruments/gnirs/spectroscopy
+    # 0 - min wavelength
+    # 1 - max wavelength
+    # 2 - 'short' camera resolution
+    # 3 - 'long' camera resolution
+    # 4 - Since November 2012 and for the cross-dispersed mode with
+    # the 2 pix wide slit only resolving powers are somewhat lower, as
+    # follows: X-1400; J-1400, H-1400; K-1300, for 'short' camera
+    # resolution
+
+    # cross-dispersion information:
+    # Change xd_mode to include grating ID (e.g. ‘32’ or ‘10’ or ‘110’)
+    # and two more configurations:
+    # xd_mode = {‘SB+SXD+32’: [0.9, 2.5, 1800.0],
+    # ‘LB+LXD+10’: [0.9, 2.5, 1800.0],
+    # ‘LB+SXD+10’: [1.2, 2.5, 1800.0],
+    # ‘SB+SXD+110’:[0.9, 2.5, 5400.0],
+    # ‘LB+SXD+110’:[0.9, 2.5, 5400.0],
+    # ‘SB+LXD+32’:{0.9, 2.5, 5400.0]}
+
+    gnirs_lookup = {'11': {'X': [1.03, 1.17, 570, 2100],
+                           'J': [1.17, 1.37, 570, 1600],
+                           'H': [1.47, 1.80, 570, 1700],
+                           'K': [1.91, 2.49, 570, 1700],
+                           'L': [2.80, 4.20, 570, 1800],
+                           'M': [4.40, 6.00, 570, 1200],
+                           'LB+LXD': [0.9, 2.5, 1800],
+                           'LB+SXD': [1.2, 2.5, 1800]},
+                    '32': {'X': [1.03, 1.17, 1700, 5100, 1400],
+                           'J': [1.17, 1.37, 1600, 4800, 1400],
+                           'H': [1.49, 1.80, 1700, 5100, 1400],
+                           'K': [1.91, 2.49, 1700, 5100, 1300],
+                           'L': [2.80, 4.20, 1800, 5400, 1800],
+                           'M': [4.40, 6.00, 1240, 3700, 1240],
+                           'SB+SXD': [0.9, 2.5, 1800, 1800],
+                           'SB+LXD': [0.9, 2.5, 5400]},
+                    '111': {'X': [1.03, 1.17, 6600, 17800],
+                            'J': [1.17, 1.37, 7200, 17000],
+                            'H': [1.49, 1.80, 5900, 17800],
+                            'K': [1.91, 2.49, 5900, 17800],
+                            'L': [2.80, 4.20, 6400, 19000],
+                            'M': [4.40, 6.00, 4300, 12800],
+                            'SB+SXD': [0.9, 2.5, 5400],
+                            'LB+SXD': [0.9, 2.5, 5400],
+                            'LB+LXD': [0.9, 2.5, 17000]}}
+
     fm = FilterMetadata('GNIRS')
     if data_product_type == DataProductType.SPECTRUM:
         logging.debug(
             'gnirs: SpectralWCS Spectroscopy mode for {}.'.format(obs_id))
         fm.central_wl = em.om.get('central_wavelength')
         disperser = em.om.get('disperser')
+        grating = disperser.split('_')[0]
+        if grating not in gnirs_lookup:
+            raise mc.CadcException(
+                'GNIRS: Mystery grating {} for {}'.format(grating, obs_id))
+
+        camera = em.om.get('camera')
+        focal_plane_mask = em.om.get('focal_plane_mask')
+        slit_width = 1.0
+        if 'arcsec' in focal_plane_mask:
+            slit_width = float(focal_plane_mask.split('arcsec')[0])
+
         if 'XD' in disperser:
-            logging.error('gnirs: cross dispersed mode.')
+            logging.debug('gnirs: cross dispersed mode for {}.'.format(obs_id))
             # https://www.gemini.edu/sciops/instruments/gnirs/spectroscopy/
             # crossdispersed-xd-spectroscopy/xd-prisms
             # 0 = lower
@@ -1610,91 +1687,65 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name):
             # 2 = spectral resolution with 2-pix wide slit
             # DB - 04-03-19 - Change the last number in each row to 1800.0
             # since the resolving power is the same for all 3 cases
-            xd_mode = {'SB+SXD': [0.9, 2.5, 1800.0],
-                       'LB+LXD': [0.9, 2.5, 1800.0],
-                       'LB+SXD': [1.2, 2.5, 1800.0]}
+            #
+            # Add line to find grating ID (from long-slit code):
+            # grating = disperser.split(‘_’)[0]
+            #
+            # Then change ‘lookup’ to include grating.
+            #
+            # I can’t find any other combinations (e.g. ‘LB+LXD+32’) but no
+            # guarantee that I won’t have to add another line or two if we
+            # see failures.   Wavelength coverage isn’t correct for the
+            # R=5400 entries because only about 1/3rd of the full band pass
+            # is covered but in bits and pieces that we can’t identify in
+            # raw image.
+
             lookup = None
             coverage = disperser[-3:]
-            camera = em.om.get('camera')
             if camera.startswith('Short'):
                 lookup = '{}+{}'.format('SB', coverage)
             elif camera.startswith('Long'):
                 lookup = '{}+{}'.format('LB', coverage)
-            if lookup is None:
-                raise mc.CadcException(
-                    'gnirs: Do not understand xd mode {} {}'
-                        .format(camera, coverage))
-            bounds = xd_mode[lookup]
 
-            focal_plane_mask = em.om.get('focal_plane_mask')
-            slit_width = 1.0
-            if 'arcsec' in focal_plane_mask:
-                slit_width = float(focal_plane_mask.split('arcsec')[0])
             if camera.startswith('Long'):
-                fm.resolving_power = _calc_gnirs_resolving_power(
-                    0.1, xd_mode[lookup][2], slit_width)
+                ratio = 0.1
+                lookup_index = 2
             elif camera.startswith('Short'):
-                fm.resolving_power = _calc_gnirs_resolving_power(
-                    0.3, xd_mode[lookup][2], slit_width)
-
+                ratio = 0.3
+                lookup_index = 2
+            else:
+                raise mc.CadcException(
+                    'GNIRS: Mystery camera definition {} for {}'.format(camera,
+                                                                        obs_id))
         else:
             logging.debug('gnirs: long slit mode for {}.'.format(obs_id))
-            # https://www.gemini.edu/sciops/instruments/gnirs/spectroscopy
-            # 0 - min wavelength
-            # 1 - max wavelength
-            # 2 - 'short' camera resolution
-            # 3 - 'long' camera resolution
-            # 4 - Since November 2012 and for the cross-dispersed mode with
-            # the 2 pix wide slit only resolving powers are somewhat lower, as
-            # follows: X-1400; J-1400, H-1400; K-1300
-            long_slit_mode = {'11': {'X': [1.03, 1.17, 570, 2100],
-                                     'J': [1.17, 1.37, 570, 1600],
-                                     'H': [1.47, 1.80, 570, 1700],
-                                     'K': [1.91, 2.49, 570, 1700],
-                                     'L': [2.80, 4.20, 570, 1800],
-                                     'M': [4.40, 6.00, 570, 1200]},
-                              '32': {'X': [1.03, 1.17, 1700, 5100, 1400],
-                                     'J': [1.17, 1.37, 1600, 4800, 1400],
-                                     'H': [1.49, 1.80, 1700, 5100, 1400],
-                                     'K': [1.91, 2.49, 1700, 5100, 1300],
-                                     'L': [2.80, 4.20, 1800, 5400, 1800],
-                                     'M': [4.40, 6.00, 1240, 3700, 1240]},
-                              '111': {'X': [1.03, 1.17, 6600, 17800],
-                                      'J': [1.17, 1.37, 7200, 17000],
-                                      'H': [1.49, 1.80, 5900, 17800],
-                                      'K': [1.91, 2.49, 5900, 17800],
-                                      'L': [2.80, 4.20, 6400, 19000],
-                                      'M': [4.40, 6.00, 4300, 12800]}}
             bandpass = filter_name[0]
-            grating = disperser.split('_')[0]
-            bounds = long_slit_mode[grating][bandpass]
-            if not bounds:
-                raise mc.CadcException(
-                    'gnirs: Do not understand long slit mode with {} {}'
-                        .format(bandpass, bounds))
-            camera = em.om.get('camera')
-            focal_plane_mask = em.om.get('focal_plane_mask')
-            slit_width = 1.0
-            if 'arcsec' in focal_plane_mask:
-                slit_width = float(focal_plane_mask.split('arcsec')[0])
+            lookup = bandpass
             if camera.startswith('Long'):
-                fm.resolving_power = _calc_gnirs_resolving_power(
-                    0.1, long_slit_mode[grating][bandpass][2], slit_width)
+                ratio = 0.1
+                lookup_index = 3
             elif camera.startswith('Short'):
                 date_time = ac.get_datetime(em.om.get('ut_datetime'))
                 if date_time > ac.get_datetime('2012-11-01T00:00:00'):
-                    fm.resolving_power = _calc_gnirs_resolving_power(
-                        0.3, long_slit_mode[grating][bandpass][4], slit_width)
+                    ratio = 0.3
+                    lookup_index = 4
                 else:
-                    fm.resolving_power = _calc_gnirs_resolving_power(
-                        0.3, long_slit_mode[grating][bandpass][3], slit_width)
+                    ratio = 0.3
+                    lookup_index = 2
             else:
                 raise mc.CadcException(
-                    'GNIRS: Mystery camera value {} for {}'.format(camera,
-                                                                   obs_id))
+                    'GNIRS: Mystery camera definition {} for {}'.format(camera,
+                                                                        obs_id))
 
+        if lookup not in gnirs_lookup[grating]:
+            raise mc.CadcException(
+                'GNIRS: Mystery lookup {} for grating {}, obs {}'.format(lookup,
+                                                                         grating,
+                                                                         obs_id))
+
+        bounds = gnirs_lookup[grating][lookup]
         fm.set_bandpass(bounds[1], bounds[0])
-
+        fm.resolving_power = ratio * bounds[lookup_index] / slit_width
     elif data_product_type == DataProductType.IMAGE:
         logging.debug('gnirs: SpectralWCS imaging mode for {}.'.format(obs_id))
         # https://www.gemini.edu/sciops/instruments/gnirs/imaging
@@ -1719,15 +1770,11 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name):
         fm.set_central_wl(bounds[1], bounds[0])
         fm.set_bandpass(bounds[1], bounds[0])
     else:
-        raise mc.CadcException(
-            'GNIRS: Unexpected DataProductType {} for {}'.format(
-                data_product_type, obs_id))
+        raise mc.CadcException('GNIRS: Unexpected DataProductType {} for {}'.format(
+            data_product_type, obs_id))
+
     _build_chunk_energy(chunk, filter_name, fm)
     logging.debug('End _update_chunk_energy_gnirs')
-
-
-def _calc_gnirs_resolving_power(ratio, initial_value, slit_width):
-    return ratio * initial_value / slit_width
 
 
 # select filter_id, wavelength_central, wavelength_lower, wavelength_upper
@@ -1805,7 +1852,8 @@ def _update_chunk_energy_phoenix(chunk, data_product_type, obs_id, filter_name):
     logging.debug('End _update_chunk_energy_phoenix')
 
 
-def _update_chunk_energy_flamingos(chunk, data_product_type, obs_id, filter_name):
+def _update_chunk_energy_flamingos(chunk, data_product_type, obs_id,
+                                   filter_name):
     """Flamingos-specific chunk-level Energy WCS construction."""
     logging.debug('Begin _update_chunk_energy_flamingos')
     mc.check_param(chunk, Chunk)
@@ -2102,10 +2150,12 @@ def _reset_energy(observation_type, data_label, instrument):
     om_filter_name = em.om.get('filter_name')
 
     if ((observation_type is not None and ((observation_type == 'DARK') or
-         (instrument in [em.Inst.GMOS, em.Inst.GMOSN, em.Inst.GMOSS] and
-          observation_type == 'BIAS'))) or
-        (om_filter_name is not None and ('blank' in om_filter_name or
-                                         'Blank' in om_filter_name))):
+                                           (instrument in [em.Inst.GMOS,
+                                                           em.Inst.GMOSN,
+                                                           em.Inst.GMOSS] and
+                                            observation_type == 'BIAS'))) or
+            (om_filter_name is not None and ('blank' in om_filter_name or
+                                             'Blank' in om_filter_name))):
         logging.info(
             'No chunk energy for {} obs type {} filter name {}'.format(
                 data_label, observation_type, om_filter_name))

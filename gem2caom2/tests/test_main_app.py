@@ -165,6 +165,14 @@ LOOKUP = {
     'S20080526S0024': ['GS-2008A-Q-41-26-013', 'GMOS', 'GS-2008A-Q-41'],
     'S20090620S0145': ['GS-2009A-Q-30-6-007', 'GMOS', 'GS-2009A-Q-30'],
     'S20060125S0027': ['GS-CAL20060125-1-002', 'GMOS', 'GS-CAL20060125'],
+    # 'gS20190301S0556_bia': ['GS-CAL20190301-4-046-g-bias', 'GMOS',
+    #                         'GS-CAL20190301-4'],
+    # 'gS20181219S0216_flat': ['GS-CAL20181219-4-021-g-flat', 'GMOS',
+    #                          'GS-CAL20181219-4'],
+    # 'rgS20130103S0098_FRINGE': ['GS-CAL20130103-3-001-rg-fringe', 'GMOS',
+    #                             'GS-CAL20130103-3'],
+    # 'rgS20100212S0301': ['GS-2010A-Q-36-5-246-rg', 'GMOS', 'GS-2010A-Q-36'],
+    # 'S20100212S0301': ['GS-2010A-Q-36-5-246-rg', 'GMOS', 'GS-2010A-Q-36'],
     # GNIRS
     'N20100915S0167': ['GN-2010B-Q-2-44-003', 'GNIRS', 'GN-2010B-Q-2'],
     'N20100722S0185': ['GN-2010B-SV-142-10-007', 'GNIRS', 'GN-2010B-SV-142'],
@@ -174,9 +182,12 @@ LOOKUP = {
     'N20120101S0195': ['GN-2011B-Q-68-116-013', 'GNIRS', 'GN-2011B-Q-68'],
     'N20120103S0100': ['GN-2011B-Q-7-193-010', 'GNIRS', 'GN-2011B-Q-7'],
     'N20120103S0134': ['GN-2011B-Q-7-193-044', 'GNIRS', 'GN-2011B-Q-7'],
+    'N20130419S0198': ['GN-2013A-Q-71-102-086', 'GNIRS', 'GN-2013A-Q-71'],
+    'N20130408S0105': ['GN-2013A-Q-71-86-031', 'GNIRS', 'GN-2013A-Q-71'],
     'N20160123S0097': ['GN-2015B-SV-101-1061-005', 'GNIRS', 'GN-2015B-SV-101'],
     'N20151213S0022': ['GN-CAL20151213-6-002', 'GNIRS', 'GN-CAL20151213'],
     'N20160202S0098': ['GN-CAL20160202-3-039', 'GNIRS', 'GN-CAL20160202'],
+    'S20041101S0215': ['GS-2004B-Q-19-20-023', 'GNIRS', 'GS-2004B-Q-19'],
     # GPI
     'S20140422S0167': ['GS-2014A-SV-408-6-003', 'GPI', 'GS-2014A-SV-408'],
     'S20180313S0108': ['GS-2018A-FT-101-5-043', 'GPI', 'GS-2018A-FT-101'],
@@ -272,10 +283,10 @@ def pytest_generate_tests(metafunc):
 
         file_list = []
         # for root, dirs, files in os.walk(TESTDATA_DIR):
-        for ii in ['NIFS']:
-        # for ii in ['GMOS', 'NIRI', 'GPI', 'F2', 'GSAOI', 'NICI', 'TReCS',
-        #            'Michelle', 'GRACES', 'NIFS', 'GNIRS', 'Phoenix',
-        #            'Flamingos', 'hrwfs', 'HOKUPAA', 'OSCIR', 'bHROS']:
+        # for ii in ['GNIRS']:
+        for ii in ['GMOS', 'NIRI', 'GPI', 'F2', 'GSAOI', 'NICI', 'TReCS',
+                   'Michelle', 'GRACES', 'NIFS', 'GNIRS', 'Phoenix',
+                   'Flamingos', 'hrwfs', 'HOKUPAA', 'OSCIR', 'bHROS']:
             for root, dirs, files in os.walk('{}/{}'.format(TEST_DATA_DIR, ii)):
                 for file in files:
                     if file.endswith(".header"):
