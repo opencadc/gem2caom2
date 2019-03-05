@@ -970,7 +970,7 @@ def update(observation, **kwargs):
                             # extension; use primary header
                             #
                             # DB - 04-03-19 - NIFS spatial WCS info in the
-                            # header has way too large a FOV so hardcode this
+                            # header has way too large a FOV so hard-code this
                             # to the instrument's tiny 3" x 3" FOV.
                             n_axis1 = headers[-1]['NAXIS1']
                             n_axis2 = headers[-1]['NAXIS2']
@@ -1648,6 +1648,20 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name):
     # ‘LB+SXD+110’:[0.9, 2.5, 5400.0],
     # ‘SB+LXD+32’:{0.9, 2.5, 5400.0]}
 
+    # DB - 05-03-19
+    # Disregard central wavelength provided by Gemini.  e.g. if a long-slit
+    # observation with the K filter in the beam has a central_wavelength
+    # setting of (for example) 2.3 microns then using the bounding
+    # wavelengths in the arrays to define the wavelength coverage will
+    # result in the upper wavelength being outside the filter bandpass.
+    # Instead use the average of the lower/upper wavelength ranges
+    # for each configuration in long_slit_mode and xd_mode as the central
+    # wavelength.  e.g. for K long-slit observations the central wavelength
+    # would be (1.91+2.49)/2.0 or 2.2 microns.  The way it is now with a
+    # central wavelength of 2.3 microns we calculate wavelength limits of
+    # 2.01 to 2.59 microns but wavelengths beyond 2.49 microns don’t make it
+    # past the filter.
+
     gnirs_lookup = {'11': {'X': [1.03, 1.17, 570, 2100],
                            'J': [1.17, 1.37, 570, 1600],
                            'H': [1.47, 1.80, 570, 1700],
@@ -1678,7 +1692,6 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name):
     if data_product_type == DataProductType.SPECTRUM:
         logging.debug(
             'gnirs: SpectralWCS Spectroscopy mode for {}.'.format(obs_id))
-        fm.central_wl = em.om.get('central_wavelength')
         disperser = em.om.get('disperser')
         grating = disperser.split('_')[0]
         if grating not in gnirs_lookup:
@@ -1759,6 +1772,7 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name):
         bounds = gnirs_lookup[grating][lookup]
         fm.set_bandpass(bounds[1], bounds[0])
         fm.resolving_power = ratio * bounds[lookup_index] / slit_width
+        fm.set_central_wl(bounds[1], bounds[0])
     elif data_product_type == DataProductType.IMAGE:
         logging.debug('gnirs: SpectralWCS imaging mode for {}.'.format(obs_id))
         # https://www.gemini.edu/sciops/instruments/gnirs/imaging
