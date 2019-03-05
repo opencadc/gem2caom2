@@ -82,18 +82,18 @@
                         </caom2:dimension>
                         <caom2:refCoord>
                           <caom2:coord1>
-                            <caom2:pix>14.999689</caom2:pix>
-                            <caom2:val>178.461676</caom2:val>
+                            <caom2:pix>1.0</caom2:pix>
+                            <caom2:val>178.482583248285</caom2:val>
                           </caom2:coord1>
                           <caom2:coord2>
-                            <caom2:pix>34.000271</caom2:pix>
-                            <caom2:val>-25.835571</caom2:val>
+                            <caom2:pix>1.0</caom2:pix>
+                            <caom2:val>-25.88299250565</caom2:val>
                           </caom2:coord2>
                         </caom2:refCoord>
-                        <caom2:cd11>-0.0</caom2:cd11>
-                        <caom2:cd12>1.9e-05</caom2:cd12>
-                        <caom2:cd21>-4.7e-05</caom2:cd21>
-                        <caom2:cd22>0.0</caom2:cd22>
+                        <caom2:cd11>0.000833333333333333</caom2:cd11>
+                        <caom2:cd12>0.0</caom2:cd12>
+                        <caom2:cd21>0.0</caom2:cd21>
+                        <caom2:cd22>0.000833333333333333</caom2:cd22>
                       </caom2:function>
                     </caom2:axis>
                     <caom2:coordsys>FK5</caom2:coordsys>

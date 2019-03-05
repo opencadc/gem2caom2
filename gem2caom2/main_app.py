@@ -127,12 +127,14 @@ APPLICATION = 'gem2caom2'
 # bHROS - DB - 20-02-19 - bHROS ‘bounding box’ is only 0.9".
 #                         A very small fibre.
 # HOKUPAA - http://www.gemini.edu/sciops/instruments/uhaos/uhaosIndex.html
+# NIFS - DB - 04-03-19 - hard-code 3" FOV
 RADIUS_LOOKUP = {em.Inst.GPI: 2.8 / 3600.0,  # units are arcseconds
                  em.Inst.GRACES: 1.2 / 3600.0,
                  em.Inst.PHOENIX: 5.0 / 3600.0,
                  em.Inst.OSCIR: 11.0 / 3600.0,
                  em.Inst.HOKUPAA: 4.0 / 3600.0,
-                 em.Inst.BHROS: 0.9 / 3600.0}
+                 em.Inst.BHROS: 0.9 / 3600.0,
+                 em.Inst.NIFS: 3.0 / 3600.0}
 
 
 def get_time_delta(header):
@@ -825,8 +827,7 @@ def update(observation, **kwargs):
 
                 instrument = em.Inst(observation.instrument.name)
                 if (instrument in
-                        [em.Inst.MICHELLE, em.Inst.TRECS, em.Inst.NIFS,
-                         em.Inst.GNIRS]):
+                        [em.Inst.MICHELLE, em.Inst.TRECS, em.Inst.GNIRS]):
                     # Michelle is a retired visitor instrument.
                     # Spatial WCS info is in primary header. There
                     # are a variable number of FITS extensions
@@ -835,8 +836,7 @@ def update(observation, **kwargs):
                     # only slightly because of telescope 'chopping'
                     # and 'nodding' used in acquisition. DB - 01-18-19
                     #
-                    # DB - 01-18-19 - NIFS has no WCS info in extension; use
-                    # primary header, GNIRS has no WCS info in extension; use
+                    # DB - 01-18-19 - GNIRS has no WCS info in extension; use
                     # primary header
                     _update_position_from_zeroth_header(
                         observation.planes[p].artifacts[a], headers,
@@ -965,6 +965,19 @@ def update(observation, **kwargs):
                             _update_chunk_position(
                                 c, headers[0], instrument,
                                 int(part), observation.observation_id)
+                        elif instrument == em.Inst.NIFS:
+                            # DB - 01-18-19 - NIFS has no WCS info in
+                            # extension; use primary header
+                            #
+                            # DB - 04-03-19 - NIFS spatial WCS info in the
+                            # header has way too large a FOV so hardcode this
+                            # to the instrument's tiny 3" x 3" FOV.
+                            n_axis1 = headers[-1]['NAXIS1']
+                            n_axis2 = headers[-1]['NAXIS2']
+                            _update_chunk_position(
+                                c, headers[0], instrument,
+                                int(part), observation.observation_id, n_axis1,
+                                n_axis2)
                         elif instrument == em.Inst.GPI:
                             _update_chunk_position(
                                 c, headers[1], instrument, int(part),
@@ -2279,7 +2292,8 @@ def _update_chunk_position_flamingos(chunk, header, obs_id):
         logging.info('FLAMINGOS: Missing spatial wcs for {}'.format(obs_id))
 
 
-def _update_chunk_position(chunk, header, instrument, extension, obs_id):
+def _update_chunk_position(chunk, header, instrument, extension, obs_id,
+                           n_axis1=None, n_axis2=None):
     logging.debug('Begin _update_chunk_position')
     mc.check_param(chunk, Chunk)
 
@@ -2350,6 +2364,10 @@ def _update_chunk_position(chunk, header, instrument, extension, obs_id):
     if instrument not in [em.Inst.OSCIR, em.Inst.GPI]:
         header['NAXIS1'] = 1
         header['NAXIS2'] = 1
+    if instrument == em.Inst.NIFS:
+        # DB 05-03-19 - persist NAXIS values for NIFS
+        header['NAXIS1'] = n_axis1
+        header['NAXIS2'] = n_axis2
     header['CRPIX1'] = get_crpix1(header)
     header['CRPIX2'] = get_crpix2(header)
     header['CD1_1'] = get_cd11(header)

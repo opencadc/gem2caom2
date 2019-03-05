@@ -1,3 +1,4 @@
+<?xml version='1.0' encoding='UTF-8'?>
 <caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="00000000-0000-0000-b648-14cb0329aa6e" caom2:lastModified="2018-11-18T10:15:47.338" caom2:maxLastModified="2018-11-18T10:15:47.338" caom2:metaChecksum="md5:b7257fe816c3b6a6566b637e090af2fb" caom2:accMetaChecksum="md5:df95d9ed0132170f1b535db4d08136e1">
   <caom2:collection>GEMINI</caom2:collection>
   <caom2:observationID>GN-2006A-C-11-670-006</caom2:observationID>
@@ -81,18 +82,18 @@
                         </caom2:dimension>
                         <caom2:refCoord>
                           <caom2:coord1>
-                            <caom2:pix>14.9999</caom2:pix>
-                            <caom2:val>299.867452</caom2:val>
+                            <caom2:pix>1.0</caom2:pix>
+                            <caom2:val>299.865238485625</caom2:val>
                           </caom2:coord1>
                           <caom2:coord2>
-                            <caom2:pix>33.999938</caom2:pix>
-                            <caom2:val>40.733642</caom2:val>
+                            <caom2:pix>1.0</caom2:pix>
+                            <caom2:val>40.784967969957</caom2:val>
                           </caom2:coord2>
                         </caom2:refCoord>
-                        <caom2:cd11>1.6e-05</caom2:cd11>
-                        <caom2:cd12>-1.8e-05</caom2:cd12>
-                        <caom2:cd21>4.4e-05</caom2:cd21>
-                        <caom2:cd22>7e-06</caom2:cd22>
+                        <caom2:cd11>0.000833333333333333</caom2:cd11>
+                        <caom2:cd12>0.0</caom2:cd12>
+                        <caom2:cd21>0.0</caom2:cd21>
+                        <caom2:cd22>0.000833333333333333</caom2:cd22>
                       </caom2:function>
                     </caom2:axis>
                     <caom2:coordsys>FK5</caom2:coordsys>
@@ -119,7 +120,7 @@
                     <caom2:ssysobs>TOPOCENT</caom2:ssysobs>
                     <caom2:ssyssrc>TOPOCENT</caom2:ssyssrc>
                     <caom2:bandpassName>HK</caom2:bandpassName>
-		    <caom2:resolvingPower>2.0317729717789574</caom2:resolvingPower>
+                    <caom2:resolvingPower>2.0317729717789574</caom2:resolvingPower>
                   </caom2:energy>
                   <caom2:time>
                     <caom2:axis>

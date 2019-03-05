@@ -83,18 +83,18 @@
                         </caom2:dimension>
                         <caom2:refCoord>
                           <caom2:coord1>
-                            <caom2:pix>14.999973</caom2:pix>
+                            <caom2:pix>1.0</caom2:pix>
                             <caom2:val>345.073249</caom2:val>
                           </caom2:coord1>
                           <caom2:coord2>
-                            <caom2:pix>34.000082</caom2:pix>
+                            <caom2:pix>1.0</caom2:pix>
                             <caom2:val>19.779935</caom2:val>
                           </caom2:coord2>
                         </caom2:refCoord>
-                        <caom2:cd11>3.6e-05</caom2:cd11>
-                        <caom2:cd12>1.2e-05</caom2:cd12>
-                        <caom2:cd21>-3e-05</caom2:cd21>
-                        <caom2:cd22>1.5e-05</caom2:cd22>
+                        <caom2:cd11>0.000833333333333333</caom2:cd11>
+                        <caom2:cd12>0.0</caom2:cd12>
+                        <caom2:cd21>0.0</caom2:cd21>
+                        <caom2:cd22>0.000833333333333333</caom2:cd22>
                       </caom2:function>
                     </caom2:axis>
                     <caom2:coordsys>FK5</caom2:coordsys>
@@ -121,7 +121,7 @@
                     <caom2:ssysobs>TOPOCENT</caom2:ssysobs>
                     <caom2:ssyssrc>TOPOCENT</caom2:ssyssrc>
                     <caom2:bandpassName>HK</caom2:bandpassName>
-		    <caom2:resolvingPower>5290.0</caom2:resolvingPower>
+                    <caom2:resolvingPower>5290.0</caom2:resolvingPower>
                   </caom2:energy>
                   <caom2:time>
                     <caom2:axis>
