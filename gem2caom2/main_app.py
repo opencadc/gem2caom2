@@ -385,6 +385,9 @@ def get_exposure(header):
     elif instrument == em.Inst.FLAMINGOS:
         # exposure_time is null in the JSON
         result = mc.to_float(header.get('EXP_TIME'))
+    elif (instrument in [em.Inst.GMOS, em.Inst.GMOSN, em.Inst.GMOSS] and
+          _get_obs_type(header) == 'MASK'):
+        result = 0.0
     return result
 
 
@@ -482,6 +485,16 @@ def get_obs_type(header):
         # DB - 01-18-19 Use IMAGETYP as the keyword
         result = header.get('IMAGETYP')
     return result
+
+
+def get_proposal_id(header):
+    """
+    Determine the Proposal ID.
+
+    :param header:  The FITS header for the current extension.
+    :return: The proposal id from Gemini JSON metadata, or None if not found.
+    """
+    return em.om.get('program_id')
 
 
 def get_ra(header):
@@ -760,9 +773,7 @@ def accumulate_fits_bp(bp, obs_id, file_id):
     bp.set('Observation.metaRelease', 'get_meta_release(header)')
     bp.set('Observation.target.type', 'get_target_type(header)')
     bp.set('Observation.target.moving', 'get_target_moving(header)')
-    # GRACES has entries with RUNID set to non-proposal ID values
-    # so clear the default FITS value lookup
-    bp.clear('Observation.proposal.id')
+    bp.set('Observation.proposal.id', 'get_proposal_id(header)')
 
     bp.set('Plane.dataProductType', 'get_data_product_type(header)')
     bp.set('Plane.calibrationLevel', 'get_calibration_level(header)')
@@ -989,11 +1000,29 @@ def update(observation, **kwargs):
                         elif instrument == em.Inst.FLAMINGOS:
                             _update_chunk_position_flamingos(
                                 c, header, observation.observation_id)
+                        elif (instrument in
+                              [em.Inst.GMOSS, em.Inst.GMOSN, em.Inst.GMOS] and
+                                observation.type == 'MASK'):
+                            # DB - 04-03-19
+                            # Another type of GMOS-N/S dataset to archive.
+                            # Mask images.   json observation_type = “MASK”.
+                            # These have no WCS info at all, although I guess
+                            # json ut_date_time could be used as the start date
+                            # with null exposure time. These would have only
+                            # instrument, obstype, datatype (spectrum) and
+                            # product type (AUXILIARY) set.
+                            c.position = None
+                            c.position_axis_1 = None
+                            c.position_axis_2 = None
 
                         # time WCS
                         if instrument == em.Inst.F2:
                             _update_chunk_time_f2(c, observation.observation_id)
-
+                        elif (instrument in
+                              [em.Inst.GMOSS, em.Inst.GMOSN, em.Inst.GMOS] and
+                              observation.type == 'MASK'):
+                            _update_chunk_time_gmos(c,
+                                                    observation.observation_id)
         program = em.get_pi_metadata(observation.proposal.id)
         if program is not None:
             observation.proposal.pi_name = program['pi_name']
@@ -1734,10 +1763,10 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name):
                 lookup = '{}+{}'.format('LB', coverage)
 
             if camera.startswith('Long'):
-                ratio = 0.1
+                slit_table_value = 0.1
                 lookup_index = 2
             elif camera.startswith('Short'):
-                ratio = 0.3
+                slit_table_value = 0.3
                 lookup_index = 2
             else:
                 raise mc.CadcException(
@@ -1748,15 +1777,15 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name):
             bandpass = filter_name[0]
             lookup = bandpass
             if camera.startswith('Long'):
-                ratio = 0.1
+                slit_table_value= 0.1
                 lookup_index = 3
             elif camera.startswith('Short'):
                 date_time = ac.get_datetime(em.om.get('ut_datetime'))
                 if date_time > ac.get_datetime('2012-11-01T00:00:00'):
-                    ratio = 0.3
+                    slit_table_value = 0.3
                     lookup_index = 4
                 else:
-                    ratio = 0.3
+                    slit_table_value = 0.3
                     lookup_index = 2
             else:
                 raise mc.CadcException(
@@ -1771,7 +1800,7 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name):
 
         bounds = gnirs_lookup[grating][lookup]
         fm.set_bandpass(bounds[1], bounds[0])
-        fm.resolving_power = ratio * bounds[lookup_index] / slit_width
+        fm.resolving_power = slit_table_value * bounds[lookup_index] / slit_width
         fm.set_central_wl(bounds[1], bounds[0])
     elif data_product_type == DataProductType.IMAGE:
         logging.debug('gnirs: SpectralWCS imaging mode for {}.'.format(obs_id))
@@ -2176,11 +2205,10 @@ def _reset_energy(observation_type, data_label, instrument):
     result = False
     om_filter_name = em.om.get('filter_name')
 
-    if ((observation_type is not None and ((observation_type == 'DARK') or
-                                           (instrument in [em.Inst.GMOS,
-                                                           em.Inst.GMOSN,
-                                                           em.Inst.GMOSS] and
-                                            observation_type == 'BIAS'))) or
+    if ((observation_type is not None and
+         ((observation_type == 'DARK') or
+          (instrument in [em.Inst.GMOS, em.Inst.GMOSN, em.Inst.GMOSS] and
+           observation_type in ['BIAS', 'MASK']))) or
             (om_filter_name is not None and ('blank' in om_filter_name or
                                              'Blank' in om_filter_name))):
         logging.info(
@@ -2419,6 +2447,20 @@ def _update_chunk_time_f2(chunk, obs_id):
         chunk.time.axis.function.delta = get_time_delta(None)
         logging.info('F2: Updated time delta for {}'.format(obs_id))
     logging.debug('End _update_chunk_time_f2 {}'.format(obs_id))
+
+
+def _update_chunk_time_gmos(chunk, obs_id):
+    """"""
+    logging.debug('Begin _update_chunk_time_gmos {}'.format(obs_id))
+    mc.check_param(chunk, Chunk)
+    if chunk.time is not None and chunk.time.axis is not None:
+        mjd_start = get_time_function_val(None)
+        start = RefCoord(0.5, mjd_start.value)
+        end = RefCoord(1.5, mjd_start.value)
+        chunk.time.exposure = 0.0
+        chunk.time.axis.range = CoordRange1D(start, end)
+        chunk.time.axis.function = None
+    logging.debug('End _update_chunk_time_gmos {}'.format(obs_id))
 
 
 def _build_blueprints(uris, obs_id, file_id):
