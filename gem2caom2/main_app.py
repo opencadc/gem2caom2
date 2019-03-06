@@ -145,6 +145,9 @@ def get_time_delta(header):
     :return: The Time delta, or None if none found.
     """
     exptime = get_exposure(header)
+    if _is_gmos_mask(header):
+        # DB - 05-03-19 - delta hardcoded to 0
+        exptime = 0.0
     if exptime is None:
         return None
     return float(exptime) / (24.0 * 3600.0)
@@ -185,7 +188,7 @@ def get_art_product_type(header):
             else:
                 result = ProductType.SCIENCE
         else:
-            instrument = em.Inst(header.get('INSTRUME'))
+            instrument = _get_instrument()
             if instrument is not None:
                 if instrument == em.Inst.PHOENIX:
                     if _is_phoenix_calibration(header):
@@ -388,8 +391,7 @@ def get_exposure(header):
     elif instrument == em.Inst.FLAMINGOS:
         # exposure_time is null in the JSON
         result = mc.to_float(header.get('EXP_TIME'))
-    elif (instrument in [em.Inst.GMOS, em.Inst.GMOSN, em.Inst.GMOSS] and
-          _get_obs_type(header) == 'MASK'):
+    elif _is_gmos_mask(header):
         result = 0.0
     return result
 
@@ -454,7 +456,7 @@ def get_obs_intent(header):
             if type_lookup in cal_values:
                 result = ObservationIntentType.CALIBRATION
             else:
-                instrument = em.Inst(header.get('INSTRUME'))
+                instrument = _get_instrument()
                 if instrument is not None:
                     if instrument == em.Inst.TRECS:
                         data_label = header.get('DATALAB')
@@ -765,6 +767,17 @@ def _is_phoenix_calibration(header):
     return False
 
 
+def _is_gmos_mask(header):
+    result = False
+    instrument = _get_instrument()
+    if instrument in [em.Inst.GMOSS, em.Inst.GMOSN, em.Inst.GMOS]:
+        logging.error('check passes instrument is {}'.format(instrument))
+        obs_type = _get_obs_type(header)
+        if obs_type == 'MASK':
+            result = True
+    return result
+
+
 def accumulate_fits_bp(bp, obs_id, file_id):
     """Configure the telescope-specific ObsBlueprint at the CAOM model 
     Observation level."""
@@ -1003,9 +1016,7 @@ def update(observation, **kwargs):
                         elif instrument == em.Inst.FLAMINGOS:
                             _update_chunk_position_flamingos(
                                 c, header, observation.observation_id)
-                        elif (instrument in
-                              [em.Inst.GMOSS, em.Inst.GMOSN, em.Inst.GMOS] and
-                                observation.type == 'MASK'):
+                        elif _is_gmos_mask(headers[0]):
                             # DB - 04-03-19
                             # Another type of GMOS-N/S dataset to archive.
                             # Mask images.   json observation_type = “MASK”.
@@ -1021,11 +1032,6 @@ def update(observation, **kwargs):
                         # time WCS
                         if instrument == em.Inst.F2:
                             _update_chunk_time_f2(c, observation.observation_id)
-                        elif (instrument in
-                              [em.Inst.GMOSS, em.Inst.GMOSN, em.Inst.GMOS] and
-                              observation.type == 'MASK'):
-                            _update_chunk_time_gmos(c,
-                                                    observation.observation_id)
         program = em.get_pi_metadata(observation.proposal.id)
         if program is not None:
             observation.proposal.pi_name = program['pi_name']
@@ -1953,6 +1959,10 @@ def _update_chunk_energy_flamingos(chunk, data_product_type, obs_id,
         fm.bandpass = lookup[filter_name][1]
     else:
         fm = em.get_filter_metadata(em.Inst.FLAMINGOS, filter_name)
+        if fm is None:
+            raise mc.CadcException(
+                'Flamingos: Mystery filter {} for {}'.format(filter_name,
+                                                             obs_id))
 
     if data_product_type == DataProductType.SPECTRUM:
         logging.debug('Flamingos: SpectralWCS for {}.'.format(obs_id))

@@ -221,6 +221,8 @@ def _repair_instrument_name_for_svo(instrument):
                 result = 'AcqCam-N'
     elif instrument == Inst.F2:
         result = 'Flamingos2'
+    elif instrument == Inst.FLAMINGOS:
+        result = 'Flamingos'
     return result
 
 
