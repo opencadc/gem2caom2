@@ -90,10 +90,10 @@
                             <caom2:val>-25.88299250565</caom2:val>
                           </caom2:coord2>
                         </caom2:refCoord>
-                        <caom2:cd11>0.000833333333333333</caom2:cd11>
+                        <caom2:cd11>4.06901041666666e-07</caom2:cd11>
                         <caom2:cd12>0.0</caom2:cd12>
                         <caom2:cd21>0.0</caom2:cd21>
-                        <caom2:cd22>0.000833333333333333</caom2:cd22>
+                        <caom2:cd22>4.06901041666666e-07</caom2:cd22>
                       </caom2:function>
                     </caom2:axis>
                     <caom2:coordsys>FK5</caom2:coordsys>

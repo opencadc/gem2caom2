@@ -131,7 +131,7 @@ APPLICATION = 'gem2caom2'
 RADIUS_LOOKUP = {em.Inst.GPI: 2.8 / 3600.0,  # units are arcseconds
                  em.Inst.GRACES: 1.2 / 3600.0,
                  em.Inst.PHOENIX: 5.0 / 3600.0,
-                 em.Inst.OSCIR: 11.0 / 3600.0,
+                 em.Inst.OSCIR: 0.0890 / 3600.0,
                  em.Inst.HOKUPAA: 4.0 / 3600.0,
                  em.Inst.BHROS: 0.9 / 3600.0,
                  em.Inst.NIFS: 3.0 / 3600.0}
@@ -221,11 +221,11 @@ def get_cd11(header):
     if instrument == em.Inst.HOKUPAA:
         result = _get_pix_scale(header)
     elif instrument == em.Inst.OSCIR:
-        result = 0.0890 / 3600.0
-    elif instrument == em.Inst.GPI:
-        # FOV is 2.8" x 2.8" on each side or 2.8/3600.0 degrees
-        # cd1_1 = 2.8/(3600.0 * naxis1)
-        result = 2.8 / (3600.0 * header.get('NAXIS1'))
+        result = RADIUS_LOOKUP[instrument]
+    elif instrument in [em.Inst.GPI, em.Inst.NIFS]:
+        # DB - 05-03-19 - NIFS needs a division by NAXIS1/2 for the
+        # cdelta1/2 calculations.
+        result = RADIUS_LOOKUP[instrument]/header.get('NAXIS1')
     else:
         cdelt1 = header.get('CDELT1')
         if cdelt1 is None:
@@ -240,11 +240,11 @@ def get_cd22(header):
     if instrument == em.Inst.HOKUPAA:
         result = _get_pix_scale(header)
     elif instrument == em.Inst.OSCIR:
-        result = 0.0890 / 3600.0
-    elif instrument == em.Inst.GPI:
-        # FOV is 2.8" x 2.8" on each side or 2.8/3600.0 degrees
-        # cd2_2 = 2.8/(3600.0 * naxis2)
-        result = 2.8 / (3600.0 * header.get('NAXIS2'))
+        result = RADIUS_LOOKUP[instrument]
+    elif instrument in [em.Inst.GPI, em.Inst.NIFS]:
+        # DB - 05-03-19 - NIFS needs a division by NAXIS1/2 for the
+        # cdelta1/2 calculations.
+        result = RADIUS_LOOKUP[instrument]/header.get('NAXIS2')
     else:
         cdelt2 = header.get('CDELT2')
         if cdelt2 is None:
