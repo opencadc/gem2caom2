@@ -172,7 +172,9 @@ def get_art_product_type(header):
     obs_type = _get_obs_type(header)
     obs_class = _get_obs_class(header)
 
-    # logging.error('type is {} and class is {}'.format(obs_type, obs_class))
+    logging.debug(
+        'obs type is {} obs class is {} for '.format(obs_type, obs_class,
+                                                     em.om.get('data_label')))
     if obs_type is not None and obs_type == 'MASK':
         result = ProductType.AUXILIARY
     elif obs_class is None:
@@ -309,7 +311,6 @@ def get_data_product_type(header):
             raise mc.CadcException('No mode information found for {}'.format(
                 em.om.get('filename')))
         elif instrument == em.Inst.GPI:
-            logging.error('mode is {}'.format(mode))
             # DB - 22-02-19 FOR GPI only:  To determine if the data type
             # is an ‘image’ or ‘spectrum’:
             #     json ‘mode’ = IFP then ‘image’
@@ -452,7 +453,6 @@ def get_obs_intent(header):
                 result = ObservationIntentType.CALIBRATION
             else:
                 instrument = em.Inst(header.get('INSTRUME'))
-                logging.error('instrument is {}'.format(instrument))
                 if instrument is not None:
                     if instrument == em.Inst.TRECS:
                         data_label = header.get('DATALAB')
@@ -514,7 +514,6 @@ def get_ra(header):
         result = ra
     elif instrument == em.Inst.BHROS:
         result = header.get('RA')  # ra/dec not in json
-        logging.error('getting ra from here {}'.format(result))
     else:
         result = em.om.get('ra')
     return result
@@ -1155,9 +1154,8 @@ def _update_chunk_energy_niri(chunk, data_product_type, obs_id, filter_name):
 
     filter_md = em.get_filter_metadata(em.Inst.NIRI, filter_name)
     if filter_md is None:
-        logging.warning('{}: mystery filter {} for {}'.format(
+        raise mc.CadcException('{}: mystery filter {} for {}'.format(
             em.Inst.NIRI, filter_name, obs_id))
-        return
     filter_name = em.om.get('filter_name')
     if data_product_type == DataProductType.IMAGE:
         logging.debug('NIRI: SpectralWCS imaging for {}.'.format(obs_id))
@@ -1180,9 +1178,11 @@ def _update_chunk_energy_niri(chunk, data_product_type, obs_id, filter_name):
                 fm.resolving_power = \
                     NIRI_RESOLVING_POWER[bandpass_name][f_ratio]
             else:
-                logging.info('NIRI: No resolving power for {}.'.format(obs_id))
+                raise mc.CadcException(
+                    'NIRI: Mystery bandpass name {} for {}.'.format(
+                        bandpass_name, obs_id))
         else:
-            logging.info(
+            raise mc.CadcException(
                 'NIRI: Mystery disperser value {} for {}'.format(disperser,
                                                                  obs_id))
     else:
@@ -1251,10 +1251,11 @@ def _update_chunk_energy_f2(chunk, header, data_product_type, obs_id,
 
     filter_md = em.get_filter_metadata(em.Inst.F2, filter_name)
     if data_product_type == DataProductType.IMAGE:
-        logging.debug('SpectralWCS: F2 imaging mode.')
+        logging.debug('SpectralWCS: F2 imaging mode for {}.'.format(obs_id))
         fm = filter_md
     elif data_product_type == DataProductType.SPECTRUM:
-        logging.debug('SpectralWCS: F2 LS|Spectroscopy mode.')
+        logging.debug(
+            'SpectralWCS: F2 LS|Spectroscopy mode for {}.'.format(obs_id))
         fp_mask = header.get('MASKNAME')
         mode = em.om.get('mode')
         if mode == 'LS':
@@ -1268,7 +1269,9 @@ def _update_chunk_energy_f2(chunk, header, data_product_type, obs_id,
         fm.bandpass = filter_md.bandpass
         grism_name = header.get('GRISM')
         logging.debug(
-            'F2: grism name is {} fp_mask is {}'.format(grism_name, fp_mask))
+            'F2: grism name is {} fp_mask is {} for {}'.format(grism_name,
+                                                               fp_mask,
+                                                               obs_id))
         # lookup values from
         # https://www.gemini.edu/sciops/instruments/flamingos2/spectroscopy/longslit-spectroscopy
         lookup = {'1': [1300.0, 3600.0],
@@ -1283,7 +1286,7 @@ def _update_chunk_energy_f2(chunk, header, data_product_type, obs_id,
             fm.resolving_power = lookup[slit_width][0]
     else:
         raise mc.CadcException(
-            'Do not understand DataProductType {} for {}'.format(
+            'F2: Do not understand DataProductType {} for {}'.format(
                 data_product_type, obs_id))
 
     _build_chunk_energy(chunk, filter_name, fm)
@@ -1297,8 +1300,9 @@ def _update_chunk_energy_general(chunk, instrument, allowable_types,
     mc.check_param(chunk, Chunk)
 
     if data_product_type in allowable_types:
-        logging.debug('{} Spectral WCS {} mode.'.format(instrument,
-                                                        data_product_type))
+        logging.debug('{} Spectral WCS {} mode for {}.'.format(instrument,
+                                                               data_product_type,
+                                                               obs_id))
         filter_md = em.get_filter_metadata(instrument, filter_name)
         _build_chunk_energy(chunk, filter_name, filter_md)
     else:
@@ -1315,7 +1319,9 @@ def _update_chunk_energy_hrwfs(chunk, data_product_type, obs_id, filter_name):
     mc.check_param(chunk, Chunk)
 
     if data_product_type == DataProductType.IMAGE:
-        logging.debug('hrwfs Spectral WCS {} mode.'.format(data_product_type))
+        logging.debug(
+            'hrwfs Spectral WCS {} mode for {}.'.format(data_product_type,
+                                                        obs_id))
         filter_md = em.get_filter_metadata(em.Inst.HRWFS, filter_name)
         temp = []
         for ii in filter_name.split('+'):
@@ -1324,8 +1330,8 @@ def _update_chunk_energy_hrwfs(chunk, data_product_type, obs_id, filter_name):
         _build_chunk_energy(chunk, filter_name, filter_md)
     else:
         raise mc.CadcException(
-            'hrwfs no Spectral WCS support when DataProductType {} for {}'.format(
-                data_product_type, obs_id))
+            'hrwfs no Spectral WCS support when DataProductType {} for '
+            '{}'.format(data_product_type, obs_id))
 
     logging.debug('End _update_chunk_energy_hrwfs')
 
@@ -1363,7 +1369,8 @@ def _update_chunk_energy_michelle(chunk, data_product_type, obs_id,
 
     if data_product_type in [DataProductType.IMAGE, DataProductType.SPECTRUM]:
         logging.debug(
-            'michelle: Spectral WCS {} mode.'.format(data_product_type))
+            'michelle: Spectral WCS {} mode for {}.'.format(data_product_type,
+                                                            obs_id))
         filter_md = em.get_filter_metadata(em.Inst.MICHELLE, filter_name)
         if data_product_type == DataProductType.SPECTRUM:
             disperser = em.om.get('disperser')
@@ -1444,6 +1451,8 @@ def _update_chunk_energy_nici(chunk, data_product_type, obs_id, filter_name):
             fm.set_bandpass(w_max, w_min)
             fm.set_central_wl(w_max, w_min)
             fm.set_resolving_power(w_max, w_min)
+        else:
+            fm = filter_md
 
         temp = em.om.get('filter_name')
         # NICI has two different bandpass names (most of the time) in its two
@@ -1485,8 +1494,8 @@ def _update_chunk_energy_trecs(chunk, data_product_type, obs_id, filter_name):
                 filter_md.resolving_power = 100.0
     else:
         raise mc.CadcException(
-            'Do not understand mode {} for {}'.format(data_product_type,
-                                                      obs_id))
+            'TReCS: Do not understand mode {} for {}'.format(data_product_type,
+                                                             obs_id))
 
     _build_chunk_energy(chunk, filter_name, filter_md)
     logging.debug('End _update_chunk_energy_trecs')
@@ -1573,7 +1582,7 @@ def _update_chunk_energy_nifs(chunk, data_product_type, obs_id, filter_name):
         # resolution (central_wavelength/bandpass).
     else:
         raise mc.CadcException(
-            'NIFS: No spectroscopy information for {}'.format(obs_id))
+            'NIFS: DataProductType {} for {}'.format(data_product_type, obs_id))
 
     _build_chunk_energy(chunk, filter_name, fm)
     logging.debug('End _update_chunk_energy_nifs')
