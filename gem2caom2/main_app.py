@@ -181,7 +181,8 @@ def get_art_product_type(header):
     if obs_type is not None and obs_type == 'MASK':
         result = ProductType.AUXILIARY
     elif obs_class is None:
-        if obs_type is not None and obs_type == 'OBJECT':
+        # 'unknown' is the value of observation_class for CIRPASS
+        if obs_type is not None and obs_type in ['OBJECT', 'unknown']:
             obs_id = header.get('DATALAB')
             if obs_id is not None and 'CAL' in obs_id:
                 result = ProductType.CALIBRATION
@@ -231,6 +232,21 @@ def get_cd11(header):
         # DB - 05-03-19 - NIFS needs a division by NAXIS1/2 for the
         # cdelta1/2 calculations.
         result = RADIUS_LOOKUP[instrument]/header.get('NAXIS1')
+    elif instrument == em.Inst.CIRPASS:
+        # DB - 06-03-19
+        # FOV is fixed at two possible values and has no bearing on NAXIS1/2
+        # values. See
+        # http://www.gemini.edu/sciops/instruments/cirpass/cirpassIFU.html.
+        # 499 lenslets cover the FOV: about 33 along one axis and 15 along the
+        # other.
+        #
+        # LENS_SCL determines the scale/lenslet:  0.36 or 0.25 (arcseconds per lens)
+        #     if 0.36 then FOV is 13.0" x 4.7" (RA and Dec)
+        #     if 0.25 then FOV is 9.3" x 3.5"
+        #     cd11 = LENS_SCL/3600.0
+        #     cd22 = LENS_SCL/3600.0
+        lens_scl = header.get('LENS_SCL')
+        result = float(lens_scl) / 3600.0
     else:
         cdelt1 = header.get('CDELT1')
         if cdelt1 is None:
@@ -250,6 +266,9 @@ def get_cd22(header):
         # DB - 05-03-19 - NIFS needs a division by NAXIS1/2 for the
         # cdelta1/2 calculations.
         result = RADIUS_LOOKUP[instrument]/header.get('NAXIS2')
+    elif instrument == em.Inst.CIRPASS:
+        lens_scl = header.get('LENS_SCL')
+        result = float(lens_scl) / 3600.0
     else:
         cdelt2 = header.get('CDELT2')
         if cdelt2 is None:
@@ -307,6 +326,8 @@ def get_data_product_type(header):
     instrument = _get_instrument()
     if instrument == em.Inst.FLAMINGOS:
         result, ignore = _get_flamingos_mode(header)
+    elif instrument == em.Inst.CIRPASS:
+        result = DataProductType.SPECTRUM
     else:
         mode = em.om.get('mode')
         obs_type = _get_obs_type(header)
@@ -366,6 +387,10 @@ def get_dec(header):
         # bHROS ra/dec not in json
         # NIFS ra/dec not reliable in json
         result = header.get('DEC')
+    elif instrument == em.Inst.CIRPASS:
+        # DB - 06-03-19 - Must use FITS header info for most WCS info
+        ra, dec = _get_sky_coord(header, 'TEL_RA', 'TEL_DEC')
+        result = dec
     else:
         result = em.om.get('dec')
     return result
@@ -388,8 +413,9 @@ def get_exposure(header):
         # DB - 20-02-19 - json ‘exposure_time’ is in minutes, so multiply
         # by 60.0.
         result = result * 60.0
-    elif instrument == em.Inst.FLAMINGOS:
+    elif instrument in [em.Inst.FLAMINGOS, em.Inst.CIRPASS]:
         # exposure_time is null in the JSON
+        # DB - 06-03-19 Use value of header keyword EXP_TIME for exposure time.
         result = mc.to_float(header.get('EXP_TIME'))
     elif _is_gmos_mask(header):
         result = 0.0
@@ -462,6 +488,16 @@ def get_obs_intent(header):
                         data_label = header.get('DATALAB')
                         if data_label is not None and '-CAL' in data_label:
                             result = ObservationIntentType.CALIBRATION
+                    elif instrument == em.Inst.CIRPASS:
+                        data_label = header.get('DATALAB')
+                        if data_label is not None and '-CAL' in data_label:
+                            result = ObservationIntentType.CALIBRATION
+                        else:
+                            obs_type = header.get('OBS_TYPE')
+                            if obs_type in cal_values:
+                                result = ObservationIntentType.CALIBRATION
+                            else:
+                                result = ObservationIntentType.SCIENCE
                     else:
                         result = ObservationIntentType.SCIENCE
                 else:
@@ -488,6 +524,25 @@ def get_obs_type(header):
     elif instrument == em.Inst.HOKUPAA:
         # DB - 01-18-19 Use IMAGETYP as the keyword
         result = header.get('IMAGETYP')
+    elif instrument == em.Inst.CIRPASS:
+        # DB - 06-03-19
+        temp = header.get('OBJECT')
+        # if ‘dome’ or ‘flat’ or ‘twilight’ or ‘gcal’ in
+        #       object string:  obstype = FLAT
+        # if ‘argon’ or ‘arc’ in string: obstype = ARC
+        # if ‘dark’ in string: obstype = DARK
+        # Otherwise assume obstype = OBJECT
+        result = 'OBJECT'
+        for ii in ['dome', 'flat', 'twilight', 'gcal']:
+            if ii in temp:
+                result = 'FLAT'
+                break
+        for ii in ['argon', 'arc']:
+            if ii in temp:
+                result = 'ARC'
+                break
+        if 'dark' in temp:
+            result = 'DARK'
     return result
 
 
@@ -520,6 +575,10 @@ def get_ra(header):
         # bHROS: ra/dec not in json
         # DB - 05-03-19 - NIFS: ra/dec not reliable in json
         result = header.get('RA')
+    elif instrument == em.Inst.CIRPASS:
+        # DB - 06-03-19 - Must use FITS header info for most WCS info
+        ra, dec = _get_sky_coord(header, 'TEL_RA', 'TEL_DEC')
+        result = ra
     else:
         result = em.om.get('ra')
     return result
@@ -573,6 +632,9 @@ def get_time_function_val(header):
         # DB - 20-02-19 - OSCIR json ‘ut_datetime’ is not correct.  Must
         # concatenate DATE-OBS and UTC1 values and convert to MJD as usual
         # or use MJD directly (seems to be correct starting MJD)
+
+        # DB - 06-03-19 json ut_date_time Gemini is based on DATE keyword.
+        # Better to use MJD header keyword value directly.
 
         time_val = header.get('MJD')
     else:
@@ -807,6 +869,8 @@ def accumulate_fits_bp(bp, obs_id, file_id):
     bp.set('Artifact.productType', 'get_art_product_type(header)')
 
     instrument = _get_instrument()
+    if instrument == em.Inst.CIRPASS:
+        bp.set_default('Observation.telescope.name', 'Gemini-South')
     mode = em.om.get('mode')
     if not (instrument in [em.Inst.GPI, em.Inst.PHOENIX, em.Inst.HOKUPAA,
                            em.Inst.OSCIR, em.Inst.BHROS] or
@@ -978,6 +1042,10 @@ def update(observation, **kwargs):
                                     c, observation.planes[p].data_product_type,
                                     observation.observation_id, filter_name,
                                     instrument)
+                            elif instrument == em.Inst.CIRPASS:
+                                _update_chunk_energy_cirpass(
+                                    c, observation.planes[p].data_product_type,
+                                    observation.observation_id)
 
                         # position WCS
                         mode = em.om.get('mode')
@@ -988,7 +1056,7 @@ def update(observation, **kwargs):
                             _update_chunk_position(
                                 c, header, instrument, int(part),
                                 observation.observation_id)
-                        elif instrument == em.Inst.BHROS:
+                        elif instrument in [em.Inst.BHROS, em.Inst.CIRPASS]:
                             _update_chunk_position(
                                 c, headers[0], instrument,
                                 int(part), observation.observation_id)
@@ -2217,6 +2285,31 @@ def _update_chunk_energy_gmos(chunk, data_product_type, obs_id, filter_name,
     logging.debug('End _update_chunk_energy_gmos')
 
 
+def _update_chunk_energy_cirpass(chunk, data_product_type, obs_id):
+    # DB - 06-03-19
+    # Energy WCS:
+    #
+    # Can’t do anything better than fixing lower/upper wavelength bounds to
+    # 1.0 and 1.67 microns and resolving power of 3200.  NAXIS=1 as we’ve
+    # done for other spectra like this.
+    #
+    # Data type should always be spectrum despite json giving ‘imaging’.
+    logging.debug('Begin _update_chunk_energy_cirpass')
+    if data_product_type == DataProductType.SPECTRUM:
+        logging.debug(
+            'cirpass: SpectralWCS spectral mode for {}.'.format(obs_id))
+        fm = FilterMetadata()
+        fm.set_central_wl(1.0, 1.67)
+        fm.set_bandpass(1.0, 1.67)
+        fm.resolving_power = 3200.0
+    else:
+        raise mc.CadcException(
+            'cirpass: mystery data product type {} for {}'.format(
+                data_product_type, obs_id))
+    _build_chunk_energy(chunk, '', fm)
+    logging.debug('End _update_chunk_energy_cirpass')
+
+
 def _reset_energy(observation_type, data_label, instrument):
     """
     Return True if there should be no energy WCS information created at
@@ -2422,7 +2515,7 @@ def _update_chunk_position(chunk, header, instrument, extension, obs_id,
     header['CUNIT2'] = 'deg'
     header['CRVAL1'] = get_ra(header)
     header['CRVAL2'] = get_dec(header)
-    if instrument != em.Inst.GPI:
+    if instrument not in [em.Inst.GPI, em.Inst.CIRPASS]:
         header['CDELT1'] = RADIUS_LOOKUP[instrument]
         header['CDELT2'] = RADIUS_LOOKUP[instrument]
         header['CROTA1'] = 0.0
@@ -2433,6 +2526,22 @@ def _update_chunk_position(chunk, header, instrument, extension, obs_id,
         # DB 05-03-19 - persist NAXIS values for NIFS
         header['NAXIS1'] = n_axis1
         header['NAXIS2'] = n_axis2
+    if instrument == em.Inst.CIRPASS:
+        # So perhaps try:
+        #     NAXIS1 = 33
+        #     NAXIS2 = 15
+        header['NAXIS1'] = 33
+        header['NAXIS2'] = 15
+        # LENS_SCL determines the scale/lenslet:  0.36 or 0.25 (arcseconds per lens)
+        #     if 0.36 then FOV is 13.0" x 4.7" (RA and Dec)
+        #     if 0.25 then FOV is 9.3" x 3.5"
+        lens_scl = header.get('LENS_SCL')
+        if lens_scl == '0.36':
+            header['CDELT1'] = 13.0 / 3600.0
+            header['CDELT2'] = 4.7 / 3600.0
+        else:
+            header['CDELT1'] = 9.3 / 3600.0
+            header['CDELT2'] = 3.5 / 3600.0
     header['CRPIX1'] = get_crpix1(header)
     header['CRPIX2'] = get_crpix2(header)
     header['CD1_1'] = get_cd11(header)

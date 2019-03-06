@@ -93,6 +93,7 @@ fm = {}
 class Inst(Enum):
 
     BHROS = 'bHROS'
+    CIRPASS = 'CIRPASS'
     F2 = 'F2'
     FLAMINGOS = 'FLAMINGOS'
     GMOS = 'GMOS'
@@ -107,10 +108,10 @@ class Inst(Enum):
     MICHELLE = 'michelle'
     NICI = 'NICI'
     NIFS = 'NIFS'
+    NIRI = 'NIRI'
     OSCIR = 'OSCIR'
     PHOENIX = 'PHOENIX'
     TRECS = 'TReCS'
-    NIRI = 'NIRI'
 
 
 def get_obs_metadata(file_id):

@@ -173,4 +173,12 @@ Again, likely not since Gemini displays results with 'hrwfs' from the header.
 1. ABU returns no data on the Gemini site.
 1. ABU - TBD
 1. A quick look suggest CIRPASS will be the same as the other older visitor instruments.   e.g. no use of IMAGTYPE or OBSTYPE keyword, no WCS spatial information at all as for OSCIR.  
-1. CIRPASS - TBD
+1. CIRPASS
+   1. GS-CAL20030320-3-2731    dome flat
+   1. GS-CAL20030630-4-3463    another dome flat
+   1. GS-CAL20030309-9-1247     dark
+   1. GS-2003A-Q-10-19-1204      science object
+   1. GS-2003A-Q-3-22-3598         science object
+   1. GS-CAL20030315-18-2027   standard star (obstype=OBJECT but intent still CALIBRATION)
+   1. GS-CAL20030630-1-3384      flat
+   1. GS-CAL20030313-3-1769      arc

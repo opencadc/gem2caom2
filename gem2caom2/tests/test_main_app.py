@@ -276,6 +276,19 @@ LOOKUP = {
     'S20080610S0045': ['GS-2008A-C-5-35-002', 'TReCS', 'GS-2008A-C-5'],
     'S20120922S0372': ['GS-2012A-Q-7-31-001', 'TReCS', 'GS-2012A-Q-7'],
     'S20050102S0024': ['GS-CAL20050102-1-001', 'TReCS', 'GS-CAL20050102'],
+    # CIRPASS
+    '2003mar09_1204': ['GS-2003A-Q-10-19-1204', 'CIRPASS', 'GS-2003A-Q-10'],
+    '2003jun30_3507': ['GS-2003A-Q-14-2-3507', 'CIRPASS', 'GS-2003A-Q-14'],
+    '2003mar09_1161': ['GS-2003A-Q-24-1-1161', 'CIRPASS', 'GS-2003A-Q-24'],
+    '2003jul01_3598': ['GS-2003A-Q-3-22-3598', 'CIRPASS', 'GS-2003A-Q-3'],
+    '2003mar08_1055': ['GS-CAL20030308-4-1055', 'CIRPASS', 'GS-CAL20030308'],
+    '2003mar09_1247': ['GS-CAL20030309-9-1247', 'CIRPASS', 'GS-CAL20030309'],
+    '2003mar13_1769': ['GS-CAL20030313-3-1769', 'CIRPASS', 'GS-CAL20030313'],
+    '2003mar15_2027': ['GS-CAL20030315-18-2027', 'CIRPASS', 'GS-CAL20030315'],
+    '2003mar20_2731': ['GS-CAL20030320-3-2731', 'CIRPASS', 'GS-CAL20030320'],
+    '2003jun30_3384': ['GS-CAL20030630-1-3384', 'CIRPASS', 'GS-CAL20030630'],
+    '2003jun30_3532': ['GS-CAL20030630-11-3532', 'CIRPASS', 'GS-CAL20030630'],
+    '2003jun30_3463': ['GS-CAL20030630-4-3463', 'CIRPASS', 'GS-CAL20030630'],
 }
 
 
@@ -284,10 +297,11 @@ def pytest_generate_tests(metafunc):
 
         file_list = []
         # for root, dirs, files in os.walk(TESTDATA_DIR):
-        # for ii in ['GMOS']:
+        # for ii in ['CIRPASS']:
         for ii in ['GMOS', 'NIRI', 'GPI', 'F2', 'GSAOI', 'NICI', 'TReCS',
                    'Michelle', 'GRACES', 'NIFS', 'GNIRS', 'Phoenix',
-                   'Flamingos', 'hrwfs', 'HOKUPAA', 'OSCIR', 'bHROS']:
+                   'Flamingos', 'hrwfs', 'HOKUPAA', 'OSCIR', 'bHROS',
+                   'CIRPASS']:
             for root, dirs, files in os.walk('{}/{}'.format(TEST_DATA_DIR, ii)):
                 for file in files:
                     if file.endswith(".header"):
