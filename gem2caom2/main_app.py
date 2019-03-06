@@ -359,7 +359,9 @@ def get_dec(header):
     elif instrument == em.Inst.OSCIR:
         ra, dec = _get_sky_coord(header, 'RA_TEL', 'DEC_TEL')
         result = dec
-    elif instrument == em.Inst.BHROS:  # ra/dec not in json
+    elif instrument in [em.Inst.BHROS, em.Inst.NIFS]:
+        # bHROS ra/dec not in json
+        # NIFS ra/dec not reliable in json
         result = header.get('DEC')
     else:
         result = em.om.get('dec')
@@ -512,8 +514,10 @@ def get_ra(header):
     elif instrument == em.Inst.OSCIR:
         ra, dec = _get_sky_coord(header, 'RA_TEL', 'DEC_TEL')
         result = ra
-    elif instrument == em.Inst.BHROS:
-        result = header.get('RA')  # ra/dec not in json
+    elif instrument in [em.Inst.BHROS, em.Inst.NIFS]:
+        # bHROS: ra/dec not in json
+        # DB - 05-03-19 - NIFS: ra/dec not reliable in json
+        result = header.get('RA')
     else:
         result = em.om.get('ra')
     return result
