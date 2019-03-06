@@ -165,6 +165,7 @@ LOOKUP = {
     'S20080526S0024': ['GS-2008A-Q-41-26-013', 'GMOS', 'GS-2008A-Q-41'],
     'S20090620S0145': ['GS-2009A-Q-30-6-007', 'GMOS', 'GS-2009A-Q-30'],
     'S20060125S0027': ['GS-CAL20060125-1-002', 'GMOS', 'GS-CAL20060125'],
+    'GN2001BQ013-04': ['GN2001BQ013-04', 'GMOS', 'GN-2001B-Q-13'],
     # 'gS20190301S0556_bia': ['GS-CAL20190301-4-046-g-bias', 'GMOS',
     #                         'GS-CAL20190301-4'],
     # 'gS20181219S0216_flat': ['GS-CAL20181219-4-021-g-flat', 'GMOS',
@@ -283,7 +284,7 @@ def pytest_generate_tests(metafunc):
 
         file_list = []
         # for root, dirs, files in os.walk(TESTDATA_DIR):
-        # for ii in ['GNIRS']:
+        # for ii in ['GMOS']:
         for ii in ['GMOS', 'NIRI', 'GPI', 'F2', 'GSAOI', 'NICI', 'TReCS',
                    'Michelle', 'GRACES', 'NIFS', 'GNIRS', 'Phoenix',
                    'Flamingos', 'hrwfs', 'HOKUPAA', 'OSCIR', 'bHROS']:
@@ -293,7 +294,7 @@ def pytest_generate_tests(metafunc):
                         file_list.append(os.path.join(root, file))
 
         # metafunc.parametrize('test_name',
-        # ['{}/GRACES/N20150807G0044.fits.header'.format(TEST_DATA_DIR)])
+        # ['{}/GMOS/GN2001BQ013-04.fits.header'.format(TEST_DATA_DIR)])
         # metafunc.parametrize('test_name', file_list[8:])
         metafunc.parametrize('test_name', file_list)
 

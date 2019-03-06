@@ -1,0 +1,158 @@
+Filename: GN2001BQ013-04.fits.bz2
+
+AstroData Types: ['GMOS_N', 'GEMINI', 'GMOS_SPECT', 'GMOS', 'SPECT', 'GMOS_RAW', 'RAW', 'UNPREPARED']
+
+
+--- HDU 0 ---
+SIMPLE  =                    T / Fits standard                                  
+BITPIX  =                   16 / Bits per pixel                                 
+NAXIS   =                    0 / Number of axes                                 
+EXTEND  =                    T / File may contain extensions                    
+IRAF-TLM= '2010-05-12T13:35:33' / Time of last modification                     
+DATE    = '2001-12-11'         / Date tape was written                          
+ORIGIN  = 'STScI-STSDAS'       / Fitsio version 21-Feb-1996                     
+FILENAME= 'null_image'         / ZERO LENGTH DUMMY IMAGE                        
+GEMPRGID= 'GN-2001B-Q-13'                                                       
+RELEASE = '2003-02-01'         / End of proprietary period YYYY-MM-DD           
+DATE-OBS= '2001-08-01'                                                          
+INSTRUME= 'GMOS-N  '                                                            
+OBSTYPE = 'MASK    '                                                            
+DATALAB = 'GN2001BQ013-04'                                                      
+
+--- HDU 1 ---
+XTENSION= 'BINTABLE'           / Binary table extension                         
+BITPIX  =                    8 / 8-bits per 'pixels'                            
+NAXIS   =                    2 / Simple 2-D matrix                              
+NAXIS1  =                   86 / Number of characters per row                   
+NAXIS2  =                   26                                                  
+PCOUNT  =                    0 / No 'random' parameters                         
+GCOUNT  =                    1 / Only one group                                 
+TFIELDS =                   21                                                  
+EXTNAME = 'GN-DEFAULT-4.tab'   / Name of table                                  
+EXTVER  =                    1                                                  
+                                                                                
+TTYPE1  = 'ID      '           /                                                
+TFORM1  = '1J      '           /                                                
+TUNIT1  = '#       '           /                                                
+TDISP1  = 'I11     '           / %11d                                           
+                                                                                
+TTYPE2  = 'RA      '           /                                                
+TFORM2  = '1E      '           /                                                
+TUNIT2  = 'deg     '           /                                                
+TDISP2  = 'G15.7   '           / %15.7g                                         
+                                                                                
+TTYPE3  = 'DEC     '           /                                                
+TFORM3  = '1E      '           /                                                
+TUNIT3  = 'deg     '           /                                                
+TDISP3  = 'G15.7   '           / %15.7g                                         
+                                                                                
+TTYPE4  = 'x_ccd   '           /                                                
+TFORM4  = '1E      '           /                                                
+TUNIT4  = 'pixels  '           /                                                
+TDISP4  = 'G15.7   '           / %15.7g                                         
+                                                                                
+TTYPE5  = 'y_ccd   '           /                                                
+TFORM5  = '1E      '           /                                                
+TUNIT5  = 'pixels  '           /                                                
+TDISP5  = 'G15.7   '           / %15.7g                                         
+                                                                                
+TTYPE6  = 'slitpos_x'          /                                                
+TFORM6  = '1E      '           /                                                
+TUNIT6  = 'arcsec  '           /                                                
+TDISP6  = 'G15.7   '           / %15.7g                                         
+                                                                                
+TTYPE7  = 'slitpos_y'          /                                                
+TFORM7  = '1E      '           /                                                
+TUNIT7  = 'arcsec  '           /                                                
+TDISP7  = 'G15.7   '           / %15.7g                                         
+                                                                                
+TTYPE8  = 'slitsize_x'         /                                                
+TFORM8  = '1E      '           /                                                
+TUNIT8  = 'arcsec  '           /                                                
+TDISP8  = 'G15.7   '           / %15.7g                                         
+                                                                                
+TTYPE9  = 'slitsize_y'         /                                                
+TFORM9  = '1E      '           /                                                
+TUNIT9  = 'arcsec  '           /                                                
+TDISP9  = 'G15.7   '           / %15.7g                                         
+                                                                                
+TTYPE10 = 'slittilt'           /                                                
+TFORM10 = '1E      '           /                                                
+TUNIT10 = 'deg     '           /                                                
+TDISP10 = 'G15.7   '           / %15.7g                                         
+                                                                                
+TTYPE11 = 'MAG     '           /                                                
+TFORM11 = '1E      '           /                                                
+TUNIT11 = '#       '           /                                                
+TDISP11 = 'G15.7   '           / %15.7g                                         
+                                                                                
+TTYPE12 = 'priority'           /                                                
+TFORM12 = '1A      '           /                                                
+TUNIT12 = 'c       '           /                                                
+TDISP12 = 'A1      '           / %-1s                                           
+                                                                                
+TTYPE13 = 'slitpos_mx'         /                                                
+TFORM13 = '1E      '           /                                                
+TUNIT13 = '        '           /                                                
+TDISP13 = 'F9.6    '           / %9.6f                                          
+                                                                                
+TTYPE14 = 'slitpos_my'         /                                                
+TFORM14 = '1E      '           /                                                
+TUNIT14 = '        '           /                                                
+TDISP14 = 'F9.6    '           / %9.6f                                          
+                                                                                
+TTYPE15 = 'slitid  '           /                                                
+TFORM15 = '1E      '           /                                                
+TUNIT15 = '        '           /                                                
+TDISP15 = 'F9.6    '           / %4d                                            
+                                                                                
+TTYPE16 = 'slitsize_mx'        /                                                
+TFORM16 = '1E      '           /                                                
+TUNIT16 = '        '           /                                                
+TDISP16 = 'F9.6    '           / %8.6f                                          
+                                                                                
+TTYPE17 = 'slitsize_my'        /                                                
+TFORM17 = '1E      '           /                                                
+TUNIT17 = '        '           /                                                
+TDISP17 = 'F9.6    '           / %8.6f                                          
+                                                                                
+TTYPE18 = 'slittilt_m'         /                                                
+TFORM18 = '1E      '           /                                                
+TUNIT18 = '        '           /                                                
+TDISP18 = 'F6.3    '           / %6.3f                                          
+                                                                                
+TTYPE19 = 'slitsize_mr'        /                                                
+TFORM19 = '1E      '           /                                                
+TUNIT19 = '        '           /                                                
+TDISP19 = 'F8.6    '           / %8.6f                                          
+                                                                                
+TTYPE20 = 'slitsize_mw'        /                                                
+TFORM20 = '1E      '           /                                                
+TUNIT20 = '        '           /                                                
+TDISP20 = 'F8.6    '           / %8.6f                                          
+                                                                                
+TTYPE21 = 'slittype'           /                                                
+TFORM21 = '9A      '           /                                                
+TUNIT21 = '        '           /                                                
+TDISP21 = 'A9      '           / %9d                                            
+                                                                                
+EXTNAME = 'MINIMAL.TAB'        / name of this binary table extension            
+FILTSPEC= 'OG515_G0306'        /                                                
+GRATING = 'R400_G5305'         /                                                
+WAVELENG=                  800 /                                                
+SPOCMODE= 'Normal_Opt'         /                                                
+GEMSOFT = '0.15    '           /                                                
+MASK_PA =                   0.                                                  
+PERS_ODF= 'pwl     '           /                                                
+DATE_ODF= '2001-12-11'                                                          
+FILE_OT = 'm1_OT7ODF1.fits'    /                                                
+FILENAME= '/local/home/pwl/m1_OT7' /                                            
+TIME_ODF= '2001-12-11T16:36:29.000' /                                           
+PIXSCALE=  0.07269999999999999                                                  
+ANAMORPH=                  1.2                                                  
+DATEIMAG= '2001-08-01'                                                          
+SPEC_LEN=                 2600                                                  
+FILTER  = 'r_G0303 '                                                            
+DEC_IMAG=             -5.37022                                                  
+RA_IMAG =              83.7799                                                  
+TIMEIMAG=     16.6080555555556                                                  
