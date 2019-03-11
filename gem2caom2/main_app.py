@@ -864,6 +864,16 @@ def accumulate_fits_bp(bp, obs_id, file_id):
     bp.set('Observation.target.moving', 'get_target_moving(header)')
     bp.set('Observation.proposal.id', 'get_proposal_id(header)')
 
+    telescope = em.om.get('telescope')
+    if telescope is not None:
+        if 'North' in telescope:
+            x, y, z = ac.get_location(19.823806, -155.46906, 4213.0)
+        else:
+            x, y, z = ac.get_location(-30.240750, -70.736693, 2722.0)
+        bp.set('Observation.telescope.geoLocationX', x)
+        bp.set('Observation.telescope.geoLocationY', y)
+        bp.set('Observation.telescope.geoLocationZ', z)
+
     bp.set('Plane.dataProductType', 'get_data_product_type(header)')
     bp.set('Plane.calibrationLevel', 'get_calibration_level(uri)')
     bp.set('Plane.metaRelease', 'get_meta_release(header)')
