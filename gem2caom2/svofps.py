@@ -247,7 +247,7 @@ class FilterMetadata(object):
 
     @property
     def resolving_power(self):
-        if self.instrument == 'Phoenix':
+        if self.instrument in ['Phoenix', 'TEXES']:
             return None
         elif self._resolving_power is None:
             if self.instrument is 'NIRI':

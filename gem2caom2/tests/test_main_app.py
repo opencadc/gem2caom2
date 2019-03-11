@@ -289,6 +289,19 @@ LOOKUP = {
     '2003jun30_3384': ['GS-CAL20030630-1-3384', 'CIRPASS', 'GS-CAL20030630'],
     '2003jun30_3532': ['GS-CAL20030630-11-3532', 'CIRPASS', 'GS-CAL20030630'],
     '2003jun30_3463': ['GS-CAL20030630-4-3463', 'CIRPASS', 'GS-CAL20030630'],
+    # TEXES
+    'TX20071021_FLT.2037': ['TX20071021_FLT.2037', 'TEXES', 'GN-2007B-C-6'],
+    'TX20071021_RAW.2037': ['TX20071021_RAW.2037', 'TEXES', 'GN-2007B-C-6'],
+    'TX20071021_SUM.2037': ['TX20071021_SUM.2037', 'TEXES', 'GN-2007B-C-6'],
+    'TX20131117_flt.3002': ['TX20131117_flt.3002', 'TEXES', 'GN-2013B-Q-38'],
+    'TX20131117_raw.3002': ['TX20131117_raw.3002', 'TEXES', 'GN-2013B-Q-38'],
+    'TX20170321_flt.2505': ['TX20170321_flt.2505', 'TEXES', 'GN-2017A-Q-56'],
+    'TX20170321_flt.2507': ['TX20170321_flt.2507', 'TEXES', 'GN-2017A-Q-56'],
+    'TX20170321_raw.2505': ['TX20170321_raw.2505', 'TEXES', 'GN-2017A-Q-56'],
+    'TX20170321_raw.2507': ['TX20170321_raw.2507', 'TEXES', 'GN-2017A-Q-56'],
+    'TX20170321_red.2505': ['TX20170321_red.2505', 'TEXES', 'GN-2017A-Q-56'],
+    'TX20170321_red.2507': ['TX20170321_red.2507', 'TEXES', 'GN-2017A-Q-56'],
+    'TX20170321_sum.2505': ['TX20170321_sum.2505', 'TEXES', 'GN-2017A-Q-56'],
 }
 
 
@@ -297,11 +310,11 @@ def pytest_generate_tests(metafunc):
 
         file_list = []
         # for root, dirs, files in os.walk(TESTDATA_DIR):
-        # for ii in ['CIRPASS']:
-        for ii in ['GMOS', 'NIRI', 'GPI', 'F2', 'GSAOI', 'NICI', 'TReCS',
-                   'Michelle', 'GRACES', 'NIFS', 'GNIRS', 'Phoenix',
-                   'Flamingos', 'hrwfs', 'HOKUPAA', 'OSCIR', 'bHROS',
-                   'CIRPASS']:
+        for ii in ['TEXES']:
+        # for ii in ['GMOS', 'NIRI', 'GPI', 'F2', 'GSAOI', 'NICI', 'TReCS',
+        #            'Michelle', 'GRACES', 'NIFS', 'GNIRS', 'Phoenix',
+        #            'Flamingos', 'hrwfs', 'HOKUPAA', 'OSCIR', 'bHROS',
+        #            'CIRPASS', 'TEXES']:
             for root, dirs, files in os.walk('{}/{}'.format(TEST_DATA_DIR, ii)):
                 for file in files:
                     if file.endswith(".header"):
@@ -317,7 +330,7 @@ def test_main_app(test_name):
     basename = os.path.basename(test_name)
     dirname = os.path.dirname(test_name)
     file_id = _get_file_id(basename)
-    obs_id = LOOKUP[file_id][0]
+    obs_id = _get_obs_id(file_id) # LOOKUP[file_id][0]
     product_id = _get_product_id(file_id)
     lineage = _get_lineage(dirname, basename, product_id, file_id)
     input_file = '{}.in.xml'.format(obs_id)

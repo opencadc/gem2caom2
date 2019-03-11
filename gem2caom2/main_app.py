@@ -128,13 +128,15 @@ APPLICATION = 'gem2caom2'
 #                         A very small fibre.
 # HOKUPAA - http://www.gemini.edu/sciops/instruments/uhaos/uhaosIndex.html
 # NIFS - DB - 04-03-19 - hard-code 3" FOV
+# TEXES - DB - 07-03-19 - cd11=cd22 = 5.0/3600.0
 RADIUS_LOOKUP = {em.Inst.GPI: 2.8 / 3600.0,  # units are arcseconds
                  em.Inst.GRACES: 1.2 / 3600.0,
                  em.Inst.PHOENIX: 5.0 / 3600.0,
                  em.Inst.OSCIR: 0.0890 / 3600.0,
                  em.Inst.HOKUPAA: 4.0 / 3600.0,
                  em.Inst.BHROS: 0.9 / 3600.0,
-                 em.Inst.NIFS: 3.0 / 3600.0}
+                 em.Inst.NIFS: 3.0 / 3600.0,
+                 em.Inst.TEXES: 5.0 / 3600.0}
 
 
 def get_time_delta(header):
@@ -153,10 +155,13 @@ def get_time_delta(header):
     return float(exptime) / (24.0 * 3600.0)
 
 
-def get_calibration_level(header):
-    reduction = em.om.get('reduction')
+def get_calibration_level(uri):
     result = CalibrationLevel.RAW_STANDARD
-    if reduction is not None and 'PROCESSED_SCIENCE' in reduction:
+    reduction = em.om.get('reduction')
+    instrument = _get_instrument()
+    if ((reduction is not None and 'PROCESSED_SCIENCE' in reduction) or
+            (instrument is em.Inst.TEXES and
+             ('_red' in uri.lower() or '_sum' in uri.lower()))):
         result = CalibrationLevel.CALIBRATED
     return result
 
@@ -226,7 +231,7 @@ def get_cd11(header):
     instrument = _get_instrument()
     if instrument == em.Inst.HOKUPAA:
         result = _get_pix_scale(header)
-    elif instrument == em.Inst.OSCIR:
+    elif instrument in [em.Inst.OSCIR, em.Inst.TEXES]:
         result = RADIUS_LOOKUP[instrument]
     elif instrument in [em.Inst.GPI, em.Inst.NIFS]:
         # DB - 05-03-19 - NIFS needs a division by NAXIS1/2 for the
@@ -260,7 +265,7 @@ def get_cd22(header):
     instrument = _get_instrument()
     if instrument == em.Inst.HOKUPAA:
         result = _get_pix_scale(header)
-    elif instrument == em.Inst.OSCIR:
+    elif instrument in [em.Inst.OSCIR, em.Inst.TEXES]:
         result = RADIUS_LOOKUP[instrument]
     elif instrument in [em.Inst.GPI, em.Inst.NIFS]:
         # DB - 05-03-19 - NIFS needs a division by NAXIS1/2 for the
@@ -326,7 +331,7 @@ def get_data_product_type(header):
     instrument = _get_instrument()
     if instrument == em.Inst.FLAMINGOS:
         result, ignore = _get_flamingos_mode(header)
-    elif instrument == em.Inst.CIRPASS:
+    elif instrument in [em.Inst.CIRPASS, em.Inst.TEXES]:
         result = DataProductType.SPECTRUM
     else:
         mode = em.om.get('mode')
@@ -383,8 +388,8 @@ def get_dec(header):
     elif instrument == em.Inst.OSCIR:
         ra, dec = _get_sky_coord(header, 'RA_TEL', 'DEC_TEL')
         result = dec
-    elif instrument in [em.Inst.BHROS, em.Inst.NIFS]:
-        # bHROS ra/dec not in json
+    elif instrument in [em.Inst.BHROS, em.Inst.NIFS, em.Inst.TEXES]:
+        # bHROS, TEXES ra/dec not in json
         # NIFS ra/dec not reliable in json
         result = header.get('DEC')
     elif instrument == em.Inst.CIRPASS:
@@ -417,6 +422,10 @@ def get_exposure(header):
         # exposure_time is null in the JSON
         # DB - 06-03-19 Use value of header keyword EXP_TIME for exposure time.
         result = mc.to_float(header.get('EXP_TIME'))
+    elif instrument == em.Inst.TEXES:
+        # DB - 07-03-19 -  Use header ‘OBSTIME’ value as exposure time in
+        # seconds.
+        result = mc.to_float(header.get('OBSTIME'))
     elif _is_gmos_mask(header):
         result = 0.0
     return result
@@ -571,8 +580,8 @@ def get_ra(header):
     elif instrument == em.Inst.OSCIR:
         ra, dec = _get_sky_coord(header, 'RA_TEL', 'DEC_TEL')
         result = ra
-    elif instrument in [em.Inst.BHROS, em.Inst.NIFS]:
-        # bHROS: ra/dec not in json
+    elif instrument in [em.Inst.BHROS, em.Inst.NIFS, em.Inst.TEXES]:
+        # bHROS, TEXES: ra/dec not in json
         # DB - 05-03-19 - NIFS: ra/dec not reliable in json
         result = header.get('RA')
     elif instrument == em.Inst.CIRPASS:
@@ -606,11 +615,12 @@ def get_target_type(header):
     :param header:  The FITS header for the current extension.
     :return: The Target TargetType, or None if not found.
     """
+    result = TargetType.FIELD
     spectroscopy = em.om.get('spectroscopy')
-    if spectroscopy:
-        return TargetType.OBJECT
-    else:
-        return TargetType.FIELD
+    instrument = _get_instrument()
+    if spectroscopy or instrument is em.Inst.TEXES:
+        result = TargetType.OBJECT
+    return result
 
 
 def get_time_function_val(header):
@@ -638,6 +648,7 @@ def get_time_function_val(header):
 
         time_val = header.get('MJD')
     else:
+        # DB - 07-03-19 - TEXES json ut_date_time is correct.
         time_string = em.om.get('ut_datetime')
         time_val = ac.get_datetime(time_string)
     return time_val
@@ -854,7 +865,7 @@ def accumulate_fits_bp(bp, obs_id, file_id):
     bp.set('Observation.proposal.id', 'get_proposal_id(header)')
 
     bp.set('Plane.dataProductType', 'get_data_product_type(header)')
-    bp.set('Plane.calibrationLevel', 'get_calibration_level(header)')
+    bp.set('Plane.calibrationLevel', 'get_calibration_level(uri)')
     bp.set('Plane.metaRelease', 'get_meta_release(header)')
     bp.set('Plane.dataRelease', 'get_data_release(header)')
 
@@ -863,12 +874,17 @@ def accumulate_fits_bp(bp, obs_id, file_id):
     # Add IMAGESWV for GRACES
     bp.add_fits_attribute('Plane.provenance.producer', 'IMAGESWV')
     bp.set_default('Plane.provenance.producer', 'Gemini Observatory')
-    bp.set('Plane.provenance.reference',
-           'http://archive.gemini.edu/searchform/{}'.format(obs_id))
+    instrument = _get_instrument()
+    if instrument is em.Inst.TEXES:
+        logging.error('file id is {}'.format(file_id))
+        bp.set('Plane.provenance.reference',
+               'http://archive.gemini.edu/searchform/filepre={}'.format(file_id))
+    else:
+        bp.set('Plane.provenance.reference',
+               'http://archive.gemini.edu/searchform/{}'.format(obs_id))
 
     bp.set('Artifact.productType', 'get_art_product_type(header)')
 
-    instrument = _get_instrument()
     if instrument == em.Inst.CIRPASS:
         bp.set_default('Observation.telescope.name', 'Gemini-South')
     mode = em.om.get('mode')
@@ -1046,6 +1062,11 @@ def update(observation, **kwargs):
                                 _update_chunk_energy_cirpass(
                                     c, observation.planes[p].data_product_type,
                                     observation.observation_id)
+                            elif instrument == em.Inst.TEXES:
+                                _update_chunk_energy_texes(
+                                    c, headers[0],
+                                    observation.planes[p].data_product_type,
+                                    observation.observation_id)
 
                         # position WCS
                         mode = em.om.get('mode')
@@ -1056,7 +1077,8 @@ def update(observation, **kwargs):
                             _update_chunk_position(
                                 c, header, instrument, int(part),
                                 observation.observation_id)
-                        elif instrument in [em.Inst.BHROS, em.Inst.CIRPASS]:
+                        elif instrument in [em.Inst.BHROS, em.Inst.CIRPASS,
+                                            em.Inst.TEXES]:
                             _update_chunk_position(
                                 c, headers[0], instrument,
                                 int(part), observation.observation_id)
@@ -2310,6 +2332,49 @@ def _update_chunk_energy_cirpass(chunk, data_product_type, obs_id):
     logging.debug('End _update_chunk_energy_cirpass')
 
 
+def _update_chunk_energy_texes(chunk, header, data_product_type, obs_id):
+    # DB - 07-03-19
+    # TEXES Spectroscopy
+    #
+    # Some special code will be needed for datalabels/planes.  There are no
+    # datalabels in the FITS header.  json metadata (limited) must be
+    # obtained with URL like
+    # https://archive.gemini.edu/jsonsummary/canonical/filepre=TX20170321_flt.2507.fits.
+    # Use TX20170321_flt.2507 as datalabel.  But NOTE:  *raw.2507.fits and
+    # *red.2507.fits are two planes of the same observation. I’d suggest we
+    # use ‘*raw*’ as the datalabel and ‘*red*’ or ‘*raw*’ as the appropriate
+    # product ID’s for the science observations.  The ‘flt’ observations do
+    # not have a ‘red’ plane.  The json document contains ‘filename’ if
+    # that’s helpful at all.  The ‘red’ files do not exist for all ‘raw’
+    # files.
+    #
+    #
+    # Header OBSTYPE appears to be correct; not json obs_type.
+    #
+    # No previews are generated by Gemini
+    #
+    # Energy WCS:
+    #
+    # Central wavelength is given by 10,000/header(WAVENO0).  I have to do
+    # some more investigation to see if we can determine wavelength coverage
+    # (i.e. see if I can identify the echelle/echelon info rom the header - I
+    # don’t think so).  For now use 0.25 microns as the fixed FWHM bandpass.
+    logging.debug('Begin _update_chunk_energy_texes')
+    if data_product_type == DataProductType.SPECTRUM:
+        logging.debug(
+            'texes: SpectralWCS spectral mode for {}.'.format(obs_id))
+        fm = FilterMetadata('TEXES')
+        fm.central_wl = 10000/header.get('WAVENO0')
+        fm.bandpass = 0.25
+    else:
+        # data_type/observing mode is always spectroscopy
+        raise mc.CadcException(
+            'texes: mystery data product type {} for {}'.format(
+                data_product_type, obs_id))
+    _build_chunk_energy(chunk, '', fm)
+    logging.debug('End _update_chunk_energy_texes')
+
+
 def _reset_energy(observation_type, data_label, instrument):
     """
     Return True if there should be no energy WCS information created at
@@ -2345,7 +2410,7 @@ def get_filter_name(primary_header, header, obs_id, instrument=None):
     :param instrument: For instrument-specific behaviour.
     :return: The filter names, or None if none found.
     """
-    if instrument == em.Inst.GRACES:
+    if instrument in [em.Inst.GRACES, em.Inst.TEXES]:
         # filter name not used in spectral WCS calculation
         return None
 
@@ -2509,6 +2574,10 @@ def _update_chunk_position(chunk, header, instrument, extension, obs_id,
     # cd2_2 = 2.8/(3600.0 * naxis2)
     # cd1_2 = cd2_1 = 0.0 since we don’t know rotation value
 
+    # TEXES - DB - 07-03-19
+    # Use header RA and DEC for crval1/2.  Use a fixed 5" x 5" FOV.
+    # So NAXIS=1 and cd11=cd22 = 5.0/3600.0
+
     header['CTYPE1'] = 'RA---TAN'
     header['CTYPE2'] = 'DEC--TAN'
     header['CUNIT1'] = 'deg'
@@ -2665,11 +2734,11 @@ def _get_file_id(args):
     result = None
     if args.lineage:
         for lineage in args.lineage:
-            temp = lineage.split(':', 1)
+            temp = lineage.split('{}/'.format(ARCHIVE))
             if temp[1].endswith('.jpg'):
                 pass
             else:
-                result = re.split(r"[/.]", temp[1])[1]
+                result = GemName.remove_extensions(temp[1])
     else:
         raise mc.CadcException(
             'Cannot get the fileID without the file_uri from args {}'

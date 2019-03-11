@@ -111,6 +111,7 @@ class Inst(Enum):
     NIRI = 'NIRI'
     OSCIR = 'OSCIR'
     PHOENIX = 'PHOENIX'
+    TEXES = 'TEXES'
     TRECS = 'TReCS'
 
 

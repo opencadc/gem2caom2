@@ -169,7 +169,12 @@ Again, likely not since Gemini displays results with 'hrwfs' from the header.
    1. object: GN-2002A-DD-1-319-591
    1. dark:   GN-CAL20020424-1-007
 1. TEXES was a more recent visitor instrument so should be more consistent.
-1. TEXES - TBD
+1. TEXES
+   1. flat field: TX20131117_flt.3002.fits
+   1. unprocessed science: TX20131117_raw.3002.fits
+   1. flat field: TX20170321_flt.2507.fits
+   1. unprocessed science: TX20170321_raw.2507.fits
+   1. reduced science: TX20170321_red.2507.fits
 1. ABU returns no data on the Gemini site.
 1. ABU - TBD
 1. A quick look suggest CIRPASS will be the same as the other older visitor instruments.   e.g. no use of IMAGTYPE or OBSTYPE keyword, no WCS spatial information at all as for OSCIR.  
