@@ -1,3 +1,4 @@
+<?xml version='1.0' encoding='UTF-8'?>
 <caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="00000000-0000-0000-16b2-01506e4c9700">
   <caom2:collection>GEMINI</caom2:collection>
   <caom2:observationID>GN2001BQ013-04</caom2:observationID>

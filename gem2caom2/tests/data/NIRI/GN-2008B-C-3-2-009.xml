@@ -1,3 +1,4 @@
+<?xml version='1.0' encoding='UTF-8'?>
 <caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="00000000-0000-0000-8692-7cb718590201" caom2:lastModified="2018-10-29T01:13:39.507" caom2:maxLastModified="2018-10-29T01:13:39.507" caom2:metaChecksum="md5:551a27a8e5275a51d1de8881889fe807" caom2:accMetaChecksum="md5:8076cfd276d374e8867941c16e6892c6">
   <caom2:collection>GEMINI</caom2:collection>
   <caom2:observationID>GN-2008B-C-3-2-009</caom2:observationID>
@@ -18,9 +19,9 @@
   </caom2:target>
   <caom2:telescope>
     <caom2:name>Gemini-North</caom2:name>
-    <caom2:geoLocationX>-5464284.388114523</caom2:geoLocationX>
-    <caom2:geoLocationY>-2493782.309746151</caom2:geoLocationY>
-    <caom2:geoLocationZ>2150786.371607106</caom2:geoLocationZ>
+    <caom2:geoLocationX>-5464284.386715498</caom2:geoLocationX>
+    <caom2:geoLocationY>-2493782.3091076654</caom2:geoLocationY>
+    <caom2:geoLocationZ>2150786.380689657</caom2:geoLocationZ>
   </caom2:telescope>
   <caom2:instrument>
     <caom2:name>NIRI</caom2:name>

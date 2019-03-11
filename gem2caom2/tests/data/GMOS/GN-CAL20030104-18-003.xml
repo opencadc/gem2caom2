@@ -17,9 +17,9 @@
   </caom2:target>
   <caom2:telescope>
     <caom2:name>Gemini-North</caom2:name>
-    <caom2:geoLocationX>-5464284.388114523</caom2:geoLocationX>
-    <caom2:geoLocationY>-2493782.309746151</caom2:geoLocationY>
-    <caom2:geoLocationZ>2150786.371607106</caom2:geoLocationZ>
+    <caom2:geoLocationX>-5464284.386715498</caom2:geoLocationX>
+    <caom2:geoLocationY>-2493782.3091076654</caom2:geoLocationY>
+    <caom2:geoLocationZ>2150786.380689657</caom2:geoLocationZ>
   </caom2:telescope>
   <caom2:instrument>
     <caom2:name>GMOS-N</caom2:name>

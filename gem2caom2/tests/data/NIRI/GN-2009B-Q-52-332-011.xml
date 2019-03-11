@@ -1,3 +1,4 @@
+<?xml version='1.0' encoding='UTF-8'?>
 <caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="00000000-0000-0000-b66a-214cf36104dc" caom2:lastModified="2018-11-06T18:41:14.699" caom2:maxLastModified="2018-11-06T18:41:14.699" caom2:metaChecksum="md5:55ebdbda5d52c5e552a8cd6409206a77" caom2:accMetaChecksum="md5:9b0aa41654024652fed9a02ef3eee1a6">
   <caom2:collection>GEMINI</caom2:collection>
   <caom2:observationID>GN-2009B-Q-52-332-011</caom2:observationID>
@@ -17,9 +18,9 @@
   </caom2:target>
   <caom2:telescope>
     <caom2:name>Gemini-North</caom2:name>
-    <caom2:geoLocationX>-5464284.388114524</caom2:geoLocationX>
-    <caom2:geoLocationY>-2493782.309746151</caom2:geoLocationY>
-    <caom2:geoLocationZ>2150786.371607106</caom2:geoLocationZ>
+    <caom2:geoLocationX>-5464284.386715498</caom2:geoLocationX>
+    <caom2:geoLocationY>-2493782.3091076654</caom2:geoLocationY>
+    <caom2:geoLocationZ>2150786.380689657</caom2:geoLocationZ>
   </caom2:telescope>
   <caom2:instrument>
     <caom2:name>NIRI</caom2:name>
@@ -34,7 +35,7 @@
       <caom2:provenance>
         <caom2:name>Gemini Observatory Data</caom2:name>
         <caom2:project>Gemini Archive</caom2:project>
-	<caom2:producer>NOAO-IRAF FITS Image Kernel July 2003</caom2:producer>
+        <caom2:producer>NOAO-IRAF FITS Image Kernel July 2003</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/GN-2009B-Q-52-332-011</caom2:reference>
       </caom2:provenance>
       <caom2:position/>
