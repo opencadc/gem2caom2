@@ -67,29 +67,48 @@
 # ***********************************************************************
 #
 
-import logging
-
 from caom2pipe import manage_composable as mc
+from caom2pipe import execute_composable as ec
 from gem2caom2.gem_name import GemName
 
 
 class GeminiObsMetadata(object):
-    """A place to hold access to output from a jsonsummary
-    query."""
+    """A place to hold access to output from multiple jsonsummary
+    queries.
 
-    def __init__(self, metadata, file_id):
-        self.obs_metadata = metadata
-        self.index = self._get_index(file_id)
+    Hold the query results for all files associated with an observation.
+    Use the 'add' method to add a single jsonsummary query result.
+    Use the 'reset_index' method to have the 'get' method look up the
+    results associated with a particular file_id.
+    """
+
+    def __init__(self):
+        # a dictionary of all the jsonsummary results
+        self.lookup = {}
+        # which dictionary entry is of current lookup interest
+        self.current = None
+        # the json summary results are a list, track which entry in the
+        # list has the information for a particular file_id
+        self.index = -1
+
+    def add(self, metadata, file_id):
+        self.lookup[file_id] = metadata
+        self._reset_index(file_id)
 
     def get(self, lookup):
-        return mc.response_lookup(self.obs_metadata[self.index], lookup)
+        return mc.response_lookup(self.current[self.index], lookup)
 
-    def reset_index(self, file_id):
+    def reset_index(self, uri):
+        file_id = GemName.remove_extensions(ec.CaomName(uri).file_name)
+        self._reset_index(file_id)
+
+    def _reset_index(self, file_id):
+        self.current = self.lookup[file_id]
         self.index = self._get_index(file_id)
 
     def _get_index(self, file_id):
         result = -1
-        for index, value in enumerate(self.obs_metadata):
+        for index, value in enumerate(self.current):
             indexed_f_name = mc.response_lookup(value, 'filename')
             if indexed_f_name is not None:
                 temp = GemName.remove_extensions(indexed_f_name)

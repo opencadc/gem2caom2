@@ -310,11 +310,11 @@ def pytest_generate_tests(metafunc):
 
         file_list = []
         # for root, dirs, files in os.walk(TESTDATA_DIR):
-        for ii in ['TEXES']:
-        # for ii in ['GMOS', 'NIRI', 'GPI', 'F2', 'GSAOI', 'NICI', 'TReCS',
-        #            'Michelle', 'GRACES', 'NIFS', 'GNIRS', 'Phoenix',
-        #            'Flamingos', 'hrwfs', 'HOKUPAA', 'OSCIR', 'bHROS',
-        #            'CIRPASS', 'TEXES']:
+        # for ii in ['TEXES']:
+        for ii in ['GMOS', 'NIRI', 'GPI', 'F2', 'GSAOI', 'NICI', 'TReCS',
+                   'Michelle', 'GRACES', 'NIFS', 'GNIRS', 'Phoenix',
+                   'Flamingos', 'hrwfs', 'HOKUPAA', 'OSCIR', 'bHROS',
+                   'CIRPASS', 'TEXES']:
             for root, dirs, files in os.walk('{}/{}'.format(TEST_DATA_DIR, ii)):
                 for file in files:
                     if file.endswith(".header"):
@@ -362,7 +362,8 @@ def test_main_app(test_name):
                 with open(fname) as f:
                     y = json.loads(f.read())
                     em.obs_metadata = y[0]
-                    em.om = gom.GeminiObsMetadata(y, file_id)
+                    em.om = gom.GeminiObsMetadata()
+                    em.om.add(y, file_id)
                 # >>> with open('./GN-2015B-Q-1-12-1003.json') as f:
                 #     ...     x = json.load(f)
             except Exception as e:

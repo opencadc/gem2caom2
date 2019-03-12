@@ -104,6 +104,7 @@ from caom2 import TypedList, CoordRange1D
 from caom2utils import ObsBlueprint, get_gen_proc_arg_parser, gen_proc
 from caom2utils import WcsParser
 from caom2pipe import manage_composable as mc
+from caom2pipe import execute_composable as ec
 from caom2pipe import astro_composable as ac
 
 import gem2caom2.external_metadata as em
@@ -608,13 +609,14 @@ def get_target_moving(header):
         return None
 
 
-def get_target_type(header):
+def get_target_type(uri):
     """
     Calculate the Target TargetType
 
     :param header:  The FITS header for the current extension.
     :return: The Target TargetType, or None if not found.
     """
+    em.om.reset_index(uri)
     result = TargetType.FIELD
     spectroscopy = em.om.get('spectroscopy')
     instrument = _get_instrument()
@@ -851,16 +853,18 @@ def _is_gmos_mask(header):
     return result
 
 
-def accumulate_fits_bp(bp, obs_id, file_id):
+def accumulate_fits_bp(bp, obs_id, file_id, uri):
     """Configure the telescope-specific ObsBlueprint at the CAOM model 
     Observation level."""
     logging.debug('Begin accumulate_fits_bp.')
     em.get_obs_metadata(file_id)
+    logging.error('current index is {} len is {}'.format(em.om.index,
+                                                         len(em.om.current)))
 
     bp.set('Observation.intent', 'get_obs_intent(header)')
     bp.set('Observation.type', 'get_obs_type(header)')
     bp.set('Observation.metaRelease', 'get_meta_release(header)')
-    bp.set('Observation.target.type', 'get_target_type(header)')
+    bp.set('Observation.target.type', 'get_target_type(uri)')
     bp.set('Observation.target.moving', 'get_target_moving(header)')
     bp.set('Observation.proposal.id', 'get_proposal_id(header)')
 
@@ -894,6 +898,12 @@ def accumulate_fits_bp(bp, obs_id, file_id):
                'http://archive.gemini.edu/searchform/{}'.format(obs_id))
 
     bp.set('Artifact.productType', 'get_art_product_type(header)')
+    bp.set('Artifact.contentChecksum', 'md5:{}'.format(em.om.get('file_md5')))
+    bp.set('Artifact.contentLength', em.om.get('file_size'))
+    bp.set('Artifact.contentType', 'application/fits')
+    # always see the metadata, see the data only when it's public
+    bp.set('Artifact.releaseType', 'data')
+    bp.set('Artifact.uri', uri)
 
     if instrument == em.Inst.CIRPASS:
         bp.set_default('Observation.telescope.name', 'Gemini-South')
@@ -2674,7 +2684,7 @@ def _update_chunk_time_gmos(chunk, obs_id):
     logging.debug('End _update_chunk_time_gmos {}'.format(obs_id))
 
 
-def _build_blueprints(uris, obs_id, file_id):
+def _build_blueprints(uris, obs_id):
     """This application relies on the caom2utils fits2caom2 ObsBlueprint
     definition for mapping FITS file values to CAOM model element
     attributes. This method builds the DRAO-ST blueprint for a single
@@ -2691,8 +2701,9 @@ def _build_blueprints(uris, obs_id, file_id):
     for uri in uris:
         blueprint = ObsBlueprint(module=module)
         if not GemName.is_preview(uri):
-            logging.info('Building blueprint for {}'.format(uri))
-            accumulate_fits_bp(blueprint, obs_id, file_id)
+            logging.debug('Building blueprint for {}'.format(uri))
+            file_id = GemName.remove_extensions(ec.CaomName(uri).file_name)
+            accumulate_fits_bp(blueprint, obs_id, file_id, uri)
         blueprints[uri] = blueprint
     return blueprints
 
@@ -2740,29 +2751,12 @@ def _get_obs_id(args):
     return result
 
 
-def _get_file_id(args):
-    result = None
-    if args.lineage:
-        for lineage in args.lineage:
-            temp = lineage.split('{}/'.format(ARCHIVE))
-            if temp[1].endswith('.jpg'):
-                pass
-            else:
-                result = GemName.remove_extensions(temp[1])
-    else:
-        raise mc.CadcException(
-            'Cannot get the fileID without the file_uri from args {}'
-                .format(args))
-    return result
-
-
 def main_app2():
     args = get_gen_proc_arg_parser().parse_args()
     try:
         uris = _get_uris(args)
         obs_id = _get_obs_id(args)
-        file_id = _get_file_id(args)
-        blueprints = _build_blueprints(uris, obs_id, file_id)
+        blueprints = _build_blueprints(uris, obs_id)
         gen_proc(args, blueprints)
     except Exception as e:
         logging.error('Failed {} execution for {}.'.format(APPLICATION, args))
