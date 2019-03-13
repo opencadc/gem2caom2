@@ -187,3 +187,36 @@ Again, likely not since Gemini displays results with 'hrwfs' from the header.
    1. GS-CAL20030315-18-2027   standard star (obstype=OBJECT but intent still CALIBRATION)
    1. GS-CAL20030630-1-3384      flat
    1. GS-CAL20030313-3-1769      arc
+1. GMOS Processed Files, Separate Composite Observations
+   1. GS-CAL20161227-5-001                S20161227S0051
+   1. GS-CAL20161227-5-001-RG-FRINGE      rgS20161227S0051_fringe
+   1. GS-CAL20131007-900-067-FRINGE       S20131007S0067_fringe
+   1. GN-CAL20120320-900-328-STACK-FRINGE N20120320S0328_stack_fringe
+   1. GN-CAL20110927-900-170-FRINGE       N20110927S0170_fringe
+   1. GS-CAL20181016-5-001-MRG-FRINGE     mrgS20181016S0184_fringe
+   1. GS-2016B-Q-72-23-001-MRG-ADD        mrgS20160901S0122_add
+   1. GN-2016A-Q-68-46-001-MRG-ADD        mrgN20160311S0691_add
+   1. GS-2016A-Q-7-175-001-MFRG-ADD       mfrgS20160310S0154_add
+   1. GN-2005B-Q-28-32-001-MRG-ADD        mrgN20050831S0770_add
+   1. GS-2004B-Q-42-1-001-MFRG-ADD        mfrgS20041117S0073_add
+   1. GN-2002A-SV-78-7-003-FMRG-ADD       fmrgN20020413S0120_add
+   1. GS-2012B-Q-1-32-002-MRG             mrgS20120922S0406
+   1. GS-2012B-Q-1-32-002                 S20120922S0406
+   1. GN-2004B-Q-30-1-001-MRG             mrgN20041016S0095
+   1. GN-CAL20160404-7-017-FLAT-PASTED    N20160403S0236_flat_pasted
+   1. GS-CAL20131109-17-001-RG-FRINGE     rgS20131109S0166_FRINGE
+   1. GS-CAL20141226-7-026-G-BIAS         GS20141226S0203_BIAS
+   1. GN-CAL20141109-2-001-BIAS           N20141109S0266_bias
+1. GMOS Processed Files, Additional Planes on existing Simple Observations
+   1. GS-2010A-Q-36-6-358-RG              rgS20100316S0366
+1. TReCS Processed Files, Additional Planes on existing Simple Observations
+   1. GS-2012B-Q-90-366-003-R             rS20121030S0136 
+1. NIRI Processed
+   1. GN-2013B-Q-75-163-011_STACK         N20140313S0072_flat
+   1. GN-2015B-Q-53-138-061_STACK         N20150804S0348_dark
+   1. GN-2007B-Q-107-150-004_DARK         N20070819S0339_dark
+   1. GN-2013A-Q-63-54-051_FLAT           N20130404S0512_flat
+1. Flamingos Processed
+   1. GS-2013B-Q-16-277-019_STACK         S20140124S0039_dark
+   1. GS-CAL20141129-1-001_DARK           S20141129S0331_dark
+   

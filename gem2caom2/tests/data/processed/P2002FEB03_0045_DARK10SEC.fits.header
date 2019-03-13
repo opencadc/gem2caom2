@@ -1,0 +1,144 @@
+Filename: P2002FEB03_0045_DARK10SEC.fits.bz2
+
+AstroData Types: ['GEMINI', 'PHOENIX', 'GEMINI_SOUTH', 'SPECT', 'RAW', 'UNPREPARED']
+
+
+--- HDU 0 ---
+SIMPLE  =                    T / conforms to FITS standard                      
+BITPIX  =                    8 / array data type                                
+NAXIS   =                    0 / number of array dimensions                     
+EXTEND  =                    T                                                  
+ORIGIN  = 'NOAO-IRAF FITS Image Kernel July 1999' / FITS file originator        
+DATE    = '2002-04-04T21:21:31' / Date FITS file was generated                  
+IRAF-TLM= '03:53:13 (18/01/2002)' / Time of last modification                   
+CHANNEL = 'only              '  /                                               
+INSTRUME= 'PHOENIX           '  /                                               
+OBJECT  = 'dark 10 sec'         /                                               
+COADDS  =                    1  /  No. internal coadds                          
+INT_S   =            10.000000  /  Exposure time                                
+EXPTIME =                  10.  /  Exp.time (usual)                             
+MODE    = 'stare             '  /                                               
+LNRS    =                    1  /  Low noise reads                              
+UCODE   = 'PHaladII_12_11    '  /  Detector microcode                           
+IMAGETYP= 'object            '  /                                               
+OFFSET  = '2.185 north 20.0 west                                               '
+COMMENT = 'none              '  /                                               
+OBSERVER= 'Winge,Hinkle,Smith,Cunha' / Observer(s)                              
+DETECTOR= 'ALAD256x1024      '  /                                               
+RECID   = 'gscp8m.20020202.235613.193                                          '
+FILT_POS= '4308 (6)          '  /                                               
+LYOT_POS= 'dark (1)          '  /                                               
+CVF_POS = 'open (1)          '  /                                               
+SLIT_POS= '107u_1.0-5.0 (8)  '  /                                               
+VIEW_POS= 'open (-152996)    '  /                                               
+GRAT_POS= 'encoder -6488     '  /                                               
+FOC_POS = '246.3             '  /                                               
+COVR_POS= 'open              '  /                                               
+OBSERVAT= 'Gemini-South'                                                        
+TELESCOP= 'Gemini-South'                                                        
+SSA     = 'Grashuis'           / SSA                                            
+OBSID   = 'GS-CAL20020203-4'   / Observation ID                                 
+DATALAB = 'GS-CAL20020203-4-0045' / Data Label                                  
+GEMPRGID= 'GS-CAL20020203'     / Gemini Science Program ID                      
+RAWBG   = '50-percentile'      / Raw Background                                 
+RAWCC   = '20-percentile'      / Raw Cloud Cover                                
+RAWIQ   = 'Any     '           / Raw Image Quality                              
+RAWWV   = 'Any     '           / Raw Water Vapour/Transparency                  
+RAWGEMOA= 'Unknown           '  /                                               
+RAWPIREQ= 'UNKNOWN '           / PI Requirements Met                            
+RA      = '06:00:00.000      '  /                                               
+DEC     = '-30:00:00.00      '  /                                               
+EPOCH   =          2002.090210  /                                               
+UT      = '23:55:02.4        '  /  Gemini UTC                                   
+UTDATE  = '2002-02-02        '  /  Gemini UTCDATE                               
+LST     = '04:04:04.3        '  /                                               
+HA      =            -1.933700  /                                               
+ZD      =            -0.000200  /                                               
+AIRMASS =             1.000000  /                                               
+FOCUS   =            -0.672000  /                                               
+RAWGEMQA= 'USABLE  '           / Gemini Quality Assessment                      
+NCOMBINE=                   10                                                  
+FINALINT= 'pass              ' / Requested total integration time               
+FINALIQ = 'pass              ' / Requested final image quality                  
+PICONFIG= 'pass              ' / Requested instrument configuration             
+PITARGET= 'pass              ' / Requested target                               
+RELEASE = '2002-02-02'         / End of proprietary period YYYY-MM-DD           
+HISTORY Corrected metadata: automated fixes from PyFITS                         
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+
+--- HDU 1 ---
+XTENSION= 'IMAGE   '           / Image extension                                
+BITPIX  =                  -32 / array data type                                
+NAXIS   =                    2 / number of array dimensions                     
+NAXIS1  =                  256                                                  
+NAXIS2  =                 1024                                                  
+PCOUNT  =                    0 / number of parameters                           
+GCOUNT  =                    1 / number of groups                               
+EXTNAME = 'SCI     '           / ad4549: added by AstroData                     
+EXTVER  =                    1                                                  
+ORIGIN  = 'NOAO-IRAF FITS Image Kernel July 1999' / FITS file originator        
+DATE    = '2002-04-04T21:21:31' / Date FITS file was generated                  
+IRAF-TLM= '03:53:13 (18/01/2002)' / Time of last modification                   
+CHANNEL = 'only              '  /                                               
+INSTRUME= 'PHOENIX           '  /                                               
+OBJECT  = 'dark 10 sec'         /                                               
+COADDS  =                    1  /  No. internal coadds                          
+INT_S   =            10.000000  /  Exposure time                                
+EXPTIME =                  10.  /  Exp.time (usual)                             
+MODE    = 'stare             '  /                                               
+LNRS    =                    1  /  Low noise reads                              
+UCODE   = 'PHaladII_12_11    '  /  Detector microcode                           
+IMAGETYP= 'object            '  /                                               
+OFFSET  = '2.185 north 20.0 west                                               '
+COMMENT = 'none              '  /                                               
+OBSERVER= 'Winge,Hinkle,Smith,Cunha' / Observer(s)                              
+DETECTOR= 'ALAD256x1024      '  /                                               
+RECID   = 'gscp8m.20020202.235613.193                                          '
+FILT_POS= '4308 (6)          '  /                                               
+LYOT_POS= 'dark (1)          '  /                                               
+CVF_POS = 'open (1)          '  /                                               
+SLIT_POS= '107u_1.0-5.0 (8)  '  /                                               
+VIEW_POS= 'open (-152996)    '  /                                               
+GRAT_POS= 'encoder -6488     '  /                                               
+FOC_POS = '246.3             '  /                                               
+COVR_POS= 'open              '  /                                               
+OBSERVAT= 'Gemini-South'                                                        
+TELESCOP= 'Gemini-South'                                                        
+SSA     = 'Grashuis'           / SSA                                            
+OBSID   = 'GS-CAL20020203-4'   / Observation ID                                 
+DATALAB = 'GS-CAL20020203-4-0045' / Data Label                                  
+GEMPRGID= 'GS-CAL20020203'     / Gemini Science Program ID                      
+RAWBG   = '50-percentile'      / Raw Background                                 
+RAWCC   = '20-percentile'      / Raw Cloud Cover                                
+RAWIQ   = 'Any     '           / Raw Image Quality                              
+RAWWV   = 'Any     '           / Raw Water Vapour/Transparency                  
+RAWGEMOA= 'Unknown           '  /                                               
+RAWPIREQ= 'UNKNOWN '           / PI Requirements Met                            
+RA      = '06:00:00.000      '  /                                               
+DEC     = '-30:00:00.00      '  /                                               
+EPOCH   =          2002.090210  /                                               
+UT      = '23:55:02.4        '  /  Gemini UTC                                   
+UTDATE  = '2002-02-02        '  /  Gemini UTCDATE                               
+LST     = '04:04:04.3        '  /                                               
+HA      =            -1.933700  /                                               
+ZD      =            -0.000200  /                                               
+AIRMASS =             1.000000  /                                               
+FOCUS   =            -0.672000  /                                               
+RAWGEMQA= 'USABLE  '           / Gemini Quality Assessment                      
+NCOMBINE=                   10                                                  
+FINALINT= 'pass              ' / Requested total integration time               
+FINALIQ = 'pass              ' / Requested final image quality                  
+PICONFIG= 'pass              ' / Requested instrument configuration             
+PITARGET= 'pass              ' / Requested target                               
+RELEASE = '2002-02-02'         / End of proprietary period YYYY-MM-DD           
+HISTORY Corrected metadata: automated fixes from PyFITS                         
+                                                                                
+                                                                                
+                                                                                
+                                                                                

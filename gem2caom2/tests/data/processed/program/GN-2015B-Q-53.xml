@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GN-2015B-Q-53</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GN-2015B-Q-53</h1>
+
+<table>
+ <tr><td>Title:<td>Multi-scale investigation of the coma of comet 67P/Churyumov-Gerasimenko: Combined Gemini and Rosetta study of activity</tr>
+ <tr><td>PI:<td>Matthew Knight</tr>
+ <tr><td>Co-I(s):<td> Silvia Protopapa,  Michael Kelley,  Colin Snodgrass,  Blair Conn,  Tim Lister</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+We propose to take advantage of the unique opportunity presented by the arrival of the Rosetta mission at comet 67P/Churyumov-Gerasimenko to conduct multi-scale monitoring of the comet’s dust coma. Approximately weekly NIRI imaging and three epochs of GNIRS spectroscopy will monitor the evolution of activity in the comet over the six months including and immediately following 67P’s perihelion passage on August 13, during which time 67P is expected to be most vigorously active from water ice sublimation. We will gain an unique understanding of the dust coma by direct comparison between ground-based and in situ results to provide a multi-scale view of comet activity: Rosetta will sample within 5-100 km of the comet, while Gemini will provide a crucial overview of the larger (&gt;1000 km) scale dust coma morphology and properties, which the spacecraft cannot measure. 
+</div>
+
+
+
+</body>
+</html>

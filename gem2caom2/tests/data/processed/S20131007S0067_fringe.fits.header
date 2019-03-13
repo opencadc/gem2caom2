@@ -1,0 +1,765 @@
+Filename: S20131007S0067_fringe.fits.bz2
+
+AstroData Types: ['GMOS_S', 'GMOS_IMAGE', 'GEMINI', 'SIDEREAL', 'IMAGE', 'GMOS', 'GEMINI_SOUTH', 'OVERSCAN_SUBTRACTED', 'PROCESSED_FRINGE', 'PREPARED', 'OVERSCAN_TRIMMED']
+
+
+--- HDU 0 ---
+SIMPLE  =                    T / Fits standard                                  
+BITPIX  =                   16 / Bits per pixel                                 
+NAXIS   =                    0 / Number of axes                                 
+EXTEND  =                    T / File may contain extensions                    
+ORIGIN  = 'NOAO-IRAF FITS Image Kernel July 2003' / FITS file originator        
+DATE    = '2013-10-07T03:06:29' / Date FITS file was generated                  
+IRAF-TLM= '2013-10-07T03:24:43' / Time of last modification                     
+COMMENT   FITS (Flexible Image Transport System) format is defined in 'Astronomy
+COMMENT   and Astrophysics', volume 376, page 359; bibcode: 2001A&A...376..359H 
+INSTRUME= 'GMOS-S  '           / Instrument used to acquire data                
+OBJECT  = 'Fringe Frame'       / (UPDATED) Object Name                          
+OBSTYPE = 'FRINGE  '           / (UPDATED) Observation type                     
+OBSCLASS= 'partnerCal'         / (UPDATED) Observe class                        
+GEMPRGID= 'GS-CAL20131007'     / (UPDATED) Gemini program ID                    
+OBSID   = 'GS-CAL20131007-900' / (UPDATED) Observation ID / Data label          
+DATALAB = 'GS-CAL20131007-900-067' / (UPDATED) DHS data label                   
+OBSERVER= 'Andrew Cardwell'    / Observer                                       
+OBSERVAT= 'Gemini-South'       / Name of telescope (Gemini-North|Gemini-South)  
+TELESCOP= 'Gemini-South'       / Gemini-North                                   
+PARALLAX=                   0. / Parallax of Target                             
+RADVEL  =                   0. / Heliocentric Radial Velocity                   
+EPOCH   =                2000. / Epoch for Target coordinates                   
+EQUINOX =                2000. / Equinox of coordinate system                   
+TRKEQUIN=                2000. / Tracking equinox                               
+SSA     = 'L. Magill'          / SSA                                            
+RA      =                  0.0 / (UPDATED) Right Ascension                      
+DEC     =                  0.0 / (UPDATED) Declination of Target                
+ELEVATIO=     57.9175305555556 / Current Elevation                              
+AZIMUTH =     91.6358013888889 / Current Azimuth                                
+CRPA    =      16.065034152758 / Current Cass Rotator Position Angle            
+HA      = '-02:25:17.43'       / Telescope hour angle                           
+LT      = '00:59:09.9'         / Local time at start of observation             
+TRKFRAME= 'FK5     '           / Tracking co-ordinate                           
+DECTRACK=                   0. / Differential tracking rate Dec                 
+TRKEPOCH=         56572.148875 / Differential tracking reference epoch          
+RATRACK =                   0. / Differential tracking rate RA                  
+FRAME   = 'FK5     '           / Target coordinate system                       
+PMDEC   =                  -0. / Proper Motion in Declination                   
+PMRA    =                   0. / Proper Motion in RA                            
+WAVELENG=                7800. / Effective Target Wavelength                    
+RAWIQ   = '85-percentile'      / Raw Image Quality                              
+RAWCC   = '50-percentile'      / Raw Cloud Cover                                
+RAWWV   = 'Any     '           / Raw Water Vapour/Transparency                  
+RAWBG   = '20-percentile'      / Raw Background                                 
+RAWPIREQ= 'UNKNOWN '           / PI Requirements Met                            
+RAWGEMQA= 'UNKNOWN '           / Gemini Quality Assessment                      
+CGUIDMOD= 'Basic   '           / Driving mode for carousel                      
+UT      = '03:59:09.9'         / UT at observation start                        
+M2BAFFLE= 'VISIBLE '           / Position of M2 baffle                          
+M2CENBAF= 'CLOSED  '           / Position of M2 central hole baffle             
+ST      = '00:20:05.7'         / Sidereal time at the start of the exposure     
+XOFFSET =                   0. / Telescope offset in x in arcsec                
+YOFFSET =                   0. / Telescope offset in y in arcsec                
+POFFSET =                  -0. / Telescope offset in p in arcsec                
+QOFFSET =                   0. / Telescope offset in q in arcsec                
+RAOFFSET=                   0. / Telescope offset in RA in arcsec               
+DECOFFSE=                   0. / Telescope offset in DEC in arcsec              
+RATRGOFF=                   0. / Target offset in RA in arcsec                  
+DECTRGOF=                   0. / Target offset in DEC in arcsec                 
+PA      =                  90. / Sky Position Angle at start of exposure        
+IAA     =              359.933 / Instrument Alignment Angle                     
+SFRT2   =                 -0.6 / Science fold rotation angle (degrees)          
+SFTILT  =                44.95 / Science fold tilt angle (degrees)              
+SFLINEAR=                  -3. / Science fold linear position (mm)              
+AOFOLD  = 'park-pos.'          / AO Pick-Off Mirror Position                    
+PWFS1_ST= 'parked  '           / PWFS1 probe state (frozen,guiding,parked)      
+PWFS2_ST= 'parked  '           / PWFS2 probe state (frozen,guiding,parked)      
+OIWFS_ST= 'guiding '           / OIWFS probe state (frozen,guiding,parked)      
+AOWFS_ST= 'parked  '           / AOWFS probe state (frozen,guiding,parked)      
+SCIBAND =                    2 / Science Ranking Band                           
+REQIQ   = '85-percentile'      / Requested Image Quality                        
+REQCC   = '70-percentile'      / Requested Cloud Cover                          
+REQBG   = '50-percentile'      / Requested Background                           
+REQWV   = 'Any     '           / Requested Water Vapour                         
+REQMINAM=                   1. / Requested Minimum Airmass                      
+REQMAXAM=                  1.3 / Requested Maximum Airmass                      
+OIARA   =          41.24669167 / RA of OIWFS guide star                         
+OIARV   =                   0. / OIWFS Heliocentric Radial Velocity             
+OIAWAVEL=                6500. / OIWFS Effective Target Wavelength              
+OIADEC  =         -26.15425833 / Declination of OIWFS guide star                
+OIAEPOCH=                2000. / Epoch for OIWFS guide star coordinates         
+OIAEQUIN=                2000. / Equinox for OIWFS guide star coordinates       
+OIAFRAME= 'FK5     '           / OIWFS Target co-ordinate system                
+OIAOBJEC= '128-005935'         / Object Name for OIWFS, Chop A                  
+OIAPMDEC=               0.0159 / OIWFS Proper Motion in Declination             
+OIAPMRA =             -0.00033 / OIWFS Proper Motion in RA                      
+OIAPARAL=                   0. / OIWFS Parallax of Target                       
+HUMIDITY=                  40. / The Relative Humidity (fraction, 0..101).      
+TAMBIENT=                   6. / The ambient temp (C).                          
+TAMBIEN2=                 42.8 / The ambient temp (F).                          
+PRESSURE=            546.20384 / The atmospheric pressure (mm Hg).              
+PRESSUR2=               72800. / The atmospheric pressure (Pa).                 
+DEWPOINT=                 -6.8 / The dew point (C).                             
+DEWPOIN2=                19.76 / The dew point (F).                             
+WINDSPEE=                 11.8 / The wind speed (m/s).                          
+WINDSPE2=              26.3966 / The wind speed (mph).                          
+WINDDIRE=                 330. / The wind direction (degrees).                  
+INPORT  =                    3 / Number of ISS port where GMOS was located      
+GMOSCC  = 'GMOS-CP (V6-9)'     / GMOS components controller s/w                 
+CONID   = 'GMOS v6.0'          / Detector controller ID                         
+DETECTOR= 'GMOS + Blue1 + new CCD1' / Detector name                             
+DEWAR   = 'Cryostat B'         / Dewar name                                     
+DEW-TEMP=    -112.769953051643 / Dewar temperature (Celsius)                    
+DETSIZE = '[1:6144,1:4644]'    / Detector size                                  
+NCCDS   =                    3 / Number of CCD chips                            
+NAMPS   =                    1 / Number of amplifiers                           
+SHUTTER = 'OPEN    '           / Shutter state during observation               
+AMPINTEG=                 5000 / Amplifier integration time                     
+OBSEPOCH=     2013.76499957111 / Epoch at start of exposure                     
+TIMESYS = 'UT1     '           / Time system used                               
+DATE-OBS= '2013-10-07'         / UT Date of observation (YYYY-MM-DD)            
+TIME-OBS= '03:59:48.3'         / Time of observation                            
+GMOSTHT = 'GOOD    '           / Shutter health                                 
+NSUBEXP =                    1 / Number of sub exposures                        
+UTSTART = '03:59:48.3'         / UT at observation start                        
+UTEND   = '04:06:28.8'         / UT at observation end                          
+EXPTIME =             400.4922 / Exposure time in seconds                       
+ELAPSED =     400.492186069489 / Elapsed observation time in seconds            
+DARKTIME=     437.407657146454 / Dark current integration in seconds            
+MASKID  =                  -99 / Mask/IFU barcode                               
+MASKNAME= 'None    '           / Mask name                                      
+MASKTYP =                    0 / Mask/IFU type (0=none/-1=IFU/1=mask)           
+MASKLOC =                    1 / Mask/IFU location (-1=unknown/0=FP/1=cassette) 
+FILTER1 = 'open1-6 '           / Filter 1 name                                  
+FILTID1 =             20000033 / Filter 1 barcode                               
+FILTER2 = 'i_G0327 '           / Filter 2 name                                  
+FILTID2 =             20000028 / Filter 2 barcode                               
+GRATING = 'MIRROR  '           / Grating name                                   
+GRATID  =             30000012 / Grating barcode                                
+GRWLEN  =                   0. / Grating wavelength at slit (nm)                
+CENTWAVE=                   0. / Central wavelength (nm)                        
+GRORDER =                    0 / Grating order                                  
+GRTILT  =                  65. / Grating tilt angle (degrees)                   
+GRSTEP  =            7004.3276 / Requested grating motor step position          
+DTAX    =                  32. / Detector translation X position (microns)      
+DTAY    =               113.28 / Detector translation Y position (microns)      
+DTAZ    =                2838. / Detector translation Z position (microns)      
+DTAZST  =                2838. / Focus at observation start (microns)           
+DTAZEN  =                2838. / Focus at observation end (microns)             
+DTAZME  =                   0. / Mean focus during observation (microns)        
+DTMODE  = 'FOLLOW  '           / Detector translation stage mode                
+ADCMODE = '        '           / ADC mode                                       
+GMOSDC  = 'GMOS DC '           / GMOS detector controller s/w                   
+DETTYPE = 'SDSU II CCD'        / Detector array type                            
+DETID   = 'EEV2037-06-03EEV8194-19-04EEV8261-07-04' / Chip IDs                  
+EXPOSURE=                 400. / Requested exposure time in seconds             
+ADCUSED =                    1 / ADC used? (0=yes/1=no)                         
+DETNROI =                    1 / No. regions of interest                        
+ADCENPST=                   0. / Start entrance prism angle of ADC              
+ADCENPEN=                   0. / End entrance prism angle of ADC                
+ADCENPME=                   0. / Mean entrance prism angle of ADC               
+ADCEXPST=                   0. / Start exit prism angle of ADC                  
+ADCEXPEN=                   0. / End exit prism angle of ADC                    
+ADCEXPME=                   0. / Mean exit prism angle of ADC                   
+ADCWLEN1=                   0. / Lower wavelength for ADC calculation           
+ADCWLEN2=                   0. / Upper wavelength for ADC calculation           
+DETRO1X =                    1 / ROI 1 X start                                  
+DETRO1XS=                 3072 / ROI 1 X size                                   
+DETRO1Y =                    1 / ROI 1 Y start                                  
+DETRO1YS=                 2304 / ROI 1 Y size                                   
+AIRMASS =                 1.17 / Mean airmass for the observation               
+AMSTART =                 1.18 / Airmass at start of exposure                   
+AMEND   =                 1.16 / Airmass at end of exposure                     
+VALDATA = '2013-10-07T01:06:00' / (NEW) UT time stamp for validateData          
+GEM-TLM = '2013-10-07T01:24:05' / (UPDATED) UT last modification with GEMINI    
+ORIGNAME= 'S20131007S0067.fits' / (NEW) Original filename prior to processing   
+SDZSTRUC= '2013-10-07T01:06:00' / (NEW) UT time stamp for standardizeStructure  
+NSCIEXT =                    1 / Number of science extensions                   
+NEXTEND =                    3 / Number of extensions                           
+SDZHDRSG= '2013-10-07T01:06:00' / (NEW) UT time stamp for standardizeGeminiHeade
+SDZHDRSI= '2013-10-07T01:06:01' / (NEW) UT time stamp for standardizeInstrumentH
+PREPARE = '2013-10-07T01:06:01' / (NEW) UT time stamp for prepare               
+ADDDQ   = '2013-10-07T01:06:06' / (NEW) UT time stamp for addDQ                 
+ADDVAR  = '2013-10-07T01:06:34' / (UPDATED) UT time stamp for addVAR            
+DETECSRC= '2013-10-07T01:22:48' / (UPDATED) UT time stamp for detectSources     
+MEASREIQ= '2013-10-07T01:06:23' / (NEW) UT time stamp for measureIQ             
+SKYLEVEL=      8345.8701171875 / (UPDATED) Estimated sky level [electron]       
+MEASREBG= '2013-10-07T01:06:57' / (UPDATED) UT time stamp for measureBG         
+HISTORY New keyword VALDATA=2013-10-07T01:06:00 was written to the PHU          
+HISTORY New keyword GEM-TLM=2013-10-07T01:06:00 was written to the PHU          
+HISTORY New keyword ORIGNAME=S20131007S0067.fits was written to the PHU         
+HISTORY New keyword SDZSTRUC=2013-10-07T01:06:00 was written to the PHU         
+HISTORY New keyword NSCIEXT=3 was written to the PHU                            
+HISTORY New keyword NEXTEND=3 was written to the PHU                            
+HISTORY New keyword BUNIT=adu was written to extension SCI,1                    
+HISTORY New keyword BUNIT=adu was written to extension SCI,2                    
+HISTORY New keyword BUNIT=adu was written to extension SCI,3                    
+HISTORY New keyword SDZHDRSG=2013-10-07T01:06:00 was written to the PHU         
+HISTORY New keyword PIXSCALE=0.146 was written to extension SCI,1               
+HISTORY New keyword PIXSCALE=0.146 was written to extension SCI,2               
+HISTORY New keyword PIXSCALE=0.146 was written to extension SCI,3               
+HISTORY The keyword RDNOISE=3.20000004768 was overwritten in extension SCI,1 wit
+HISTORY h new value 3.98                                                        
+HISTORY The keyword RDNOISE=3.5 was overwritten in extension SCI,2 with new valu
+HISTORY e 3.85                                                                  
+HISTORY The keyword RDNOISE=3.09999990463 was overwritten in extension SCI,3 wit
+HISTORY h new value 3.16                                                        
+HISTORY New keyword GAINSET=low was written to extension SCI,1                  
+HISTORY New keyword GAINSET=low was written to extension SCI,2                  
+HISTORY New keyword GAINSET=low was written to extension SCI,3                  
+HISTORY The keyword GAIN=2.0 was overwritten in extension SCI,1 with new value 2
+HISTORY .372                                                                    
+HISTORY The keyword GAIN=1.89999997616 was overwritten in extension SCI,2 with n
+HISTORY ew value 2.076                                                          
+HISTORY The keyword GAIN=1.89999997616 was overwritten in extension SCI,3 with n
+HISTORY ew value 2.097                                                          
+HISTORY New keyword RAWBIAS=714.0 was written to extension SCI,1                
+HISTORY New keyword RAWBIAS=667.0 was written to extension SCI,2                
+HISTORY New keyword RAWBIAS=644.0 was written to extension SCI,3                
+HISTORY New keyword SATLEVEL=65535 was written to extension SCI,1               
+HISTORY New keyword SATLEVEL=65535 was written to extension SCI,2               
+HISTORY New keyword SATLEVEL=65535 was written to extension SCI,3               
+HISTORY New keyword SDZHDRSI=2013-10-07T01:06:01 was written to the PHU         
+HISTORY New keyword PREPARE=2013-10-07T01:06:01 was written to the PHU          
+HISTORY New keyword ADDDQ=2013-10-07T01:06:06 was written to the PHU            
+HISTORY New keyword ADDVAR=2013-10-07T01:06:06 was written to the PHU           
+HISTORY New keyword DETECSRC=2013-10-07T01:06:21 was written to the PHU         
+HISTORY New keyword MEASREIQ=2013-10-07T01:06:23 was written to the PHU         
+HISTORY New keyword SKYLEVEL=3502.0 was written to extension SCI,1              
+HISTORY New keyword SKYLEVEL=4067.0 was written to extension SCI,2              
+HISTORY New keyword SKYLEVEL=3912.0 was written to extension SCI,3              
+HISTORY New keyword SKYLEVEL=3848.25 was written to the PHU                     
+HISTORY New keyword MEASREBG=2013-10-07T01:06:27 was written to the PHU         
+HISTORY New keyword GPREPARE=2013-10-07T01:06:01 was written to the PHU         
+HISTORY New keyword OBSMODE=IMAGE was written to the PHU                        
+HISTORY New keyword SUBOVER=2013-10-07T01:06:30 was written to the PHU          
+HISTORY The comment for the keyword NAXIS1 was updated                          
+HISTORY The comment for the keyword NAXIS2 was updated                          
+HISTORY The comment for the keyword DATASEC was updated                         
+HISTORY New keyword TRIMSEC=[1:1024,1:2304] was written to extension SCI,1      
+HISTORY The comment for the keyword CRPIX1 was updated                          
+HISTORY The comment for the keyword CRPIX2 was updated                          
+HISTORY The comment for the keyword NAXIS1 was updated                          
+HISTORY The comment for the keyword NAXIS2 was updated                          
+HISTORY The comment for the keyword DATASEC was updated                         
+HISTORY New keyword TRIMSEC=[1:1024,1:2304] was written to extension DQ,1       
+HISTORY The comment for the keyword CRPIX1 was updated                          
+HISTORY The comment for the keyword CRPIX2 was updated                          
+HISTORY The comment for the keyword NAXIS1 was updated                          
+HISTORY The comment for the keyword NAXIS2 was updated                          
+HISTORY The comment for the keyword DATASEC was updated                         
+HISTORY New keyword TRIMSEC=[1:1024,1:2304] was written to extension VAR,1      
+HISTORY The comment for the keyword CRPIX1 was updated                          
+HISTORY The comment for the keyword CRPIX2 was updated                          
+HISTORY The comment for the keyword NAXIS1 was updated                          
+HISTORY The comment for the keyword NAXIS2 was updated                          
+HISTORY The comment for the keyword DATASEC was updated                         
+HISTORY New keyword TRIMSEC=[1:1024,1:2304] was written to extension SCI,2      
+HISTORY The comment for the keyword CRPIX1 was updated                          
+HISTORY The comment for the keyword CRPIX2 was updated                          
+HISTORY The comment for the keyword NAXIS1 was updated                          
+HISTORY The comment for the keyword NAXIS2 was updated                          
+HISTORY The comment for the keyword DATASEC was updated                         
+HISTORY New keyword TRIMSEC=[1:1024,1:2304] was written to extension DQ,2       
+HISTORY The comment for the keyword CRPIX1 was updated                          
+HISTORY The comment for the keyword CRPIX2 was updated                          
+HISTORY The comment for the keyword NAXIS1 was updated                          
+HISTORY The comment for the keyword NAXIS2 was updated                          
+HISTORY The comment for the keyword DATASEC was updated                         
+HISTORY New keyword TRIMSEC=[1:1024,1:2304] was written to extension VAR,2      
+HISTORY The comment for the keyword CRPIX1 was updated                          
+HISTORY The comment for the keyword CRPIX2 was updated                          
+HISTORY The comment for the keyword NAXIS1 was updated                          
+HISTORY The comment for the keyword NAXIS2 was updated                          
+HISTORY The keyword DATASEC=[33:1056,1:2304] was overwritten in extension SCI,3 
+HISTORY with new value [1:1024,1:2304]                                          
+HISTORY New keyword TRIMSEC=[33:1056,1:2304] was written to extension SCI,3     
+HISTORY The keyword CRPIX1=-501.319125812 was overwritten in extension SCI,3 wit
+HISTORY h new value -533.319125812                                              
+HISTORY The comment for the keyword CRPIX2 was updated                          
+HISTORY The comment for the keyword NAXIS1 was updated                          
+HISTORY The comment for the keyword NAXIS2 was updated                          
+HISTORY The keyword DATASEC=[33:1056,1:2304] was overwritten in extension DQ,3 w
+HISTORY ith new value [1:1024,1:2304]                                           
+HISTORY New keyword TRIMSEC=[33:1056,1:2304] was written to extension DQ,3      
+HISTORY The keyword CRPIX1=-501.319125812 was overwritten in extension DQ,3 with
+HISTORY  new value -533.319125812                                               
+HISTORY The comment for the keyword CRPIX2 was updated                          
+HISTORY The comment for the keyword NAXIS1 was updated                          
+HISTORY The comment for the keyword NAXIS2 was updated                          
+HISTORY The keyword DATASEC=[33:1056,1:2304] was overwritten in extension VAR,3 
+HISTORY with new value [1:1024,1:2304]                                          
+HISTORY New keyword TRIMSEC=[33:1056,1:2304] was written to extension VAR,3     
+HISTORY The keyword CRPIX1=-501.319125812 was overwritten in extension VAR,3 wit
+HISTORY h new value -533.319125812                                              
+HISTORY The comment for the keyword CRPIX2 was updated                          
+HISTORY New keyword TRIMMED=yes was written to the PHU                          
+HISTORY New keyword TRIMOVER=2013-10-07T01:06:31 was written to the PHU         
+HISTORY The keyword BUNIT=adu was overwritten in extension SCI,1 with new value 
+HISTORY electron                                                                
+HISTORY The keyword BUNIT=adu was overwritten in extension SCI,2 with new value 
+HISTORY electron                                                                
+HISTORY The keyword BUNIT=adu was overwritten in extension SCI,3 with new value 
+HISTORY electron                                                                
+HISTORY The keyword BUNIT=adu*adu was overwritten in extension VAR,1 with new va
+HISTORY lue electron*electron                                                   
+HISTORY The keyword BUNIT=adu*adu was overwritten in extension VAR,2 with new va
+HISTORY lue electron*electron                                                   
+HISTORY The keyword BUNIT=adu*adu was overwritten in extension VAR,3 with new va
+HISTORY lue electron*electron                                                   
+HISTORY New keyword ADUTOELE=2013-10-07T01:06:33 was written to the PHU         
+HISTORY The keyword ADDVAR=2013-10-07T01:06:06 was overwritten in the PHU with n
+HISTORY ew value 2013-10-07T01:06:34                                            
+HISTORY New keyword GPREPARE=2013-10-07T01:06:01 was written to the PHU         
+HISTORY New keyword OBSMODE=IMAGE was written to the PHU                        
+HISTORY New keyword BUNIT=electron was written to extension SCI,1               
+HISTORY New keyword OVERSCAN=675.3587 was written to extension SCI,1            
+HISTORY New keyword AMPNAME=EEV 2037-06-03, left,EEV 8194-19-04, left,EEV 8261-0
+HISTORY 7-04, right was written to extension SCI,1                              
+HISTORY New keyword DETSEC=[1:6216,1:4608] was written to extension SCI,1       
+HISTORY New keyword CCDSEC=[1:6216,1:4608] was written to extension SCI,1       
+HISTORY New keyword DATASEC=[1:3108,1:2304] was written to extension SCI,1      
+HISTORY New keyword BUNIT=electron*electron was written to extension VAR,1      
+HISTORY New keyword AMPNAME=EEV 2037-06-03, left,EEV 8194-19-04, left,EEV 8261-0
+HISTORY 7-04, right was written to extension VAR,1                              
+HISTORY New keyword DETSEC=[1:6216,1:4608] was written to extension VAR,1       
+HISTORY New keyword CCDSEC=[1:6216,1:4608] was written to extension VAR,1       
+HISTORY New keyword DATASEC=[1:3108,1:2304] was written to extension VAR,1      
+HISTORY New keyword AMPNAME=EEV 2037-06-03, left,EEV 8194-19-04, left,EEV 8261-0
+HISTORY 7-04, right was written to extension DQ,1                               
+HISTORY New keyword DETSEC=[1:6216,1:4608] was written to extension DQ,1        
+HISTORY New keyword CCDSEC=[1:6216,1:4608] was written to extension DQ,1        
+HISTORY New keyword DATASEC=[1:3108,1:2304] was written to extension DQ,1       
+HISTORY New keyword MOSAIC=2013-10-07T01:06:53 was written to the PHU           
+HISTORY New keyword SKYLEVEL=8345.87011719 was written to extension SCI,1       
+HISTORY The keyword SKYLEVEL=3848.25 was overwritten in the PHU with new value 8
+HISTORY 345.87011719                                                            
+HISTORY The keyword MEASREBG=2013-10-07T01:06:27 was overwritten in the PHU with
+HISTORY  new value 2013-10-07T01:06:57                                          
+HISTORY New keyword CORRBG=2013-10-07T01:22:15 was written to the PHU           
+HISTORY New keyword SUBTRACT=2013-10-07T01:22:18 was written to the PHU         
+HISTORY The keyword DETECSRC=2013-10-07T01:06:21 was overwritten in the PHU with
+HISTORY  new value 2013-10-07T01:22:48                                          
+HISTORY New keyword ADD=2013-10-07T01:23:49 was written to the PHU              
+HISTORY New keyword GPREPARE=2013-10-07T01:06:01 was written to the PHU         
+HISTORY New keyword OBSMODE=IMAGE was written to the PHU                        
+HISTORY The keyword BUNIT=electron was overwritten in extension VAR,1 with new v
+HISTORY alue electron*electron                                                  
+HISTORY The keyword BUNIT=electron was overwritten in extension DQ,1 with new va
+HISTORY lue bit                                                                 
+HISTORY The keyword GAIN=4.152 was overwritten in extension SCI,1 with new value
+HISTORY  2.076                                                                  
+HISTORY The keyword RDNOISE=5.44472221514 was overwritten in extension SCI,1 wit
+HISTORY h new value 6.66839560914                                               
+HISTORY The keyword GAIN=17.239104 was overwritten in extension VAR,1 with new v
+HISTORY alue 2.076                                                              
+HISTORY The keyword RDNOISE=29.645 was overwritten in extension VAR,1 with new v
+HISTORY alue 6.66839560914                                                      
+HISTORY The comment for the keyword GAIN was updated                            
+HISTORY The keyword RDNOISE=3.85 was overwritten in extension DQ,1 with new valu
+HISTORY e 6.66839560914                                                         
+HISTORY The keyword GAIN=4.152 was overwritten in the PHU with new value 2.076  
+HISTORY The keyword RDNOISE=5.44472221514 was overwritten in the PHU with new va
+HISTORY lue 6.66839560914                                                       
+HISTORY The keyword DATALAB=GS-2013B-Q-69-59-004 was overwritten in the PHU with
+HISTORY  new value GS-2013B-Q-69-59-004_stack                                   
+HISTORY New keyword STACKFRM=2013-10-07T01:24:05 was written to the PHU         
+HISTORY The keyword OBSCLASS=science was overwritten in the PHU with new value p
+HISTORY artnerCal                                                               
+HISTORY The keyword OBSTYPE=OBJECT was overwritten in the PHU with new value FRI
+HISTORY NGE                                                                     
+HISTORY The keyword OBJECT=GRB130925A was overwritten in the PHU with new value 
+HISTORY Fringe Frame                                                            
+HISTORY The keyword GEMPRGID=GS-2013B-Q-69 was overwritten in the PHU with new v
+HISTORY alue GS-CAL20131007                                                     
+HISTORY The keyword OBSID=GS-2013B-Q-69-59 was overwritten in the PHU with new v
+HISTORY alue GS-CAL20131007-900                                                 
+HISTORY The keyword DATALAB=GS-2013B-Q-69-59-004_stack was overwritten in the PH
+HISTORY U with new value GS-CAL20131007-900-067                                 
+HISTORY New keyword RELEASE=2013-10-07 was written to the PHU                   
+HISTORY The keyword RA=41.18799583 was overwritten in the PHU with new value 0.0
+HISTORY The keyword DEC=-26.15796667 was overwritten in the PHU with new value 0
+HISTORY .0                                                                      
+HISTORY The keyword CRVAL1=41.1879999787 was overwritten in the PHU with new val
+HISTORY ue 0.0                                                                  
+HISTORY The keyword CRVAL2=-26.1579655751 was overwritten in the PHU with new va
+HISTORY lue 0.0                                                                 
+HISTORY The keyword CRVAL1=41.1879999787 was overwritten in extension SCI,1 with
+HISTORY  new value 0.0                                                          
+HISTORY The keyword CRVAL2=-26.1579655751 was overwritten in extension SCI,1 wit
+HISTORY h new value 0.0                                                         
+HISTORY The keyword OBJECT=DEFAULT was overwritten in extension SCI,1 with new v
+HISTORY alue Fringe Frame                                                       
+HISTORY The keyword CRVAL1=41.1879999787 was overwritten in extension VAR,1 with
+HISTORY  new value 0.0                                                          
+HISTORY The keyword CRVAL2=-26.1579655751 was overwritten in extension VAR,1 wit
+HISTORY h new value 0.0                                                         
+HISTORY The keyword OBJECT=Combine sigma images for tmpcombout71808_16 was overw
+HISTORY ritten in extension VAR,1 with new value Fringe Frame                   
+HISTORY The keyword CRVAL1=41.1879999787 was overwritten in extension DQ,1 with 
+HISTORY new value 0.0                                                           
+HISTORY The keyword CRVAL2=-26.1579655751 was overwritten in extension DQ,1 with
+HISTORY  new value 0.0                                                          
+HISTORY The keyword OBJECT=GRB130925A was overwritten in extension DQ,1 with new
+HISTORY  value Fringe Frame                                                     
+HISTORY New keyword PROCFRNG=2013-10-07T01:24:05 was written to the PHU         
+GIREDUCE= '2013-10-07T04:06:30' / UT Time stamp for GIREDUCE                    
+SUBOVER = '2013-10-07T01:06:30' / (NEW) UT time stamp for subtractOverscan      
+TRIMMED = 'yes     '           / (NEW) Overscan section trimmed                 
+TRIMOVER= '2013-10-07T01:06:31' / (NEW) UT time stamp for trimOverscan          
+ADUTOELE= '2013-10-07T01:06:33' / (NEW) UT time stamp for ADUToElectrons        
+GMOSCLVA=             8471.693 / GMOSAIC cleaning value                         
+CTYPE1  = 'RA---TAN'           / R.A. in tangent plane projection               
+CTYPE2  = 'DEC--TAN'           / DEC. in tangent plane projection               
+CRPIX1  =        1554.06858398 / (UPDATED) Ref pix of axis 1                    
+CRPIX2  =    1152.04468413287  / (UPDATED) Ref pix of axis 2                    
+CRVAL1  =                  0.0 / (UPDATED) RA at Ref pix in decimal degrees     
+CRVAL2  =                  0.0 / (UPDATED) DEC at Ref pix in decimal degrees    
+CD1_1   = -4.01731645289432E-09 / WCS matrix element 1 1                        
+CD1_2   = -4.05734588123873E-05 / WCS matrix element 1 2                        
+CD2_1   = 4.05879642630884E-05 / WCS matrix element 2 1                         
+CD2_2   = -2.08671062444073E-08 / WCS matrix element 2 2                        
+CCDSUM  = '2 2     '           / CCD sum                                        
+GAIN    =                2.076 / (UPDATED) Gain [electrons/ADU]                 
+GAINSET = 'low     '           / (NEW) Gain setting (low / high)                
+RDNOISE =    6.668395609140178 / (UPDATED) Estimated read noise [electrons]     
+RADECSYS= 'FK5     '           / R.A./DEC. coordinate system reference          
+EQUINOX =                2000. / Equinox of coordinate system                   
+MJD-OBS =     56572.1668708537 / MJD of start of obseration                     
+GMOSAIC = '2013-10-07T04:06:51' / UT Time stamp for GMOSAIC                     
+GMSINTER= 'linear  '           / Interpolant used by GMOSAIC                    
+MOSAIC  = '2013-10-07T01:06:53' / (NEW) UT time stamp for mosaicDetectors       
+CORRBG  = '2013-10-07T01:22:15' / (NEW) UT time stamp for correctBackgroundToRef
+SUBTRACT= '2013-10-07T01:22:18' / (NEW) UT time stamp for subtract              
+ADD     = '2013-10-07T01:23:49' / (NEW) UT time stamp for add                   
+WMEF    = '2013-10-07T04:24:04' / UT Time stamp for WMEF                        
+GAINORIG=                2.076 / Input gain                                     
+RONORIG =                 3.85 / Input read-noise                               
+GEMCOMB = '2013-10-07T04:24:04' / UT Time stamp for GEMCOMBINE                  
+STACKFRM= '2013-10-07T01:24:05' / (NEW) UT time stamp for stackFrames           
+RELEASE = '2013-10-07'         / (NEW) End of proprietary period YYYY-MM-DD     
+PROCFRNG= '2013-10-07T01:24:05' / (NEW) UT time stamp for PROCFRNG              
+
+--- HDU 1 ---
+XTENSION= 'IMAGE   '           / Image extension                                
+BITPIX  =                  -32 / Bits per pixel                                 
+NAXIS   =                    2 / Number of axes                                 
+NAXIS1  =                 3108 / Axis length                                    
+NAXIS2  =                 2304 / Axis length                                    
+PCOUNT  =                    0 / No 'random' parameters                         
+GCOUNT  =                    1 / Only one group                                 
+EXTNAME = 'SCI     '           / Extension name                                 
+EXTVER  =                    1 / Extension version                              
+INHERIT =                    F / Inherits global header                         
+ORIGIN  = 'NOAO-IRAF FITS Image Kernel July 2003' / FITS file originator        
+OBJECT  = 'Fringe Frame'       / (UPDATED) Object Name                          
+DATE    = '2013-10-07T03:23:57' / Date FITS file was generated                  
+IRAF-TLM= '2013-10-07T03:24:26' / Time of last modification                     
+CTYPE1  = 'RA---TAN'           / R.A. in tangent plane projection               
+CTYPE2  = 'DEC--TAN'           / DEC. in tangent plane projection               
+CRPIX1  =        1554.06858398 / (UPDATED) Ref pix of axis 1                    
+CRPIX2  =    1152.04468413287  / (UPDATED) Ref pix of axis 2                    
+CRVAL1  =                  0.0 / (UPDATED) RA at Ref pix in decimal degrees     
+CRVAL2  =                  0.0 / (UPDATED) DEC at Ref pix in decimal degrees    
+CD1_1   = -4.01731645289432E-09 / WCS matrix element 1 1                        
+CD1_2   = -4.05734588123873E-05 / WCS matrix element 1 2                        
+CD2_1   = 4.05879642630884E-05 / WCS matrix element 2 1                         
+CD2_2   = -2.08671062444073E-08 / WCS matrix element 2 2                        
+CCDSUM  = '2 2     '           / CCD sum                                        
+GAIN    =                2.076 / (UPDATED) Gain [electrons/ADU]                 
+GAINSET = 'low     '           / (NEW) Gain setting (low / high)                
+RDNOISE =    6.668395609140178 / (UPDATED) Estimated read noise [electrons]     
+RADECSYS= 'FK5     '           / R.A./DEC. coordinate system reference          
+EQUINOX =                2000. / Equinox of coordinate system                   
+MJD-OBS =     56572.1668708537 / MJD of start of obseration                     
+BUNIT   = 'electron'           / (NEW) Physical units of the array values       
+OVERSCAN=    675.3586999999999 / (NEW) Overscan mean value                      
+AMPNAME = 'EEV 2037-06-03, left,EEV 8194-19-04, left,EEV 8261-07-04, right' / (N
+DETSEC  = '[1:6216,1:4608]'    / (NEW) Detector section(s)                      
+CCDSEC  = '[1:6216,1:4608]'    / (NEW) CCD section(s)                           
+DATASEC = '[1:3108,1:2304]'    / (NEW) Data section(s)                          
+SKYLEVEL=      8345.8701171875 / (NEW) Estimated sky level [electron]           
+EXPTIME =             400.4922 /                                                
+IMCMB001= 'tmp71808gemcombineS20131007S0067.fits[SCI,1]'                        
+IMCMB002= 'tmp71808gemcombineS20131007S0068.fits[SCI,1]'                        
+IMCMB003= 'tmp71808gemcombineS20131007S0069.fits[SCI,1]'                        
+NCOMBINE=                    3                                                  
+GAINORIG=                2.076 / Input gain                                     
+RONORIG =                 3.85 / Input read-noise                               
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+
+--- HDU 2 ---
+XTENSION= 'IMAGE   '           / Image extension                                
+BITPIX  =                  -32 / Bits per pixel                                 
+NAXIS   =                    2 / Number of axes                                 
+NAXIS1  =                 3108 / Axis length                                    
+NAXIS2  =                 2304 / Axis length                                    
+PCOUNT  =                    0 / No 'random' parameters                         
+GCOUNT  =                    1 / Only one group                                 
+EXTNAME = 'VAR     '           / Extension name                                 
+EXTVER  =                    1 / Extension version                              
+INHERIT =                    F / Inherits global header                         
+ORIGIN  = 'NOAO-IRAF FITS Image Kernel July 2003' / FITS file originator        
+OBJECT  = 'Fringe Frame'       / (UPDATED) Object Name                          
+DATE    = '2013-10-07T03:23:57' / Date FITS file was generated                  
+IRAF-TLM= '2013-10-07T03:24:26' / Time of last modification                     
+CTYPE1  = 'RA---TAN'           / R.A. in tangent plane projection               
+CTYPE2  = 'DEC--TAN'           / DEC. in tangent plane projection               
+CRPIX1  =        1554.06858398 / (UPDATED) Ref pix of axis 1                    
+CRPIX2  =    1152.04468413287  / (UPDATED) Ref pix of axis 2                    
+CRVAL1  =                  0.0 / (UPDATED) RA at Ref pix in decimal degrees     
+CRVAL2  =                  0.0 / (UPDATED) DEC at Ref pix in decimal degrees    
+CD1_1   = -4.01731645289432E-09 / WCS matrix element 1 1                        
+CD1_2   = -4.05734588123873E-05 / WCS matrix element 1 2                        
+CD2_1   = 4.05879642630884E-05 / WCS matrix element 2 1                         
+CD2_2   = -2.08671062444073E-08 / WCS matrix element 2 2                        
+CCDSUM  = '2 2     '           / CCD sum                                        
+GAIN    =                2.076 / (UPDATED) Gain [electrons/ADU]                 
+GAINSET = 'low     '           / (NEW) Gain setting (low / high)                
+RDNOISE =    6.668395609140178 / (UPDATED) Estimated read noise [electrons]     
+RADECSYS= 'FK5     '           / R.A./DEC. coordinate system reference          
+EQUINOX =                2000. / Equinox of coordinate system                   
+MJD-OBS =     56572.1668708537 / MJD of start of obseration                     
+BUNIT   = 'electron*electron'  / (UPDATED) Physical units of the array values   
+OVERSCAN=    675.3586999999999 / (NEW) Overscan mean value                      
+AMPNAME = 'EEV 2037-06-03, left,EEV 8194-19-04, left,EEV 8261-07-04, right' / (N
+DETSEC  = '[1:6216,1:4608]'    / (NEW) Detector section(s)                      
+CCDSEC  = '[1:6216,1:4608]'    / (NEW) CCD section(s)                           
+DATASEC = '[1:3108,1:2304]'    / (NEW) Data section(s)                          
+SKYLEVEL=      8345.8701171875 / (NEW) Estimated sky level [electron]           
+EXPTIME =             400.4922 /                                                
+IMCMB001= 'tmp71808gemcombineS20131007S0067.fits[SCI,1]'                        
+IMCMB002= 'tmp71808gemcombineS20131007S0068.fits[SCI,1]'                        
+IMCMB003= 'tmp71808gemcombineS20131007S0069.fits[SCI,1]'                        
+GAINORIG=             4.309776 / Input gain                                     
+RONORIG =              14.8225 / Input read-noise                               
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+
+--- HDU 3 ---
+XTENSION= 'IMAGE   '           / Image extension                                
+BITPIX  =                    8 / Bits per pixel                                 
+NAXIS   =                    2 / Number of axes                                 
+NAXIS1  =                 3108 / Axis length                                    
+NAXIS2  =                 2304 / Axis length                                    
+PCOUNT  =                    0 / No 'random' parameters                         
+GCOUNT  =                    1 / Only one group                                 
+EXTNAME = 'DQ      '           / Extension name                                 
+EXTVER  =                    1 / Extension version                              
+INHERIT =                    F / Inherits global header                         
+ORIGIN  = 'NOAO-IRAF FITS Image Kernel July 2003' / FITS file originator        
+OBJECT  = 'Fringe Frame'       / (UPDATED) Object Name                          
+DATE    = '2013-10-07T03:24:02' / Date FITS file was generated                  
+IRAF-TLM= '2013-10-07T03:24:14' / Time of last modification                     
+CTYPE1  = 'RA---TAN'           / R.A. in tangent plane projection               
+CTYPE2  = 'DEC--TAN'           / DEC. in tangent plane projection               
+CRPIX1  =        1554.06858398 / (UPDATED) Ref pix of axis 1                    
+CRPIX2  =    1152.04468413287  / (UPDATED) Ref pix of axis 2                    
+CRVAL1  =                  0.0 / (UPDATED) RA at Ref pix in decimal degrees     
+CRVAL2  =                  0.0 / (UPDATED) DEC at Ref pix in decimal degrees    
+CD1_1   = -4.01731645289432E-09 / WCS matrix element 1 1                        
+CD1_2   = -4.05734588123873E-05 / WCS matrix element 1 2                        
+CD2_1   = 4.05879642630884E-05 / WCS matrix element 2 1                         
+CD2_2   = -2.08671062444073E-08 / WCS matrix element 2 2                        
+CCDSUM  = '2 2     '           / CCD sum                                        
+GAIN    =               2.076  / (UPDATED) Gain [electrons/ADU]                 
+GAINSET = 'low     '           / (NEW) Gain setting (low / high)                
+RDNOISE =    6.668395609140178 / (UPDATED) Estimated read noise [electrons]     
+RADECSYS= 'FK5     '           / R.A./DEC. coordinate system reference          
+EQUINOX =                2000. / Equinox of coordinate system                   
+MJD-OBS =     56572.1668708537 / MJD of start of obseration                     
+BUNIT   = 'bit     '           / (UPDATED) Physical units of the array values   
+OVERSCAN=    675.3586999999999 / (NEW) Overscan mean value                      
+AMPNAME = 'EEV 2037-06-03, left,EEV 8194-19-04, left,EEV 8261-07-04, right' / (N
+DETSEC  = '[1:6216,1:4608]'    / (NEW) Detector section(s)                      
+CCDSEC  = '[1:6216,1:4608]'    / (NEW) CCD section(s)                           
+DATASEC = '[1:3108,1:2304]'    / (NEW) Data section(s)                          
+SKYLEVEL=      8345.8701171875 / (NEW) Estimated sky level [electron]           
+EXPTIME =             400.4922 /                                                
+IMCMB001= 'tmp71808gemcombineS20131007S0067.fits[SCI,1]'                        
+IMCMB002= 'tmp71808gemcombineS20131007S0068.fits[SCI,1]'                        
+IMCMB003= 'tmp71808gemcombineS20131007S0069.fits[SCI,1]'                        
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                

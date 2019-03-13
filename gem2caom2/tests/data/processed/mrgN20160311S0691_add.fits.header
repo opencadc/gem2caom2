@@ -1,0 +1,366 @@
+Filename: mrgN20160311S0691_add.fits.bz2
+
+AstroData Types: ['GEMINI_NORTH', 'GMOS_N', 'GMOS_IMAGE', 'GEMINI', 'SIDEREAL', 'IMAGE', 'GMOS', 'PROCESSED_SCIENCE', 'PREPARED']
+
+
+--- HDU 0 ---
+SIMPLE  =                    T / Fits standard                                  
+BITPIX  =                   16 / Bits per pixel                                 
+NAXIS   =                    0 / Number of axes                                 
+EXTEND  =                    T / File may contain extensions                    
+ORIGIN  = 'NOAO-IRAF FITS Image Kernel July 2003' / FITS file originator        
+DATE    = '2016-03-11T23:43:02' / Date FITS file was generated                  
+IRAF-TLM= '2016-03-11T23:45:52' / Time of last modification                     
+COMMENT   FITS (Flexible Image Transport System) format is defined in 'Astronomy
+COMMENT   and Astrophysics', volume 376, page 359; bibcode: 2001A&A...376..359H 
+INSTRUME= 'GMOS-N  '           / Instrument used to acquire data                
+OBJECT  = 'NGC 4523'           / Object Name                                    
+OBSTYPE = 'OBJECT  '           / Observation type                               
+OBSCLASS= 'science '           / Observe class                                  
+GEMPRGID= 'GN-2016A-Q-68'      / Gemini programme ID                            
+OBSID   = 'GN-2016A-Q-68-46'   / Observation ID / Data label                    
+DATALAB = 'GN-2016A-Q-68-46-001-mrg-add' / DHS data label                       
+OBSERVER= 'M.Pohlen'           / Observer                                       
+OBSERVAT= 'Gemini-North'       / Name of telescope (Gemini-North|Gemini-South)  
+TELESCOP= 'Gemini-North'       / Gemini-North                                   
+PARALLAX=                   0. / Parallax of Target                             
+RADVEL  =                   0. / Heliocentric Radial Velocity                   
+EPOCH   =                2000. / Epoch for Target coordinates                   
+EQUINOX =                2000. / Equinox of coordinate system                   
+TRKEQUIN=                2000. / Tracking equinox                               
+SSA     = 'S.Pakzad'           / SSA                                            
+RA      =           188.449975 / Right Ascension                                
+DEC     =          15.16830278 / Declination of Target                          
+ELEVATIO=     59.0299013888889 / Current Elevation                              
+AZIMUTH =    -93.5901555555556 / Current Azimuth                                
+CRPA    =    -76.4261488930193 / Current Cass Rotator Position Angle            
+HA      = '+02:08:34.19'       / Telescope hour angle                           
+LT      = '03:46:28.3'         / Local time at start of observation             
+TRKFRAME= 'FK5     '           / Tracking co-ordinate                           
+DECTRACK=                   0. / Differential tracking rate Dec                 
+TRKEPOCH=         57458.570825 / Differential tracking reference epoch          
+RATRACK =                   0. / Differential tracking rate RA                  
+FRAME   = 'FK5     '           / Target coordinate system                       
+PMDEC   =                   0. / Proper Motion in Declination                   
+PMRA    =                   0. / Proper Motion in RA                            
+WAVELENG=                6550. / Effective Target Wavelength                    
+RAWIQ   = '70-percentile'      / Raw Image Quality                              
+RAWCC   = '50-percentile'      / Raw Cloud Cover                                
+RAWWV   = '50-percentile'      / Raw Water Vapour/Transparency                  
+RAWBG   = '20-percentile'      / Raw Background                                 
+RAWPIREQ= 'YES     '           / PI Requirements Met                            
+RAWGEMQA= 'USABLE  '           / Gemini Quality Assessment                      
+CGUIDMOD= 'Basic   '           / Carousel Mode                                  
+UT      = '13:46:28.3'         / UT at observation start                        
+M2BAFFLE= 'VISIBLE '           / Position of M2 baffle                          
+M2CENBAF= 'CLOSED  '           / Position of M2 central hole baffle             
+ST      = '14:43:12.1'         / Sidereal time at the start of the exposure     
+XOFFSET =                   0. / Telescope offset in x in arcsec                
+YOFFSET =                   0. / Telescope offset in y in arcsec                
+POFFSET =                   0. / Telescope offset in p in arcsec                
+QOFFSET =                   0. / Telescope offset in q in arcsec                
+RAOFFSET=                   0. / Telescope offset in RA in arcsec               
+DECOFFSE=                   0. / Telescope offset in DEC in arcsec              
+RATRGOFF=                   0. / Target offset in RA in arcsec                  
+DECTRGOF=                   0. / Target offset in DEC in arcsec                 
+PA      =                   0. / Sky Position Angle at start of exposure        
+IAA     =              179.937 / Instrument Alignment Angle                     
+SFRT2   =              178.518 / Science fold rotation angle (degrees)          
+SFTILT  =                44.84 / Science fold tilt angle (degrees)              
+SFLINEAR=                  -2. / Science fold linear position (mm)              
+AOFOLD  = 'park-pos.'          / AO Pick-Off Mirror Position                    
+PWFS1_ST= 'parked  '           / PWFS1 probe state (frozen,guiding,parked)      
+PWFS2_ST= 'parked  '           / PWFS2 probe state (frozen,guiding,parked)      
+OIWFS_ST= 'guiding '           / OIWFS probe state (frozen,guiding,parked)      
+AOWFS_ST= 'parked  '           / AOWFS probe state (frozen,guiding,parked)      
+SCIBAND =                    2 / Science Ranking Band                           
+REQIQ   = '85-percentile'      / Requested Image Quality                        
+REQCC   = '50-percentile'      / Requested Cloud Cover                          
+REQBG   = '50-percentile'      / Requested Background                           
+REQWV   = 'Any     '           / Requested Water Vapour                         
+NUMREQTW=                    0 / Number of Requested Timing Window REQTW entries
+OIARA   =         188.39883333 / RA of OIWFS guide star                         
+OIARV   =                   0. / OIWFS Heliocentric Radial Velocity             
+OIAWAVEL=                6500. / OIWFS Effective Target Wavelength              
+OIADEC  =          15.19409722 / Declination of OIWFS guide star                
+OIAEPOCH=                2000. / Epoch for OIWFS guide star coordinates         
+OIAEQUIN=                2000. / Equinox for OIWFS guide star coordinates       
+OIAFRAME= 'FK5     '           / OIWFS Target co-ordinate system                
+OIAOBJEC= '526-054652'         / Object Name for OIWFS, Chop A                  
+OIAPMDEC=               0.0052 / OIWFS Proper Motion in Declination             
+OIAPMRA =             -0.00021 / OIWFS Proper Motion in RA                      
+OIAPARAL=                   0. / OIWFS Parallax of Target                       
+OIFREQ  =                 200. / OIWFS sampling frequency (Hz)                  
+HUMIDITY=                  21. / The Relative Humidity (fraction, 0..101).      
+TAMBIENT=                  1.1 / The ambient temp (C).                          
+TAMBIEN2=                33.98 / The ambient temp (F).                          
+PRESSURE=            462.92276 / The atmospheric pressure (mm Hg).              
+PRESSUR2=               61700. / The atmospheric pressure (Pa).                 
+DEWPOINT=                 -19. / The dew point (C).                             
+DEWPOIN2=                 -2.2 / The dew point (F).                             
+WINDSPEE=                   0. / The wind speed (m/s).                          
+WINDSPE2=                   0. / The wind speed (mph).                          
+WINDDIRE=                 352. / The wind direction (degrees).                  
+INPORT  =                    5 / Number of ISS port where GMOS was located      
+GMOSCC  = 'GMOS-N (V7-2)'      / GMOS components controller s/w                 
+PREIMAGE=                    T / MOS pre-imaging                                
+CONID   = 'GMOS v8.0'          / Detector controller ID                         
+DETECTOR= 'GMOS + e2v DD CCD42-90' / Detector name                              
+DEWAR   = 'Cryostat A'         / Dewar name                                     
+DEW-TEMP=                -100. / Dewar temperature (Celsius)                    
+DETSIZE = '[1:6144,1:4644]'    / Detector size                                  
+NCCDS   =                    3 / Number of CCD chips                            
+NAMPS   =                    2 / Number of amplifiers                           
+SHUTTER = 'OPEN    '           / Shutter state during observation               
+AMPINTEG=                 5000 / Amplifier integration time                     
+OBSEPOCH=     2016.19185200607 / Epoch at start of exposure                     
+TIMESYS = 'UT1     '           / Time system used                               
+DATE-OBS= '2016-03-11'         / UT Date of observation (YYYY-MM-DD)            
+TIME-OBS= '13:47:07.7'         / Time of observation                            
+GMOSTHT = 'GOOD    '           / Shutter health                                 
+NSUBEXP =                    1 / Number of sub exposures                        
+UTSTART = '13:47:07.7'         / UT at observation start                        
+UTEND   = '13:48:07.7'         / UT at observation end                          
+EXPTIME =     59.9988420009613 / Exposure time in seconds                       
+ELAPSED =     59.9988420009613 / Elapsed observation time in seconds            
+DARKTIME=     81.0009620189667 / Dark current integration in seconds            
+MASKID  =                  -99 / Mask/IFU barcode                               
+MASKNAME= 'None    '           / Mask name                                      
+MASKTYP =                    0 / Mask/IFU type (0=none/-1=IFU/1=mask)           
+MASKLOC =                    1 / Mask/IFU location (-1=unknown/0=FP/1=cassette) 
+FILTER1 = 'open1-6 '           / Filter 1 name                                  
+FILTID1 =             20000018 / Filter 1 barcode                               
+FILTER2 = 'Ha_G0310'           / Filter 2 name                                  
+FILTID2 =             20000010 / Filter 2 barcode                               
+GRATING = 'MIRROR  '           / Grating name                                   
+GRATID  =             30000008 / Grating barcode                                
+GRWLEN  =                   0. / Grating wavelength at slit (nm)                
+CENTWAVE=                   0. / Central wavelength (nm)                        
+GRORDER =                    0 / Grating order                                  
+GRTILT  =                  65. / Grating tilt angle (degrees)                   
+GRSTEP  =             6911.782 / Requested grating motor step position          
+DTAX    =                 83.6 / Detector translation X position (microns)      
+DTAY    =                 81.6 / Detector translation Y position (microns)      
+DTAZ    =                2558. / Detector translation Z position (microns)      
+DTAZST  =                2558. / Focus at observation start (microns)           
+DTAZEN  =                2558. / Focus at observation end (microns)             
+DTAZME  =                   0. / Mean focus during observation (microns)        
+DTMODE  = 'FOLLOW-XY'          / Detector translation stage mode                
+ADCMODE = 'STOP    '           / ADC mode                                       
+GMOSDC  = 'GMOS DC '           / GMOS detector controller s/w                   
+DETTYPE = 'SDSU II e2v DD CCD42-90' / Detector array type                       
+DETID   = 'e2v 10031-23-05,10031-01-03,10031-18-04' / Chip IDs                  
+EXPOSURE=                  60. / Requested exposure time in seconds             
+ADCUSED =                    1 / ADC used? (0=yes/1=no)                         
+DETNROI =                    1 / No. regions of interest                        
+ADCENPST=                   0. / Start entrance prism angle of ADC              
+ADCENPEN=                   0. / End entrance prism angle of ADC                
+ADCENPME=                   0. / Mean entrance prism angle of ADC               
+ADCEXPST=                   0. / Start exit prism angle of ADC                  
+ADCEXPEN=                   0. / End exit prism angle of ADC                    
+ADCEXPME=                   0. / Mean exit prism angle of ADC                   
+ADCWLEN1=                   0. / Lower wavelength for ADC calculation           
+ADCWLEN2=                   0. / Upper wavelength for ADC calculation           
+DETRO1X =                    1 / ROI 1 X start                                  
+DETRO1XS=                 3072 / ROI 1 X size                                   
+DETRO1Y =                    1 / ROI 1 Y start                                  
+DETRO1YS=                 2304 / ROI 1 Y size                                   
+AIRMASS =                1.168 / Mean airmass for the observation               
+AMSTART =                1.166 / Airmass at start of exposure                   
+AMEND   =                 1.17 / Airmass at end of exposure                     
+PROP_MD =                    F / Proprietary Metadata                           
+RELEASE = '2017-09-11'         / End of proprietary period YYYY-MM-DD           
+NSCIEXT =                    1 / Number of science extensions                   
+PIXSCALE=              0.14576 / Pixel scale in Y in arcsec/pixel               
+NEXTEND =                    1 / Number of extensions                           
+OBSMODE = 'IMAGE   '           / Observing mode (IMAGE|IFU|MOS|LONGSLIT)        
+GEM-TLM = '2016-03-11T23:45:24' / UT Last modification with GEMINI              
+GPREPARE= '2016-03-11T23:42:54' / UT Time stamp for GPREPARE                    
+TRIMMED = 'yes     '           / Overscan section trimmed                       
+GGAIN   = '2016-03-11T23:43:10' / UT Time stamp for GGAIN                       
+BIASIM  = 'N20160229S0328_bias' / Bias image used by GIREDUCE                   
+FLATIM  = 'N20151229S0516_flat' / Flat field used by GIREDUCE                   
+GIREDUCE= '2016-03-11T23:43:26' / UT Time stamp for GIREDUCE                    
+GMOSCLVA=             40.15384 / GMOSAIC cleaning value                         
+CTYPE1  = 'RA---TAN'           / R.A. in tangent plane projection               
+CTYPE2  = 'DEC--TAN'           / DEC. in tangent plane projection               
+CRPIX1  =        1554.25655967 / Ref pix of axis 1                              
+CRPIX2  =     1151.67870381506 / Ref pix of axis 2                              
+CRVAL1  =     188.449975036841 / RA at Ref pix in decimal degrees               
+CRVAL2  =     15.1683027841305 / DEC at Ref pix in decimal degrees              
+CD1_1   = -4.04987132210755E-05 / WCS matrix element 1 1                        
+CD1_2   = 3.38419277939397E-08 / WCS matrix element 1 2                         
+CD2_1   = -3.27827357325359E-08 / WCS matrix element 2 1                        
+CD2_2   = -4.04846147403329E-05 / WCS matrix element 2 2                        
+CCDSUM  = '2 2     '           / CCD sum                                        
+GAIN    =                  4.0 / Effective gain [e-/ADU]                        
+GAINMULT=                 2.21 / Gain multiplication                            
+RDNOISE =                  6.4 / Effective read-noise [e-]                      
+RADECSYS= 'FK5     '           / R.A./DEC. coordinate system reference          
+EQUINOX =                2000. / Equinox of coordinate system                   
+MJD-OBS =      57458.574734299 / MJD of start of obseration                     
+GMOSAIC = '2016-03-11T23:43:29' / UT Time stamp for GMOSAIC                     
+GMSINTER= 'linear  '           / Interpolant used by GMOSAIC                    
+WMEF    = '2016-03-11T23:44:01' / UT Time stamp for WMEF                        
+IMCOADD = '2016-03-11T23:44:01' / UT Time stamp for imcoadd                     
+IMCOBPM = 'gmos$data/gmos-n_bpm_e2v_22_6amp_v1_mosaic.pl' / Detector bad pixel f
+COMBSC  = 'imcoadd combine scaled with RELINT'                                  
+MED_SKY =             39.41534 / Median sky level                               
+GAINORIG=                   1. / Input gain                                     
+RONORIG =                  3.2 / Input read-noise                               
+SCNOISE =                   0. / imcoadd scnoise                                
+LIMIT   =             105.6998 / imcoadd limit for cleaning                     
+LOWSIG  =                   7. / imcoadd sigma rejection                        
+LOWLIM  =                 500. / imcoadd absolute rejection limit               
+GROWTHR =                    1 / imcoadd growth radius                          
+GEOGEOM = 'rscale  '           / imcoadd geomap geometry                        
+GEOINTER= 'linear  '           / imcoadd geotrans interpolation                 
+IMAGE01 = 'mrgN20160311S0691'  / Input image for imcoadd                        
+IMAGE02 = 'mrgN20160311S0692'  / Input image for imcoadd                        
+IMAGE03 = 'mrgN20160311S0693'  / Input image for imcoadd                        
+IMAGE04 = 'mrgN20160311S0694'  / Input image for imcoadd                        
+FINALINT= 'pass    '           / Requested total integration time               
+FINALIQ = 'pass    '           / Requested final image quality                  
+PICONFIG= 'pass    '           / Requested instrument configuration             
+PITARGET= 'pass    '           / Requested target                               
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+
+--- HDU 1 ---
+XTENSION= 'IMAGE   '           / Image extension                                
+BITPIX  =                  -32 / Bits per pixel                                 
+NAXIS   =                    2 / Number of axes                                 
+NAXIS1  =                 3108 / Axis length                                    
+NAXIS2  =                 2304 / Axis length                                    
+PCOUNT  =                    0 / No 'random' parameters                         
+GCOUNT  =                    1 / Only one group                                 
+EXTNAME = 'SCI     '           / Extension name                                 
+EXTVER  =                    1 / Extension version                              
+INHERIT =                    F / Inherits global header                         
+ORIGIN  = 'NOAO-IRAF FITS Image Kernel July 2003' / FITS file originator        
+OBJECT  = 'NGC 4523'           / Name of the object observed                    
+DATE    = '2016-03-11T23:44:00' / Date FITS file was generated                  
+IRAF-TLM= '2016-03-11T23:45:00' / Time of last modification                     
+CTYPE1  = 'RA---TAN'           / R.A. in tangent plane projection               
+CTYPE2  = 'DEC--TAN'           / DEC. in tangent plane projection               
+CRPIX1  =        1554.25655967 / Ref pix of axis 1                              
+CRPIX2  =     1151.67870381506 / Ref pix of axis 2                              
+CRVAL1  =     188.449975036841 / RA at Ref pix in decimal degrees               
+CRVAL2  =     15.1683027841305 / DEC at Ref pix in decimal degrees              
+CD1_1   = -4.04987132210755E-05 / WCS matrix element 1 1                        
+CD1_2   = 3.38419277939397E-08 / WCS matrix element 1 2                         
+CD2_1   = -3.27827357325359E-08 / WCS matrix element 2 1                        
+CD2_2   = -4.04846147403329E-05 / WCS matrix element 2 2                        
+CCDSUM  = '2 2     '           / CCD sum                                        
+GAIN    =                  4.0 / Effective gain [e-/ADU]                        
+GAINMULT=                 2.21 / Gain multiplication                            
+RDNOISE =                  6.4 / Effective read-noise [e-]                      
+RADECSYS= 'FK5     '           / R.A./DEC. coordinate system reference          
+EQUINOX =                2000. / Equinox of coordinate system                   
+MJD-OBS =      57458.574734299 / MJD of start of obseration                     
+GEM-TLM = '2016-03-11T23:43:41' / UT Last modification with GEMINI              
+IMCOADD = '2016-03-11T23:43:41' / UT Time stamp for imcoadd                     
+MED_SKY =             39.92989 / Median sky level                               
+RELINT  =                   1. / Inverse of the relative intensity              
+IMCMB001= 'mrgN20160311S0691_trn'                                               
+IMCMB002= 'mrgN20160311S0692_trn'                                               
+IMCMB003= 'mrgN20160311S0693_trn'                                               
+IMCMB004= 'mrgN20160311S0694_trn'                                               
+NCOMBINE=                    4                                                  
+GAINORIG=                   1. / Input gain                                     
+RONORIG =                  3.2 / Input read-noise                               
+GEMSEE  = '2016-03-11T23:45:23' / UT Time stamp for gemseeing                   
+SEEPRG  = 'gemseeing:  psfmeasure  direct/eed50/eed85/moffat'                   
+FWHMPSF =            0.9908765 / FWHM of PSF [arcsec], direct measurement       
+NPSF    =                   16 / Number of stars used by gemseeing              
+MFWHM   =             1.127964 / FWHM of PSF [arcsec], Moffat fit               
+EED50   =             1.686152 / 50-percent encircled energy diameter [arcsec]  
+EED85   =             3.503196 / 85-percent encircled energy diameter [arcsec]  
+EPSPSF  =                0.055 / Ellipticity of PSF                             
+POSPSF  =                 -24. / Position angle of PSF, CCW from X-axis         
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                

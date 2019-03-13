@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GS-2004B-Q-42</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-2004B-Q-42</h1>
+
+<table>
+ <tr><td>Title:<td>SPECTROSCOPIC CONFIRMATION OF RICH GALAXY CLUSTERS AT z ~ 1.2</tr>
+ <tr><td>PI:<td>Felipe Barrientos</tr>
+ <tr><td>Co-I(s):<td> Mike Gladders,  Howard Yee,  Patrick Hall,  Erica Ellingson,  Leopoldo Infante</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+We propose to use Gemini+GMOS to study a new sample of high redshift clusters of galaxies obtained from the Red-Sequence Cluster Survey (RCS), a 90 deg^2 two-color imaging survey in both hemispheres. We will obtain ~200 galaxy spectra in the fields of 5 z~1.2 galaxy clusters. The spectra will be used to (1) calibrate the cluster photometric redshifts to z~1, and augment the value of the deep VLT IR and Magellan optical imaging already in hand, (2) determine the cluster masses and thus calibrate the B_gc richness parameter vs. velocity dispersion relation, to obtain masses for the rest of the sample, and (3) study the galaxy stellar populations by using line indices and principal component analysis.
+</div>
+
+
+
+</body>
+</html>
