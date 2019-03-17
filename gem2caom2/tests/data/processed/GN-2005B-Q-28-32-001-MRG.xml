@@ -1,59 +1,61 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="00000000-0000-0000-a995-4010f2912bb5">
+<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="00000000-0000-0000-8fc8-63cad36278a7">
   <caom2:collection>GEMINI</caom2:collection>
-  <caom2:observationID>GS-2002B-Q-22-13-0161</caom2:observationID>
-  <caom2:metaRelease>2004-06-02T00:00:00.000</caom2:metaRelease>
+  <caom2:observationID>GN-2005B-Q-28-32-001-MRG</caom2:observationID>
+  <caom2:metaRelease>2005-08-31T00:00:00.000</caom2:metaRelease>
   <caom2:algorithm>
     <caom2:name>exposure</caom2:name>
   </caom2:algorithm>
   <caom2:type>OBJECT</caom2:type>
   <caom2:intent>science</caom2:intent>
   <caom2:proposal>
-    <caom2:id>GS-2002B-Q-22</caom2:id>
+    <caom2:id>GN-2005B-Q-28</caom2:id>
+    <caom2:pi>Avon Huxor</caom2:pi>
+    <caom2:title>Is there dark matter in the newly discovered luminous stellar clusters in the halo of M31?</caom2:title>
   </caom2:proposal>
   <caom2:target>
-    <caom2:name>IRAS 04509</caom2:name>
-    <caom2:type>object</caom2:type>
+    <caom2:name>extended cluster</caom2:name>
+    <caom2:type>field</caom2:type>
   </caom2:target>
   <caom2:telescope>
-    <caom2:name>Gemini-South</caom2:name>
-    <caom2:geoLocationX>1820184.0557473274</caom2:geoLocationX>
-    <caom2:geoLocationY>-5208320.066618682</caom2:geoLocationY>
-    <caom2:geoLocationZ>-3194829.197152751</caom2:geoLocationZ>
+    <caom2:name>Gemini-North</caom2:name>
+    <caom2:geoLocationX>-5464284.386715498</caom2:geoLocationX>
+    <caom2:geoLocationY>-2493782.3091076654</caom2:geoLocationY>
+    <caom2:geoLocationZ>2150786.380689657</caom2:geoLocationZ>
   </caom2:telescope>
   <caom2:instrument>
-    <caom2:name>PHOENIX</caom2:name>
+    <caom2:name>GMOS-N</caom2:name>
   </caom2:instrument>
   <caom2:planes>
-    <caom2:plane caom2:id="00000000-0000-0000-93e2-3d15616a57aa">
-      <caom2:productID>GS-2002B-Q-22-13-0161</caom2:productID>
-      <caom2:metaRelease>2004-06-02T00:00:00.000</caom2:metaRelease>
-      <caom2:dataRelease>2004-06-02T00:00:00.000</caom2:dataRelease>
-      <caom2:dataProductType>spectrum</caom2:dataProductType>
+    <caom2:plane caom2:id="00000000-0000-0000-ada3-f16958d2471e">
+      <caom2:productID>GN-2005B-Q-28-32-001-MRG</caom2:productID>
+      <caom2:metaRelease>2005-08-31T00:00:00.000</caom2:metaRelease>
+      <caom2:dataRelease>2007-03-01T00:00:00.000</caom2:dataRelease>
+      <caom2:dataProductType>image</caom2:dataProductType>
       <caom2:calibrationLevel>2</caom2:calibrationLevel>
       <caom2:provenance>
         <caom2:name>Gemini Observatory Data</caom2:name>
         <caom2:project>Gemini Archive</caom2:project>
-        <caom2:producer>NOAO-IRAF FITS Image Kernel July 1999</caom2:producer>
-        <caom2:reference>http://archive.gemini.edu/searchform/filepre=P2002DEC02_0161_SUB.fits</caom2:reference>
+        <caom2:producer>NOAO-IRAF FITS Image Kernel July 2003</caom2:producer>
+        <caom2:reference>http://archive.gemini.edu/searchform/filepre=mrgN20050831S0770_add.fits</caom2:reference>
       </caom2:provenance>
       <caom2:artifacts>
-        <caom2:artifact caom2:id="00000000-0000-0000-9ae7-1c73bb659bf9">
-          <caom2:uri>gemini:GEM/P2002DEC02_0161_SUB.fits</caom2:uri>
+        <caom2:artifact caom2:id="00000000-0000-0000-9778-4b65b9c0f669">
+          <caom2:uri>gemini:GEM/mrgN20050831S0770_add.fits</caom2:uri>
           <caom2:productType>science</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>
-          <caom2:contentLength>832548</caom2:contentLength>
-          <caom2:contentChecksum>md5:00894aece755fc8b21392e0a2573029b</caom2:contentChecksum>
+          <caom2:contentLength>12988153</caom2:contentLength>
+          <caom2:contentChecksum>md5:2c7588478f3d3a4de8d690fb50c95d30</caom2:contentChecksum>
           <caom2:parts>
-            <caom2:part caom2:id="00000000-0000-0000-aee4-1869430c9890">
+            <caom2:part caom2:id="00000000-0000-0000-93b4-9ac566997e16">
               <caom2:name>0</caom2:name>
               <caom2:chunks/>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-93d0-0ca454d2348e">
+            <caom2:part caom2:id="00000000-0000-0000-ae88-4e9270d36192">
               <caom2:name>1</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-8db7-937bb6a25a77">
+                <caom2:chunk caom2:id="00000000-0000-0000-a541-d763267aa148">
                   <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -71,27 +73,26 @@
                       </caom2:axis2>
                       <caom2:function>
                         <caom2:dimension>
-                          <caom2:naxis1>1</caom2:naxis1>
-                          <caom2:naxis2>1</caom2:naxis2>
+                          <caom2:naxis1>3108</caom2:naxis1>
+                          <caom2:naxis2>2304</caom2:naxis2>
                         </caom2:dimension>
                         <caom2:refCoord>
                           <caom2:coord1>
-                            <caom2:pix>1.0</caom2:pix>
-                            <caom2:val>72.6657875</caom2:val>
+                            <caom2:pix>1512.4582180351</caom2:pix>
+                            <caom2:val>14.5755545858651</caom2:val>
                           </caom2:coord1>
                           <caom2:coord2>
-                            <caom2:pix>1.0</caom2:pix>
-                            <caom2:val>-69.292419444444</caom2:val>
+                            <caom2:pix>1158.59159112304</caom2:pix>
+                            <caom2:val>38.0476216874639</caom2:val>
                           </caom2:coord2>
                         </caom2:refCoord>
-                        <caom2:cd11>0.001388888888888889</caom2:cd11>
-                        <caom2:cd12>0.0</caom2:cd12>
-                        <caom2:cd21>0.0</caom2:cd21>
-                        <caom2:cd22>0.001388888888888889</caom2:cd22>
+                        <caom2:cd11>2.44188161505403e-05</caom2:cd11>
+                        <caom2:cd12>-3.23516748528376e-05</caom2:cd12>
+                        <caom2:cd21>3.23600202227841e-05</caom2:cd21>
+                        <caom2:cd22>2.43594653249068e-05</caom2:cd22>
                       </caom2:function>
                     </caom2:axis>
-                    <caom2:coordsys>FK5</caom2:coordsys>
-                    <caom2:equinox>2000.0</caom2:equinox>
+                    <caom2:coordsys>ICRS</caom2:coordsys>
                   </caom2:position>
                   <caom2:energy>
                     <caom2:axis>
@@ -102,18 +103,19 @@
                       <caom2:range>
                         <caom2:start>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>2.2959999999999994</caom2:val>
+                          <caom2:val>0.7061363636365001</caom2:val>
                         </caom2:start>
                         <caom2:end>
                           <caom2:pix>1.5</caom2:pix>
-                          <caom2:val>2.349</caom2:val>
+                          <caom2:val>0.8501388888895001</caom2:val>
                         </caom2:end>
                       </caom2:range>
                     </caom2:axis>
                     <caom2:specsys>TOPOCENT</caom2:specsys>
                     <caom2:ssysobs>TOPOCENT</caom2:ssysobs>
                     <caom2:ssyssrc>TOPOCENT</caom2:ssyssrc>
-                    <caom2:bandpassName>4308</caom2:bandpassName>
+                    <caom2:bandpassName>i</caom2:bandpassName>
+                    <caom2:resolvingPower>5.4036387549168285</caom2:resolvingPower>
                   </caom2:energy>
                   <caom2:time>
                     <caom2:axis>
@@ -127,16 +129,16 @@
                       </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>0.006944444444444444</caom2:delta>
+                        <caom2:delta>0.00138887962962963</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>52610.30948958333</caom2:val>
+                          <caom2:val>53613.5067650463</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
                     <caom2:timesys>UTC</caom2:timesys>
-                    <caom2:exposure>600.0</caom2:exposure>
-                    <caom2:resolution>600.0</caom2:resolution>
+                    <caom2:exposure>119.9992</caom2:exposure>
+                    <caom2:resolution>119.9992</caom2:resolution>
                   </caom2:time>
                 </caom2:chunk>
               </caom2:chunks>

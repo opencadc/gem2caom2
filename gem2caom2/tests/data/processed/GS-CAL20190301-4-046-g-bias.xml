@@ -1,8 +1,0 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:CompositeObservation" caom2:id="00000000-0000-0000-9050-7f52784e93d7">
-  <caom2:collection>GEMINI</caom2:collection>
-  <caom2:observationID>gS20190301S0556_bias</caom2:observationID>
-  <caom2:algorithm>
-    <caom2:name>composite</caom2:name>
-  </caom2:algorithm>
-</caom2:Observation>

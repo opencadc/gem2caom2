@@ -91,7 +91,6 @@ import logging
 import math
 import os
 import sys
-import re
 import traceback
 
 from astropy import units
@@ -100,16 +99,18 @@ from astropy.coordinates import SkyCoord
 from caom2 import Observation, ObservationIntentType, DataProductType
 from caom2 import CalibrationLevel, TargetType, ProductType, Chunk, Axis
 from caom2 import SpectralWCS, CoordAxis1D, CoordFunction1D, RefCoord
-from caom2 import TypedList, CoordRange1D
+from caom2 import TypedList, CoordRange1D, CompositeObservation
 from caom2utils import ObsBlueprint, get_gen_proc_arg_parser, gen_proc
 from caom2utils import WcsParser
 from caom2pipe import manage_composable as mc
 from caom2pipe import execute_composable as ec
+from caom2pipe import caom_composable as cc
 from caom2pipe import astro_composable as ac
 
 import gem2caom2.external_metadata as em
 from gem2caom2.gem_name import GemName, COLLECTION, ARCHIVE, SCHEME
 from gem2caom2.svofps import FilterMetadata
+from gem2caom2.gem_obs_file_relationship import GemObsFileRelationship
 
 __all__ = ['main_app2', 'update', 'APPLICATION']
 
@@ -160,9 +161,12 @@ def get_calibration_level(uri):
     result = CalibrationLevel.RAW_STANDARD
     reduction = em.om.get('reduction')
     instrument = _get_instrument()
-    if ((reduction is not None and 'PROCESSED_SCIENCE' in reduction) or
+    if ((reduction is not None and
+         (('PROCESSED' in reduction) or ('PREPARED' in reduction))) or
             (instrument is em.Inst.TEXES and
-             ('_red' in uri.lower() or '_sum' in uri.lower()))):
+             ('_red' in uri.lower() or '_sum' in uri.lower())) or
+            (instrument is em.Inst.PHOENIX and
+             ec.CaomName(uri.lower()).file_id.startswith('p'))):
         result = CalibrationLevel.CALIBRATED
     return result
 
@@ -846,7 +850,6 @@ def _is_gmos_mask(header):
     result = False
     instrument = _get_instrument()
     if instrument in [em.Inst.GMOSS, em.Inst.GMOSN, em.Inst.GMOS]:
-        logging.error('check passes instrument is {}'.format(instrument))
         obs_type = _get_obs_type(header)
         if obs_type == 'MASK':
             result = True
@@ -858,9 +861,6 @@ def accumulate_fits_bp(bp, obs_id, file_id, uri):
     Observation level."""
     logging.debug('Begin accumulate_fits_bp.')
     em.get_obs_metadata(file_id)
-    logging.error('current index is {} len is {}'.format(em.om.index,
-                                                         len(em.om.current)))
-
     bp.set('Observation.intent', 'get_obs_intent(header)')
     bp.set('Observation.type', 'get_obs_type(header)')
     bp.set('Observation.metaRelease', 'get_meta_release(header)')
@@ -890,7 +890,6 @@ def accumulate_fits_bp(bp, obs_id, file_id, uri):
     bp.set_default('Plane.provenance.producer', 'Gemini Observatory')
     instrument = _get_instrument()
     if instrument is em.Inst.TEXES:
-        logging.error('file id is {}'.format(file_id))
         bp.set('Plane.provenance.reference',
                'http://archive.gemini.edu/searchform/filepre={}'.format(file_id))
     else:
@@ -947,6 +946,12 @@ def update(observation, **kwargs):
     headers = None
     if 'headers' in kwargs:
         headers = kwargs['headers']
+
+    # processed files
+    if is_composite(headers):
+        logging.info('{} is a Composite Observation.'.format(
+            observation.observation_id))
+        observation = _update_composite(observation)
 
     try:
         for p in observation.planes:
@@ -1142,27 +1147,31 @@ def update(observation, **kwargs):
                         # time WCS
                         if instrument == em.Inst.F2:
                             _update_chunk_time_f2(c, observation.observation_id)
-        program = em.get_pi_metadata(observation.proposal.id)
-        if program is not None:
-            observation.proposal.pi_name = program['pi_name']
-            observation.proposal.title = program['title']
 
-    # DB - 04-03-19  TODO
-    # Example of GMOS composites:  any datasets with datalabels like
-    # GS-CAL20190301-4-046-g-bias, GS-CAL20181219-4-021-g-flat and
-    # GS-CAL20130103-3-001-rg-fringe are composite processed bias/flat/fringe
-    # images.  Corresponding file names are gS20190301S0556_bias.fits,
-    # gS20181219S0216_flat.fits, and rgS20130103S0098_FRINGE.fits.
-    # (With some naming inconsistencies perhaps.)   It also won’t always be
-    # possible to determine the members since the information isn’t always in
-    # the headers.
-    # GMOS:  I don’t think there are any GMOS processed science observations
-    # that are ‘composites’ but there will be some images with one or two
-    # processed planes.  e.g. datalable GS-2010A-Q-36-5-246-rg, file name
-    # rgS20100212S0301.fits.  Basically any Gemini image with a ‘-[a-z|A-Z]’
-    # suffix to the datalabel is a processed dataset.
-    #
-    # File names can have a suffix AND a prefix.
+                if isinstance(observation, CompositeObservation):
+                    cc.update_plane_provenance(observation.planes[p],
+                                               headers[1:],
+                                               'IMCMB', COLLECTION,
+                                               _repair_provenance_value,
+                                               observation.observation_id)
+
+                file_name = ec.CaomName(
+                    observation.planes[p].artifacts[a].uri).file_name
+                if (_is_processed(file_name, instrument) or
+                        isinstance(observation, CompositeObservation)):
+                    # there's one artifact per processed (Composite) plane,
+                    # so the following assumption will work for now
+                    observation.planes[p].provenance.reference = \
+                        'http://archive.gemini.edu/searchform/' \
+                        'filepre={}'.format(file_name)
+
+            program = em.get_pi_metadata(observation.proposal.id)
+            if program is not None:
+                observation.proposal.pi_name = program['pi_name']
+                observation.proposal.title = program['title']
+
+        if isinstance(observation, CompositeObservation):
+            cc.update_observation_members(observation)
 
     except Exception as e:
         logging.error('Error {} for {}'.format(e, observation.observation_id))
@@ -2684,6 +2693,57 @@ def _update_chunk_time_gmos(chunk, obs_id):
     logging.debug('End _update_chunk_time_gmos {}'.format(obs_id))
 
 
+def _update_composite(obs):
+    comp_obs = cc.change_to_composite(obs)
+    return comp_obs
+
+
+def _repair_provenance_value(imcmb_value, obs_id):
+    """There are several naming patterns in the provenance for
+    processed files. Try to extract meaningful raw file names.
+    Return None if the encountered pattern is unexpected."""
+    if 'N' in imcmb_value:
+        temp = 'N' + imcmb_value.split('N', 1)[1]
+    elif 'S' in imcmb_value:
+        temp = 'S' + imcmb_value.split('S', 1)[1]
+    elif '$' in imcmb_value:
+        temp = imcmb_value.split('$', 1)[1]
+    else:
+        logging.warning(
+            'Unrecognized IMCMB value {}'.format(imcmb_value))
+        return None
+
+    if '_' in temp:
+        temp1 = temp.split('_')[0]
+    elif '.fits' in temp:
+        # because there's often irrelevant information after the '.fits',
+        # get rid of it here, even though it's added later
+        temp1 = temp.split('.fits')[0]
+    elif '[SCI' in temp:
+        temp1 = temp.split('[SCI')[0]
+    else:
+        logging.warning(
+            'Failure to repair {} for {}'.format(temp, obs_id))
+        return None
+
+    result = em.gofr.get_obs_id(temp1[:14] + '.fits')
+    return result
+
+
+def _is_processed(file_name, instrument):
+    result = True
+    file_id = GemName.remove_extensions(file_name)
+    if (file_id.startswith(('S', 'N', 'TX2', 'GN')) and file_id.endswith(
+            ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'))):
+        logging.error('SN file id {}'.format(file_id))
+        result = False
+    elif file_id.startswith(('2', '02')):
+        result = False
+    elif file_id.startswith('r') and instrument is em.Inst.OSCIR:
+        result = False
+    return result
+
+
 def _build_blueprints(uris, obs_id):
     """This application relies on the caom2utils fits2caom2 ObsBlueprint
     definition for mapping FITS file values to CAOM model element
@@ -2751,8 +2811,24 @@ def _get_obs_id(args):
     return result
 
 
+def is_composite(headers):
+    """All the logic to determine if a file name is part of a
+    CompositeObservation, in one marvelous function."""
+    result = False
+
+    # look in the last header - IMCMB keywords are not in the zero'th header
+    header = headers[-1]
+    for ii in header:
+        if ii.startswith('IMCMB'):
+            result = True
+            break
+    return result
+
+
 def main_app2():
     args = get_gen_proc_arg_parser().parse_args()
+    if em.gofr is None:
+        em.gofr = GemObsFileRelationship('/app/data/from_paul.txt')
     try:
         uris = _get_uris(args)
         obs_id = _get_obs_id(args)

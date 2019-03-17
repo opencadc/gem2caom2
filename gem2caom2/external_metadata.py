@@ -79,6 +79,7 @@ from bs4 import BeautifulSoup
 from caom2pipe import manage_composable as mc
 from gem2caom2.svofps import filter_metadata
 from gem2caom2 import gemini_obs_metadata as gom
+from gem2caom2.gem_obs_file_relationship import GemObsFileRelationship
 
 
 GEMINI_METADATA_URL = \
@@ -91,6 +92,8 @@ om = gom.GeminiObsMetadata()
 fm = {}
 # lazy initialization for program metadata from Gemini
 pm = {}
+
+gofr = GemObsFileRelationship('/app/data/from_paul.txt')
 
 
 class Inst(Enum):
@@ -255,7 +258,8 @@ def _repair_filter_name_for_svo(instrument, filter_names):
                           'CH4-H1L_2': 'ED283'}
     FILTER_REPAIR_NIRI = {'H2v=2-1s1-G0220': 'H2S1v2-1-G0220',
                           'H2v=1-0s1-G0216': 'H2S1v1-0-G0216',
-                          'H2v=1-0S1-G0216': 'H2S1v1-0-G0216'}
+                          'H2v=1-0S1-G0216': 'H2S1v1-0-G0216',
+                          'H2Oice_G0230': 'H2Oice-G0230w'}
     FILTER_REPAIR_TRECS = {'K': 'k',
                            'L': 'l',
                            'M': 'm',

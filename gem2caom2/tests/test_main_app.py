@@ -75,7 +75,7 @@ from astropy.io.votable import parse_single_table
 
 import gem2caom2.external_metadata as em
 
-from gem2caom2 import main_app2, APPLICATION, ARCHIVE, SCHEME
+from gem2caom2 import main_app2, APPLICATION, ARCHIVE, SCHEME, COLLECTION
 from gem2caom2 import gemini_obs_metadata as gom
 from caom2.diff import get_differences
 from caom2pipe import manage_composable as mc
@@ -166,14 +166,6 @@ LOOKUP = {
     'S20090620S0145': ['GS-2009A-Q-30-6-007', 'GMOS', 'GS-2009A-Q-30'],
     'S20060125S0027': ['GS-CAL20060125-1-002', 'GMOS', 'GS-CAL20060125'],
     'GN2001BQ013-04': ['GN2001BQ013-04', 'GMOS', 'GN-2001B-Q-13'],
-    # 'gS20190301S0556_bia': ['GS-CAL20190301-4-046-g-bias', 'GMOS',
-    #                         'GS-CAL20190301-4'],
-    # 'gS20181219S0216_flat': ['GS-CAL20181219-4-021-g-flat', 'GMOS',
-    #                          'GS-CAL20181219-4'],
-    # 'rgS20130103S0098_FRINGE': ['GS-CAL20130103-3-001-rg-fringe', 'GMOS',
-    #                             'GS-CAL20130103-3'],
-    # 'rgS20100212S0301': ['GS-2010A-Q-36-5-246-rg', 'GMOS', 'GS-2010A-Q-36'],
-    # 'S20100212S0301': ['GS-2010A-Q-36-5-246-rg', 'GMOS', 'GS-2010A-Q-36'],
     # GNIRS
     'N20100915S0167': ['GN-2010B-Q-2-44-003', 'GNIRS', 'GN-2010B-Q-2'],
     'N20100722S0185': ['GN-2010B-SV-142-10-007', 'GNIRS', 'GN-2010B-SV-142'],
@@ -302,6 +294,74 @@ LOOKUP = {
     'TX20170321_red.2505': ['TX20170321_red.2505', 'TEXES', 'GN-2017A-Q-56'],
     'TX20170321_red.2507': ['TX20170321_red.2507', 'TEXES', 'GN-2017A-Q-56'],
     'TX20170321_sum.2505': ['TX20170321_sum.2505', 'TEXES', 'GN-2017A-Q-56'],
+    # processed
+    'GS20141226S0203_BIAS': ['GS-CAL20141226-7-026-G-BIAS', 'GMOS',
+                             'GS-CAL20141226'],
+    'N20070819S0339_dark': ['GN-2007B-Q-107-150-004-DARK', 'GMOS',
+                            'GN-2007B-Q-107'],
+    'N20110927S0170_fringe': ['GN-CAL20110927-900-170-FRINGE', 'GMOS',
+                              'GN-CAL20110927'],
+    'N20120320S0328_stack_fringe': ['GN-CAL20120320-900-328-STACK-FRINGE',
+                                    'GMOS', 'GN-CAL20120320'],
+    'N20130404S0512_flat': ['GN-2013A-Q-63-54-051-FLAT', 'GMOS',
+                            'GN-2013A-Q-63'],
+    'N20140313S0072_flat': ['GN-2013B-Q-75-163-011-FLAT', 'GMOS',
+                            'GN-2013B-Q-75'],
+    'N20141109S0266_bias': ['GN-CAL20141109-2-001-BIAS', 'GMOS',
+                            'GN-CAL20141109'],
+    'N20150804S0348_dark': ['GN-2015B-Q-53-138-061-STACK', 'GMOS',
+                            'GN-2015B-Q-53'],
+    'N20160403S0236_flat_pasted': ['GN-CAL20160404-7-017-FLAT-PASTED', 'GMOS',
+                                   'GN-CAL20160404'],
+    'S20120922S0406': ['GS-2012B-Q-1-32-002', 'GMOS', 'GS-2012B-Q-1'],
+    'S20131007S0067_fringe': ['GS-CAL20131007-900-067-FRINGE', 'GMOS',
+                              'GS-CAL20131007'],
+    'S20140124S0039_dark': ['GS-2013B-Q-16-277-019-DARK', 'GMOS',
+                            'GS-2013B-Q-16'],
+    'S20141129S0331_dark': ['GS-CAL20141129-1-001-DARK', 'GMOS',
+                            'GS-CAL20141129'],
+    'S20161227S0051': ['GS-CAL20161227-5-001', 'GMOS', 'GS-CAL20161227'],
+    'fmrgN20020413S0120_add': ['GN-2002A-SV-78-7-003-FMRG-ADD', 'GMOS',
+                               'GN-2002A-SV-78'],
+    'gS20181219S0216_flat': ['GS-CAL20181219-4-021-G-FLAT', 'GMOS',
+                             'GS-CAL20181219'],
+    'gS20190301S0556_bias': ['GS-CAL20190301-4-046-G-BIAS', 'GMOS',
+                             'GS-CAL20190301'],
+    'mfrgS20041117S0073_add': ['GS-2004B-Q-42-1-001-MFRG', 'GMOS',
+                               'GS-2004B-Q-42'],
+    'mfrgS20160310S0154_add': ['GS-2016A-Q-7-175-001-MFRG-ADD', 'GMOS',
+                               'GS-2016A-Q-7'],
+    'mrgN20041016S0095': ['GN-2004B-Q-30-1-001-MRG', 'GMOS', 'GN-2004B-Q-30'],
+    'mrgN20050831S0770_add': ['GN-2005B-Q-28-32-001-MRG', 'GMOS',
+                              'GN-2005B-Q-28'],
+    'mrgN20160311S0691_add': ['GN-2016A-Q-68-46-001-MRG-ADD', 'GMOS',
+                              'GN-2016A-Q-68'],
+    'mrgS20120922S0406': ['GS-2012B-Q-1-32-002-MRG', 'GMOS', 'GS-2012B-Q-1'],
+    'mrgS20160901S0122_add': ['GS-2016B-Q-72-23-001-MRG-ADD', 'GMOS',
+                              'GS-2016B-Q-72'],
+    'mrgS20181016S0184_fringe': ['GS-CAL20181016-5-001-MRG-FRINGE', 'GMOS',
+                                 'GS-CAL20181016'],
+    'rS20121030S0136': ['GS-2012B-Q-90-366-003-R', 'GMOS', 'GS-2012B-Q-90'],
+    'rgS20100212S0301': ['GS-2010A-Q-36-5-246-RG', 'GMOS', 'GS-2010A-Q-36'],
+    'rgS20100316S0366': ['GS-2010A-Q-36-6-358', 'GMOS', 'GS-2010A-Q-36'],
+    'rgS20130103S0098_FRINGE': ['GS-CAL20130103-3-001-RG-FRINGE', 'GMOS',
+                                'GS-CAL20130103'],
+    'rgS20131109S0166_FRINGE': ['GS-CAL20131109-17-001-RG-FRINGE', 'GMOS',
+                                'GS-CAL20131109'],
+    'rgS20161227S0051_fringe': ['GS-CAL20161227-5-001-RG-FRINGE', 'GMOS',
+                                'GS-CAL20161227'],
+    'p2004may20_0048_FLAT': ['GS-CAL20040520-7-0048-P-FLAT', 'Phoenix',
+                             'GS-CAL20040520'],
+    'p2004may19_0255_COMB': ['GS-2004A-Q-6-27-0255-P-COMB', 'Phoenix',
+                             'GS-2004A-Q-6'],
+    'P2003JAN14_0148_DARK': ['GS-CAL20030114-7-0148', 'Phoenix',
+                             'GS-CAL2003011'],
+    'P2002FEB03_0045_DARK10SEC': ['GS-CAL20020203-4-0045', 'Phoenix',
+                                  'GS-CAL20020203'],
+    'P2002DEC02_0161_SUB': ['GS-2002B-Q-22-13-0161', 'Phoenix',
+                            'GS-2002B-Q-22'],
+    'P2002DEC02_0075_SUB.0001': ['GS-CAL20021202-3-0075', 'Phoenix',
+                                 'GS-CAL2002120'],
 }
 
 
@@ -310,11 +370,11 @@ def pytest_generate_tests(metafunc):
 
         file_list = []
         # for root, dirs, files in os.walk(TESTDATA_DIR):
-        # for ii in ['TEXES']:
+        # for ii in ['GRACES']:
         for ii in ['GMOS', 'NIRI', 'GPI', 'F2', 'GSAOI', 'NICI', 'TReCS',
                    'Michelle', 'GRACES', 'NIFS', 'GNIRS', 'Phoenix',
                    'Flamingos', 'hrwfs', 'HOKUPAA', 'OSCIR', 'bHROS',
-                   'CIRPASS', 'TEXES']:
+                   'CIRPASS', 'TEXES', 'processed']:
             for root, dirs, files in os.walk('{}/{}'.format(TEST_DATA_DIR, ii)):
                 for file in files:
                     if file.endswith(".header"):
@@ -322,7 +382,7 @@ def pytest_generate_tests(metafunc):
 
         # metafunc.parametrize('test_name',
         # ['{}/GMOS/GN2001BQ013-04.fits.header'.format(TEST_DATA_DIR)])
-        # metafunc.parametrize('test_name', file_list[8:])
+        # metafunc.parametrize('test_name', file_list[0:3])
         metafunc.parametrize('test_name', file_list)
 
 
@@ -339,7 +399,7 @@ def test_main_app(test_name):
     local = _get_local(test_name)
     plugin = PLUGIN
 
-    with patch('caom2utils.fits2caom2.CadcDataClient') as data_client_mock, \
+    with  patch('caom2utils.fits2caom2.CadcDataClient') as data_client_mock, \
         patch('gem2caom2.external_metadata.get_obs_metadata') as gemini_client_mock, \
         patch('gem2caom2.external_metadata.get_pi_metadata') as gemini_pi_mock, \
             patch('gem2caom2.svofps.get_vo_table') as svofps_mock:
@@ -357,8 +417,12 @@ def test_main_app(test_name):
 
         def get_obs_metadata(obs_id):
             try:
-                fname = '{}/{}/json/{}.json'.format(TEST_DATA_DIR,
-                                                    _get_instr(file_id), obs_id)
+                if 'processed' in dirname:
+                    fname = '{}/processed/json/{}.json'.format(TEST_DATA_DIR,
+                                                               file_id)
+                else:
+                    fname = '{}/{}/json/{}.json'.format(TEST_DATA_DIR,
+                                                        _get_instr(file_id), obs_id)
                 with open(fname) as f:
                     y = json.loads(f.read())
                     em.obs_metadata = y[0]
@@ -374,9 +438,14 @@ def test_main_app(test_name):
 
         def get_pi_metadata(program_id):
             try:
-                fname = '{}/{}/program/{}.xml'.format(TEST_DATA_DIR,
-                                                      _get_instr(file_id),
-                                                      _get_program_id(file_id))
+                if 'processed' in dirname:
+                    fname = '{}/processed/program/{}.xml'.format(TEST_DATA_DIR,
+                                                                 _get_program_id(
+                                                                     file_id))
+                else:
+                    fname = '{}/{}/program/{}.xml'.format(TEST_DATA_DIR,
+                                                          _get_instr(file_id),
+                                                          _get_program_id(file_id))
                 with open(fname) as f:
                     y = f.read()
                     from bs4 import BeautifulSoup
@@ -417,11 +486,19 @@ def test_main_app(test_name):
         if os.path.exists(actual_fqn):
             os.remove(actual_fqn)
 
-        sys.argv = \
-            ('{} --verbose --no_validate --local {} '
-             '--plugin {} --module {} --in {}/{} --out {} --lineage {}'.
-             format(APPLICATION, local, plugin, plugin, dirname,
-                    input_file, actual_fqn, lineage)).split()
+        if dirname.endswith('processed'):
+            sys.argv = \
+                ('{} --verbose --no_validate --local {} '
+                 '--plugin {} --module {} --observation {} {} --out {} '
+                 '--lineage {}'.
+                 format(APPLICATION, local, plugin, plugin, COLLECTION,
+                        obs_id, actual_fqn, lineage)).split()
+        else:
+            sys.argv = \
+                ('{} --verbose --no_validate --local {} '
+                 '--plugin {} --module {} --in {}/{} --out {} --lineage {}'.
+                 format(APPLICATION, local, plugin, plugin, dirname,
+                        input_file, actual_fqn, lineage)).split()
         print(sys.argv)
         main_app2()
         expected_fqn = _get_expected_file_name(dirname, product_id, file_id,
@@ -484,6 +561,8 @@ def _get_product_id(file_id):
         product_id = 'intensity'
     elif file_id == 'N20150807G0044i':
         product_id = 'norm_intensity'
+    elif file_id == 'P2002FEB03_0045_DARK10SEC':
+        product_id = 'GS-CAL20020203-4-0045-DARK10SEC'
     else:
         product_id = LOOKUP[file_id][0]
     return product_id
@@ -498,6 +577,8 @@ def _get_expected_file_name(dirname, product_id, file_id, obs_id):
         expected_fqn = '{}/{}{}.xml'.format(dirname, obs_id, '27')
     elif file_id == 'S20030218S0042':
         expected_fqn = '{}/{}{}.xml'.format(dirname, obs_id, '42')
+    elif file_id == 'P2002FEB03_0045_DARK10SEC':
+        expected_fqn = '{}/{}.xml'.format(dirname, obs_id)
     else:
         expected_fqn = '{}/{}.xml'.format(dirname, product_id)
     return expected_fqn

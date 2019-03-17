@@ -1,10 +1,10 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="00000000-0000-0000-8a83-bf314cbbb9c1">
+<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:CompositeObservation" caom2:id="00000000-0000-0000-ba0f-335b19752196">
   <caom2:collection>GEMINI</caom2:collection>
-  <caom2:observationID>GS-CAL20161227-5-001</caom2:observationID>
+  <caom2:observationID>GS-CAL20161227-5-001-RG-FRINGE</caom2:observationID>
   <caom2:metaRelease>2016-12-27T00:00:00.000</caom2:metaRelease>
   <caom2:algorithm>
-    <caom2:name>exposure</caom2:name>
+    <caom2:name>composite</caom2:name>
   </caom2:algorithm>
   <caom2:type>OBJECT</caom2:type>
   <caom2:intent>calibration</caom2:intent>
@@ -25,35 +25,38 @@
     <caom2:name>GMOS-S</caom2:name>
   </caom2:instrument>
   <caom2:planes>
-    <caom2:plane caom2:id="00000000-0000-0000-8c66-90cf4543103d">
-      <caom2:productID>GS-CAL20161227-5-001</caom2:productID>
+    <caom2:plane caom2:id="00000000-0000-0000-9cad-bb5b08f5eec2">
+      <caom2:productID>GS-CAL20161227-5-001-RG-FRINGE</caom2:productID>
       <caom2:metaRelease>2016-12-27T00:00:00.000</caom2:metaRelease>
       <caom2:dataRelease>2016-12-27T00:00:00.000</caom2:dataRelease>
       <caom2:dataProductType>image</caom2:dataProductType>
-      <caom2:calibrationLevel>1</caom2:calibrationLevel>
+      <caom2:calibrationLevel>2</caom2:calibrationLevel>
       <caom2:provenance>
         <caom2:name>Gemini Observatory Data</caom2:name>
         <caom2:project>Gemini Archive</caom2:project>
-        <caom2:producer>Gemini Observatory</caom2:producer>
-        <caom2:reference>http://archive.gemini.edu/searchform/GS-CAL20161227-5-001</caom2:reference>
+        <caom2:producer>NOAO-IRAF FITS Image Kernel July 2003</caom2:producer>
+        <caom2:reference>http://archive.gemini.edu/searchform/filepre=rgS20161227S0051_fringe.fits</caom2:reference>
+        <caom2:inputs>
+          <caom2:planeURI>caom:GEMINI/GS-CAL20161227-5-007/GS-CAL20161227-5-007</caom2:planeURI>
+        </caom2:inputs>
       </caom2:provenance>
       <caom2:artifacts>
-        <caom2:artifact caom2:id="00000000-0000-0000-ad73-2b4c258808c9">
-          <caom2:uri>gemini:GEM/S20161227S0051.fits</caom2:uri>
+        <caom2:artifact caom2:id="00000000-0000-0000-a8c7-54aa8b5443cc">
+          <caom2:uri>gemini:GEM/rgS20161227S0051_fringe.fits</caom2:uri>
           <caom2:productType>calibration</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>
-          <caom2:contentLength>24590167</caom2:contentLength>
-          <caom2:contentChecksum>md5:d7b96365d25d4656e71a30ab4ccb38b3</caom2:contentChecksum>
+          <caom2:contentLength>74804652</caom2:contentLength>
+          <caom2:contentChecksum>md5:e17d1b0d18ce9b69bfc86636ace27bde</caom2:contentChecksum>
           <caom2:parts>
-            <caom2:part caom2:id="00000000-0000-0000-9d5b-c138630d821e">
+            <caom2:part caom2:id="00000000-0000-0000-917f-af9aae7f6948">
               <caom2:name>0</caom2:name>
               <caom2:chunks/>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-a4b9-a8e2c93b12b6">
+            <caom2:part caom2:id="00000000-0000-0000-8711-302c4950bf58">
               <caom2:name>1</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-988c-0404a04f8f48">
+                <caom2:chunk caom2:id="00000000-0000-0000-8075-1db2ca92a167">
                   <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -71,8 +74,8 @@
                       </caom2:axis2>
                       <caom2:function>
                         <caom2:dimension>
-                          <caom2:naxis1>544</caom2:naxis1>
-                          <caom2:naxis2>4224</caom2:naxis2>
+                          <caom2:naxis1>512</caom2:naxis1>
+                          <caom2:naxis2>4176</caom2:naxis2>
                         </caom2:dimension>
                         <caom2:refCoord>
                           <caom2:coord1>
@@ -80,7 +83,7 @@
                             <caom2:val>53.0198042024729</caom2:val>
                           </caom2:coord1>
                           <caom2:coord2>
-                            <caom2:pix>2136.79781360572</caom2:pix>
+                            <caom2:pix>2088.79781360572</caom2:pix>
                             <caom2:val>-29.7142083313668</caom2:val>
                           </caom2:coord2>
                         </caom2:refCoord>
@@ -142,10 +145,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-be78-69773c8fe335">
+            <caom2:part caom2:id="00000000-0000-0000-8ca9-6ca7a83d5931">
               <caom2:name>2</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-a80c-4f06cb2f11ae">
+                <caom2:chunk caom2:id="00000000-0000-0000-bafa-62710336be0d">
                   <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -163,16 +166,16 @@
                       </caom2:axis2>
                       <caom2:function>
                         <caom2:dimension>
-                          <caom2:naxis1>544</caom2:naxis1>
-                          <caom2:naxis2>4224</caom2:naxis2>
+                          <caom2:naxis1>512</caom2:naxis1>
+                          <caom2:naxis2>4176</caom2:naxis2>
                         </caom2:dimension>
                         <caom2:refCoord>
                           <caom2:coord1>
-                            <caom2:pix>2678.04824830009</caom2:pix>
+                            <caom2:pix>2646.04824830009</caom2:pix>
                             <caom2:val>53.0198042024729</caom2:val>
                           </caom2:coord1>
                           <caom2:coord2>
-                            <caom2:pix>2136.79781360574</caom2:pix>
+                            <caom2:pix>2088.79781360574</caom2:pix>
                             <caom2:val>-29.7142083313668</caom2:val>
                           </caom2:coord2>
                         </caom2:refCoord>
@@ -234,10 +237,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-9904-79856c4d2b3c">
+            <caom2:part caom2:id="00000000-0000-0000-bc7d-a5370b2c41bb">
               <caom2:name>3</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-8efb-3f31242dff3a">
+                <caom2:chunk caom2:id="00000000-0000-0000-a637-ce7729d12a06">
                   <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -255,8 +258,8 @@
                       </caom2:axis2>
                       <caom2:function>
                         <caom2:dimension>
-                          <caom2:naxis1>544</caom2:naxis1>
-                          <caom2:naxis2>4224</caom2:naxis2>
+                          <caom2:naxis1>512</caom2:naxis1>
+                          <caom2:naxis2>4176</caom2:naxis2>
                         </caom2:dimension>
                         <caom2:refCoord>
                           <caom2:coord1>
@@ -264,7 +267,7 @@
                             <caom2:val>53.0198042024729</caom2:val>
                           </caom2:coord1>
                           <caom2:coord2>
-                            <caom2:pix>2136.79781360573</caom2:pix>
+                            <caom2:pix>2088.79781360573</caom2:pix>
                             <caom2:val>-29.7142083313668</caom2:val>
                           </caom2:coord2>
                         </caom2:refCoord>
@@ -326,10 +329,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-8958-7f132cac03d6">
+            <caom2:part caom2:id="00000000-0000-0000-99b3-e7c6e6ef3a3e">
               <caom2:name>4</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-8a6d-4c52859d3f41">
+                <caom2:chunk caom2:id="00000000-0000-0000-8876-b50e8902c606">
                   <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -347,16 +350,16 @@
                       </caom2:axis2>
                       <caom2:function>
                         <caom2:dimension>
-                          <caom2:naxis1>544</caom2:naxis1>
-                          <caom2:naxis2>4224</caom2:naxis2>
+                          <caom2:naxis1>512</caom2:naxis1>
+                          <caom2:naxis2>4176</caom2:naxis2>
                         </caom2:dimension>
                         <caom2:refCoord>
                           <caom2:coord1>
-                            <caom2:pix>1654.04824830008</caom2:pix>
+                            <caom2:pix>1622.04824830008</caom2:pix>
                             <caom2:val>53.0198042024729</caom2:val>
                           </caom2:coord1>
                           <caom2:coord2>
-                            <caom2:pix>2136.79781360573</caom2:pix>
+                            <caom2:pix>2088.79781360573</caom2:pix>
                             <caom2:val>-29.7142083313668</caom2:val>
                           </caom2:coord2>
                         </caom2:refCoord>
@@ -418,10 +421,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-854d-508b79fb3769">
+            <caom2:part caom2:id="00000000-0000-0000-9f4c-f2f892e41e41">
               <caom2:name>5</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-bda5-6a799b762f4b">
+                <caom2:chunk caom2:id="00000000-0000-0000-b71d-da77110e0cc2">
                   <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -439,8 +442,8 @@
                       </caom2:axis2>
                       <caom2:function>
                         <caom2:dimension>
-                          <caom2:naxis1>544</caom2:naxis1>
-                          <caom2:naxis2>4224</caom2:naxis2>
+                          <caom2:naxis1>512</caom2:naxis1>
+                          <caom2:naxis2>4176</caom2:naxis2>
                         </caom2:dimension>
                         <caom2:refCoord>
                           <caom2:coord1>
@@ -448,7 +451,7 @@
                             <caom2:val>53.0198042024729</caom2:val>
                           </caom2:coord1>
                           <caom2:coord2>
-                            <caom2:pix>2137.65781164187</caom2:pix>
+                            <caom2:pix>2089.65781164187</caom2:pix>
                             <caom2:val>-29.7142083313668</caom2:val>
                           </caom2:coord2>
                         </caom2:refCoord>
@@ -510,10 +513,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-8b3e-f96299b6947b">
+            <caom2:part caom2:id="00000000-0000-0000-9974-3006813efc31">
               <caom2:name>6</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-a8a6-d85886a80027">
+                <caom2:chunk caom2:id="00000000-0000-0000-859b-fd21068ef862">
                   <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -531,16 +534,16 @@
                       </caom2:axis2>
                       <caom2:function>
                         <caom2:dimension>
-                          <caom2:naxis1>544</caom2:naxis1>
-                          <caom2:naxis2>4224</caom2:naxis2>
+                          <caom2:naxis1>512</caom2:naxis1>
+                          <caom2:naxis2>4176</caom2:naxis2>
                         </caom2:dimension>
                         <caom2:refCoord>
                           <caom2:coord1>
-                            <caom2:pix>545.203500264762</caom2:pix>
+                            <caom2:pix>513.203500264763</caom2:pix>
                             <caom2:val>53.0198042024729</caom2:val>
                           </caom2:coord1>
                           <caom2:coord2>
-                            <caom2:pix>2137.65781164187</caom2:pix>
+                            <caom2:pix>2089.65781164187</caom2:pix>
                             <caom2:val>-29.7142083313668</caom2:val>
                           </caom2:coord2>
                         </caom2:refCoord>
@@ -602,10 +605,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-b7bc-ca3eebcf2a4e">
+            <caom2:part caom2:id="00000000-0000-0000-91f5-3b3914d6997d">
               <caom2:name>7</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-8ebb-03a930d02b4c">
+                <caom2:chunk caom2:id="00000000-0000-0000-b532-2ea5cab8a527">
                   <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -623,8 +626,8 @@
                       </caom2:axis2>
                       <caom2:function>
                         <caom2:dimension>
-                          <caom2:naxis1>544</caom2:naxis1>
-                          <caom2:naxis2>4224</caom2:naxis2>
+                          <caom2:naxis1>512</caom2:naxis1>
+                          <caom2:naxis2>4176</caom2:naxis2>
                         </caom2:dimension>
                         <caom2:refCoord>
                           <caom2:coord1>
@@ -632,7 +635,7 @@
                             <caom2:val>53.0198042024729</caom2:val>
                           </caom2:coord1>
                           <caom2:coord2>
-                            <caom2:pix>2137.65781164187</caom2:pix>
+                            <caom2:pix>2089.65781164187</caom2:pix>
                             <caom2:val>-29.7142083313668</caom2:val>
                           </caom2:coord2>
                         </caom2:refCoord>
@@ -694,10 +697,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-bd5e-86dbf4019eee">
+            <caom2:part caom2:id="00000000-0000-0000-807a-2ee96781d096">
               <caom2:name>8</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-aa0b-04025f91b633">
+                <caom2:chunk caom2:id="00000000-0000-0000-b54e-f83bf9f28c46">
                   <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -715,16 +718,16 @@
                       </caom2:axis2>
                       <caom2:function>
                         <caom2:dimension>
-                          <caom2:naxis1>544</caom2:naxis1>
-                          <caom2:naxis2>4224</caom2:naxis2>
+                          <caom2:naxis1>512</caom2:naxis1>
+                          <caom2:naxis2>4176</caom2:naxis2>
                         </caom2:dimension>
                         <caom2:refCoord>
                           <caom2:coord1>
-                            <caom2:pix>-478.796499735238</caom2:pix>
+                            <caom2:pix>-510.796499735239</caom2:pix>
                             <caom2:val>53.0198042024729</caom2:val>
                           </caom2:coord1>
                           <caom2:coord2>
-                            <caom2:pix>2137.65781164187</caom2:pix>
+                            <caom2:pix>2089.65781164187</caom2:pix>
                             <caom2:val>-29.7142083313668</caom2:val>
                           </caom2:coord2>
                         </caom2:refCoord>
@@ -786,10 +789,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-bdec-4bf4f85f7ead">
+            <caom2:part caom2:id="00000000-0000-0000-b05f-8bef419c961a">
               <caom2:name>9</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-84a1-cdb648b23b04">
+                <caom2:chunk caom2:id="00000000-0000-0000-8814-be25b4484982">
                   <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -807,8 +810,8 @@
                       </caom2:axis2>
                       <caom2:function>
                         <caom2:dimension>
-                          <caom2:naxis1>544</caom2:naxis1>
-                          <caom2:naxis2>4224</caom2:naxis2>
+                          <caom2:naxis1>512</caom2:naxis1>
+                          <caom2:naxis2>4176</caom2:naxis2>
                         </caom2:dimension>
                         <caom2:refCoord>
                           <caom2:coord1>
@@ -816,7 +819,7 @@
                             <caom2:val>53.0198042024729</caom2:val>
                           </caom2:coord1>
                           <caom2:coord2>
-                            <caom2:pix>2141.7493207738</caom2:pix>
+                            <caom2:pix>2093.7493207738</caom2:pix>
                             <caom2:val>-29.7142083313668</caom2:val>
                           </caom2:coord2>
                         </caom2:refCoord>
@@ -878,10 +881,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-8210-90ba50a5e3f8">
+            <caom2:part caom2:id="00000000-0000-0000-abe8-978e1804fe9b">
               <caom2:name>10</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-bbe6-66582200987b">
+                <caom2:chunk caom2:id="00000000-0000-0000-88ff-36a61f5ebe39">
                   <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -899,16 +902,16 @@
                       </caom2:axis2>
                       <caom2:function>
                         <caom2:dimension>
-                          <caom2:naxis1>544</caom2:naxis1>
-                          <caom2:naxis2>4224</caom2:naxis2>
+                          <caom2:naxis1>512</caom2:naxis1>
+                          <caom2:naxis2>4176</caom2:naxis2>
                         </caom2:dimension>
                         <caom2:refCoord>
                           <caom2:coord1>
-                            <caom2:pix>-1595.25923476903</caom2:pix>
+                            <caom2:pix>-1627.25923476903</caom2:pix>
                             <caom2:val>53.0198042024729</caom2:val>
                           </caom2:coord1>
                           <caom2:coord2>
-                            <caom2:pix>2141.7493207738</caom2:pix>
+                            <caom2:pix>2093.7493207738</caom2:pix>
                             <caom2:val>-29.7142083313668</caom2:val>
                           </caom2:coord2>
                         </caom2:refCoord>
@@ -970,10 +973,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-b880-5bf9201c368b">
+            <caom2:part caom2:id="00000000-0000-0000-b7a9-632404bf42a9">
               <caom2:name>11</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-a873-398143fe1f2a">
+                <caom2:chunk caom2:id="00000000-0000-0000-9db3-da9186cb0fa3">
                   <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -991,8 +994,8 @@
                       </caom2:axis2>
                       <caom2:function>
                         <caom2:dimension>
-                          <caom2:naxis1>544</caom2:naxis1>
-                          <caom2:naxis2>4224</caom2:naxis2>
+                          <caom2:naxis1>512</caom2:naxis1>
+                          <caom2:naxis2>4176</caom2:naxis2>
                         </caom2:dimension>
                         <caom2:refCoord>
                           <caom2:coord1>
@@ -1000,7 +1003,7 @@
                             <caom2:val>53.0198042024729</caom2:val>
                           </caom2:coord1>
                           <caom2:coord2>
-                            <caom2:pix>2141.7493207738</caom2:pix>
+                            <caom2:pix>2093.7493207738</caom2:pix>
                             <caom2:val>-29.7142083313668</caom2:val>
                           </caom2:coord2>
                         </caom2:refCoord>
@@ -1062,10 +1065,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="00000000-0000-0000-9f1d-e86fcb5d011d">
+            <caom2:part caom2:id="00000000-0000-0000-8e61-efd5d1137776">
               <caom2:name>12</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-a736-c77eae965405">
+                <caom2:chunk caom2:id="00000000-0000-0000-8e9c-75e5d65dea0e">
                   <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -1083,16 +1086,16 @@
                       </caom2:axis2>
                       <caom2:function>
                         <caom2:dimension>
-                          <caom2:naxis1>544</caom2:naxis1>
-                          <caom2:naxis2>4224</caom2:naxis2>
+                          <caom2:naxis1>512</caom2:naxis1>
+                          <caom2:naxis2>4176</caom2:naxis2>
                         </caom2:dimension>
                         <caom2:refCoord>
                           <caom2:coord1>
-                            <caom2:pix>-2618.25923476904</caom2:pix>
+                            <caom2:pix>-2650.25923476904</caom2:pix>
                             <caom2:val>53.0198042024729</caom2:val>
                           </caom2:coord1>
                           <caom2:coord2>
-                            <caom2:pix>2141.7493207738</caom2:pix>
+                            <caom2:pix>2093.7493207738</caom2:pix>
                             <caom2:val>-29.7142083313668</caom2:val>
                           </caom2:coord2>
                         </caom2:refCoord>
@@ -1159,4 +1162,7 @@
       </caom2:artifacts>
     </caom2:plane>
   </caom2:planes>
+  <caom2:members>
+    <caom2:observationURI>caom:GEMINI/GS-CAL20161227-5-007</caom2:observationURI>
+  </caom2:members>
 </caom2:Observation>

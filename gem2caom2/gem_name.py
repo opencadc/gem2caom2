@@ -171,8 +171,6 @@ class GemName(ec.StorageName):
 
     @staticmethod
     def get_file_id(file_name):
-        # TODO - how important is the file name case? check with DB.
-        # return GemName.remove_extensions(file_name.lower()).upper()
         return GemName.remove_extensions(file_name)
 
     @staticmethod
