@@ -38,6 +38,7 @@
         <caom2:reference>http://archive.gemini.edu/searchform/filepre=rgS20161227S0051_fringe.fits</caom2:reference>
         <caom2:inputs>
           <caom2:planeURI>caom:GEMINI/GS-CAL20161227-5-007/GS-CAL20161227-5-007</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GS-CAL20161227-5-001/GS-CAL20161227-5-001</caom2:planeURI>
         </caom2:inputs>
       </caom2:provenance>
       <caom2:artifacts>
@@ -1164,5 +1165,6 @@
   </caom2:planes>
   <caom2:members>
     <caom2:observationURI>caom:GEMINI/GS-CAL20161227-5-007</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GS-CAL20161227-5-001</caom2:observationURI>
   </caom2:members>
 </caom2:Observation>

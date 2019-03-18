@@ -79,7 +79,7 @@ from bs4 import BeautifulSoup
 from caom2pipe import manage_composable as mc
 from gem2caom2.svofps import filter_metadata
 from gem2caom2 import gemini_obs_metadata as gom
-from gem2caom2.gem_obs_file_relationship import GemObsFileRelationship
+from gem2caom2.obs_file_relationship import GemObsFileRelationship
 
 
 GEMINI_METADATA_URL = \

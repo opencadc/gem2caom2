@@ -74,6 +74,11 @@ from datetime import timezone
 
 from caom2pipe import manage_composable as mc
 
+from gem2caom2 import gem_name
+from gem2caom2 import external_metadata as em
+
+__all__ = ['GemObsFileRelationship']
+
 
 class GemObsFileRelationship(object):
     """A class to hold and access the content of the observation ID/file id
@@ -120,10 +125,11 @@ class GemObsFileRelationship(object):
                 self.id_list[ii[0]].append(ii[2])
             else:
                 self.id_list[ii[0]] = [ii[2]]
-            if ii[2] in self.name_list:
-                self.name_list[ii[2]].append(ii[0])
+            file_id = gem_name.GemName.remove_extensions(ii[2])
+            if file_id in self.name_list:
+                self.name_list[file_id].append(ii[0])
             else:
-                self.name_list[ii[2]] = [ii[0]]
+                self.name_list[file_id] = [ii[0]]
 
         # this structure means an observation ID occurs more than once with
         # different last modified times
@@ -224,3 +230,85 @@ class GemObsFileRelationship(object):
             return self.name_list[file_name]
         else:
             return None
+
+    @staticmethod
+    def is_processed(file_name, instrument):
+        """Try to determine if a Gemini file is processed, based on naming
+        patterns."""
+        result = True
+        file_id = gem_name.GemName.remove_extensions(file_name)
+        if (file_id.startswith(('S', 'N', 'TX2', 'GN')) and file_id.endswith(
+                ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'))):
+            result = False
+        elif file_id.startswith(('2', '02')):
+            result = False
+        elif file_id.startswith('r') and instrument is em.Inst.OSCIR:
+            result = False
+        return result
+
+    def repair_data_label(self, file_id, instrument, default=None,
+                          num_ccds=-1):
+        """For processed files, try to provide a consistent naming pattern,
+        because data labels aren't unique within Gemini, although the files
+        they refer to are, and are in different CAOM Observations.
+
+        Take the prefixes and suffixes on the files, that indicate the type of
+        processing, and append them to the data label, for uniqueness.
+        """
+        if file_id in self.name_list:
+            repaired = self.name_list[file_id][0]
+            repaired = repaired.split('_')[0]
+            if GemObsFileRelationship.is_processed(file_id, instrument):
+                if (file_id.startswith(('p', 'P')) and
+                        instrument == em.Inst.PHOENIX):
+                    prefix = 'P'
+                elif -1 < file_id.find('GN') < 14:
+                    prefix = file_id.split('GN', 1)[0]
+                elif -1 < file_id.find('N') < 14:
+                    prefix = file_id.split('N', 1)[0]
+                elif 'GS' in file_id:
+                    prefix = file_id.split('GS', 1)[0]
+                elif 'S' in file_id:
+                    prefix = file_id.split('S', 1)[0]
+                else:
+                    self.logger.warning(
+                        'Unrecognized file_id pattern {}'.format(file_id))
+                    prefix = ''
+                if '-' in file_id:
+                    suffix = file_id.split('-')[:1]
+                elif '_' in file_id:
+                    if instrument == em.Inst.PHOENIX:
+                        if '_FLAT' in file_id or '_COMB' in file_id:
+                            suffix = file_id.split('_')[2:]
+                        else:
+                            suffix = []
+                            prefix = ''
+                    else:
+                        suffix = file_id.split('_')[1:]
+                else:
+                    suffix = []
+
+                if len(prefix) > 0:
+                    urp = [prefix] + suffix
+                else:
+                    urp = suffix
+                for ii in urp:
+                    repaired = repaired.split(ii, 1)[0]
+                    repaired = repaired.split(ii.upper(), 1)[0]
+                    repaired = repaired.rstrip('-')
+                    repaired = repaired.rstrip('_')
+                if len(prefix) > 0:
+                    repaired = '{}-{}'.format(repaired, prefix.upper())
+                    if (instrument in
+                            [em.Inst.GMOS, em.Inst.GMOSN, em.Inst.GMOSS] and
+                            num_ccds == 1 and 'add' not in file_id):
+                        repaired = repaired.replace('-' + prefix.upper(), '')
+                for ii in suffix:
+                    repaired = '{}-{}'.format(repaired, ii.upper())
+            else:
+                repaired = default if default is not None else file_id
+        else:
+            logging.warning(
+                'File name {} not found in the Gemini list.'.format(file_id))
+            repaired = default if default is not None else file_id
+        return repaired

@@ -110,7 +110,7 @@ from caom2pipe import astro_composable as ac
 import gem2caom2.external_metadata as em
 from gem2caom2.gem_name import GemName, COLLECTION, ARCHIVE, SCHEME
 from gem2caom2.svofps import FilterMetadata
-from gem2caom2.gem_obs_file_relationship import GemObsFileRelationship
+from gem2caom2.obs_file_relationship import GemObsFileRelationship
 
 __all__ = ['main_app2', 'update', 'APPLICATION']
 
@@ -1157,7 +1157,7 @@ def update(observation, **kwargs):
 
                 file_name = ec.CaomName(
                     observation.planes[p].artifacts[a].uri).file_name
-                if (_is_processed(file_name, instrument) or
+                if (em.gofr.is_processed(file_name, instrument) or
                         isinstance(observation, CompositeObservation)):
                     # there's one artifact per processed (Composite) plane,
                     # so the following assumption will work for now
@@ -2716,8 +2716,6 @@ def _repair_provenance_value(imcmb_value, obs_id):
     if '_' in temp:
         temp1 = temp.split('_')[0]
     elif '.fits' in temp:
-        # because there's often irrelevant information after the '.fits',
-        # get rid of it here, even though it's added later
         temp1 = temp.split('.fits')[0]
     elif '[SCI' in temp:
         temp1 = temp.split('[SCI')[0]
@@ -2726,21 +2724,7 @@ def _repair_provenance_value(imcmb_value, obs_id):
             'Failure to repair {} for {}'.format(temp, obs_id))
         return None
 
-    result = em.gofr.get_obs_id(temp1[:14] + '.fits')
-    return result
-
-
-def _is_processed(file_name, instrument):
-    result = True
-    file_id = GemName.remove_extensions(file_name)
-    if (file_id.startswith(('S', 'N', 'TX2', 'GN')) and file_id.endswith(
-            ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'))):
-        logging.error('SN file id {}'.format(file_id))
-        result = False
-    elif file_id.startswith(('2', '02')):
-        result = False
-    elif file_id.startswith('r') and instrument is em.Inst.OSCIR:
-        result = False
+    result = em.gofr.get_obs_id(temp1[:14])
     return result
 
 
