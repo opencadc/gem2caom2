@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:CompositeObservation" caom2:id="00000000-0000-0000-a363-13034167783a">
+  <caom2:collection>GEMINI</caom2:collection>
+  <caom2:observationID>GS-2013B-Q-16-277-019-DARK</caom2:observationID>
+  <caom2:metaRelease>2014-01-23T00:00:00.000</caom2:metaRelease>
+  <caom2:algorithm>
+    <caom2:name>composite</caom2:name>
+  </caom2:algorithm>
+  <caom2:planes>
+    <caom2:plane caom2:id="00000000-0000-0000-abdf-1eb8382f00ce">
+      <caom2:productID>GS-2013B-Q-16-277-019-DARK</caom2:productID>
+      <caom2:metaRelease>2014-01-23T00:00:00.000</caom2:metaRelease>
+      <caom2:dataRelease>2014-01-23T00:00:00.000</caom2:dataRelease>
+      <caom2:dataProductType>image</caom2:dataProductType>
+      <caom2:calibrationLevel>2</caom2:calibrationLevel>
+      <caom2:artifacts>
+        <caom2:artifact caom2:id="00000000-0000-0000-b18f-bff0ca3c200e">
+          <caom2:uri>gemini:GEM/S20140124S0039_dark.fits</caom2:uri>
+          <caom2:productType>calibration</caom2:productType>
+          <caom2:releaseType>data</caom2:releaseType>
+          <caom2:contentType>application/fits</caom2:contentType>
+          <caom2:contentLength>11544158</caom2:contentLength>
+          <caom2:contentChecksum>md5:c902a05b35dcc9f8a274cbfaa1fc275e</caom2:contentChecksum>
+	  <caom2:parts/>
+        </caom2:artifact>
+        <caom2:artifact caom2:id="00000000-0000-0000-b18f-bff0ca3c2000">
+		<caom2:uri>gemini:GEM/S20140124S0039_dark.jpg</caom2:uri>
+<caom2:productType>preview</caom2:productType>
+<caom2:releaseType>data</caom2:releaseType>
+<caom2:contentType>image/jpeg</caom2:contentType>
+<caom2:contentLength>71122</caom2:contentLength>
+<caom2:contentChecksum>md5:a37604d4f13c3fd3f1bd11c416fda21b</caom2:contentChecksum>
+
+	  <caom2:parts/>
+        </caom2:artifact>
+      </caom2:artifacts>
+    </caom2:plane>
+  </caom2:planes>
+  <caom2:members>
+    <caom2:observationURI>caom:GEMINI/GS-2013B-Q-16-277-019</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GS-2013B-Q-16-277-023</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GS-2013B-Q-16-277-020</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GS-2013B-Q-16-277-022</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GS-2013B-Q-16-277-021</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GS-2013B-Q-16-277-024</caom2:observationURI>
+  </caom2:members>
+</caom2:Observation>

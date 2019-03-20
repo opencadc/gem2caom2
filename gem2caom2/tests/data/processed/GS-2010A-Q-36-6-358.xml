@@ -146,6 +146,15 @@
             </caom2:part>
           </caom2:parts>
         </caom2:artifact>
+        <caom2:artifact caom2:id="00000000-0000-0000-bcfa-b4900cbe9270">
+          <caom2:uri>gemini:GEM/rgS20100316S0366.jpg</caom2:uri>
+          <caom2:productType>preview</caom2:productType>
+          <caom2:releaseType>data</caom2:releaseType>
+          <caom2:contentType>image/jpeg</caom2:contentType>
+          <caom2:contentLength>55386</caom2:contentLength>
+          <caom2:contentChecksum>md5:12388af87d0923e7e12b7a6f33606c4e</caom2:contentChecksum>
+          <caom2:parts/>
+        </caom2:artifact>
       </caom2:artifacts>
     </caom2:plane>
   </caom2:planes>

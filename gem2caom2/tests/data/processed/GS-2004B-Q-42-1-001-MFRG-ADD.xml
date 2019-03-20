@@ -39,8 +39,8 @@
         <caom2:producer>NOAO-IRAF FITS Image Kernel July 2003</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/filepre=mfrgS20041117S0073_add.fits</caom2:reference>
         <caom2:inputs>
-          <caom2:planeURI>caom:GEMINI/GS-2004B-Q-42-1-001/GS-2004B-Q-42-1-001</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/GS-2004B-Q-42-1-002/GS-2004B-Q-42-1-002</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GS-2004B-Q-42-1-001/GS-2004B-Q-42-1-001</caom2:planeURI>
         </caom2:inputs>
       </caom2:provenance>
       <caom2:artifacts>
@@ -148,6 +148,15 @@
               </caom2:chunks>
             </caom2:part>
           </caom2:parts>
+        </caom2:artifact>
+        <caom2:artifact caom2:id="00000000-0000-0000-bf9f-f59a76e0b5f0">
+          <caom2:uri>gemini:GEM/mfrgS20041117S0073_add.jpg</caom2:uri>
+          <caom2:productType>preview</caom2:productType>
+          <caom2:releaseType>data</caom2:releaseType>
+          <caom2:contentType>image/jpeg</caom2:contentType>
+          <caom2:contentLength>73616</caom2:contentLength>
+          <caom2:contentChecksum>md5:48e4604c799f2fc919ea4cb845f0afa7</caom2:contentChecksum>
+          <caom2:parts/>
         </caom2:artifact>
       </caom2:artifacts>
     </caom2:plane>

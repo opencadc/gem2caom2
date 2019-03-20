@@ -68,6 +68,7 @@
 #
 import collections
 import logging
+import re
 
 from datetime import datetime
 from datetime import timezone
@@ -232,22 +233,27 @@ class GemObsFileRelationship(object):
             return None
 
     @staticmethod
-    def is_processed(file_name, instrument):
+    def is_processed(file_name):
         """Try to determine if a Gemini file is processed, based on naming
         patterns."""
         result = True
         file_id = gem_name.GemName.remove_extensions(file_name)
-        if (file_id.startswith(('S', 'N', 'TX2', 'GN')) and file_id.endswith(
-                ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'))):
+        if (file_id.startswith(('S', 'N', 'GN', 'GS')) and
+                file_id.endswith(
+                    ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'))):
             result = False
         elif file_id.startswith(('2', '02')):
             result = False
-        elif file_id.startswith('r') and instrument is em.Inst.OSCIR:
+        # TEXES naming patterns
+        elif file_id.startswith('TX2') and '_raw' in file_id:
+            result = False
+        # OSCIR file naming pattern
+        elif (file_id.startswith('r') and
+              re.match('r\\w{7}_\\d{3}', file_id, flags=re.ASCII) is not None):
             result = False
         return result
 
-    def repair_data_label(self, file_id, instrument, default=None,
-                          num_ccds=-1):
+    def repair_data_label(self, file_id):
         """For processed files, try to provide a consistent naming pattern,
         because data labels aren't unique within Gemini, although the files
         they refer to are, and are in different CAOM Observations.
@@ -257,11 +263,22 @@ class GemObsFileRelationship(object):
         """
         if file_id in self.name_list:
             repaired = self.name_list[file_id][0]
-            repaired = repaired.split('_')[0]
-            if GemObsFileRelationship.is_processed(file_id, instrument):
-                if (file_id.startswith(('p', 'P')) and
-                        instrument == em.Inst.PHOENIX):
+            # if the data label is missing, the file name, including
+            # extensions, is treated as the data label, so get rid of .fits
+            repaired = gem_name.GemName.remove_extensions(repaired)
+            self.logger.debug(
+                'Gemini says data label is {} for file {}'.format(repaired,
+                                                                  file_id))
+            # repaired = repaired.split('_')[0]
+            if (GemObsFileRelationship.is_processed(file_id) or
+                    file_id.startswith('TX2')):
+                removals = []
+                if not file_id.startswith('TX2'):
+                    repaired = repaired.split('_')[0]
+                if file_id.startswith(('p', 'P')):
                     prefix = 'P'
+                elif file_id.startswith('TX2'):
+                    prefix = ''
                 elif -1 < file_id.find('GN') < 14:
                     prefix = file_id.split('GN', 1)[0]
                 elif -1 < file_id.find('N') < 14:
@@ -274,41 +291,109 @@ class GemObsFileRelationship(object):
                     self.logger.warning(
                         'Unrecognized file_id pattern {}'.format(file_id))
                     prefix = ''
+                suffix = []
                 if '-' in file_id:
                     suffix = file_id.split('-')[:1]
                 elif '_' in file_id:
-                    if instrument == em.Inst.PHOENIX:
+                    if file_id.startswith(('p', 'P')):
                         if '_FLAT' in file_id or '_COMB' in file_id:
                             suffix = file_id.split('_')[2:]
                         else:
                             suffix = []
                             prefix = ''
+                    elif file_id.startswith('TX2'):
+                        # when the data label is the file id, fix every
+                        # data label except flats
+                        if repaired.startswith(file_id):
+                            if '_flt' not in file_id.lower():
+                                suffix = []
+                                removals = ['_raw', '_red', '_sum']
+                        else:
+                            if '_flt' in file_id.lower():
+                                suffix = ['flt']
+                                removals = []
+                            else:
+                                suffix = []
+                                removals = ['raw', 'red', 'sum']
                     else:
                         suffix = file_id.split('_')[1:]
                 else:
                     suffix = []
 
                 if len(prefix) > 0:
-                    urp = [prefix] + suffix
+                    removals = [prefix] + suffix
                 else:
-                    urp = suffix
-                for ii in urp:
-                    repaired = repaired.split(ii, 1)[0]
-                    repaired = repaired.split(ii.upper(), 1)[0]
+                    removals = removals + suffix
+                self.logger.debug(
+                    'repaired {} removals {}'.format(repaired, removals))
+                for ii in removals:
+                    # rreplace
+                    temp = repaired.rsplit(ii, 1)
+                    repaired = ''.join(temp)
+                    temp = repaired.rsplit(ii.upper(), 1)
+                    repaired = ''.join(temp)
                     repaired = repaired.rstrip('-')
                     repaired = repaired.rstrip('_')
+
+                # DB - 18-03-19
+                # Basically any ‘mfrg’, ‘mrg’, or ‘rg’ file WITHOUT ‘add’
+                # in the datalabel or name is a processed version of a raw
+                # file without the datalabel suffix (filename prefix)
+                if 'mfrg' == prefix or 'mrg' == prefix or 'rg' == prefix:
+                    if not ('add' in suffix or 'ADD' in suffix):
+                        prefix = ''
+                        suffix = []
+
                 if len(prefix) > 0:
                     repaired = '{}-{}'.format(repaired, prefix.upper())
-                    if (instrument in
-                            [em.Inst.GMOS, em.Inst.GMOSN, em.Inst.GMOSS] and
-                            num_ccds == 1 and 'add' not in file_id):
-                        repaired = repaired.replace('-' + prefix.upper(), '')
                 for ii in suffix:
                     repaired = '{}-{}'.format(repaired, ii.upper())
             else:
-                repaired = default if default is not None else file_id
+                repaired = file_id if repaired is None else repaired
         else:
             logging.warning(
                 'File name {} not found in the Gemini list.'.format(file_id))
-            repaired = default if default is not None else file_id
+            repaired = file_id
         return repaired
+
+    @staticmethod
+    def _get_prefix(file_id):
+        if file_id.startswith(('p', 'P')):
+            # Phoenix naming patterns
+            if '_FLAT' in file_id or '_COMB' in file_id:
+                prefix = 'P'
+            else:
+                prefix = ''
+        elif -1 < file_id.find('GN') < 14:
+            prefix = file_id.split('GN', 1)[0]
+        elif -1 < file_id.find('N') < 14:
+            prefix = file_id.split('N', 1)[0]
+        elif 'GS' in file_id:
+            prefix = file_id.split('GS', 1)[0]
+        elif 'S' in file_id:
+            prefix = file_id.split('S', 1)[0]
+        elif file_id.startswith('TX2'):
+            prefix = ''
+        else:
+            logging.warning(
+                'Unrecognized file_id pattern for prefix {}'.format(file_id))
+            prefix = ''
+        return prefix
+
+    @staticmethod
+    def _get_suffix(file_id):
+        suffix = []
+        if '-' in file_id:
+            suffix = file_id.split('-')[:1]
+        elif '_' in file_id:
+            if file_id.startswith(('p', 'P')):
+                suffix = file_id.split('_')[2:]
+            elif file_id.startswith('TX2'):
+                if '_flt' in file_id:
+                    suffix = ['FLT']
+            else:
+                suffix = file_id.split('_')[1:]
+        elif re.match('.+[a-zA-Z]$', file_id, re.ASCII) is not None:
+            suffix = file_id[-1]
+        suffix = [ii.replace('.', '-') for ii in suffix]
+        return suffix

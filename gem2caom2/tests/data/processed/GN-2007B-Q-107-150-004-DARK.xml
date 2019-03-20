@@ -40,13 +40,13 @@
         <caom2:producer>NOAO-IRAF FITS Image Kernel July 2003</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/filepre=N20070819S0339_dark.fits</caom2:reference>
         <caom2:inputs>
-          <caom2:planeURI>caom:GEMINI/GN-2007B-Q-107-150-008/GN-2007B-Q-107-150-008</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/GN-2007B-Q-107-150-009/GN-2007B-Q-107-150-009</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/GN-2007B-Q-107-150-007/GN-2007B-Q-107-150-007</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/GN-2007B-Q-107-150-004/GN-2007B-Q-107-150-004</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/GN-2007B-Q-107-150-010/GN-2007B-Q-107-150-010</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/GN-2007B-Q-107-150-005/GN-2007B-Q-107-150-005</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GN-2007B-Q-107-150-009/GN-2007B-Q-107-150-009</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GN-2007B-Q-107-150-004/GN-2007B-Q-107-150-004</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/GN-2007B-Q-107-150-006/GN-2007B-Q-107-150-006</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GN-2007B-Q-107-150-008/GN-2007B-Q-107-150-008</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GN-2007B-Q-107-150-007/GN-2007B-Q-107-150-007</caom2:planeURI>
         </caom2:inputs>
       </caom2:provenance>
       <caom2:artifacts>
@@ -265,16 +265,24 @@
             </caom2:part>
           </caom2:parts>
         </caom2:artifact>
+        <caom2:artifact caom2:id="00000000-0000-0000-8cd9-24a33f5fb330">
+          <caom2:uri>gemini:GEM/N20070819S0339_dark.jpg</caom2:uri>
+          <caom2:productType>preview</caom2:productType>
+          <caom2:releaseType>data</caom2:releaseType>
+          <caom2:contentType>image/jpeg</caom2:contentType>
+          <caom2:contentLength>161006</caom2:contentLength>
+          <caom2:parts/>
+        </caom2:artifact>
       </caom2:artifacts>
     </caom2:plane>
   </caom2:planes>
   <caom2:members>
-    <caom2:observationURI>caom:GEMINI/GN-2007B-Q-107-150-004</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GN-2007B-Q-107-150-007</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GN-2007B-Q-107-150-009</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GN-2007B-Q-107-150-010</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GN-2007B-Q-107-150-008</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GN-2007B-Q-107-150-007</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GN-2007B-Q-107-150-004</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GN-2007B-Q-107-150-006</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GN-2007B-Q-107-150-009</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GN-2007B-Q-107-150-005</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GN-2007B-Q-107-150-010</caom2:observationURI>
   </caom2:members>
 </caom2:Observation>

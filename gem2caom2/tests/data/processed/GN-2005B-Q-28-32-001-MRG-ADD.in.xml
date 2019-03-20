@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="00000000-0000-0000-acf9-9430c4e19f13">
+  <caom2:collection>GEMINI</caom2:collection>
+  <caom2:observationID>GN-2005B-Q-28-32-001-MRG-ADD</caom2:observationID>
+  <caom2:metaRelease>2005-08-31T00:00:00.000</caom2:metaRelease>
+  <caom2:algorithm>
+    <caom2:name>exposure</caom2:name>
+  </caom2:algorithm>
+  <caom2:planes>
+    <caom2:plane caom2:id="00000000-0000-0000-9055-a58c2de178bb">
+      <caom2:productID>GN-2005B-Q-28-32-001-MRG-ADD</caom2:productID>
+      <caom2:artifacts>
+        <caom2:artifact caom2:id="00000000-0000-0000-8cff-54e9e3c48116">
+          <caom2:uri>gemini:GEM/mrgN20050831S0770_add.fits</caom2:uri>
+          <caom2:productType>science</caom2:productType>
+          <caom2:releaseType>data</caom2:releaseType>
+          <caom2:contentType>application/fits</caom2:contentType>
+          <caom2:contentLength>12988153</caom2:contentLength>
+          <caom2:contentChecksum>md5:2c7588478f3d3a4de8d690fb50c95d30</caom2:contentChecksum>
+	  <caom2:parts/>
+        </caom2:artifact>
+        <caom2:artifact caom2:id="00000000-0000-0000-8cd9-24a33f5fb300">
+		<caom2:uri>gemini:GEM/mrgN20050831S0770_add.jpg</caom2:uri>
+<caom2:productType>preview</caom2:productType>
+<caom2:releaseType>data</caom2:releaseType>
+<caom2:contentType>image/jpeg</caom2:contentType>
+<caom2:contentLength>190795</caom2:contentLength>
+<caom2:contentChecksum>md5:366bbc706e0c6dfdd3b4e5c43c66c737</caom2:contentChecksum>
+	  <caom2:parts/>
+        </caom2:artifact>
+      </caom2:artifacts>
+    </caom2:plane>
+  </caom2:planes>
+</caom2:Observation>

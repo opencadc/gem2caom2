@@ -880,6 +880,16 @@
             </caom2:part>
           </caom2:parts>
         </caom2:artifact>
+        <caom2:artifact caom2:id="00000000-0000-0000-a5a1-43b8cc009950">
+          <caom2:uri>gemini:GEM/N20110927S0170_fringe.jpg</caom2:uri>
+          <caom2:productType>preview</caom2:productType>
+          <caom2:releaseType>data</caom2:releaseType>
+          <caom2:contentType>image/jpeg</caom2:contentType>
+          <caom2:contentLength>8227</caom2:contentLength>
+          <caom2:contentChecksum>md5:41f90793197cd89d008730dab85247c6</caom2:contentChecksum>
+          <caom2:parts/>
+        </caom2:artifact>
+
       </caom2:artifacts>
     </caom2:plane>
   </caom2:planes>

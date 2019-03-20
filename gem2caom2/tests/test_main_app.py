@@ -334,29 +334,30 @@ LOOKUP = {
     '2003jun30_3463': ['GS-CAL20030630-4-3463', em.Inst.CIRPASS,
                        'GS-CAL20030630'],
     # TEXES
-    'TX20071021_FLT.2037': ['TX20071021_FLT.2037', em.Inst.TEXES,
+    # TODO TODO TODO changed some obs id values
+    'TX20071021_FLT.2037': ['GN-2007B-C-6-5-005-FLT', em.Inst.TEXES,
                             'GN-2007B-C-6'],
-    'TX20071021_RAW.2037': ['TX20071021_RAW.2037', em.Inst.TEXES,
+    'TX20071021_RAW.2037': ['GN-2007B-C-6-5-005', em.Inst.TEXES,
                             'GN-2007B-C-6'],
-    'TX20071021_SUM.2037': ['TX20071021_SUM.2037', em.Inst.TEXES,
+    'TX20071021_SUM.2037': ['GN-2007B-C-6-5-005', em.Inst.TEXES,
                             'GN-2007B-C-6'],
     'TX20131117_flt.3002': ['TX20131117_flt.3002', em.Inst.TEXES,
                             'GN-2013B-Q-38'],
-    'TX20131117_raw.3002': ['TX20131117_raw.3002', em.Inst.TEXES,
+    'TX20131117_raw.3002': ['TX20131117.3002', em.Inst.TEXES,
                             'GN-2013B-Q-38'],
     'TX20170321_flt.2505': ['TX20170321_flt.2505', em.Inst.TEXES,
                             'GN-2017A-Q-56'],
     'TX20170321_flt.2507': ['TX20170321_flt.2507', em.Inst.TEXES,
                             'GN-2017A-Q-56'],
-    'TX20170321_raw.2505': ['TX20170321_raw.2505', em.Inst.TEXES,
+    'TX20170321_raw.2505': ['TX20170321.2505', em.Inst.TEXES,
                             'GN-2017A-Q-56'],
-    'TX20170321_raw.2507': ['TX20170321_raw.2507', em.Inst.TEXES,
+    'TX20170321_raw.2507': ['TX20170321.2507', em.Inst.TEXES,
                             'GN-2017A-Q-56'],
-    'TX20170321_red.2505': ['TX20170321_red.2505', em.Inst.TEXES,
+    'TX20170321_red.2505': ['TX20170321.2505', em.Inst.TEXES,
                             'GN-2017A-Q-56'],
-    'TX20170321_red.2507': ['TX20170321_red.2507', em.Inst.TEXES,
+    'TX20170321_red.2507': ['TX20170321.2507', em.Inst.TEXES,
                             'GN-2017A-Q-56'],
-    'TX20170321_sum.2505': ['TX20170321_sum.2505', em.Inst.TEXES,
+    'TX20170321_sum.2505': ['TX20170321.2505', em.Inst.TEXES,
                             'GN-2017A-Q-56'],
     # processed
     'GS20141226S0203_BIAS': ['GS-CAL20141226-7-026-G-BIAS', em.Inst.GMOS,
@@ -395,28 +396,31 @@ LOOKUP = {
                                'GS-2004B-Q-42'],
     'mfrgS20160310S0154_add': ['GS-2016A-Q-7-175-001-MFRG-ADD', em.Inst.GMOS,
                                'GS-2016A-Q-7'],
-    'mrgN20041016S0095': ['GN-2004B-Q-30-1-001-MRG', em.Inst.GMOS,
+    # TODO TODO TODO - changed obs ids
+    'mrgN20041016S0095': ['GN-2004B-Q-30-1-001', em.Inst.GMOS,
                           'GN-2004B-Q-30'],
     'mrgN20050831S0770_add': ['GN-2005B-Q-28-32-001-MRG-ADD', em.Inst.GMOS,
                               'GN-2005B-Q-28'],
     'mrgN20160311S0691_add': ['GN-2016A-Q-68-46-001-MRG-ADD', em.Inst.GMOS,
                               'GN-2016A-Q-68'],
-    'mrgS20120922S0406': ['GS-2012B-Q-1-32-002-MRG', em.Inst.GMOS,
+    # TODO TODO TODO - changed obs id
+    'mrgS20120922S0406': ['GS-2012B-Q-1-32-002', em.Inst.GMOS,
                           'GS-2012B-Q-1'],
     'mrgS20160901S0122_add': ['GS-2016B-Q-72-23-001-MRG-ADD', em.Inst.GMOS,
                               'GS-2016B-Q-72'],
-    'mrgS20181016S0184_fringe': ['GS-CAL20181016-5-001-MRG-FRINGE',
+    # TODO obs id change
+    'mrgS20181016S0184_fringe': ['GS-CAL20181016-5-001',
                                  em.Inst.GMOS, 'GS-CAL20181016'],
     'rS20121030S0136': ['GS-2012B-Q-90-366-003-R', em.Inst.GMOS,
                         'GS-2012B-Q-90'],
-    'rgS20100212S0301': ['GS-2010A-Q-36-5-246-RG', em.Inst.GMOS,
+    'rgS20100212S0301': ['GS-2010A-Q-36-5-246', em.Inst.GMOS,
                          'GS-2010A-Q-36'],
     'rgS20100316S0366': ['GS-2010A-Q-36-6-358', em.Inst.GMOS, 'GS-2010A-Q-36'],
-    'rgS20130103S0098_FRINGE': ['GS-CAL20130103-3-001-RG-FRINGE', em.Inst.GMOS,
+    'rgS20130103S0098_FRINGE': ['GS-CAL20130103-3-001', em.Inst.GMOS,
                                 'GS-CAL20130103'],
-    'rgS20131109S0166_FRINGE': ['GS-CAL20131109-17-001-RG-FRINGE', em.Inst.GMOS,
+    'rgS20131109S0166_FRINGE': ['GS-CAL20131109-17-001', em.Inst.GMOS,
                                 'GS-CAL20131109'],
-    'rgS20161227S0051_fringe': ['GS-CAL20161227-5-001-RG-FRINGE', em.Inst.GMOS,
+    'rgS20161227S0051_fringe': ['GS-CAL20161227-5-001', em.Inst.GMOS,
                                 'GS-CAL20161227'],
     'p2004may20_0048_FLAT': ['GS-CAL20040520-7-0048-P-FLAT', em.Inst.PHOENIX,
                              'GS-CAL20040520'],
@@ -428,8 +432,15 @@ LOOKUP = {
                                   'GS-CAL20020203'],
     'P2002DEC02_0161_SUB': ['GS-2002B-Q-22-13-0161', em.Inst.PHOENIX,
                             'GS-2002B-Q-22'],
+    'P2002DEC02_0161_SUB.0001': ['GS-2002B-Q-22-13-0161', em.Inst.PHOENIX,
+                                 'GS-2002B-Q-22'],
     'P2002DEC02_0075_SUB.0001': ['GS-CAL20021202-3-0075', em.Inst.PHOENIX,
                                  'GS-CAL2002120'],
+    '2004may19_0255': ['GS-2004A-Q-6-27-0255', em.Inst.PHOENIX, 'GS-2004A-Q-6'],
+    'S20181016S0184': ['GS-CAL20181016-5-001', em.Inst.GMOS,
+                       'GS-CAL20181016-5'],
+    '2002dec02_0161': ['GS-2002B-Q-22-13-0161', em.Inst.PHOENIX,
+                       'GS-2002B-Q-22']
 }
 
 
@@ -438,17 +449,13 @@ def pytest_generate_tests(metafunc):
 
         file_list = []
         # for root, dirs, files in os.walk(TESTDATA_DIR):
-        # for ii in [em.Inst.GRACES]:
+        # for ii in ['GRACES']:
         for ii in [em.Inst.GMOS, em.Inst.NIRI, em.Inst.GPI, em.Inst.F2,
                    em.Inst.GSAOI, em.Inst.NICI, em.Inst.TRECS, em.Inst.MICHELLE,
                    em.Inst.GRACES, em.Inst.NIFS, em.Inst.GNIRS, em.Inst.PHOENIX,
                    em.Inst.FLAMINGOS, em.Inst.HRWFS, em.Inst.HOKUPAA,
                    em.Inst.OSCIR, em.Inst.BHROS, em.Inst.CIRPASS, em.Inst.TEXES,
                    'processed']:
-            # if ii == 'processed':
-            #     walk_dir = ii
-            # else:
-            #     walk_dir = ii.value
             walk_dir = _get_inst_name(ii)
             for root, dirs, files in os.walk(
                     '{}/{}'.format(TEST_DATA_DIR, walk_dir)):
@@ -466,16 +473,17 @@ def test_main_app(test_name):
     basename = os.path.basename(test_name)
     dirname = os.path.dirname(test_name)
     file_id = _get_file_id(basename)
-    obs_id = _get_obs_id(file_id) # LOOKUP[file_id][0]
+    obs_id = _get_obs_id(file_id)
     product_id = _get_product_id(file_id)
     lineage = _get_lineage(dirname, basename, product_id, file_id)
-    input_file = '{}.in.xml'.format(obs_id)
+    # input_file = '{}.in.xml'.format(obs_id)
+    input_file = '{}.in.xml'.format(product_id)
     actual_fqn = _get_actual_file_name(dirname, product_id, file_id, obs_id)
 
     local = _get_local(test_name)
     plugin = PLUGIN
 
-    with  patch('caom2utils.fits2caom2.CadcDataClient') as data_client_mock, \
+    with patch('caom2utils.fits2caom2.CadcDataClient') as data_client_mock, \
         patch('gem2caom2.external_metadata.get_obs_metadata') as gemini_client_mock, \
         patch('gem2caom2.external_metadata.get_pi_metadata') as gemini_pi_mock, \
             patch('gem2caom2.svofps.get_vo_table') as svofps_mock:
@@ -496,6 +504,9 @@ def test_main_app(test_name):
                 if 'processed' in dirname:
                     fname = '{}/processed/json/{}.json'.format(TEST_DATA_DIR,
                                                                file_id)
+                elif 'TEXES' in dirname:
+                    fname = '{}/TEXES/json/{}.json'.format(TEST_DATA_DIR,
+                                                           file_id)
                 else:
                     fname = '{}/{}/json/{}.json'.format(TEST_DATA_DIR,
                                                         _get_instr(file_id), obs_id)
@@ -562,19 +573,21 @@ def test_main_app(test_name):
         if os.path.exists(actual_fqn):
             os.remove(actual_fqn)
 
-        if dirname.endswith('processed'):
+        # if dirname.endswith('processed'):
+        logging.error('{}'.format(os.path.join(dirname, input_file)))
+        if os.path.exists(os.path.join(dirname, input_file)):
+            sys.argv = \
+                ('{} --verbose --no_validate --local {} '
+                 '--plugin {} --module {} --in {}/{} --out {} --lineage {}'.
+                 format(APPLICATION, local, plugin, plugin, dirname,
+                        input_file, actual_fqn, lineage)).split()
+        else:
             sys.argv = \
                 ('{} --verbose --no_validate --local {} '
                  '--plugin {} --module {} --observation {} {} --out {} '
                  '--lineage {}'.
                  format(APPLICATION, local, plugin, plugin, COLLECTION,
                         obs_id, actual_fqn, lineage)).split()
-        else:
-            sys.argv = \
-                ('{} --verbose --no_validate --local {} '
-                 '--plugin {} --module {} --in {}/{} --out {} --lineage {}'.
-                 format(APPLICATION, local, plugin, plugin, dirname,
-                        input_file, actual_fqn, lineage)).split()
         print(sys.argv)
         main_app2()
         expected_fqn = _get_expected_file_name(dirname, product_id, file_id,
@@ -635,12 +648,37 @@ def _get_lineage(dirname, basename, product_id, file_id):
 
 def _get_product_id(file_id):
     if file_id == 'N20150807G0044m':
-        product_id = 'intensity'
+        product_id = 'GN-2015B-Q-1-12-1003m'
     elif file_id == 'N20150807G0044i':
-        product_id = 'norm_intensity'
-    elif file_id == 'P2002FEB03_0045_DARK10SEC':
-        product_id = 'GS-CAL20020203-4-0045-DARK10SEC'
+        product_id = 'GN-2015B-Q-1-12-1003i'
+    elif file_id == 'rgS20100212S0301':
+        product_id = 'GS-2010A-Q-36-5-246-RG'
+    elif file_id == 'P2002DEC02_0161_SUB':
+        product_id = 'GS-2002B-Q-22-13-0161-SUB'
+    elif file_id == 'P2002DEC02_0161_SUB.0001':
+        product_id ='GS-2002B-Q-22-13-0161-SUB-0001'
+    elif file_id == 'rgS20161227S0051_fringe':
+        product_id = 'GS-CAL20161227-5-001-RG-FRINGE'
+    elif file_id == 'mrgS20120922S0406':
+        product_id = 'GS-2012B-Q-1-32-002-MRG'
+    elif file_id == 'mrgS20181016S0184_fringe':
+        product_id = 'GS-CAL20181016-5-001-MRG-FRINGE'
+    elif file_id == 'TX20170321_red.2507':
+        product_id = 'TX20170321_red.2507'
+    elif file_id == 'TX20170321_raw.2507':
+        product_id = 'TX20170321_raw.2507'
+    elif file_id == 'TX20170321_red.2505':
+        product_id = 'TX20170321_red.2505'
+    elif file_id == 'TX20170321_sum.2505':
+        product_id = 'TX20170321_sum.2505'
+    elif file_id == 'TX20170321_raw.2505':
+        product_id = 'TX20170321_raw.2505'
+    elif file_id == 'TX20071021_RAW.2037':
+        product_id = 'TX20071021_RAW.2037'
+    elif file_id == 'TX20071021_SUM.2037':
+        product_id = 'TX20071021_SUM.2037'
     else:
+        # product id == obs id
         product_id = LOOKUP[file_id][0]
     return product_id
 
@@ -654,8 +692,6 @@ def _get_expected_file_name(dirname, product_id, file_id, obs_id):
         expected_fqn = '{}/{}{}.xml'.format(dirname, obs_id, '27')
     elif file_id == 'S20030218S0042':
         expected_fqn = '{}/{}{}.xml'.format(dirname, obs_id, '42')
-    elif file_id == 'P2002FEB03_0045_DARK10SEC':
-        expected_fqn = '{}/{}.xml'.format(dirname, obs_id)
     else:
         expected_fqn = '{}/{}.xml'.format(dirname, product_id)
     return expected_fqn
@@ -677,6 +713,6 @@ def _get_actual_file_name(dirname, product_id, file_id, obs_id):
 
 def _get_inst_name(inst):
     walk_dir = inst
-    if inst != 'processed':
+    if inst != 'processed' and isinstance(inst, em.Inst):
         walk_dir = inst.value
     return walk_dir

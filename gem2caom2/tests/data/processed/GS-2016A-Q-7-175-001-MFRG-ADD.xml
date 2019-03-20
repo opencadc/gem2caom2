@@ -39,12 +39,12 @@
         <caom2:producer>NOAO-IRAF FITS Image Kernel July 2003</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/filepre=mfrgS20160310S0154_add.fits</caom2:reference>
         <caom2:inputs>
-          <caom2:planeURI>caom:GEMINI/GS-2016A-Q-7-175-002/GS-2016A-Q-7-175-002</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/GS-2016A-Q-7-175-005/GS-2016A-Q-7-175-005</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/GS-2016A-Q-7-175-007/GS-2016A-Q-7-175-007</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/GS-2016A-Q-7-175-004/GS-2016A-Q-7-175-004</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/GS-2016A-Q-7-175-001/GS-2016A-Q-7-175-001</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/GS-2016A-Q-7-175-003/GS-2016A-Q-7-175-003</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GS-2016A-Q-7-175-001/GS-2016A-Q-7-175-001</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GS-2016A-Q-7-175-007/GS-2016A-Q-7-175-007</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GS-2016A-Q-7-175-002/GS-2016A-Q-7-175-002</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GS-2016A-Q-7-175-004/GS-2016A-Q-7-175-004</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GS-2016A-Q-7-175-005/GS-2016A-Q-7-175-005</caom2:planeURI>
         </caom2:inputs>
       </caom2:provenance>
       <caom2:artifacts>
@@ -154,15 +154,24 @@
             </caom2:part>
           </caom2:parts>
         </caom2:artifact>
+        <caom2:artifact caom2:id="00000000-0000-0000-8734-6133f0602c20">
+          <caom2:uri>gemini:GEM/mfrgS20160310S0154_add.jpg</caom2:uri>
+          <caom2:productType>preview</caom2:productType>
+          <caom2:releaseType>data</caom2:releaseType>
+          <caom2:contentType>image/jpeg</caom2:contentType>
+          <caom2:contentLength>43247</caom2:contentLength>
+          <caom2:contentChecksum>md5:1e3247178bbff8c696f0e4864513e4c0</caom2:contentChecksum>
+          <caom2:parts/>
+        </caom2:artifact>
       </caom2:artifacts>
     </caom2:plane>
   </caom2:planes>
   <caom2:members>
     <caom2:observationURI>caom:GEMINI/GS-2016A-Q-7-175-007</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GS-2016A-Q-7-175-001</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GS-2016A-Q-7-175-002</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GS-2016A-Q-7-175-005</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GS-2016A-Q-7-175-003</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GS-2016A-Q-7-175-001</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GS-2016A-Q-7-175-004</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GS-2016A-Q-7-175-003</caom2:observationURI>
   </caom2:members>
 </caom2:Observation>

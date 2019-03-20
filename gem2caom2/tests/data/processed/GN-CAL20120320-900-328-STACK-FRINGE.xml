@@ -328,6 +328,15 @@
             </caom2:part>
           </caom2:parts>
         </caom2:artifact>
+        <caom2:artifact caom2:id="00000000-0000-0000-812f-71566214fc40">
+          <caom2:uri>gemini:GEM/N20120320S0328_stack_fringe.jpg</caom2:uri>
+          <caom2:productType>preview</caom2:productType>
+          <caom2:releaseType>data</caom2:releaseType>
+          <caom2:contentType>image/jpeg</caom2:contentType>
+          <caom2:contentLength>219925</caom2:contentLength>
+          <caom2:contentChecksum>md5:2fd3b0efcb703f4667d515025b05e7c5</caom2:contentChecksum>
+          <caom2:parts/>
+        </caom2:artifact>
       </caom2:artifacts>
     </caom2:plane>
   </caom2:planes>

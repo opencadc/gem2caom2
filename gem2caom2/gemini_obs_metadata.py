@@ -245,9 +245,27 @@ class GeminiObsMetadata(object):
 # the headers.
 # GMOS:  I don’t think there are any GMOS processed science observations
 # that are ‘composites’ but there will be some images with one or two
-# processed planes.  e.g. datalable GS-2010A-Q-36-5-246-rg, file name
+# processed planes.  e.g. datalabel GS-2010A-Q-36-5-246-rg, file name
 # rgS20100212S0301.fits.  Basically any Gemini image with a ‘-[a-z|A-Z]’
 # suffix to the datalabel is a processed dataset.
 #
 # File names can have a suffix AND a prefix.
 
+# DB - 18-03-19
+# The processed PHOENIX file GS-2004A-Q-6-27-0255-COMB-P shows a problem
+# with PHOENIX filters that I wasn’t aware of.  The actual filter in the
+# beam can be identified with either the value of the FIL_POS keyword or
+# the CVF_POS.  In this case FIL_POS contains the string ‘open’ and should
+# be ignored and the CVF_POS value used to look up energy info.  Maybe add
+# what is likely the first file added in this ‘comb’ file to the test:
+# GS-2004A-Q-6-27-0255.
+#
+# P2002DEC02_0161_SUB.fits has a ‘regular’ datalabel,
+# ‘GS-2002B-Q-22-13-0161’.   Can you add the latter unprocessed file as a
+# test to see if the ‘sub’ file is added as another plane? (The file name
+# is 2002dec02_0161.fits)
+#
+# GMOS:  could you add GS-CAL20181016-5-001 as a test unprocessed file?
+# Then mrgS20181016S0184_fringe.fits should become a second processed
+# plane.   I guess I should have given you the unprocessed versions of all
+# of the non-co-added examples.

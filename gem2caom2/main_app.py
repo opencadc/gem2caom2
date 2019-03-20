@@ -958,6 +958,9 @@ def update(observation, **kwargs):
             for a in observation.planes[p].artifacts:
 
                 instrument = em.Inst(observation.instrument.name)
+                file_name = ec.CaomName(
+                    observation.planes[p].artifacts[a].uri).file_name
+                processed = em.gofr.is_processed(file_name)
                 if (instrument in
                         [em.Inst.MICHELLE, em.Inst.TRECS, em.Inst.GNIRS]):
                     # Michelle is a retired visitor instrument.
@@ -997,7 +1000,7 @@ def update(observation, **kwargs):
                         else:
                             filter_name = get_filter_name(
                                 headers[0], header, observation.observation_id,
-                                instrument)
+                                processed, instrument)
                             if instrument == em.Inst.NIRI:
                                 _update_chunk_energy_niri(
                                     c, observation.planes[p].data_product_type,
@@ -1155,15 +1158,13 @@ def update(observation, **kwargs):
                                                _repair_provenance_value,
                                                observation.observation_id)
 
-                file_name = ec.CaomName(
-                    observation.planes[p].artifacts[a].uri).file_name
-                if (em.gofr.is_processed(file_name, instrument) or
-                        isinstance(observation, CompositeObservation)):
-                    # there's one artifact per processed (Composite) plane,
-                    # so the following assumption will work for now
-                    observation.planes[p].provenance.reference = \
-                        'http://archive.gemini.edu/searchform/' \
-                        'filepre={}'.format(file_name)
+                if ((processed or isinstance(observation, CompositeObservation))
+                        and 'jpg' not in file_name):
+                    # not the preview artifact
+                    if observation.planes[p].provenance is not None:
+                        observation.planes[p].provenance.reference = \
+                            'http://archive.gemini.edu/searchform/' \
+                            'filepre={}'.format(file_name)
 
             program = em.get_pi_metadata(observation.proposal.id)
             if program is not None:
@@ -2428,7 +2429,7 @@ def _reset_energy(observation_type, data_label, instrument):
     return result
 
 
-def get_filter_name(primary_header, header, obs_id, instrument=None):
+def get_filter_name(primary_header, header, obs_id, processed, instrument=None):
     """
     Create the filter names.
 
@@ -2459,26 +2460,27 @@ def get_filter_name(primary_header, header, obs_id, instrument=None):
         # DB - 04-02-19 - strip out anything with 'pupil' as it doesn't affect
         # energy transmission
         filters2ignore = ['open', 'invalid', 'pupil']
-        lookup = 'FILTER'
+        lookups = ['FILTER']
         if instrument == em.Inst.PHOENIX:
-            lookup = 'FILT_POS'
+            lookups = ['CVF_POS', 'FILT_POS']
             search_header = header
         elif instrument == em.Inst.NICI:
             search_header = header
         else:
             search_header = primary_header
         for key in search_header.keys():
-            if lookup in key:
-                value = search_header.get(key).lower()
-                ignore = False
-                for ii in filters2ignore:
-                    if ii.startswith(value) or value.startswith(ii):
-                        ignore = True
-                        break
-                if ignore:
-                    continue
-                else:
-                    header_filters.append(search_header.get(key).strip())
+            for lookup in lookups:
+                if lookup in key:
+                    value = search_header.get(key).lower()
+                    ignore = False
+                    for ii in filters2ignore:
+                        if ii.startswith(value) or value.startswith(ii):
+                            ignore = True
+                            break
+                    if ignore:
+                        continue
+                    else:
+                        header_filters.append(search_header.get(key).strip())
             filter_name = '+'.join(header_filters)
     logging.info(
         'Filter names are {} for instrument {} in {}'.format(filter_name,

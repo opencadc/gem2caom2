@@ -1,6 +1,6 @@
 <caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="00000000-0000-0000-0126-01506e4c9700">
   <caom2:collection>GEMINI</caom2:collection>
-  <caom2:observationID>TX20170321_red.2507</caom2:observationID>
+  <caom2:observationID>TX20170321.2507</caom2:observationID>
   <caom2:algorithm>
     <caom2:name>exposure</caom2:name>
   </caom2:algorithm>

@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="00000000-0000-0000-9bf4-3bde2585541f">
   <caom2:collection>GEMINI</caom2:collection>
-  <caom2:observationID>GS-2010A-Q-36-5-246-RG</caom2:observationID>
+  <caom2:observationID>GS-2010A-Q-36-5-246</caom2:observationID>
   <caom2:metaRelease>2010-02-12T00:00:00.000</caom2:metaRelease>
   <caom2:algorithm>
     <caom2:name>exposure</caom2:name>

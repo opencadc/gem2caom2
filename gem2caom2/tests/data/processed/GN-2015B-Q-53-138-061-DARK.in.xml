@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:CompositeObservation" caom2:id="00000000-0000-0000-8d96-b661d76bfaae">
+  <caom2:collection>GEMINI</caom2:collection>
+  <caom2:observationID>GN-2015B-Q-53-138-061-DARK</caom2:observationID>
+  <caom2:metaRelease>2015-08-04T00:00:00.000</caom2:metaRelease>
+  <caom2:algorithm>
+    <caom2:name>composite</caom2:name>
+  </caom2:algorithm>
+  <caom2:planes>
+    <caom2:plane caom2:id="00000000-0000-0000-ade3-2b805859d780">
+      <caom2:productID>GN-2015B-Q-53-138-061-DARK</caom2:productID>
+      <caom2:metaRelease>2015-08-04T00:00:00.000</caom2:metaRelease>
+      <caom2:artifacts>
+        <caom2:artifact caom2:id="00000000-0000-0000-b6c3-ab0e84373da1">
+          <caom2:uri>gemini:GEM/N20150804S0348_dark.fits</caom2:uri>
+          <caom2:productType>calibration</caom2:productType>
+          <caom2:releaseType>data</caom2:releaseType>
+          <caom2:contentType>application/fits</caom2:contentType>
+          <caom2:contentLength>3322466</caom2:contentLength>
+          <caom2:contentChecksum>md5:6d80daa038b51e093da1dc257dbe13ca</caom2:contentChecksum>
+	  <caom2:parts/>
+        </caom2:artifact>
+	<caom2:artifact caom2:id="00000000-0000-0000-b6c3-ab0e84373da0">
+		<caom2:uri>gemini:GEM/N20150804S0348_dark.jpg</caom2:uri>
+<caom2:productType>preview</caom2:productType>
+<caom2:releaseType>data</caom2:releaseType>
+<caom2:contentType>image/jpeg</caom2:contentType>
+<caom2:contentLength>141034</caom2:contentLength>
+<caom2:contentChecksum>md5:9da913db526e4bd899af5a626cb42abb</caom2:contentChecksum>
+
+	  <caom2:parts/>
+        </caom2:artifact>
+      </caom2:artifacts>
+    </caom2:plane>
+  </caom2:planes>
+  <caom2:members>
+    <caom2:observationURI>caom:GEMINI/GN-2015B-Q-53-138-062</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GN-2015B-Q-53-138-067</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GN-2015B-Q-53-138-070</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GN-2015B-Q-53-138-061</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GN-2015B-Q-53-138-064</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GN-2015B-Q-53-138-065</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GN-2015B-Q-53-138-068</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GN-2015B-Q-53-138-069</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GN-2015B-Q-53-138-066</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GN-2015B-Q-53-138-063</caom2:observationURI>
+  </caom2:members>
+</caom2:Observation>

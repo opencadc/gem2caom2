@@ -1,0 +1,214 @@
+Filename: P2002DEC02_0161_SUB.0001.fits.bz2
+
+AstroData Types: ['GEMINI', 'PHOENIX', 'GEMINI_SOUTH', 'SPECT', 'RAW', 'UNPREPARED']
+
+
+--- HDU 0 ---
+SIMPLE  =                    T / conforms to FITS standard                      
+BITPIX  =                    8 / array data type                                
+NAXIS   =                    0 / number of array dimensions                     
+EXTEND  =                    T                                                  
+ORIGIN  = 'NOAO-IRAF FITS Image Kernel July 1999' / FITS file originator        
+DATE    = '2002-12-17T18:56:29' / Date FITS file was generated                  
+IRAF-TLM= '10:23:55 (16/12/2002)' / Time of last modification                   
+CHANNEL = 'only              '  /                                               
+INSTRUME= 'PHOENIX           '  /                                               
+OBJECT  = 'IRAS 04509'          /                                               
+COADDS  =                    1  /  No. internal coadds                          
+INT_S   =           600.000000  /  Exposure time                                
+EXPTIME =           600.000000  /  Exp.time (usual)                             
+MODE    = 'stare             '  /                                               
+LNRS    =                    8  /  Low noise reads                              
+UCODE   = 'PHaladII_12_11    '  /  Detector microcode                           
+IMAGETYP= 'object            '  /                                               
+OFFSET  = '0.66325 north 1.8262 west                                           '
+COMMENT = 'none              '  /                                               
+OBSERVER= 'Winge,Blum'         / Observer(s)                                    
+DETECTOR= 'ALAD256x1024      '  /                                               
+RA      = '04:50:39.789      '  /                                               
+DEC     = '-69:17:32.71      '  /                                               
+EQUINOX =          2000.000000  /                                               
+EPOCH   =          2002.917725  /                                               
+UT      = '07:25:39.9        '  /  Gemini UTC                                   
+UTDATE  = '2002-12-02        '  /  Gemini UTCDATE                               
+LST     = '07:26:35.4        '  /                                               
+HA      =             2.597900  /                                               
+ZD      =            44.765499  /                                               
+AIRMASS =             1.407000  /                                               
+FOCUS   =             0.445000  /                                               
+RECID   = 'gscp8m.20021202.072540.4                                            '
+FILT_POS= '4308 (6)          '  /                                               
+LYOT_POS= '8m_2.5 (4)        '  /                                               
+CVF_POS = 'open (1)          '  /                                               
+SLIT_POS= '107u_1.0-5.0 (8)  '  /                                               
+VIEW_POS= 'open (-152990)    '  /                                               
+GRAT_POS= 'encoder -6455     '  /                                               
+FOC_POS = '247.1             '  /                                               
+COVR_POS= 'open              '  /                                               
+OBSERVAT= 'Gemini-South'                                                        
+TELESCOP= 'Gemini-South'                                                        
+SSA     = 'Trancho '           / SSA                                            
+OBSID   = 'GS-2002B-Q-22-13'   / Observation ID                                 
+DATALAB = 'GS-2002B-Q-22-13-0161' / Data Label                                  
+GEMPRGID= 'GS-2002B-Q-22'      / Gemini Science Program ID                      
+RAWBG   = 'Any     '           / Raw Background                                 
+RAWCC   = '90-percentile'      / Raw Cloud Cover                                
+RAWIQ   = '80-percentile'      / Raw Image Quality                              
+RAWWV   = 'Any     '           / Raw Water Vapour/Transparency                  
+RAWGEMOA= 'Unknown           '  /                                               
+RAWPIREQ= 'YES     '           / PI Requirements Met                            
+RAWGEMQA= 'USABLE  '           / Gemini Quality Assessment                      
+BANDID1 = 'spectrum: background fit, weights variance, clean no'                
+BANDID2 = 'spectrum: background fit, weights none, clean no'                    
+BANDID3 = 'background: background fit'                                          
+BANDID4 = 'sigma - background fit, weights variance, clean no'                  
+APNUM1  = '1 1 194.54 212.54'                                                   
+WCSDIM  =                    3                                                  
+CTYPE1  = 'PIXEL   '                                                            
+CTYPE2  = 'LINEAR  '                                                            
+CTYPE3  = 'LINEAR  '                                                            
+CRVAL1  =                   1.                                                  
+CRPIX1  =                   1.                                                  
+CD1_1   =                   1.                                                  
+CD2_2   =                   1.                                                  
+CD3_3   =                   1.                                                  
+LTM1_1  =                   1.                                                  
+LTM2_2  =                   1.                                                  
+LTM3_3  =                   1.                                                  
+WAT0_001= 'system=equispec'                                                     
+WAT1_001= 'wtype=linear label=Pixel'                                            
+WAT2_001= 'wtype=linear'                                                        
+WAT3_001= 'wtype=linear'                                                        
+RELEASE = '2004-06-02'         / End of proprietary period YYYY-MM-DD           
+HISTORY Corrected metadata: automated fixes from PyFITS                         
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+
+--- HDU 1 ---
+XTENSION= 'IMAGE   '           / Image extension                                
+BITPIX  =                  -32 / array data type                                
+NAXIS   =                    3 / number of array dimensions                     
+NAXIS1  =                 1024                                                  
+NAXIS2  =                    1                                                  
+NAXIS3  =                    4                                                  
+PCOUNT  =                    0 / number of parameters                           
+GCOUNT  =                    1 / number of groups                               
+EXTNAME = 'SCI     '           / ad4549: added by AstroData                     
+EXTVER  =                    1                                                  
+ORIGIN  = 'NOAO-IRAF FITS Image Kernel July 1999' / FITS file originator        
+DATE    = '2002-12-17T18:56:29' / Date FITS file was generated                  
+IRAF-TLM= '10:23:55 (16/12/2002)' / Time of last modification                   
+CHANNEL = 'only              '  /                                               
+INSTRUME= 'PHOENIX           '  /                                               
+OBJECT  = 'IRAS 04509'          /                                               
+COADDS  =                    1  /  No. internal coadds                          
+INT_S   =           600.000000  /  Exposure time                                
+EXPTIME =           600.000000  /  Exp.time (usual)                             
+MODE    = 'stare             '  /                                               
+LNRS    =                    8  /  Low noise reads                              
+UCODE   = 'PHaladII_12_11    '  /  Detector microcode                           
+IMAGETYP= 'object            '  /                                               
+OFFSET  = '0.66325 north 1.8262 west                                           '
+COMMENT = 'none              '  /                                               
+OBSERVER= 'Winge,Blum'         / Observer(s)                                    
+DETECTOR= 'ALAD256x1024      '  /                                               
+RA      = '04:50:39.789      '  /                                               
+DEC     = '-69:17:32.71      '  /                                               
+EQUINOX =          2000.000000  /                                               
+EPOCH   =          2002.917725  /                                               
+UT      = '07:25:39.9        '  /  Gemini UTC                                   
+UTDATE  = '2002-12-02        '  /  Gemini UTCDATE                               
+LST     = '07:26:35.4        '  /                                               
+HA      =             2.597900  /                                               
+ZD      =            44.765499  /                                               
+AIRMASS =             1.407000  /                                               
+FOCUS   =             0.445000  /                                               
+RECID   = 'gscp8m.20021202.072540.4                                            '
+FILT_POS= '4308 (6)          '  /                                               
+LYOT_POS= '8m_2.5 (4)        '  /                                               
+CVF_POS = 'open (1)          '  /                                               
+SLIT_POS= '107u_1.0-5.0 (8)  '  /                                               
+VIEW_POS= 'open (-152990)    '  /                                               
+GRAT_POS= 'encoder -6455     '  /                                               
+FOC_POS = '247.1             '  /                                               
+COVR_POS= 'open              '  /                                               
+OBSERVAT= 'Gemini-South'                                                        
+TELESCOP= 'Gemini-South'                                                        
+SSA     = 'Trancho '           / SSA                                            
+OBSID   = 'GS-2002B-Q-22-13'   / Observation ID                                 
+DATALAB = 'GS-2002B-Q-22-13-0161' / Data Label                                  
+GEMPRGID= 'GS-2002B-Q-22'      / Gemini Science Program ID                      
+RAWBG   = 'Any     '           / Raw Background                                 
+RAWCC   = '90-percentile'      / Raw Cloud Cover                                
+RAWIQ   = '80-percentile'      / Raw Image Quality                              
+RAWWV   = 'Any     '           / Raw Water Vapour/Transparency                  
+RAWGEMOA= 'Unknown           '  /                                               
+RAWPIREQ= 'YES     '           / PI Requirements Met                            
+RAWGEMQA= 'USABLE  '           / Gemini Quality Assessment                      
+BANDID1 = 'spectrum: background fit, weights variance, clean no'                
+BANDID2 = 'spectrum: background fit, weights none, clean no'                    
+BANDID3 = 'background: background fit'                                          
+BANDID4 = 'sigma - background fit, weights variance, clean no'                  
+APNUM1  = '1 1 194.54 212.54'                                                   
+WCSDIM  =                    3                                                  
+CTYPE1  = 'PIXEL   '                                                            
+CTYPE2  = 'LINEAR  '                                                            
+CTYPE3  = 'LINEAR  '                                                            
+CRVAL1  =                   1.                                                  
+CRPIX1  =                   1.                                                  
+CD1_1   =                   1.                                                  
+CD2_2   =                   1.                                                  
+CD3_3   =                   1.                                                  
+LTM1_1  =                   1.                                                  
+LTM2_2  =                   1.                                                  
+LTM3_3  =                   1.                                                  
+WAT0_001= 'system=equispec'                                                     
+WAT1_001= 'wtype=linear label=Pixel'                                            
+WAT2_001= 'wtype=linear'                                                        
+WAT3_001= 'wtype=linear'                                                        
+RELEASE = '2004-06-02'         / End of proprietary period YYYY-MM-DD           
+HISTORY Corrected metadata: automated fixes from PyFITS                         
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
