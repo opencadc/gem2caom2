@@ -187,7 +187,7 @@ def get_art_product_type(header):
 
     logging.debug(
         'obs type is {} obs class is {} for '.format(obs_type, obs_class,
-                                                     em.om.get('data_label')))
+                                                     _get_data_label()))
     if obs_type is not None and obs_type == 'MASK':
         result = ProductType.AUXILIARY
     elif obs_class is None:
@@ -466,7 +466,7 @@ def get_obs_intent(header):
         type_lookup = _get_obs_type(header)
         logging.debug('observation_type is {} for {}'.format(type_lookup, dl))
         if type_lookup is None:
-            data_label = em.om.get('data_label')
+            data_label = _get_data_label()
             logging.debug('data_label is {}'.format(data_label))
             if (data_label is None or
                     (data_label is not None and '-CAL' not in data_label)):
@@ -753,6 +753,10 @@ def _get_flamingos_mode(header):
     return data_type, obs_type
 
 
+def _get_data_label():
+    return em.om.get('data_label')
+
+
 def _get_instrument():
     return em.Inst(em.om.get('instrument'))
 
@@ -817,7 +821,7 @@ def _is_flamingos_calibration():
     for ii in ['Dark', 'DARK', 'Arc', 'flat', 'Flat', 'Acq', 'acq']:
         if ii in object_value:
             return True
-    data_label = em.om.get('data_label')
+    data_label = _get_data_label()
     if data_label is not None and 'CAL' in data_label:
         return True
     return False
@@ -856,7 +860,7 @@ def _is_gmos_mask(header):
     return result
 
 
-def accumulate_fits_bp(bp, obs_id, file_id, uri):
+def accumulate_fits_bp(bp, file_id, uri):
     """Configure the telescope-specific ObsBlueprint at the CAOM model 
     Observation level."""
     logging.debug('Begin accumulate_fits_bp.')
@@ -878,6 +882,7 @@ def accumulate_fits_bp(bp, obs_id, file_id, uri):
         bp.set('Observation.telescope.geoLocationY', y)
         bp.set('Observation.telescope.geoLocationZ', z)
 
+    bp.set('Plane.productID', file_id)
     bp.set('Plane.dataProductType', 'get_data_product_type(header)')
     bp.set('Plane.calibrationLevel', 'get_calibration_level(uri)')
     bp.set('Plane.metaRelease', 'get_meta_release(header)')
@@ -893,8 +898,9 @@ def accumulate_fits_bp(bp, obs_id, file_id, uri):
         bp.set('Plane.provenance.reference',
                'http://archive.gemini.edu/searchform/filepre={}'.format(file_id))
     else:
+        data_label = _get_data_label()
         bp.set('Plane.provenance.reference',
-               'http://archive.gemini.edu/searchform/{}'.format(obs_id))
+               'http://archive.gemini.edu/searchform/{}'.format(data_label))
 
     bp.set('Artifact.productType', 'get_art_product_type(header)')
     bp.set('Artifact.contentChecksum', 'md5:{}'.format(em.om.get('file_md5')))
@@ -2730,7 +2736,7 @@ def _repair_provenance_value(imcmb_value, obs_id):
     return result
 
 
-def _build_blueprints(uris, obs_id):
+def _build_blueprints(uris):
     """This application relies on the caom2utils fits2caom2 ObsBlueprint
     definition for mapping FITS file values to CAOM model element
     attributes. This method builds the DRAO-ST blueprint for a single
@@ -2749,7 +2755,7 @@ def _build_blueprints(uris, obs_id):
         if not GemName.is_preview(uri):
             logging.debug('Building blueprint for {}'.format(uri))
             file_id = GemName.remove_extensions(ec.CaomName(uri).file_name)
-            accumulate_fits_bp(blueprint, obs_id, file_id, uri)
+            accumulate_fits_bp(blueprint, file_id, uri)
         blueprints[uri] = blueprint
     return blueprints
 
@@ -2767,33 +2773,6 @@ def _get_uris(args):
     else:
         raise mc.CadcException(
             'Could not define uri from these args {}'.format(args))
-    return result
-
-
-def _get_obs_id(args):
-    result = None
-    if args.in_obs_xml:
-        temp = args.in_obs_xml.name.split('/')
-        result = temp[-1].split('.')[0]
-    elif args.lineage:
-        for lineage in args.lineage:
-            temp = lineage.split('/', 1)
-            if temp[1].endswith('.jpg'):
-                pass
-            else:
-                result = temp[0]
-    # TODO - figure out what to do about GemName.obs_id value
-    # elif args.local:
-    #     for local in args.local:
-    #         if local.endswith('.jpg'):
-    #             pass
-    #         else:
-    #             # result = GemName(
-    #             #     fname_on_disk=os.path.basename(local))._get_obs_id()
-    else:
-        raise mc.CadcException(
-            'Cannot get the obsID without the file_uri from args {}'
-                .format(args))
     return result
 
 
@@ -2817,8 +2796,7 @@ def main_app2():
         em.gofr = GemObsFileRelationship('/app/data/from_paul.txt')
     try:
         uris = _get_uris(args)
-        obs_id = _get_obs_id(args)
-        blueprints = _build_blueprints(uris, obs_id)
+        blueprints = _build_blueprints(uris)
         gen_proc(args, blueprints)
     except Exception as e:
         logging.error('Failed {} execution for {}.'.format(APPLICATION, args))

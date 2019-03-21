@@ -214,11 +214,11 @@ def test_repair_data_label():
         test_result = em.gofr.repair_data_label(ii)
         if ii == 'S20181230S0026':
             assert test_result == 'S20181230S0026', \
-                'repair failed for {} got {} instead of {}'.format(
+                'repair failed for {} actual {} expected {}'.format(
                     ii, test_result, test_main_app.LOOKUP[ii][0])
         else:
             assert test_result == test_main_app.LOOKUP[ii][0], \
-                'repair failed for {} got {} instead of {}'.format(
+                'repair failed for {} actual {} expected {}'.format(
                     ii, test_result, test_main_app.LOOKUP[ii][0])
 
 

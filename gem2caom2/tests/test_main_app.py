@@ -396,19 +396,16 @@ LOOKUP = {
                                'GS-2004B-Q-42'],
     'mfrgS20160310S0154_add': ['GS-2016A-Q-7-175-001-MFRG-ADD', em.Inst.GMOS,
                                'GS-2016A-Q-7'],
-    # TODO TODO TODO - changed obs ids
     'mrgN20041016S0095': ['GN-2004B-Q-30-1-001', em.Inst.GMOS,
                           'GN-2004B-Q-30'],
     'mrgN20050831S0770_add': ['GN-2005B-Q-28-32-001-MRG-ADD', em.Inst.GMOS,
                               'GN-2005B-Q-28'],
     'mrgN20160311S0691_add': ['GN-2016A-Q-68-46-001-MRG-ADD', em.Inst.GMOS,
                               'GN-2016A-Q-68'],
-    # TODO TODO TODO - changed obs id
     'mrgS20120922S0406': ['GS-2012B-Q-1-32-002', em.Inst.GMOS,
                           'GS-2012B-Q-1'],
     'mrgS20160901S0122_add': ['GS-2016B-Q-72-23-001-MRG-ADD', em.Inst.GMOS,
                               'GS-2016B-Q-72'],
-    # TODO obs id change
     'mrgS20181016S0184_fringe': ['GS-CAL20181016-5-001',
                                  em.Inst.GMOS, 'GS-CAL20181016'],
     'rS20121030S0136': ['GS-2012B-Q-90-366-003-R', em.Inst.GMOS,
@@ -449,7 +446,7 @@ def pytest_generate_tests(metafunc):
 
         file_list = []
         # for root, dirs, files in os.walk(TESTDATA_DIR):
-        # for ii in ['GRACES']:
+        # for ii in ['hrwfs']:
         for ii in [em.Inst.GMOS, em.Inst.NIRI, em.Inst.GPI, em.Inst.F2,
                    em.Inst.GSAOI, em.Inst.NICI, em.Inst.TRECS, em.Inst.MICHELLE,
                    em.Inst.GRACES, em.Inst.NIFS, em.Inst.GNIRS, em.Inst.PHOENIX,
@@ -474,11 +471,10 @@ def test_main_app(test_name):
     dirname = os.path.dirname(test_name)
     file_id = _get_file_id(basename)
     obs_id = _get_obs_id(file_id)
-    product_id = _get_product_id(file_id)
+    product_id = file_id
     lineage = _get_lineage(dirname, basename, product_id, file_id)
-    # input_file = '{}.in.xml'.format(obs_id)
     input_file = '{}.in.xml'.format(product_id)
-    actual_fqn = _get_actual_file_name(dirname, product_id, file_id, obs_id)
+    actual_fqn = _get_actual_file_name(dirname, product_id)
 
     local = _get_local(test_name)
     plugin = PLUGIN
@@ -577,21 +573,20 @@ def test_main_app(test_name):
         logging.error('{}'.format(os.path.join(dirname, input_file)))
         if os.path.exists(os.path.join(dirname, input_file)):
             sys.argv = \
-                ('{} --verbose --no_validate --local {} '
+                ('{} --quiet --no_validate --local {} '
                  '--plugin {} --module {} --in {}/{} --out {} --lineage {}'.
                  format(APPLICATION, local, plugin, plugin, dirname,
                         input_file, actual_fqn, lineage)).split()
         else:
             sys.argv = \
-                ('{} --verbose --no_validate --local {} '
+                ('{} --quiet --no_validate --local {} '
                  '--plugin {} --module {} --observation {} {} --out {} '
                  '--lineage {}'.
                  format(APPLICATION, local, plugin, plugin, COLLECTION,
                         obs_id, actual_fqn, lineage)).split()
         print(sys.argv)
         main_app2()
-        expected_fqn = _get_expected_file_name(dirname, product_id, file_id,
-                                               obs_id)
+        expected_fqn = _get_expected_file_name(dirname, product_id)
         expected = mc.read_obs_from_file(expected_fqn)
         actual = mc.read_obs_from_file(actual_fqn)
         result = get_differences(expected, actual, 'Observation')
@@ -646,69 +641,12 @@ def _get_lineage(dirname, basename, product_id, file_id):
                               SCHEME)
 
 
-def _get_product_id(file_id):
-    if file_id == 'N20150807G0044m':
-        product_id = 'GN-2015B-Q-1-12-1003m'
-    elif file_id == 'N20150807G0044i':
-        product_id = 'GN-2015B-Q-1-12-1003i'
-    elif file_id == 'rgS20100212S0301':
-        product_id = 'GS-2010A-Q-36-5-246-RG'
-    elif file_id == 'P2002DEC02_0161_SUB':
-        product_id = 'GS-2002B-Q-22-13-0161-SUB'
-    elif file_id == 'P2002DEC02_0161_SUB.0001':
-        product_id ='GS-2002B-Q-22-13-0161-SUB-0001'
-    elif file_id == 'rgS20161227S0051_fringe':
-        product_id = 'GS-CAL20161227-5-001-RG-FRINGE'
-    elif file_id == 'mrgS20120922S0406':
-        product_id = 'GS-2012B-Q-1-32-002-MRG'
-    elif file_id == 'mrgS20181016S0184_fringe':
-        product_id = 'GS-CAL20181016-5-001-MRG-FRINGE'
-    elif file_id == 'TX20170321_red.2507':
-        product_id = 'TX20170321_red.2507'
-    elif file_id == 'TX20170321_raw.2507':
-        product_id = 'TX20170321_raw.2507'
-    elif file_id == 'TX20170321_red.2505':
-        product_id = 'TX20170321_red.2505'
-    elif file_id == 'TX20170321_sum.2505':
-        product_id = 'TX20170321_sum.2505'
-    elif file_id == 'TX20170321_raw.2505':
-        product_id = 'TX20170321_raw.2505'
-    elif file_id == 'TX20071021_RAW.2037':
-        product_id = 'TX20071021_RAW.2037'
-    elif file_id == 'TX20071021_SUM.2037':
-        product_id = 'TX20071021_SUM.2037'
-    else:
-        # product id == obs id
-        product_id = LOOKUP[file_id][0]
-    return product_id
+def _get_expected_file_name(dirname, product_id):
+    return '{}/{}.xml'.format(dirname, product_id)
 
 
-def _get_expected_file_name(dirname, product_id, file_id, obs_id):
-    if file_id == 'N20150807G0044m':
-        expected_fqn = '{}/{}{}.xml'.format(dirname, obs_id, 'm')
-    elif file_id == 'N20150807G0044i':
-        expected_fqn = '{}/{}{}.xml'.format(dirname, obs_id, 'i')
-    elif file_id == 'S20030218S0027':
-        expected_fqn = '{}/{}{}.xml'.format(dirname, obs_id, '27')
-    elif file_id == 'S20030218S0042':
-        expected_fqn = '{}/{}{}.xml'.format(dirname, obs_id, '42')
-    else:
-        expected_fqn = '{}/{}.xml'.format(dirname, product_id)
-    return expected_fqn
-
-
-def _get_actual_file_name(dirname, product_id, file_id, obs_id):
-    if file_id == 'N20150807G0044m':
-        actual_fqn = '{}/{}{}.actual.xml'.format(dirname, obs_id, 'm')
-    elif file_id == 'N20150807G0044i':
-        actual_fqn = '{}/{}{}.actual.xml'.format(dirname, obs_id, 'i')
-    elif file_id == 'S20030218S0027':
-        actual_fqn = '{}/{}{}.actual.xml'.format(dirname, obs_id, '27')
-    elif file_id == 'S20030218S0042':
-        actual_fqn = '{}/{}{}.actual.xml'.format(dirname, obs_id, '42')
-    else:
-        actual_fqn = '{}/{}.actual.xml'.format(dirname, product_id)
-    return actual_fqn
+def _get_actual_file_name(dirname, product_id):
+    return '{}/{}.actual.xml'.format(dirname, product_id)
 
 
 def _get_inst_name(inst):

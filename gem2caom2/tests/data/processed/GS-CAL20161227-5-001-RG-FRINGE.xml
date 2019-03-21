@@ -26,7 +26,7 @@
   </caom2:instrument>
   <caom2:planes>
     <caom2:plane caom2:id="00000000-0000-0000-9cad-bb5b08f5eec2">
-      <caom2:productID>GS-CAL20161227-5-001-RG-FRINGE</caom2:productID>
+      <caom2:productID>rgS20161227S0051_fringe</caom2:productID>
       <caom2:metaRelease>2016-12-27T00:00:00.000</caom2:metaRelease>
       <caom2:dataRelease>2016-12-27T00:00:00.000</caom2:dataRelease>
       <caom2:dataProductType>image</caom2:dataProductType>

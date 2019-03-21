@@ -76,7 +76,6 @@ from datetime import timezone
 from caom2pipe import manage_composable as mc
 
 from gem2caom2 import gem_name
-from gem2caom2 import external_metadata as em
 
 __all__ = ['GemObsFileRelationship']
 
@@ -269,56 +268,14 @@ class GemObsFileRelationship(object):
             self.logger.debug(
                 'Gemini says data label is {} for file {}'.format(repaired,
                                                                   file_id))
-            # repaired = repaired.split('_')[0]
             if (GemObsFileRelationship.is_processed(file_id) or
                     file_id.startswith('TX2')):
-                removals = []
                 if not file_id.startswith('TX2'):
                     repaired = repaired.split('_')[0]
-                if file_id.startswith(('p', 'P')):
-                    prefix = 'P'
-                elif file_id.startswith('TX2'):
-                    prefix = ''
-                elif -1 < file_id.find('GN') < 14:
-                    prefix = file_id.split('GN', 1)[0]
-                elif -1 < file_id.find('N') < 14:
-                    prefix = file_id.split('N', 1)[0]
-                elif 'GS' in file_id:
-                    prefix = file_id.split('GS', 1)[0]
-                elif 'S' in file_id:
-                    prefix = file_id.split('S', 1)[0]
-                else:
-                    self.logger.warning(
-                        'Unrecognized file_id pattern {}'.format(file_id))
-                    prefix = ''
-                suffix = []
-                if '-' in file_id:
-                    suffix = file_id.split('-')[:1]
-                elif '_' in file_id:
-                    if file_id.startswith(('p', 'P')):
-                        if '_FLAT' in file_id or '_COMB' in file_id:
-                            suffix = file_id.split('_')[2:]
-                        else:
-                            suffix = []
-                            prefix = ''
-                    elif file_id.startswith('TX2'):
-                        # when the data label is the file id, fix every
-                        # data label except flats
-                        if repaired.startswith(file_id):
-                            if '_flt' not in file_id.lower():
-                                suffix = []
-                                removals = ['_raw', '_red', '_sum']
-                        else:
-                            if '_flt' in file_id.lower():
-                                suffix = ['flt']
-                                removals = []
-                            else:
-                                suffix = []
-                                removals = ['raw', 'red', 'sum']
-                    else:
-                        suffix = file_id.split('_')[1:]
-                else:
-                    suffix = []
+                prefix = GemObsFileRelationship._get_prefix(file_id)
+                suffix = GemObsFileRelationship._get_suffix(file_id, repaired)
+                removals = GemObsFileRelationship._get_removals(file_id,
+                                                                repaired)
 
                 if len(prefix) > 0:
                     removals = [prefix] + suffix
@@ -359,11 +316,12 @@ class GemObsFileRelationship(object):
     @staticmethod
     def _get_prefix(file_id):
         if file_id.startswith(('p', 'P')):
-            # Phoenix naming patterns
             if '_FLAT' in file_id or '_COMB' in file_id:
                 prefix = 'P'
             else:
                 prefix = ''
+        elif file_id.startswith('TX2'):
+            prefix = ''
         elif -1 < file_id.find('GN') < 14:
             prefix = file_id.split('GN', 1)[0]
         elif -1 < file_id.find('N') < 14:
@@ -372,28 +330,42 @@ class GemObsFileRelationship(object):
             prefix = file_id.split('GS', 1)[0]
         elif 'S' in file_id:
             prefix = file_id.split('S', 1)[0]
-        elif file_id.startswith('TX2'):
-            prefix = ''
         else:
             logging.warning(
-                'Unrecognized file_id pattern for prefix {}'.format(file_id))
+                'Unrecognized file_id pattern {}'.format(file_id))
             prefix = ''
         return prefix
 
     @staticmethod
-    def _get_suffix(file_id):
+    def _get_suffix(file_id, data_label):
         suffix = []
         if '-' in file_id:
             suffix = file_id.split('-')[:1]
         elif '_' in file_id:
             if file_id.startswith(('p', 'P')):
-                suffix = file_id.split('_')[2:]
+                if '_FLAT' in file_id or '_COMB' in file_id:
+                    suffix = file_id.split('_')[2:]
             elif file_id.startswith('TX2'):
-                if '_flt' in file_id:
-                    suffix = ['FLT']
+                # when the data label is the file id, fix every
+                # data label except flats
+                if not data_label.startswith(file_id):
+                    if '_flt' in file_id.lower():
+                        suffix = ['flt']
             else:
                 suffix = file_id.split('_')[1:]
-        elif re.match('.+[a-zA-Z]$', file_id, re.ASCII) is not None:
-            suffix = file_id[-1]
-        suffix = [ii.replace('.', '-') for ii in suffix]
+                logging.error('get here? suffix is {} for {}'.format(suffix, file_id))
         return suffix
+
+    @staticmethod
+    def _get_removals(file_id, repaired):
+        removals = []
+        if file_id.startswith('TX2'):
+            # when the data label is the file id, fix every
+            # data label except flats
+            if repaired.startswith(file_id):
+                if '_flt' not in file_id.lower():
+                    removals = ['_raw', '_red', '_sum']
+            else:
+                if '_flt' not in file_id.lower():
+                    removals = ['raw', 'red', 'sum']
+        return removals
