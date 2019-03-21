@@ -2719,7 +2719,7 @@ def _repair_provenance_value(imcmb_value, obs_id):
     else:
         logging.warning(
             'Unrecognized IMCMB value {}'.format(imcmb_value))
-        return None
+        return None, None
 
     if '_' in temp:
         temp1 = temp.split('_')[0]
@@ -2730,10 +2730,13 @@ def _repair_provenance_value(imcmb_value, obs_id):
     else:
         logging.warning(
             'Failure to repair {} for {}'.format(temp, obs_id))
-        return None
+        return None, None
 
-    result = em.gofr.get_obs_id(temp1[:14])
-    return result
+    prov_file_id = temp1[:14]
+    prov_obs_id = em.gofr.get_obs_id(prov_file_id)
+    if prov_obs_id is None:
+        return None, prov_file_id
+    return prov_obs_id[0], prov_file_id
 
 
 def _build_blueprints(uris):
