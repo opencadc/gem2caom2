@@ -96,7 +96,7 @@ def test_subset_all():
     assert temp[0].startswith(
         'GN-CAL20170616-11-022,2017-06-19T03:21:29.345417'), \
         'wrong content'
-    assert len(list(temp)) == 502, 'wrong count'
+    assert len(list(temp)) == 503, 'wrong count'
     result = gofr.get_file_names('GN-2015B-Q-1-12-1003')
     assert result == \
            ['N20150807G0044m.fits', 'N20150807G0044i.fits',
@@ -132,7 +132,7 @@ def test_subset_only_end():
     assert temp[0].startswith(
         'GN-CAL20170616-11-022,2017-06-19T03:21:29.345417+00'), \
         'wrong content'
-    assert len(list(temp)) == 404, 'wrong count'
+    assert len(list(temp)) == 405, 'wrong count'
 
     temp = gofr.subset(end=end, maxrec=3)
     assert temp is not None, 'should have content'
@@ -717,8 +717,10 @@ x = {
         lineage='{1}/{0}{1}.fits'.format(z, 'P2002FEB03_0045_DARK10SEC'))],
     'GS-CAL20021202-3-0075': [CommandLineBits(
         obs_id='GEMINI GS-CAL20021202-3-0075',
-        urls='{}{}'.format(y, 'P2002DEC02_0075_SUB.0001.fits'),
-        lineage='{1}/{0}{1}.fits'.format(z, 'P2002DEC02_0075_SUB.0001'))],
+        urls='{0}{1} {0}{2}'.format(
+            y, 'P2002DEC02_0075_SUB.0001.fits', '2002dec02_0075.fits'),
+        lineage='{1}/{0}{1}.fits {2}/{0}{2}.fits'.format(
+            z, 'P2002DEC02_0075_SUB.0001', '2002dec02_0075'))],
     'GS-CAL20030114-7-0148': [CommandLineBits(
         obs_id='GEMINI GS-CAL20030114-7-0148',
         urls='{}{}'.format(y, 'P2003JAN14_0148_DARK.fits'),
