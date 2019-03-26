@@ -77,7 +77,10 @@ from caom2pipe import manage_composable as mc
 
 from gem2caom2 import gem_name
 
-__all__ = ['GemObsFileRelationship']
+
+__all__ = ['GemObsFileRelationship', 'CommandLineBits']
+
+HEADER_URL = 'https://archive.gemini.edu/fullheader/'
 
 
 class GemObsFileRelationship(object):
@@ -90,21 +93,43 @@ class GemObsFileRelationship(object):
     """
 
     def __init__(self, file_name):
+
+        # id_list structure: a dict, keys are Gemini observation IDs, values
+        # are a set of associated file names. This structure supports the
+        # get_observation query.
+
         self.id_list = {}
+
+        # time_list structure: a dict, keys are last modified time,
+        # values are a set of observation IDs as specified from Gemini
+        # with that last modified time. This structure supports the
+        # time-bounded queries of the Harvester.
+
         self.time_list = {}
+
+        # name_list structure: a dict, keys are file ids, values are repaired
+        # observation IDs. This structure supports queries by gem2caom2
+        # for determining provenance information for planes and
+        # observations.
+
         self.name_list = {}
+
+        # structure: a dict, keys are Gemini observation IDs, values are
+        # repaired observation IDs. This structure supports generation
+        # of the command line for invoking gem2caom2
+
+        self.repaired_ids = {}
+
+        # the repaired obs id to file name lookup
+
+        self.repaired_names = {}
+
         self.logger = logging.getLogger('GemObsFileRelationship')
         self._initialize_content(file_name)
 
     def _initialize_content(self, fqn):
         """Initialize the internal data structures that represents the
         query list from the Gemini Science Archive.
-
-        observation_list structure: a dict, keys are last modified time,
-            values are a set of observation IDs with that last modified time
-
-        observation_id_list structure: a dict, keys are observation ID,
-            values are a set of associated file names
         """
         result = self._read_file(fqn)
         # result row structure:
@@ -130,6 +155,8 @@ class GemObsFileRelationship(object):
                 self.name_list[file_id].append(ii[0])
             else:
                 self.name_list[file_id] = [ii[0]]
+
+        self._build_repaired_lookups()
 
         # this structure means an observation ID occurs more than once with
         # different last modified times
@@ -255,10 +282,26 @@ class GemObsFileRelationship(object):
     def repair_data_label(self, file_id):
         """For processed files, try to provide a consistent naming pattern,
         because data labels aren't unique within Gemini, although the files
-        they refer to are, and are in different CAOM Observations.
+        they refer to are, and can be in different CAOM Observations.
 
         Take the prefixes and suffixes on the files, that indicate the type of
-        processing, and append them to the data label, for uniqueness.
+        processing, and append them in upper case, to the data label, for
+        uniqueness.
+
+        DB - 07-03-19
+        TEXES Spectroscopy
+
+        Some special code will be needed for datalabels/planes.  There are no
+        datalabels in the FITS header.  json metadata (limited) must be
+        obtained with URL like
+        https://archive.gemini.edu/jsonsummary/canonical/filepre=TX20170321_flt.2507.fits.
+        Use TX20170321_flt.2507 as datalabel.  But NOTE:  *raw.2507.fits and
+        *red.2507.fits are two planes of the same observation. I’d suggest we
+        use ‘*raw*’ as the datalabel and ‘*red*’ or ‘*raw*’ as the appropriate
+        product ID’s for the science observations.  The ‘flt’ observations do
+        not have a ‘red’ plane.  The json document contains ‘filename’ if
+        that’s helpful at all.  The ‘red’ files do not exist for all ‘raw’
+        files.
         """
         if file_id in self.name_list:
             repaired = self.name_list[file_id][0]
@@ -353,7 +396,7 @@ class GemObsFileRelationship(object):
                         suffix = ['flt']
             else:
                 suffix = file_id.split('_')[1:]
-                logging.error('get here? suffix is {} for {}'.format(suffix, file_id))
+                # logging.error('get here? suffix is {} for {}'.format(suffix, file_id))
         return suffix
 
     @staticmethod
@@ -369,3 +412,100 @@ class GemObsFileRelationship(object):
                 if '_flt' not in file_id.lower():
                     removals = ['raw', 'red', 'sum']
         return removals
+
+    def _build_repaired_lookups(self):
+        # for each gemini observation ID, get the file names associated with
+        # that observation ID
+        for ii in self.id_list:
+            file_names = self.id_list[ii]
+            # for each file name, repair the obs id, add repaired obs id
+            # and file name to new structure
+            for file_name in file_names:
+                file_id = gem_name.GemName.remove_extensions(file_name)
+                repaired_obs_id = self.repair_data_label(file_id)
+                temp = gem_name.GemName.remove_extensions(ii)
+                self._add_repaired_element(temp, repaired_obs_id, file_id)
+
+        # for each file name, add repaired obs ids, if they're not already
+        # in the list
+        for file_name in self.name_list:
+            for obs_id in self.name_list[file_name]:
+                file_id = gem_name.GemName.remove_extensions(file_name)
+                repaired_obs_id = self.repair_data_label(file_id)
+                self._add_repaired_element(obs_id, repaired_obs_id, file_id)
+
+    def _add_repaired_element(self, obs_id, repaired_obs_id, file_id):
+        if obs_id in self.repaired_ids:
+            if repaired_obs_id not in self.repaired_ids[obs_id]:
+                self.repaired_ids[obs_id].append(repaired_obs_id)
+        else:
+            self.repaired_ids[obs_id] = [repaired_obs_id]
+        if repaired_obs_id in self.repaired_names:
+            if file_id not in self.repaired_names[repaired_obs_id]:
+                self.repaired_names[repaired_obs_id].append(file_id)
+        else:
+            self.repaired_names[repaired_obs_id] = [file_id]
+
+
+    def get_args(self, obs_id):
+        if obs_id in self.repaired_ids:
+            result = []
+            for repaired_id in self.repaired_ids[obs_id]:
+                lineage = ''
+                urls = ''
+                for file_id in self.repaired_names[repaired_id]:
+                    # works because the file id == product id
+                    lineage += mc.get_lineage(
+                        gem_name.ARCHIVE, file_id, '{}.fits'.format(file_id),
+                        gem_name.SCHEME)
+                    urls += '{}{}.fits'.format(HEADER_URL, file_id)
+                    if file_id != self.repaired_names[repaired_id][-1]:
+                        lineage += ' '
+                        urls += ' '
+                c = CommandLineBits(
+                    '{} {}'.format(gem_name.COLLECTION, repaired_id),
+                    lineage, urls)
+                result.append(c)
+            return result
+        else:
+            logging.warning(
+                'Could not find observation ID {} in Gemini-provided '
+                'list.'.format(obs_id))
+            return []
+
+
+class CommandLineBits(object):
+    """Convenience class to keep the bits of command-line that are
+    inter-connected together."""
+
+    def __init__(self, obs_id='', lineage='', urls=''):
+        self.obs_id = obs_id
+        self.lineage = lineage
+        self.urls = urls
+
+    def __str__(self):
+        return '{}\n{}\n{}'.format(self.obs_id, self.lineage, self.urls)
+
+    @property
+    def obs_id(self):
+        return self._obs_id
+
+    @obs_id.setter
+    def obs_id(self, value):
+        self._obs_id = value
+
+    @property
+    def lineage(self):
+        return self._lineage
+
+    @lineage.setter
+    def lineage(self, value):
+        self._lineage = value
+
+    @property
+    def urls(self):
+        return self._urls
+
+    @urls.setter
+    def urls(self, value):
+        self._urls = value
