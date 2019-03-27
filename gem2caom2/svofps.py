@@ -69,18 +69,17 @@
 
 import io
 import logging
-import re
 
 import requests
 from astropy.io.votable import parse_single_table
-from caom2pipe import manage_composable as mc
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 
 SVO_URL = 'http://svo2.cab.inta-csic.es/svo/theory/fps/fps.php?ID=Gemini/'
 SVO_KPNO_URL = 'http://svo2.cab.inta-csic.es/svo/theory/fps/fps.php?ID=KPNO/'
 
-def get_votable(url):
+
+def get_vo_table(url):
     """
     Download the VOTable XML for the given url and return a astropy.io.votable
     object.
@@ -119,114 +118,56 @@ def filter_metadata(instrument, filters):
 
     :param instrument: The instrument name.
     :param filters: The filter name.
-    :return: Energy metadata dictionary.
+    :return: FilterMetadata instance, or None, if there's no SVO information
+        for the filter.
     """
 
     try:
-        filter_md = {}
         filter_names = filters.split('+')
         # use detector maximums as defaults
-        w_min = 0.0
         wl_min = 0.0
-        w_max = 100000.0
         wl_max = 100000.0
         width_min = 100000.0
         wl_width = wl_max - wl_min
         wl_eff = (wl_max + wl_min)/2.0
 
-        filter_name_found = True
+        # does the filter exist at SVO?
+        filter_name_found = False
 
         for index in filter_names:
             filter_name = index.strip()
-            if 'Hartmann' in filter_name:
-                continue
-            if filter_name == 'open':
-                if 'GMOS' in instrument:
-                    w_min = 3500.0
-                    w_max = 11000.0
-                    wl_width = w_max - w_min
-                    wl_eff = (w_max + w_min)/2.0
-            elif filter_name == 'GG455':
-                w_min = 4600.0
-                w_max = 11000.0
-                wl_width = w_max - w_min
-                wl_eff = (w_max + w_min)/2.0
-            elif filter_name == 'OG515':
-                w_min = 5200.0
-                w_max = 11000.0
-                wl_width = w_max - w_min
-                wl_eff = (w_max + w_min)/2.0
-            elif filter_name == 'RG610':
-                w_min = 6150.0
-                w_max = 11000.0
-                wl_width = w_max - w_min
-                wl_eff = (w_max + w_min)/2.0
-            elif filter_name == 'RG780':
-                w_min = 780.0
-                w_max = 11000.0
-                wl_width = w_max - w_min
-                wl_eff = (w_max + w_min)/2.0
+            filter_id = "{}.{}".format(instrument, filter_name)
+            if instrument == 'Flamingos':
+                url = "{}{}".format(SVO_KPNO_URL, filter_id)
             else:
-                if instrument == 'F2':
-                    instrument = 'Flamingos2'
-                if instrument == 'NIRI':
-                    filter_name = re.sub(r'con', 'cont', filter_name)
-                    filter_name = re.sub(r'_', '-', filter_name)
-                    # SVO filter service has renamed some Gemini NIRI filters...
-                    if filter_name == 'H2v=2-1s1-G0220':
-                        filter_name = 'H2S1v2-1-G0220'
-                    if (filter_name == 'H2v=1-0s1-G0216' or
-                            filter_name == 'H2v=1-0S1-G0216'):
-                        filter_name = 'H2S1v1-0-G0216'
-                if instrument == 'NICI':
-                    nici_rename = {'CH4-H4S': 'ED451',
-                                   'CH4-H4L': 'ED449',
-                                   'CH4-H1S': 'ED286',
-                                   'CH4-H1Sp': 'ED379',
-                                   '': 'ED299',
-                                   'CH4-H1L': 'ED381',
-                                   'CH4-H1L_2': 'ED283'}
-                # S20100228S0275 CH4-H1%Sp_G0728
-                    if filter_name in nici_rename:
-                        temp = nici_rename[filter_name]
-                        filter_name = temp
-                    else:
-                        filter_name_found = False
-                        logging.info(
-                            'NICI filter {} not at SVO.'.format(filter_name))
-                        continue
+                url = "{}{}".format(SVO_URL, filter_id)
 
-                filter_id = "{}.{}".format(instrument, filter_name)
-                if instrument == 'Flamingos':
-                    url = "{}{}".format(SVO_KPNO_URL, filter_id)
-                else:
-                    url = "{}{}".format(SVO_URL, filter_id)
+            # Open the URL and fetch the VOTable document.
+            # Some Gemini filters in SVO filter database have bandpass info
+            # only for 'w'arm filters.  First check for filter without 'w'
+            # appended to the ID (which I assume means bandpass is for cold
+            # filter), then search for 'w' if nothing is found...
+            votable, error_message = get_vo_table(url)
+            if not votable:
+                url += 'w'
+                votable, error_message = get_vo_table(url)
+            if not votable:
+                logging.error(
+                    'Unable to download SVO filter data from {} because {}'
+                    .format(url, error_message))
+                continue
 
-                # Open the URL and fetch the VOTable document.
-                # Some Gemini filters in SVO filter database have bandpass info
-                # only for 'w'arm filters.  First check for filter without 'w'
-                # appended to the ID (which I assume means bandpass is for cold
-                # filter), then search for 'w' if nothing is found...
-                votable, error_message = get_votable(url)
-                if not votable:
-                    url += 'w'
-                    votable, error_message = get_votable(url)
-                if not votable:
-                    logging.error(
-                        'Unable to download SVO filter data from {} because {}'
-                        .format(url, error_message))
-                    continue
+            # DB - 14-04-19 After discussion with a few others use the
+            # wavelength lookup values “WavelengthCen” and “FWHM” returned
+            # from the SVO. Looking at some of the IR filters
+            # use the more common “WavelengthCen” and “FWHM” values that
+            # the service offers.
 
-                # DB - 14-04-19 After discussion with a few others use the
-                # wavelength lookup values “WavelengthCen” and “FWHM” returned
-                # from the SVO. Looking at some of the IR filters
-                # use the more common “WavelengthCen” and “FWHM” values that
-                # the service offers.
-
-                wl_width = votable.get_field_by_id('FWHM').value
-                wl_eff = votable.get_field_by_id('WavelengthCen').value
-                w_min = wl_eff - wl_width/2.0
-                w_max = wl_eff + wl_width/2.0
+            filter_name_found = True
+            wl_width = votable.get_field_by_id('FWHM').value
+            wl_eff = votable.get_field_by_id('WavelengthCen').value
+            w_min = wl_eff - wl_width/2.0
+            w_max = wl_eff + wl_width/2.0
 
             if w_min > wl_min:
                 wl_min = w_min
@@ -236,12 +177,103 @@ def filter_metadata(instrument, filters):
                 width_min = wl_width
 
         if filter_name_found:
-            filter_md['wl_eff_width'] = wl_width
-            filter_md['wl_eff'] = wl_eff
-        logging.info('Filter(s): {}  MD: {}'.format(filter_names, filter_md))
-        return filter_md
+            fm = FilterMetadata(instrument)
+            # SVO filter units are angstroms, Gemini CAOM2 spectral wcs is
+            # microns
+            fm.central_wl = wl_eff / 1.0e4
+            fm.bandpass = wl_width / 1.0e4
+            logging.info(
+                'Filter(s): {}  MD: {}, {}'.format(filter_names, fm.central_wl,
+                                                   fm.bandpass))
+            return fm
+        else:
+            return None
     except Exception as e:
         logging.error(e)
         import traceback
         tb = traceback.format_exc()
         logging.error(tb)
+
+
+class FilterMetadata(object):
+    # DB - 27-02-19
+    # I’ve approached Gemini spectra like I have for DAO but the header
+    # content for DAO spectra permits an accurate estimate of the upper/lower
+    # wavelengths (a few % accuracy, at least for data from the last decade
+    # or so).  It’s more a ‘ballpark’ estimate for Gemini even for simple
+    # long-slit instruments like PHOENIX and NIRI.  And this approach isn’t
+    # very consistent for spectrographs like GRACES or bHROS or GPI.  e.g.
+    # for GRACES the WCS I’ve built  suggests that the full spectral range
+    # is covered from one end of the detector to the other but in reality
+    # there are perhaps 40 individual spectral orders stacked one above
+    # the other each covering a few % of the full wavelength range with a
+    # bit of overlap between successive orders.  I’ve never actually tried
+    # to do a spectral cutout but the returned cutouts for unprocessed
+    # GRACES data wouldn’t be valid.
+    #
+    # Just talked with Chris briefly as well.  For consistency and to avoid
+    # misleading users it’s likely best to use the ‘range’ approach.
+    #
+    # microns for the units, not nm.  And second line would be something like:
+    #
+    # axis.range = CoordRange1D(RefCoord(0.5,crval1),
+    #                           RefCoord(1.5,(crval1+bandpass)))
+    #
+    # and crval1 is the lower wavelength.
+
+    def __init__(self, instrument=None):
+        self.central_wl = None
+        self.bandpass = None
+        self.resolving_power = None
+        self.instrument = instrument
+
+    @property
+    def central_wl(self):
+        """Central wavelength for a filter."""
+        return self._central_wl
+
+    @central_wl.setter
+    def central_wl(self, value):
+        self._central_wl = value
+
+    @property
+    def bandpass(self):
+        """Width of a filter."""
+        return self._bandpass
+
+    @bandpass.setter
+    def bandpass(self, value):
+        self._bandpass = value
+
+    @property
+    def resolving_power(self):
+        if self.instrument in ['Phoenix', 'TEXES']:
+            return None
+        elif self._resolving_power is None:
+            if self.instrument is 'NIRI':
+                return None
+            else:
+                self.adjust_resolving_power()
+                return self._resolving_power
+        else:
+            return self._resolving_power
+
+    @resolving_power.setter
+    def resolving_power(self, value):
+        self._resolving_power = value
+
+    def adjust_bandpass(self, variance):
+        self.bandpass = ((self.central_wl + variance) -
+                         (self.central_wl - variance))
+
+    def set_bandpass(self, w_max, w_min):
+        self.bandpass = (w_max - w_min)
+
+    def set_central_wl(self, w_max, w_min):
+        self.central_wl = (w_max + w_min) / 2.0
+
+    def set_resolving_power(self, w_max, w_min):
+        self.resolving_power = (w_max + w_min) / (2 * self.bandpass)
+
+    def adjust_resolving_power(self):
+        self.resolving_power = self.central_wl / self.bandpass

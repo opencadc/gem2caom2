@@ -33,7 +33,7 @@
   </caom2:instrument>
   <caom2:planes>
     <caom2:plane caom2:id="00000000-0000-0000-fc34-014bfab1cf14" caom2:lastModified="2015-03-08T18:42:12.746" caom2:maxLastModified="2018-05-08T11:08:45.586" caom2:metaChecksum="md5:6935c1eeba06e720228b83c85813c48e" caom2:accMetaChecksum="md5:f57ae5f1de96e222be6868c756ab1cce">
-      <caom2:productID>GN-2002A-C-4-2-001</caom2:productID>
+      <caom2:productID>N20020405S0044</caom2:productID>
       <caom2:metaRelease>2002-04-05T00:00:00.000</caom2:metaRelease>
       <caom2:dataRelease>2003-10-05T00:00:00.000</caom2:dataRelease>
       <caom2:dataProductType>image</caom2:dataProductType>

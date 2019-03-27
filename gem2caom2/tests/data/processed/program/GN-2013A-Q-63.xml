@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GN-2013A-Q-63</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GN-2013A-Q-63</h1>
+
+<table>
+ <tr><td>Title:<td>Near-Infrared Characterization of Y Dwarfs</tr>
+ <tr><td>PI:<td>Sandy Leggett</tr>
+ <tr><td>Co-I(s):<td> Mark Marley,  Caroline Morley,  Didier Saumon,  Jonathan Fortney,  Channon Visscher</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+Extremely low-temperature brown dwarfs, the prototype Y dwarfs, have recently been discovered  in 5 micron images obtained by WISE .  We have shown that our models which include chloride and sulfide clouds are successful at reproducing the energy distributions of brown dwarfs with T_eff between 400K and 800K (Y0 to T8 spectral types). We are working on cooler models which incorporate water clouds. NIRI photometry obtained in 12A and 12B indicates problems with previously published Palomar photometry. We have used the NIRI data and our models to constrain temperature,  mass and age for the first WISE Y dwarfs: 300 to 450K, 5 to 10 Jupiter masses, and 1 to 5 Gyr.  We request time to obtain NIRI photometry of two new WISE 400K dwarfs, and additional data for two 300-350K WISE dwarfs. We will also observe a WISE T9 dwarf with apparently odd colors. These data will allow us to examine the distribution in temperature, gravity and cloudiness for 400K objects, and constrain our new water cloud models for 300K objects. The new model suite will enable  detailed study of brown dwarfs and gas giant exoplanets at nearly all relevant T_eff, including those found at Gemini by GPI. 
+</div>
+
+
+<h2>Publications using this program's data</h2>
+<ul>
+<li>
+<a href="/searchform/publication=2015ApJ...799...37L" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2015ApJ...799...37L/abstract" target="_blank">[ADS]</a> Near-infrared Photometry of Y Dwarfs: Low Ammonia Abundance and the Onset of Water Clouds
+</ul>
+
+
+</body>
+</html>

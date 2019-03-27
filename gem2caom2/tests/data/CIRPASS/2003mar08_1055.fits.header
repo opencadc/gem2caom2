@@ -1,0 +1,303 @@
+Filename: 2003mar08_1055.fits.bz2
+
+AstroData Types: ['GEMINI', 'CIRPASS', 'GEMINI_SOUTH', 'RAW', 'UNPREPARED']
+
+
+--- HDU 0 ---
+SIMPLE  =                    T / Fits standard                                  
+BITPIX  =                   16 / Bits per pixel                                 
+NAXIS   =                    0 / Number of axes                                 
+EXTEND  =                    T / File may contain extensions                    
+ORIGIN  = '        '           / FITS file originator                           
+DATE    = '2003-04-24T19:29:23' / Date FITS file was generated                  
+IRAF-TLM= '03:33:18 (08/03/2003)' / Time of last modification                   
+NEXTEND =                    9                                                  
+NRUN    =                 1055 /Run Number                                      
+OBJECT  = 'domeoff '                                                            
+FILTER  = 'test      '/Filter name                                              
+OBSTYPE = 'unknown   '/Observation type                                         
+IMAGTYPE= 'unknown   '/Observation type                                         
+IRAFNAME= 'domeoff_1055_c1_000.fits'/Filename                                   
+FILEPATH= 'e:\today  '/Disk to save data                                        
+CAMERA  = 'cirpass   '/Name of camera                                           
+DETECTOR= 'Hawaii    '/Type of detector                                         
+CHIP    =                    1 /Chip number                                     
+QUAD    = '1 2 3 4   '/Active quads in this image                               
+FPA     = 'unknown1  '/Array serial number                                      
+DATE_OBS= '2003-03-08T06:27:35'/Sequence started                                
+EXP_TIME=                   20 /Requested integration-seconds                   
+INT_TIME=               19.977 /Actual integration time                         
+READRATE=              334.336 /Pixel rate KHz                                  
+GAIN    =                3.083 /Camera gain e/dn                                
+READMODE= 'NDR       '/Non-destructive read                                     
+COMMENT NFRAMES - what does this mean                                           
+FRAME   =                    3 /Current frame in sequence                       
+NLOOPS  =                    1 /Total number of loops                           
+TOTALNDR=                    2 /Total number of reads of each pixel             
+NREADS  =                    2 /Number of sequential reads                      
+RSTIMAGE=                    T /Frame contains black level image                
+SUBTRACT=                    F /Reset level subtracted                          
+ROTATE  =                    F /Image rotated                                   
+COMMENT ROTANGLE Image is not rotated                                           
+FLIP_H  =                    F /Image reversed left-right                       
+FLIP_V  =                    F /Image reversed up-down                          
+SAMVER  = 'ual_l_jackson'/Type of SAM                                           
+PIXVER  = '          '/Jan  9 2001 19:18:56                                     
+PRE-READ=                    F /Number of Dummy reads                           
+FLUSHES =                   16 /Number flushes                                  
+SAMTYPE =                    2 /SAM type                                        
+CHIPGAIN=                0.340 /Relative chip gain                              
+HWGAIN  =                   12 /HW Gain setting                                 
+PIXRATE =                   17 /HW Rate setting                                 
+BLKLEVEL=                  500 /Blacklevel setting                              
+COMMENT Start of external header file                                           
+COMMENT C:\Cirpass\info.fits                                                    
+INSTRUME= 'CIRPASS' / Instrument Name                                           
+READNOIS= 18       / Detector Read noise estimate                               
+TEMP_DET= ''       / Temperature of detector                                    
+TEMP_FRI= ''       / Temperature of fridge                                      
+RA_OFF  = ''       / RA offset of IFU reference lens                            
+DEC_OFF = ''       / DEC offset of IFU reference lens                           
+LENS_SCL= '0.36'   / Image scale (arcsec per lenslet)                           
+MAG_X   = '4600'   / Magnifier X                                                
+MAG_Y   = '4100'   / Magnifier Y                                                
+IFU_Z   = '0'      / IFU position on optical axis                               
+FO_LAMP = 'OFF'    / Foreoptics calibration lamp                                
+FO_SHTR = 'CLOSED' / Foreoptics shutter                                         
+GRATING = '??'     / Grating used                                               
+GRAT_X  = '18950'  / Grating X                                                  
+GRAT_Y  = '3930'   / Grating Y                                                  
+TILTMIRX= '11200'  / Tilt mirror X                                              
+TILTMIRY= '21388'  / Tilt mirror Y                                              
+MASK    = '??'     / Mask used                                                  
+MASK_FOC= '20000'  / Mask focus                                                 
+SUP_LAMP= 'OFF'    / Suppressor lamp                                            
+SUP_SHTR= 'CLOSED' / Suppressor shutter                                         
+FILTER1 = 'Clear'  / Filter 1 - Closer to dewar window                          
+FILTER2 = 'Cam Blk3' / Filter 2 - Closer to detector                            
+DET_FOC = 3050     / Detector focus position                                    
+DET_TILT= -0.800461 / Detector tilt                                             
+TARGNAME= 'NGC2992' / Target Name                                               
+TARG_RA = '146.42500000' / Target right ascension                               
+TARG_DEC= '-14.32638889' / Target declination                                   
+OFF_RA  = '-0.413' / Offset in right ascension                                  
+OFF_DEC = '1.000'  / Offset in declination                                      
+CRDFRAM = 'FK5'    / Coordinate frame of target                                 
+TARGSYS = 'FK5'    / Target's FITS coord frame                                  
+EQUINOX = '2000.00000000000000' / Equinox of target coordinates                 
+EPOCH   = '2003.18035059857561' / Epoch of target coordinates                   
+PARALLAX= ''       / Parallax of target                                         
+PM_RA   = ''       / Proper motion in RA of target                              
+PM_DEC  = ''       / Proper motion in Dec of target                             
+RAD_VEL = ''       / Radial velocity of target                                  
+TEL_RA  = '09:45:41.972' / Telescope right ascension                            
+TEL_DEC = '-14:19:34.00' / Telescope declination                                
+TEL_FOC = '-0.336' / Telescope nominal focus                                    
+USERFOC = '-0.100' / Offset from nominal focus                                  
+ROT_PA  = '90.00'  / Rotator position angle                                     
+INST_PA = '338.00' / Rotator position angle offset                              
+FRAMEPA = 'FK5'    / Reference Frame of Instrument PA                           
+AIRMASS = '1.312'  / Object arimass                                             
+HUMIDITY= '40.0'   / Humidity                                                   
+TEL_HLTH= 'BAD'    / Telescope health                                           
+OBJ_HA  = '3.0227' / HA at start of observation                                 
+LST     = '12:47:14.2' / LST at start of observation                            
+OBJ_ZD  = '40.3946' / Object Zenith Distance                                    
+LOC_TIME= '02:27:57.8' / Local Time                                             
+MJD     = ' 5.27062694196026e+04' / Modified Julian date                        
+UTC     = '06:27:58.8' / Universal Coordinated Time                             
+UTC_DATE= '2003-03-08' / UTC date                                               
+GUIDING = 'Off'    / Guiding enabled; 0=no; 1=yes                               
+GEMPRGID= 'GS-CAL20030308'                                                      
+OBSID   = 'GS-CAL20030308-4'                                                    
+DATALAB = 'GS-CAL20030308-4-1055'                                               
+OBSERVER= 'Jensen,Turner,Parry'                                                 
+SSA     = 'Trancho '                                                            
+RAWBG   = '80-percentile'                                                       
+RAWCC   = '70-percentile'                                                       
+RAWIQ   = 'UNKNOWN '                                                            
+RAWWV   = 'Any     '                 /Transparancy                              
+TELESCOP= 'Gemini-South'                                                        
+OBSERVAT= 'Gemini-South'                                                        
+RAWPIREQ= 'UNKNOWN '                                                            
+RAWGEMQA= 'USABLE  '                                                            
+OBS_L   = ''       / Last name of observer                                      
+OBS_F   = ''       / First name of Observer                                     
+PROPOSID= ''       / Proposal identifier                                        
+PR_INV_L= ''       / Last name of principal investigator                        
+PR_INV_F= ''       / First name of principal investigator                       
+PR_INV_M= ''       / Middle initial of principal investigtor                    
+DBFILE  = '/home/cirpass/database/db' / Database to write/read parameters to/fr 
+MASKFILE= '/home/cirpass/mask/mask' / Static data quality file                  
+NOISFILE= '/home/cirpass/noise/noise' / Detector Read noise file                
+LINFILE = '/home/cirpass/linearity/linearity' / Detector nonlinearities file    
+BKGFILE = '/home/cirpass/bkg/bkg' / Background file                             
+EXTRFILE= '/datared1/20030307/fibpos_long_J.list' / Image to use to find extrac 
+WVFILE  = '/home/cirpass/wave/wave' / Wavelength calibration file               
+FLATFILE= '/home/cirpass/flat/flat' / Flat field file                           
+CALFILE = '/home/cirpass/flux/flux' / Flux calibration file                     
+ZOFFCORR= 'PERFORM' / Subtract zeroth read                                      
+MASKCORR= 'OMIT'   / Data quality initialization                                
+NOISCALC= 'OMIT'   / Calculate statistical errors                               
+TIMECALC= 'OMIT'   / Populated time extensions                                  
+LINCORR = 'OMIT'   / Correct for detector nonlinearities                        
+UNITCORR= 'OMIT'   / Convert to count rates                                     
+CRIDCALC= 'OMIT'   / Identify cosmic ray hits                                   
+BKGCORR = 'OMIT'   / Subtract background image                                  
+DOWVCAL = 'OMIT'   / Wavelength calibrate spectra                               
+DOWVALGN= 'OMIT'   / Wavelength align spectra                                   
+FLATCORR= 'OMIT'   / Flatfield spectra                                          
+DOFLCAL = 'OMIT'   / Flux calibrate spectra                                     
+DOEXTR  = 'PERFORM' / Extract spectra                                           
+ZOFFDONE= ''       / Subtract zeroth read                                       
+MASKDONE= ''       / Data quality initialization                                
+NOISDONE= ''       / Calculate statistical errors                               
+TIMEDONE= ''       / Populate time extensions                                   
+LINDONE = ''       / Correct for detector nonlinearities                        
+UNITDONE= ''       / Convert to count rates                                     
+CRIDDONE= ''       / Identify cosmic ray hits                                   
+BKGDONE = ''       / Subtract background image                                  
+EXTRDONE= ''       / Extract spectra                                            
+WVCLDONE= ''       / Wavelength calibrate spectra                               
+WVALDONE= ''       / Wavelength align spectra                                   
+FLATDONE= ''       / Flatfield spectra                                          
+FLUXDONE= ''       / Flux calibrate spectra                                     
+CALSTAGE= ''       / Calibration stage                                          
+CAL_VER = ''       / Calibration code version                                   
+USR_CMTS= ''       / User comments                                              
+COMMENT End of values inserted from external file                               
+CIRPNAME= 'domeoff_1055_raw.fits'                                               
+OBS_TYPE= 'DARK    '                                                            
+RELEASE = '2003-03-08'         / End of proprietary period YYYY-MM-DD           
+HISTORY Corrected metadata: automated fixes from PyFITS                         
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+
+--- HDU 1 ---
+XTENSION= 'BINTABLE'           / binary table extension                         
+BITPIX  =                    8 / 8-bit bytes                                    
+NAXIS   =                    2 / 2-dimensional binary table                     
+NAXIS1  =                   12 / width of table in bytes                        
+NAXIS2  =                  517 / number of rows in table                        
+PCOUNT  =                    0 / size of special data area                      
+GCOUNT  =                    1 / one data group (required keyword)              
+TFIELDS =                    3 / number of fields in each row                   
+TTYPE1  = 'FibreID '           / label for field   1                            
+TFORM1  = '1E      '           / data format of field: 4-byte REAL              
+TTYPE2  = 'xcord   '           / label for field   2                            
+TFORM2  = '1E      '           / data format of field: 4-byte REAL              
+TTYPE3  = 'ycord   '           / label for field   3                            
+TFORM3  = '1E      '           / data format of field: 4-byte REAL              
+YOVERX  =             1.732051                                                  
+MAXDIST =             1.154701                                                  
+EXTNAME = 'HDU     '                                                            
+EXTVER  =                    3                                                  
+
+--- HDU 2 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                  -32 / number of bits per data pixel                  
+NAXIS   =                    2 / number of data axes                            
+NAXIS1  =                 1024 / length of data axis 1                          
+NAXIS2  =                 1024 / length of data axis 2                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'SCI     '                                                            
+EXTVER  =                    1                                                  
+LOOP    =         1.000000E+00                                                  
+READ    =         1.000000E+00                                                  
+CURR_NDR=         3.000000E+00                                                  
+TIME_OBS=         2.592000E+04                                                  
+SAMPTIME=         0.000000E+00                                                  
+
+--- HDU 3 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                  -32 / number of bits per data pixel                  
+NAXIS   =                    2 / number of data axes                            
+NAXIS1  =                 1024 / length of data axis 1                          
+NAXIS2  =                 1024 / length of data axis 2                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'VAR     '                                                            
+EXTVER  =                    1                                                  
+
+--- HDU 4 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                   16 / number of bits per data pixel                  
+NAXIS   =                    2 / number of data axes                            
+NAXIS1  =                 1024 / length of data axis 1                          
+NAXIS2  =                 1024 / length of data axis 2                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'DQ      '                                                            
+EXTVER  =                    1                                                  
+
+--- HDU 5 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                  -32 / number of bits per data pixel                  
+NAXIS   =                    2 / number of data axes                            
+NAXIS1  =                 1024 / length of data axis 1                          
+NAXIS2  =                 1024 / length of data axis 2                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'TIME    '                                                            
+EXTVER  =                    1                                                  
+
+--- HDU 6 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                  -32 / number of bits per data pixel                  
+NAXIS   =                    2 / number of data axes                            
+NAXIS1  =                 1024 / length of data axis 1                          
+NAXIS2  =                 1024 / length of data axis 2                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'SCI     '                                                            
+EXTVER  =                    2                                                  
+LOOP    =         0.000000E+00                                                  
+READ    =         1.000000E+00                                                  
+CURR_NDR=         1.000000E+00                                                  
+TIME_OBS=         5.943000E+03                                                  
+SAMPTIME=         0.000000E+00                                                  
+
+--- HDU 7 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                  -32 / number of bits per data pixel                  
+NAXIS   =                    2 / number of data axes                            
+NAXIS1  =                 1024 / length of data axis 1                          
+NAXIS2  =                 1024 / length of data axis 2                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'VAR     '                                                            
+EXTVER  =                    2                                                  
+
+--- HDU 8 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                   16 / number of bits per data pixel                  
+NAXIS   =                    2 / number of data axes                            
+NAXIS1  =                 1024 / length of data axis 1                          
+NAXIS2  =                 1024 / length of data axis 2                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'DQ      '                                                            
+EXTVER  =                    2                                                  
+
+--- HDU 9 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                  -32 / number of bits per data pixel                  
+NAXIS   =                    2 / number of data axes                            
+NAXIS1  =                 1024 / length of data axis 1                          
+NAXIS2  =                 1024 / length of data axis 2                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'TIME    '                                                            
+EXTVER  =                    2                                                  

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GS-2016A-Q-7</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-2016A-Q-7</h1>
+
+<table>
+ <tr><td>Title:<td>Spectroscopy of very luminous z~6 galaxies from the HSC-Wide survey</tr>
+ <tr><td>PI:<td>Marcin Sawicki</tr>
+ <tr><td>Co-I(s):<td> Yuma Sugahara,  Nobunari Kashikawa,  Surhud More,  Tohru Nagao,  Yuichi Harikane,  Lihwai Lin,  Michael Strauss,  Yoshiki Matsuoka,  John Silverman,  Masami Ouchi,  Anupreeta More,  Masafumi Ishigaki,  Chris Willott,  Jun Toshikawa,  Takatoshi Shibuya,  Yoshiaki Ono,  Seiji Fujimoto,  Masatoshi Imanishi,  Takashi Kojima,  Shiro Mukae,  Kazuhiro Shimasaku,  Jean Coupon</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+We propose GMOS-South nod-and-shuffle spectroscopy of 11 very luminous (M_UV~-22.5, y(AB)~24.2-24.7) z~6 i-dropout candidate galaxies drawn from 70 square degrees of early HSC Survey imaging data. These are very rare objects that can only be found in large numbers in very large volumes such those covered by the HSC Survey. We will use our spectrocopy to address two science themes:  (1) We will use the redshifts to, for the first time, precisely constrain the bright end of the z~6 galaxy luminosity function by measuring contamination fractions and effective survey volumes, and (2) we will use our spectroscopy to select targets suitable for future deep spectroscopic followup needed to measure the fraction of ionizing radiation escaping from z~6 galaxies. 
+</div>
+
+
+
+</body>
+</html>

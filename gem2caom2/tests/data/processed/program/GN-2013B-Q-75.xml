@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GN-2013B-Q-75</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GN-2013B-Q-75</h1>
+
+<table>
+ <tr><td>Title:<td>Photo-chemical evolution of PAHs</tr>
+ <tr><td>PI:<td>Els Peeters</tr>
+ <tr><td>Co-I(s):<td> Jan Cami</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+The mid-IR spectra of almost all astronomical objects are dominated by strong emission bands due to Polycyclic Aromatic Hydrocarbons (PAHs) or PAH-like species. Significant variation in the PAH characteristics and PAH abundance is observed spatially within reflection nebulae in response to changing physical environments. Specifically, photo-chemical evolution of PAHs and thus a varying PAH size distribution is invoked to explain the spatial characteristics of the PAHs. Here, we propose to obtain a 3.3 um PAH image with Gemini-NIRI toward the reflection nebula NGC2023. Combined with Spitzer observations, this will allow us to determine the 3.3/11.2 intensity ratio which is a direct measurement of the size of the emitting PAHs. These results critically test the proposed models for the interpretation of the observed spatial characteristics of the PAH emission as well as the formation of fullerenes in the ISM. 
+</div>
+
+
+
+</body>
+</html>

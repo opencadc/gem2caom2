@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GS-2012B-Q-1</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-2012B-Q-1</h1>
+
+<table>
+ <tr><td>Title:<td>LMC Microlensing Source Stars - Stripped from the SMC?</tr>
+ <tr><td>PI:<td>Tim Axelrod</tr>
+ <tr><td>Co-I(s):<td> Abhijit Saha,  Knut Olsen,  Spencer Axelrod,  Edward Olszewski</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+Recently Olsen et al (2011) discovered a population of stars in the LMC which apparently have their origin in the SMC.  This discovery has been given theoretical context by the work of Besla et al (2012), who have developed a model for the interaction of the SMC and LMC over the past several Gyr which successfully predicts the morphology of the Magellanic Stream and Bridge, and also suggests that some tidally stripped SMC stars may lie behind the LMC.  They further suggest that these stars may be the stars being lensed in the microlensing events that have been observed toward the LMC.  The number and duration of these events have long been difficult to explain from the known stellar populations along the line of sight to the LMC.  If the Besla et al explanation could be proven, this longstanding puzzle would be solved. We propose to test it by measuring the radial velocities and metallicities of a known set of microlensing source stars with GMOS on Gemini-S. 
+</div>
+
+
+
+</body>
+</html>

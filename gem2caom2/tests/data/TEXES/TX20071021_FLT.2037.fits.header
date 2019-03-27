@@ -1,0 +1,157 @@
+Filename: TX20071021_FLT.2037.fits.bz2
+
+AstroData Types: ['TEXES', 'RAW', 'UNPREPARED']
+
+
+--- HDU 0 ---
+SIMPLE  =                    T / Fits standard                                  
+BITPIX  =                   32 / Bits per pixel                                 
+NAXIS   =                    0 / Number of axes                                 
+EXTEND  =                    T / File may contain extensions                    
+ORIGIN  = 'University of Texas' / FITS file originator                          
+DATE    = '2007-10-25T22:51:45' / Date FITS file was generated                  
+IRAF-TLM= '13:07:23 (25/10/2007)' / Time of last modification                   
+FILENAME= 'flat.2037'                                                           
+OBJECT  = 'FLAT    '                                                            
+FEATURE = 'C2H2 R(5)'           / spectral feature                              
+WAVENO0 =         7.440000E+02  / planned central wavenumber                    
+ORDER   =                    4  / echelle order number                          
+TEMPER  =         2.816000E+02  / ambient temperature                           
+TAU     = '.07'                                                                 
+HUMIDITY= '17.9'                                                                
+OBSMODE = 'flat'                                                                
+OBSTYPE = 'flat'                                                                
+OBSCLASS= 'partnerCal'                                                          
+TELSTEP = '-0.00 E   0.14 N'                                                    
+TSTEPPQ = '-0.14 P   0.00 Q'                                                    
+OFFSET  = '0.00 E   -2.10 N'                                                    
+OFFSETPQ= '2.10 P   0.00 Q'                                                     
+NOD     =         0.000000E+00  / 0.00 E   0.00 N                               
+NODPQ   = '0.00 P   0.00 Q'                                                     
+NPOINTS =                   33  / number of points in scan                      
+NODWAIT = '3.0'                                                                 
+FRAMETIM=         1.011917E+00  / integration time / frame                      
+NFRAME  =                    2  / number of frames coadded in hardware          
+NSUM    =                    1  / number of frames coadded in software          
+NWRITE  =                    2  / number of frames written per nod phase        
+NNOD    =                    2  / number of nod pairs                           
+OBSTIME =         8.100000E+00  / calculated observation time                   
+TOTTIME =         4.019000E+01  / calculated total clock time                   
+INSTMODE= 'hi-med'              / echelon x echelle                             
+ECHELLE =         5.843300E+01  / echelle grating angle (deg)                   
+LORES   =        -1.499200E+01  / lo-res grating angle (deg)                    
+KMIRROR =         4.500000E-02  / K-mirror angle                                
+SLIT    =         2.400000E+02  / slit wheel angle                              
+FILTER  =         2.838000E+02  / filter wheel angle                            
+PARAB   = '-223.920'                                                            
+INSTRPA =         9.000000E+01                                                  
+INSTRAA =         9.150000E+01                                                  
+NSKY    =                    0  / number of extra points on sky                 
+INSTRUME= 'TEXES'                                                               
+EVOLT   = '6.877'                                                               
+LVOLT   = '8.968'                                                               
+KVOLT   = '2.033'                                                               
+SVOLT   = '5.998'                                                               
+FVOLT   = '6.724'                                                               
+PVOLT   = '4.378'                                                               
+EVOLT0  = '14.708'                                                              
+LVOLT0  = ' 6.970'                                                              
+KVOLT0  = ' 2.031'                                                              
+SVOLT0  = ' 1.999'                                                              
+FVOLT0  = ' 1.994'                                                              
+PVOLT0  = ' 5.000'                                                              
+TEMP_DET= '0.362'                                                               
+TEMP_ECH= '0.368'                                                               
+TEMP_LHE= '0.047'                                                               
+TEMP_LN2= '0.012'                                                               
+PRESSURE=         1.681000E+01  / LN2 pumping line pressure (Torr)              
+HUMIDITY= '17.9'                                                                
+BIAS    = '-4.0 V'                                                              
+GAIN    =         2.500000E+01  / electronic gain                               
+BANDWID = '3000 kHz'                                                            
+DAS     = 'IR Observer: 15 Oct 07'                                              
+NSPEC   =                  256  / array size in spectral dimension              
+NSPAT   =                  256  / array size in spatial dimension               
+DATE-OBS= '2007-10-21'                                                          
+TIME-OBS= '06:13:25.8'          / UTC ?                                         
+TIMESYS = 'UTC'                                                                 
+OBSERVER= 'mr,mb,jl,tg,jb'                                                      
+TELESCOP= 'Gemini-North'                                                        
+RA      =         3.485076E+02  / 23:14:01.824                                  
+DEC     =         6.145567E+01  / +61:27:20.42                                  
+LST     = '21:42:52.9'                                                          
+HA      =        -1.525100E+00                                                  
+AIRMASS =         1.403000E+00                                                  
+AZIMUTH =         1.537463E+01  / +15:22:28.67                                  
+ELEVATIO=         4.541822E+01  / +45:25:05.59                                  
+TARGRA  = '23:11:52.87'                                                         
+TARGDEC = '61:10:59.00'                                                         
+TARGCOOR= 'FK4'                                                                 
+FRAMEPA = 'FK5'                                                                 
+BASEX   = ' -1.7438'                                                            
+BASEY   = '  2.5319'                                                            
+BASEUNIT= 'mm'                                                                  
+BASECONV= '1.611 arcsec/mm'                                                     
+HEALTH  = 'GOOD'                                                                
+FOCUSOFF= '0.001'                                                               
+GEMPRGID= 'GN-2007B-C-6'                                                        
+OBSID   = 'GN-2007B-C-6-5'                                                      
+FOCUS   = '0.309'                                                               
+ENDTIME = '06:13:53.8'                                                          
+EQUINOX =         2.000000E+03  / equinox for RA, DEC.  TARG equinox is 1950.   
+RAWCC   = 'ANY     '                                                            
+RAWWV   = 'ANY     '                                                            
+RAWBG   = 'ANY     '                                                            
+RAWIQ   = 'ANY     '                                                            
+SSA     = 'B. Walls'                                                            
+DATALAB = 'GN-2007B-C-6-5-005-flt'                                              
+RELEASE = '2007-10-21'         / End of proprietary period YYYY-MM-DD           
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+
+--- HDU 1 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                    1                                                  
+
+--- HDU 2 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                    2                                                  
+
+--- HDU 3 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                    3                                                  
+
+--- HDU 4 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                    4                                                  

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GN-2013A-Q-71</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GN-2013A-Q-71</h1>
+
+<table>
+ <tr><td>Title:<td>A High Resolution Near Infrared Spectral Atlas of O stars with Gemini</tr>
+ <tr><td>PI:<td>Gabriel Ferrero</tr>
+ <tr><td>Co-I(s):<td> Nidia Morrell,  Rodolfo Barba,  Roberto Gamen</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+This proposal aims at compiling the highest resolution and S/N, instrumentally homogeneous and complete, NIR spectral atlas of O stars that has ever been published before, providing a more detailed insight into its spectral features, a better definition of the characteristics of every spectral type in the NIR, and contributing to build of a set of spectral standard O stars. This objective can be achieved with the GNIRS instrument configured at its highest spectral resolution limit. The proposal for this semester is to observe 13 optical spectral standard main sequence stars in the J, H and K bands. The other bands and other spectral standards of different luminosity class will be proposed to observe in the next semesters. 
+</div>
+
+
+
+</body>
+</html>

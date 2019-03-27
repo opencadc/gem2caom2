@@ -1,0 +1,144 @@
+Filename: P2003JAN14_0148_DARK.fits.bz2
+
+AstroData Types: ['GEMINI', 'PHOENIX', 'GEMINI_SOUTH', 'SPECT', 'RAW', 'UNPREPARED']
+
+
+--- HDU 0 ---
+SIMPLE  =                    T / conforms to FITS standard                      
+BITPIX  =                    8 / array data type                                
+NAXIS   =                    0 / number of array dimensions                     
+EXTEND  =                    T                                                  
+ORIGIN  = 'NOAO-IRAF FITS Image Kernel July 1999' / FITS file originator        
+DATE    = '2003-02-03T16:27:14' / Date FITS file was generated                  
+IRAF-TLM= '02:12:33 (10/01/2003)' / Time of last modification                   
+CHANNEL = 'only              '  /                                               
+INSTRUME= 'PHOENIX           '  /                                               
+OBJECT  = 'Darks   '            /                                               
+COADDS  =                    1  /  No. internal coadds                          
+INT_S   =             2.000000  /  Exposure time                                
+EXPTIME =                   2.  /  Exp.time (usual)                             
+MODE    = 'stare             '  /                                               
+LNRS    =                    1  /  Low noise reads                              
+UCODE   = 'PHaladII_12_11    '  /  Detector microcode                           
+IMAGETYP= 'dark    '            /                                               
+OFFSET  = '1.11809 south 4.30611 west                                          '
+COMMENT = 'none              '  /                                               
+OBSERVER= 'Rodgerds,Ridgway'    /                                               
+DETECTOR= 'ALAD256x1024      '  /                                               
+RA      = '08:44:42.273      '  /                                               
+DEC     = '-54:42:33.13      '  /                                               
+EQUINOX =          2000.000000  /                                               
+EPOCH   =          2003.035400  /                                               
+UT      = '04:41:02.8        '  /  Gemini UTC                                   
+UTDATE  = '2003-01-14        '  /  Gemini UTCDATE                               
+LST     = '07:31:03.2        '  /                                               
+HA      =            -1.229300  /                                               
+ZD      =            27.731701  /                                               
+AIRMASS =             1.129000  /                                               
+FOCUS   =            -0.459000  /                                               
+RECID   = 'gscp8m.20030114.044102.373                                          '
+FILT_POS= '6420 (12)         '  /                                               
+LYOT_POS= '8m_5.1 (6)        '  /                                               
+CVF_POS = 'open (1)          '  /                                               
+SLIT_POS= '107u_1.0-5.0 (8)  '  /                                               
+VIEW_POS= 'open (-152998)    '  /                                               
+GRAT_POS= 'encoder -7720     '  /                                               
+FOC_POS = '247.1             '  /                                               
+COVR_POS= 'open              '  /                                               
+OBSERVAT= 'Gemini-South'        /                                               
+TELESCOP= 'Gemini-South'        /                                               
+SSA     = 'Garcia  '            /                                               
+OBSID   = 'GS-CAL20030114-7'    /                                               
+DATALAB = 'GS-CAL20030114-7-0148'                                               
+GEMPRGID= 'GS-CAL20030114'      /                                               
+RAWBG   = '20-percentile'       /                                               
+RAWCC   = '70-percentile'       /                                               
+RAWIQ   = '80-percentile'       /                                               
+RAWWV   = '80-percentile'       /                                               
+RAWGEMOA= 'Unknown           '  /                                               
+RAWPIREQ= 'YES     '                                                            
+RAWGEMQA= 'USABLE  '                                                            
+NCOMBINE=                   10                                                  
+RELEASE = '2003-01-14'         / End of proprietary period YYYY-MM-DD           
+HISTORY Corrected metadata: automated fixes from PyFITS                         
+HISTORY Corrected metadata: RAWPIREQ                                            
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+
+--- HDU 1 ---
+XTENSION= 'IMAGE   '           / Image extension                                
+BITPIX  =                  -32 / array data type                                
+NAXIS   =                    2 / number of array dimensions                     
+NAXIS1  =                  256                                                  
+NAXIS2  =                 1024                                                  
+PCOUNT  =                    0 / number of parameters                           
+GCOUNT  =                    1 / number of groups                               
+EXTNAME = 'SCI     '           / ad4549: added by AstroData                     
+EXTVER  =                    1                                                  
+ORIGIN  = 'NOAO-IRAF FITS Image Kernel July 1999' / FITS file originator        
+DATE    = '2003-02-03T16:27:14' / Date FITS file was generated                  
+IRAF-TLM= '02:12:33 (10/01/2003)' / Time of last modification                   
+CHANNEL = 'only              '  /                                               
+INSTRUME= 'PHOENIX           '  /                                               
+OBJECT  = 'Darks   '            /                                               
+COADDS  =                    1  /  No. internal coadds                          
+INT_S   =             2.000000  /  Exposure time                                
+EXPTIME =                   2.  /  Exp.time (usual)                             
+MODE    = 'stare             '  /                                               
+LNRS    =                    1  /  Low noise reads                              
+UCODE   = 'PHaladII_12_11    '  /  Detector microcode                           
+IMAGETYP= 'dark    '            /                                               
+OFFSET  = '1.11809 south 4.30611 west                                          '
+COMMENT = 'none              '  /                                               
+OBSERVER= 'Rodgerds,Ridgway'    /                                               
+DETECTOR= 'ALAD256x1024      '  /                                               
+RA      = '08:44:42.273      '  /                                               
+DEC     = '-54:42:33.13      '  /                                               
+EQUINOX =          2000.000000  /                                               
+EPOCH   =          2003.035400  /                                               
+UT      = '04:41:02.8        '  /  Gemini UTC                                   
+UTDATE  = '2003-01-14        '  /  Gemini UTCDATE                               
+LST     = '07:31:03.2        '  /                                               
+HA      =            -1.229300  /                                               
+ZD      =            27.731701  /                                               
+AIRMASS =             1.129000  /                                               
+FOCUS   =            -0.459000  /                                               
+RECID   = 'gscp8m.20030114.044102.373                                          '
+FILT_POS= '6420 (12)         '  /                                               
+LYOT_POS= '8m_5.1 (6)        '  /                                               
+CVF_POS = 'open (1)          '  /                                               
+SLIT_POS= '107u_1.0-5.0 (8)  '  /                                               
+VIEW_POS= 'open (-152998)    '  /                                               
+GRAT_POS= 'encoder -7720     '  /                                               
+FOC_POS = '247.1             '  /                                               
+COVR_POS= 'open              '  /                                               
+OBSERVAT= 'Gemini-South'        /                                               
+TELESCOP= 'Gemini-South'        /                                               
+SSA     = 'Garcia  '            /                                               
+OBSID   = 'GS-CAL20030114-7'    /                                               
+DATALAB = 'GS-CAL20030114-7-0148'                                               
+GEMPRGID= 'GS-CAL20030114'      /                                               
+RAWBG   = '20-percentile'       /                                               
+RAWCC   = '70-percentile'       /                                               
+RAWIQ   = '80-percentile'       /                                               
+RAWWV   = '80-percentile'       /                                               
+RAWGEMOA= 'Unknown           '  /                                               
+RAWPIREQ= 'YES     '                                                            
+RAWGEMQA= 'USABLE  '                                                            
+NCOMBINE=                   10                                                  
+RELEASE = '2003-01-14'         / End of proprietary period YYYY-MM-DD           
+HISTORY Corrected metadata: automated fixes from PyFITS                         
+HISTORY Corrected metadata: RAWPIREQ                                            
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                

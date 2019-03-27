@@ -67,127 +67,58 @@
 # ***********************************************************************
 #
 
-# import os
 import logging
 import re
 import requests
+from enum import Enum
 from requests.adapters import HTTPAdapter
 from urllib3 import Retry
 
 from bs4 import BeautifulSoup
 
-import caom2
 from caom2pipe import manage_composable as mc
 from gem2caom2.svofps import filter_metadata
 from gem2caom2 import gemini_obs_metadata as gom
+from gem2caom2.obs_file_relationship import GemObsFileRelationship
 
 
 GEMINI_METADATA_URL = \
     'https://archive.gemini.edu/jsonsummary/canonical/filepre='
 GEMINI_FITS_HEADER_URL = 'https://archive.gemini.edu/fullheader/'
 
-GMOS_ENERGY_BAND = caom2.EnergyBand['OPTICAL']
-NIRI_ENERGY_BAND = caom2.EnergyBand['INFRARED']
-
-GMOS_RESOLVING_POWER = {
-    'B1200': 3744.0,
-    'R831': 4396.0,
-    'B600': 1688.0,
-    'R600': 3744.0,
-    'R400': 1918.0,
-    'R150': 631.0
-}
-
-# Angstroms/pixel
-GMOS_DISPERSION = {
-    'B1200': 0.245,
-    'R831': 0.36,
-    'B600': 0.475,
-    'R600': 0.495,
-    'R400': 0.705,
-    'R150': 1.835
-}
-
-# values from
-# https://www.gemini.edu/sciops/instruments/niri/spectroscopy/grisms
-NIRI_RESOLVING_POWER = {
-    'J': {
-        'f6-2pix': 770.0,
-        'f6-4pix': 610.0,
-        'f6-6pix': 460.0,
-        'f6-2pixB1': 770.0,
-        'f6-4pixB1': 650.0,
-        'f6-6pixB1': 480.0,
-        'f32-4pix': 1000.0,
-        'f32-6pix': 620.0,  # f32-7pix
-        'f32-9pix': 450.0  # f32-10pix
-    },
-    'H': {
-        'f6-2pix': 1650.0,
-        'f6-4pix': 825.0,
-        'f6-6pix': 520.0,
-        'f6-2pixB1': 1650.0,
-        'f6-4pixB1': 940.0,
-        'f6-6pixB1': 550.0,
-        'f32-4pix': 880.0,
-        'f32-6pix': 630.0,  # f32-7pix
-        'f32-9pix': 500.0  # f32-10pix
-    },
-    'L': {
-        'f6-2pix': 1100.0,
-        'f6-4pix': 690.0,
-        'f6-6pix': 460.0,
-        'f6-2pixB1': 1100.0,
-        'f6-4pixB1': 770.0,
-        'f6-6pixB1': 490.0,
-    },
-    'M': {
-        'f6-2pix': 1100.0,
-        'f6-4pix': 770.0,
-        'f6-6pix': 460.0
-    },
-    'K': {
-        'f6-2pix': 1300.0,
-        'f6-4pix': 780.0,
-        'f6-6pix': 520.0,
-        'f32-4pix': 1280.0,
-        'f32-6pix': 775.0,  # f32-7pix
-        'f32-9pix': 570.0  # f32-10pix
-    }
-}
-
-# select filter_id, wavelength_central, wavelength_lower, wavelength_upper
-# from gsa..gsa_filters where instrument = 'NICI'
-# 0 - central
-# 1 - lower
-# 2 - upper
-
-PHOENIX = {'2030 (4)': [4.929000, 4.808000, 5.050000],
-           '2030 (9)': [4.929000, 4.808000, 5.050000],
-           '2150 (2)': [4.658500, 4.566000, 4.751000],
-           '2462 (5)': [4.078500, 4.008000, 4.149000],
-           '2734 (4)': [3.670500, 3.610000, 3.731000],
-           '2870 (7)': [3.490500, 3.436000, 3.545000],
-           '3010 (4)': [3.334500, 3.279000, 3.390000],
-           '3100 (11)': [3.240000, 3.180000, 3.300000],
-           '3290 (7)': [3.032500, 2.980000, 3.085000],
-           '4220 (5)': [2.370000, 2.348000, 2.392000],
-           '4308 (6)': [2.322500, 2.296000, 2.349000],
-           '4396 (8)': [2.272500, 2.249000, 2.296000],
-           '4484 (8)': [2.230000, 2.210000, 2.250000],
-           '4578 (6)': [2.185000, 2.160000, 2.210000],
-           '4667 (9)': [2.143000, 2.120000, 2.166000],
-           '4748 (11)': [2.104000, 2.082000, 2.126000],
-           '6073 (10)': [1.647000, 1.632000, 1.662000],
-           '6420 (12)': [1.557500, 1.547000, 1.568000],
-           '7799 (10)': [1.280500, 1.271000, 1.290000],
-           '8265 (13)': [1.204500, 1.196000, 1.213000],
-           '9232 (3)': [1.083000, 1.077000, 1.089000],
-           'L2870 (7)': [3.490500, 3.436000, 3.545000]}
-
-obs_metadata = {}
-om = None
+# lazy initialization for jsonsummary metadata from Gemini
+om = gom.GeminiObsMetadata()
+# lazy initialization for filter metadata from SVO
 fm = {}
+# lazy initialization for program metadata from Gemini
+pm = {}
+
+gofr = GemObsFileRelationship('/app/data/from_paul.txt')
+
+
+class Inst(Enum):
+
+    BHROS = 'bHROS'
+    CIRPASS = 'CIRPASS'
+    F2 = 'F2'
+    FLAMINGOS = 'FLAMINGOS'
+    GMOS = 'GMOS'
+    GMOSN = 'GMOS-N'
+    GMOSS = 'GMOS-S'
+    GNIRS = 'GNIRS'
+    GPI = 'GPI'
+    GRACES = 'GRACES'
+    GSAOI = 'GSAOI'
+    HOKUPAA = 'Hokupaa+QUIRC'
+    HRWFS = 'hrwfs'
+    MICHELLE = 'michelle'
+    NICI = 'NICI'
+    NIFS = 'NIFS'
+    NIRI = 'NIRI'
+    OSCIR = 'OSCIR'
+    PHOENIX = 'PHOENIX'
+    TEXES = 'TEXES'
+    TRECS = 'TReCS'
 
 
 def get_obs_metadata(file_id):
@@ -197,7 +128,7 @@ def get_obs_metadata(file_id):
     :param file_id: The file ID
     :return: Dictionary of observation metadata.
     """
-    logging.debug('Begin get_obs_metadata')
+    logging.debug('Begin get_obs_metadata for {}'.format(file_id))
     gemini_url = '{}{}'.format(GEMINI_METADATA_URL, file_id)
 
     # Open the URL and fetch the JSON document for the observation
@@ -210,131 +141,185 @@ def get_obs_metadata(file_id):
     session.mount('https://', adapter)
     try:
         response = session.get(gemini_url, timeout=20)
-        metadata = response.json()[0]
+        metadata = response.json()
         response.close()
     except Exception as e:
         raise mc.CadcException(
             'Unable to download Gemini observation metadata from {} because {}'
                 .format(gemini_url, str(e)))
-    global obs_metadata
-    obs_metadata = metadata
     global om
-    om = gom.GeminiObsMetadata(metadata, file_id)
-    logging.debug('End get_obs_metadata')
+    om.add(metadata, file_id)
+    logging.debug('End get_obs_metadata for {}'.format(file_id))
 
 
 def get_pi_metadata(program_id):
-    program_url = 'https://archive.gemini.edu/programinfo/' + program_id
+    global pm
+    if program_id in pm:
+        metadata = pm[program_id]
+    else:
+        program_url = 'https://archive.gemini.edu/programinfo/' + program_id
 
-    # Open the URL and fetch the JSON document for the observation
-    session = requests.Session()
-    retries = 10
-    retry = Retry(total=retries, read=retries, connect=retries,
-                  backoff_factor=0.5)
-    adapter = HTTPAdapter(max_retries=retry)
-    session.mount('http://', adapter)
-    session.mount('https://', adapter)
-    try:
-        response = session.get(program_url, timeout=20)
-        xml_metadata = response.text
-        response.close()
-        logging.error('got pi metdata')
-    except Exception as e:
-        raise mc.CadcException(
-            'Unable to download Gemini observation metadata from {} because {}'
-                .format(program_url, str(e)))
-    metadata = None
-    soup = BeautifulSoup(xml_metadata, 'lxml')
-    tds = soup.find_all('td')
-    if len(tds) > 0:
-        title = tds[1].contents[0].replace('\n', ' ')
-        pi_name = tds[3].contents[0]
-        metadata = {'title': title,
-                    'pi_name': pi_name}
-    logging.debug('End get_obs_metadata')
+        # Open the URL and fetch the JSON document for the observation
+        session = requests.Session()
+        retries = 10
+        retry = Retry(total=retries, read=retries, connect=retries,
+                      backoff_factor=0.5)
+        adapter = HTTPAdapter(max_retries=retry)
+        session.mount('http://', adapter)
+        session.mount('https://', adapter)
+        try:
+            response = session.get(program_url, timeout=20)
+            xml_metadata = response.text
+            response.close()
+        except Exception as e:
+            raise mc.CadcException(
+                'Unable to download Gemini observation metadata from {} '
+                'because {}'.format(program_url, str(e)))
+        metadata = None
+        soup = BeautifulSoup(xml_metadata, 'lxml')
+        tds = soup.find_all('td')
+        if len(tds) > 0:
+            title = tds[1].contents[0].replace('\n', ' ')
+            pi_name = tds[3].contents[0]
+            metadata = {'title': title,
+                        'pi_name': pi_name}
+            pm[program_id] = metadata
+        logging.debug('End get_obs_metadata')
     return metadata
 
 
 def get_filter_metadata(instrument, filter_name):
     """A way to lazily initialize all the filter metadata reads from SVO."""
     global fm
-    if instrument in fm and filter_name in fm[instrument]:
-        result = fm[instrument][filter_name]
+    repaired_inst = _repair_instrument_name_for_svo(instrument)
+    repaired_filters = _repair_filter_name_for_svo(instrument, filter_name)
+    if repaired_filters is None:
+        # nothing to look up, try something else
+        return None
+    if repaired_inst in fm and repaired_filters in fm[repaired_inst]:
+        result = fm[repaired_inst][repaired_filters]
     else:
-        result = filter_metadata(instrument, filter_name)
-        if instrument in fm:
-            temp = fm[instrument]
-            temp[filter_name] = result
+        result = filter_metadata(repaired_inst, repaired_filters)
+        if repaired_inst in fm:
+            temp = fm[repaired_inst]
+            temp[repaired_filters] = result
         else:
-            fm[instrument] = {filter_name: result}
+            fm[repaired_inst] = {repaired_filters: result}
     return result
 
 
-def gmos_metadata():
+def _repair_instrument_name_for_svo(instrument):
     """
-    Calculate GMOS energy metadata using the Gemini observation metadata.
-    Imaging observations require a filter lookup to an external service.
-
-    :param obs_metadata: Dictionary of observation metadata.
-    :return: Dictionary of energy metadata
+    Instrument names from JSON/headers are not necessarily the same
+    as the instrument names used by the SVO Filter service. Correlate
+    the two here.
+    :param instrument the Gemini version
+    :return instrument the SVO version
     """
-    logging.debug('Begin gmos_metadata')
-    metadata = {
-        'energy': True,
-        'energy_band': GMOS_ENERGY_BAND
-    }
+    result = instrument.value
+    if instrument == Inst.HRWFS:
+        telescope = om.get('telescope')
+        if telescope is None:
+            obs_id = om.get('data_label')
+            raise mc.CadcException(
+                '{}: No observatory information for {}'.format(instrument,
+                                                               obs_id))
+        else:
+            if 'Gemini-South' == telescope:
+                result = 'AcqCam-S'
+            else:
+                result = 'AcqCam-N'
+    elif instrument == Inst.F2:
+        result = 'Flamingos2'
+    elif instrument == Inst.FLAMINGOS:
+        result = 'Flamingos'
+    return result
 
-    # Determine energy metadata for the plane.
-    # No energy information is determined for biases or darks.  The
-    # latter are sometimes only identified by a 'blank' filter.  e.g.
-    # NIRI 'flats' are sometimes obtained with the filter wheel blocked off.
-    global obs_metadata
-    if obs_metadata['observation_type'] in ('BIAS', 'DARK'):
-        metadata['energy'] = False
-        return metadata
 
-    reference_wavelength = 0.0
-    delta = 0.0
-    resolving_power = 0.0
+def _repair_filter_name_for_svo(instrument, filter_names):
+    """
+    Filter names from JSON/headers are not necessarily the same
+    as the filter names used by the SVO Filter service. Correlate
+    the two here.
 
-    if obs_metadata['mode'] == 'imaging':
-        filter_md = filter_metadata(obs_metadata['instrument'],
-                                    obs_metadata['filter_name'])
+    DB - 02-04-19 - strip the bar code from the filter names
 
-        delta = filter_md['wl_eff_width']
-        reference_wavelength = filter_md['wl_eff']
-        resolving_power = reference_wavelength/delta
-        reference_wavelength /= 1.0e10
-        delta /= 1.0e10
-    elif obs_metadata['mode'] in ('LS', 'spectroscopy', 'MOS'):
-        reference_wavelength = obs_metadata['central_wavelength']
+    :param instrument what repairs to apply
+    :param filter_names the Gemini version, which may include multiple names
+        separated by '+'
+    :return filter_name the SVO version
+    """
+    FILTER_REPAIR_NICI = {'CH4-H4S': 'ED451',
+                          'CH4-H4L': 'ED449',
+                          'CH4-H1S': 'ED286',
+                          'CH4-H1Sp': 'ED379',
+                          '': 'ED299',
+                          'CH4-H1L': 'ED381',
+                          'CH4-H1L_2': 'ED283'}
+    FILTER_REPAIR_NIRI = {'H2v=2-1s1-G0220': 'H2S1v2-1-G0220',
+                          'H2v=1-0s1-G0216': 'H2S1v1-0-G0216',
+                          'H2v=1-0S1-G0216': 'H2S1v1-0-G0216',
+                          'H2Oice_G0230': 'H2Oice-G0230w'}
+    FILTER_REPAIR_TRECS = {'K': 'k',
+                           'L': 'l',
+                           'M': 'm',
+                           'N': 'n',
+                           'Nprime': 'nprime',
+                           'Qw': 'Qwide',
+                           'NeII_ref2': 'NeII_ref'}
+    FILTER_REPAIR_MICHELLE = {'I79B10': 'Si1',
+                              'I88B10': 'Si2',
+                              'I97B10': 'Si3',
+                              'I103B10': 'Si4',
+                              'I105B53': 'N',
+                              'I112B21': 'Np',
+                              'I116B9': 'Si5',
+                              'I125B9': 'Si6',
+                              'I185B9': 'Qa',
+                              'I209B42': 'Q'}
 
-        # Ignore energy information if value of 'central_wavelength' = 0.0
-        if reference_wavelength == 0.0:
-            metadata['energy'] = False
-            return metadata
-
-        resolving_power = GMOS_RESOLVING_POWER[obs_metadata['disperser']]
-        delta = GMOS_DISPERSION[obs_metadata['disperser']]
-
-        reference_wavelength /= 1.0e6
-        delta /= 1.0e10
-
-    filter_name = re.sub(r'\+', ' + ', obs_metadata['filter_name'])
-    metadata['filter_name'] = filter_name
-    metadata['wavelength_type'] = 'WAVE'
-    # metadata['wavelength_unit'] = 'm'
-    metadata['number_pixels'] = 1
-    metadata['reference_wavelength'] = reference_wavelength
-    metadata['delta'] = delta
-    metadata['resolving_power'] = resolving_power
-    metadata['reference_pixel'] = 1.0
-
-    # On occasion (e.g. Moon observations) two filters with
-    # inconsistent passbands result in negative r.  e.g. RG610 + g
-    # Skip energy metadata in this case.
-    if metadata['resolving_power'] < 0:
-        metadata['energy'] = False
-
-    logging.debug('End gmos_metadata')
-    return metadata
+    result = []
+    for filter_name in filter_names.split('+'):
+        temp = filter_name
+        if instrument == Inst.NIRI:
+            temp = re.sub(r'con', 'cont', temp)
+            temp = re.sub(r'_', '-', temp)
+            if temp in FILTER_REPAIR_NIRI:
+                temp = FILTER_REPAIR_NIRI[temp]
+        elif instrument == Inst.NICI:
+            if temp in FILTER_REPAIR_NICI:
+                temp = FILTER_REPAIR_NICI[temp]
+            else:
+                logging.info(
+                    '{} filter {} not at SVO.'.format(instrument, temp))
+                temp = None
+        elif instrument == Inst.TRECS:
+            temp = filter_name.split('-')
+            if len(temp) > 0:
+                temp = temp[0]
+            if temp in FILTER_REPAIR_TRECS:
+                temp = FILTER_REPAIR_TRECS[temp]
+        elif instrument == Inst.MICHELLE:
+            temp = filter_name.split('-')
+            if len(temp) > 0:
+                temp = temp[0]
+            if temp in FILTER_REPAIR_MICHELLE:
+                temp = FILTER_REPAIR_MICHELLE[temp]
+        elif instrument == Inst.HRWFS:
+            # “ND” in the filter name means ‘neutral density’.  Ignore any
+            # of these as they have no impact on the transmitted wavelengths
+            # - I think #159 was the only one delivered according to
+            # http://www.gemini.edu/sciops/telescope/acqcam/acqFilterList.html.
+            # Acqcam/hrwfs was used mainly to look for rapid variability in
+            # bright, stellar objects that were really too bright for an 8'
+            # telescope and would have saturated the detector without an ND
+            # filter.
+            if temp.startswith('ND'):
+                continue
+            temp = temp[0]
+        if temp is not None:
+            result.append(temp)
+    if len(result) > 0:
+        return '+'.join(i for i in result)
+    else:
+        return None

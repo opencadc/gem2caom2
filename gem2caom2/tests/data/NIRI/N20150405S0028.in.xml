@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="00000000-0000-0000-a5f3-dfd8913f6998" caom2:lastModified="2018-10-05T23:43:50.266" caom2:maxLastModified="2018-10-05T23:43:50.266" caom2:metaChecksum="md5:59710a46eabb6ebae4d2963007cdd133" caom2:accMetaChecksum="md5:f5be6860bb47974c82569b7fad348876">
+  <caom2:collection>GEMINI</caom2:collection>
+  <caom2:observationID>GN-2015A-C-1-27-071</caom2:observationID>
+  <caom2:metaRelease>2015-04-05T00:00:00.000</caom2:metaRelease>
+  <caom2:algorithm>
+    <caom2:name>exposure</caom2:name>
+  </caom2:algorithm>
+  <caom2:type>FLAT</caom2:type>
+  <caom2:intent>calibration</caom2:intent>
+  <caom2:proposal>
+    <caom2:id>GN-2015A-C-1</caom2:id>
+  </caom2:proposal>
+  <caom2:target>
+    <caom2:name>GCALflat</caom2:name>
+  </caom2:target>
+  <caom2:telescope>
+    <caom2:name>Gemini-North</caom2:name>
+    <caom2:geoLocationX>-5464284.388114523</caom2:geoLocationX>
+    <caom2:geoLocationY>-2493782.309746151</caom2:geoLocationY>
+    <caom2:geoLocationZ>2150786.371607106</caom2:geoLocationZ>
+  </caom2:telescope>
+  <caom2:instrument>
+    <caom2:name>NIRI</caom2:name>
+  </caom2:instrument>
+  <caom2:planes>
+    <caom2:plane caom2:id="00000000-0000-0000-bfd1-f65f75546472" caom2:lastModified="2018-10-05T23:43:50.266" caom2:maxLastModified="2018-10-05T23:43:50.266" caom2:metaChecksum="md5:28d72da2ed58ccd44cec80935c48e204" caom2:accMetaChecksum="md5:9045afe69fa9817dbb5e03a6db638b58">
+      <caom2:productID>N20150405S0028</caom2:productID>
+      <caom2:metaRelease>2015-04-05T00:00:00.000</caom2:metaRelease>
+      <caom2:dataRelease>2015-04-05T00:00:00.000</caom2:dataRelease>
+      <caom2:dataProductType>image</caom2:dataProductType>
+      <caom2:calibrationLevel>1</caom2:calibrationLevel>
+      <caom2:provenance>
+        <caom2:name>Gemini Observatory Data</caom2:name>
+        <caom2:project>Gemini Archive</caom2:project>
+        <caom2:producer>Gemini Observatory</caom2:producer>
+        <caom2:reference>http://archive.gemini.edu/searchform/GN-2015A-C-1-27-071</caom2:reference>
+      </caom2:provenance>
+      <caom2:position/>
+      <caom2:energy/>
+      <caom2:time/>
+      <caom2:polarization/>
+      <caom2:artifacts>
+        <caom2:artifact caom2:id="00000000-0000-0000-bc7d-b23a4a1f6fd4" caom2:lastModified="2018-10-05T23:43:50.266" caom2:maxLastModified="2018-10-05T23:43:50.266" caom2:metaChecksum="md5:699985a010fc8e1d70fb915eb2e56fda" caom2:accMetaChecksum="md5:d5147e28b0e74b70526d4f66c17992ca">
+          <caom2:uri>gemini:GEM/N20150405S0028.fits</caom2:uri>
+          <caom2:productType>science</caom2:productType>
+          <caom2:releaseType>data</caom2:releaseType>
+          <caom2:contentType>application/fits</caom2:contentType>
+          <caom2:contentLength>4213440</caom2:contentLength>
+          <caom2:contentChecksum>md5:8d2f8e9826b237509fa85442e3de662c</caom2:contentChecksum>
+          <caom2:parts/>
+        </caom2:artifact>
+        <caom2:artifact caom2:id="00000000-0000-0000-b01d-ac60136f486e" caom2:lastModified="2018-10-05T23:43:50.266" caom2:maxLastModified="2018-10-05T23:43:50.266" caom2:metaChecksum="md5:47bf5eade8433f45274ccf7ad6c9f70a" caom2:accMetaChecksum="md5:9f83715f6a5f8bd19ebbd714f13f1aa8">
+          <caom2:uri>gemini:GEM/N20150405S0028.jpg</caom2:uri>
+          <caom2:productType>preview</caom2:productType>
+          <caom2:releaseType>data</caom2:releaseType>
+          <caom2:contentType>image/jpeg</caom2:contentType>
+          <caom2:parts/>
+        </caom2:artifact>
+      </caom2:artifacts>
+    </caom2:plane>
+  </caom2:planes>
+</caom2:Observation>

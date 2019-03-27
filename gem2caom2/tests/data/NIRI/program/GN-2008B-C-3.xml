@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GN-2008B-C-3</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GN-2008B-C-3</h1>
+
+<table>
+ <tr><td>Title:<td>Looking for Evidence of AGN Feedback in Massive Star--Forming Galaxies
+  at Hosting Luminous Compton--Thick Nuclei
+</tr>
+ <tr><td>PI:<td>Mauro Giavalisco</tr>
+ <tr><td>Co-I(s):<td> Emanuele Daddi,  Mark Dickinson,  Elena Tundo,  Francesco Bertola,  Marco Mignoli,  Andrea Cimatti</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+We propose 4 nights with Gemini--North and NIRI to study the effects of
+feedback in the ISM of massive, star-forming (SF) galaxies at
+$2.2&lt;z&lt;2.6$ (sBzK), with and without luminous Compton--thick (CT) AGN
+hosted in them. We will measure the velocity and geometry of the
+large--scale motions of the interstellar gas from the redshift
+difference between the \halpha\ line, which traces the systemic
+redshift, and the UV low-ionization interstellar absorption lines and
+\lya, whose spectra we already have. This is the same methodology used
+to study galactic winds in Lyman--break galaxies at $z\sim 2$--3
+(BX/LBG). The key new element here is that the SF rate and stellar mass
+of the selected sBzK are $~\sim 10\times$ higher than those of their
+BX/LBG counterparts at the same redshift, and half of them host a
+luminous, Compton--tick AGN. We will study if the feedback depends on
+the presence of a powerful CT AGN, whose energy is absorbed and
+re--irradiated by the ISM, but the fraction retained as mechanical energy
+is unknown. By comparing with the LBG, we will also study how the
+feedback depends on SF rate and mass. These observations will be one of
+the first attempts to provide empirical information on feedback and its
+relationship with physical properties of galaxies at the cosmic time
+when some massive galaxies were already passively evolving.
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GS-2013B-Q-16</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-2013B-Q-16</h1>
+
+<table>
+ <tr><td>Title:<td>A new Y dwarf search probing the limits of WISE (South)</tr>
+ <tr><td>PI:<td>Sandy Leggett</tr>
+ <tr><td>Co-I(s):<td> Didier Saumon,  Mark Marley,  David Pinfield,  Jackie Faherty,  Joana Gomes,  Ricky Smart,  Avril Day-Jones,  Maria Teresa Ruiz</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+We propose to use FLAMINGOS-2, GNIRS and NIRI to follow-up candidate Y dwarfs from a new search  of the WISE catalog.  Our method uses WISE multiple measurements and photometric profile fit information to identify non-variable point sources which are detected only in the W2-band, the band most sensitive to very cool brown dwarfs.  This search identifies 121 previously unknown candidates down to a S/N=8 limit and probes the lowest Teff that WISE is sensitive to. Initial near-IR followup produced photometry for 13 sources, of which 9 are T8 and earlier T types, three are new 500K T9 dwarfs and one is a new 400K Y0 dwarf. When followup is complete we should approximately double the known number of WISE brown dwarfs cooler than 500K. In 13B we request time to obtain J-band photometry for 85 sources, which make up 75% of our remaining unmatched sample. We expect to find ~8 new Y dwarfs, for which we will also obtain H-band photometry. For the brightest new Y dwarfs we will  obtain spectra. We expect there will be up to three more semesters where we request  time for this project, to image and followup the remaining 25% of our sample, and confirm and characterize new Y dwarfs. 
+</div>
+
+
+<h2>Publications using this program's data</h2>
+<ul>
+<li>
+<a href="/searchform/publication=2014MNRAS.444.1931P" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2014MNRAS.444.1931P/abstract" target="_blank">[ADS]</a> Discovery of a new Y dwarf: WISE J030449.03-270508.3
+</ul>
+
+
+</body>
+</html>

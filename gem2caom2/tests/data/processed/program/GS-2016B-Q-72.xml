@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GS-2016B-Q-72</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-2016B-Q-72</h1>
+
+<table>
+ <tr><td>Title:<td>Rotational Velocities and Radii of Pre-Main Sequence Stars in the Young Cluster NGC 2362</tr>
+ <tr><td>PI:<td>Catrina Hamilton-Drager</tr>
+ <tr><td>Co-I(s):<td> David James,  Phillip Cargile</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+We wish to obtain high-resolution spectra for a large number of pre-main sequence (PMS) stars in NGC 2362 in order to measure v sin(i) values. Our sample includes about 100 stars with R=13.0- 17.5 for which accurate rotation periods are known from photometric monitoring. By combining rotation periods with projected velocities for this large sample of stars, we will be able to apply statistical arguments to arrive at estimates for the mean radii of the stars in NGC 2362. Stellar radii and rotational velocities are crucial fundamental parameters which constrain theoretical models describing PMS evolution, as well as magnetospheric accretion. Our method uses a novel approach for the estimation of stellar radii, which has already been successfully employed in the Orion Nebula Cluster (ONC), NGC 2264, and IC 348, and more recently in the older clusters NGC 2547 and NGC 2516. As a part of the cross-correlation process, we plan to measure the target stars’ radial velocities. 
+</div>
+
+
+
+</body>
+</html>

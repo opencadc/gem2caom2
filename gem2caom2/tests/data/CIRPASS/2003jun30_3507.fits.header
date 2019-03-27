@@ -1,0 +1,548 @@
+Filename: 2003jun30_3507.fits.bz2
+
+AstroData Types: ['CIRPASS', 'RAW', 'UNPREPARED']
+
+
+--- HDU 0 ---
+SIMPLE  =                    T / Fits standard                                  
+BITPIX  =                   16 / Bits per pixel                                 
+NAXIS   =                    0 / Number of axes                                 
+EXTEND  =                    T / File may contain extensions                    
+ORIGIN  = '        '           / FITS file originator                           
+DATE    = '2003-07-24T13:33:52'                                                 
+IRAF-TLM= '04:52:06 (30/06/2003)'                                               
+NEXTEND =                   29                                                  
+NRUN    =                 3507 /Run Number                                      
+OBJECT  = 'CFRS22.0779'                                                         
+FILTER  = 'test      '/Filter name                                              
+OBSTYPE = 'unknown   '/Observation type                                         
+IMAGTYPE= 'unknown   '/Observation type                                         
+IRAFNAME= 'CFRS22.0779_3507_c1_000.fits'/Filename                               
+FILEPATH= 'e:\today  '/Disk to save data                                        
+CAMERA  = 'cirpass   '/Name of camera                                           
+DETECTOR= 'Hawaii    '/Type of detector                                         
+CHIP    =                    1 /Chip number                                     
+QUAD    = '1 2 3 4   '/Active quads in this image                               
+FPA     = 'unknown1  '/Array serial number                                      
+DATE_OBS= '2003-06-30T08:18:23'/Sequence started                                
+EXP_TIME=                 1800 /Requested integration-seconds                   
+INT_TIME=             1800.005 /Actual integration time                         
+READRATE=              334.336 /Pixel rate KHz                                  
+GAIN    =                3.083 /Camera gain e/dn                                
+READMODE= 'NDR       '/Non-destructive read                                     
+COMMENT NFRAMES - what does this mean                                           
+FRAME   =                    3 /Current frame in sequence                       
+NLOOPS  =                    6 /Total number of loops                           
+TOTALNDR=                   60 /Total number of reads of each pixel             
+NREADS  =                   10 /Number of sequential reads                      
+RSTIMAGE=                    T /Frame contains black level image                
+SUBTRACT=                    F /Reset level subtracted                          
+ROTATE  =                    F /Image rotated                                   
+COMMENT ROTANGLE Image is not rotated                                           
+FLIP_H  =                    F /Image reversed left-right                       
+FLIP_V  =                    F /Image reversed up-down                          
+SAMVER  = 'ual_l_jackson'/Type of SAM                                           
+PIXVER  = '          '/Jan  9 2001 19:18:56                                     
+PRE-READ=                    F /Number of Dummy reads                           
+FLUSHES =                   16 /Number flushes                                  
+SAMTYPE =                    2 /SAM type                                        
+CHIPGAIN=                0.340 /Relative chip gain                              
+HWGAIN  =                   12 /HW Gain setting                                 
+PIXRATE =                   17 /HW Rate setting                                 
+BLKLEVEL=                  500 /Blacklevel setting                              
+COMMENT Start of external header file                                           
+COMMENT C:\Cirpass\info.fits                                                    
+INSTRUME= 'CIRPASS' / Instrument Name                                           
+READNOIS= 18       / Detector Read noise estimate                               
+TEMP_DET= ''       / Temperature of detector                                    
+TEMP_FRI= ''       / Temperature of fridge                                      
+RA_OFF  = ''       / RA offset of IFU reference lens                            
+DEC_OFF = ''       / DEC offset of IFU reference lens                           
+LENS_SCL= '0.36'   / Image scale (arcsec per lenslet)                           
+MAG_X   = '4500'   / Magnifier X                                                
+MAG_Y   = '4300'   / Magnifier Y                                                
+IFU_Z   = '0'      / IFU position on optical axis                               
+FO_LAMP = 'OFF'    / Foreoptics calibration lamp                                
+FO_SHTR = 'CLOSED' / Foreoptics shutter                                         
+GRATING = '??'     / Grating used                                               
+GRAT_X  = '18950'  / Grating X                                                  
+GRAT_Y  = '3910'   / Grating Y                                                  
+TILTMIRX= '11200'  / Tilt mirror X                                              
+TILTMIRY= '21605'  / Tilt mirror Y                                              
+MASK    = '??'     / Mask used                                                  
+MASK_FOC= '20000'  / Mask focus                                                 
+SUP_LAMP= 'OFF'    / Suppressor lamp                                            
+SUP_SHTR= 'CLOSED' / Suppressor shutter                                         
+FILTER1 = 'Clear'  / Filter 1 - Closer to dewar window                          
+FILTER2 = 'Cam Blk3' / Filter 2 - Closer to detector                            
+DET_FOC = 3046     / Detector focus position                                    
+DET_TILT= -0.799976 / Detector tilt                                             
+TARGNAME= 'CFRS22.0779' / Target Name                                           
+TARG_RA = '334.46716667' / Target right ascension                               
+TARG_DEC= '0.33619444' / Target declination                                     
+OFF_RA  = '0.000'  / Offset in right ascension                                  
+OFF_DEC = '1.620'  / Offset in declination                                      
+CRDFRAM = 'FK5'    / Coordinate frame of target                                 
+TARGSYS = 'FK5'    / Target's FITS coord frame                                  
+EQUINOX = '2000.00000000000000' / Equinox of target coordinates                 
+EPOCH   = '2000.00000000000000' / Epoch of target coordinates                   
+PARALLAX= ''       / Parallax of target                                         
+PM_RA   = ''       / Proper motion in RA of target                              
+PM_DEC  = ''       / Proper motion in Dec of target                             
+RAD_VEL = ''       / Radial velocity of target                                  
+TEL_RA  = '22:17:49.985' / Telescope right ascension                            
+TEL_DEC = '+00:17:33.52' / Telescope declination                                
+TEL_FOC = '-0.382' / Telescope nominal focus                                    
+USERFOC = '-0.050' / Offset from nominal focus                                  
+ROT_PA  = '90.00'  / Rotator position angle                                     
+INST_PA = '0.00'   / Rotator position angle offset                              
+FRAMEPA = 'FK5'    / Reference Frame of Instrument PA                           
+AIRMASS = '1.161'  / Object arimass                                             
+HUMIDITY= '40.0'   / Humidity                                                   
+TEL_HLTH= 'BAD'    / Telescope health                                           
+OBJ_HA  = '-0.1378' / HA at start of observation                                
+LST     = '22:09:44.5' / LST at start of observation                            
+OBJ_ZD  = '30.5379' / Object Zenith Distance                                    
+LOC_TIME= '04:20:43.3' / Local Time                                             
+MJD     = ' 5.28203477243508e+04' / Modified Julian date                        
+UTC     = '08:20:43.3' / Universal Coordinated Time                             
+UTC_DATE= '2003-06-30' / UTC date                                               
+GUIDING = 'On'     / Guiding enabled; 0=no; 1=yes                               
+GEMPRGID= 'GS-2003A-Q-14'                                                       
+OBSID   = 'GS-2003A-Q-14-2'                                                     
+DATALAB = 'GS-2003A-Q-14-2-3507'                                                
+OBSERVER= 'Turner,Dean,Sharp'                                                   
+SSA     = 'Grashuis'                                                            
+RAWBG   = '80-percentile'                                                       
+RAWCC   = '90-percentile'                                                       
+RAWIQ   = '85-percentile'                                                       
+RAWWV   = 'Any     '                 /Transparancy                              
+TELESCOP= ''       /                                                            
+OBSERVAT= ''       /                                                            
+RAWPIREQ= 'UNKNOWN '                                                            
+RAWGEMQA= 'USABLE  '                                                            
+OBS_L   = ''       / Last name of observer                                      
+OBS_F   = ''       / First name of Observer                                     
+PROPOSID= ''       / Proposal identifier                                        
+PR_INV_L= ''       / Last name of principal investigator                        
+PR_INV_F= ''       / First name of principal investigator                       
+PR_INV_M= ''       / Middle initial of principal investigtor                    
+DBFILE  = '/home/cirpass/database/db' / Database to write/read parameters to/fr 
+MASKFILE= '/home/cirpass/mask/mask' / Static data quality file                  
+NOISFILE= '/home/cirpass/noise/noise' / Detector Read noise file                
+LINFILE = '/home/cirpass/linearity/linearity' / Detector nonlinearities file    
+BKGFILE = '/home/obs/Calibration/dark_900s_1342_ima.fits' / Background file     
+EXTRFILE= '/datared2/20030629/fibpos_longJ2.list' / Image to use to find extrac 
+WVFILE  = '/home/cirpass/wave/wave' / Wavelength calibration file               
+FLATFILE= '/home/cirpass/flat/flat' / Flat field file                           
+CALFILE = '/home/cirpass/flux/flux' / Flux calibration file                     
+ZOFFCORR= 'PERFORM' / Subtract zeroth read                                      
+MASKCORR= 'OMIT'   / Data quality initialization                                
+NOISCALC= 'OMIT'   / Calculate statistical errors                               
+TIMECALC= 'OMIT'   / Populated time extensions                                  
+LINCORR = 'OMIT'   / Correct for detector nonlinearities                        
+UNITCORR= 'OMIT'   / Convert to count rates                                     
+CRIDCALC= 'OMIT'   / Identify cosmic ray hits                                   
+BKGCORR = 'OMIT'   / Subtract background image                                  
+DOWVCAL = 'OMIT'   / Wavelength calibrate spectra                               
+DOWVALGN= 'OMIT'   / Wavelength align spectra                                   
+FLATCORR= 'OMIT'   / Flatfield spectra                                          
+DOFLCAL = 'OMIT'   / Flux calibrate spectra                                     
+DOEXTR  = 'PERFORM' / Extract spectra                                           
+ZOFFDONE= ''       / Subtract zeroth read                                       
+MASKDONE= ''       / Data quality initialization                                
+NOISDONE= ''       / Calculate statistical errors                               
+TIMEDONE= ''       / Populate time extensions                                   
+LINDONE = ''       / Correct for detector nonlinearities                        
+UNITDONE= ''       / Convert to count rates                                     
+CRIDDONE= ''       / Identify cosmic ray hits                                   
+BKGDONE = ''       / Subtract background image                                  
+EXTRDONE= ''       / Extract spectra                                            
+WVCLDONE= ''       / Wavelength calibrate spectra                               
+WVALDONE= ''       / Wavelength align spectra                                   
+FLATDONE= ''       / Flatfield spectra                                          
+FLUXDONE= ''       / Flux calibrate spectra                                     
+CALSTAGE= ''       / Calibration stage                                          
+CAL_VER = ''       / Calibration code version                                   
+USR_CMTS= ''       / User comments                                              
+COMMENT End of values inserted from external file                               
+CIRPNAME= 'CFRS22.0779_3507_raw.fits'                                           
+OBS_TYPE= 'Object  '                                                            
+RELEASE = '2004-12-30'         / End of proprietary period YYYY-MM-DD           
+HISTORY Corrected metadata: automated fixes from PyFITS                         
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+
+--- HDU 1 ---
+XTENSION= 'BINTABLE'           / binary table extension                         
+BITPIX  =                    8 / 8-bit bytes                                    
+NAXIS   =                    2 / 2-dimensional binary table                     
+NAXIS1  =                   12 / width of table in bytes                        
+NAXIS2  =                  517 / number of rows in table                        
+PCOUNT  =                    0 / size of special data area                      
+GCOUNT  =                    1 / one data group (required keyword)              
+TFIELDS =                    3 / number of fields in each row                   
+TTYPE1  = 'FibreID '           / label for field   1                            
+TFORM1  = '1E      '           / data format of field: 4-byte REAL              
+TTYPE2  = 'xcord   '           / label for field   2                            
+TFORM2  = '1E      '           / data format of field: 4-byte REAL              
+TTYPE3  = 'ycord   '           / label for field   3                            
+TFORM3  = '1E      '           / data format of field: 4-byte REAL              
+YOVERX  =             1.732051                                                  
+MAXDIST =             1.154701                                                  
+EXTNAME = 'HDU     '                                                            
+EXTVER  =                    8                                                  
+
+--- HDU 2 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                  -32 / number of bits per data pixel                  
+NAXIS   =                    2 / number of data axes                            
+NAXIS1  =                 1024 / length of data axis 1                          
+NAXIS2  =                 1024 / length of data axis 2                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'SCI     '                                                            
+EXTVER  =                    1                                                  
+LOOP    =         6.000000E+00                                                  
+READ    =         9.000000E+00                                                  
+CURR_NDR=         6.900000E+01                                                  
+TIME_OBS=         1.832205E+06                                                  
+SAMPTIME=         0.000000E+00                                                  
+
+--- HDU 3 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                  -32 / number of bits per data pixel                  
+NAXIS   =                    2 / number of data axes                            
+NAXIS1  =                 1024 / length of data axis 1                          
+NAXIS2  =                 1024 / length of data axis 2                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'VAR     '                                                            
+EXTVER  =                    1                                                  
+
+--- HDU 4 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                   16 / number of bits per data pixel                  
+NAXIS   =                    2 / number of data axes                            
+NAXIS1  =                 1024 / length of data axis 1                          
+NAXIS2  =                 1024 / length of data axis 2                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'DQ      '                                                            
+EXTVER  =                    1                                                  
+
+--- HDU 5 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                  -32 / number of bits per data pixel                  
+NAXIS   =                    2 / number of data axes                            
+NAXIS1  =                 1024 / length of data axis 1                          
+NAXIS2  =                 1024 / length of data axis 2                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'TIME    '                                                            
+EXTVER  =                    1                                                  
+
+--- HDU 6 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                  -32 / number of bits per data pixel                  
+NAXIS   =                    2 / number of data axes                            
+NAXIS1  =                 1024 / length of data axis 1                          
+NAXIS2  =                 1024 / length of data axis 2                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'SCI     '                                                            
+EXTVER  =                    2                                                  
+LOOP    =         5.000000E+00                                                  
+READ    =         9.000000E+00                                                  
+CURR_NDR=         5.900000E+01                                                  
+TIME_OBS=         1.532200E+06                                                  
+SAMPTIME=         0.000000E+00                                                  
+
+--- HDU 7 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                  -32 / number of bits per data pixel                  
+NAXIS   =                    2 / number of data axes                            
+NAXIS1  =                 1024 / length of data axis 1                          
+NAXIS2  =                 1024 / length of data axis 2                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'VAR     '                                                            
+EXTVER  =                    2                                                  
+
+--- HDU 8 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                   16 / number of bits per data pixel                  
+NAXIS   =                    2 / number of data axes                            
+NAXIS1  =                 1024 / length of data axis 1                          
+NAXIS2  =                 1024 / length of data axis 2                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'DQ      '                                                            
+EXTVER  =                    2                                                  
+
+--- HDU 9 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                  -32 / number of bits per data pixel                  
+NAXIS   =                    2 / number of data axes                            
+NAXIS1  =                 1024 / length of data axis 1                          
+NAXIS2  =                 1024 / length of data axis 2                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'TIME    '                                                            
+EXTVER  =                    2                                                  
+
+--- HDU 10 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                  -32 / number of bits per data pixel                  
+NAXIS   =                    2 / number of data axes                            
+NAXIS1  =                 1024 / length of data axis 1                          
+NAXIS2  =                 1024 / length of data axis 2                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'SCI     '                                                            
+EXTVER  =                    3                                                  
+LOOP    =         4.000000E+00                                                  
+READ    =         9.000000E+00                                                  
+CURR_NDR=         4.900000E+01                                                  
+TIME_OBS=         1.232200E+06                                                  
+SAMPTIME=         0.000000E+00                                                  
+
+--- HDU 11 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                  -32 / number of bits per data pixel                  
+NAXIS   =                    2 / number of data axes                            
+NAXIS1  =                 1024 / length of data axis 1                          
+NAXIS2  =                 1024 / length of data axis 2                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'VAR     '                                                            
+EXTVER  =                    3                                                  
+
+--- HDU 12 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                   16 / number of bits per data pixel                  
+NAXIS   =                    2 / number of data axes                            
+NAXIS1  =                 1024 / length of data axis 1                          
+NAXIS2  =                 1024 / length of data axis 2                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'DQ      '                                                            
+EXTVER  =                    3                                                  
+
+--- HDU 13 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                  -32 / number of bits per data pixel                  
+NAXIS   =                    2 / number of data axes                            
+NAXIS1  =                 1024 / length of data axis 1                          
+NAXIS2  =                 1024 / length of data axis 2                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'TIME    '                                                            
+EXTVER  =                    3                                                  
+
+--- HDU 14 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                  -32 / number of bits per data pixel                  
+NAXIS   =                    2 / number of data axes                            
+NAXIS1  =                 1024 / length of data axis 1                          
+NAXIS2  =                 1024 / length of data axis 2                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'SCI     '                                                            
+EXTVER  =                    4                                                  
+LOOP    =         3.000000E+00                                                  
+READ    =         9.000000E+00                                                  
+CURR_NDR=         3.900000E+01                                                  
+TIME_OBS=         9.322000E+05                                                  
+SAMPTIME=         0.000000E+00                                                  
+
+--- HDU 15 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                  -32 / number of bits per data pixel                  
+NAXIS   =                    2 / number of data axes                            
+NAXIS1  =                 1024 / length of data axis 1                          
+NAXIS2  =                 1024 / length of data axis 2                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'VAR     '                                                            
+EXTVER  =                    4                                                  
+
+--- HDU 16 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                   16 / number of bits per data pixel                  
+NAXIS   =                    2 / number of data axes                            
+NAXIS1  =                 1024 / length of data axis 1                          
+NAXIS2  =                 1024 / length of data axis 2                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'DQ      '                                                            
+EXTVER  =                    4                                                  
+
+--- HDU 17 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                  -32 / number of bits per data pixel                  
+NAXIS   =                    2 / number of data axes                            
+NAXIS1  =                 1024 / length of data axis 1                          
+NAXIS2  =                 1024 / length of data axis 2                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'TIME    '                                                            
+EXTVER  =                    4                                                  
+
+--- HDU 18 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                  -32 / number of bits per data pixel                  
+NAXIS   =                    2 / number of data axes                            
+NAXIS1  =                 1024 / length of data axis 1                          
+NAXIS2  =                 1024 / length of data axis 2                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'SCI     '                                                            
+EXTVER  =                    5                                                  
+LOOP    =         2.000000E+00                                                  
+READ    =         9.000000E+00                                                  
+CURR_NDR=         2.900000E+01                                                  
+TIME_OBS=         6.322000E+05                                                  
+SAMPTIME=         0.000000E+00                                                  
+
+--- HDU 19 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                  -32 / number of bits per data pixel                  
+NAXIS   =                    2 / number of data axes                            
+NAXIS1  =                 1024 / length of data axis 1                          
+NAXIS2  =                 1024 / length of data axis 2                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'VAR     '                                                            
+EXTVER  =                    5                                                  
+
+--- HDU 20 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                   16 / number of bits per data pixel                  
+NAXIS   =                    2 / number of data axes                            
+NAXIS1  =                 1024 / length of data axis 1                          
+NAXIS2  =                 1024 / length of data axis 2                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'DQ      '                                                            
+EXTVER  =                    5                                                  
+
+--- HDU 21 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                  -32 / number of bits per data pixel                  
+NAXIS   =                    2 / number of data axes                            
+NAXIS1  =                 1024 / length of data axis 1                          
+NAXIS2  =                 1024 / length of data axis 2                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'TIME    '                                                            
+EXTVER  =                    5                                                  
+
+--- HDU 22 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                  -32 / number of bits per data pixel                  
+NAXIS   =                    2 / number of data axes                            
+NAXIS1  =                 1024 / length of data axis 1                          
+NAXIS2  =                 1024 / length of data axis 2                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'SCI     '                                                            
+EXTVER  =                    6                                                  
+LOOP    =         1.000000E+00                                                  
+READ    =         9.000000E+00                                                  
+CURR_NDR=         1.900000E+01                                                  
+TIME_OBS=         3.321550E+05                                                  
+SAMPTIME=         0.000000E+00                                                  
+
+--- HDU 23 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                  -32 / number of bits per data pixel                  
+NAXIS   =                    2 / number of data axes                            
+NAXIS1  =                 1024 / length of data axis 1                          
+NAXIS2  =                 1024 / length of data axis 2                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'VAR     '                                                            
+EXTVER  =                    6                                                  
+
+--- HDU 24 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                   16 / number of bits per data pixel                  
+NAXIS   =                    2 / number of data axes                            
+NAXIS1  =                 1024 / length of data axis 1                          
+NAXIS2  =                 1024 / length of data axis 2                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'DQ      '                                                            
+EXTVER  =                    6                                                  
+
+--- HDU 25 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                  -32 / number of bits per data pixel                  
+NAXIS   =                    2 / number of data axes                            
+NAXIS1  =                 1024 / length of data axis 1                          
+NAXIS2  =                 1024 / length of data axis 2                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'TIME    '                                                            
+EXTVER  =                    6                                                  
+
+--- HDU 26 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                  -32 / number of bits per data pixel                  
+NAXIS   =                    2 / number of data axes                            
+NAXIS1  =                 1024 / length of data axis 1                          
+NAXIS2  =                 1024 / length of data axis 2                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'SCI     '                                                            
+EXTVER  =                    7                                                  
+LOOP    =         0.000000E+00                                                  
+READ    =         9.000000E+00                                                  
+CURR_NDR=         9.000000E+00                                                  
+TIME_OBS=         3.220000E+04                                                  
+SAMPTIME=         0.000000E+00                                                  
+
+--- HDU 27 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                  -32 / number of bits per data pixel                  
+NAXIS   =                    2 / number of data axes                            
+NAXIS1  =                 1024 / length of data axis 1                          
+NAXIS2  =                 1024 / length of data axis 2                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'VAR     '                                                            
+EXTVER  =                    7                                                  
+
+--- HDU 28 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                   16 / number of bits per data pixel                  
+NAXIS   =                    2 / number of data axes                            
+NAXIS1  =                 1024 / length of data axis 1                          
+NAXIS2  =                 1024 / length of data axis 2                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'DQ      '                                                            
+EXTVER  =                    7                                                  
+
+--- HDU 29 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                  -32 / number of bits per data pixel                  
+NAXIS   =                    2 / number of data axes                            
+NAXIS1  =                 1024 / length of data axis 1                          
+NAXIS2  =                 1024 / length of data axis 2                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+EXTNAME = 'TIME    '                                                            
+EXTVER  =                    7                                                  

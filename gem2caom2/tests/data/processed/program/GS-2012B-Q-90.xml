@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GS-2012B-Q-90</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-2012B-Q-90</h1>
+
+<table>
+ <tr><td>Title:<td>T-ReCS Open Call for IQ85 Observations between Sept 25 and Oct 9</tr>
+ <tr><td>PI:<td>Bernadette Rodgers</tr>
+ <tr><td>Co-I(s):<td></tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+No abstract
+</div>
+
+
+<h2>Publications using this program's data</h2>
+<ul>
+<li>
+<a href="/searchform/publication=2013ApJ...777...78S" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2013ApJ...777...78S/abstract" target="_blank">[ADS]</a> The Nearby, Young, Isolated, Dusty Star HD 166191
+<li>
+<a href="/searchform/publication=2016A&A...593A.112K" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2016A&A...593A.112K/abstract" target="_blank">[ADS]</a> Inhomogeneous molecular ring around the B[e] supergiant LHA 120-S 73
+</ul>
+
+
+</body>
+</html>

@@ -1,0 +1,218 @@
+Filename: p2004may20_0048_FLAT.fits.bz2
+
+AstroData Types: ['GEMINI', 'PHOENIX', 'GEMINI_SOUTH', 'SPECT', 'UNPREPARED']
+
+
+--- HDU 0 ---
+SIMPLE  =                    T / conforms to FITS standard                      
+BITPIX  =                    8 / array data type                                
+NAXIS   =                    0 / number of array dimensions                     
+EXTEND  =                    T                                                  
+ORIGIN  = 'NOAO-IRAF FITS Image Kernel July 2003' / FITS file originator        
+DATE    = '2004-06-14T20:01:32' / Date FITS file was generated                  
+IRAF-TLM= '13:33:25 (21/09/2005)' / Time of last modification                   
+CHANNEL = 'only              '  /                                               
+INSTRUME= 'PHOENIX           '  /                                               
+OBJECT  = 'flats   '           /                                                
+COADDS  =                    1  /  No. internal coadds                          
+INT_S   =             1.002000  /  Exposure time                                
+EXPTIME =             1.002000  /  Exp.time (usual)                             
+MODE    = 'stare             '  /                                               
+LNRS    =                    1  /  Low noise reads                              
+UCODE   = 'PHaladII_12_11    '  /  Detector microcode                           
+IMAGETYP= 'Flat    '           /                                                
+OFFSET  = '38.1862 north 132.026 east                                          '
+COMMENT = 'none              '  /                                               
+OBSERVER= 'observer'           / Observer(s)                                    
+DETECTOR= 'ALAD256x1024      '  /                                               
+RA      = '08:44:42.551      '  /                                               
+DEC     = '-54:42:29.93      '  /                                               
+EQUINOX =          2000.000000  /                                               
+EPOCH   =          2000.000000  /                                               
+UT      = '01:40:31.2        '  /  Gemini UTC                                   
+UTDATE  = '2004-05-20        '  /  Gemini UTCDATE                               
+LST     = '12:49:47.1        '  /                                               
+HA      =             4.083000  /                                               
+ZD      =            49.253201  /                                               
+AIRMASS =             1.530000  /                                               
+FOCUS   =             0.402000  /                                               
+PLATE_SC=             0.085000  /  Arc sec. per pixel                           
+RECID   = 'gscp8m.20040520.014031.1094                                         '
+FILT_POS= '4220 (5)          '  /                                               
+LYOT_POS= '8m_2.5 (4)        '  /                                               
+CVF_POS = 'open (1)          '  /                                               
+SLIT_POS= '107u_1.0-5.0 (8)  '  /                                               
+VIEW_POS= 'open (-152989)    '  /                                               
+GRAT_POS= 'encoder -10739    '  /                                               
+FOC_POS = '245.0             '  /                                               
+COVR_POS= 'open              '  /                                               
+OBSERVAT= 'Gemini-South'                                                        
+TELESCOP= 'Gemini-South'                                                        
+SSA     = 'ssa     '           / SSA                                            
+OBSID   = 'GS-CAL20040520-7'   / Observation ID                                 
+DATALAB = 'GS-CAL20040520-7-0048-flat-p' / Data Label                           
+GEMPRGID= 'GS-CAL20040520'     / Gemini Science Program ID                      
+RAWBG   = 'UNKNOWN '           / Raw Background                                 
+RAWCC   = 'UNKNOWN '           / Raw Cloud Cover                                
+RAWIQ   = 'UNKNOWN '           / Raw Image Quality                              
+RAWWV   = 'UNKNOWN '           / Raw Water Vapour/Transparency                  
+RAWGEMOA= 'Unknown           '  /                                               
+RAWPIREQ= 'UNKNOWN '           / PI Requirements Met                            
+RAWGEMQA= 'USABLE  '           / Gemini Quality Assessment                      
+PROCID  = 'GS-CAL20040520-7V1'                                                  
+PROCID01= 'GS-CAL20040520-7'                                                    
+PROCID02= 'GS-CAL20040520-7'                                                    
+PROCID03= 'GS-CAL20040520-7'                                                    
+PROCID04= 'GS-CAL20040520-7'                                                    
+PROCID05= 'GS-CAL20040520-7'                                                    
+PROCID06= 'GS-CAL20040520-7'                                                    
+PROCID07= 'GS-CAL20040520-7'                                                    
+PROCID08= 'GS-CAL20040520-7'                                                    
+PROCID09= 'GS-CAL20040520-7'                                                    
+PROCID10= 'GS-CAL20040520-7'                                                    
+PROCID11= 'GS-CAL20040520-7'                                                    
+PROCID12= 'GS-CAL20040520-7'                                                    
+PROCID13= 'GS-CAL20040520-7'                                                    
+PROCID14= 'GS-CAL20040520-7'                                                    
+PROCID15= 'GS-CAL20040520-7'                                                    
+IMCMB001= 'rawdir$2004may20_0048.fits'                                          
+IMCMB002= 'rawdir$2004may20_0049.fits'                                          
+IMCMB003= 'rawdir$2004may20_0050.fits'                                          
+IMCMB004= 'rawdir$2004may20_0051.fits'                                          
+IMCMB005= 'rawdir$2004may20_0052.fits'                                          
+IMCMB006= 'rawdir$2004may20_0053.fits'                                          
+IMCMB007= 'rawdir$2004may20_0054.fits'                                          
+IMCMB008= 'rawdir$2004may20_0055.fits'                                          
+IMCMB009= 'rawdir$2004may20_0056.fits'                                          
+IMCMB010= 'rawdir$2004may20_0057.fits'                                          
+IMCMB011= 'rawdir$2004may20_0058.fits'                                          
+IMCMB012= 'rawdir$2004may20_0059.fits'                                          
+IMCMB013= 'rawdir$2004may20_0060.fits'                                          
+IMCMB014= 'rawdir$2004may20_0061.fits'                                          
+IMCMB015= 'rawdir$2004may20_0062.fits'                                          
+NCOMBINE=                   15                                                  
+FINALINT= 'pass    '           / Requested total integration time               
+FINALIQ = 'pass    '           / Requested final image quality                  
+PICONFIG= 'pass    '           / Requested instrument configuration             
+PITARGET= 'pass    '           / Requested target                               
+RELEASE = '2004-05-20        ' / End of proprietary period YYYY-MM-DD           
+GEM-TLM = '2005-09-21T15:37:45' / UT Last modification with GEMINI              
+OBS_TYPE= 'Flat    '                                                            
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+
+--- HDU 1 ---
+XTENSION= 'IMAGE   '           / Image extension                                
+BITPIX  =                  -32 / array data type                                
+NAXIS   =                    2 / number of array dimensions                     
+NAXIS1  =                  256                                                  
+NAXIS2  =                 1024                                                  
+PCOUNT  =                    0 / number of parameters                           
+GCOUNT  =                    1 / number of groups                               
+EXTNAME = 'SCI     '           / ad4549: added by AstroData                     
+ORIGIN  = 'NOAO-IRAF FITS Image Kernel July 2003' / FITS file originator        
+DATE    = '2004-06-14T20:01:32' / Date FITS file was generated                  
+IRAF-TLM= '13:33:25 (21/09/2005)' / Time of last modification                   
+CHANNEL = 'only              '  /                                               
+INSTRUME= 'PHOENIX           '  /                                               
+OBJECT  = 'flats   '           /                                                
+COADDS  =                    1  /  No. internal coadds                          
+INT_S   =             1.002000  /  Exposure time                                
+EXPTIME =             1.002000  /  Exp.time (usual)                             
+MODE    = 'stare             '  /                                               
+LNRS    =                    1  /  Low noise reads                              
+UCODE   = 'PHaladII_12_11    '  /  Detector microcode                           
+IMAGETYP= 'Flat    '           /                                                
+OFFSET  = '38.1862 north 132.026 east                                          '
+COMMENT = 'none              '  /                                               
+OBSERVER= 'observer'           / Observer(s)                                    
+DETECTOR= 'ALAD256x1024      '  /                                               
+RA      = '08:44:42.551      '  /                                               
+DEC     = '-54:42:29.93      '  /                                               
+EQUINOX =          2000.000000  /                                               
+EPOCH   =          2000.000000  /                                               
+UT      = '01:40:31.2        '  /  Gemini UTC                                   
+UTDATE  = '2004-05-20        '  /  Gemini UTCDATE                               
+LST     = '12:49:47.1        '  /                                               
+HA      =             4.083000  /                                               
+ZD      =            49.253201  /                                               
+AIRMASS =             1.530000  /                                               
+FOCUS   =             0.402000  /                                               
+PLATE_SC=             0.085000  /  Arc sec. per pixel                           
+RECID   = 'gscp8m.20040520.014031.1094                                         '
+FILT_POS= '4220 (5)          '  /                                               
+LYOT_POS= '8m_2.5 (4)        '  /                                               
+CVF_POS = 'open (1)          '  /                                               
+SLIT_POS= '107u_1.0-5.0 (8)  '  /                                               
+VIEW_POS= 'open (-152989)    '  /                                               
+GRAT_POS= 'encoder -10739    '  /                                               
+FOC_POS = '245.0             '  /                                               
+COVR_POS= 'open              '  /                                               
+OBSERVAT= 'Gemini-South'                                                        
+TELESCOP= 'Gemini-South'                                                        
+SSA     = 'ssa     '           / SSA                                            
+OBSID   = 'GS-CAL20040520-7'   / Observation ID                                 
+DATALAB = 'GS-CAL20040520-7-0048-flat-p' / Data Label                           
+GEMPRGID= 'GS-CAL20040520'     / Gemini Science Program ID                      
+RAWBG   = 'UNKNOWN '           / Raw Background                                 
+RAWCC   = 'UNKNOWN '           / Raw Cloud Cover                                
+RAWIQ   = 'UNKNOWN '           / Raw Image Quality                              
+RAWWV   = 'UNKNOWN '           / Raw Water Vapour/Transparency                  
+RAWGEMOA= 'Unknown           '  /                                               
+RAWPIREQ= 'UNKNOWN '           / PI Requirements Met                            
+RAWGEMQA= 'USABLE  '           / Gemini Quality Assessment                      
+PROCID  = 'GS-CAL20040520-7V1'                                                  
+PROCID01= 'GS-CAL20040520-7'                                                    
+PROCID02= 'GS-CAL20040520-7'                                                    
+PROCID03= 'GS-CAL20040520-7'                                                    
+PROCID04= 'GS-CAL20040520-7'                                                    
+PROCID05= 'GS-CAL20040520-7'                                                    
+PROCID06= 'GS-CAL20040520-7'                                                    
+PROCID07= 'GS-CAL20040520-7'                                                    
+PROCID08= 'GS-CAL20040520-7'                                                    
+PROCID09= 'GS-CAL20040520-7'                                                    
+PROCID10= 'GS-CAL20040520-7'                                                    
+PROCID11= 'GS-CAL20040520-7'                                                    
+PROCID12= 'GS-CAL20040520-7'                                                    
+PROCID13= 'GS-CAL20040520-7'                                                    
+PROCID14= 'GS-CAL20040520-7'                                                    
+PROCID15= 'GS-CAL20040520-7'                                                    
+IMCMB001= 'rawdir$2004may20_0048.fits'                                          
+IMCMB002= 'rawdir$2004may20_0049.fits'                                          
+IMCMB003= 'rawdir$2004may20_0050.fits'                                          
+IMCMB004= 'rawdir$2004may20_0051.fits'                                          
+IMCMB005= 'rawdir$2004may20_0052.fits'                                          
+IMCMB006= 'rawdir$2004may20_0053.fits'                                          
+IMCMB007= 'rawdir$2004may20_0054.fits'                                          
+IMCMB008= 'rawdir$2004may20_0055.fits'                                          
+IMCMB009= 'rawdir$2004may20_0056.fits'                                          
+IMCMB010= 'rawdir$2004may20_0057.fits'                                          
+IMCMB011= 'rawdir$2004may20_0058.fits'                                          
+IMCMB012= 'rawdir$2004may20_0059.fits'                                          
+IMCMB013= 'rawdir$2004may20_0060.fits'                                          
+IMCMB014= 'rawdir$2004may20_0061.fits'                                          
+IMCMB015= 'rawdir$2004may20_0062.fits'                                          
+NCOMBINE=                   15                                                  
+FINALINT= 'pass    '           / Requested total integration time               
+FINALIQ = 'pass    '           / Requested final image quality                  
+PICONFIG= 'pass    '           / Requested instrument configuration             
+PITARGET= 'pass    '           / Requested target                               
+RELEASE = '2004-05-20        ' / End of proprietary period YYYY-MM-DD           
+GEM-TLM = '2005-09-21T15:37:45' / UT Last modification with GEMINI              
+OBS_TYPE= 'Flat    '                                                            
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                

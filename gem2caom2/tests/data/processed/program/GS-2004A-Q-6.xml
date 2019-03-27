@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GS-2004A-Q-6</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-2004A-Q-6</h1>
+
+<table>
+ <tr><td>Title:<td>The Chemical Evolution of the Galactic Center</tr>
+ <tr><td>PI:<td>John Carr</tr>
+ <tr><td>Co-I(s):<td> Suchitra Balachandran</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+We propose to continue studies of the chemical evolution of the Galactic Center
+by carrying out abundance analyses of cool giants in the central cluster of
+the Galaxy.  Our earlier pioneering work showed a near solar Fe abundance
+in the Galactic Center, but firm results for other elements are needed. 
+Using high quality Phoenix spectra, we will examine the abundance trends of
+Fe, Ni, Na and the $\alpha$-elements Mg, Si, Ca and Ti in a sample of GC stars,
+and directly compare these to populations in the Bulge and Disk.
+The abundances of C, N, and O, and the isotopic ratios $^{12}$C/$^{13}$C and
+$^{16}$O/$^{17}$O will allow us to probe the extent of mixing in evolved
+GC stars, a significant difference from that seen in disk and bulge stars
+could be due to a rather different star formation and angular momentum history.
+</div>
+
+
+
+</body>
+</html>

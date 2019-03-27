@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GN-2013B-Q-38</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GN-2013B-Q-38</h1>
+
+<table>
+ <tr><td>Title:<td>Are Herbig Ae disks really depleted of water vapor?</tr>
+ <tr><td>PI:<td>Klaus Pontoppidan</tr>
+ <tr><td>Co-I(s):<td> Ke Zhang,  Colette Salyk,  Matt Richter,  Geoffrey Blake,  John Lacy</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+Spitzer discovered that protoplanetary disks around low-mass stars generally exhibit strong mid-infrared emission from warm water vapor and other molecules. The emission originates in the planet-forming region around 1 AU. Conversely, disks around the more massive, hot and luminous Herbig Ae stars {\it do not} show detectable water emission. There is still no agreed-upon explanation for this very strong observation. We propose to use TEXES to conduct a sensitive search for warm water vapor in a sample of protoplanetary disks around Herbig Ae stars (a few solar masses). The sample is chosen from a database of high quality Spitzer spectra to contain disks that show hints of water emission beyond 20 micron. The observations will firmly demonstrate whether there really is a deficit of water in the the surfaces of Herbig Ae disks, or whether more mundane radiative transfer effects caused line fluxes to be suppressed just enough that they dropped below the Spitzer detection threshold. If the former holds, it is possible that the bulk disk chemistry around Herbig stars is different from that of disks around low-mass stars, potentially leading to different compositions and demographics of the planetary systems formed by the disks. 
+</div>
+
+
+
+</body>
+</html>

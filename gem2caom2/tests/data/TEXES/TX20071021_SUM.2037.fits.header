@@ -1,0 +1,723 @@
+Filename: TX20071021_SUM.2037.fits.bz2
+
+AstroData Types: ['TEXES', 'RAW', 'UNPREPARED']
+
+
+--- HDU 0 ---
+SIMPLE  =                    T / Fits standard                                  
+BITPIX  =                  -32 / Bits per pixel                                 
+NAXIS   =                    0 / Number of axes                                 
+EXTEND  =                    T / File may contain extensions                    
+OBJECT  = 'NGC 7538 IRS 9'     / Name of the object observed                    
+ORIGIN  = 'University of Texas' / FITS file originator                          
+DATE    = '2007-10-25T22:51:45' / Date FITS file was generated                  
+IRAF-TLM= '13:09:06 (25/10/2007)' / Time of last modification                   
+COMMENT   For scan or map data, the primary data array is empty                 
+COMMENT   The primary HDU is followed by four 1-D IMAGE extensions              
+COMMENT   giving the wavenumber scale (EXTNAME = WAVENUMBER),                   
+COMMENT   the extracted flux spectrum (may be zero) (FLUX),                     
+COMMENT   the calculated 1-sigma noise in the flux (NOISE),                     
+COMMENT   and the telluric transmission spectrum calculated from                
+COMMENT   (black-sky)/black (EXTNAME = ATMO)                                    
+COMMENT   The data are stored in   33 2-D spectral x spatial                    
+COMMENT   frames along the scan (EXTNAME = SCAN-FRAME)                          
+COMMENT   The scan frames are followed by two additional frames                 
+COMMENT   giving the sky frame which has been subtracted from the               
+COMMENT   scan frames (EXTNAME = SKY),                                          
+COMMENT   and the calculated noise frame (EXTNAME = SCAN-NOISE)                 
+FILENAME= 'irs9.2035'                                                           
+FEATURE = 'C2H2 R(5)'           / spectral feature                              
+WAVENO0 =         7.440000E+02  / planned central wavenumber                    
+ORDER   =                    4  / echelle order number                          
+TEMPER  =         2.815000E+02  / ambient temperature                           
+TAU     = '.07'                                                                 
+HUMIDITY= '17.8'                                                                
+OBSMODE = 'scan'                                                                
+OBSTYPE = 'object'                                                              
+OBSCLASS= 'science'                                                             
+TELSTEP = '-0.00 E   0.14 N'                                                    
+TSTEPPQ = '-0.14 P   0.00 Q'                                                    
+OFFSET  = '0.00 E   -2.10 N'                                                    
+OFFSETPQ= '2.10 P   0.00 Q'                                                     
+NOD     =         0.000000E+00  / 0.00 E   0.00 N                               
+NODPQ   = '0.00 P   0.00 Q'                                                     
+NPOINTS =                   30  / number of points in scan                      
+NODWAIT = '3.0'                                                                 
+FRAMETIM=         1.011917E+00  / integration time / frame                      
+NFRAME  =                    2  / number of frames coadded in hardware          
+NSUM    =                    1  / number of frames coadded in software          
+NWRITE  =                    1  / number of frames written per nod phase        
+NSCAN   =                    4  / number of scans                               
+OBSTIME =         8.100000E+00  / calculated observation time                   
+TOTTIME =         3.232400E+02  / calculated total clock time                   
+INSTMODE= 'hi-med'              / echelon x echelle                             
+ECHELLE =         5.843300E+01  / echelle grating angle (deg)                   
+LORES   =        -1.499200E+01  / lo-res grating angle (deg)                    
+KMIRROR =         4.500000E-02  / K-mirror angle                                
+SLIT    =         2.400000E+02  / slit wheel angle                              
+FILTER  =         2.838000E+02  / filter wheel angle                            
+PARAB   = '-223.920'                                                            
+INSTRPA =         9.000000E+01                                                  
+INSTRAA =         9.150000E+01                                                  
+NSKY    =                    3  / number of extra points on sky                 
+INSTRUME= 'TEXES'                                                               
+EVOLT   = '6.877'                                                               
+LVOLT   = '8.969'                                                               
+KVOLT   = '2.033'                                                               
+SVOLT   = '5.999'                                                               
+FVOLT   = '6.724'                                                               
+PVOLT   = '4.378'                                                               
+EVOLT0  = '14.708'                                                              
+LVOLT0  = ' 6.970'                                                              
+KVOLT0  = ' 2.031'                                                              
+SVOLT0  = ' 1.999'                                                              
+FVOLT0  = ' 1.994'                                                              
+PVOLT0  = ' 5.000'                                                              
+TEMP_DET= '0.362'                                                               
+TEMP_ECH= '0.368'                                                               
+TEMP_LHE= '0.047'                                                               
+TEMP_LN2= '0.012'                                                               
+PRESSURE=         1.703000E+01  / LN2 pumping line pressure (Torr)              
+HUMIDITY= '17.8'                                                                
+BIAS    = '-4.0 V'                                                              
+GAIN    =         2.500000E+01  / electronic gain                               
+BANDWID = '3000 kHz'                                                            
+DAS     = 'IR Observer: 15 Oct 07'                                              
+NSPEC   =                  256  / array size in spectral dimension              
+NSPAT   =                  256  / array size in spatial dimension               
+DATE-OBS= '2007-10-21'                                                          
+TIME-OBS= '06:02:15.8'          / UTC ?                                         
+TIMESYS = 'UTC'                                                                 
+OBSERVER= 'mr,mb,jl,tg,jb'                                                      
+TELESCOP= 'Gemini-North'                                                        
+RA      =         3.485076E+02  / 23:14:01.831                                  
+DEC     =         6.145567E+01  / +61:27:20.41                                  
+LST     = '21:37:12.0'                                                          
+HA      =        -1.619800E+00                                                  
+AIRMASS =         1.412000E+00                                                  
+AZIMUTH =         1.618747E+01  / +16:11:14.88                                  
+ELEVATIO=         4.505651E+01  / +45:03:23.44                                  
+TARGRA  = '23:11:52.87'                                                         
+TARGDEC = '61:10:59.00'                                                         
+TARGCOOR= 'FK4'                                                                 
+FRAMEPA = 'FK5'                                                                 
+BASEX   = ' -1.7438'                                                            
+BASEY   = '  2.5319'                                                            
+BASEUNIT= 'mm'                                                                  
+BASECONV= '1.611 arcsec/mm'                                                     
+HEALTH  = 'BAD'                                                                 
+FOCUSOFF= '0.001'                                                               
+GEMPRGID= 'GN-2007B-C-6'                                                        
+OBSID   = 'GN-2007B-C-6-5'                                                      
+FOCUS   = '0.288'                                                               
+ENDTIME = '06:06:54.8'                                                          
+EQUINOX =         2.000000E+03  / equinox for RA, DEC.  TARG equinox is 1950.   
+VEHELIO =         2.121523E-01  / heliocentric motion of Earth from object      
+VELSR   =        -9.950136E+00  / LSR motion of Earth from object               
+PLTSCL  =         1.404547E-01  / arcsec / pixel after focal reduction          
+CDELT2  =         3.901519E-05  / deg / pixel along slit                        
+SLITWID =         5.380973E-01  / slit width (arcsec)                           
+BEAMTIME=         2.023834E+00  / frtime*nframe*nsum*nwrite                     
+HISTORY   Reduced with fife.f version 19 jun 07                                 
+COMMENT   The following 23 lines are pipe reduction parameters                  
+CARDMODE=                    5                                                  
+THRFAC  =         5.000000E-01                                                  
+SPIKEFAC=         2.000000E+01                                                  
+STDFAC  =         2.000000E+01                                                  
+SATVAL  =         6.029312E+04                                                  
+XNLIN   =         0.000000E+00                                                  
+CLOUD   =         0.000000E+00                                                  
+BOUNCE  =         1.000000E-01  / grating bounce was removed if != 0            
+SLITROT =        -8.000000E-02                                                  
+KROT    =        -2.000000E-02                                                  
+DETROT  =         8.000000E-02                                                  
+HRFL    =         4.846353E+01                                                  
+HRR     =         9.539000E+00  / may have changed after header write           
+HRG     =         1.000000E-02                                                  
+HRDGR   =         7.589141E-01                                                  
+XDFL    =         3.634765E+01                                                  
+XDR     =         1.635203E+00                                                  
+XDG     =         1.330000E-02                                                  
+XDDGR   =         3.151000E-03                                                  
+BRL     =         1.500000E+00                                                  
+X0BRL   =         0.000000E+00                                                  
+Y0BRL   =         0.000000E+00                                                  
+RAWFILE = 'irs9.2035'                                                           
+YSHIFT  =                    0  / for scan  2                                   
+ZSHIFT  =                    0  / for scan  2                                   
+YSHIFT  =                    0  / for scan  3                                   
+ZSHIFT  =                    0  / for scan  3                                   
+YSHIFT  =                    0  / for scan  4                                   
+ZSHIFT  =                    0  / for scan  4                                   
+SUMTIME =         8.095334E+00  / summed time per point                         
+BUNIT   = 'erg/s cm2 sr cm-1'   / cgs intensity units                           
+RAWCC   = 'ANY     '                                                            
+RAWWV   = 'ANY     '                                                            
+RAWBG   = 'ANY     '                                                            
+RAWIQ   = 'ANY     '                                                            
+SSA     = 'B. Walls'                                                            
+DATALAB = 'GN-2007B-C-6-5-005-sum'                                              
+RELEASE = '2009-04-21'         / End of proprietary period YYYY-MM-DD           
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+
+--- HDU 1 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                  -32                                                  
+NAXIS   =                    1                                                  
+NAXIS1  =                 1536                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+CTYPE1  = 'spectral pixel'                                                      
+EXTNAME = 'WAVENUMBER'  / wavenumbers for corresponding data values             
+EXTVER  =                   34                                                  
+BUNIT   = 'cm^-1'                                                               
+
+--- HDU 2 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                  -32                                                  
+NAXIS   =                    1                                                  
+NAXIS1  =                 1536                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+CTYPE1  = 'spectral pixel'                                                      
+EXTNAME = 'FLUX'  / fluxes extracted from 2-D data                              
+EXTVER  =                   35                                                  
+BUNIT   = 'Jy  / (may be inaccurate)'                                           
+
+--- HDU 3 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                  -32                                                  
+NAXIS   =                    1                                                  
+NAXIS1  =                 1536                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+CTYPE1  = 'spectral pixel'                                                      
+EXTNAME = 'NOISE'  / calculated 1-sigma noise in extracted fluxes               
+EXTVER  =                   36                                                  
+BUNIT   = 'Jy  / (may be inaccurate)'                                           
+
+--- HDU 4 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                  -32                                                  
+NAXIS   =                    1                                                  
+NAXIS1  =                 1536                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+CTYPE1  = 'spectral pixel'                                                      
+EXTNAME = 'ATMO'  / atmospheric transmission calculated from black-sky          
+EXTVER  =                   37                                                  
+BUNIT   = 'none'                                                                
+
+--- HDU 5 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                  -32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                 1536                                                  
+NAXIS2  =                   35                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+CTYPE1  = 'spectral pixel'                                                      
+EXTNAME = 'SCAN-FRAME'  / 2-D frame from one step of a scan or map              
+EXTVER  =                    1                                                  
+BUNIT   = 'erg / s cm2 cm-1 sr'                                                 
+CTYPE2  = 'pixel along slit'                                                    
+
+--- HDU 6 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                  -32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                 1536                                                  
+NAXIS2  =                   35                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+CTYPE1  = 'spectral pixel'                                                      
+EXTNAME = 'SCAN-FRAME'  / 2-D frame from one step of a scan or map              
+EXTVER  =                    2                                                  
+BUNIT   = 'erg / s cm2 cm-1 sr'                                                 
+CTYPE2  = 'pixel along slit'                                                    
+
+--- HDU 7 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                  -32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                 1536                                                  
+NAXIS2  =                   35                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+CTYPE1  = 'spectral pixel'                                                      
+EXTNAME = 'SCAN-FRAME'  / 2-D frame from one step of a scan or map              
+EXTVER  =                    3                                                  
+BUNIT   = 'erg / s cm2 cm-1 sr'                                                 
+CTYPE2  = 'pixel along slit'                                                    
+
+--- HDU 8 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                  -32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                 1536                                                  
+NAXIS2  =                   35                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+CTYPE1  = 'spectral pixel'                                                      
+EXTNAME = 'SCAN-FRAME'  / 2-D frame from one step of a scan or map              
+EXTVER  =                    4                                                  
+BUNIT   = 'erg / s cm2 cm-1 sr'                                                 
+CTYPE2  = 'pixel along slit'                                                    
+
+--- HDU 9 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                  -32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                 1536                                                  
+NAXIS2  =                   35                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+CTYPE1  = 'spectral pixel'                                                      
+EXTNAME = 'SCAN-FRAME'  / 2-D frame from one step of a scan or map              
+EXTVER  =                    5                                                  
+BUNIT   = 'erg / s cm2 cm-1 sr'                                                 
+CTYPE2  = 'pixel along slit'                                                    
+
+--- HDU 10 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                  -32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                 1536                                                  
+NAXIS2  =                   35                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+CTYPE1  = 'spectral pixel'                                                      
+EXTNAME = 'SCAN-FRAME'  / 2-D frame from one step of a scan or map              
+EXTVER  =                    6                                                  
+BUNIT   = 'erg / s cm2 cm-1 sr'                                                 
+CTYPE2  = 'pixel along slit'                                                    
+
+--- HDU 11 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                  -32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                 1536                                                  
+NAXIS2  =                   35                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+CTYPE1  = 'spectral pixel'                                                      
+EXTNAME = 'SCAN-FRAME'  / 2-D frame from one step of a scan or map              
+EXTVER  =                    7                                                  
+BUNIT   = 'erg / s cm2 cm-1 sr'                                                 
+CTYPE2  = 'pixel along slit'                                                    
+
+--- HDU 12 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                  -32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                 1536                                                  
+NAXIS2  =                   35                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+CTYPE1  = 'spectral pixel'                                                      
+EXTNAME = 'SCAN-FRAME'  / 2-D frame from one step of a scan or map              
+EXTVER  =                    8                                                  
+BUNIT   = 'erg / s cm2 cm-1 sr'                                                 
+CTYPE2  = 'pixel along slit'                                                    
+
+--- HDU 13 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                  -32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                 1536                                                  
+NAXIS2  =                   35                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+CTYPE1  = 'spectral pixel'                                                      
+EXTNAME = 'SCAN-FRAME'  / 2-D frame from one step of a scan or map              
+EXTVER  =                    9                                                  
+BUNIT   = 'erg / s cm2 cm-1 sr'                                                 
+CTYPE2  = 'pixel along slit'                                                    
+
+--- HDU 14 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                  -32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                 1536                                                  
+NAXIS2  =                   35                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+CTYPE1  = 'spectral pixel'                                                      
+EXTNAME = 'SCAN-FRAME'  / 2-D frame from one step of a scan or map              
+EXTVER  =                   10                                                  
+BUNIT   = 'erg / s cm2 cm-1 sr'                                                 
+CTYPE2  = 'pixel along slit'                                                    
+
+--- HDU 15 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                  -32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                 1536                                                  
+NAXIS2  =                   35                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+CTYPE1  = 'spectral pixel'                                                      
+EXTNAME = 'SCAN-FRAME'  / 2-D frame from one step of a scan or map              
+EXTVER  =                   11                                                  
+BUNIT   = 'erg / s cm2 cm-1 sr'                                                 
+CTYPE2  = 'pixel along slit'                                                    
+
+--- HDU 16 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                  -32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                 1536                                                  
+NAXIS2  =                   35                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+CTYPE1  = 'spectral pixel'                                                      
+EXTNAME = 'SCAN-FRAME'  / 2-D frame from one step of a scan or map              
+EXTVER  =                   12                                                  
+BUNIT   = 'erg / s cm2 cm-1 sr'                                                 
+CTYPE2  = 'pixel along slit'                                                    
+
+--- HDU 17 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                  -32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                 1536                                                  
+NAXIS2  =                   35                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+CTYPE1  = 'spectral pixel'                                                      
+EXTNAME = 'SCAN-FRAME'  / 2-D frame from one step of a scan or map              
+EXTVER  =                   13                                                  
+BUNIT   = 'erg / s cm2 cm-1 sr'                                                 
+CTYPE2  = 'pixel along slit'                                                    
+
+--- HDU 18 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                  -32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                 1536                                                  
+NAXIS2  =                   35                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+CTYPE1  = 'spectral pixel'                                                      
+EXTNAME = 'SCAN-FRAME'  / 2-D frame from one step of a scan or map              
+EXTVER  =                   14                                                  
+BUNIT   = 'erg / s cm2 cm-1 sr'                                                 
+CTYPE2  = 'pixel along slit'                                                    
+
+--- HDU 19 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                  -32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                 1536                                                  
+NAXIS2  =                   35                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+CTYPE1  = 'spectral pixel'                                                      
+EXTNAME = 'SCAN-FRAME'  / 2-D frame from one step of a scan or map              
+EXTVER  =                   15                                                  
+BUNIT   = 'erg / s cm2 cm-1 sr'                                                 
+CTYPE2  = 'pixel along slit'                                                    
+
+--- HDU 20 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                  -32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                 1536                                                  
+NAXIS2  =                   35                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+CTYPE1  = 'spectral pixel'                                                      
+EXTNAME = 'SCAN-FRAME'  / 2-D frame from one step of a scan or map              
+EXTVER  =                   16                                                  
+BUNIT   = 'erg / s cm2 cm-1 sr'                                                 
+CTYPE2  = 'pixel along slit'                                                    
+
+--- HDU 21 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                  -32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                 1536                                                  
+NAXIS2  =                   35                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+CTYPE1  = 'spectral pixel'                                                      
+EXTNAME = 'SCAN-FRAME'  / 2-D frame from one step of a scan or map              
+EXTVER  =                   17                                                  
+BUNIT   = 'erg / s cm2 cm-1 sr'                                                 
+CTYPE2  = 'pixel along slit'                                                    
+
+--- HDU 22 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                  -32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                 1536                                                  
+NAXIS2  =                   35                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+CTYPE1  = 'spectral pixel'                                                      
+EXTNAME = 'SCAN-FRAME'  / 2-D frame from one step of a scan or map              
+EXTVER  =                   18                                                  
+BUNIT   = 'erg / s cm2 cm-1 sr'                                                 
+CTYPE2  = 'pixel along slit'                                                    
+
+--- HDU 23 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                  -32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                 1536                                                  
+NAXIS2  =                   35                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+CTYPE1  = 'spectral pixel'                                                      
+EXTNAME = 'SCAN-FRAME'  / 2-D frame from one step of a scan or map              
+EXTVER  =                   19                                                  
+BUNIT   = 'erg / s cm2 cm-1 sr'                                                 
+CTYPE2  = 'pixel along slit'                                                    
+
+--- HDU 24 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                  -32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                 1536                                                  
+NAXIS2  =                   35                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+CTYPE1  = 'spectral pixel'                                                      
+EXTNAME = 'SCAN-FRAME'  / 2-D frame from one step of a scan or map              
+EXTVER  =                   20                                                  
+BUNIT   = 'erg / s cm2 cm-1 sr'                                                 
+CTYPE2  = 'pixel along slit'                                                    
+
+--- HDU 25 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                  -32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                 1536                                                  
+NAXIS2  =                   35                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+CTYPE1  = 'spectral pixel'                                                      
+EXTNAME = 'SCAN-FRAME'  / 2-D frame from one step of a scan or map              
+EXTVER  =                   21                                                  
+BUNIT   = 'erg / s cm2 cm-1 sr'                                                 
+CTYPE2  = 'pixel along slit'                                                    
+
+--- HDU 26 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                  -32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                 1536                                                  
+NAXIS2  =                   35                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+CTYPE1  = 'spectral pixel'                                                      
+EXTNAME = 'SCAN-FRAME'  / 2-D frame from one step of a scan or map              
+EXTVER  =                   22                                                  
+BUNIT   = 'erg / s cm2 cm-1 sr'                                                 
+CTYPE2  = 'pixel along slit'                                                    
+
+--- HDU 27 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                  -32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                 1536                                                  
+NAXIS2  =                   35                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+CTYPE1  = 'spectral pixel'                                                      
+EXTNAME = 'SCAN-FRAME'  / 2-D frame from one step of a scan or map              
+EXTVER  =                   23                                                  
+BUNIT   = 'erg / s cm2 cm-1 sr'                                                 
+CTYPE2  = 'pixel along slit'                                                    
+
+--- HDU 28 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                  -32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                 1536                                                  
+NAXIS2  =                   35                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+CTYPE1  = 'spectral pixel'                                                      
+EXTNAME = 'SCAN-FRAME'  / 2-D frame from one step of a scan or map              
+EXTVER  =                   24                                                  
+BUNIT   = 'erg / s cm2 cm-1 sr'                                                 
+CTYPE2  = 'pixel along slit'                                                    
+
+--- HDU 29 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                  -32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                 1536                                                  
+NAXIS2  =                   35                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+CTYPE1  = 'spectral pixel'                                                      
+EXTNAME = 'SCAN-FRAME'  / 2-D frame from one step of a scan or map              
+EXTVER  =                   25                                                  
+BUNIT   = 'erg / s cm2 cm-1 sr'                                                 
+CTYPE2  = 'pixel along slit'                                                    
+
+--- HDU 30 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                  -32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                 1536                                                  
+NAXIS2  =                   35                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+CTYPE1  = 'spectral pixel'                                                      
+EXTNAME = 'SCAN-FRAME'  / 2-D frame from one step of a scan or map              
+EXTVER  =                   26                                                  
+BUNIT   = 'erg / s cm2 cm-1 sr'                                                 
+CTYPE2  = 'pixel along slit'                                                    
+
+--- HDU 31 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                  -32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                 1536                                                  
+NAXIS2  =                   35                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+CTYPE1  = 'spectral pixel'                                                      
+EXTNAME = 'SCAN-FRAME'  / 2-D frame from one step of a scan or map              
+EXTVER  =                   27                                                  
+BUNIT   = 'erg / s cm2 cm-1 sr'                                                 
+CTYPE2  = 'pixel along slit'                                                    
+
+--- HDU 32 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                  -32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                 1536                                                  
+NAXIS2  =                   35                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+CTYPE1  = 'spectral pixel'                                                      
+EXTNAME = 'SCAN-FRAME'  / 2-D frame from one step of a scan or map              
+EXTVER  =                   28                                                  
+BUNIT   = 'erg / s cm2 cm-1 sr'                                                 
+CTYPE2  = 'pixel along slit'                                                    
+
+--- HDU 33 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                  -32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                 1536                                                  
+NAXIS2  =                   35                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+CTYPE1  = 'spectral pixel'                                                      
+EXTNAME = 'SCAN-FRAME'  / 2-D frame from one step of a scan or map              
+EXTVER  =                   29                                                  
+BUNIT   = 'erg / s cm2 cm-1 sr'                                                 
+CTYPE2  = 'pixel along slit'                                                    
+
+--- HDU 34 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                  -32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                 1536                                                  
+NAXIS2  =                   35                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+CTYPE1  = 'spectral pixel'                                                      
+EXTNAME = 'SCAN-FRAME'  / 2-D frame from one step of a scan or map              
+EXTVER  =                   30                                                  
+BUNIT   = 'erg / s cm2 cm-1 sr'                                                 
+CTYPE2  = 'pixel along slit'                                                    
+
+--- HDU 35 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                  -32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                 1536                                                  
+NAXIS2  =                   35                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+CTYPE1  = 'spectral pixel'                                                      
+EXTNAME = 'SCAN-FRAME'  / 2-D frame from one step of a scan or map              
+EXTVER  =                   31                                                  
+BUNIT   = 'erg / s cm2 cm-1 sr'                                                 
+CTYPE2  = 'pixel along slit'                                                    
+
+--- HDU 36 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                  -32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                 1536                                                  
+NAXIS2  =                   35                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+CTYPE1  = 'spectral pixel'                                                      
+EXTNAME = 'SCAN-FRAME'  / 2-D frame from one step of a scan or map              
+EXTVER  =                   32                                                  
+BUNIT   = 'erg / s cm2 cm-1 sr'                                                 
+CTYPE2  = 'pixel along slit'                                                    
+
+--- HDU 37 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                  -32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                 1536                                                  
+NAXIS2  =                   35                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+CTYPE1  = 'spectral pixel'                                                      
+EXTNAME = 'SCAN-FRAME'  / 2-D frame from one step of a scan or map              
+EXTVER  =                   33                                                  
+BUNIT   = 'erg / s cm2 cm-1 sr'                                                 
+CTYPE2  = 'pixel along slit'                                                    
+
+--- HDU 38 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                  -32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                 1536                                                  
+NAXIS2  =                   35                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+CTYPE1  = 'spectral pixel'                                                      
+EXTNAME = 'SKY'  / sky frame which was subtracted from scan frames              
+EXTVER  =                   71                                                  
+BUNIT   = 'erg / s cm2 cm-1 sr'                                                 
+CTYPE2  = 'pixel along slit'                                                    
+
+--- HDU 39 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                  -32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                 1536                                                  
+NAXIS2  =                   35                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+CTYPE1  = 'spectral pixel'                                                      
+EXTNAME = 'SCAN-NOISE'  / calculated noise in each scan frame                   
+EXTVER  =                   72                                                  
+BUNIT   = 'erg / s cm2 cm-1 sr'                                                 
+CTYPE2  = 'pixel along slit'                                                    

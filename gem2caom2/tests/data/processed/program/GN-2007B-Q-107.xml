@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GN-2007B-Q-107</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GN-2007B-Q-107</h1>
+
+<table>
+ <tr><td>Title:<td>Investigating the Nature of HAEBE Companions</tr>
+ <tr><td>PI:<td>Bernadette Rodgers</tr>
+ <tr><td>Co-I(s):<td> Nicole van der Bliek,  Sandrine Thomas,  Greg Doppmann</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+The companions to Herbig Ae/Be stars are not "typical" T Tauris, as once assumed: many are not T Tauris at all and those that are late type often do not show characteristic T Tauri emission.  Our HAEBE multiplicity survey has more than doubled the number of candidate multiple systems and identified a large number of very close companion candidates.  We propose to use NIRI and NIFS (both with Altair) to obtain near-infrared  JHKL photometry and moderate-resolution spectra of 20 promising binary candidates, to deduce companion physical properties such as mass, luminosity and age (via spectral type), and study their pre-main sequence status (via near-infrared excess and emission lines).  GNIRS observations have shown that NIR photometry alone does not accurately identify the spectral type of the star and, surprisingly, that emission lines are not common in many companions.  However, the GNIRS work is limited to separations &gt; 0.7".  Here we target companions with smaller separations to 1) take advantage of the Altair AO system to resolve these objects, 2) maximize the likelihood of physical binarity, and 3) understand how environment and proximity is effecting the companion's evolution.  The target primary stars have spectral types ranging from B0 to F5, to study the nature of binarity as a function of primary mass.
+</div>
+
+
+
+</body>
+</html>

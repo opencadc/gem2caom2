@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GN-2005B-Q-28</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GN-2005B-Q-28</h1>
+
+<table>
+ <tr><td>Title:<td>Is there dark matter in the newly discovered luminous stellar clusters in the halo of M31?</tr>
+ <tr><td>PI:<td>Avon Huxor</tr>
+ <tr><td>Co-I(s):<td> Nial Tanvir,  Jim Collett,  Mike Irwin,  Annette Ferguson,  Rodrigo Ibata,  Geraint Lewis,  Rachel Johnson,  Terry Bridges,  Scott Chapman</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+We have recently discovered a population of luminous star clusters in the far halo of M31.  These objects have luminosities typical of globular clusters, but are much more extended (roughly 5-10x greater half-light radius than typical GCs) and have no known counterparts in the Milky-Way.  Their stellar populations appear old and metal-poor.  The question naturally arises: do these clusters have a dark-matter component (cf. dSphs) or not (cf. GCs)?  This is crucial for understanding their origin, and more broadly, if they do reside in dark-matter halos then they would help explain the apparent deficit of small halos compared to theoretical predictions.  Here we propose multi-slit GMOS spectroscopy of a sample of stars in one of these clusters, to determine its velocity dispersion and hence M/L.  As by-products we will also estimate the spectroscopic metallicity, look for any evidence of kinematic disturbance, and determine the systemic velocity of the cluster.
+
+</div>
+
+
+
+</body>
+</html>

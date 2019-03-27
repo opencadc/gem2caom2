@@ -1,0 +1,1601 @@
+Filename: TX20071021_RAW.2037.fits.bz2
+
+AstroData Types: ['TEXES', 'RAW', 'UNPREPARED']
+
+
+--- HDU 0 ---
+SIMPLE  =                    T / Fits standard                                  
+BITPIX  =                   32 / Bits per pixel                                 
+NAXIS   =                    0 / Number of axes                                 
+EXTEND  =                    T / File may contain extensions                    
+ORIGIN  = 'University of Texas' / FITS file originator                          
+DATE    = '2007-10-25T22:51:45' / Date FITS file was generated                  
+IRAF-TLM= '13:08:04 (25/10/2007)' / Time of last modification                   
+FILENAME= 'irs9.2037'                                                           
+OBJECT  = 'NGC 7538 IRS 9'                                                      
+FEATURE = 'C2H2 R(5)'           / spectral feature                              
+WAVENO0 =         7.440000E+02  / planned central wavenumber                    
+ORDER   =                    4  / echelle order number                          
+TEMPER  =         2.816000E+02  / ambient temperature                           
+TAU     = '.07'                                                                 
+HUMIDITY= '16.4'                                                                
+OBSMODE = 'scan'                                                                
+OBSTYPE = 'object'                                                              
+OBSCLASS= 'science'                                                             
+TELSTEP = '-0.00 E   0.14 N'                                                    
+TSTEPPQ = '-0.14 P   0.00 Q'                                                    
+OFFSET  = '0.00 E   -2.10 N'                                                    
+OFFSETPQ= '2.10 P   0.00 Q'                                                     
+NOD     =         0.000000E+00  / 0.00 E   0.00 N                               
+NODPQ   = '0.00 P   0.00 Q'                                                     
+NPOINTS =                   30  / number of points in scan                      
+NODWAIT = '3.0'                                                                 
+FRAMETIM=         1.011917E+00  / integration time / frame                      
+NFRAME  =                    2  / number of frames coadded in hardware          
+NSUM    =                    1  / number of frames coadded in software          
+NWRITE  =                    1  / number of frames written per nod phase        
+NSCAN   =                    4  / number of scans                               
+OBSTIME =         8.100000E+00  / calculated observation time                   
+TOTTIME =         3.232400E+02  / calculated total clock time                   
+INSTMODE= 'hi-med'              / echelon x echelle                             
+ECHELLE =         5.843300E+01  / echelle grating angle (deg)                   
+LORES   =        -1.498500E+01  / lo-res grating angle (deg)                    
+KMIRROR =         4.500000E-02  / K-mirror angle                                
+SLIT    =         2.399400E+02  / slit wheel angle                              
+FILTER  =         2.838000E+02  / filter wheel angle                            
+PARAB   = '-223.920'                                                            
+INSTRPA =         9.000000E+01                                                  
+INSTRAA =         9.150000E+01                                                  
+NSKY    =                    3  / number of extra points on sky                 
+INSTRUME= 'TEXES'                                                               
+EVOLT   = '6.877'                                                               
+LVOLT   = '8.968'                                                               
+KVOLT   = '2.033'                                                               
+SVOLT   = '5.999'                                                               
+FVOLT   = '6.724'                                                               
+PVOLT   = '4.378'                                                               
+EVOLT0  = '14.708'                                                              
+LVOLT0  = ' 6.970'                                                              
+KVOLT0  = ' 2.031'                                                              
+SVOLT0  = ' 1.999'                                                              
+FVOLT0  = ' 1.994'                                                              
+PVOLT0  = ' 5.000'                                                              
+TEMP_DET= '0.362'                                                               
+TEMP_ECH= '0.368'                                                               
+TEMP_LHE= '0.047'                                                               
+TEMP_LN2= '0.012'                                                               
+PRESSURE=         1.682000E+01  / LN2 pumping line pressure (Torr)              
+HUMIDITY= '16.4'                                                                
+BIAS    = '-4.0 V'                                                              
+GAIN    =         2.500000E+01  / electronic gain                               
+BANDWID = '3000 kHz'                                                            
+DAS     = 'IR Observer: 15 Oct 07'                                              
+NSPEC   =                  256  / array size in spectral dimension              
+NSPAT   =                  256  / array size in spatial dimension               
+DATE-OBS= '2007-10-21'                                                          
+TIME-OBS= '06:13:53.8'          / UTC ?                                         
+TIMESYS = 'UTC'                                                                 
+OBSERVER= 'mr,mb,jl,tg,jb'                                                      
+TELESCOP= 'Gemini-North'                                                        
+RA      =         3.485076E+02  / 23:14:01.823                                  
+DEC     =         6.145567E+01  / +61:27:20.42                                  
+LST     = '21:48:50.9'                                                          
+HA      =        -1.425700E+00                                                  
+AIRMASS =         1.394000E+00                                                  
+AZIMUTH =         1.449779E+01  / +14:29:52.05                                  
+ELEVATIO=         4.577758E+01  / +45:46:39.28                                  
+TARGRA  = '23:11:52.87'                                                         
+TARGDEC = '61:10:59.00'                                                         
+TARGCOOR= 'FK4'                                                                 
+FRAMEPA = 'FK5'                                                                 
+BASEX   = ' -1.7438'                                                            
+BASEY   = '  2.5319'                                                            
+BASEUNIT= 'mm'                                                                  
+BASECONV= '1.611 arcsec/mm'                                                     
+HEALTH  = 'GOOD'                                                                
+FOCUSOFF= '0.001'                                                               
+GEMPRGID= 'GN-2007B-C-6'                                                        
+OBSID   = 'GN-2007B-C-6-5'                                                      
+FOCUS   = '0.306'                                                               
+ENDTIME = '06:18:32.8'                                                          
+EQUINOX =         2.000000E+03  / equinox for RA, DEC.  TARG equinox is 1950.   
+VEHELIO =         2.144353E-01  / heliocentric motion of Earth from object      
+VELSR   =        -9.947865E+00  / LSR motion of Earth from object               
+PLTSCL  =         1.404547E-01  / arcsec / pixel after focal reduction          
+CDELT2  =         3.901519E-05  / deg / pixel along slit                        
+SLITWID =         5.380973E-01  / slit width (arcsec)                           
+BEAMTIME=         2.023834E+00  / frtime*nframe*nsum*nwrite                     
+RAWCC   = 'ANY     '                                                            
+RAWWV   = 'ANY     '                                                            
+RAWBG   = 'ANY     '                                                            
+RAWIQ   = 'ANY     '                                                            
+SSA     = 'B. Walls'                                                            
+DATALAB = 'GN-2007B-C-6-5-005-raw'                                              
+RELEASE = '2009-04-21'         / End of proprietary period YYYY-MM-DD           
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+
+--- HDU 1 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                    1                                                  
+
+--- HDU 2 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                    2                                                  
+
+--- HDU 3 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                    3                                                  
+
+--- HDU 4 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                    4                                                  
+
+--- HDU 5 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                    5                                                  
+
+--- HDU 6 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                    6                                                  
+
+--- HDU 7 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                    7                                                  
+
+--- HDU 8 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                    8                                                  
+
+--- HDU 9 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                    9                                                  
+
+--- HDU 10 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   10                                                  
+
+--- HDU 11 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   11                                                  
+
+--- HDU 12 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   12                                                  
+
+--- HDU 13 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   13                                                  
+
+--- HDU 14 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   14                                                  
+
+--- HDU 15 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   15                                                  
+
+--- HDU 16 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   16                                                  
+
+--- HDU 17 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   17                                                  
+
+--- HDU 18 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   18                                                  
+
+--- HDU 19 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   19                                                  
+
+--- HDU 20 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   20                                                  
+
+--- HDU 21 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   21                                                  
+
+--- HDU 22 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   22                                                  
+
+--- HDU 23 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   23                                                  
+
+--- HDU 24 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   24                                                  
+
+--- HDU 25 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   25                                                  
+
+--- HDU 26 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   26                                                  
+
+--- HDU 27 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   27                                                  
+
+--- HDU 28 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   28                                                  
+
+--- HDU 29 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   29                                                  
+
+--- HDU 30 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   30                                                  
+
+--- HDU 31 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   31                                                  
+
+--- HDU 32 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   32                                                  
+
+--- HDU 33 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   33                                                  
+
+--- HDU 34 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   34                                                  
+
+--- HDU 35 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   35                                                  
+
+--- HDU 36 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   36                                                  
+
+--- HDU 37 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   37                                                  
+
+--- HDU 38 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   38                                                  
+
+--- HDU 39 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   39                                                  
+
+--- HDU 40 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   40                                                  
+
+--- HDU 41 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   41                                                  
+
+--- HDU 42 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   42                                                  
+
+--- HDU 43 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   43                                                  
+
+--- HDU 44 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   44                                                  
+
+--- HDU 45 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   45                                                  
+
+--- HDU 46 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   46                                                  
+
+--- HDU 47 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   47                                                  
+
+--- HDU 48 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   48                                                  
+
+--- HDU 49 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   49                                                  
+
+--- HDU 50 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   50                                                  
+
+--- HDU 51 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   51                                                  
+
+--- HDU 52 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   52                                                  
+
+--- HDU 53 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   53                                                  
+
+--- HDU 54 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   54                                                  
+
+--- HDU 55 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   55                                                  
+
+--- HDU 56 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   56                                                  
+
+--- HDU 57 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   57                                                  
+
+--- HDU 58 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   58                                                  
+
+--- HDU 59 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   59                                                  
+
+--- HDU 60 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   60                                                  
+
+--- HDU 61 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   61                                                  
+
+--- HDU 62 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   62                                                  
+
+--- HDU 63 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   63                                                  
+
+--- HDU 64 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   64                                                  
+
+--- HDU 65 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   65                                                  
+
+--- HDU 66 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   66                                                  
+
+--- HDU 67 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   67                                                  
+
+--- HDU 68 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   68                                                  
+
+--- HDU 69 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   69                                                  
+
+--- HDU 70 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   70                                                  
+
+--- HDU 71 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   71                                                  
+
+--- HDU 72 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   72                                                  
+
+--- HDU 73 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   73                                                  
+
+--- HDU 74 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   74                                                  
+
+--- HDU 75 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   75                                                  
+
+--- HDU 76 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   76                                                  
+
+--- HDU 77 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   77                                                  
+
+--- HDU 78 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   78                                                  
+
+--- HDU 79 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   79                                                  
+
+--- HDU 80 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   80                                                  
+
+--- HDU 81 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   81                                                  
+
+--- HDU 82 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   82                                                  
+
+--- HDU 83 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   83                                                  
+
+--- HDU 84 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   84                                                  
+
+--- HDU 85 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   85                                                  
+
+--- HDU 86 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   86                                                  
+
+--- HDU 87 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   87                                                  
+
+--- HDU 88 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   88                                                  
+
+--- HDU 89 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   89                                                  
+
+--- HDU 90 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   90                                                  
+
+--- HDU 91 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   91                                                  
+
+--- HDU 92 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   92                                                  
+
+--- HDU 93 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   93                                                  
+
+--- HDU 94 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   94                                                  
+
+--- HDU 95 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   95                                                  
+
+--- HDU 96 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   96                                                  
+
+--- HDU 97 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   97                                                  
+
+--- HDU 98 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   98                                                  
+
+--- HDU 99 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                   99                                                  
+
+--- HDU 100 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                  100                                                  
+
+--- HDU 101 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                  101                                                  
+
+--- HDU 102 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                  102                                                  
+
+--- HDU 103 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                  103                                                  
+
+--- HDU 104 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                  104                                                  
+
+--- HDU 105 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                  105                                                  
+
+--- HDU 106 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                  106                                                  
+
+--- HDU 107 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                  107                                                  
+
+--- HDU 108 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                  108                                                  
+
+--- HDU 109 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                  109                                                  
+
+--- HDU 110 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                  110                                                  
+
+--- HDU 111 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                  111                                                  
+
+--- HDU 112 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                  112                                                  
+
+--- HDU 113 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                  113                                                  
+
+--- HDU 114 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                  114                                                  
+
+--- HDU 115 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                  115                                                  
+
+--- HDU 116 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                  116                                                  
+
+--- HDU 117 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                  117                                                  
+
+--- HDU 118 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                  118                                                  
+
+--- HDU 119 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                  119                                                  
+
+--- HDU 120 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                  120                                                  
+
+--- HDU 121 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                  121                                                  
+
+--- HDU 122 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                  122                                                  
+
+--- HDU 123 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                  123                                                  
+
+--- HDU 124 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                  124                                                  
+
+--- HDU 125 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                  125                                                  
+
+--- HDU 126 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                  126                                                  
+
+--- HDU 127 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                  127                                                  
+
+--- HDU 128 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                  128                                                  
+
+--- HDU 129 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                  129                                                  
+
+--- HDU 130 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                  130                                                  
+
+--- HDU 131 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                  131                                                  
+
+--- HDU 132 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                  132                                                  

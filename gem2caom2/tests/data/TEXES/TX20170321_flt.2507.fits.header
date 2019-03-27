@@ -1,0 +1,157 @@
+Filename: TX20170321_flt.2507.fits.bz2
+
+AstroData Types: ['TEXES', 'RAW', 'UNPREPARED']
+
+
+--- HDU 0 ---
+SIMPLE  =                    T / Fits standard                                  
+BITPIX  =                   32 / Bits per pixel                                 
+NAXIS   =                    0 / Number of axes                                 
+EXTEND  =                    T / File may contain extensions                    
+ORIGIN  = 'University of Texas' / FITS file originator                          
+DATE    = '2017-03-21         ' / Date FITS file was generated                  
+IRAF-TLM= '2017-03-23T02:56:21' / Time of last modification                     
+FILENAME= 'flat.2507'                                                           
+OBJECT  = 'FLAT    '                                                            
+FEATURE = 'SiO'                 / spectral feature                              
+WAVENO0 =         1.232000E+03  / planned central wavenumber                    
+ORDER   =                    7  / echelle order number                          
+TEMPER  =         2.823000E+02  / ambient temperature                           
+TAU     = ''                                                                    
+HUMIDITY= '63.3'                                                                
+OBSMODE = 'flat'                                                                
+OBSTYPE = 'flat'                                                                
+OBSCLASS= 'partnerCal'                                                          
+TELSTEP = '0.25 E   0.00 N'                                                     
+TSTEPPQ = '0.25 P   0.00 Q'                                                     
+OFFSET  = '1.70 E   -7.00 N'                                                    
+OFFSETPQ= '1.70 P   -7.00 Q'                                                    
+NOD     =         5.000000E+00  / 0.00 E   5.00 N                               
+NODPQ   = '0.00 P   5.00 Q'                                                     
+NODWAIT = '3.0'                                                                 
+FRAMETIM=         2.023834E+00  / integration time / frame                      
+NFRAME  =                    1  / number of frames coadded in hardware          
+NSUM    =                    1  / number of frames coadded in software          
+NWRITE  =                    2  / number of frames written per nod phase        
+NNOD    =                    2  / number of nod pairs                           
+OBSTIME =         8.100000E+00  / calculated observation time                   
+TOTTIME =         4.019000E+01  / calculated total clock time                   
+INSTMODE= 'hi-med'              / echelon x echelle                             
+ECHELLE =         6.422200E+01  / echelle grating angle (deg)                   
+LORES   =        -1.312500E+01  / lo-res grating angle (deg)                    
+KMIRROR =         9.450000E-01  / K-mirror angle                                
+SLIT    =         4.038000E+01  / slit wheel angle                              
+FILTER  =         9.888000E+01  / filter wheel angle                            
+PARAB   = '71.640'                                                              
+INSTRPA =         0.000000E+00                                                  
+INSTRAA =         9.150000E+01                                                  
+NSKY    =                    0  / number of extra points on sky                 
+INSTRUME= 'TEXES'                                                               
+EVOLT   = '5.610'                                                               
+LVOLT   = '8.763'                                                               
+KVOLT   = '2.073'                                                               
+SVOLT   = '2.651'                                                               
+FVOLT   = '3.648'                                                               
+PVOLT   = '3.159'                                                               
+EVOLT0  = '14.213'                                                              
+LVOLT0  = ' 7.013'                                                              
+KVOLT0  = ' 2.031'                                                              
+SVOLT0  = ' 1.978'                                                              
+FVOLT0  = ' 2.000'                                                              
+PVOLT0  = ' 2.960'                                                              
+TEMP_DET= '0.358'                                                               
+TEMP_ECH= '0.370'                                                               
+TEMP_LHE= '0.047'                                                               
+TEMP_LN2= '0.011'                                                               
+PRESSURE=         2.327000E+01  / LN2 pumping line pressure (Torr)              
+HUMIDITY= '63.3'                                                                
+GAIN    =         5.000000E+01  / electronic gain                               
+BANDWID = '3000 kHz'                                                            
+DAS     = 'IR Observer: 28 May 09'                                              
+NSPEC   =                  256  / array size in spectral dimension              
+NSPAT   =                  256  / array size in spatial dimension               
+DATE-OBS= '2017-03-21'                                                          
+TIME-OBS= '05:58:16.8'          / UTC ?                                         
+TIMESYS = 'UTC'                                                                 
+OBSERVER= 'tkg, rg, jl'                                                         
+TELESCOP= 'Gemini-North'                                                        
+RA      =         8.380867E+01  / 05:35:14.084                                  
+DEC     =        -5.373153E+00  / -05:22:23.35                                  
+LST     = '07:24:01.8'                                                          
+HA      =         1.799300E+00                                                  
+AIRMASS =         1.245000E+00                                                  
+AZIMUTH =         2.293228E+02  / +229:19:22.18                                 
+ELEVATIO=         5.341767E+01  / +53:25:03.60                                  
+TARGRA  = '05:35:14.12'                                                         
+TARGDEC = '-05:22:22.90'                                                        
+TARGCOOR= 'FK5'                                                                 
+FRAMEPA = 'FK5'                                                                 
+BASEX   = ' -2.1533'                                                            
+BASEY   = '  0.8812'                                                            
+BASEUNIT= 'mm'                                                                  
+BASECONV= '1.611 arcsec/mm'                                                     
+HEALTH  = 'GOOD'                                                                
+FOCUSOFF= '-0.060'                                                              
+GEMPRGID= 'GN-2017A-Q-56'                                                       
+OBSID   = 'GN-2017A-Q-56-0'                                                     
+FOCUS   = '-0.435'                                                              
+ENDTIME = '05:58:53.8'                                                          
+EQUINOX =         2.000000E+03                                                  
+RELEASE = '2017-03-21'         / End of proprietary period YYYY-MM-DD           
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+
+--- HDU 1 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                    1                                                  
+
+--- HDU 2 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                    2                                                  
+
+--- HDU 3 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                    3                                                  
+
+--- HDU 4 ---
+XTENSION= 'IMAGE   '                                                            
+BITPIX  =                   32                                                  
+NAXIS   =                    2                                                  
+NAXIS1  =                  256                                                  
+NAXIS2  =                  256                                                  
+PCOUNT  =                    0                                                  
+GCOUNT  =                    1                                                  
+EXTNAME = 'RAWFRAME'                                                            
+EXTVER  =                    4                                                  
