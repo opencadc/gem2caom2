@@ -71,7 +71,6 @@ import logging
 import re
 
 from datetime import datetime
-from datetime import timezone
 
 from caom2pipe import manage_composable as mc
 
@@ -137,6 +136,7 @@ class GemObsFileRelationship(object):
         # 1 = timestamp
         # 2 = file name
         temp_content = {}
+        logging.error('well it started ....')
         for ii in result:
             # re-organize to be able to answer list_observations queries
             ol_key = self._make_seconds(ii[1])
@@ -156,7 +156,11 @@ class GemObsFileRelationship(object):
             else:
                 self.name_list[file_id] = [ii[0]]
 
+        logging.error('After the initial bits')
+
         self._build_repaired_lookups()
+
+        logging.error('After the repair bits')
 
         # this structure means an observation ID occurs more than once with
         # different last modified times
@@ -241,7 +245,10 @@ class GemObsFileRelationship(object):
             if start_s <= ii <= end_s:
                 for jj in self.time_list[ii]:
                     temp.append(
-                        '{},{}'.format(jj, datetime.fromtimestamp(ii, timezone.utc).isoformat()))
+                        '{} {} {}'.format(
+                            gem_name.COLLECTION, jj,
+                            datetime.fromtimestamp(ii).isoformat(
+                                timespec='milliseconds')))
             if ii > end_s:
                 break
         return temp
@@ -264,11 +271,11 @@ class GemObsFileRelationship(object):
         patterns."""
         result = True
         file_id = gem_name.GemName.remove_extensions(file_name)
-        if (file_id.startswith(('S', 'N', 'GN', 'GS')) and
+        if (file_id.startswith(('S', 'N', 'GN', 'GS', 'c', 'abu')) and
                 file_id.endswith(
                     ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'))):
             result = False
-        elif file_id.startswith(('2', '02')):
+        elif file_id.startswith(('2', '02', '01')):
             result = False
         # TEXES naming patterns
         elif file_id.startswith('TX2') and '_raw' in file_id:
@@ -363,7 +370,7 @@ class GemObsFileRelationship(object):
                 prefix = 'P'
             else:
                 prefix = ''
-        elif file_id.startswith('TX2'):
+        elif file_id.startswith(('TX', 'ag', 'c')):
             prefix = ''
         elif -1 < file_id.find('GN') < 14:
             prefix = file_id.split('GN', 1)[0]
@@ -381,22 +388,26 @@ class GemObsFileRelationship(object):
 
     @staticmethod
     def _get_suffix(file_id, data_label):
+        temp = []
         suffix = []
         if '-' in file_id:
-            suffix = file_id.split('-')[:1]
+            temp = file_id.split('-')[:1]
         elif '_' in file_id:
             if file_id.startswith(('p', 'P')):
                 if '_FLAT' in file_id or '_COMB' in file_id:
-                    suffix = file_id.split('_')[2:]
+                    temp = file_id.split('_')[2:]
             elif file_id.startswith('TX2'):
                 # when the data label is the file id, fix every
                 # data label except flats
                 if not data_label.startswith(file_id):
                     if '_flt' in file_id.lower():
-                        suffix = ['flt']
+                        temp = ['flt']
             else:
-                suffix = file_id.split('_')[1:]
+                temp = file_id.split('_')[1:]
                 # logging.error('get here? suffix is {} for {}'.format(suffix, file_id))
+        for ii in temp:
+            if re.match('[a-zA-Z]+', ii) is not None:
+                suffix.append(ii)
         return suffix
 
     @staticmethod
@@ -416,6 +427,7 @@ class GemObsFileRelationship(object):
     def _build_repaired_lookups(self):
         # for each gemini observation ID, get the file names associated with
         # that observation ID
+        index = 0
         for ii in self.id_list:
             file_names = self.id_list[ii]
             # for each file name, repair the obs id, add repaired obs id
@@ -425,7 +437,12 @@ class GemObsFileRelationship(object):
                 repaired_obs_id = self.repair_data_label(file_id)
                 temp = gem_name.GemName.remove_extensions(ii)
                 self._add_repaired_element(temp, repaired_obs_id, file_id)
+            index += 1
 
+            if index % 100000 == 0:
+                logging.error('got to {} {}'.format(index, ii))
+
+        index = 0
         # for each file name, add repaired obs ids, if they're not already
         # in the list
         for file_name in self.name_list:
@@ -433,6 +450,10 @@ class GemObsFileRelationship(object):
                 file_id = gem_name.GemName.remove_extensions(file_name)
                 repaired_obs_id = self.repair_data_label(file_id)
                 self._add_repaired_element(obs_id, repaired_obs_id, file_id)
+            index += 1
+
+            if index % 100000 == 0:
+                logging.error('got to {} {}'.format(index, file_name))
 
     def _add_repaired_element(self, obs_id, repaired_obs_id, file_id):
         if obs_id in self.repaired_ids:
@@ -445,7 +466,6 @@ class GemObsFileRelationship(object):
                 self.repaired_names[repaired_obs_id].append(file_id)
         else:
             self.repaired_names[repaired_obs_id] = [file_id]
-
 
     def get_args(self, obs_id):
         if obs_id in self.repaired_ids:
