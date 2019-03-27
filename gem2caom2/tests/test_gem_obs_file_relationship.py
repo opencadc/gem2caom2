@@ -94,9 +94,9 @@ def test_subset_all():
     temp = gofr.subset()
     assert temp is not None, 'should have content'
     assert temp[0].startswith(
-        'GN-CAL20170616-11-022,2017-06-19T03:21:29.345417'), \
+        'GEMINI GN-CAL20170616-11-022 2017-06-19T03:21:29.345'), \
         'wrong content'
-    assert len(list(temp)) == 503, 'wrong count'
+    assert len(list(temp)) == 505, 'wrong count'
     result = gofr.get_file_names('GN-2015B-Q-1-12-1003')
     assert result == \
            ['N20150807G0044m.fits', 'N20150807G0044i.fits',
@@ -111,14 +111,14 @@ def test_subset_only_start():
     temp = gofr.subset(start=start)
     assert temp is not None, 'should have content'
     assert temp[0].startswith(
-        'GN-2018B-FT-113-24-015,2018-12-17T18:08:29.362826+00'), \
+        'GEMINI GN-2018B-FT-113-24-015 2018-12-17T18:08:29.362'), \
         'wrong content'
     assert len(list(temp)) == 98, 'wrong count'
 
     temp = gofr.subset(start=start, maxrec=3)
     assert temp is not None, 'should have content'
     assert temp[0].startswith(
-        'GN-2018B-FT-113-24-015,2018-12-17T18:08:29.362826+00'), \
+        'GEMINI GN-2018B-FT-113-24-015 2018-12-17T18:08:29.362'), \
         'wrong content'
     assert len(list(temp)) == 3, 'wrong maxrec count'
 
@@ -130,14 +130,14 @@ def test_subset_only_end():
     temp = gofr.subset(end=end)
     assert temp is not None, 'should have content'
     assert temp[0].startswith(
-        'GN-CAL20170616-11-022,2017-06-19T03:21:29.345417+00'), \
+        'GEMINI GN-CAL20170616-11-022 2017-06-19T03:21:29.345'), \
         'wrong content'
-    assert len(list(temp)) == 405, 'wrong count'
+    assert len(list(temp)) == 407, 'wrong count'
 
     temp = gofr.subset(end=end, maxrec=3)
     assert temp is not None, 'should have content'
     assert temp[0].startswith(
-        'GN-CAL20170616-11-022,2017-06-19T03:21:29.345417+00'), \
+        'GEMINI GN-CAL20170616-11-022 2017-06-19T03:21:29.345'), \
         'wrong content'
     assert len(list(temp)) == 3, 'wrong maxrec count'
 
@@ -150,14 +150,14 @@ def test_subset_start_end():
     temp = test_subject.subset(start=start, end=end)
     assert temp is not None, 'should have content'
     assert temp[0].startswith(
-        'GN-CAL20150925-2-007,2017-06-20T14:50:59.795755+00:00'), \
+        'GEMINI GN-CAL20150925-2-007 2017-06-20T14:50:59.795'), \
         'wrong content'
-    assert len(list(temp)) == 308, 'wrong count'
+    assert len(list(temp)) == 310, 'wrong count'
 
     temp = test_subject.subset(start=start, end=end, maxrec=3)
     assert temp is not None, 'should have content'
     assert temp[0].startswith(
-        'GN-CAL20150925-2-007,2017-06-20T14:50:59.795755+00:00'), \
+        'GEMINI GN-CAL20150925-2-007 2017-06-20T14:50:59.795'), \
         'wrong content'
     assert len(list(temp)) == 3, 'wrong maxrec count'
 
@@ -165,6 +165,10 @@ def test_subset_start_end():
 @pytest.mark.skipif(single_test, reason='Single test mode')
 def test_is_processed():
     tests = {
+        'c2016may18_sci128': False,
+        'abu01aug16_001': False,
+        'ag2003feb19_6.0001': True,
+        'TX06A_flt.2511': True,
         'GS20141226S0203_BIAS': True,
         'N20070819S0339_dark': True,
         'N20110927S0170_fringe': True,
@@ -795,6 +799,12 @@ x = {
             y, 'TX20170321_red.2507.fits', 'TX20170321_raw.2507.fits'),
         lineage='{1}/{0}{1}.fits {2}/{0}{2}.fits'.format(
             z, 'TX20170321_red.2507', 'TX20170321_raw.2507'))],
+    'GS-2003A-Q-43-3-20001': [CommandLineBits(
+        obs_id='GEMINI GS-2003A-Q-43-3-20001',
+        urls='{0}{1} {0}{2}'.format(
+            y, 'ag2003feb19_6.0001.fits', '2003feb19_6.0001.fits'),
+        lineage='{1}/{0}{1}.fits {2}/{0}{2}.fits'.format(
+            z, 'ag2003feb19_6.0001', '2003feb19_6.0001'))],
 }
 
 

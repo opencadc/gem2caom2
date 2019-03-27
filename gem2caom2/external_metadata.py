@@ -92,8 +92,8 @@ om = gom.GeminiObsMetadata()
 fm = {}
 # lazy initialization for program metadata from Gemini
 pm = {}
-
-gofr = GemObsFileRelationship('/app/data/from_paul.txt')
+# lazy initialization for the Gemini listing of files
+gofr = None
 
 
 class Inst(Enum):
