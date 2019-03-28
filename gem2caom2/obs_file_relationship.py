@@ -71,6 +71,7 @@ import logging
 import re
 
 from datetime import datetime
+from datetime import timedelta
 
 from caom2pipe import manage_composable as mc
 
@@ -106,7 +107,7 @@ class GemObsFileRelationship(object):
 
         self.time_list = {}
 
-        # name_list structure: a dict, keys are file ids, values are repaired
+        # name_list structure: a dict, keys are file ids, values are Gemini
         # observation IDs. This structure supports queries by gem2caom2
         # for determining provenance information for planes and
         # observations.
@@ -152,9 +153,9 @@ class GemObsFileRelationship(object):
                 self.id_list[ii[0]] = [ii[2]]
             file_id = gem_name.GemName.remove_extensions(ii[2])
             if file_id in self.name_list:
-                self.name_list[file_id].append(ii[0])
+                self.name_list[file_id].append([ii[0], ol_key])
             else:
-                self.name_list[file_id] = [ii[0]]
+                self.name_list[file_id] = [[ii[0], ol_key]]
 
         logging.error('After the initial bits')
 
@@ -259,11 +260,18 @@ class GemObsFileRelationship(object):
         else:
             return None
 
-    def get_obs_id(self, file_name):
-        if file_name in self.name_list:
-            return self.name_list[file_name]
+    def get_obs_id(self, file_id):
+        if file_id in self.name_list:
+            return self.name_list[file_id][0]
         else:
             return None
+
+    def get_timestamp(self, file_id):
+        if file_id in self.name_list:
+            temp = self.name_list[file_id]
+            return self.id_list[temp[0][1]]
+        else:
+            return timedelta()
 
     @staticmethod
     def is_processed(file_name):
@@ -311,7 +319,7 @@ class GemObsFileRelationship(object):
         files.
         """
         if file_id in self.name_list:
-            repaired = self.name_list[file_id][0]
+            repaired = self.name_list[file_id][0][0]
             # if the data label is missing, the file name, including
             # extensions, is treated as the data label, so get rid of .fits
             repaired = gem_name.GemName.remove_extensions(repaired)
@@ -446,7 +454,8 @@ class GemObsFileRelationship(object):
         # for each file name, add repaired obs ids, if they're not already
         # in the list
         for file_name in self.name_list:
-            for obs_id in self.name_list[file_name]:
+            for ii in self.name_list[file_name]:
+                obs_id = ii[0]
                 file_id = gem_name.GemName.remove_extensions(file_name)
                 repaired_obs_id = self.repair_data_label(file_id)
                 self._add_repaired_element(obs_id, repaired_obs_id, file_id)
