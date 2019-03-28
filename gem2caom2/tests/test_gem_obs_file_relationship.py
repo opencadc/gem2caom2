@@ -96,7 +96,7 @@ def test_subset_all():
     assert temp[0].startswith(
         'GEMINI GN-CAL20170616-11-022 2017-06-19T03:21:29.345'), \
         'wrong content'
-    assert len(list(temp)) == 505, 'wrong count'
+    assert len(list(temp)) == 506, 'wrong count'
     result = gofr.get_file_names('GN-2015B-Q-1-12-1003')
     assert result == \
            ['N20150807G0044m.fits', 'N20150807G0044i.fits',
@@ -132,7 +132,7 @@ def test_subset_only_end():
     assert temp[0].startswith(
         'GEMINI GN-CAL20170616-11-022 2017-06-19T03:21:29.345'), \
         'wrong content'
-    assert len(list(temp)) == 407, 'wrong count'
+    assert len(list(temp)) == 408, 'wrong count'
 
     temp = gofr.subset(end=end, maxrec=3)
     assert temp is not None, 'should have content'
