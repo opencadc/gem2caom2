@@ -269,7 +269,7 @@ class GemObsFileRelationship(object):
     def get_timestamp(self, file_id):
         if file_id in self.name_list:
             temp = self.name_list[file_id]
-            return self.id_list[temp[0][1]]
+            return temp[0][1]
         else:
             return timedelta()
 
