@@ -259,6 +259,8 @@ def _repair_filter_name_for_svo(instrument, filter_names):
                           'H2v=1-0s1-G0216': 'H2S1v1-0-G0216',
                           'H2v=1-0S1-G0216': 'H2S1v1-0-G0216',
                           'H2Oice_G0230': 'H2Oice-G0230w',
+                          'Brgamma-G0218': 'BrG-G0218',
+                          'Brgamma-G0218w': 'BrG-G0218w',
                           'H2v=2-1s1_G0220': 'H2S1v2-1-G0220'}
     FILTER_REPAIR_TRECS = {'K': 'k',
                            'L': 'l',
