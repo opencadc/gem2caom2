@@ -79,7 +79,6 @@ from bs4 import BeautifulSoup
 from caom2pipe import manage_composable as mc
 from gem2caom2.svofps import filter_metadata
 from gem2caom2 import gemini_obs_metadata as gom
-from gem2caom2.obs_file_relationship import GemObsFileRelationship
 
 
 GEMINI_METADATA_URL = \
@@ -284,6 +283,8 @@ def _repair_filter_name_for_svo(instrument, filter_names):
         if instrument == Inst.NIRI:
             temp = re.sub(r'con', 'cont', temp)
             temp = re.sub(r'_', '-', temp)
+            temp = re.sub('\\(', '', temp)
+            temp = re.sub('\\)', '', temp)
             if temp in FILTER_REPAIR_NIRI:
                 temp = FILTER_REPAIR_NIRI[temp]
         elif instrument == Inst.NICI:
