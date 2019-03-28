@@ -830,3 +830,12 @@ def test_make_gem2caom2_args():
                         '{} urls {} instead of {}'.format(jj.obs_id, jj.urls, kk.urls)
                     break
             assert found, 'new obs id {}'.format(jj.obs_id)
+
+
+@pytest.mark.skipif(not sys.version.startswith(PY_VERSION),
+                    reason='support 3.6 only')
+def test_get_timestamp():
+    gofr = GemObsFileRelationship('/app/data/from_paul.txt')
+    test_result = gofr.get_timestamp('ag2003feb19_6.0001')
+    assert test_result is not None, 'no result'
+    assert test_result == 1498571069.924588, 'wrong result'
