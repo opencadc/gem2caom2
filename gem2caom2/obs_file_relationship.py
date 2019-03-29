@@ -330,6 +330,8 @@ class GemObsFileRelationship(object):
                     file_id.startswith('TX2')):
                 if not file_id.startswith('TX2'):
                     repaired = repaired.split('_')[0]
+                if '/' in repaired:
+                    repaired = repaired.replace('BIAS/MBIAS/', '')
                 prefix = GemObsFileRelationship._get_prefix(file_id)
                 suffix = GemObsFileRelationship._get_suffix(file_id, repaired)
                 removals = GemObsFileRelationship._get_removals(file_id,
