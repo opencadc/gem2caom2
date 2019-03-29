@@ -137,10 +137,11 @@ def filter_metadata(instrument, filters):
         for index in filter_names:
             filter_name = index.strip()
             filter_id = "{}.{}".format(instrument, filter_name)
+            # VERB=0 parameter means the
             if instrument == 'Flamingos':
-                url = "{}{}".format(SVO_KPNO_URL, filter_id)
+                url = "{}{}&VERB=0".format(SVO_KPNO_URL, filter_id)
             else:
-                url = "{}{}".format(SVO_URL, filter_id)
+                url = "{}{}&VERB=0".format(SVO_URL, filter_id)
 
             # Open the URL and fetch the VOTable document.
             # Some Gemini filters in SVO filter database have bandpass info

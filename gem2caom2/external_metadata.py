@@ -256,6 +256,8 @@ def _repair_filter_name_for_svo(instrument, filter_names):
                           'CH4-H1L': 'ED381',
                           'CH4-H1L_2': 'ED283'}
     FILTER_REPAIR_NIRI = {'H2v=2-1s1-G0220': 'H2S1v2-1-G0220',
+                          'H2v=2-1S1-G0220w': 'H2S1v2-1-G0220w',
+                          'H2v=2-1S1-G0220': 'H2S1v2-1-G0220',
                           'H2v=1-0s1-G0216': 'H2S1v1-0-G0216',
                           'H2v=1-0S1-G0216': 'H2S1v1-0-G0216',
                           'H2Oice_G0230': 'H2Oice-G0230w',
