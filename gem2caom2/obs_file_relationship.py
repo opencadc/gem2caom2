@@ -206,7 +206,7 @@ class GemObsFileRelationship(object):
                                 logging.warning(
                                     'Mystery data label {}'.format(temp[0]))
                         elif '?' in temp[0]:
-                            if 'GS-2002A-DD-1-?' in temp:
+                            if 'GS-2002A-DD-1-?' in temp[0]:
                                 temp[0] = temp[0].replace('?', '11')
                             else:
                                 logging.warning(
