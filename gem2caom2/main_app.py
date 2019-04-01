@@ -1922,13 +1922,16 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name):
             bandpass = filter_name[0]
             lookup = bandpass
             if camera.startswith('Long'):
-                slit_table_value= 0.1
+                slit_table_value = 0.1
                 lookup_index = 3
             elif camera.startswith('Short'):
                 date_time = ac.get_datetime(em.om.get('ut_datetime'))
                 if date_time > ac.get_datetime('2012-11-01T00:00:00'):
                     slit_table_value = 0.3
-                    lookup_index = 4
+                    if grating == '32':
+                        lookup_index = 4
+                    else:
+                        lookup_index = 3
                 else:
                     slit_table_value = 0.3
                     lookup_index = 2
@@ -1939,13 +1942,12 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name):
 
         if lookup not in gnirs_lookup[grating]:
             raise mc.CadcException(
-                'GNIRS: Mystery lookup {} for grating {}, obs {}'.format(lookup,
-                                                                         grating,
-                                                                         obs_id))
-
+                'GNIRS: Mystery lookup {} for grating {}, obs {}'.format(
+                    lookup, grating, obs_id))
         bounds = gnirs_lookup[grating][lookup]
         fm.set_bandpass(bounds[1], bounds[0])
-        fm.resolving_power = slit_table_value * bounds[lookup_index] / slit_width
+        fm.resolving_power = slit_table_value * bounds[
+            lookup_index] / slit_width
         fm.set_central_wl(bounds[1], bounds[0])
     elif data_product_type == DataProductType.IMAGE:
         logging.debug('gnirs: SpectralWCS imaging mode for {}.'.format(obs_id))
