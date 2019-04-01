@@ -73,7 +73,17 @@ from gem2caom2 import external_metadata as ext_md
 single_test = False
 
 
-test_subjects = {'H2v=2-1S1_G0220': [ext_md.Inst.NIRI, 'H2S1v2-1-G0220']}
+test_subjects = {
+    'H2v=2-1S1_G0220': [ext_md.Inst.NIRI, 'H2S1v2-1-G0220'],
+    'Kprime_G0206': [ext_md.Inst.NIRI, 'Kprime-G0206'],
+    'H2Oice204_G0242': [ext_md.Inst.NIRI, 'H2Oice2045-G0242'],
+    'Jcon(121)_G0232': [ext_md.Inst.NIRI, 'Jcont1207-G0232'],
+    'Bra_G0238': [ext_md.Inst.NIRI, 'BrAlpha-G0238'],
+    'Bracont_G0237': [ext_md.Inst.NIRI, 'BrAlphaCont-G0237'],
+    'Brgamma_G0218': [ext_md.Inst.NIRI, 'BrG-G0218'],
+    'Jcon1065_G0239': [ext_md.Inst.NIRI, 'Jcont1065-G0239'],
+    'hydrocarb_G0231': [ext_md.Inst.NIRI, 'hydrocarbon-G0231'],
+}
 
 
 @pytest.mark.skipif(single_test, reason='Single test mode')
