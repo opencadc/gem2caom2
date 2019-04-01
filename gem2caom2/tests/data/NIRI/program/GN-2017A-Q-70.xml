@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GN-2017A-Q-70</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GN-2017A-Q-70</h1>
+
+<table>
+ <tr><td>Title:<td>Carbon Isotope Ratios in M10</tr>
+ <tr><td>PI:<td>Zachary Maas</tr>
+ <tr><td>Co-I(s):<td> Eileen Friel,  Catherine Pilachowski,  Jeffrey Gerber</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+We propose to derive carbon isotope ratios in 27 giants in the globular cluster M10 using GNIRS with Gemini North. The sample for our proposed observations of M10 ([Fe/H}=-1.56) include 14 CN-strong stars and 13 CN-weak stars as determined from CN band (~3800 angstroms) measurements in low resolution spectra. Measurements of carbon isotope ratios in field stars and globular clusters have shown low 12C/13C ratios from 3-10 which are indicative of CNO processed material mixing into the stars' outer atmosphere. Additionally, measurements in metal rich globular clusters, such as M71, have found a correlation between carbon isotope ratio and CN band strength. CN strong stars show lower 12C/13C ratios compared to CN weak stars. However, one other study of two intermediate metallicity globular clusters did not find the same correlation between band strength and carbon isotope ratio, which were all primarily found to be between 3-5. Our measurements will explore carbon isotope ratios in an [Fe/H]=-1.56 metallicity cluster, which could illuminate multiple populations through differences between isotope ratios and through full CNO element abundance measurements, or provide more evidence of lower isotope ratios measured in intermediate metallicity clusters than in similar metal poor field stars. 
+</div>
+
+
+
+</body>
+</html>
