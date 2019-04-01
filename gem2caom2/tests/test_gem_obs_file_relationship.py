@@ -96,7 +96,7 @@ def test_subset_all():
     assert temp[0].startswith(
         'GEMINI GN-CAL20170616-11-022 2017-06-19T03:21:29.345'), \
         'wrong content'
-    assert len(list(temp)) == 507, 'wrong count'
+    assert len(list(temp)) == 506, 'wrong count'
     result = gofr.get_file_names('GN-2015B-Q-1-12-1003')
     assert result == \
            ['N20150807G0044m.fits', 'N20150807G0044i.fits',
@@ -113,7 +113,7 @@ def test_subset_only_start():
     assert temp[0].startswith(
         'GEMINI GN-2018B-FT-113-24-015 2018-12-17T18:08:29.362'), \
         'wrong content'
-    assert len(list(temp)) == 98, 'wrong count'
+    assert len(list(temp)) == 97, 'wrong count'
 
     temp = gofr.subset(start=start, maxrec=3)
     assert temp is not None, 'should have content'
@@ -225,6 +225,9 @@ def test_repair_data_label():
             assert test_result == test_main_app.LOOKUP[ii][0], \
                 'repair failed for {} actual {} expected {}'.format(
                     ii, test_result, test_main_app.LOOKUP[ii][0])
+    test_result = em.gofr.repair_data_label('N20181217S0266')
+    assert test_result is not None, 'no result'
+    assert test_result == 'GN-2018B-Q-133-20-001', 'wrong result'
 
 
 test_subjects = [
@@ -805,7 +808,7 @@ x = {
             y, 'ag2003feb19_6.0001.fits', '2003feb19_6.0001.fits'),
         lineage='{1}/{0}{1}.fits {2}/{0}{2}.fits'.format(
             z, 'ag2003feb19_6.0001', '2003feb19_6.0001'))],
-    'GS-CAL20150906-1-001-BIAS/MBIAS/G-BIAS': [CommandLineBits(
+    'GS-CAL20150906-1-001-G-BIAS': [CommandLineBits(
         obs_id='GEMINI GS-CAL20150906-1-001-G-BIAS',
         urls='{0}{1}'.format(y, 'gS20150906S0222_bias.fits'),
         lineage='{1}/{0}{1}.fits'.format(z, 'gS20150906S0222_bias'))]
@@ -828,10 +831,10 @@ def test_make_gem2caom2_args():
                 if jj.obs_id == kk.obs_id:
                     found = True
                     assert jj.lineage == kk.lineage, \
-                        '{} lineage {} instead of {}'.format(
+                        '{} lineage {} expected {}'.format(
                             jj.obs_id, jj.lineage, kk.lineage)
                     assert jj.urls == kk.urls, \
-                        '{} urls {} instead of {}'.format(jj.obs_id, jj.urls, kk.urls)
+                        '{} urls {} expected {}'.format(jj.obs_id, jj.urls, kk.urls)
                     break
             assert found, 'new obs id {}'.format(jj.obs_id)
 

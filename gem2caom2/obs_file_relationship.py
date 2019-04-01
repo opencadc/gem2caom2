@@ -193,6 +193,24 @@ class GemObsFileRelationship(object):
                     temp = row.split('|')
                     if len(temp) > 1 and 'data_label' not in row:
                         time_string = temp[3].strip().replace(' ', 'T')
+                        if '/' in temp[0]:
+                            if 'MBIAS' in temp[0]:
+                                temp[0] = temp[0].replace('BIAS/MBIAS/', '')
+                            elif 'PETRO' in temp[0]:
+                                temp[0] = temp[0].replace(
+                                    '-/NET/PETROHUE/DATAFLOW/',
+                                    '')
+                            elif '12CD' in temp[0] or 'EXPORT/HOME' in temp[0]:
+                                temp[0] = temp[0].split('/', 1)[0]
+                            else:
+                                logging.warning(
+                                    'Mystery data label {}'.format(temp[0]))
+                        elif '?' in temp[0]:
+                            if 'GS-2002A-DD-1-?' in temp:
+                                temp[0] = temp[0].replace('?', '11')
+                            else:
+                                logging.warning(
+                                    'Mystery data label {}'.format(temp[0]))
                         if len(temp[0].strip()) > 1:
                             results.append(
                                 [temp[0].strip(), time_string, temp[1].strip()])
@@ -330,8 +348,6 @@ class GemObsFileRelationship(object):
                     file_id.startswith('TX2')):
                 if not file_id.startswith('TX2'):
                     repaired = repaired.split('_')[0]
-                if '/' in repaired:
-                    repaired = repaired.replace('BIAS/MBIAS/', '')
                 prefix = GemObsFileRelationship._get_prefix(file_id)
                 suffix = GemObsFileRelationship._get_suffix(file_id, repaired)
                 removals = GemObsFileRelationship._get_removals(file_id,

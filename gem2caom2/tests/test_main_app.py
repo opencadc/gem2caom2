@@ -551,7 +551,7 @@ def test_main_app(test_name):
         def mock_get_votable(url):
             try:
                 x = url.split('/')
-                filter_name = x[-1]
+                filter_name = x[-1].replace('&VERB=0', '')
                 votable = parse_single_table(
                     '{}/votable/{}.xml'.format(TEST_DATA_DIR, filter_name))
                 return votable, None
