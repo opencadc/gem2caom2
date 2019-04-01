@@ -255,6 +255,8 @@ def _repair_filter_name_for_svo(instrument, filter_names):
                           '': 'ED299',
                           'CH4-H1L': 'ED381',
                           'CH4-H1L_2': 'ED283'}
+    # note the lookup repair values are not what comes from the files,
+    # they're what's left after the re.sub calls have completed
     FILTER_REPAIR_NIRI = {'H2v=2-1s1-G0220': 'H2S1v2-1-G0220',
                           'H2v=2-1S1-G0220w': 'H2S1v2-1-G0220w',
                           'H2v=2-1S1-G0220': 'H2S1v2-1-G0220',
