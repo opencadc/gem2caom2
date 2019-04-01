@@ -137,7 +137,7 @@ def filter_metadata(instrument, filters):
         for index in filter_names:
             filter_name = index.strip()
             filter_id = "{}.{}".format(instrument, filter_name)
-            # VERB=0 parameter means the
+            # VERB=0 parameter means the smallest amount returned
             if instrument == 'Flamingos':
                 url = "{}{}&VERB=0".format(SVO_KPNO_URL, filter_id)
             else:
@@ -150,7 +150,10 @@ def filter_metadata(instrument, filters):
             # filter), then search for 'w' if nothing is found...
             votable, error_message = get_vo_table(url)
             if not votable:
-                url += 'w'
+                if instrument == 'Flamingos':
+                    url = "{}{}w&VERB=0".format(SVO_KPNO_URL, filter_id)
+                else:
+                    url = "{}{}w&VERB=0".format(SVO_URL, filter_id)
                 votable, error_message = get_vo_table(url)
             if not votable:
                 logging.error(
