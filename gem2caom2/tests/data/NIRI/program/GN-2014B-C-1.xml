@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GN-2014B-C-1</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GN-2014B-C-1</h1>
+
+<table>
+ <tr><td>Title:<td>Study of the structure of Jovian atmosphere by Galilean satellites eclipse</tr>
+ <tr><td>PI:<td>Yasuto Takahashi</tr>
+ <tr><td>Co-I(s):<td> Jun Kimura,  Ko Arimatsu,  Taishi Nakamoto,  Ko-ishiro Sugiyama,  Takehiko Wada,  Chikatoshi Honda,  Yusuke Minowa,  Kiyoshi Kuramoto,  Yutaka Hayano,  Kensuke Nakajima,  Mai Shirahata,  Kohji Tsumura</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+Galilean satellites are thought to have only negligible brightness in Jovian shadow because they cannot receive solar irradiation and emit enough thermal radiation due to its low surface temperature. But our recent observations discovered that some of eclipsed Galilean satellites certainly have the brightness anomaly in particular band. We have assumed some candidates as the origin of this brightness anomaly, and concluded that the scattered and refracted sunlight at Jovian limb is most probable. It means that this observation method can provide us the information of the vertical structure of Jovian atmosphere. Moreover, from model calculation, we expected to be able to obtain the property of deeper atmosphere (&lt; 1bar) than former occultation studies. It will give us useful constrain of cloud or haze distribution in Jovian atmosphere which is not well known. We need to observe more number of events to investigate the latitude dependence of the light curve, which may correspond to the difference of cloud structure of zone and belt. In 14B period (2014/Aug - 2015/Jan), we will be able to observe the almost deepest eclipse, and if we miss this chance we have to wait 6 years. 
+</div>
+
+
+
+</body>
+</html>
