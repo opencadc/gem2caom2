@@ -117,6 +117,7 @@ LOOKUP = {
     'S20171226S0358': ['GS-2017A-Q-28-280-012', em.Inst.F2, 'GS-2017A-Q-28'],
     'S20171123S0216': ['GS-2017B-Q-18-96-006', em.Inst.F2, 'GS-2017B-Q-18'],
     'S20171123S0166': ['GS-2017B-Q-45-156-079', em.Inst.F2, 'GS-2017B-Q-45'],
+    'S20170221S0005': ['GS-CAL20170221-1-005', em.Inst.F2, 'GS-CAL20170221'],
     'S20181230S0026': ['GS-2018B-SV-301-144-020', em.Inst.F2,
                        'GS-2018B-SV-301'],
     'S20170905S0318': ['GS-2017A-Q-58-66-027', em.Inst.F2, 'GS-2017A-Q-58'],
@@ -202,6 +203,8 @@ LOOKUP = {
     'N20151213S0022': ['GN-CAL20151213-6-002', em.Inst.GNIRS, 'GN-CAL20151213'],
     'N20160202S0098': ['GN-CAL20160202-3-039', em.Inst.GNIRS, 'GN-CAL20160202'],
     'S20041101S0215': ['GS-2004B-Q-19-20-023', em.Inst.GNIRS, 'GS-2004B-Q-19'],
+    'N20170210S0013': ['GN-CAL20170209-5-003', em.Inst.GNIRS,
+                       'GN-CAL20170209-5'],
     # GPI
     'S20140422S0167': ['GS-2014A-SV-408-6-003', em.Inst.GPI, 'GS-2014A-SV-408'],
     'S20180313S0108': ['GS-2018A-FT-101-5-043', em.Inst.GPI, 'GS-2018A-FT-101'],
@@ -449,7 +452,7 @@ def pytest_generate_tests(metafunc):
 
         file_list = []
         # for root, dirs, files in os.walk(TESTDATA_DIR):
-        # for ii in [em.Inst.NIRI]:
+        # for ii in [em.Inst.F2]:
         for ii in [em.Inst.GMOS, em.Inst.NIRI, em.Inst.GPI, em.Inst.F2,
                    em.Inst.GSAOI, em.Inst.NICI, em.Inst.TRECS, em.Inst.MICHELLE,
                    em.Inst.GRACES, em.Inst.NIFS, em.Inst.GNIRS, em.Inst.PHOENIX,

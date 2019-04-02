@@ -981,7 +981,7 @@ def update(observation, **kwargs):
                     # primary header
                     _update_position_from_zeroth_header(
                         observation.planes[p].artifacts[a], headers,
-                        observation.observation_id)
+                        instrument, observation.observation_id)
 
                 for part in observation.planes[p].artifacts[a].parts:
 
@@ -1392,9 +1392,30 @@ def _update_chunk_energy_gpi(chunk, data_product_type, obs_id, filter_name):
 
 def _update_chunk_energy_f2(chunk, header, data_product_type, obs_id,
                             filter_name):
-    """NIRI-specific chunk-level Energy WCS construction."""
+    """F2-specific chunk-level Energy WCS construction."""
     logging.debug('Begin _update_chunk_energy_f2')
     mc.check_param(chunk, Chunk)
+
+    # DB - 02-05-19
+    # For F2 use SVO filter service for bandpass or ‘delta’ for images and
+    # spectroscopy.  Treat images as for other instruments but…
+    #
+    # if gemini_md[‘spectroscopy’] == ‘true’:
+    #  ref_wl = gemini_md[‘central_wavelength’]   or  GRWLEN header value
+    #  grism = gemini_md[‘disperser’]  or  GRISM header value
+    #  if gemini_md[‘mode’] == ‘LS’:  # long-slit
+    #    slit_width = MASKNAME header value, e.g. ‘4pix-slit’, but need only ‘4’
+    #    use the table I sent you with slit/grism values to determine
+    #    average resolution R
+    #
+    #  elif gemini_md[‘mode’] == ‘MOS’:  # Multi-object
+    #    slit_width = 2   # no way to determine slit widths used in
+    #    custom mask, so assume 2
+    #    use the table I sent you with slit/grism values to determine
+    #    average resolution R
+    #
+    #  else:
+    #    fail because there shouldn’t be any other spectroscopy mode
 
     filter_md = em.get_filter_metadata(em.Inst.F2, filter_name)
     if data_product_type == DataProductType.IMAGE:
@@ -1405,12 +1426,9 @@ def _update_chunk_energy_f2(chunk, header, data_product_type, obs_id,
             'SpectralWCS: F2 LS|Spectroscopy mode for {}.'.format(obs_id))
         fp_mask = header.get('MASKNAME')
         mode = em.om.get('mode')
+        slit_width = None
         if mode == 'LS':
             slit_width = fp_mask[0]
-        else:
-            # DB - 04-04-19 no way to determine slit widths used in
-            # custom mask, so assume 2
-            slit_width = '2'
         fm = FilterMetadata()
         fm.central_wl = filter_md.central_wl
         fm.bandpass = filter_md.bandpass
@@ -1427,6 +1445,11 @@ def _update_chunk_energy_f2(chunk, header, data_product_type, obs_id,
                   '4': [350.0, 1300.0],
                   '6': [130.0, 1000.0],
                   '8': [100.0, 750.0]}
+        if slit_width is None or slit_width not in lookup:
+            # DB 02-04-19
+            # For F2 at line 1409 of main_app.py set slit_width = ‘2’ as
+            # a default of slit_width[0] is not a numeric value
+            slit_width = '2'
         if grism_name.startswith('R3K_'):
             fm.resolving_power = lookup[slit_width][1]
         else:
@@ -2508,7 +2531,7 @@ def get_filter_name(primary_header, header, obs_id, processed, instrument=None):
     return filter_name
 
 
-def _update_position_from_zeroth_header(artifact, headers, log_id):
+def _update_position_from_zeroth_header(artifact, headers, instrument, obs_id):
     """Make the 0th header spatial WCS the WCS for all the
     chunks."""
     primary_header = headers[0]
@@ -2518,9 +2541,18 @@ def _update_position_from_zeroth_header(artifact, headers, log_id):
     primary_header['NAXIS1'] = headers[-1].get('NAXIS1')
     primary_header['NAXIS2'] = headers[-1].get('NAXIS2')
 
-    wcs_parser = WcsParser(primary_header, log_id, 0)
     primary_chunk = Chunk()
-    wcs_parser.augment_position(primary_chunk)
+    types = em.om.get('types')
+    ra = get_ra(headers[0])
+    if (instrument is em.Inst.GNIRS and 'AZEL_TARGET' in types and
+            ra is None):
+        # DB - 02-04-19 - Az-El coordinate frame likely means the telescope
+        # was parked or at least not tracking so spatial information is
+        # irrelevant.
+        logging.info('GNIRS: Spatial WCS is None for {}'.format(obs_id))
+    else:
+        wcs_parser = WcsParser(primary_header, obs_id, 0)
+        wcs_parser.augment_position(primary_chunk)
 
     for part in artifact.parts:
         if part == '0':
