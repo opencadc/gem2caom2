@@ -1847,7 +1847,7 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name):
     # 2.01 to 2.59 microns but wavelengths beyond 2.49 microns don’t make it
     # past the filter.
 
-    gnirs_lookup = {'11': {'X': [1.03, 1.17, 570, 2100],
+    gnirs_lookup = {'10': {'X': [1.03, 1.17, 570, 2100],
                            'J': [1.17, 1.37, 570, 1600],
                            'H': [1.47, 1.80, 570, 1700],
                            'K': [1.91, 2.49, 570, 1700],
