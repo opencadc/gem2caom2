@@ -1288,7 +1288,18 @@ def _update_chunk_energy_niri(chunk, data_product_type, obs_id, filter_name):
 
     # https://www.gemini.edu/sciops/instruments/niri/spectroscopy/blocking-filters
 
-    filter_md = em.get_filter_metadata(em.Inst.NIRI, filter_name)
+    if 'Jcon(112)_G0235' in filter_name:
+        # DB - 01-04-19 The G0235 filter is listed as ‘damaged’ on the Gemini
+        # NIRI filters web site:
+        # https://www.gemini.edu/sciops/instruments/niri/imaging/filters.
+        # Not enough info is given there for SVO to add this filter to their
+        # system.  Hardcode a central wavelength of 1.1232 microns and a
+        # FWHM of 0.0092 microns
+        filter_md = FilterMetadata('NIRI')
+        filter_md.central_wl = 1.1232
+        filter_md.bandpass = 0.0092
+    else:
+        filter_md = em.get_filter_metadata(em.Inst.NIRI, filter_name)
     if filter_md is None:
         raise mc.CadcException('{}: mystery filter {} for {}'.format(
             em.Inst.NIRI, filter_name, obs_id))
