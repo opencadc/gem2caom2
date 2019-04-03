@@ -330,6 +330,12 @@ def _repair_filter_name_for_svo(instrument, filter_names):
             if temp.startswith('ND'):
                 continue
             temp = temp[0]
+        elif instrument == Inst.GSAOI:
+            # DB 02-04-19
+            # The GSAOI filter CO2360 should map to SVO filter GSAOI.CO
+            logging.error('what is temp {}'.format(temp))
+            if temp == 'CO2360':
+                temp = 'CO'
         if temp is not None:
             result.append(temp)
     if len(result) > 0:
