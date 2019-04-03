@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GN-2017A-Q-44</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GN-2017A-Q-44</h1>
+
+<table>
+ <tr><td>Title:<td>A Survey of Peculiar L and T Dwarfs in a Cross-Correlation of the SDSS, 2MASS and WISE Databases</tr>
+ <tr><td>PI:<td>Kendra Kellogg</tr>
+ <tr><td>Co-I(s):<td> Stanimir Metchev</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+Brown dwarf atmospheres are complex, hosting a wide variety of molecule and condensate species. With the goal of understanding how surface gravities, metallicities and other unusual cloud properties affect the atmospheric characteristics of ultracool objects, we propose to complete the spectroscopic follow-up of a large program to identify peculiar brown dwarfs in the SDSS, 2MASS and WISE catalogs based on their optical and infrared colors. From this program we have uncovered several objects which have the most extreme near-IR colors ever found. With this systematic search for peculiar brown dwarfs, we expect to elucidate the full range of atmospheric properties of L and T dwarfs and to accurately determine the population properties and evolutionary paths of substellar objects. 
+</div>
+
+
+
+</body>
+</html>
