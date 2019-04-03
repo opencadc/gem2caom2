@@ -336,6 +336,15 @@ def get_data_product_type(header):
     instrument = _get_instrument()
     if instrument == em.Inst.FLAMINGOS:
         result, ignore = _get_flamingos_mode(header)
+    elif instrument == em.Inst.GNIRS:
+        # DB - 03-04-19
+        # if disperser for GNIRS = MIRROR
+        # then it’s an image, otherwise a spectrum.
+        disperser = em.om.get('disperser')
+        if disperser == 'MIRROR':
+            result = DataProductType.IMAGE
+        else:
+            result = DataProductType.SPECTRUM
     elif instrument in [em.Inst.CIRPASS, em.Inst.TEXES]:
         result = DataProductType.SPECTRUM
     else:
@@ -1869,6 +1878,14 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name):
     # central wavelength of 2.3 microns we calculate wavelength limits of
     # 2.01 to 2.59 microns but wavelengths beyond 2.49 microns don’t make it
     # past the filter.
+
+    # DB - 03-04-19
+
+    # GNIRS observation GN-2017A-Q-44-25-031 has a json ‘mode’ value of
+    # ‘imaging’ despite having a disperser value of ‘32_mm&SXD’ indicating
+    # that it’s a spectrum (as you can also see from the preview). Means
+    # forgetting about relying on json ‘mode’ but looking to see if the
+    # json disperser value = ‘MIRROR’.
 
     gnirs_lookup = {'10': {'X': [1.03, 1.17, 570, 2100],
                            'J': [1.17, 1.37, 570, 1600],
