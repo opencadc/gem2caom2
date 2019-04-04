@@ -2348,28 +2348,52 @@ def _update_chunk_energy_gmos(chunk, data_product_type, obs_id, filter_name,
               'RG780': [0.07800, 1.10000],
               'open': [0.35000, 1.10000]}
 
+    # DB - 04-04-19
+
+    # GG455&g filter is a case where both the GG455 order-sorting filter
+    # and the g filter are combined (which is likely quite common).  The
+    # former is in the ‘lookup’ on line 2343.  The g filter is g_G0301
+    # which is in the SVO.  My original ‘svo’ script handled the
+    # order-sorting filters as part of that subroutine.  I don’t think
+    # that works with the current _update_chunk_energy_gmos.  The o-s
+    # filter will change the effective wavelength coverage of the g
+    # filter.
+
+    # this means some filter metadata will come from SVO, and some is
+    # hard-coded here
+
+    filter_name = filter_name.replace('&', '+')
+
     filter_md = em.get_filter_metadata(instrument, filter_name)
-    if filter_md is None:  # means filter_name not found
-        w_max = 10.0
-        w_min = 0.0
-        for ii in filter_name.split('+'):
-            if 'Hartmann' in ii:
-                continue
-            elif ii in lookup:
-                wl_max = lookup[ii][1]
-                wl_min = lookup[ii][0]
-            else:
-                raise mc.CadcException(
-                    '{}: Mystery filter {} from {}'.format(
-                        instrument, filter_name, obs_id))
+    # if filter_md is None:  # means filter_name not found
+    #     logging.error('i got here')
+    w_max = 10.0
+    w_min = 0.0
+    for ii in filter_name.split('+'):
+        if 'Hartmann' in ii:
+            continue
+        elif ii in lookup:
+            wl_max = lookup[ii][1]
+            wl_min = lookup[ii][0]
             if wl_max < w_max:
                 w_max = wl_max
             if wl_min > w_min:
                 w_min = wl_min
-        filter_md = FilterMetadata()
-        filter_md.set_bandpass(w_max, w_min)
-        filter_md.set_central_wl(w_max, w_min)
-        filter_md.set_resolving_power(w_max, w_min)
+
+    if filter_md is not None:
+        # mingle the SVO lookup values with the hard-coded lookup values
+        # from here
+        svo_min = (2 * filter_md.central_wl - filter_md.bandpass) / 2
+        svo_max = filter_md.bandpass + svo_min
+        if svo_max < w_max:
+            w_max = svo_max
+        if svo_min > w_min:
+            w_min = svo_min
+
+    filter_md = FilterMetadata()
+    filter_md.set_bandpass(w_max, w_min)
+    filter_md.set_central_wl(w_max, w_min)
+    filter_md.set_resolving_power(w_max, w_min)
 
     if data_product_type == DataProductType.SPECTRUM:
         logging.debug('gmos: SpectralWCS spectroscopy for {}.'.format(obs_id))

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GN-2011A-Q-87</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GN-2011A-Q-87</h1>
+
+<table>
+ <tr><td>Title:<td>Star formation history in barred spiral galaxies: NGC 5430 </tr>
+ <tr><td>PI:<td>Carmelle Robert</tr>
+ <tr><td>Co-I(s):<td> Simon Cantin,  Anne Pellerin,  Mercedes Molla,  Hugo Martel,  Stephanie Cote</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+
+Using IFU data, we have studied the history of stellar populations in the central 
+region of 8 barred spiral galaxies. It shows young bursts located in nuclear bar/ring/spirals, 
+non thermal emission, dust lanes, and multiple underlying old populations. 
+The importance of the galaxy bar to bring new gas in the galaxy center is put forward. 
+GMOS/IFU data, with high spatial resolution is proposed here to push further this
+study. We will concentrate on NGC5430, the more massive galaxy in our sample that
+offer high spatial resolution. These new data will describe the stellar populations 
+and gas in regions located in the galaxy bar and arms. It will provide new constrains 
+for the role of bar and interaction in the evolutionary history of galaxies.
+
+
+</div>
+
+
+
+</body>
+</html>
