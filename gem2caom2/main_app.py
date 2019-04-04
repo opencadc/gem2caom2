@@ -1607,42 +1607,51 @@ def _update_chunk_energy_nici(chunk, data_product_type, obs_id, filter_name):
     mc.check_param(chunk, Chunk)
 
     filter_name = filter_name.split('_G')[0]
-    filter_md = em.get_filter_metadata(em.Inst.NICI, filter_name)
-
-    if data_product_type == DataProductType.IMAGE:
-        logging.debug('NICI: SpectralWCS imaging mode for {}.'.format(obs_id))
-        if filter_md is None:  # means filter_name not found
-            w_max = 10.0
-            w_min = 0.0
-            for ii in filter_name.split('+'):
-                if ii in NICI:
-                    wl_max = NICI[ii][2]
-                    wl_min = NICI[ii][1]
-                else:
-                    raise mc.CadcException(
-                        'NICI: Unprepared for filter {} from {}'.format(
-                            filter_name, obs_id))
-                if wl_max < w_max:
-                    w_max = wl_max
-                if wl_min > w_min:
-                    w_min = wl_min
-            fm = FilterMetadata()
-            fm.set_bandpass(w_max, w_min)
-            fm.set_central_wl(w_max, w_min)
-            fm.set_resolving_power(w_max, w_min)
-        else:
-            fm = filter_md
-
-        temp = em.om.get('filter_name')
-        # NICI has two different bandpass names (most of the time) in its two
-        # chunks.  Pat says in this case nothing will be put in the bandpass
-        # name for the plane.  Add code to combine the two chunk bandpass names
-        # to create a plane bandpass name only for this instrument
-        _build_chunk_energy(chunk, temp, fm)
+    if filter_name == 'Block':
+        # DB 04-04-19
+        # If one of the NICI filters is ‘Block’ then energy WCS should be
+        # ignored for that extension.
+        chunk.energy = None
+        chunk.energy_axis = None
     else:
-        raise mc.CadcException(
-            'NICI: Do not understand DataProductType {} from {}'.format(
-                data_product_type, obs_id))
+        filter_md = em.get_filter_metadata(em.Inst.NICI, filter_name)
+
+        if data_product_type == DataProductType.IMAGE:
+            logging.debug(
+                'NICI: SpectralWCS imaging mode for {}.'.format(obs_id))
+            if filter_md is None:  # means filter_name not found
+                w_max = 10.0
+                w_min = 0.0
+                for ii in filter_name.split('+'):
+                    if ii in NICI:
+                        wl_max = NICI[ii][2]
+                        wl_min = NICI[ii][1]
+                    else:
+                        raise mc.CadcException(
+                            'NICI: Unprepared for filter {} from {}'.format(
+                                filter_name, obs_id))
+                    if wl_max < w_max:
+                        w_max = wl_max
+                    if wl_min > w_min:
+                        w_min = wl_min
+                fm = FilterMetadata()
+                fm.set_bandpass(w_max, w_min)
+                fm.set_central_wl(w_max, w_min)
+                fm.set_resolving_power(w_max, w_min)
+            else:
+                fm = filter_md
+
+            temp = em.om.get('filter_name')
+            # NICI has two different bandpass names (most of the time) in
+            # its two chunks.  Pat says in this case nothing will be put in
+            # the bandpass name for the plane.  Add code to combine the two
+            # chunk bandpass names to create a plane bandpass name only for
+            # this instrument
+            _build_chunk_energy(chunk, temp, fm)
+        else:
+            raise mc.CadcException(
+                'NICI: Do not understand DataProductType {} from {}'.format(
+                    data_product_type, obs_id))
 
     logging.debug('End _update_chunk_energy_nici')
 
@@ -2365,8 +2374,6 @@ def _update_chunk_energy_gmos(chunk, data_product_type, obs_id, filter_name,
     filter_name = filter_name.replace('&', '+')
 
     filter_md = em.get_filter_metadata(instrument, filter_name)
-    # if filter_md is None:  # means filter_name not found
-    #     logging.error('i got here')
     w_max = 10.0
     w_min = 0.0
     for ii in filter_name.split('+'):

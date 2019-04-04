@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GS-2010B-Q-20</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-2010B-Q-20</h1>
+
+<table>
+ <tr><td>Title:<td>A Planet Search around Young-associations M dwarfs (PSYM survey)</tr>
+ <tr><td>PI:<td>Marie-Eve Naud</tr>
+ <tr><td>Co-I(s):<td> Etienne Artigau,  Lison Malo,  Rene Doyon,  David Lafreniere,  Christian Marois,  Bruce McIntosh,  Travis Barman,  Jennifer Patience</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+A comprehensive investigation of the formation and evolution of giant planets requires a thorough direct imaging search for planets around primaries of all masses. Currently, as past direct imaging surveys have focused on sun-like or more massive primaries, and since relatively few nearby young low-mass stars were known, low-mass stars are under-represented in the sample targeted by previous searches. Using a new Bayesian analysis that takes into account proper motion, sky position, chromospheric activity (Halpha and X-ray), photometry and radial-velocity, we have identified close to 100 new low mass (&gt;M0) members of nearby young (&lt;50 Myr) associations. Being young and nearby, these newly-identified members are ideal targets for direct imaging searches. We propose to observe this sample of new low-mass stars with NICI to search for self-luminous giant planets down to 2 Mjup at orbital separations of 15-500 AU. Our survey will nearly quadruple the number of young M-dwarfs probed for planets and will allow, for the first time, to place constraints on the existence of planets around low-mass stars at a level comparable to what has been done for more massive stars.
+</div>
+
+
+<h2>Publications using this program's data</h2>
+<ul>
+<li>
+<a href="/searchform/publication=2013MNRAS.428.2645M" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2013MNRAS.428.2645M/abstract" target="_blank">[ADS]</a> Spitzer 3.6 and 4.5 μm full-orbit light curves of WASP-18
+</ul>
+
+
+</body>
+</html>
