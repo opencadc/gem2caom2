@@ -1749,8 +1749,8 @@ def _update_chunk_energy_nifs(chunk, data_product_type, obs_id, filter_name):
                 fm.resolving_power = nifs_lookup[grating][filter_name][3]
             else:
                 raise mc.CadcException(
-                    'NIFS: mystery filter_name {} for {}'.format(
-                        filter_name, obs_id))
+                    'NIFS: mystery filter_name {} with disperser {} for {}'.format(
+                        filter_name, grating, obs_id))
         else:
             raise mc.CadcException(
                 'NIFS: mystery grating {} for {}'.format(grating, obs_id))
@@ -2014,7 +2014,7 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name):
                    'H2': [2.105, 2.137],
                    'PAH': [3.27, 3.32]}
 
-        if len(filter_name) == 1 or filter_name is 'H2' or filter_name is 'PAH':
+        if len(filter_name) == 1 or filter_name == 'H2' or filter_name == 'PAH':
             bandpass = filter_name
         else:
             bandpass = filter_name[0]
