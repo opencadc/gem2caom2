@@ -1015,7 +1015,7 @@ def update(observation, **kwargs):
                         else:
                             filter_name = get_filter_name(
                                 headers[0], header, observation.observation_id,
-                                processed, instrument)
+                                instrument)
                             if instrument is em.Inst.NIRI:
                                 _update_chunk_energy_niri(
                                     c, observation.planes[p].data_product_type,
@@ -1052,7 +1052,8 @@ def update(observation, **kwargs):
                                     filter_name)
                             elif instrument is em.Inst.MICHELLE:
                                 _update_chunk_energy_michelle(
-                                    c, observation.planes[p].data_product_type,
+                                    c, headers[0],
+                                    observation.planes[p].data_product_type,
                                     observation.observation_id,
                                     filter_name)
                             elif instrument is em.Inst.NIFS:
@@ -1514,8 +1515,37 @@ def _update_chunk_energy_hrwfs(chunk, data_product_type, obs_id, filter_name):
 
     logging.debug('End _update_chunk_energy_hrwfs')
 
+# 0 - central
+# 1 - lower
+# 2 - upper
+#
+# units are microns
+#
+# select filter_id,wavelength_central,
+# wavelength_lower,wavelength_upper from gsa..gsa_filters where
+# instrument="michelle";
+michelle = {
+    'F103B10': [10.282990, 9.875740, 10.690240],
+    'F105B53': [10.500000, 7.850000, 13.150000],
+    'F112B21': [11.299610, 10.236910, 12.362310],
+    'F116B9': [11.687970, 11.254020, 12.121920],
+    'F125B9': [12.493580, 12.097480, 12.889680],
+    'F128B2': [12.800000, 12.650000, 12.950000],
+    'F14SA': [10.000000, 1.000000, 14.000000],
+    'F161L': [20.500000, 16.100000, 25.000000],
+    'F185B9B': [18.113860, 17.385410, 18.842310],
+    'F198B27': [20.696080, 17.945430, 23.446730],
+    'F209B42L': [20.900000, 16.500000, 25.300000],
+    'F209B42S': [20.900000, 16.500000, 25.300000],
+    'F66LA': [10.000000, 6.600000, 99.900000],
+    'F66LB': [10.000000, 6.600000, 99.900000],
+    'F79B10': [7.715890, 7.392540, 8.039240],
+    'F88B10': [8.821500, 8.469400, 9.173600],
+    'F97B10': [9.688450, 9.253750, 10.123150]
+}
 
-def _update_chunk_energy_michelle(chunk, data_product_type, obs_id,
+
+def _update_chunk_energy_michelle(chunk, header, data_product_type, obs_id,
                                   filter_name):
     """General chunk-level Energy WCS construction."""
     logging.debug('Begin _update_chunk_energy_michelle')
@@ -1537,6 +1567,13 @@ def _update_chunk_energy_michelle(chunk, data_product_type, obs_id,
     # MedN2    3000    R x 2/slit width
     # Echelle    30000    R x 2/slit width (very approximate)
 
+    # DB - 04-04-19
+    # The only solution for the michelle datasets (another ‘visitor’
+    # instrument) would be to use filter info in the gsa..gsa_filters
+    # table (as you do for PHOENIX).  No info to pass on to SVO folks to
+    # add more filters.   Code would have to handle this case of two
+    # filters with overlapping bandpasses.
+
     # 0 = R
     # 1 = ratio for slit width
     lookup = {'LowN': [200, 2.0],
@@ -1546,11 +1583,10 @@ def _update_chunk_energy_michelle(chunk, data_product_type, obs_id,
               'Echelle': [30000, 2.0]
               }
 
-    if data_product_type in [DataProductType.IMAGE, DataProductType.SPECTRUM]:
+    filter_md = em.get_filter_metadata(em.Inst.MICHELLE, filter_name)
+    if data_product_type == DataProductType.SPECTRUM:
         logging.debug(
-            'michelle: Spectral WCS {} mode for {}.'.format(data_product_type,
-                                                            obs_id))
-        filter_md = em.get_filter_metadata(em.Inst.MICHELLE, filter_name)
+            'michelle: Spectral WCS spectrum for {}.'.format(obs_id))
         if data_product_type == DataProductType.SPECTRUM:
             disperser = em.om.get('disperser')
             focal_plane_mask = em.om.get('focal_plane_mask')
@@ -1561,12 +1597,24 @@ def _update_chunk_energy_michelle(chunk, data_product_type, obs_id,
                                                                    obs_id))
             filter_md.resolving_power = \
                 lookup[disperser][0] * lookup[disperser][1] / slit_width
-        _build_chunk_energy(chunk, filter_name, filter_md)
+    elif data_product_type == DataProductType.IMAGE:
+        logging.debug(
+            'michelle: Spectral WCS imaging mode for {}.'.format(obs_id))
+        if filter_md is None:  # means filter_name not found
+            w_max, w_min = _multiple_filter_lookup(filter_name, michelle,
+                                                   obs_id, em.Inst.MICHELLE)
+            filter_md = FilterMetadata()
+            filter_md.set_bandpass(w_max, w_min)
+            filter_md.set_central_wl(w_max, w_min)
     else:
         raise mc.CadcException(
             'michelle: no Spectral WCS support when DataProductType {} for '
             '{}'.format(data_product_type, obs_id))
 
+    # use the json value for bandpass_name value - it's representative of
+    # multiple filters
+    filter_name = em.om.get('filter_name')
+    _build_chunk_energy(chunk, filter_name, filter_md)
     logging.debug('End _update_chunk_energy_michelle')
 
 
@@ -1620,20 +1668,8 @@ def _update_chunk_energy_nici(chunk, data_product_type, obs_id, filter_name):
             logging.debug(
                 'NICI: SpectralWCS imaging mode for {}.'.format(obs_id))
             if filter_md is None:  # means filter_name not found
-                w_max = 10.0
-                w_min = 0.0
-                for ii in filter_name.split('+'):
-                    if ii in NICI:
-                        wl_max = NICI[ii][2]
-                        wl_min = NICI[ii][1]
-                    else:
-                        raise mc.CadcException(
-                            'NICI: Unprepared for filter {} from {}'.format(
-                                filter_name, obs_id))
-                    if wl_max < w_max:
-                        w_max = wl_max
-                    if wl_min > w_min:
-                        w_min = wl_min
+                w_max, w_min = _multiple_filter_lookup(filter_name, NICI,
+                                                       obs_id, em.Inst.NICI)
                 fm = FilterMetadata()
                 fm.set_bandpass(w_max, w_min)
                 fm.set_central_wl(w_max, w_min)
@@ -2558,7 +2594,25 @@ def _reset_energy(observation_type, data_label, instrument):
     return result
 
 
-def get_filter_name(primary_header, header, obs_id, processed, instrument=None):
+def _multiple_filter_lookup(filter_name, lookup, obs_id, instrument):
+    w_max = 10.0
+    w_min = 0.0
+    for ii in filter_name.split('+'):
+        if ii in lookup:
+            wl_max = lookup[ii][2]
+            wl_min = lookup[ii][1]
+        else:
+            raise mc.CadcException(
+                '{}: Unprepared for filter {} from {}'.format(
+                    instrument, filter_name, obs_id))
+        if wl_max < w_max:
+            w_max = wl_max
+        if wl_min > w_min:
+            w_min = wl_min
+    return w_max, w_min
+
+
+def get_filter_name(primary_header, header, obs_id, instrument=None):
     """
     Create the filter names.
 
@@ -2582,13 +2636,23 @@ def get_filter_name(primary_header, header, obs_id, processed, instrument=None):
     # NICI - use filter names from headers, because there's a different
     # filter/header, and the JSON summary value obfuscates that
     #
-    if instrument not in [em.Inst.NIRI, em.Inst.NICI]:
+    # MICHELLE
+    # DB - 08-04-19
+    # Use header FILTERA and FILTERB values to determine the filter
+    # bandpass
+    #
+    if instrument not in [em.Inst.NIRI, em.Inst.NICI, em.Inst.MICHELLE]:
         filter_name = em.om.get('filter_name')
     if (filter_name is None or
             (filter_name is not None and len(filter_name.strip()) == 0)):
         # DB - 04-02-19 - strip out anything with 'pupil' as it doesn't affect
         # energy transmission
-        filters2ignore = ['open', 'invalid', 'pupil']
+        #
+        # 08-04-19 - MICHELLE
+        # Note that FILTERB sometimes has a value “Clear_B” and that should
+        # be ignored.  Not sure if “Clear_A” is possible but maybe best to
+        # allow for it.
+        filters2ignore = ['open', 'invalid', 'pupil', 'clear']
         lookups = ['FILTER']
         if instrument is em.Inst.PHOENIX:
             lookups = ['CVF_POS', 'FILT_POS']

@@ -211,6 +211,8 @@ class GemObsFileRelationship(object):
                             else:
                                 logging.warning(
                                     'Mystery data label {}'.format(temp[0]))
+                        elif '"' in temp[0]:
+                            temp[0] = temp[0].replace('"', '')
                         if len(temp[0].strip()) > 1:
                             results.append(
                                 [temp[0].strip(), time_string, temp[1].strip()])
