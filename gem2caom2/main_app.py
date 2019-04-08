@@ -872,7 +872,7 @@ def _is_gmos_mask(header):
 def accumulate_fits_bp(bp, file_id, uri):
     """Configure the telescope-specific ObsBlueprint at the CAOM model 
     Observation level."""
-    logging.debug('Begin accumulate_fits_bp.')
+    logging.debug('Begin accumulate_fits_bp for {}.'.format(file_id))
     em.get_obs_metadata(file_id)
     bp.set('Observation.intent', 'get_obs_intent(header)')
     bp.set('Observation.type', 'get_obs_type(header)')
@@ -961,6 +961,8 @@ def update(observation, **kwargs):
     headers = None
     if 'headers' in kwargs:
         headers = kwargs['headers']
+    if 'product_id' in kwargs:
+        current_product_id = kwargs['product_id']
 
     # processed files
     if is_composite(headers):
@@ -970,12 +972,15 @@ def update(observation, **kwargs):
 
     try:
         for p in observation.planes:
+            if current_product_id != observation.planes[p].product_id:
+                continue
+
             for a in observation.planes[p].artifacts:
 
                 instrument = em.Inst(observation.instrument.name)
-                file_name = ec.CaomName(
-                    observation.planes[p].artifacts[a].uri).file_name
-                processed = em.gofr.is_processed(file_name)
+                caom_name = ec.CaomName(observation.planes[p].artifacts[a].uri)
+                em.om.reset_index(caom_name.uri)
+                processed = em.gofr.is_processed(caom_name.file_name)
                 if (instrument in
                         [em.Inst.MICHELLE, em.Inst.TRECS, em.Inst.GNIRS]):
                     # Michelle is a retired visitor instrument.
@@ -1175,12 +1180,12 @@ def update(observation, **kwargs):
                                                observation.observation_id)
 
                 if ((processed or isinstance(observation, CompositeObservation))
-                        and 'jpg' not in file_name):
+                        and 'jpg' not in caom_name.file_name):
                     # not the preview artifact
                     if observation.planes[p].provenance is not None:
                         observation.planes[p].provenance.reference = \
                             'http://archive.gemini.edu/searchform/' \
-                            'filepre={}'.format(file_name)
+                            'filepre={}'.format(caom_name.file_name)
 
             program = em.get_pi_metadata(observation.proposal.id)
             if program is not None:
@@ -2952,7 +2957,6 @@ def _build_blueprints(uris):
     for uri in uris:
         blueprint = ObsBlueprint(module=module)
         if not GemName.is_preview(uri):
-            logging.debug('Building blueprint for {}'.format(uri))
             file_id = GemName.remove_extensions(ec.CaomName(uri).file_name)
             accumulate_fits_bp(blueprint, file_id, uri)
         blueprints[uri] = blueprint
