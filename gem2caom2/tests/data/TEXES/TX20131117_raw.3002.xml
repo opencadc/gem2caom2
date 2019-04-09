@@ -39,7 +39,7 @@
         <caom2:name>Gemini Observatory Data</caom2:name>
         <caom2:project>Gemini Archive</caom2:project>
         <caom2:producer>University of Texas</caom2:producer>
-        <caom2:reference>http://archive.gemini.edu/searchform/filepre=TX20131117_raw.3002</caom2:reference>
+        <caom2:reference>http://archive.gemini.edu/searchform/filepre=TX20131117_raw.3002.fits</caom2:reference>
       </caom2:provenance>
       <caom2:artifacts>
         <caom2:artifact caom2:id="00000000-0000-0000-b298-4cefa391083d">

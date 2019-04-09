@@ -95,7 +95,17 @@ PLUGIN = os.path.join(os.path.dirname(THIS_DIR), 'main_app.py')
 # structured by observation id, list of file ids that make up a multi-plane
 # observation
 DIR_NAME = 'multi_plane'
-LOOKUP = {'GS-CAL20101028-5-004': ['mrgS20101028S0134', 'S20101028S0134']}
+LOOKUP = {'GS-CAL20101028-5-004': ['mrgS20101028S0134', 'S20101028S0134'],
+          'GN-2007B-C-6-5-005': ['TX20071021_RAW.2037', 'TX20071021_SUM.2037'],
+          'TX20170321.2505': ['TX20170321_raw.2505', 'TX20170321_red.2505',
+                              'TX20170321_sum.2505'],
+          'TX20170321.2507': ['TX20170321_raw.2507', 'TX20170321_red.2507'],
+          'GS-2002B-Q-22-13-0161': ['2002dec02_0161',
+                                    'P2002DEC02_0161_SUB.0001',
+                                    'P2002DEC02_0161_SUB'],
+          'GN-2015B-Q-1-12-1003': ['N20150807G0044', 'N20150807G0044i',
+                                   'N20150807G0044m']
+          }
 
 
 def pytest_generate_tests(metafunc):
