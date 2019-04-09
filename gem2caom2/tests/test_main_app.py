@@ -217,9 +217,6 @@ LOOKUP = {
     'S20150410S0541': ['GS-CAL20150410-1-007', em.Inst.GPI, 'GS-CAL20150410'],
     'S20160224S0323': ['GS-CAL20160224-12-017', em.Inst.GPI, 'GS-CAL20160224'],
     # GRACES
-    'N20150807G0044': ['GN-2015B-Q-1-12-1003', em.Inst.GRACES, 'GN-2015B-Q-1'],
-    'N20150807G0044m': ['GN-2015B-Q-1-12-1003', em.Inst.GRACES, 'GN-2015B-Q-1'],
-    'N20150807G0044i': ['GN-2015B-Q-1-12-1003', em.Inst.GRACES, 'GN-2015B-Q-1'],
     'N20150604G0003': ['GN-CAL20150604-1000-1072', em.Inst.GRACES,
                        'GN-CAL20150604'],
     'N20150604G0014': ['GN-CAL20150604-1000-1081', em.Inst.GRACES,
@@ -343,12 +340,7 @@ LOOKUP = {
     '2003jun30_3463': ['GS-CAL20030630-4-3463', em.Inst.CIRPASS,
                        'GS-CAL20030630'],
     # TEXES
-    # TODO TODO TODO changed some obs id values
     'TX20071021_FLT.2037': ['GN-2007B-C-6-5-005-FLT', em.Inst.TEXES,
-                            'GN-2007B-C-6'],
-    'TX20071021_RAW.2037': ['GN-2007B-C-6-5-005', em.Inst.TEXES,
-                            'GN-2007B-C-6'],
-    'TX20071021_SUM.2037': ['GN-2007B-C-6-5-005', em.Inst.TEXES,
                             'GN-2007B-C-6'],
     'TX20131117_flt.3002': ['TX20131117_flt.3002', em.Inst.TEXES,
                             'GN-2013B-Q-38'],
@@ -357,16 +349,6 @@ LOOKUP = {
     'TX20170321_flt.2505': ['TX20170321_flt.2505', em.Inst.TEXES,
                             'GN-2017A-Q-56'],
     'TX20170321_flt.2507': ['TX20170321_flt.2507', em.Inst.TEXES,
-                            'GN-2017A-Q-56'],
-    'TX20170321_raw.2505': ['TX20170321.2505', em.Inst.TEXES,
-                            'GN-2017A-Q-56'],
-    'TX20170321_raw.2507': ['TX20170321.2507', em.Inst.TEXES,
-                            'GN-2017A-Q-56'],
-    'TX20170321_red.2505': ['TX20170321.2505', em.Inst.TEXES,
-                            'GN-2017A-Q-56'],
-    'TX20170321_red.2507': ['TX20170321.2507', em.Inst.TEXES,
-                            'GN-2017A-Q-56'],
-    'TX20170321_sum.2505': ['TX20170321.2505', em.Inst.TEXES,
                             'GN-2017A-Q-56'],
     # processed
     'GS20141226S0203_BIAS': ['GS-CAL20141226-7-026-G-BIAS', em.Inst.GMOS,
@@ -436,17 +418,11 @@ LOOKUP = {
                              'GS-CAL2003011'],
     'P2002FEB03_0045_DARK10SEC': ['GS-CAL20020203-4-0045', em.Inst.PHOENIX,
                                   'GS-CAL20020203'],
-    'P2002DEC02_0161_SUB': ['GS-2002B-Q-22-13-0161', em.Inst.PHOENIX,
-                            'GS-2002B-Q-22'],
-    'P2002DEC02_0161_SUB.0001': ['GS-2002B-Q-22-13-0161', em.Inst.PHOENIX,
-                                 'GS-2002B-Q-22'],
     'P2002DEC02_0075_SUB.0001': ['GS-CAL20021202-3-0075', em.Inst.PHOENIX,
                                  'GS-CAL2002120'],
     '2004may19_0255': ['GS-2004A-Q-6-27-0255', em.Inst.PHOENIX, 'GS-2004A-Q-6'],
     'S20181016S0184': ['GS-CAL20181016-5-001', em.Inst.GMOS,
                        'GS-CAL20181016-5'],
-    '2002dec02_0161': ['GS-2002B-Q-22-13-0161', em.Inst.PHOENIX,
-                       'GS-2002B-Q-22']
 }
 
 
@@ -455,7 +431,7 @@ def pytest_generate_tests(metafunc):
 
         file_list = []
         # for root, dirs, files in os.walk(TESTDATA_DIR):
-        # for ii in [em.Inst.NICI]:
+        # for ii in [em.Inst.GRACES]:
         for ii in [em.Inst.GMOS, em.Inst.NIRI, em.Inst.GPI, em.Inst.F2,
                    em.Inst.GSAOI, em.Inst.NICI, em.Inst.TRECS, em.Inst.MICHELLE,
                    em.Inst.GRACES, em.Inst.NIFS, em.Inst.GNIRS, em.Inst.PHOENIX,

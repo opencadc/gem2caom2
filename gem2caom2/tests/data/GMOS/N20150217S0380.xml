@@ -61,44 +61,8 @@
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-996d-c014e63dde2a">
                   <caom2:naxis>2</caom2:naxis>
-                  <caom2:positionAxis1>1</caom2:positionAxis1>
-                  <caom2:positionAxis2>2</caom2:positionAxis2>
                   <caom2:energyAxis>4</caom2:energyAxis>
                   <caom2:timeAxis>3</caom2:timeAxis>
-                  <caom2:position>
-                    <caom2:axis>
-                      <caom2:axis1>
-                        <caom2:ctype>RA---TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis1>
-                      <caom2:axis2>
-                        <caom2:ctype>DEC--TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis2>
-                      <caom2:function>
-                        <caom2:dimension>
-                          <caom2:naxis1>1056</caom2:naxis1>
-                          <caom2:naxis2>250</caom2:naxis2>
-                        </caom2:dimension>
-                        <caom2:refCoord>
-                          <caom2:coord1>
-                            <caom2:pix>2121.36314424843</caom2:pix>
-                            <caom2:val>333.545829711352</caom2:val>
-                          </caom2:coord1>
-                          <caom2:coord2>
-                            <caom2:pix>1552.99166178581</caom2:pix>
-                            <caom2:val>19.7729407462558</caom2:val>
-                          </caom2:coord2>
-                        </caom2:refCoord>
-                        <caom2:cd11>-2.94406815707437e-06</caom2:cd11>
-                        <caom2:cd12>-1.9995639154159e-05</caom2:cd12>
-                        <caom2:cd21>1.99864655185402e-05</caom2:cd21>
-                        <caom2:cd22>-2.95927355569883e-06</caom2:cd22>
-                      </caom2:function>
-                    </caom2:axis>
-                    <caom2:coordsys>FK5</caom2:coordsys>
-                    <caom2:equinox>2000.0</caom2:equinox>
-                  </caom2:position>
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
@@ -153,44 +117,8 @@
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-a23c-46ee250be654">
                   <caom2:naxis>2</caom2:naxis>
-                  <caom2:positionAxis1>1</caom2:positionAxis1>
-                  <caom2:positionAxis2>2</caom2:positionAxis2>
                   <caom2:energyAxis>4</caom2:energyAxis>
                   <caom2:timeAxis>3</caom2:timeAxis>
-                  <caom2:position>
-                    <caom2:axis>
-                      <caom2:axis1>
-                        <caom2:ctype>RA---TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis1>
-                      <caom2:axis2>
-                        <caom2:ctype>DEC--TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis2>
-                      <caom2:function>
-                        <caom2:dimension>
-                          <caom2:naxis1>1056</caom2:naxis1>
-                          <caom2:naxis2>250</caom2:naxis2>
-                        </caom2:dimension>
-                        <caom2:refCoord>
-                          <caom2:coord1>
-                            <caom2:pix>3113.36314424844</caom2:pix>
-                            <caom2:val>333.545829711352</caom2:val>
-                          </caom2:coord1>
-                          <caom2:coord2>
-                            <caom2:pix>1552.99166178581</caom2:pix>
-                            <caom2:val>19.7729407462558</caom2:val>
-                          </caom2:coord2>
-                        </caom2:refCoord>
-                        <caom2:cd11>-2.9440681570743e-06</caom2:cd11>
-                        <caom2:cd12>-1.9995639154159e-05</caom2:cd12>
-                        <caom2:cd21>1.99864655185401e-05</caom2:cd21>
-                        <caom2:cd22>-2.95927355569883e-06</caom2:cd22>
-                      </caom2:function>
-                    </caom2:axis>
-                    <caom2:coordsys>FK5</caom2:coordsys>
-                    <caom2:equinox>2000.0</caom2:equinox>
-                  </caom2:position>
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
@@ -245,44 +173,8 @@
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-835e-ee426d24c285">
                   <caom2:naxis>2</caom2:naxis>
-                  <caom2:positionAxis1>1</caom2:positionAxis1>
-                  <caom2:positionAxis2>2</caom2:positionAxis2>
                   <caom2:energyAxis>4</caom2:energyAxis>
                   <caom2:timeAxis>3</caom2:timeAxis>
-                  <caom2:position>
-                    <caom2:axis>
-                      <caom2:axis1>
-                        <caom2:ctype>RA---TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis1>
-                      <caom2:axis2>
-                        <caom2:ctype>DEC--TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis2>
-                      <caom2:function>
-                        <caom2:dimension>
-                          <caom2:naxis1>1056</caom2:naxis1>
-                          <caom2:naxis2>250</caom2:naxis2>
-                        </caom2:dimension>
-                        <caom2:refCoord>
-                          <caom2:coord1>
-                            <caom2:pix>32.0136533742326</caom2:pix>
-                            <caom2:val>333.545829711352</caom2:val>
-                          </caom2:coord1>
-                          <caom2:coord2>
-                            <caom2:pix>1549.85732589628</caom2:pix>
-                            <caom2:val>19.7729407462558</caom2:val>
-                          </caom2:coord2>
-                        </caom2:refCoord>
-                        <caom2:cd11>-2.96102982991997e-06</caom2:cd11>
-                        <caom2:cd12>-2.00187082496055e-05</caom2:cd12>
-                        <caom2:cd21>2.00247145780924e-05</caom2:cd21>
-                        <caom2:cd22>-2.96127187600543e-06</caom2:cd22>
-                      </caom2:function>
-                    </caom2:axis>
-                    <caom2:coordsys>FK5</caom2:coordsys>
-                    <caom2:equinox>2000.0</caom2:equinox>
-                  </caom2:position>
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
@@ -337,44 +229,8 @@
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-ac79-758d76e3f5e2">
                   <caom2:naxis>2</caom2:naxis>
-                  <caom2:positionAxis1>1</caom2:positionAxis1>
-                  <caom2:positionAxis2>2</caom2:positionAxis2>
                   <caom2:energyAxis>4</caom2:energyAxis>
                   <caom2:timeAxis>3</caom2:timeAxis>
-                  <caom2:position>
-                    <caom2:axis>
-                      <caom2:axis1>
-                        <caom2:ctype>RA---TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis1>
-                      <caom2:axis2>
-                        <caom2:ctype>DEC--TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis2>
-                      <caom2:function>
-                        <caom2:dimension>
-                          <caom2:naxis1>1056</caom2:naxis1>
-                          <caom2:naxis2>250</caom2:naxis2>
-                        </caom2:dimension>
-                        <caom2:refCoord>
-                          <caom2:coord1>
-                            <caom2:pix>1024.01365337423</caom2:pix>
-                            <caom2:val>333.545829711352</caom2:val>
-                          </caom2:coord1>
-                          <caom2:coord2>
-                            <caom2:pix>1549.85732589629</caom2:pix>
-                            <caom2:val>19.7729407462558</caom2:val>
-                          </caom2:coord2>
-                        </caom2:refCoord>
-                        <caom2:cd11>-2.96102982991998e-06</caom2:cd11>
-                        <caom2:cd12>-2.00187082496055e-05</caom2:cd12>
-                        <caom2:cd21>2.00247145780924e-05</caom2:cd21>
-                        <caom2:cd22>-2.96127187600543e-06</caom2:cd22>
-                      </caom2:function>
-                    </caom2:axis>
-                    <caom2:coordsys>FK5</caom2:coordsys>
-                    <caom2:equinox>2000.0</caom2:equinox>
-                  </caom2:position>
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
@@ -429,44 +285,8 @@
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-a17d-2af81b585fe7">
                   <caom2:naxis>2</caom2:naxis>
-                  <caom2:positionAxis1>1</caom2:positionAxis1>
-                  <caom2:positionAxis2>2</caom2:positionAxis2>
                   <caom2:energyAxis>4</caom2:energyAxis>
                   <caom2:timeAxis>3</caom2:timeAxis>
-                  <caom2:position>
-                    <caom2:axis>
-                      <caom2:axis1>
-                        <caom2:ctype>RA---TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis1>
-                      <caom2:axis2>
-                        <caom2:ctype>DEC--TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis2>
-                      <caom2:function>
-                        <caom2:dimension>
-                          <caom2:naxis1>1056</caom2:naxis1>
-                          <caom2:naxis2>250</caom2:naxis2>
-                        </caom2:dimension>
-                        <caom2:refCoord>
-                          <caom2:coord1>
-                            <caom2:pix>-1067.26234337898</caom2:pix>
-                            <caom2:val>333.545829711352</caom2:val>
-                          </caom2:coord1>
-                          <caom2:coord2>
-                            <caom2:pix>1549.91427812196</caom2:pix>
-                            <caom2:val>19.7729407462558</caom2:val>
-                          </caom2:coord2>
-                        </caom2:refCoord>
-                        <caom2:cd11>-2.93253271313424e-06</caom2:cd11>
-                        <caom2:cd12>-2.0009135228356e-05</caom2:cd12>
-                        <caom2:cd21>1.99631700131153e-05</caom2:cd21>
-                        <caom2:cd22>-2.93045401780335e-06</caom2:cd22>
-                      </caom2:function>
-                    </caom2:axis>
-                    <caom2:coordsys>FK5</caom2:coordsys>
-                    <caom2:equinox>2000.0</caom2:equinox>
-                  </caom2:position>
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
@@ -521,44 +341,8 @@
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-8fb5-800694550a87">
                   <caom2:naxis>2</caom2:naxis>
-                  <caom2:positionAxis1>1</caom2:positionAxis1>
-                  <caom2:positionAxis2>2</caom2:positionAxis2>
                   <caom2:energyAxis>4</caom2:energyAxis>
                   <caom2:timeAxis>3</caom2:timeAxis>
-                  <caom2:position>
-                    <caom2:axis>
-                      <caom2:axis1>
-                        <caom2:ctype>RA---TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis1>
-                      <caom2:axis2>
-                        <caom2:ctype>DEC--TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis2>
-                      <caom2:function>
-                        <caom2:dimension>
-                          <caom2:naxis1>1056</caom2:naxis1>
-                          <caom2:naxis2>250</caom2:naxis2>
-                        </caom2:dimension>
-                        <caom2:refCoord>
-                          <caom2:coord1>
-                            <caom2:pix>-2059.26234337897</caom2:pix>
-                            <caom2:val>333.545829711352</caom2:val>
-                          </caom2:coord1>
-                          <caom2:coord2>
-                            <caom2:pix>1549.91427812195</caom2:pix>
-                            <caom2:val>19.7729407462558</caom2:val>
-                          </caom2:coord2>
-                        </caom2:refCoord>
-                        <caom2:cd11>-2.93253271313417e-06</caom2:cd11>
-                        <caom2:cd12>-2.0009135228356e-05</caom2:cd12>
-                        <caom2:cd21>1.99631700131154e-05</caom2:cd21>
-                        <caom2:cd22>-2.93045401780335e-06</caom2:cd22>
-                      </caom2:function>
-                    </caom2:axis>
-                    <caom2:coordsys>FK5</caom2:coordsys>
-                    <caom2:equinox>2000.0</caom2:equinox>
-                  </caom2:position>
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
@@ -613,44 +397,8 @@
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-9bd6-675815f9e6ba">
                   <caom2:naxis>2</caom2:naxis>
-                  <caom2:positionAxis1>1</caom2:positionAxis1>
-                  <caom2:positionAxis2>2</caom2:positionAxis2>
                   <caom2:energyAxis>4</caom2:energyAxis>
                   <caom2:timeAxis>3</caom2:timeAxis>
-                  <caom2:position>
-                    <caom2:axis>
-                      <caom2:axis1>
-                        <caom2:ctype>RA---TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis1>
-                      <caom2:axis2>
-                        <caom2:ctype>DEC--TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis2>
-                      <caom2:function>
-                        <caom2:dimension>
-                          <caom2:naxis1>1056</caom2:naxis1>
-                          <caom2:naxis2>250</caom2:naxis2>
-                        </caom2:dimension>
-                        <caom2:refCoord>
-                          <caom2:coord1>
-                            <caom2:pix>2121.36314424843</caom2:pix>
-                            <caom2:val>333.545829711352</caom2:val>
-                          </caom2:coord1>
-                          <caom2:coord2>
-                            <caom2:pix>1177.99166178581</caom2:pix>
-                            <caom2:val>19.7729407462558</caom2:val>
-                          </caom2:coord2>
-                        </caom2:refCoord>
-                        <caom2:cd11>-2.94406815707435e-06</caom2:cd11>
-                        <caom2:cd12>-1.9995639154159e-05</caom2:cd12>
-                        <caom2:cd21>1.99864655185402e-05</caom2:cd21>
-                        <caom2:cd22>-2.95927355569883e-06</caom2:cd22>
-                      </caom2:function>
-                    </caom2:axis>
-                    <caom2:coordsys>FK5</caom2:coordsys>
-                    <caom2:equinox>2000.0</caom2:equinox>
-                  </caom2:position>
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
@@ -705,44 +453,8 @@
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-b30d-c9a3dbeabd58">
                   <caom2:naxis>2</caom2:naxis>
-                  <caom2:positionAxis1>1</caom2:positionAxis1>
-                  <caom2:positionAxis2>2</caom2:positionAxis2>
                   <caom2:energyAxis>4</caom2:energyAxis>
                   <caom2:timeAxis>3</caom2:timeAxis>
-                  <caom2:position>
-                    <caom2:axis>
-                      <caom2:axis1>
-                        <caom2:ctype>RA---TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis1>
-                      <caom2:axis2>
-                        <caom2:ctype>DEC--TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis2>
-                      <caom2:function>
-                        <caom2:dimension>
-                          <caom2:naxis1>1056</caom2:naxis1>
-                          <caom2:naxis2>250</caom2:naxis2>
-                        </caom2:dimension>
-                        <caom2:refCoord>
-                          <caom2:coord1>
-                            <caom2:pix>3113.36314424844</caom2:pix>
-                            <caom2:val>333.545829711352</caom2:val>
-                          </caom2:coord1>
-                          <caom2:coord2>
-                            <caom2:pix>1177.9916617858</caom2:pix>
-                            <caom2:val>19.7729407462558</caom2:val>
-                          </caom2:coord2>
-                        </caom2:refCoord>
-                        <caom2:cd11>-2.94406815707442e-06</caom2:cd11>
-                        <caom2:cd12>-1.9995639154159e-05</caom2:cd12>
-                        <caom2:cd21>1.99864655185401e-05</caom2:cd21>
-                        <caom2:cd22>-2.95927355569883e-06</caom2:cd22>
-                      </caom2:function>
-                    </caom2:axis>
-                    <caom2:coordsys>FK5</caom2:coordsys>
-                    <caom2:equinox>2000.0</caom2:equinox>
-                  </caom2:position>
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
@@ -797,44 +509,8 @@
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-8bf5-1c7c1d147f9e">
                   <caom2:naxis>2</caom2:naxis>
-                  <caom2:positionAxis1>1</caom2:positionAxis1>
-                  <caom2:positionAxis2>2</caom2:positionAxis2>
                   <caom2:energyAxis>4</caom2:energyAxis>
                   <caom2:timeAxis>3</caom2:timeAxis>
-                  <caom2:position>
-                    <caom2:axis>
-                      <caom2:axis1>
-                        <caom2:ctype>RA---TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis1>
-                      <caom2:axis2>
-                        <caom2:ctype>DEC--TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis2>
-                      <caom2:function>
-                        <caom2:dimension>
-                          <caom2:naxis1>1056</caom2:naxis1>
-                          <caom2:naxis2>250</caom2:naxis2>
-                        </caom2:dimension>
-                        <caom2:refCoord>
-                          <caom2:coord1>
-                            <caom2:pix>32.0136533742326</caom2:pix>
-                            <caom2:val>333.545829711352</caom2:val>
-                          </caom2:coord1>
-                          <caom2:coord2>
-                            <caom2:pix>1174.85732589628</caom2:pix>
-                            <caom2:val>19.7729407462558</caom2:val>
-                          </caom2:coord2>
-                        </caom2:refCoord>
-                        <caom2:cd11>-2.96102982991997e-06</caom2:cd11>
-                        <caom2:cd12>-2.00187082496056e-05</caom2:cd12>
-                        <caom2:cd21>2.00247145780924e-05</caom2:cd21>
-                        <caom2:cd22>-2.96127187600543e-06</caom2:cd22>
-                      </caom2:function>
-                    </caom2:axis>
-                    <caom2:coordsys>FK5</caom2:coordsys>
-                    <caom2:equinox>2000.0</caom2:equinox>
-                  </caom2:position>
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
@@ -889,44 +565,8 @@
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-b234-c8de8d5dee21">
                   <caom2:naxis>2</caom2:naxis>
-                  <caom2:positionAxis1>1</caom2:positionAxis1>
-                  <caom2:positionAxis2>2</caom2:positionAxis2>
                   <caom2:energyAxis>4</caom2:energyAxis>
                   <caom2:timeAxis>3</caom2:timeAxis>
-                  <caom2:position>
-                    <caom2:axis>
-                      <caom2:axis1>
-                        <caom2:ctype>RA---TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis1>
-                      <caom2:axis2>
-                        <caom2:ctype>DEC--TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis2>
-                      <caom2:function>
-                        <caom2:dimension>
-                          <caom2:naxis1>1056</caom2:naxis1>
-                          <caom2:naxis2>250</caom2:naxis2>
-                        </caom2:dimension>
-                        <caom2:refCoord>
-                          <caom2:coord1>
-                            <caom2:pix>1024.01365337423</caom2:pix>
-                            <caom2:val>333.545829711352</caom2:val>
-                          </caom2:coord1>
-                          <caom2:coord2>
-                            <caom2:pix>1174.85732589628</caom2:pix>
-                            <caom2:val>19.7729407462558</caom2:val>
-                          </caom2:coord2>
-                        </caom2:refCoord>
-                        <caom2:cd11>-2.96102982991999e-06</caom2:cd11>
-                        <caom2:cd12>-2.00187082496056e-05</caom2:cd12>
-                        <caom2:cd21>2.00247145780923e-05</caom2:cd21>
-                        <caom2:cd22>-2.96127187600543e-06</caom2:cd22>
-                      </caom2:function>
-                    </caom2:axis>
-                    <caom2:coordsys>FK5</caom2:coordsys>
-                    <caom2:equinox>2000.0</caom2:equinox>
-                  </caom2:position>
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
@@ -981,44 +621,8 @@
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-9f18-a27910553e81">
                   <caom2:naxis>2</caom2:naxis>
-                  <caom2:positionAxis1>1</caom2:positionAxis1>
-                  <caom2:positionAxis2>2</caom2:positionAxis2>
                   <caom2:energyAxis>4</caom2:energyAxis>
                   <caom2:timeAxis>3</caom2:timeAxis>
-                  <caom2:position>
-                    <caom2:axis>
-                      <caom2:axis1>
-                        <caom2:ctype>RA---TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis1>
-                      <caom2:axis2>
-                        <caom2:ctype>DEC--TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis2>
-                      <caom2:function>
-                        <caom2:dimension>
-                          <caom2:naxis1>1056</caom2:naxis1>
-                          <caom2:naxis2>250</caom2:naxis2>
-                        </caom2:dimension>
-                        <caom2:refCoord>
-                          <caom2:coord1>
-                            <caom2:pix>-1067.26234337898</caom2:pix>
-                            <caom2:val>333.545829711352</caom2:val>
-                          </caom2:coord1>
-                          <caom2:coord2>
-                            <caom2:pix>1174.91427812195</caom2:pix>
-                            <caom2:val>19.7729407462558</caom2:val>
-                          </caom2:coord2>
-                        </caom2:refCoord>
-                        <caom2:cd11>-2.9325327131342e-06</caom2:cd11>
-                        <caom2:cd12>-2.0009135228356e-05</caom2:cd12>
-                        <caom2:cd21>1.99631700131153e-05</caom2:cd21>
-                        <caom2:cd22>-2.93045401780334e-06</caom2:cd22>
-                      </caom2:function>
-                    </caom2:axis>
-                    <caom2:coordsys>FK5</caom2:coordsys>
-                    <caom2:equinox>2000.0</caom2:equinox>
-                  </caom2:position>
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
@@ -1073,44 +677,8 @@
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-8daa-0a9a340717d8">
                   <caom2:naxis>2</caom2:naxis>
-                  <caom2:positionAxis1>1</caom2:positionAxis1>
-                  <caom2:positionAxis2>2</caom2:positionAxis2>
                   <caom2:energyAxis>4</caom2:energyAxis>
                   <caom2:timeAxis>3</caom2:timeAxis>
-                  <caom2:position>
-                    <caom2:axis>
-                      <caom2:axis1>
-                        <caom2:ctype>RA---TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis1>
-                      <caom2:axis2>
-                        <caom2:ctype>DEC--TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis2>
-                      <caom2:function>
-                        <caom2:dimension>
-                          <caom2:naxis1>1056</caom2:naxis1>
-                          <caom2:naxis2>250</caom2:naxis2>
-                        </caom2:dimension>
-                        <caom2:refCoord>
-                          <caom2:coord1>
-                            <caom2:pix>-2059.26234337897</caom2:pix>
-                            <caom2:val>333.545829711352</caom2:val>
-                          </caom2:coord1>
-                          <caom2:coord2>
-                            <caom2:pix>1174.91427812195</caom2:pix>
-                            <caom2:val>19.7729407462558</caom2:val>
-                          </caom2:coord2>
-                        </caom2:refCoord>
-                        <caom2:cd11>-2.93253271313419e-06</caom2:cd11>
-                        <caom2:cd12>-2.0009135228356e-05</caom2:cd12>
-                        <caom2:cd21>1.99631700131154e-05</caom2:cd21>
-                        <caom2:cd22>-2.93045401780334e-06</caom2:cd22>
-                      </caom2:function>
-                    </caom2:axis>
-                    <caom2:coordsys>FK5</caom2:coordsys>
-                    <caom2:equinox>2000.0</caom2:equinox>
-                  </caom2:position>
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
@@ -1165,44 +733,8 @@
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-9a42-256ace9255ec">
                   <caom2:naxis>2</caom2:naxis>
-                  <caom2:positionAxis1>1</caom2:positionAxis1>
-                  <caom2:positionAxis2>2</caom2:positionAxis2>
                   <caom2:energyAxis>4</caom2:energyAxis>
                   <caom2:timeAxis>3</caom2:timeAxis>
-                  <caom2:position>
-                    <caom2:axis>
-                      <caom2:axis1>
-                        <caom2:ctype>RA---TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis1>
-                      <caom2:axis2>
-                        <caom2:ctype>DEC--TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis2>
-                      <caom2:function>
-                        <caom2:dimension>
-                          <caom2:naxis1>1056</caom2:naxis1>
-                          <caom2:naxis2>397</caom2:naxis2>
-                        </caom2:dimension>
-                        <caom2:refCoord>
-                          <caom2:coord1>
-                            <caom2:pix>2121.36314424843</caom2:pix>
-                            <caom2:val>333.545829711352</caom2:val>
-                          </caom2:coord1>
-                          <caom2:coord2>
-                            <caom2:pix>-1424.00833821419</caom2:pix>
-                            <caom2:val>19.7729407462558</caom2:val>
-                          </caom2:coord2>
-                        </caom2:refCoord>
-                        <caom2:cd11>-2.94406815707436e-06</caom2:cd11>
-                        <caom2:cd12>-1.9995639154159e-05</caom2:cd12>
-                        <caom2:cd21>1.99864655185402e-05</caom2:cd21>
-                        <caom2:cd22>-2.95927355569885e-06</caom2:cd22>
-                      </caom2:function>
-                    </caom2:axis>
-                    <caom2:coordsys>FK5</caom2:coordsys>
-                    <caom2:equinox>2000.0</caom2:equinox>
-                  </caom2:position>
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
@@ -1257,44 +789,8 @@
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-9ac8-55ae32b53c77">
                   <caom2:naxis>2</caom2:naxis>
-                  <caom2:positionAxis1>1</caom2:positionAxis1>
-                  <caom2:positionAxis2>2</caom2:positionAxis2>
                   <caom2:energyAxis>4</caom2:energyAxis>
                   <caom2:timeAxis>3</caom2:timeAxis>
-                  <caom2:position>
-                    <caom2:axis>
-                      <caom2:axis1>
-                        <caom2:ctype>RA---TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis1>
-                      <caom2:axis2>
-                        <caom2:ctype>DEC--TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis2>
-                      <caom2:function>
-                        <caom2:dimension>
-                          <caom2:naxis1>1056</caom2:naxis1>
-                          <caom2:naxis2>397</caom2:naxis2>
-                        </caom2:dimension>
-                        <caom2:refCoord>
-                          <caom2:coord1>
-                            <caom2:pix>3113.36314424844</caom2:pix>
-                            <caom2:val>333.545829711352</caom2:val>
-                          </caom2:coord1>
-                          <caom2:coord2>
-                            <caom2:pix>-1424.00833821418</caom2:pix>
-                            <caom2:val>19.7729407462558</caom2:val>
-                          </caom2:coord2>
-                        </caom2:refCoord>
-                        <caom2:cd11>-2.94406815707428e-06</caom2:cd11>
-                        <caom2:cd12>-1.9995639154159e-05</caom2:cd12>
-                        <caom2:cd21>1.99864655185401e-05</caom2:cd21>
-                        <caom2:cd22>-2.95927355569886e-06</caom2:cd22>
-                      </caom2:function>
-                    </caom2:axis>
-                    <caom2:coordsys>FK5</caom2:coordsys>
-                    <caom2:equinox>2000.0</caom2:equinox>
-                  </caom2:position>
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
@@ -1349,44 +845,8 @@
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-ad33-a774bfff8476">
                   <caom2:naxis>2</caom2:naxis>
-                  <caom2:positionAxis1>1</caom2:positionAxis1>
-                  <caom2:positionAxis2>2</caom2:positionAxis2>
                   <caom2:energyAxis>4</caom2:energyAxis>
                   <caom2:timeAxis>3</caom2:timeAxis>
-                  <caom2:position>
-                    <caom2:axis>
-                      <caom2:axis1>
-                        <caom2:ctype>RA---TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis1>
-                      <caom2:axis2>
-                        <caom2:ctype>DEC--TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis2>
-                      <caom2:function>
-                        <caom2:dimension>
-                          <caom2:naxis1>1056</caom2:naxis1>
-                          <caom2:naxis2>397</caom2:naxis2>
-                        </caom2:dimension>
-                        <caom2:refCoord>
-                          <caom2:coord1>
-                            <caom2:pix>32.0136533742326</caom2:pix>
-                            <caom2:val>333.545829711352</caom2:val>
-                          </caom2:coord1>
-                          <caom2:coord2>
-                            <caom2:pix>-1427.14267410372</caom2:pix>
-                            <caom2:val>19.7729407462558</caom2:val>
-                          </caom2:coord2>
-                        </caom2:refCoord>
-                        <caom2:cd11>-2.96102982991998e-06</caom2:cd11>
-                        <caom2:cd12>-2.00187082496056e-05</caom2:cd12>
-                        <caom2:cd21>2.00247145780924e-05</caom2:cd21>
-                        <caom2:cd22>-2.96127187600543e-06</caom2:cd22>
-                      </caom2:function>
-                    </caom2:axis>
-                    <caom2:coordsys>FK5</caom2:coordsys>
-                    <caom2:equinox>2000.0</caom2:equinox>
-                  </caom2:position>
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
@@ -1441,44 +901,8 @@
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-a1e0-6afc2e2a37dc">
                   <caom2:naxis>2</caom2:naxis>
-                  <caom2:positionAxis1>1</caom2:positionAxis1>
-                  <caom2:positionAxis2>2</caom2:positionAxis2>
                   <caom2:energyAxis>4</caom2:energyAxis>
                   <caom2:timeAxis>3</caom2:timeAxis>
-                  <caom2:position>
-                    <caom2:axis>
-                      <caom2:axis1>
-                        <caom2:ctype>RA---TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis1>
-                      <caom2:axis2>
-                        <caom2:ctype>DEC--TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis2>
-                      <caom2:function>
-                        <caom2:dimension>
-                          <caom2:naxis1>1056</caom2:naxis1>
-                          <caom2:naxis2>397</caom2:naxis2>
-                        </caom2:dimension>
-                        <caom2:refCoord>
-                          <caom2:coord1>
-                            <caom2:pix>1024.01365337423</caom2:pix>
-                            <caom2:val>333.545829711352</caom2:val>
-                          </caom2:coord1>
-                          <caom2:coord2>
-                            <caom2:pix>-1427.14267410372</caom2:pix>
-                            <caom2:val>19.7729407462558</caom2:val>
-                          </caom2:coord2>
-                        </caom2:refCoord>
-                        <caom2:cd11>-2.96102982991997e-06</caom2:cd11>
-                        <caom2:cd12>-2.00187082496056e-05</caom2:cd12>
-                        <caom2:cd21>2.00247145780924e-05</caom2:cd21>
-                        <caom2:cd22>-2.96127187600543e-06</caom2:cd22>
-                      </caom2:function>
-                    </caom2:axis>
-                    <caom2:coordsys>FK5</caom2:coordsys>
-                    <caom2:equinox>2000.0</caom2:equinox>
-                  </caom2:position>
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
@@ -1533,44 +957,8 @@
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-8ff6-acee8ada4a36">
                   <caom2:naxis>2</caom2:naxis>
-                  <caom2:positionAxis1>1</caom2:positionAxis1>
-                  <caom2:positionAxis2>2</caom2:positionAxis2>
                   <caom2:energyAxis>4</caom2:energyAxis>
                   <caom2:timeAxis>3</caom2:timeAxis>
-                  <caom2:position>
-                    <caom2:axis>
-                      <caom2:axis1>
-                        <caom2:ctype>RA---TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis1>
-                      <caom2:axis2>
-                        <caom2:ctype>DEC--TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis2>
-                      <caom2:function>
-                        <caom2:dimension>
-                          <caom2:naxis1>1056</caom2:naxis1>
-                          <caom2:naxis2>397</caom2:naxis2>
-                        </caom2:dimension>
-                        <caom2:refCoord>
-                          <caom2:coord1>
-                            <caom2:pix>-1067.26234337897</caom2:pix>
-                            <caom2:val>333.545829711352</caom2:val>
-                          </caom2:coord1>
-                          <caom2:coord2>
-                            <caom2:pix>-1427.08572187805</caom2:pix>
-                            <caom2:val>19.7729407462558</caom2:val>
-                          </caom2:coord2>
-                        </caom2:refCoord>
-                        <caom2:cd11>-2.93253271313419e-06</caom2:cd11>
-                        <caom2:cd12>-2.0009135228356e-05</caom2:cd12>
-                        <caom2:cd21>1.99631700131153e-05</caom2:cd21>
-                        <caom2:cd22>-2.93045401780334e-06</caom2:cd22>
-                      </caom2:function>
-                    </caom2:axis>
-                    <caom2:coordsys>FK5</caom2:coordsys>
-                    <caom2:equinox>2000.0</caom2:equinox>
-                  </caom2:position>
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
@@ -1625,44 +1013,8 @@
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-9f06-3c03c6d37cb9">
                   <caom2:naxis>2</caom2:naxis>
-                  <caom2:positionAxis1>1</caom2:positionAxis1>
-                  <caom2:positionAxis2>2</caom2:positionAxis2>
                   <caom2:energyAxis>4</caom2:energyAxis>
                   <caom2:timeAxis>3</caom2:timeAxis>
-                  <caom2:position>
-                    <caom2:axis>
-                      <caom2:axis1>
-                        <caom2:ctype>RA---TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis1>
-                      <caom2:axis2>
-                        <caom2:ctype>DEC--TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis2>
-                      <caom2:function>
-                        <caom2:dimension>
-                          <caom2:naxis1>1056</caom2:naxis1>
-                          <caom2:naxis2>397</caom2:naxis2>
-                        </caom2:dimension>
-                        <caom2:refCoord>
-                          <caom2:coord1>
-                            <caom2:pix>-2059.26234337897</caom2:pix>
-                            <caom2:val>333.545829711352</caom2:val>
-                          </caom2:coord1>
-                          <caom2:coord2>
-                            <caom2:pix>-1427.08572187805</caom2:pix>
-                            <caom2:val>19.7729407462558</caom2:val>
-                          </caom2:coord2>
-                        </caom2:refCoord>
-                        <caom2:cd11>-2.93253271313422e-06</caom2:cd11>
-                        <caom2:cd12>-2.0009135228356e-05</caom2:cd12>
-                        <caom2:cd21>1.99631700131154e-05</caom2:cd21>
-                        <caom2:cd22>-2.93045401780334e-06</caom2:cd22>
-                      </caom2:function>
-                    </caom2:axis>
-                    <caom2:coordsys>FK5</caom2:coordsys>
-                    <caom2:equinox>2000.0</caom2:equinox>
-                  </caom2:position>
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>

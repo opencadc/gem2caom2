@@ -70,42 +70,7 @@
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-a44f-e56efa9d4859">
                   <caom2:naxis>2</caom2:naxis>
-                  <caom2:positionAxis1>1</caom2:positionAxis1>
-                  <caom2:positionAxis2>2</caom2:positionAxis2>
                   <caom2:timeAxis>3</caom2:timeAxis>
-                  <caom2:position>
-                    <caom2:axis>
-                      <caom2:axis1>
-                        <caom2:ctype>RA---TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis1>
-                      <caom2:axis2>
-                        <caom2:ctype>DEC--TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis2>
-                      <caom2:function>
-                        <caom2:dimension>
-                          <caom2:naxis1>1024</caom2:naxis1>
-                          <caom2:naxis2>1024</caom2:naxis2>
-                        </caom2:dimension>
-                        <caom2:refCoord>
-                          <caom2:coord1>
-                            <caom2:pix>527.924908642242</caom2:pix>
-                            <caom2:val>44.7308827326577</caom2:val>
-                          </caom2:coord1>
-                          <caom2:coord2>
-                            <caom2:pix>499.600899849748</caom2:pix>
-                            <caom2:val>19.7912613396221</caom2:val>
-                          </caom2:coord2>
-                        </caom2:refCoord>
-                        <caom2:cd11>-3.11132324319441e-05</caom2:cd11>
-                        <caom2:cd12>-8.88860152489122e-06</caom2:cd12>
-                        <caom2:cd21>8.71944825825464e-06</caom2:cd21>
-                        <caom2:cd22>-3.10551733738523e-05</caom2:cd22>
-                      </caom2:function>
-                    </caom2:axis>
-                    <caom2:coordsys>ICRS</caom2:coordsys>
-                  </caom2:position>
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
@@ -137,42 +102,7 @@
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-896b-2551abd312a1">
                   <caom2:naxis>2</caom2:naxis>
-                  <caom2:positionAxis1>1</caom2:positionAxis1>
-                  <caom2:positionAxis2>2</caom2:positionAxis2>
                   <caom2:timeAxis>3</caom2:timeAxis>
-                  <caom2:position>
-                    <caom2:axis>
-                      <caom2:axis1>
-                        <caom2:ctype>RA---TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis1>
-                      <caom2:axis2>
-                        <caom2:ctype>DEC--TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis2>
-                      <caom2:function>
-                        <caom2:dimension>
-                          <caom2:naxis1>1024</caom2:naxis1>
-                          <caom2:naxis2>1024</caom2:naxis2>
-                        </caom2:dimension>
-                        <caom2:refCoord>
-                          <caom2:coord1>
-                            <caom2:pix>527.924908642242</caom2:pix>
-                            <caom2:val>44.7308827326577</caom2:val>
-                          </caom2:coord1>
-                          <caom2:coord2>
-                            <caom2:pix>499.600899849748</caom2:pix>
-                            <caom2:val>19.7912613396221</caom2:val>
-                          </caom2:coord2>
-                        </caom2:refCoord>
-                        <caom2:cd11>-3.11132324319441e-05</caom2:cd11>
-                        <caom2:cd12>-8.88860152489122e-06</caom2:cd12>
-                        <caom2:cd21>8.71944825825464e-06</caom2:cd21>
-                        <caom2:cd22>-3.10551733738523e-05</caom2:cd22>
-                      </caom2:function>
-                    </caom2:axis>
-                    <caom2:coordsys>ICRS</caom2:coordsys>
-                  </caom2:position>
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
@@ -204,42 +134,7 @@
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-86ae-4deaafecc959">
                   <caom2:naxis>2</caom2:naxis>
-                  <caom2:positionAxis1>1</caom2:positionAxis1>
-                  <caom2:positionAxis2>2</caom2:positionAxis2>
                   <caom2:timeAxis>3</caom2:timeAxis>
-                  <caom2:position>
-                    <caom2:axis>
-                      <caom2:axis1>
-                        <caom2:ctype>RA---TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis1>
-                      <caom2:axis2>
-                        <caom2:ctype>DEC--TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis2>
-                      <caom2:function>
-                        <caom2:dimension>
-                          <caom2:naxis1>1024</caom2:naxis1>
-                          <caom2:naxis2>1024</caom2:naxis2>
-                        </caom2:dimension>
-                        <caom2:refCoord>
-                          <caom2:coord1>
-                            <caom2:pix>527.924908642242</caom2:pix>
-                            <caom2:val>44.7308827326577</caom2:val>
-                          </caom2:coord1>
-                          <caom2:coord2>
-                            <caom2:pix>499.600899849748</caom2:pix>
-                            <caom2:val>19.7912613396221</caom2:val>
-                          </caom2:coord2>
-                        </caom2:refCoord>
-                        <caom2:cd11>-3.11132324319441e-05</caom2:cd11>
-                        <caom2:cd12>-8.88860152489122e-06</caom2:cd12>
-                        <caom2:cd21>8.71944825825464e-06</caom2:cd21>
-                        <caom2:cd22>-3.10551733738523e-05</caom2:cd22>
-                      </caom2:function>
-                    </caom2:axis>
-                    <caom2:coordsys>ICRS</caom2:coordsys>
-                  </caom2:position>
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
