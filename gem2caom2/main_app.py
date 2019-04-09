@@ -1239,9 +1239,9 @@ NIRI_RESOLVING_POWER = {
         'f6-2pix': 770.0,
         'f6-4pix': 610.0,
         'f6-6pix': 460.0,
-        'f6-2pixB1': 770.0,
-        'f6-4pixB1': 650.0,
-        'f6-6pixB1': 480.0,
+        'f6-2pixBl': 770.0,
+        'f6-4pixBl': 650.0,
+        'f6-6pixBl': 480.0,
         'f32-4pix': 1000.0,
         'f32-6pix': 620.0,  # f32-7pix
         'f32-9pix': 450.0  # f32-10pix
@@ -1250,9 +1250,9 @@ NIRI_RESOLVING_POWER = {
         'f6-2pix': 1650.0,
         'f6-4pix': 825.0,
         'f6-6pix': 520.0,
-        'f6-2pixB1': 1650.0,
-        'f6-4pixB1': 940.0,
-        'f6-6pixB1': 550.0,
+        'f6-2pixBl': 1650.0,
+        'f6-4pixBl': 940.0,
+        'f6-6pixBl': 550.0,
         'f32-4pix': 880.0,
         'f32-6pix': 630.0,  # f32-7pix
         'f32-9pix': 500.0  # f32-10pix
@@ -1261,9 +1261,9 @@ NIRI_RESOLVING_POWER = {
         'f6-2pix': 1100.0,
         'f6-4pix': 690.0,
         'f6-6pix': 460.0,
-        'f6-2pixB1': 1100.0,
-        'f6-4pixB1': 770.0,
-        'f6-6pixB1': 490.0,
+        'f6-2pixBl': 1100.0,
+        'f6-4pixBl': 770.0,
+        'f6-6pixBl': 490.0,
     },
     'M': {
         'f6-2pix': 1100.0,
@@ -1336,13 +1336,14 @@ def _update_chunk_energy_niri(chunk, data_product_type, obs_id, filter_name):
             logging.debug(
                 'NIRI: Bandpass name is {} f_ratio is {} for {}'.format(
                     bandpass_name, f_ratio, obs_id))
-            if bandpass_name in NIRI_RESOLVING_POWER:
+            if (bandpass_name in NIRI_RESOLVING_POWER and
+                    f_ratio in NIRI_RESOLVING_POWER[bandpass_name]):
                 fm.resolving_power = \
                     NIRI_RESOLVING_POWER[bandpass_name][f_ratio]
             else:
                 raise mc.CadcException(
-                    'NIRI: Mystery bandpass name {} for {}.'.format(
-                        bandpass_name, obs_id))
+                    'NIRI: Mystery bandpass name {} or f_ratio {} for '
+                    '{}.'.format(bandpass_name, f_ratio, obs_id))
         else:
             raise mc.CadcException(
                 'NIRI: Mystery disperser value {} for {}'.format(disperser,
