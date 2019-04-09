@@ -1590,6 +1590,12 @@ def _update_chunk_energy_michelle(chunk, header, data_product_type, obs_id,
               }
 
     filter_md = em.get_filter_metadata(em.Inst.MICHELLE, filter_name)
+    if filter_md is None:  # means filter_name not found
+        w_max, w_min = _multiple_filter_lookup(filter_name, michelle,
+                                               obs_id, em.Inst.MICHELLE)
+        filter_md = FilterMetadata()
+        filter_md.set_bandpass(w_max, w_min)
+        filter_md.set_central_wl(w_max, w_min)
     if data_product_type == DataProductType.SPECTRUM:
         logging.debug(
             'michelle: Spectral WCS spectrum for {}.'.format(obs_id))
@@ -1606,12 +1612,6 @@ def _update_chunk_energy_michelle(chunk, header, data_product_type, obs_id,
     elif data_product_type == DataProductType.IMAGE:
         logging.debug(
             'michelle: Spectral WCS imaging mode for {}.'.format(obs_id))
-        if filter_md is None:  # means filter_name not found
-            w_max, w_min = _multiple_filter_lookup(filter_name, michelle,
-                                                   obs_id, em.Inst.MICHELLE)
-            filter_md = FilterMetadata()
-            filter_md.set_bandpass(w_max, w_min)
-            filter_md.set_central_wl(w_max, w_min)
     else:
         raise mc.CadcException(
             'michelle: no Spectral WCS support when DataProductType {} for '
