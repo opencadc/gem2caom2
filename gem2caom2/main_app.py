@@ -1268,6 +1268,9 @@ NIRI_RESOLVING_POWER = {
         'f6-2pix': 1300.0,
         'f6-4pix': 780.0,
         'f6-6pix': 520.0,
+        'f6-2pixBl': 1300.0,
+        'f6-4pixBl': 780.0,
+        'f6-6pixBl': 520.0,
         'f32-4pix': 1280.0,
         'f32-6pix': 775.0,  # f32-7pix
         'f32-9pix': 570.0  # f32-10pix
@@ -1303,6 +1306,13 @@ def _update_chunk_energy_niri(chunk, data_product_type, obs_id, filter_name):
     # these shouldn’t impact anything (I hope).  e.g. does this one work?
     # GN-2005A-DD-12-12-017
 
+    # DB - 15-04-19
+    # For r_ratio:
+    # https://www.gemini.edu/sciops/instruments/niri/spectroscopy/grisms,
+    # parenthetically states “w. either slits” for the f/6 K section.  So
+    # duplicate lines 1268-1270 of main_app.py with “Bl” appended after
+    # ‘pix’.
+
     reset_energy = False
     if 'Jcon(112)_G0235' in filter_name:
         # DB - 01-04-19 The G0235 filter is listed as ‘damaged’ on the Gemini
@@ -1314,6 +1324,17 @@ def _update_chunk_energy_niri(chunk, data_product_type, obs_id, filter_name):
         filter_md = FilterMetadata('NIRI')
         filter_md.central_wl = 1.1232
         filter_md.bandpass = 0.0092
+    elif 'Msort' in filter_name or 'Mgrism' in filter_name:
+        # DB - 15-04-19
+        # The NIRI blocking filter page,
+        # https://www.gemini.edu/sciops/instruments/niri/spectroscopy/blocking-
+        # filters, gives no transmission data for this filter for the SVO
+        # to use.  Will need to hard-code it to central wavelength of
+        # (4.4+6)/2 and width of 6-4.4 microns.
+
+        filter_md = FilterMetadata('NIRI')
+        filter_md.set_central_wl(6., 4.4)
+        filter_md.set_bandpass(6., 4.4)
     else:
         filter_md = em.get_filter_metadata(em.Inst.NIRI, filter_name)
     if filter_md is None:
