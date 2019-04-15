@@ -1571,7 +1571,9 @@ michelle = {
     'F66LB': [10.000000, 6.600000, 99.900000],
     'F79B10': [7.715890, 7.392540, 8.039240],
     'F88B10': [8.821500, 8.469400, 9.173600],
-    'F97B10': [9.688450, 9.253750, 10.123150]
+    'F97B10': [9.688450, 9.253750, 10.123150],
+    'QBlock': [(16.1 + 25) / 2, 16.1, 25.],
+    'NBlock': [(14 + 6.8) / 2, 6.8, 14.],
 }
 
 
@@ -1603,6 +1605,16 @@ def _update_chunk_energy_michelle(chunk, data_product_type, obs_id,
     # table (as you do for PHOENIX).  No info to pass on to SVO folks to
     # add more filters.   Code would have to handle this case of two
     # filters with overlapping bandpasses.
+
+    # DB - 15-04-19
+    # Michelle:  From a hidden page of Michelle filters,
+    # http://www.gemini.edu/sciops/instruments/michelle/imaging/filters,
+    # hard-code QBlock and NBlock filters using values in that table
+    # (ignoring the greater-than symbols)?  i.e. NBlock has central
+    # bandpass of  (14+6.8)/2 microns and bandpass of 14-6.8 microns.
+    # Ditto for QBlock:  (16.1+25)/2 and 25-16.1.  Grid_T should be
+    # ignored for bandpass calculations but it would be good to keep it
+    # in the filter name so in this case it would be F125B9 + Grid_T
 
     # 0 = R
     # 1 = ratio for slit width
@@ -2706,7 +2718,8 @@ def _multiple_filter_lookup(filter_name, lookup, obs_id, instrument, wl_max=None
         else:
             msg = '{}: Unprepared for filter {} from {}'.format(
                 instrument, ii, obs_id)
-            if instrument == em.Inst.MICHELLE and ii.startswith('I'):
+            if (instrument == em.Inst.MICHELLE and
+                    (ii.startswith('I') or (ii == 'Grid_T'))):
                 logging.info(msg)
                 continue
             else:
