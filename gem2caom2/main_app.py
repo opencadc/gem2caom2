@@ -1566,6 +1566,7 @@ def _update_chunk_energy_hrwfs(chunk, data_product_type, obs_id, filter_name):
 
     logging.debug('End _update_chunk_energy_hrwfs')
 
+
 # 0 - central
 # 1 - lower
 # 2 - upper
@@ -2997,6 +2998,9 @@ def _update_chunk_position(chunk, header, instrument, extension, obs_id,
     header['CD2_1'] = 0.0
     header['CD2_2'] = get_cd22(header)
 
+    if instrument == em.Inst.BHROS:
+        header['EQUINOX'] = float(header.get('TRKEQUIN'))
+
     wcs_parser = WcsParser(header, obs_id, extension)
     if chunk is None:
         chunk = Chunk()
@@ -3009,7 +3013,6 @@ def _update_chunk_position(chunk, header, instrument, extension, obs_id,
         chunk.position.equinox = float(header.get('EQUINOX'))
     elif instrument is em.Inst.BHROS:
         chunk.position.coordsys = header.get('TRKFRAME')
-        chunk.position.equinox = float(header.get('TRKEQUIN'))
     elif instrument is em.Inst.GPI:
         chunk.position.coordsys = header.get('RADESYS')
 
