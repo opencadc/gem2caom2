@@ -2184,15 +2184,22 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name):
                    'H2': [2.105, 2.137],
                    'PAH': [3.27, 3.32]}
 
-        if len(filter_name) == 1 or filter_name == 'H2' or filter_name == 'PAH':
-            bandpass = filter_name
+        if 'Moving' in filter_name:
+            # DB 16-04-19
+            # Energy WCS should be ignored for ‘Moving’ since we don’t know
+            # what might have been in the light path when the exposure was
+            # actually being taken.
+            reset_energy = True
         else:
-            bandpass = filter_name[0]
+            if len(filter_name) == 1 or filter_name == 'H2' or filter_name == 'PAH':
+                bandpass = filter_name
+            else:
+                bandpass = filter_name[0]
 
-        bounds = imaging[bandpass]
+            bounds = imaging[bandpass]
 
-        fm.set_central_wl(bounds[1], bounds[0])
-        fm.set_bandpass(bounds[1], bounds[0])
+            fm.set_central_wl(bounds[1], bounds[0])
+            fm.set_bandpass(bounds[1], bounds[0])
     else:
         raise mc.CadcException('GNIRS: Unexpected DataProductType {} for {}'.format(
             data_product_type, obs_id))
@@ -2576,6 +2583,11 @@ def _update_chunk_energy_gmos(chunk, data_product_type, obs_id, filter_name,
         fm = FilterMetadata()
         fm.central_wl = filter_md.central_wl
         fm.bandpass = filter_md.bandpass
+        if disperser == 'B12000':
+            # DB 16-04-19
+            # B12000 must be a Gemini typo since observation
+            # GN-2006B-Q-39-100-003 has B1200 for the disperser.
+            disperser = 'B1200'
         if disperser in GMOS_RESOLVING_POWER:
             fm.resolving_power = GMOS_RESOLVING_POWER[disperser]
         else:
