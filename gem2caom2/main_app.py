@@ -969,6 +969,22 @@ def update(observation, **kwargs):
 
     instrument = em.Inst(observation.instrument.name)
 
+    if instrument is em.Inst.MICHELLE:
+        # DB 16-04-19
+        # The more important issue with this and other files is that they
+        # contain no image extensions.  The file is downloadable from
+        # the Gemini archive but their only content is the primary
+        # header.   There is no pixel data.  Test for the existence of a
+        # FITS extension and skip processing of a michelle file if
+        # there isn’t one
+
+        if len(headers) == 1:
+            logging.warning(
+                'michelle: no image data for {}. Cannot build an '
+                'observation.'.format(
+                    observation.observation_id))
+            return None
+
     try:
         for p in observation.planes:
             if current_product_id != observation.planes[p].product_id:
