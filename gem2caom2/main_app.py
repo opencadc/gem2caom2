@@ -969,7 +969,7 @@ def update(observation, **kwargs):
 
     instrument = em.Inst(observation.instrument.name)
 
-    if instrument is em.Inst.MICHELLE:
+    if instrument in [em.Inst.MICHELLE, em.Inst.GNIRS]:
         # DB 16-04-19
         # The more important issue with this and other files is that they
         # contain no image extensions.  The file is downloadable from
@@ -978,11 +978,15 @@ def update(observation, **kwargs):
         # FITS extension and skip processing of a michelle file if
         # there isn’t one
 
+        # DB 18-04-19
+        #
+        # For the last GNIRS file (NAXIS=0)  skip the file if it doesn’t have
+        # an extension.
+
         if len(headers) == 1:
             logging.warning(
-                'michelle: no image data for {}. Cannot build an '
-                'observation.'.format(
-                    observation.observation_id))
+                '{}: no image data for {}. Cannot build an '
+                'observation.'.format(instrument, observation.observation_id))
             return None
 
     try:
@@ -1330,7 +1334,13 @@ def _update_chunk_energy_niri(chunk, data_product_type, obs_id, filter_name):
     # ‘pix’.
 
     reset_energy = False
-    if 'Jcon(112)_G0235' in filter_name:
+    json_fn = em.om.get('filter_name')
+    if json_fn == 'INVALID':
+        # DB 18-04-19
+        #
+        # Gemini archive shows WaveBand=INVALID - ignore energy WCS
+        reset_energy = True
+    elif 'Jcon(112)_G0235' in filter_name:
         # DB - 01-04-19 The G0235 filter is listed as ‘damaged’ on the Gemini
         # NIRI filters web site:
         # https://www.gemini.edu/sciops/instruments/niri/imaging/filters.
@@ -1353,47 +1363,50 @@ def _update_chunk_energy_niri(chunk, data_product_type, obs_id, filter_name):
         filter_md.set_bandpass(6., 4.4)
     else:
         filter_md = em.get_filter_metadata(em.Inst.NIRI, filter_name)
-    if filter_md is None:
-        raise mc.CadcException('{}: mystery filter {} for {}'.format(
-            em.Inst.NIRI, filter_name, obs_id))
-    filter_name = em.om.get('filter_name')
-    if data_product_type == DataProductType.IMAGE:
-        logging.debug('NIRI: SpectralWCS imaging for {}.'.format(obs_id))
-        fm = filter_md
-        fm.adjust_resolving_power()
-    elif data_product_type == DataProductType.SPECTRUM:
-        logging.debug('NIRI: SpectralWCS spectroscopy for {}.'.format(obs_id))
-        fm = FilterMetadata('NIRI')
-        fm.central_wl = filter_md.central_wl
-        fm.bandpass = filter_md.bandpass
-        disperser = em.om.get('disperser')
-        if disperser in ['Jgrism', 'Jgrismf32', 'Hgrism', 'Hgrismf32',
-                         'Kgrism', 'Kgrismf32', 'Lgrism', 'Mgrism']:
-            bandpass_name = disperser[0]
-            f_ratio = em.om.get('focal_plane_mask')
-            logging.debug(
-                'NIRI: Bandpass name is {} f_ratio is {} for {}'.format(
-                    bandpass_name, f_ratio, obs_id))
-            if (bandpass_name in NIRI_RESOLVING_POWER and
-                    f_ratio in NIRI_RESOLVING_POWER[bandpass_name]):
-                fm.resolving_power = \
-                    NIRI_RESOLVING_POWER[bandpass_name][f_ratio]
-            elif 'pinhole' in f_ratio:
-                logging.info(
-                    'Pinhole. Setting energy to None for {}'.format(obs_id))
-                reset_energy = True
+        if filter_md is None:
+            raise mc.CadcException('{}: mystery filter {} for {}'.format(
+                em.Inst.NIRI, filter_name, obs_id))
+
+    filter_name = json_fn
+    if not reset_energy:
+        if data_product_type == DataProductType.IMAGE:
+            logging.debug('NIRI: SpectralWCS imaging for {}.'.format(obs_id))
+            fm = filter_md
+            fm.adjust_resolving_power()
+        elif data_product_type == DataProductType.SPECTRUM:
+            logging.debug('NIRI: SpectralWCS spectroscopy for {}.'.format(
+                obs_id))
+            fm = FilterMetadata('NIRI')
+            fm.central_wl = filter_md.central_wl
+            fm.bandpass = filter_md.bandpass
+            disperser = em.om.get('disperser')
+            if disperser in ['Jgrism', 'Jgrismf32', 'Hgrism', 'Hgrismf32',
+                             'Kgrism', 'Kgrismf32', 'Lgrism', 'Mgrism']:
+                bandpass_name = disperser[0]
+                f_ratio = em.om.get('focal_plane_mask')
+                logging.debug(
+                    'NIRI: Bandpass name is {} f_ratio is {} for {}'.format(
+                        bandpass_name, f_ratio, obs_id))
+                if (bandpass_name in NIRI_RESOLVING_POWER and
+                        f_ratio in NIRI_RESOLVING_POWER[bandpass_name]):
+                    fm.resolving_power = \
+                        NIRI_RESOLVING_POWER[bandpass_name][f_ratio]
+                elif 'pinhole' in f_ratio:
+                    logging.info(
+                        'Pinhole. Setting energy to None for {}'.format(obs_id))
+                    reset_energy = True
+                else:
+                    raise mc.CadcException(
+                        'NIRI: Mystery bandpass name {} or f_ratio {} for '
+                        '{}.'.format(bandpass_name, f_ratio, obs_id))
             else:
                 raise mc.CadcException(
-                    'NIRI: Mystery bandpass name {} or f_ratio {} for '
-                    '{}.'.format(bandpass_name, f_ratio, obs_id))
+                    'NIRI: Mystery disperser value {} for {}'.format(disperser,
+                                                                     obs_id))
         else:
             raise mc.CadcException(
-                'NIRI: Mystery disperser value {} for {}'.format(disperser,
-                                                                 obs_id))
-    else:
-        raise mc.CadcException(
-            'NIRI: Do not understand mode {} for {}'.format(data_product_type,
-                                                            obs_id))
+                'NIRI: Do not understand mode {} for {}'.format(
+                    data_product_type, obs_id))
     if reset_energy:
         chunk.energy = None
         chunk.energy_axis = None
@@ -2102,93 +2115,106 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name):
             'gnirs: SpectralWCS Spectroscopy mode for {}.'.format(obs_id))
         disperser = em.om.get('disperser')
         if disperser is None:
+            logging.info('No disperser. No energy for {}'.format(obs_id))
             reset_energy = True
         else:
             grating = disperser.split('_')[0]
-            if grating not in gnirs_lookup:
-                raise mc.CadcException(
-                    'GNIRS: Mystery grating {} for {}'.format(grating, obs_id))
-
-            camera = em.om.get('camera')
-            focal_plane_mask = em.om.get('focal_plane_mask')
-            slit_width = 1.0
-            if 'arcsec' in focal_plane_mask:
-                slit_width = float(focal_plane_mask.split('arcsec')[0])
-
-            if 'XD' in disperser:
-                logging.debug('gnirs: cross dispersed mode for {}.'.format(obs_id))
-                # https://www.gemini.edu/sciops/instruments/gnirs/spectroscopy/
-                # crossdispersed-xd-spectroscopy/xd-prisms
-                # 0 = lower
-                # 1 = upper
-                # 2 = spectral resolution with 2-pix wide slit
-                # DB - 04-03-19 - Change the last number in each row to 1800.0
-                # since the resolving power is the same for all 3 cases
-                #
-                # Add line to find grating ID (from long-slit code):
-                # grating = disperser.split(‘_’)[0]
-                #
-                # Then change ‘lookup’ to include grating.
-                #
-                # I can’t find any other combinations (e.g. ‘LB+LXD+32’) but no
-                # guarantee that I won’t have to add another line or two if we
-                # see failures.   Wavelength coverage isn’t correct for the
-                # R=5400 entries because only about 1/3rd of the full band pass
-                # is covered but in bits and pieces that we can’t identify in
-                # raw image.
-
-                lookup = None
-                coverage = disperser[-3:]
-                if camera.startswith('Short'):
-                    lookup = '{}+{}'.format('SB', coverage)
-                elif camera.startswith('Long'):
-                    lookup = '{}+{}'.format('LB', coverage)
-
-                if camera.startswith('Long'):
-                    slit_table_value = 0.1
-                    lookup_index = 2
-                elif camera.startswith('Short'):
-                    slit_table_value = 0.3
-                    lookup_index = 2
-                else:
-                    raise mc.CadcException(
-                        'GNIRS: Mystery camera definition {} for {}'.format(camera,
-                                                                            obs_id))
+            if grating == 'Moving':
+                # DB 18-04-19
+                # If grating is moving then the observation is almost
+                # certainly garbage so ignore energy WCS.
+                logging.info('grating is moving. No energy for {}'.format(obs_id))
+                reset_energy = True
             else:
-                logging.debug('gnirs: long slit mode for {}.'.format(obs_id))
-                bandpass = filter_name[0]
-                lookup = bandpass
-                if camera.startswith('Long'):
-                    slit_table_value = 0.1
-                    lookup_index = 3
-                elif camera.startswith('Short'):
-                    date_time = ac.get_datetime(em.om.get('ut_datetime'))
-                    if date_time > ac.get_datetime('2012-11-01T00:00:00'):
-                        slit_table_value = 0.3
-                        if grating == '32':
-                            lookup_index = 4
-                        else:
-                            lookup_index = 3
-                    else:
+                if grating not in gnirs_lookup:
+                    raise mc.CadcException(
+                        'GNIRS: Mystery grating {} for {}'.format(grating, obs_id))
+
+                camera = em.om.get('camera')
+                focal_plane_mask = em.om.get('focal_plane_mask')
+                slit_width = 1.0
+                if 'arcsec' in focal_plane_mask:
+                    slit_width = float(focal_plane_mask.split('arcsec')[0])
+
+                if 'XD' in disperser:
+                    logging.debug(
+                        'gnirs: cross dispersed mode for {}.'.format(obs_id))
+                    # https://www.gemini.edu/sciops/instruments/gnirs/spectroscopy/
+                    # crossdispersed-xd-spectroscopy/xd-prisms
+                    # 0 = lower
+                    # 1 = upper
+                    # 2 = spectral resolution with 2-pix wide slit
+                    # DB - 04-03-19 - Change the last number in each row to
+                    # 1800.0 since the resolving power is the same for all 3
+                    # cases
+                    #
+                    # Add line to find grating ID (from long-slit code):
+                    # grating = disperser.split(‘_’)[0]
+                    #
+                    # Then change ‘lookup’ to include grating.
+                    #
+                    # I can’t find any other combinations (e.g. ‘LB+LXD+32’)
+                    # but no guarantee that I won’t have to add another line
+                    # or two if we see failures.   Wavelength coverage isn’t
+                    # correct for the R=5400 entries because only about 1/3rd
+                    # of the full band pass is covered but in bits and pieces
+                    # that we can’t identify in raw image.
+
+                    lookup = None
+                    coverage = disperser[-3:]
+                    if camera.startswith('Short'):
+                        lookup = '{}+{}'.format('SB', coverage)
+                    elif camera.startswith('Long'):
+                        lookup = '{}+{}'.format('LB', coverage)
+
+                    if camera.startswith('Long'):
+                        slit_table_value = 0.1
+                        lookup_index = 2
+                    elif camera.startswith('Short'):
                         slit_table_value = 0.3
                         lookup_index = 2
+                    else:
+                        raise mc.CadcException(
+                            'GNIRS: Mystery camera definition {} for {}'.format(
+                                camera,
+                                                                                obs_id))
                 else:
-                    raise mc.CadcException(
-                        'GNIRS: Mystery camera definition {} for {}'.format(
-                            camera, obs_id))
+                    logging.debug('gnirs: long slit mode for {}.'.format(
+                        obs_id))
+                    bandpass = filter_name[0]
+                    lookup = bandpass
+                    if camera.startswith('Long'):
+                        slit_table_value = 0.1
+                        lookup_index = 3
+                    elif camera.startswith('Short'):
+                        date_time = ac.get_datetime(em.om.get('ut_datetime'))
+                        if date_time > ac.get_datetime('2012-11-01T00:00:00'):
+                            slit_table_value = 0.3
+                            if grating == '32':
+                                lookup_index = 4
+                            else:
+                                lookup_index = 3
+                        else:
+                            slit_table_value = 0.3
+                            lookup_index = 2
+                    else:
+                        raise mc.CadcException(
+                            'GNIRS: Mystery camera definition {} for {}'.format(
+                                camera, obs_id))
 
-            if lookup not in gnirs_lookup[grating]:
-                raise mc.CadcException(
-                    'GNIRS: Mystery lookup {} for grating {}, obs {}'.format(
-                        lookup, grating, obs_id))
-            bounds = gnirs_lookup[grating][lookup]
-            fm.set_bandpass(bounds[1], bounds[0])
-            fm.resolving_power = slit_table_value * bounds[
-                lookup_index] / slit_width
-            fm.set_central_wl(bounds[1], bounds[0])
+                if lookup not in gnirs_lookup[grating]:
+                    raise mc.CadcException(
+                        'GNIRS: Mystery lookup {} for grating {}, obs {}'.format(
+                            lookup, grating, obs_id))
+                bounds = gnirs_lookup[grating][lookup]
+                fm.set_bandpass(bounds[1], bounds[0])
+                fm.resolving_power = slit_table_value * bounds[
+                    lookup_index] / slit_width
+                fm.set_central_wl(bounds[1], bounds[0])
     elif data_product_type == DataProductType.IMAGE:
         logging.debug('gnirs: SpectralWCS imaging mode for {}.'.format(obs_id))
         # https://www.gemini.edu/sciops/instruments/gnirs/imaging
+        # https://www.gemini.edu/sciops/instruments/gnirs/spectroscopy/orderblocking-acq-nd-filters
         # 0 - min wavelength
         # 1 - max wavelength
         imaging = {'Y': [0.97, 1.07],
@@ -2198,7 +2224,9 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name):
                    'K': [2.03, 2.37],
                    'K order blocking': [1.90, 2.49],
                    'H2': [2.105, 2.137],
-                   'PAH': [3.27, 3.32]}
+                   'PAH': [3.27, 3.32],
+                   'X': [1.03, 1.17],
+                   'XD': [0.9, 2.56]}
 
         if 'Moving' in filter_name:
             # DB 16-04-19
@@ -2207,18 +2235,25 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name):
             # actually being taken.
             reset_energy = True
         else:
-            if len(filter_name) == 1 or filter_name == 'H2' or filter_name == 'PAH':
+            if (len(filter_name) == 1 or filter_name == 'H2' or
+                    filter_name == 'PAH' or filter_name == 'XD'):
                 bandpass = filter_name
             else:
                 bandpass = filter_name[0]
 
-            bounds = imaging[bandpass]
+            if bandpass in imaging:
+                bounds = imaging[bandpass]
+            else:
+                raise mc.CadcException(
+                    'GNIRS: Unexpected filter_name {} for {}'.format(
+                        filter_name, obs_id))
 
             fm.set_central_wl(bounds[1], bounds[0])
             fm.set_bandpass(bounds[1], bounds[0])
     else:
-        raise mc.CadcException('GNIRS: Unexpected DataProductType {} for {}'.format(
-            data_product_type, obs_id))
+        raise mc.CadcException(
+            'GNIRS: Unexpected DataProductType {} for {}'.format(
+                data_product_type, obs_id))
 
     if reset_energy:
         chunk.energy_axis = None
@@ -2557,6 +2592,13 @@ def _update_chunk_energy_gmos(chunk, data_product_type, obs_id, filter_name,
     # this means some filter metadata will come from SVO, and some is
     # hard-coded here
 
+    # DB 18-04-19
+    #
+    # Lots of missing header data for the GMOS observation
+    # GN-2005B-Q-60-11-011 so ignore energy WCS
+
+    reset_energy = False
+
     filter_name = filter_name.replace('&', '+')
 
     filter_md = em.get_filter_metadata(instrument, filter_name)
@@ -2596,19 +2638,22 @@ def _update_chunk_energy_gmos(chunk, data_product_type, obs_id, filter_name,
                     filter_md.central_wl, obs_id))
             return
         disperser = em.om.get('disperser')
-        fm = FilterMetadata()
-        fm.central_wl = filter_md.central_wl
-        fm.bandpass = filter_md.bandpass
-        if disperser == 'B12000':
-            # DB 16-04-19
-            # B12000 must be a Gemini typo since observation
-            # GN-2006B-Q-39-100-003 has B1200 for the disperser.
-            disperser = 'B1200'
-        if disperser in GMOS_RESOLVING_POWER:
-            fm.resolving_power = GMOS_RESOLVING_POWER[disperser]
+        if disperser is None:
+            reset_energy = True
         else:
-            raise mc.CadcException(
-                'gmos: mystery disperser {} for {}'.format(disperser, obs_id))
+            fm = FilterMetadata()
+            fm.central_wl = filter_md.central_wl
+            fm.bandpass = filter_md.bandpass
+            if disperser == 'B12000':
+                # DB 16-04-19
+                # B12000 must be a Gemini typo since observation
+                # GN-2006B-Q-39-100-003 has B1200 for the disperser.
+                disperser = 'B1200'
+            if disperser in GMOS_RESOLVING_POWER:
+                fm.resolving_power = GMOS_RESOLVING_POWER[disperser]
+            else:
+                raise mc.CadcException(
+                    'gmos: mystery disperser {} for {}'.format(disperser, obs_id))
     elif data_product_type == DataProductType.IMAGE:
         logging.debug('gmos: SpectralWCS imaging for {}.'.format(obs_id))
         fm = filter_md
@@ -2616,7 +2661,11 @@ def _update_chunk_energy_gmos(chunk, data_product_type, obs_id, filter_name,
         raise mc.CadcException(
             'gmos: mystery data product type {} for {}'.format(
                 data_product_type, obs_id))
-    _build_chunk_energy(chunk, filter_name, fm)
+    if reset_energy:
+        chunk.energy_axis = None
+        chunk.energy = None
+    else:
+        _build_chunk_energy(chunk, filter_name, fm)
     logging.debug('End _update_chunk_energy_gmos')
 
 
