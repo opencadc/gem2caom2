@@ -1137,7 +1137,7 @@ def update(observation, **kwargs):
 
                         # position WCS
                         mode = em.om.get('mode')
-                        if _reset_position(headers, None, instrument):
+                        if _reset_position(headers, instrument):
                             c.position_axis_2 = None
                             c.position_axis_1 = None
                             c.position = None
@@ -1299,6 +1299,7 @@ NIRI_RESOLVING_POWER = {
 }
 
 # NIRI.Hgrismf32-G5228
+
 
 def _update_chunk_energy_niri(chunk, data_product_type, obs_id, filter_name):
     """NIRI-specific chunk-level Energy WCS construction."""
@@ -2598,7 +2599,9 @@ def _update_chunk_energy_gmos(chunk, data_product_type, obs_id, filter_name,
     reset_energy = False
 
     filter_name = filter_name.replace('&', '+')
-    filter_md = em.get_filter_metadata(instrument, filter_name)
+    filter_md = None
+    if 'open' not in filter_name:
+        filter_md = em.get_filter_metadata(instrument, filter_name)
     w_max = 10.0
     w_min = 0.0
     for ii in filter_name.split('+'):
@@ -2628,11 +2631,12 @@ def _update_chunk_energy_gmos(chunk, data_product_type, obs_id, filter_name,
     filter_md.set_resolving_power(w_max, w_min)
 
     if data_product_type == DataProductType.SPECTRUM:
-        logging.debug('gmos: SpectralWCS spectroscopy for {}.'.format(obs_id))
+        logging.debug('{}: SpectralWCS spectroscopy for {}.'.format(
+            instrument, obs_id))
         if math.isclose(filter_md.central_wl, 0.0):
             logging.info(
-                'gmos: no spectral wcs, central wavelength is {} for {}'.format(
-                    filter_md.central_wl, obs_id))
+                '{}: no spectral wcs, central wavelength is {} for {}'.format(
+                    instrument, filter_md.central_wl, obs_id))
             return
         disperser = em.om.get('disperser')
         # 'unknown' in disperser test obs is GN-2004B-Q-30-15-002
@@ -2647,6 +2651,8 @@ def _update_chunk_energy_gmos(chunk, data_product_type, obs_id, filter_name,
             # GMOS observation GN-CAL20020501-3-000 with unknown
             # disperser.  No energy.  Just the observation number 000
             # flags this one as unusual.
+            logging.warning('{}: disperser is {}, no energy.'.format(
+                instrument, disperser))
             reset_energy = True
         else:
             fm = FilterMetadata()
@@ -2669,12 +2675,13 @@ def _update_chunk_energy_gmos(chunk, data_product_type, obs_id, filter_name,
                 raise mc.CadcException(
                     'gmos: mystery disperser {} for {}'.format(disperser, obs_id))
     elif data_product_type == DataProductType.IMAGE:
-        logging.debug('gmos: SpectralWCS imaging for {}.'.format(obs_id))
+        logging.debug('{}: SpectralWCS imaging for {}.'.format(
+            instrument, obs_id))
         fm = filter_md
     else:
         raise mc.CadcException(
-            'gmos: mystery data product type {} for {}'.format(
-                data_product_type, obs_id))
+            '{}: mystery data product type {} for {}'.format(
+                instrument, data_product_type, obs_id))
     if reset_energy:
         chunk.energy_axis = None
         chunk.energy = None
@@ -2763,21 +2770,24 @@ def _reset_energy(observation_type, data_label, instrument, filter_name):
     """
     result = False
     om_filter_name = em.om.get('filter_name')
+    logging.error('filter_name {} jfn {}'.format(filter_name, om_filter_name))
 
     if ((observation_type is not None and
          ((observation_type == 'DARK') or
           (instrument in [em.Inst.GMOS, em.Inst.GMOSN, em.Inst.GMOSS] and
            observation_type in ['BIAS', 'MASK']))) or
             (om_filter_name is not None and ('blank' in om_filter_name or
-                                             'Blank' in om_filter_name or
-                                             'unknown' in filter_name))):
+                                             'Blank' in om_filter_name)) or
+            (filter_name is not None and ('unknown' in filter_name or
+                                          filter_name == ''))):
         logging.info(
             'No chunk energy for {} obs type {} filter name {}'.format(
                 data_label, observation_type, om_filter_name))
 
         # 'unknown' in filter_name test obs is GN-2004B-Q-30-15-002
-        # 'open' in filter_name test obs is GN-2001B-SV-105-6-013
         # DB 23-04-19 - GN-2004B-Q-30-15-002: no energy
+        # GMOS GS-2005A-Q-26-12-001.  Lots of missing metadata, including
+        # release date so no energy (filter_name == '')
         result = True
     elif instrument is em.Inst.GNIRS and 'Moving' in filter_name:
         # DB 16-04-19
@@ -2786,6 +2796,9 @@ def _reset_energy(observation_type, data_label, instrument, filter_name):
         # actually being taken.
         result = True
     elif instrument is em.Inst.TRECS and filter_name == '':
+        # DB 23-04-19
+        # GMOS GS-2005A-Q-26-12-001.  Lots of missing metadata, including
+        # release date so no energy.  Ditto for TReCS GS-CAL20041206-6-007.
         result = True
     elif (instrument is em.Inst.MICHELLE and
           ('Blank' in filter_name or 'No Value' in filter_name)):
@@ -2811,12 +2824,10 @@ def _reset_energy(observation_type, data_label, instrument, filter_name):
     return result
 
 
-def _reset_position(headers, observation_type, instrument):
+def _reset_position(headers, instrument):
     """
     Return True if there should be no spatial WCS information created at
     the chunk level.
-
-    :param observation_type from the parent Observation instance.
     """
     result = False
     types = em.om.get('types')
@@ -2831,7 +2842,7 @@ def _reset_position(headers, observation_type, instrument):
         # generally means the telescope is not tracking and so spatial WCS
         # info isn’t relevant since the position is changing with time.
         result = True
-    elif instrument == em.Inst.NIFS:
+    elif instrument is em.Inst.NIFS:
         # DB - 08-04-19 - json ra/dec values are null for
         # the file with things set to -9999.  Ignore
         # spatial WCS for these cases.
@@ -2854,6 +2865,14 @@ def _reset_position(headers, observation_type, instrument):
         # instrument, obstype, datatype (spectrum) and
         # product type (AUXILIARY) set.
         result = True
+    elif instrument is em.Inst.GRACES:
+        # DB 23-04-19
+        # Ignore spatial WCS for the GRACES dataset with EPOCH=0.0.  Not
+        # important for a bias. For GMOS we skip spatial WCS for biases
+        # (and maybe for some other instruments).
+        obstype = get_obs_type(headers[0])
+        if obstype == 'BIAS':
+            result = True
     return result
 
 

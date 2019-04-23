@@ -271,12 +271,16 @@ def _repair_filter_name_for_svo(instrument, filter_names):
                           'H2Oice204-G0242': 'H2Oice2045-G0242',
                           'Jcont121-G0232': 'Jcont1207-G0232',
                           'H2v=2-1s1_G0220': 'H2S1v2-1-G0220'}
+    # DB 23-04-19
+    # The Qs-18.3um is likely intended to be the same as Qa since 18.3 is the
+    # central wavelength of that filter.
     FILTER_REPAIR_TRECS = {'K': 'k',
                            'L': 'l',
                            'M': 'm',
                            'N': 'n',
                            'Nprime': 'nprime',
                            'Qw': 'Qwide',
+                           'Qs': 'Qa',
                            'NeII_ref2': 'NeII_ref'}
     FILTER_REPAIR_MICHELLE = {'I79B10': 'Si1',
                               'I88B10': 'Si2',
