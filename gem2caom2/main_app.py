@@ -1032,13 +1032,14 @@ def update(observation, **kwargs):
                         header = headers[int(part)]
 
                         # energy WCS
-                        if _reset_energy(observation.type, p, instrument):
+                        filter_name = get_filter_name(
+                            headers[0], header, observation.observation_id,
+                            instrument)
+                        if _reset_energy(observation.type, p, instrument,
+                                         filter_name):
                             c.energy = None
                             c.energy_axis = None
                         else:
-                            filter_name = get_filter_name(
-                                headers[0], header, observation.observation_id,
-                                instrument)
                             if instrument is em.Inst.NIRI:
                                 _update_chunk_energy_niri(
                                     c, observation.planes[p].data_product_type,
@@ -1297,6 +1298,7 @@ NIRI_RESOLVING_POWER = {
     }
 }
 
+# NIRI.Hgrismf32-G5228
 
 def _update_chunk_energy_niri(chunk, data_product_type, obs_id, filter_name):
     """NIRI-specific chunk-level Energy WCS construction."""
@@ -1333,14 +1335,7 @@ def _update_chunk_energy_niri(chunk, data_product_type, obs_id, filter_name):
     # duplicate lines 1268-1270 of main_app.py with “Bl” appended after
     # ‘pix’.
 
-    reset_energy = False
-    json_fn = em.om.get('filter_name')
-    if json_fn == 'INVALID':
-        # DB 18-04-19
-        #
-        # Gemini archive shows WaveBand=INVALID - ignore energy WCS
-        reset_energy = True
-    elif 'Jcon(112)_G0235' in filter_name:
+    if 'Jcon(112)_G0235' in filter_name:
         # DB - 01-04-19 The G0235 filter is listed as ‘damaged’ on the Gemini
         # NIRI filters web site:
         # https://www.gemini.edu/sciops/instruments/niri/imaging/filters.
@@ -1367,51 +1362,46 @@ def _update_chunk_energy_niri(chunk, data_product_type, obs_id, filter_name):
             raise mc.CadcException('{}: mystery filter {} for {}'.format(
                 em.Inst.NIRI, filter_name, obs_id))
 
-    filter_name = json_fn
-    if not reset_energy:
-        if data_product_type == DataProductType.IMAGE:
-            logging.debug('NIRI: SpectralWCS imaging for {}.'.format(obs_id))
-            fm = filter_md
-            fm.adjust_resolving_power()
-        elif data_product_type == DataProductType.SPECTRUM:
-            logging.debug('NIRI: SpectralWCS spectroscopy for {}.'.format(
-                obs_id))
-            fm = FilterMetadata('NIRI')
-            fm.central_wl = filter_md.central_wl
-            fm.bandpass = filter_md.bandpass
-            disperser = em.om.get('disperser')
-            if disperser in ['Jgrism', 'Jgrismf32', 'Hgrism', 'Hgrismf32',
-                             'Kgrism', 'Kgrismf32', 'Lgrism', 'Mgrism']:
-                bandpass_name = disperser[0]
-                f_ratio = em.om.get('focal_plane_mask')
-                logging.debug(
-                    'NIRI: Bandpass name is {} f_ratio is {} for {}'.format(
-                        bandpass_name, f_ratio, obs_id))
-                if (bandpass_name in NIRI_RESOLVING_POWER and
-                        f_ratio in NIRI_RESOLVING_POWER[bandpass_name]):
-                    fm.resolving_power = \
-                        NIRI_RESOLVING_POWER[bandpass_name][f_ratio]
-                elif 'pinhole' in f_ratio:
-                    logging.info(
-                        'Pinhole. Setting energy to None for {}'.format(obs_id))
-                    reset_energy = True
-                else:
-                    raise mc.CadcException(
-                        'NIRI: Mystery bandpass name {} or f_ratio {} for '
-                        '{}.'.format(bandpass_name, f_ratio, obs_id))
+    filter_name = em.om.get('filter_name')
+    if data_product_type == DataProductType.IMAGE:
+        logging.debug('NIRI: SpectralWCS imaging for {}.'.format(obs_id))
+        fm = filter_md
+        fm.adjust_resolving_power()
+    elif data_product_type == DataProductType.SPECTRUM:
+        logging.debug('NIRI: SpectralWCS spectroscopy for {}.'.format(
+            obs_id))
+        fm = FilterMetadata('NIRI')
+        fm.central_wl = filter_md.central_wl
+        fm.bandpass = filter_md.bandpass
+        disperser = em.om.get('disperser')
+        if disperser in ['Jgrism', 'Jgrismf32', 'Hgrism', 'Hgrismf32',
+                         'Kgrism', 'Kgrismf32', 'Lgrism', 'Mgrism']:
+            bandpass_name = disperser[0]
+            f_ratio = em.om.get('focal_plane_mask')
+            logging.debug(
+                'NIRI: Bandpass name is {} f_ratio is {} for {}'.format(
+                    bandpass_name, f_ratio, obs_id))
+            if (bandpass_name in NIRI_RESOLVING_POWER and
+                    f_ratio in NIRI_RESOLVING_POWER[bandpass_name]):
+                fm.resolving_power = \
+                    NIRI_RESOLVING_POWER[bandpass_name][f_ratio]
+            elif 'pinhole' in f_ratio:
+                logging.info(
+                    'Pinhole. Setting energy to None for {}'.format(obs_id))
+                reset_energy = True
             else:
                 raise mc.CadcException(
-                    'NIRI: Mystery disperser value {} for {}'.format(disperser,
-                                                                     obs_id))
+                    'NIRI: Mystery bandpass name {} or f_ratio {} for '
+                    '{}.'.format(bandpass_name, f_ratio, obs_id))
         else:
             raise mc.CadcException(
-                'NIRI: Do not understand mode {} for {}'.format(
-                    data_product_type, obs_id))
-    if reset_energy:
-        chunk.energy = None
-        chunk.energy_axis = None
+                'NIRI: Mystery disperser value {} for {}'.format(disperser,
+                                                                 obs_id))
     else:
-        _build_chunk_energy(chunk, filter_name, fm)
+        raise mc.CadcException(
+            'NIRI: Do not understand mode {} for {}'.format(
+                data_product_type, obs_id))
+    _build_chunk_energy(chunk, filter_name, fm)
     logging.debug('End _update_chunk_energy_niri')
 
 
@@ -1676,50 +1666,40 @@ def _update_chunk_energy_michelle(chunk, data_product_type, obs_id,
               'Echelle': [30000, 2.0]
               }
 
-    reset_energy = False
-    if 'Blank' in filter_name:
-        # DB 09-04-19 - “Blank-B” -> no energy.  It is a bias exposure
-        # apparently and those shouldn't have energy WCS.
-        reset_energy = True
-    else:
-        filter_md = em.get_filter_metadata(em.Inst.MICHELLE, filter_name)
-        if filter_md is None:  # means filter_name not found
-            # DB 09-04-19 - Use 100 microns for the initial max for michelle.
-            w_max, w_min = _multiple_filter_lookup(filter_name, michelle,
-                                                   obs_id, em.Inst.MICHELLE,
-                                                   wl_max=100)
-            filter_md = FilterMetadata()
-            filter_md.set_bandpass(w_max, w_min)
-            filter_md.set_central_wl(w_max, w_min)
+    filter_md = em.get_filter_metadata(em.Inst.MICHELLE, filter_name)
+    if filter_md is None:  # means filter_name not found
+        # DB 09-04-19 - Use 100 microns for the initial max for michelle.
+        w_max, w_min = _multiple_filter_lookup(filter_name, michelle,
+                                               obs_id, em.Inst.MICHELLE,
+                                               wl_max=100)
+        filter_md = FilterMetadata()
+        filter_md.set_bandpass(w_max, w_min)
+        filter_md.set_central_wl(w_max, w_min)
+    if data_product_type == DataProductType.SPECTRUM:
+        logging.debug(
+            'michelle: Spectral WCS spectrum for {}.'.format(obs_id))
         if data_product_type == DataProductType.SPECTRUM:
-            logging.debug(
-                'michelle: Spectral WCS spectrum for {}.'.format(obs_id))
-            if data_product_type == DataProductType.SPECTRUM:
-                disperser = em.om.get('disperser')
-                focal_plane_mask = em.om.get('focal_plane_mask')
-                slit_width = float(focal_plane_mask.split('_')[0])
-                if disperser not in lookup:
-                    raise mc.CadcException(
-                        'michelle: Mystery disperser {} for {}'.format(disperser,
-                                                                       obs_id))
-                filter_md.resolving_power = \
-                    lookup[disperser][0] * lookup[disperser][1] / slit_width
-        elif data_product_type == DataProductType.IMAGE:
-            logging.debug(
-                'michelle: Spectral WCS imaging mode for {}.'.format(obs_id))
-        else:
-            raise mc.CadcException(
-                'michelle: no Spectral WCS support when DataProductType {} for '
-                '{}'.format(data_product_type, obs_id))
-
-    if reset_energy:
-        chunk.energy = None
-        chunk.energy_axis = None
+            disperser = em.om.get('disperser')
+            focal_plane_mask = em.om.get('focal_plane_mask')
+            slit_width = float(focal_plane_mask.split('_')[0])
+            if disperser not in lookup:
+                raise mc.CadcException(
+                    'michelle: Mystery disperser {} for {}'.format(disperser,
+                                                                   obs_id))
+            filter_md.resolving_power = \
+                lookup[disperser][0] * lookup[disperser][1] / slit_width
+    elif data_product_type == DataProductType.IMAGE:
+        logging.debug(
+            'michelle: Spectral WCS imaging mode for {}.'.format(obs_id))
     else:
-        # use the json value for bandpass_name value - it's representative of
-        # multiple filters
-        filter_name = em.om.get('filter_name')
-        _build_chunk_energy(chunk, filter_name, filter_md)
+        raise mc.CadcException(
+            'michelle: no Spectral WCS support when DataProductType {} for '
+            '{}'.format(data_product_type, obs_id))
+
+    # use the json value for bandpass_name value - it's representative of
+    # multiple filters
+    filter_name = em.om.get('filter_name')
+    _build_chunk_energy(chunk, filter_name, filter_md)
     logging.debug('End _update_chunk_energy_michelle')
 
 
@@ -1810,7 +1790,9 @@ def _update_chunk_energy_trecs(chunk, data_product_type, obs_id, filter_name):
     # filters.
 
     filter_md = em.get_filter_metadata(em.Inst.TRECS, filter_name)
-
+    if filter_md is None:
+        raise mc.CadcException(
+            '{}: Mystery filter {}'.format(em.Inst.TRECS, filter_name))
     if data_product_type == DataProductType.IMAGE:
         logging.debug('TRECS: imaging mode for {}.'.format(obs_id))
     elif data_product_type == DataProductType.SPECTRUM:
@@ -1825,7 +1807,6 @@ def _update_chunk_energy_trecs(chunk, data_product_type, obs_id, filter_name):
         raise mc.CadcException(
             'TReCS: Do not understand mode {} for {}'.format(data_product_type,
                                                              obs_id))
-
     _build_chunk_energy(chunk, filter_name, filter_md)
     logging.debug('End _update_chunk_energy_trecs')
 
@@ -2119,11 +2100,14 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name):
             reset_energy = True
         else:
             grating = disperser.split('_')[0]
-            if grating == 'Moving':
+            # 'UNKNOWN' in grating test obs GS-CAL20040924-6-006
+            if 'UNKNOWN' in grating or 'Moving' in grating:
+                # DB 23-04-19 - GNIRS grating UNKNOWN:  no energy
                 # DB 18-04-19
                 # If grating is moving then the observation is almost
                 # certainly garbage so ignore energy WCS.
-                logging.info('grating is moving. No energy for {}'.format(obs_id))
+                logging.info('grating is {}. No energy for {}'.format(
+                    grating, obs_id))
                 reset_energy = True
             else:
                 if grating not in gnirs_lookup:
@@ -2215,6 +2199,16 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name):
         logging.debug('gnirs: SpectralWCS imaging mode for {}.'.format(obs_id))
         # https://www.gemini.edu/sciops/instruments/gnirs/imaging
         # https://www.gemini.edu/sciops/instruments/gnirs/spectroscopy/orderblocking-acq-nd-filters
+
+        # DB 23-04-19
+        # GNIRS filter “L”: add lower/upper bandpass info for the L and M
+        # filter on this page,
+        # https://www.gemini.edu/sciops/instruments/gnirs/spectroscopy/orderblocking-acq-nd-filters
+        # to ‘imaging’ dictionary.  (In ‘imaging’ I think the K order
+        # blocking filter lower bandpass should be 1.91).
+        # Despite Gemini’s footnote stating that L and M filters are NOT
+        # used for acquisition images.
+
         # 0 - min wavelength
         # 1 - max wavelength
         imaging = {'Y': [0.97, 1.07],
@@ -2222,34 +2216,29 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name):
                    'J order blocking)': [1.17, 1.37],
                    'H': [1.49, 1.80],
                    'K': [2.03, 2.37],
-                   'K order blocking': [1.90, 2.49],
+                   'K order blocking': [1.91, 2.49],
                    'H2': [2.105, 2.137],
                    'PAH': [3.27, 3.32],
                    'X': [1.03, 1.17],
-                   'XD': [0.9, 2.56]}
+                   'XD': [0.9, 2.56],
+                   'M': [4.4, 6.0],
+                   'L': [2.8, 4.2]}
 
-        if 'Moving' in filter_name:
-            # DB 16-04-19
-            # Energy WCS should be ignored for ‘Moving’ since we don’t know
-            # what might have been in the light path when the exposure was
-            # actually being taken.
-            reset_energy = True
+        if (len(filter_name) == 1 or filter_name == 'H2' or
+                filter_name == 'PAH' or filter_name == 'XD'):
+            bandpass = filter_name
         else:
-            if (len(filter_name) == 1 or filter_name == 'H2' or
-                    filter_name == 'PAH' or filter_name == 'XD'):
-                bandpass = filter_name
-            else:
-                bandpass = filter_name[0]
+            bandpass = filter_name[0]
 
-            if bandpass in imaging:
-                bounds = imaging[bandpass]
-            else:
-                raise mc.CadcException(
-                    'GNIRS: Unexpected filter_name {} for {}'.format(
-                        filter_name, obs_id))
+        if bandpass in imaging:
+            bounds = imaging[bandpass]
+        else:
+            raise mc.CadcException(
+                'GNIRS: Unexpected filter_name {} for {}'.format(
+                    filter_name, obs_id))
 
-            fm.set_central_wl(bounds[1], bounds[0])
-            fm.set_bandpass(bounds[1], bounds[0])
+        fm.set_central_wl(bounds[1], bounds[0])
+        fm.set_bandpass(bounds[1], bounds[0])
     else:
         raise mc.CadcException(
             'GNIRS: Unexpected DataProductType {} for {}'.format(
@@ -2600,7 +2589,6 @@ def _update_chunk_energy_gmos(chunk, data_product_type, obs_id, filter_name,
     reset_energy = False
 
     filter_name = filter_name.replace('&', '+')
-
     filter_md = em.get_filter_metadata(instrument, filter_name)
     w_max = 10.0
     w_min = 0.0
@@ -2638,7 +2626,18 @@ def _update_chunk_energy_gmos(chunk, data_product_type, obs_id, filter_name,
                     filter_md.central_wl, obs_id))
             return
         disperser = em.om.get('disperser')
-        if disperser is None:
+        # 'unknown' in disperser test obs is GN-2004B-Q-30-15-002
+        # 'OLDMIRROR' in disperser test obs is GN-CAL20020329-2-025
+        if (disperser is None or 'unknown' in disperser or
+                'OLDMIRROR' in disperser):
+            # DB 23-04-19
+            # GMOS observation with OLDMIRROR looks to be a direct image
+            # with the pinhole mask in the beam.  But Gemini json info is
+            # incorrect since it claims it’s a spectrum.  No energy.
+            #
+            # GMOS observation GN-CAL20020501-3-000 with unknown
+            # disperser.  No energy.  Just the observation number 000
+            # flags this one as unusual.
             reset_energy = True
         else:
             fm = FilterMetadata()
@@ -2649,6 +2648,12 @@ def _update_chunk_energy_gmos(chunk, data_product_type, obs_id, filter_name,
                 # B12000 must be a Gemini typo since observation
                 # GN-2006B-Q-39-100-003 has B1200 for the disperser.
                 disperser = 'B1200'
+            elif disperser == 'B600-':
+                # DB 23-04-19
+                # GMOS observation GS-CAL20030130-1-002 with B600- grating.
+                # The ‘-’ must be a typo.  The observation preceding this
+                # one, GS-CAL20030130-1-001, has the B600 grating.
+                disperser = 'B600'
             if disperser in GMOS_RESOLVING_POWER:
                 fm.resolving_power = GMOS_RESOLVING_POWER[disperser]
             else:
@@ -2737,13 +2742,15 @@ def _update_chunk_energy_texes(chunk, header, data_product_type, obs_id):
     logging.debug('End _update_chunk_energy_texes')
 
 
-def _reset_energy(observation_type, data_label, instrument):
+def _reset_energy(observation_type, data_label, instrument, filter_name):
     """
     Return True if there should be no energy WCS information created at
     the chunk level.
 
     :param observation_type from the parent Observation instance.
     :param data_label str for useful logging information only.
+    :param filter_name other information useful for knowing whether to
+        reset energy
     """
     result = False
     om_filter_name = em.om.get('filter_name')
@@ -2753,11 +2760,45 @@ def _reset_energy(observation_type, data_label, instrument):
           (instrument in [em.Inst.GMOS, em.Inst.GMOSN, em.Inst.GMOSS] and
            observation_type in ['BIAS', 'MASK']))) or
             (om_filter_name is not None and ('blank' in om_filter_name or
-                                             'Blank' in om_filter_name))):
+                                             'Blank' in om_filter_name or
+                                             'unknown' in filter_name))):
         logging.info(
             'No chunk energy for {} obs type {} filter name {}'.format(
                 data_label, observation_type, om_filter_name))
+
+        # 'unknown' in filter_name test obs is GN-2004B-Q-30-15-002
+        # 'open' in filter_name test obs is GN-2001B-SV-105-6-013
+        # DB 23-04-19 - GN-2004B-Q-30-15-002: no energy
         result = True
+    elif instrument is em.Inst.GNIRS and 'Moving' in filter_name:
+        # DB 16-04-19
+        # Energy WCS should be ignored for ‘Moving’ since we don’t know
+        # what might have been in the light path when the exposure was
+        # actually being taken.
+        result = True
+    elif instrument is em.Inst.TRECS and filter_name == '':
+        result = True
+    elif (instrument is em.Inst.MICHELLE and
+          ('Blank' in filter_name or 'No Value' in filter_name)):
+        # 'No Value' in filter_name test obs GN-2005A-C-14-45-002
+        # DB 09-04-19 - “Blank-B” -> no energy.  It is a bias exposure
+        # apparently and those shouldn't have energy WCS.
+        # DB 23-04-19 - “No Value” -> no energy
+        result = True
+    elif (instrument is em.Inst.NIRI and
+          ('INVALID' in om_filter_name or filter_name == '')):
+        # filter_name == '', test obs is GN-CAL20050301-17-001
+        # DB 18-04-19
+        #
+        # Gemini archive shows WaveBand=INVALID - ignore energy WCS
+        # DB 23-04-19 - ‘no value’ -> no energy
+
+        # DB 23-04-19 - Looks like NIRI observation GN-CAL20020623-1-011 is
+        # skipping the ‘invalid’ values in FILTER1/2 headers.  So energy
+        # should likely be skipped.  In this case the json value is
+        # INVALID&INVALID.
+        result = True
+
     return result
 
 
