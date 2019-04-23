@@ -2438,21 +2438,30 @@ def _update_chunk_energy_oscir(chunk, data_product_type, obs_id, filter_name):
     # e.g. ‘S_12.5 (-11775)’ = ‘12.5’ in table.
     # It looks like only the 'r' files have filter ids.
 
+    # DB 23-04-19
+    # Split on whitespace and name the filters S_8.8 and IHW_(17-19)
+    # respectively.  And change the keys of the lookup table to these
+    # values as well.Randomly looking at observations these are other
+    # filter values:  S_12.5 (-11774), S_11.7 (-22125), S_7.9 (-63440),
+    # and N_wide (-1154).   The latter instead of the lookup “N”.  So I’m
+    # guessing the first six key values in oscir_lookup should be
+    # S_7.9, S_8.8, S_9.8, S_11.7 and S_12.5.   Then N_wide, IHW_(17-19).
+    #
     # 0 - central wavelenth
     # 1 - bandpass
     # units are microns
-    oscir_lookup = {'7.9': [7.91, 0.755],
-                    '8.8': [8.81, 0.871],
-                    '9.8': [9.80, 0.952],
-                    '10.3': [10.27, 1.103],
-                    '11.7': [11.70, 1.110],
-                    '12.5': [12.49, 1.156],
-                    'N': [10.75, 5.230],
-                    'IHW': [18.17, 1.651],
+    oscir_lookup = {'S_7.9': [7.91, 0.755],
+                    'S_8.8': [8.81, 0.871],
+                    'S_9.8': [9.80, 0.952],
+                    'S_10.3': [10.27, 1.103],
+                    'S_11.7': [11.70, 1.110],
+                    'S_12.5': [12.49, 1.156],
+                    'N_wide': [10.75, 5.230],
+                    'IHW_(17-19)': [18.17, 1.651],
                     'Q3': [20.8, 1.650]}
 
     temp = filter_name
-    filter_name = temp.split('_')[0]
+    filter_name = temp.split()[0]
     if filter_name not in oscir_lookup:
         raise mc.CadcException(
             'oscir: Mystery FILTER keyword {} for {}'.format(
