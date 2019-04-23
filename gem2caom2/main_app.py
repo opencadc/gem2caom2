@@ -2770,7 +2770,6 @@ def _reset_energy(observation_type, data_label, instrument, filter_name):
     """
     result = False
     om_filter_name = em.om.get('filter_name')
-    logging.error('filter_name {} jfn {}'.format(filter_name, om_filter_name))
 
     if ((observation_type is not None and
          ((observation_type == 'DARK') or
