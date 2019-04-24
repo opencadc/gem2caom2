@@ -292,6 +292,10 @@ def _repair_filter_name_for_svo(instrument, filter_names):
                               'I125B9': 'Si6',
                               'I185B9': 'Qa',
                               'I209B42': 'Q'}
+    # DB 02-04-19
+    # The GSAOI filter CO2360 should map to SVO filter GSAOI.CO
+    FILTER_REPAIR_GSAOI = {'Kcntlong': 'Klong_cont',
+                           'CO2360': 'CO'}
 
     result = []
     for filter_name in filter_names.split('+'):
@@ -335,10 +339,8 @@ def _repair_filter_name_for_svo(instrument, filter_names):
                 continue
             temp = temp[0]
         elif instrument == Inst.GSAOI:
-            # DB 02-04-19
-            # The GSAOI filter CO2360 should map to SVO filter GSAOI.CO
-            if temp == 'CO2360':
-                temp = 'CO'
+            if temp in FILTER_REPAIR_GSAOI:
+                temp = FILTER_REPAIR_GSAOI[temp]
         if temp is not None:
             result.append(temp)
     if len(result) > 0:

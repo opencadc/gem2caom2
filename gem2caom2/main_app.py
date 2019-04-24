@@ -1555,6 +1555,9 @@ def _update_chunk_energy_general(chunk, instrument, allowable_types,
                                                                data_product_type,
                                                                obs_id))
         filter_md = em.get_filter_metadata(instrument, filter_name)
+        if filter_md is None:
+            raise mc.CadcException(
+                '{}: mystery filter {}'.format(instrument, filter_name))
         _build_chunk_energy(chunk, filter_name, filter_md)
     else:
         raise mc.CadcException(
@@ -2061,6 +2064,11 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name):
     # only on the order of 100 in the archive - or just an error in the
     # header.  The spectra look ‘dispersed’ to me.  Just ignore energy
     # WCS for these.
+
+    # DB 24-04-19
+    # ND = neutral density and so any ND* filter can be ignored as it
+    # shouldn’t affect transmission band.  Likely observing a bright
+    # target and they need to reduce light by a factor of 100X.
 
     gnirs_lookup = {'10': {'X': [1.03, 1.17, 570, 2100],
                            'J': [1.17, 1.37, 570, 1600],
@@ -2598,7 +2606,6 @@ def _update_chunk_energy_gmos(chunk, data_product_type, obs_id, filter_name,
 
     reset_energy = False
 
-    filter_name = filter_name.replace('&', '+')
     filter_md = None
     if 'open' not in filter_name:
         filter_md = em.get_filter_metadata(instrument, filter_name)
@@ -2929,6 +2936,18 @@ def get_filter_name(primary_header, header, obs_id, instrument=None):
     #
     if instrument not in [em.Inst.NIRI, em.Inst.NICI, em.Inst.MICHELLE]:
         filter_name = em.om.get('filter_name')
+        #
+        # DB 24-04-19
+        # ND = neutral density and so any ND* filter can be ignored as it
+        # shouldn’t affect transmission band.  Likely observing a bright
+        # Other instruments occasionally have ND filters in the beam.
+        if filter_name is not None:
+            filter_name = filter_name.replace('&', '+')
+            temp = filter_name.split('+')
+            for fn in temp:
+                if fn.startswith('ND'):
+                    filter_name = filter_name.replace(fn, '')
+            filter_name = filter_name.strip('+')
     if (filter_name is None or
             (filter_name is not None and len(filter_name.strip()) == 0)):
         # DB - 04-02-19 - strip out anything with 'pupil' as it doesn't affect
@@ -2938,7 +2957,10 @@ def get_filter_name(primary_header, header, obs_id, instrument=None):
         # Note that FILTERB sometimes has a value “Clear_B” and that should
         # be ignored.  Not sure if “Clear_A” is possible but maybe best to
         # allow for it.
-        filters2ignore = ['open', 'invalid', 'pupil', 'clear']
+        #
+        # DB 24-04-19
+        # Other instruments occasionally have ND filters in the beam.
+        filters2ignore = ['open', 'invalid', 'pupil', 'clear', 'nd']
         lookups = ['FILTER']
         if instrument is em.Inst.PHOENIX:
             lookups = ['CVF_POS', 'FILT_POS']

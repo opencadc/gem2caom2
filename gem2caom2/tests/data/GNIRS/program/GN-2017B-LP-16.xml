@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GN-2017B-LP-16</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GN-2017B-LP-16</h1>
+
+<table>
+ <tr><td>Title:<td>Placing High-Redshift Quasars in Perspective: a Gemini Near-Infrared Spectroscopic Survey</tr>
+ <tr><td>PI:<td>Ohad Shemmer</tr>
+ <tr><td>Co-I(s):<td> Adam Myers,  Donald Schneider,  Beverley Wills,  Gordon Richards,  Richard Plotkin,  Gabriel Ferrero,  Jessie Runnoe,  Michael Strauss,  Yue Shen,  Todd Boroson,  Sergio Cellone,  Richard Green,  Michael Brotherton,  Paulina Lira,  Ileana Andruchow,  Joseph Hennawi,  Chris Willot,  Niel Brandt,  Sarah Gallagher</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+Our current understanding of supermassive black hole (SMBH) growth in the distant universe is compromised by the lack of key diagnostic rest-frame optical emission lines in quasar spectra. As a consequence, our view of how SMBHs and their host galaxies mutually coevolve during the peak of quasar activity is biased and incomplete. We therefore propose to obtain GNIRS spectroscopy in the 0.8-2.5 um band of 416 quasars at redshifts between 1.5 and 3.6. These spectra will provide the largest uniform inventory of Hbeta and [O III] emission-line properties for luminous quasars at these redshifts. We will obtain the most accurate and precise quasar black hole masses and redshifts, and use the results to derive improved prescriptions for UV-based proxies for these parameters. We will make our data immediately available to the public, provide reduced spectra via a dedicated website, and produce a catalog of measurements and quasar properties. The improved redshifts will establish velocities of quasar outflows that interact with the host galaxies, as well as tighten measurements of small-scale quasar clustering. Furthermore, our measurements will facilitate a more complete understanding of how the rest-frame UV-optical spectral properties depend on redshift and luminosity, and test whether the physical properties of the quasar central engine evolve over cosmic time. The next generation of cosmological surveys will generate millions of optical quasar spectra, the analysis of which will greatly benefit from the prescriptions developed in this investigation, an invaluable Gemini legacy. 
+</div>
+
+
+
+</body>
+</html>
