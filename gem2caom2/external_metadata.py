@@ -294,8 +294,11 @@ def _repair_filter_name_for_svo(instrument, filter_names):
                               'I209B42': 'Q'}
     # DB 02-04-19
     # The GSAOI filter CO2360 should map to SVO filter GSAOI.CO
+    # DB 04-24-19
+    # H2(1-0) filter maps to SVO H2_1-0
     FILTER_REPAIR_GSAOI = {'Kcntlong': 'Klong_cont',
-                           'CO2360': 'CO'}
+                           'CO2360': 'CO',
+                           'H2(1-0)': 'H2_1-0'}
 
     result = []
     for filter_name in filter_names.split('+'):
