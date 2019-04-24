@@ -205,6 +205,8 @@ LOOKUP = {
     'N20160202S0098': ['GN-CAL20160202-3-039', em.Inst.GNIRS, 'GN-CAL20160202'],
     'S20041101S0215': ['GS-2004B-Q-19-20-023', em.Inst.GNIRS, 'GS-2004B-Q-19'],
     'N20170201S0246': ['GN-2017A-Q-44-25-031', em.Inst.GNIRS, 'GS-2017A-Q-44'],
+    'N20180224S0063': ['GN-CAL20180224-3-001', em.Inst.GNIRS,
+                       'GN-CAL20180224-3'],
     'N20171106S0187': ['GN-2017B-LP-16-470-002', em.Inst.GNIRS,
                        'GN-2017B-LP-16'],
     'N20170210S0013': ['GN-CAL20170209-5-003', em.Inst.GNIRS,
@@ -433,13 +435,13 @@ def pytest_generate_tests(metafunc):
 
         file_list = []
         # for root, dirs, files in os.walk(TESTDATA_DIR):
-        # for ii in [em.Inst.GNIRS]:
-        for ii in [em.Inst.GMOS, em.Inst.NIRI, em.Inst.GPI, em.Inst.F2,
-                   em.Inst.GSAOI, em.Inst.NICI, em.Inst.TRECS, em.Inst.MICHELLE,
-                   em.Inst.GRACES, em.Inst.NIFS, em.Inst.GNIRS, em.Inst.PHOENIX,
-                   em.Inst.FLAMINGOS, em.Inst.HRWFS, em.Inst.HOKUPAA,
-                   em.Inst.OSCIR, em.Inst.BHROS, em.Inst.CIRPASS, em.Inst.TEXES,
-                   'processed']:
+        for ii in [em.Inst.GNIRS]:
+        # for ii in [em.Inst.GMOS, em.Inst.NIRI, em.Inst.GPI, em.Inst.F2,
+        #            em.Inst.GSAOI, em.Inst.NICI, em.Inst.TRECS, em.Inst.MICHELLE,
+        #            em.Inst.GRACES, em.Inst.NIFS, em.Inst.GNIRS, em.Inst.PHOENIX,
+        #            em.Inst.FLAMINGOS, em.Inst.HRWFS, em.Inst.HOKUPAA,
+        #            em.Inst.OSCIR, em.Inst.BHROS, em.Inst.CIRPASS, em.Inst.TEXES,
+        #            'processed']:
             walk_dir = _get_inst_name(ii)
             for root, dirs, files in os.walk(
                     '{}/{}'.format(TEST_DATA_DIR, walk_dir)):

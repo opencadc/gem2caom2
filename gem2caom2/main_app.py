@@ -2125,8 +2125,12 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name):
 
                 camera = em.om.get('camera')
                 focal_plane_mask = em.om.get('focal_plane_mask')
-                slit_width = 1.0
-                if 'arcsec' in focal_plane_mask:
+                if focal_plane_mask is None or 'arcsec' not in focal_plane_mask:
+                    # DB 24-04-19
+                    # Assume slit width of 1.0 for GNIRS observation without a
+                    # focal plane mask value.
+                    slit_width = 1.0
+                else:
                     slit_width = float(focal_plane_mask.split('arcsec')[0])
 
                 if 'XD' in disperser:
@@ -2826,7 +2830,11 @@ def _reset_energy(observation_type, data_label, instrument, filter_name):
         # should likely be skipped.  In this case the json value is
         # INVALID&INVALID.
         result = True
-
+    elif (instrument is em.Inst.GSAOI and (
+            'Unknown' in filter_name or 'Blocked' in filter_name)):
+        # DB 24-04-19
+        # ‘Unknown+Blocked2’ filter, no spectral WCS.
+        result = True
     return result
 
 
@@ -2876,9 +2884,17 @@ def _reset_position(headers, instrument):
         # Ignore spatial WCS for the GRACES dataset with EPOCH=0.0.  Not
         # important for a bias. For GMOS we skip spatial WCS for biases
         # (and maybe for some other instruments).
-        obstype = get_obs_type(headers[0])
-        if obstype == 'BIAS':
-            result = True
+
+        # DB 24-04-19
+        # GRACES:  you can ignore spatial WCS for flats if RA/Dec are not
+        # available.   Ditto for GNIRS darks.
+
+        ra = em.om.get('ra')
+        dec = em.om.get('dec')
+        if ra is None and dec is None:
+            obstype = get_obs_type(headers[0])
+            if obstype in ['BIAS', 'FLAT']:
+                result = True
     return result
 
 
@@ -3003,7 +3019,12 @@ def _update_position_from_zeroth_header(artifact, headers, instrument, obs_id):
     primary_chunk = Chunk()
     types = em.om.get('types')
     ra = get_ra(headers[0])
-    if 'AZEL_TARGET' in types and ra is None:
+    ra_json = em.om.get('ra')
+    dec_json = em.om.get('dec')
+    obs_type = get_obs_type(primary_header)
+    if (('AZEL_TARGET' in types and ra is None) or
+            (instrument is em.Inst.GNIRS and ra_json is None and
+             dec_json is None and obs_type == 'DARK')):
         # DB - 02-04-19 - Az-El coordinate frame likely means the telescope
         # was parked or at least not tracking so spatial information is
         # irrelevant.
@@ -3012,6 +3033,10 @@ def _update_position_from_zeroth_header(artifact, headers, instrument, obs_id):
         # datasets, and means the spatial WCS should be ignored. since this
         # generally means the telescope is not tracking and so spatial WCS
         # info isn’t relevant since the position is changing with time.
+
+        # DB 24-04-19
+        # Ignore spatial WCS for flats if RA/Dec are not available for
+        # GNIRS darks.
 
         logging.info(
             '{}: Spatial WCS is None for {}'.format(instrument, obs_id))
