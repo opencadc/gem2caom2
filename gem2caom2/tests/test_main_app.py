@@ -435,13 +435,13 @@ def pytest_generate_tests(metafunc):
 
         file_list = []
         # for root, dirs, files in os.walk(TESTDATA_DIR):
-        for ii in [em.Inst.GNIRS]:
-        # for ii in [em.Inst.GMOS, em.Inst.NIRI, em.Inst.GPI, em.Inst.F2,
-        #            em.Inst.GSAOI, em.Inst.NICI, em.Inst.TRECS, em.Inst.MICHELLE,
-        #            em.Inst.GRACES, em.Inst.NIFS, em.Inst.GNIRS, em.Inst.PHOENIX,
-        #            em.Inst.FLAMINGOS, em.Inst.HRWFS, em.Inst.HOKUPAA,
-        #            em.Inst.OSCIR, em.Inst.BHROS, em.Inst.CIRPASS, em.Inst.TEXES,
-        #            'processed']:
+        # for ii in [em.Inst.GNIRS]:
+        for ii in [em.Inst.GMOS, em.Inst.NIRI, em.Inst.GPI, em.Inst.F2,
+                   em.Inst.GSAOI, em.Inst.NICI, em.Inst.TRECS, em.Inst.MICHELLE,
+                   em.Inst.GRACES, em.Inst.NIFS, em.Inst.GNIRS, em.Inst.PHOENIX,
+                   em.Inst.FLAMINGOS, em.Inst.HRWFS, em.Inst.HOKUPAA,
+                   em.Inst.OSCIR, em.Inst.BHROS, em.Inst.CIRPASS, em.Inst.TEXES,
+                   'processed']:
             walk_dir = _get_inst_name(ii)
             for root, dirs, files in os.walk(
                     '{}/{}'.format(TEST_DATA_DIR, walk_dir)):

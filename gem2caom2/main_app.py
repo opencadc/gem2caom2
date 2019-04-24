@@ -3021,10 +3021,9 @@ def _update_position_from_zeroth_header(artifact, headers, instrument, obs_id):
     ra = get_ra(headers[0])
     ra_json = em.om.get('ra')
     dec_json = em.om.get('dec')
-    obs_type = get_obs_type(primary_header)
     if (('AZEL_TARGET' in types and ra is None) or
             (instrument is em.Inst.GNIRS and ra_json is None and
-             dec_json is None and obs_type == 'DARK')):
+             dec_json is None)):
         # DB - 02-04-19 - Az-El coordinate frame likely means the telescope
         # was parked or at least not tracking so spatial information is
         # irrelevant.
@@ -3035,8 +3034,7 @@ def _update_position_from_zeroth_header(artifact, headers, instrument, obs_id):
         # info isn’t relevant since the position is changing with time.
 
         # DB 24-04-19
-        # Ignore spatial WCS for flats if RA/Dec are not available for
-        # GNIRS darks.
+        # Ignore spatial WCS if RA/Dec are not available for GNIRS.
 
         logging.info(
             '{}: Spatial WCS is None for {}'.format(instrument, obs_id))
