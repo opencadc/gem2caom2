@@ -1138,6 +1138,9 @@ def update(observation, **kwargs):
                         # position WCS
                         mode = em.om.get('mode')
                         if _reset_position(headers, instrument):
+                            logging.debug(
+                                'Setting Spatial WCS to None for {}'.format(
+                                    observation.observation_id))
                             c.position_axis_2 = None
                             c.position_axis_1 = None
                             c.position = None
@@ -1488,7 +1491,9 @@ def _update_chunk_energy_f2(chunk, header, data_product_type, obs_id,
 
     reset_energy = False
     object_value = em.om.get('object')
-    if 'COVER CLOSED' in object_value:
+    if 'COVER CLOSED' in object_value or 'Undefined' in filter_name:
+        # DB 30-04-19
+        # Flamingos ‘Undefined’ filter:  no spectral WCS
         reset_energy = True
     else:
         filter_md = em.get_filter_metadata(em.Inst.F2, filter_name)
@@ -2237,6 +2242,11 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name):
                    'M': [4.4, 6.0],
                    'L': [2.8, 4.2]}
 
+        # DB 30-04-19
+        # GN-CAL20180607-27-001:  ignore ‘PupilViewer’ if possible.
+        filter_name = filter_name.replace('PupilViewer', '')
+        filter_name = filter_name.strip('+')
+
         if (len(filter_name) == 1 or filter_name == 'H2' or
                 filter_name == 'PAH' or filter_name == 'XD'):
             bandpass = filter_name
@@ -2266,7 +2276,7 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name):
 
 
 # select filter_id, wavelength_central, wavelength_lower, wavelength_upper
-# from gsa..gsa_filters where instrument = 'NICI'
+# from gsa..gsa_filters where instrument = 'PHOENIX'
 # 0 - central
 # 1 - lower
 # 2 - upper
@@ -2274,6 +2284,11 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name):
 # units are microns
 #
 # dict with the filter wheels stripped from the names as returned by query
+#
+# DB 30-04-19
+# A new filter not previously available.  Add info from here,
+# https://www.noao.edu/kpno/phoenix/filters.html
+
 PHOENIX = {'2030': [4.929000, 4.808000, 5.050000],
            '2150': [4.658500, 4.566000, 4.751000],
            '2462': [4.078500, 4.008000, 4.149000],
@@ -2294,7 +2309,8 @@ PHOENIX = {'2030': [4.929000, 4.808000, 5.050000],
            '7799': [1.280500, 1.271000, 1.290000],
            '8265': [1.204500, 1.196000, 1.213000],
            '9232': [1.083000, 1.077000, 1.089000],
-           'L2870': [3.490500, 3.436000, 3.545000]}
+           'L2870': [3.490500, 3.436000, 3.545000],
+           '9440': [1.058500, 1.053000, 1.064000]}
 
 
 def _update_chunk_energy_phoenix(chunk, data_product_type, obs_id, filter_name):
@@ -2856,7 +2872,7 @@ def _reset_position(headers, instrument):
         # generally means the telescope is not tracking and so spatial WCS
         # info isn’t relevant since the position is changing with time.
         result = True
-    elif instrument is em.Inst.NIFS:
+    elif instrument in [em.Inst.NIFS, em.Inst.PHOENIX]:
         # DB - 08-04-19 - json ra/dec values are null for
         # the file with things set to -9999.  Ignore
         # spatial WCS for these cases.
@@ -2865,9 +2881,24 @@ def _reset_position(headers, instrument):
         # function uses header values, which are set to
         # unlikely defaults
 
+        # DB 30-04-19
+        # Looks like many relatively recent PHOENIX files have no RA/Dec
+        # values in the header and so will have no spatial WCS.
+        # Base this decision on json null values.  But looking at all
+        # of the PHOENIX data from 2016 until 3 December 2017 it looks
+        # like json ra/dec values are either null or 0.0 for all.
+        # In both cases spatial WCS should be ignored.  (It will be
+        # very difficult for users to find anything of interest in
+        # these datasets other than searching by free-form target
+        # names…)  PHOENIX returned as a visitor instrument in May 2016
+        # after about 5 years away.
+
         ra = em.om.get('ra')
         dec = em.om.get('dec')
         if ra is None and dec is None:
+            result = True
+        elif (ra is not None and math.isclose(ra, 0.0) and
+              dec is not None and  math.isclose(dec, 0.0)):
             result = True
     elif _is_gmos_mask(headers[0]):
         # DB - 04-03-19
@@ -2889,11 +2920,14 @@ def _reset_position(headers, instrument):
         # GRACES:  you can ignore spatial WCS for flats if RA/Dec are not
         # available.   Ditto for GNIRS darks.
 
+        # DB 30-04-19
+        # Ignore spatial WCS for any GRACES arcs without RA/Dec values.
+
         ra = em.om.get('ra')
         dec = em.om.get('dec')
         if ra is None and dec is None:
             obstype = get_obs_type(headers[0])
-            if obstype in ['BIAS', 'FLAT']:
+            if obstype in ['BIAS', 'FLAT', 'ARC']:
                 result = True
     return result
 
@@ -3171,7 +3205,8 @@ def _update_chunk_position(chunk, header, instrument, extension, obs_id,
         #     NAXIS2 = 15
         header['NAXIS1'] = 33
         header['NAXIS2'] = 15
-        # LENS_SCL determines the scale/lenslet:  0.36 or 0.25 (arcseconds per lens)
+        # LENS_SCL determines the scale/lenslet:  0.36 or 0.25 (arcseconds
+        # per lens)
         #     if 0.36 then FOV is 13.0" x 4.7" (RA and Dec)
         #     if 0.25 then FOV is 9.3" x 3.5"
         lens_scl = header.get('LENS_SCL')
@@ -3188,8 +3223,13 @@ def _update_chunk_position(chunk, header, instrument, extension, obs_id,
     header['CD2_1'] = 0.0
     header['CD2_2'] = get_cd22(header)
 
-    if instrument == em.Inst.BHROS:
+    if instrument is em.Inst.BHROS:
         header['EQUINOX'] = float(header.get('TRKEQUIN'))
+
+    if instrument is em.Inst.PHOENIX:
+        temp = header.get('EQUINOX')
+        if temp is None or math.isclose(temp, 0.0):
+            header['EQUINOX'] = header.get('EPOCH')
 
     wcs_parser = WcsParser(header, obs_id, extension)
     if chunk is None:
