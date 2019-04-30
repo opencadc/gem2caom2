@@ -3226,10 +3226,14 @@ def _update_chunk_position(chunk, header, instrument, extension, obs_id,
     if instrument is em.Inst.BHROS:
         header['EQUINOX'] = float(header.get('TRKEQUIN'))
 
+    reset_equinox = False
     if instrument is em.Inst.PHOENIX:
         temp = header.get('EQUINOX')
         if temp is None or math.isclose(temp, 0.0):
             header['EQUINOX'] = header.get('EPOCH')
+            reset_equinox = True
+            # set a valid value for equinox, because augment_position
+            # needs one, but set to to null after
 
     wcs_parser = WcsParser(header, obs_id, extension)
     if chunk is None:
@@ -3245,6 +3249,8 @@ def _update_chunk_position(chunk, header, instrument, extension, obs_id,
         chunk.position.coordsys = header.get('TRKFRAME')
     elif instrument is em.Inst.GPI:
         chunk.position.coordsys = header.get('RADESYS')
+    elif instrument is em.Inst.PHOENIX and reset_equinox:
+        chunk.position.equinox = None
 
     logging.debug('End _update_chunk_position')
 
