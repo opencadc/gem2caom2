@@ -299,9 +299,16 @@ def _repair_filter_name_for_svo(instrument, filter_names):
     # DB 04-30-19
     # Kcntshrt and HeI-2p2s should map to Kshort_cont and HeI2p2s.
     # PaG for GS-CAL20180731-5-017 = SVO’s HIPaGamma
-    FILTER_REPAIR_GSAOI = {'CO2360': 'CO',
+    # DB 02-05-19
+    # BrG is Brackett Gamma again, so in SVO it is GSAOI.HIBrGamma.
+    # I think H2(2-1) must be GSAOI.H2_2-1_S1.  That observation shows
+    # up when you search the Gemini archive for that particular
+    # observation and set the filter to “H2 2-1 (S1)“.
+    FILTER_REPAIR_GSAOI = {'BrG': 'HIBrGamma',
+                           'CO2360': 'CO',
                            'HeI-2p2s': 'HeI2p2s',
                            'H2(1-0)': 'H2_1-0',
+                           'H2(2-1)': 'H2_2-1_S1',
                            'Kcntlong': 'Klong_cont',
                            'Kcntshrt': 'Kshort_cont',
                            'PaG': 'HIPaGamma'}
