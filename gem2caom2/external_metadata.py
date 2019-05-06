@@ -257,6 +257,8 @@ def _repair_filter_name_for_svo(instrument, filter_names):
                           'CH4-H1L_2': 'ED283'}
     # note the lookup repair values are not what comes from the files,
     # they're what's left after the re.sub calls have completed
+    # DB 06-05-19
+    # The NIRI filter should map to SVO’s NIRI.CO2-0bh-G0225. bh = band-head.
     FILTER_REPAIR_NIRI = {'H2v=2-1s1-G0220': 'H2S1v2-1-G0220',
                           'H2v=2-1S1-G0220w': 'H2S1v2-1-G0220w',
                           'H2v=2-1S1-G0220': 'H2S1v2-1-G0220',
@@ -267,6 +269,7 @@ def _repair_filter_name_for_svo(instrument, filter_names):
                           'Bra-G0238': 'BrAlpha-G0238',
                           'Bracontt-G0237': 'BrAlphaCont-G0237',
                           'CH4ice227-G0243': 'CH4ice2275-G0243',
+                          'COv=2-0bh-G0225': 'CO2-0bh-G0225',
                           'hydrocarb-G0231': 'hydrocarbon-G0231',
                           'H2Oice204-G0242': 'H2Oice2045-G0242',
                           'Jcont121-G0232': 'Jcont1207-G0232',
@@ -304,6 +307,8 @@ def _repair_filter_name_for_svo(instrument, filter_names):
     # I think H2(2-1) must be GSAOI.H2_2-1_S1.  That observation shows
     # up when you search the Gemini archive for that particular
     # observation and set the filter to “H2 2-1 (S1)“.
+    # DB 06-05-19
+    # PaB = HIPaBeta.
     FILTER_REPAIR_GSAOI = {'BrG': 'HIBrGamma',
                            'CO2360': 'CO',
                            'HeI-2p2s': 'HeI2p2s',
@@ -311,6 +316,7 @@ def _repair_filter_name_for_svo(instrument, filter_names):
                            'H2(2-1)': 'H2_2-1_S1',
                            'Kcntlong': 'Klong_cont',
                            'Kcntshrt': 'Kshort_cont',
+                           'PaB': 'HIPaBeta',
                            'PaG': 'HIPaGamma'}
 
     result = []
