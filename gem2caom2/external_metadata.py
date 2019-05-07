@@ -311,6 +311,7 @@ def _repair_filter_name_for_svo(instrument, filter_names):
     # PaB = HIPaBeta.
     FILTER_REPAIR_GSAOI = {'BrG': 'HIBrGamma',
                            'CO2360': 'CO',
+                           'HeI1083': 'HeI',
                            'HeI-2p2s': 'HeI2p2s',
                            'H2(1-0)': 'H2_1-0',
                            'H2(2-1)': 'H2_2-1_S1',
@@ -363,6 +364,9 @@ def _repair_filter_name_for_svo(instrument, filter_names):
         elif instrument == Inst.GSAOI:
             if temp in FILTER_REPAIR_GSAOI:
                 temp = FILTER_REPAIR_GSAOI[temp]
+        elif instrument == Inst.F2:
+            if temp == 'J-lo_G0801':
+                temp = 'Jlow'
         if temp is not None:
             result.append(temp)
     if len(result) > 0:
