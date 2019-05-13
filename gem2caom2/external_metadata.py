@@ -216,7 +216,7 @@ def _repair_instrument_name_for_svo(instrument):
     :return instrument the SVO version
     """
     result = instrument.value
-    if instrument == Inst.HRWFS:
+    if instrument is Inst.HRWFS:
         telescope = om.get('telescope')
         if telescope is None:
             obs_id = om.get('data_label')
@@ -228,9 +228,9 @@ def _repair_instrument_name_for_svo(instrument):
                 result = 'AcqCam-S'
             else:
                 result = 'AcqCam-N'
-    elif instrument == Inst.F2:
+    elif instrument is Inst.F2:
         result = 'Flamingos2'
-    elif instrument == Inst.FLAMINGOS:
+    elif instrument is Inst.FLAMINGOS:
         result = 'Flamingos'
     return result
 
@@ -311,6 +311,7 @@ def _repair_filter_name_for_svo(instrument, filter_names):
     # PaB = HIPaBeta.
     FILTER_REPAIR_GSAOI = {'BrG': 'HIBrGamma',
                            'CO2360': 'CO',
+                           'HeI1083': 'HeI',
                            'HeI-2p2s': 'HeI2p2s',
                            'H2(1-0)': 'H2_1-0',
                            'H2(2-1)': 'H2_2-1_S1',
@@ -322,33 +323,33 @@ def _repair_filter_name_for_svo(instrument, filter_names):
     result = []
     for filter_name in filter_names.split('+'):
         temp = filter_name
-        if instrument == Inst.NIRI:
+        if instrument is Inst.NIRI:
             temp = re.sub(r'con', 'cont', temp)
             temp = re.sub(r'_', '-', temp)
             temp = re.sub('\\(', '', temp)
             temp = re.sub('\\)', '', temp)
             if temp in FILTER_REPAIR_NIRI:
                 temp = FILTER_REPAIR_NIRI[temp]
-        elif instrument == Inst.NICI:
+        elif instrument is Inst.NICI:
             if temp in FILTER_REPAIR_NICI:
                 temp = FILTER_REPAIR_NICI[temp]
             else:
                 logging.info(
                     '{} filter {} not at SVO.'.format(instrument, temp))
                 temp = None
-        elif instrument == Inst.TRECS:
+        elif instrument is Inst.TRECS:
             temp = filter_name.split('-')
             if len(temp) > 0:
                 temp = temp[0]
             if temp in FILTER_REPAIR_TRECS:
                 temp = FILTER_REPAIR_TRECS[temp]
-        elif instrument == Inst.MICHELLE:
+        elif instrument is Inst.MICHELLE:
             temp = filter_name.split('-')
             if len(temp) > 0:
                 temp = temp[0]
             if temp in FILTER_REPAIR_MICHELLE:
                 temp = FILTER_REPAIR_MICHELLE[temp]
-        elif instrument == Inst.HRWFS:
+        elif instrument is Inst.HRWFS:
             # “ND” in the filter name means ‘neutral density’.  Ignore any
             # of these as they have no impact on the transmitted wavelengths
             # - I think #159 was the only one delivered according to
@@ -360,9 +361,12 @@ def _repair_filter_name_for_svo(instrument, filter_names):
             if temp.startswith('ND'):
                 continue
             temp = temp[0]
-        elif instrument == Inst.GSAOI:
+        elif instrument is Inst.GSAOI:
             if temp in FILTER_REPAIR_GSAOI:
                 temp = FILTER_REPAIR_GSAOI[temp]
+        elif instrument is Inst.F2:
+            if temp == 'J-lo':
+                temp = 'Jlow'
         if temp is not None:
             result.append(temp)
     if len(result) > 0:
