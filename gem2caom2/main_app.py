@@ -2708,7 +2708,7 @@ def _update_chunk_energy_gmos(chunk, data_product_type, obs_id, filter_name,
                 # B12000 must be a Gemini typo since observation
                 # GN-2006B-Q-39-100-003 has B1200 for the disperser.
                 disperser = 'B1200'
-            elif disperser in ['B600-', 'B600+-G5323']:
+            elif disperser in ['B600-', 'B600+-G5323', '\'B600']:
                 # DB 23-04-19
                 # GMOS observation GS-CAL20030130-1-002 with B600- grating.
                 # The ‘-’ must be a typo.  The observation preceding this
