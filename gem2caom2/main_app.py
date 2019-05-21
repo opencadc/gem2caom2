@@ -1252,10 +1252,20 @@ def _build_chunk_energy(chunk, filter_name, fm):
 # values from
 # https://www.gemini.edu/sciops/instruments/niri/spectroscopy/grisms
 # units are? page is in microns
+
+# DB 21-05-19
+# For lack of info on the slit for these odd observations use the
+# same resolution for the 4-pixel slit:  i.e. add “‘f6-cam’: 610.0”
+# for the J grism lookup (of which there may only be two cases)
+# and “‘f6-cam’: 780.0" for the K grism.  I don’t see any similar
+# types of observations for other grisms that are not ‘blank’
+# observations and so don’t have energy WCS.
+
 NIRI_RESOLVING_POWER = {
     'J': {
         'f6-2pix': 770.0,
         'f6-4pix': 610.0,
+        'f6-cam': 610.0,
         'f6-6pix': 460.0,
         'f6-2pixBl': 770.0,
         'f6-4pixBl': 650.0,
@@ -1291,6 +1301,7 @@ NIRI_RESOLVING_POWER = {
     'K': {
         'f6-2pix': 1300.0,
         'f6-4pix': 780.0,
+        'f6-cam': 780.0,
         'f6-6pix': 520.0,
         'f6-2pixBl': 1300.0,
         'f6-4pixBl': 780.0,
