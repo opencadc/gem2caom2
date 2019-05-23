@@ -2452,6 +2452,7 @@ def _update_chunk_energy_hokupaa(chunk, data_product_type, obs_id, filter_name):
                       'H': [1.65, 0.296],
                       'K': [2.2, 0.336],
                       'K\'': [2.12, 0.41],
+                      'Kp': [2.12, 0.41],
                       'H+K notch': [1.8, 0.7],
                       'methane low': [1.56, 120.0],
                       'methane high': [1.71, 120.0],
