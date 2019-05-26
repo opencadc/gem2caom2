@@ -96,7 +96,7 @@ class GeminiObsMetadata(object):
         self._reset_index(file_id)
 
     def get(self, lookup):
-        return mc.response_lookup(self.current[self.index], lookup)
+        return self.current[self.index].get(lookup)
 
     def reset_index(self, uri):
         file_id = GemName.remove_extensions(ec.CaomName(uri).file_name)
@@ -112,7 +112,7 @@ class GeminiObsMetadata(object):
     def _get_index(self, file_id):
         result = -1
         for index, value in enumerate(self.current):
-            indexed_f_name = mc.response_lookup(value, 'filename')
+            indexed_f_name = value.get('filename')
             if indexed_f_name is not None:
                 temp = GemName.remove_extensions(indexed_f_name)
                 if temp == file_id:
