@@ -99,7 +99,7 @@ from astropy.coordinates import SkyCoord
 from caom2 import Observation, ObservationIntentType, DataProductType
 from caom2 import CalibrationLevel, TargetType, ProductType, Chunk, Axis
 from caom2 import SpectralWCS, CoordAxis1D, CoordFunction1D, RefCoord
-from caom2 import TypedList, CoordRange1D, CompositeObservation
+from caom2 import TypedList, CoordRange1D, CompositeObservation, Algorithm
 from caom2utils import ObsBlueprint, get_gen_proc_arg_parser, gen_proc
 from caom2utils import WcsParser
 from caom2pipe import manage_composable as mc
@@ -3381,7 +3381,7 @@ def _update_chunk_time_gmos(chunk, obs_id):
 
 
 def _update_composite(obs):
-    comp_obs = cc.change_to_composite(obs)
+    comp_obs = change_to_composite(obs)
     return comp_obs
 
 
@@ -3469,6 +3469,25 @@ def is_composite(headers):
             result = True
             break
     return result
+
+
+def change_to_composite(observation):
+    """For the case where a SimpleObservation needs to become a
+    CompositeObservation."""
+    return CompositeObservation(observation.collection,
+                                observation.observation_id,
+                                Algorithm('composite'),
+                                observation.sequence_number,
+                                observation.intent,
+                                observation.type,
+                                observation.proposal,
+                                observation.telescope,
+                                observation.instrument,
+                                observation.target,
+                                observation.meta_release,
+                                observation.planes,
+                                observation.environment,
+                                observation.target_position)
 
 
 def main_app2():
