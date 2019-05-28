@@ -925,6 +925,17 @@ def accumulate_fits_bp(bp, file_id, uri):
              mode != 'imaging')):
         bp.configure_position_axes((1, 2))
 
+    if instrument is em.Inst.FLAMINGOS:
+        # DB 27-05-19
+        # Flamingos, you actually want to use the EQUINOX value, not the
+        # EPOCH.   And I think EQUINOX header value is usually 2000.0, even
+        # for the example GS-CAL20020620-15-0462 02jun20.0462 with
+        # RA_TEL = “UNAVAILABLE”.  For Gemini the assumption is that the
+        # RA/Dec values in the headers are always based on the position of
+        # the equinox given at the time specified by the EQUINOX keyword value.
+        bp.clear('Chunk.position.equinox')
+        bp.add_fits_attribute('Chunk.position.equinox', 'EQUINOX')
+        
     bp.configure_time_axis(3)
 
     # The Chunk time metadata is calculated using keywords from the
@@ -1320,6 +1331,8 @@ def _update_chunk_energy_niri(chunk, data_product_type, obs_id, filter_name):
     logging.debug('Begin _update_chunk_energy_niri')
     mc.check_param(chunk, Chunk)
 
+    reset_energy = False
+
     # No energy information is determined for darks.  The
     # latter are sometimes only identified by a 'blank' filter.  e.g.
     # NIRI 'flats' are sometimes obtained with the filter wheel blocked off.
@@ -1416,7 +1429,12 @@ def _update_chunk_energy_niri(chunk, data_product_type, obs_id, filter_name):
         raise mc.CadcException(
             'NIRI: Do not understand mode {} for {}'.format(
                 data_product_type, obs_id))
-    _build_chunk_energy(chunk, filter_name, fm)
+
+    if reset_energy:
+        chunk.energy_axis = None
+        chunk.energy = None
+    else:
+        _build_chunk_energy(chunk, filter_name, fm)
     logging.debug('End _update_chunk_energy_niri')
 
 
@@ -1588,15 +1606,31 @@ def _update_chunk_energy_hrwfs(chunk, data_product_type, obs_id, filter_name):
     logging.debug('Begin _update_chunk_energy_hrwfs')
     mc.check_param(chunk, Chunk)
 
+    # DB 27-05-19
+    # e.g. GS-CAL20020322-7-0003 2002mar22_0055, filter1=‘neutral’,
+    # filter2=‘open’, so treat similarly to “open” for GMOS since it’s a
+    # similar CCD:  maybe 0.35 - 1.0 microns.
+
     if data_product_type == DataProductType.IMAGE:
         logging.debug(
             'hrwfs Spectral WCS {} mode for {}.'.format(data_product_type,
                                                         obs_id))
-        filter_md = em.get_filter_metadata(em.Inst.HRWFS, filter_name)
-        temp = []
-        for ii in filter_name.split('+'):
-            temp.append(ii.split('_')[0])
-        filter_name = '+'.join(i for i in temp)
+        if 'open' in filter_name or 'neutral' in filter_name:
+            w_min = 0.35
+            w_max = 1.0
+            filter_md = FilterMetadata()
+            filter_md.set_bandpass(w_max, w_min)
+            filter_md.set_central_wl(w_max, w_min)
+            filter_md.set_resolving_power(w_max, w_min)
+            # DB 27-05-19
+            # bandpassName likely best to set to NULL
+            filter_name = ''
+        else:
+            filter_md = em.get_filter_metadata(em.Inst.HRWFS, filter_name)
+            temp = []
+            for ii in filter_name.split('+'):
+                temp.append(ii.split('_')[0])
+            filter_name = '+'.join(i for i in temp)
         _build_chunk_energy(chunk, filter_name, filter_md)
     else:
         raise mc.CadcException(
@@ -2454,30 +2488,61 @@ def _update_chunk_energy_hokupaa(chunk, data_product_type, obs_id, filter_name):
                       'K\'': [2.12, 0.41],
                       'Kp': [2.12, 0.41],
                       'H+K notch': [1.8, 0.7],
-                      'methane low': [1.56, 120.0],
-                      'methane high': [1.71, 120.0],
-                      'FeII': [1.65, 170.0],
-                      'HeI': [2.06, 30.0],
-                      '1-0 S(1) H2': [2.12, 23.0],
-                      'H Br(gamma)': [2.166, 150.0],
-                      'K-continuum': [2.26, 60.0],
-                      'CO': [2.29, 20.0]
+                      'methane low': [1.56, 0.0120],
+                      'methane high': [1.71, 0.0120],
+                      'FeII': [1.65, 0.0170],
+                      'HeI': [2.06, 0.0030],
+                      '1-0 S(1) H2': [2.12, 0.0023],
+                      'H Br(gamma)': [2.166, 0.0150],
+                      'K-continuum': [2.26, 0.0060],
+                      'CO': [2.29, 0.0020]
                       }
 
-    if filter_name not in hokupaa_lookup:
-        raise mc.CadcException(
-            'hokupaa: Mystery filter {} for {}'.format(filter_name, obs_id))
-    if data_product_type == DataProductType.IMAGE:
-        logging.debug(
-            'hokupaa: SpectralWCS imaging mode for {}.'.format(obs_id))
-        fm = FilterMetadata()
-        fm.central_wl = hokupaa_lookup[filter_name][0]
-        fm.bandpass = hokupaa_lookup[filter_name][1]
+    # DB 27-05-19
+    # The bandpasses for the 7 bottom entries have to be corrected because of
+    # the misleading column heading.  The bandpasses for these 7 are in
+    # Angstroms, not microns.  So divide the values by 10,000 to convert to
+    # microns. 170 Å = 0.017 microns for the FeII filter.
+    # H2/23 = 1-0 S(1) H2 - bandpass should be 0.0023
+    # HKnotch = H+K notch
+    # 1.56/120 = methane low  - bandpass should be 0.0120
+    # 1.71/120 = methane high - ditto
+    # LowFlx is likely the J+CO combo in line 14 of the filter table in the
+    # web page:  effectively a shutter so no energy in this case.
+    # And I think FeI/17 is likely meant to be the FeII filter (just going by
+    # the “17” in the bandpass.  I’m not aware of an IR Fe I filter…
+
+    filter_name_repair = {'H2/23': '1-0 S(1) H2',
+                          'HKnotch': 'H+K notch',
+                          '1.56/120': 'methane low',
+                          '1.71/120': 'methane high',
+                          'FeI/17': 'FeII'}
+    reset_energy = False
+
+    if 'LowFlx' in filter_name:
+        reset_energy = True
     else:
-        raise mc.CadcException(
-            'hokupaa: mystery data product type {} for {}'.format(
-                data_product_type, obs_id))
-    _build_chunk_energy(chunk, filter_name, fm)
+        if filter_name in filter_name_repair:
+            filter_name = filter_name_repair[filter_name]
+        if filter_name not in hokupaa_lookup:
+            raise mc.CadcException(
+                'hokupaa: Mystery filter {} for {}'.format(filter_name, obs_id))
+        if data_product_type == DataProductType.IMAGE:
+            logging.debug(
+                'hokupaa: SpectralWCS imaging mode for {}.'.format(obs_id))
+            fm = FilterMetadata()
+            fm.central_wl = hokupaa_lookup[filter_name][0]
+            fm.bandpass = hokupaa_lookup[filter_name][1]
+        else:
+            raise mc.CadcException(
+                'hokupaa: mystery data product type {} for {}'.format(
+                    data_product_type, obs_id))
+
+    if reset_energy:
+        chunk.energy_axis = None
+        chunk.energy = None
+    else:
+        _build_chunk_energy(chunk, filter_name, fm)
     logging.debug('End _update_chunk_energy_hokupaa')
 
 
@@ -2964,6 +3029,10 @@ def _reset_position(headers, instrument):
             obstype = get_obs_type(headers[0])
             if obstype in ['BIAS', 'FLAT', 'ARC']:
                 result = True
+    elif instrument is em.Inst.FLAMINGOS:
+        ra_tel = headers[0].get('RA_TEL')
+        if ra_tel == 'Unavailable':
+            result = True
     return result
 
 
