@@ -95,7 +95,7 @@
                       </caom2:function>
                     </caom2:axis>
                     <caom2:coordsys>FK5</caom2:coordsys>
-                    <caom2:equinox>2002.827251476858</caom2:equinox>
+                    <caom2:equinox>2000.0</caom2:equinox>
                   </caom2:position>
                   <caom2:energy>
                     <caom2:axis>
