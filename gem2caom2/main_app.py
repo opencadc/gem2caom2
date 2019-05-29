@@ -909,8 +909,8 @@ def accumulate_fits_bp(bp, file_id, uri):
                'http://archive.gemini.edu/searchform/{}'.format(data_label))
 
     bp.set('Artifact.productType', 'get_art_product_type(header)')
-    bp.set('Artifact.contentChecksum', 'md5:{}'.format(em.om.get('file_md5')))
-    bp.set('Artifact.contentLength', em.om.get('file_size'))
+    bp.set('Artifact.contentChecksum', 'md5:{}'.format(em.om.get('data_md5')))
+    bp.set('Artifact.contentLength', em.om.get('data_size'))
     bp.set('Artifact.contentType', 'application/fits')
     # always see the metadata, see the data only when it's public
     bp.set('Artifact.releaseType', 'data')
