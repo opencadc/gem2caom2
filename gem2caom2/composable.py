@@ -67,12 +67,16 @@
 # ***********************************************************************
 #
 
+import logging
 import sys
 import tempfile
+import traceback
+
+from datetime import datetime
 
 from caom2pipe import execute_composable as ec
 from caom2pipe import manage_composable as mc
-from gem2caom2 import APPLICATION
+from gem2caom2 import APPLICATION, work
 from gem2caom2 import preview_augmentation
 from gem2caom2.gem_name import GemName, COLLECTION, ARCHIVE
 
@@ -118,7 +122,7 @@ def run_single():
     sys.exit(result)
 
 
-def run_query():
+def run_query_2():
     """
     Run the processing for all the entries returned from a time-boxed ad
     query.
@@ -148,3 +152,62 @@ def run_query():
                                  config.proxy_fqn, meta_visitors,
                                  data_visitors, archive=ARCHIVE)
     sys.exit(result)
+
+
+def _run_query():
+    """
+    Run the processing for all the entries returned from a time-boxed CAOM
+    query.
+
+    :return 0 if successful, -1 if there's any sort of failure. Return status
+        is used by airflow for task instance management and reporting.
+    """
+
+    config = mc.Config()
+    config.get()
+    state = mc.State(config.state_fqn)
+    start_time = state.get_bookmark('gemini_timestamp')
+
+    logger = logging.getLogger()
+    logger.setLevel(config.logging_level)
+
+    prev_exec_date = start_time
+    exec_date = start_time
+    now_s = datetime.utcnow()
+
+    logging.debug('Starting at {}'.format(start_time))
+
+    result = 0
+    count = 0
+    while exec_date < now_s:
+        logging.debug(
+            'Processing from {} to {}'.format(prev_exec_date, exec_date))
+        obs_ids = work.read_obs_ids_from_caom(config, prev_exec_date, exec_date)
+        if len(obs_ids) > 0:
+            mc.write_to_file(config.work_fqn, '\n'.join(obs_ids))
+            result |= ec.run_by_file(GemName, APPLICATION, COLLECTION,
+                                     config.proxy_fqn, meta_visitors,
+                                     data_visitors, archive=ARCHIVE)
+            count += 1
+            if count % config.interval == 0:
+                state.save_state('gemini_timestamp', prev_exec_date)
+                logging.info('Saving timestamp {}'.format(prev_exec_date))
+        prev_exec_date = exec_date
+        exec_date = mc.increment_time(prev_exec_date, config.interval)
+
+    state.save_state('gemini_timestamp', prev_exec_date)
+    logging.info(
+        'Done {}, saved state is {}'.format(APPLICATION, prev_exec_date))
+
+    return result
+
+
+def run_query():
+    try:
+        result = _run_query()
+        sys.exit(result)
+    except Exception as e:
+        logging.error(e)
+        tb = traceback.format_exc()
+        logging.debug(tb)
+        sys.exit(-1)

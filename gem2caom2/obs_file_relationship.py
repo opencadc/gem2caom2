@@ -140,7 +140,7 @@ class GemObsFileRelationship(object):
         logging.error('well it started ....')
         for ii in result:
             # re-organize to be able to answer list_observations queries
-            ol_key = self._make_seconds(ii[1])
+            ol_key = mc.make_seconds(ii[1])
             if ol_key in temp_content:
                 if ii[0] not in temp_content[ol_key]:
                     temp_content[ol_key].append(ii[0])
@@ -225,24 +225,6 @@ class GemObsFileRelationship(object):
             self.logger.error('Could not read from csv file {}'.format(fqn))
             raise mc.CadcException(e)
         return results
-
-    @staticmethod
-    def _make_seconds(from_time):
-        """Deal with the different time formats in the Gemini-supplied file
-        to get the number of seconds since the epoch, to serve as an
-        ordering index for the list of observation IDs.
-
-        The obs id file has the timezone information as +00, strip that for
-        returned results.
-        """
-        index = from_time.index('+00')
-        try:
-            seconds_since_epoch = datetime.strptime(from_time[:index],
-                                                    '%Y-%m-%dT%H:%M:%S.%f')
-        except ValueError as e:
-            seconds_since_epoch = datetime.strptime(from_time[:index],
-                                                    '%Y-%m-%dT%H:%M:%S')
-        return seconds_since_epoch.timestamp()
 
     def subset(self, start=None, end=None, maxrec=None):
         if start is not None and end is not None:

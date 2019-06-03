@@ -39,10 +39,10 @@
         <caom2:producer>NOAO-IRAF FITS Image Kernel July 2003</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/filepre=mrgS20160901S0122_add.fits</caom2:reference>
         <caom2:inputs>
-          <caom2:planeURI>caom:GEMINI/GS-2016B-Q-72-23-001/S20160901S0122</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/GS-2016B-Q-72-23-003/S20160901S0124</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/GS-2016B-Q-72-23-002/S20160901S0123</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/GS-2016B-Q-72-23-004/S20160901S0125</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GS-2016B-Q-72-23-003/S20160901S0124</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GS-2016B-Q-72-23-001/S20160901S0122</caom2:planeURI>
         </caom2:inputs>
       </caom2:provenance>
       <caom2:artifacts>
@@ -51,8 +51,8 @@
           <caom2:productType>science</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>
-          <caom2:contentLength>14028304</caom2:contentLength>
-          <caom2:contentChecksum>md5:45bcb7aca3454c501429d78b69f9bf72</caom2:contentChecksum>
+          <caom2:contentLength>26187840</caom2:contentLength>
+          <caom2:contentChecksum>md5:92270f3a4da58430a5510981dc9084e8</caom2:contentChecksum>
           <caom2:parts>
             <caom2:part caom2:id="00000000-0000-0000-860a-7e691125c3bf">
               <caom2:name>0</caom2:name>

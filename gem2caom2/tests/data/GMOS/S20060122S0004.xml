@@ -49,7 +49,7 @@
           <caom2:productType>science</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>
-          <caom2:contentLength>4058362</caom2:contentLength>
+          <caom2:contentLength>14633280</caom2:contentLength>
           <caom2:contentChecksum>md5:b94603de0fc85287369c1d7fb0a4eedb</caom2:contentChecksum>
           <caom2:parts>
             <caom2:part caom2:id="00000000-0000-0000-883f-4a069ae1eaac">

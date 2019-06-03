@@ -1,5 +1,6 @@
 working_directory: /usr/src/app
 proxy_file_name: /usr/src/app/cadcproxy.pem
+state_file_name: state.yml
 # operational value is ivo://cadc.nrc.ca/ams
 resource_id: ivo://cadc.nrc.ca/sc2repo
 todo_file_name: todo.txt
@@ -26,12 +27,16 @@ failure_log_file_name: failure_log.txt
 retry_file_name: retries.txt
 retry_failures: False
 # ad stream value - sorry
-stream: raw
-collection: GEM
+stream: default
+collection: GEMINI
+archive: GEM
+schema: gemini
+# how many minutes the run_query timestamp chunk is going to process
+interval: 10
 # how to control the work that gets done
 # possible values are:
 # - scrape, store, ingest, modify, visit
 task_types: 
   - ingest
 features:
-  use_file_names: True
+  use_file_names: False
