@@ -66,7 +66,6 @@
 #
 # ***********************************************************************
 #
-from mock import patch
 
 from gem2caom2 import GemName, SCHEME, ARCHIVE
 
@@ -99,3 +98,8 @@ def test_storage_name():
     assert test_sn.prev == 'S20060920S0137.jpg'
     assert test_sn.thumb == 'S20060920S0137_th.jpg'
     assert test_sn.compressed_file_name is None
+
+    test_sn = GemName(fname_on_disk='N20100104S0208.fits.header')
+    assert test_sn.obs_id == 'GN-2009B-Q-121-15-001', 'wrong obs id'
+    assert test_sn.file_uri == '{}:{}/N20100104S0208.fits'.format(SCHEME,
+                                                                  ARCHIVE)

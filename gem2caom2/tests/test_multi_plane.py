@@ -114,8 +114,7 @@ def pytest_generate_tests(metafunc):
     metafunc.parametrize('test_name', obs_id_list)
 
 
-@pytest.mark.slow
-def test_main_app(test_name):
+def test_multi_plane(test_name):
     obs_id = test_name
     lineage = _get_lineage(obs_id)
     input_file = '{}/{}/{}.in.xml'.format(TEST_DATA_DIR, DIR_NAME, obs_id)

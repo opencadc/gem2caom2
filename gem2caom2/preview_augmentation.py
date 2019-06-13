@@ -109,20 +109,21 @@ def visit(observation, **kwargs):
                 continue
             file_id = ec.CaomName(artifact.uri).file_id
             logging.debug('Generate thumbnail for file id {}'.format(file_id))
-            count += _do_prev(file_id, working_dir, plane, cadc_client, stream)
+            count += _do_prev(observation.observation_id, file_id, working_dir,
+                              plane, cadc_client, stream)
             break
     logging.info('Completed preview augmentation for {}.'.format(
         observation.observation_id))
     return {'artifacts': count}
 
 
-def _do_prev(file_id, working_dir, plane, cadc_client, stream):
+def _do_prev(obs_id, file_id, working_dir, plane, cadc_client, stream):
     """Retrieve the preview file, so that a thumbnail can be made,
     store the preview if necessary, and the thumbnail, to ad.
     Then augment the CAOM observation with the two additionall artifacts.
     """
     count = 0
-    gem_name = GemName('{}.jpg'.format(file_id))
+    gem_name = GemName(obs_id=obs_id, file_id=file_id)
     preview = gem_name.prev
     preview_fqn = os.path.join(working_dir, preview)
     thumb = gem_name.thumb

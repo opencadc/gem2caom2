@@ -3413,7 +3413,7 @@ def _repair_provenance_value(imcmb_value, obs_id):
     prov_obs_id = em.gofr.get_obs_id(prov_file_id)
     if prov_obs_id is None:
         return None, prov_file_id
-    return prov_obs_id[0], prov_file_id
+    return prov_obs_id, prov_file_id
 
 
 def _build_blueprints(uris):
@@ -3491,7 +3491,7 @@ def change_to_composite(observation):
 def main_app2():
     args = get_gen_proc_arg_parser().parse_args()
     if em.gofr is None:
-        em.gofr = GemObsFileRelationship('/app/data/from_paul.txt')
+        em.gofr = GemObsFileRelationship()
     try:
         uris = _get_uris(args)
         blueprints = _build_blueprints(uris)

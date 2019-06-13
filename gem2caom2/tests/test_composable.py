@@ -84,6 +84,7 @@ PY_VERSION = '3.6'
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
 TEST_DATA_DIR = os.path.join(THIS_DIR, 'data')
 STATE_FILE = '/usr/src/app/state.yml'
+TODO_FILE = '/usr/src/app/todo.txt'
 
 
 class MyExitError(Exception):
@@ -134,6 +135,7 @@ def test_run_query():
 def test_run():
     test_obs_id = 'GS-2004A-Q-6-27-0255'
     test_f_id = '2004may19_0255'
+    _write_todo(test_obs_id)
     getcwd_orig = os.getcwd
     os.getcwd = Mock(return_value=TEST_DATA_DIR)
     try:
@@ -174,6 +176,7 @@ def test_run():
 def test_run_errors():
     test_obs_id = 'TX20131117_flt.3002'
     test_f_id = 'TX20131117_flt.3002'
+    _write_todo(test_obs_id)
     getcwd_orig = os.getcwd
     os.getcwd = Mock(return_value=TEST_DATA_DIR)
     try:
@@ -201,3 +204,8 @@ def test_run_errors():
         assert False
     finally:
         os.getcwd = getcwd_orig
+
+
+def _write_todo(test_obs_id):
+    with open(TODO_FILE, 'w') as f:
+        f.write('{}\n'.format(test_obs_id))

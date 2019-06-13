@@ -72,8 +72,10 @@ import pytest
 import sys
 
 from datetime import datetime
+from shutil import copyfile
 
 from gem2caom2 import GemObsFileRelationship, CommandLineBits
+from gem2caom2 import obs_file_relationship
 from gem2caom2.main_app import _repair_provenance_value
 import gem2caom2.external_metadata as em
 
@@ -90,13 +92,14 @@ single_test = False
 
 @pytest.mark.skipif(single_test, reason='Single test mode')
 def test_subset_all():
-    gofr = GemObsFileRelationship(TEST_FILE)
+    copyfile(TEST_FILE, obs_file_relationship.FILE_NAME)
+    gofr = GemObsFileRelationship()
     temp = gofr.subset()
     assert temp is not None, 'should have content'
     assert temp[0].startswith(
         'GEMINI GN-CAL20170616-11-022 2017-06-19T03:21:29.345'), \
         'wrong content'
-    assert len(list(temp)) == 516, 'wrong count'
+    assert len(list(temp)) == 519, 'wrong count'
     result = gofr.get_file_names('GN-2015B-Q-1-12-1003')
     assert result == \
            ['N20150807G0044m.fits', 'N20150807G0044i.fits',
@@ -107,7 +110,7 @@ def test_subset_all():
 @pytest.mark.skipif(single_test, reason='Single test mode')
 def test_subset_only_start():
     start = datetime.strptime('2018-12-16T03:47:03.939488', ISO_DATE)
-    gofr = GemObsFileRelationship(TEST_FILE)
+    gofr = GemObsFileRelationship()
     temp = gofr.subset(start=start)
     assert temp is not None, 'should have content'
     assert temp[0].startswith(
@@ -126,13 +129,13 @@ def test_subset_only_start():
 @pytest.mark.skipif(single_test, reason='Single test mode')
 def test_subset_only_end():
     end = datetime.strptime('2018-12-16T18:12:26.16614', ISO_DATE)
-    gofr = GemObsFileRelationship(TEST_FILE)
+    gofr = GemObsFileRelationship()
     temp = gofr.subset(end=end)
     assert temp is not None, 'should have content'
     assert temp[0].startswith(
         'GEMINI GN-CAL20170616-11-022 2017-06-19T03:21:29.345'), \
         'wrong content'
-    assert len(list(temp)) == 419, 'wrong count'
+    assert len(list(temp)) == 422, 'wrong count'
 
     temp = gofr.subset(end=end, maxrec=3)
     assert temp is not None, 'should have content'
@@ -146,13 +149,13 @@ def test_subset_only_end():
 def test_subset_start_end():
     start = datetime.strptime('2017-06-20T12:36:35.681662', ISO_DATE)
     end = datetime.strptime('2017-12-17T20:13:56.572387', ISO_DATE)
-    test_subject = GemObsFileRelationship(TEST_FILE)
+    test_subject = GemObsFileRelationship()
     temp = test_subject.subset(start=start, end=end)
     assert temp is not None, 'should have content'
     assert temp[0].startswith(
         'GEMINI GN-CAL20150925-2-007 2017-06-20T14:50:59.795'), \
         'wrong content'
-    assert len(list(temp)) == 316, 'wrong count'
+    assert len(list(temp)) == 319, 'wrong count'
 
     temp = test_subject.subset(start=start, end=end, maxrec=3)
     assert temp is not None, 'should have content'
@@ -214,11 +217,12 @@ def test_is_processed():
 @pytest.mark.skipif(single_test, reason='Single test mode')
 def test_repair_data_label():
     if em.gofr is None:
-        em.gofr = GemObsFileRelationship(TEST_FILE)
+        em.gofr = GemObsFileRelationship()
     for ii in test_main_app.LOOKUP:
         test_result = em.gofr.repair_data_label(ii)
-        if ii == 'S20181230S0026':
-            assert test_result == 'S20181230S0026', \
+        if ii == 'S20181230S0025':
+            # what happens when an entry is not found
+            assert test_result == 'S20181230S0025', \
                 'repair failed for {} actual {} expected {}'.format(
                     ii, test_result, test_main_app.LOOKUP[ii][0])
         else:
@@ -589,7 +593,7 @@ test_subjects = [
 @pytest.mark.skipif(single_test, reason='Single test mode')
 def test_repair_provenance():
     if em.gofr is None:
-        em.gofr = GemObsFileRelationship(TEST_FILE)
+        em.gofr = GemObsFileRelationship()
     for ii in test_subjects:
         ignore, test_fid = _repair_provenance_value(ii[1], 'test obs')
         assert test_fid is not None, 'failed lookup {}'.format(ii)
@@ -818,23 +822,24 @@ x = {
 @pytest.mark.skipif(not sys.version.startswith(PY_VERSION),
                     reason='support 3.6 only')
 def test_make_gem2caom2_args():
-    gofr = GemObsFileRelationship('/app/data/from_paul.txt')
+    gofr = GemObsFileRelationship()
 
-    for ii in x:
-        test_result = gofr.get_args(ii)
+    for obs_id in x:
+        test_result = gofr.get_args(obs_id)
         assert test_result is not None, 'no result'
-        assert len(test_result) == len(x[ii]), \
-            'wrong length for {}'.format(ii)
+        assert len(test_result) == len(x[obs_id]), \
+            'wrong length for {}'.format(obs_id)
         for jj in test_result:
             found = False
-            for kk in x[ii]:
+            for kk in x[obs_id]:
                 if jj.obs_id == kk.obs_id:
                     found = True
                     assert jj.lineage == kk.lineage, \
                         '{} lineage {} expected {}'.format(
                             jj.obs_id, jj.lineage, kk.lineage)
                     assert jj.urls == kk.urls, \
-                        '{} urls {} expected {}'.format(jj.obs_id, jj.urls, kk.urls)
+                        '{} urls {} expected {}'.format(
+                            jj.obs_id, jj.urls, kk.urls)
                     break
             assert found, 'new obs id {}'.format(jj.obs_id)
 
@@ -842,7 +847,7 @@ def test_make_gem2caom2_args():
 @pytest.mark.skipif(not sys.version.startswith(PY_VERSION),
                     reason='support 3.6 only')
 def test_get_timestamp():
-    gofr = GemObsFileRelationship('/app/data/from_paul.txt')
+    gofr = GemObsFileRelationship()
     test_result = gofr.get_timestamp('ag2003feb19_6.0001')
     assert test_result is not None, 'no result'
     assert test_result == 1498571069.924588, 'wrong result'

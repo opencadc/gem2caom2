@@ -73,6 +73,9 @@ from gem2caom2 import external_metadata as em
 from gem2caom2.obs_file_relationship import GemObsFileRelationship
 
 
+import logging
+
+
 __all__ = ['GemName', 'COLLECTION', 'ARCHIVE', 'SCHEME']
 
 
@@ -91,10 +94,16 @@ class GemName(ec.StorageName):
 
     GEM_NAME_PATTERN = '*'
 
-    def __init__(self, fname_on_disk=None, file_name=None, obs_id=None):
+    def __init__(self, fname_on_disk=None, file_name=None, obs_id=None,
+                 file_id=None):
         if em.gofr is None:
-            em.gofr = GemObsFileRelationship('/app/data/from_paul.txt')
+            em.gofr = GemObsFileRelationship()
 
+        logging.debug('parameters fname_on_disk {} file_name {}'
+                      ' obs id {} file id {}'.format(fname_on_disk,
+                                                     file_name,
+                                                     obs_id,
+                                                     file_id))
         # try to set the file name, if that information is available
 
         # file_name is assumed to be the file name in ad
@@ -104,20 +113,48 @@ class GemName(ec.StorageName):
         if file_name is not None:
             self._file_id = GemName.get_file_id(file_name)
             self.file_name = file_name
-        elif fname_on_disk is not None:
+        if fname_on_disk is not None:
             self._file_id = GemName.get_file_id(fname_on_disk)
             self.file_name = fname_on_disk
-        elif obs_id is not None:
+        if obs_id is not None:
             self._obs_id = obs_id
-        else:
-            raise mc.CadcException('Require file name.')
+        if fname_on_disk is None and file_name is None and obs_id is None:
+            raise mc.CadcException('Require a name.')
         super(GemName, self).__init__(
             obs_id=obs_id, collection=ARCHIVE,
             collection_pattern=GemName.GEM_NAME_PATTERN,
-            fname_on_disk=fname_on_disk,
+            fname_on_disk=self.file_name,
             scheme=SCHEME)
-        self.gofr_file_names = None
-        self.gofr_clb = None
+        if self._obs_id is None:
+            self._obs_id = em.gofr.get_obs_id(self._file_id)
+            logging.error('obs id is {} '.format(self._obs_id))
+        if file_id is not None:
+            self._file_id = file_id
+        temp = em.gofr.get_args(self._obs_id)
+        if len(temp) == 1:
+            self._lineage = temp[0].lineage
+            self._external_urls = temp[0].urls
+        else:
+            if len(temp) == 0:
+                raise mc.CadcException(
+                    'obs id {} unknown at Gemini'.format(self._obs_id))
+            else:
+                found = False
+                for bits in temp:
+                    urls = bits.urls.split()
+                    for url in urls:
+                        if url.endswith(self._file_name):
+                            self._obs_id = bits.obs_id.split()[1]
+                            logging.debug(
+                                'Replaced obs id with {}'.format(self._obs_id))
+                            self._external_urls = bits.urls
+                            self._lineage = bits.lineage
+                            found = True
+                            break
+                if not found:
+                    raise mc.CadcException(
+                        'Could not find obs id for file name {}'.format(
+                            self._file_name))
 
     @property
     def file_uri(self):
@@ -128,7 +165,7 @@ class GemName(ec.StorageName):
         return self._file_name
 
     @file_name.setter
-    def file_name(self,value):
+    def file_name(self, value):
         self._file_name = value.replace('.bz2', '').replace('.header', '')
 
     @property
@@ -153,21 +190,11 @@ class GemName(ec.StorageName):
 
     @property
     def lineage(self):
-        if self.gofr_clb is None:
-            self.gofr_clb = em.gofr.get_args(self._obs_id)
-        if len(self.gofr_clb) > 1:
-            raise mc.CadcException(
-                'Too many obs ids for {}'.format(self._obs_id))
-        return self.gofr_clb[0].lineage
+        return self._lineage
 
     @property
     def external_urls(self):
-        if self.gofr_clb is None:
-            self.gofr_clb = em.gofr.get_args(self._obs_id)
-        if len(self.gofr_clb) > 1:
-            raise mc.CadcException(
-                'Too many obs ids for {}'.format(self._obs_id))
-        return self.gofr_clb[0].urls
+        return self._external_urls
 
     @property
     def thumb_uri(self):
