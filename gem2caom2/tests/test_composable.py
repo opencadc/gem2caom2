@@ -67,15 +67,17 @@
 # ***********************************************************************
 #
 
+import logging
 import os
 import pytest
 import sys
+import traceback
 
 from datetime import datetime
 from mock import patch, Mock
 
 from caom2pipe import manage_composable as mc
-from gem2caom2 import composable
+from gem2caom2 import composable, GemName
 
 
 PY_VERSION = '3.6'
@@ -91,7 +93,7 @@ class MyExitError(Exception):
 @pytest.mark.skipif(not sys.version.startswith(PY_VERSION),
                     reason='support single version')
 @patch('sys.exit', Mock(return_value=MyExitError))
-def test_run_state():
+def test_run_query():
     # preconditions
     now = datetime.utcnow()
     test_start_time = datetime(year=now.year, month=now.month,
@@ -111,7 +113,7 @@ def test_run_state():
         # execution
         with patch('caom2pipe.astro_composable.query_tap') as \
                 query_endpoint_mock, \
-                patch('caom2pipe.execute_composable.run_by_file') \
+                patch('caom2pipe.execute_composable.run_by_file_prime') \
                 as run_mock:
             query_endpoint_mock.return_value = {
                 'observationID': [b'GS-2004A-Q-6-27-0255']}
@@ -120,13 +122,82 @@ def test_run_state():
         end_time = os.path.getmtime(STATE_FILE)
         assert end_time > start_time, 'no execution'
     except Exception as e:
-        import traceback
-        import logging
         logging.error(traceback.format_exc())
         assert False
     finally:
         os.getcwd = getcwd_orig
 
 
-def _query_tap(query_string, config):
-    return {'observationID': [b'GS-2004A-Q-6-27-0255']}
+@pytest.mark.skipif(not sys.version.startswith(PY_VERSION),
+                    reason='support single version')
+@patch('sys.exit', Mock(return_value=MyExitError))
+def test_run():
+    test_obs_id = 'GS-2004A-Q-6-27-0255'
+    test_f_id = '2004may19_0255'
+    getcwd_orig = os.getcwd
+    os.getcwd = Mock(return_value=TEST_DATA_DIR)
+    try:
+        # execution
+        with patch('caom2pipe.execute_composable._do_one') \
+                as run_mock:
+            composable.run()
+            assert run_mock.called, 'should have been called'
+            args, kwargs = run_mock.call_args
+            assert args[3] == 'gem2caom2', 'wrong command'
+            test_storage = args[2]
+            assert isinstance(test_storage, GemName), type(test_storage)
+            assert test_storage.obs_id == test_obs_id, 'wrong obs id'
+            assert test_storage.file_name is None, 'wrong file name'
+            assert test_storage.fname_on_disk is None, 'wrong fname on disk'
+            assert test_storage.url is None, 'wrong url'
+            assert test_storage.lineage == \
+                '{}/gemini:GEM/{}.fits'.format(test_f_id, test_f_id), \
+                'wrong lineage'
+            assert test_storage.external_urls == \
+                   'https://archive.gemini.edu/fullheader/{}.fits'.format(
+                       test_f_id), 'wrong external urls'
+    except Exception as e:
+        logging.error(traceback.format_exc())
+        assert False
+    finally:
+        os.getcwd = getcwd_orig
+
+
+# gem2caom2 --verbose --cert /usr/src/app/cadcproxy.pem --observation GEMINI
+# TX20131117_flt.3002 --out /usr/src/app/logs/TX20131117_flt.3002.fits.xml
+# --plugin /usr/local/lib/python3.6/site-packages/gem2caom2/gem2caom2.py
+# --module /usr/local/lib/python3.6/site-packages/gem2caom2/gem2caom2.py
+# --lineage TX20131117_flt.3002/gemini:GEM/TX20131117_flt.3002.fits
+@pytest.mark.skipif(not sys.version.startswith(PY_VERSION),
+                    reason='support single version')
+@patch('sys.exit', Mock(return_value=MyExitError))
+def test_run_errors():
+    test_obs_id = 'TX20131117_flt.3002'
+    test_f_id = 'TX20131117_flt.3002'
+    getcwd_orig = os.getcwd
+    os.getcwd = Mock(return_value=TEST_DATA_DIR)
+    try:
+        # execution
+        with patch('caom2pipe.execute_composable._do_one') \
+                as run_mock:
+            composable.run()
+            assert run_mock.called, 'should have been called'
+            args, kwargs = run_mock.call_args
+            assert args[3] == 'gem2caom2', 'wrong command'
+            test_storage = args[2]
+            assert isinstance(test_storage, GemName), type(test_storage)
+            assert test_storage.obs_id == test_obs_id, 'wrong obs id'
+            assert test_storage.file_name is None, 'wrong file name'
+            assert test_storage.fname_on_disk is None, 'wrong fname on disk'
+            assert test_storage.url is None, 'wrong url'
+            assert test_storage.lineage == \
+                   '{}/gemini:GEM/{}.fits'.format(test_f_id, test_f_id), \
+                'wrong lineage'
+            assert test_storage.external_urls == \
+                   'https://archive.gemini.edu/fullheader/{}.fits'.format(
+                       test_f_id), 'wrong external urls'
+    except Exception as e:
+        logging.error(traceback.format_exc())
+        assert False
+    finally:
+        os.getcwd = getcwd_orig

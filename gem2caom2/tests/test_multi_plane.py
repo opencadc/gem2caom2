@@ -75,8 +75,7 @@ from astropy.io.votable import parse_single_table
 
 import gem2caom2.external_metadata as em
 
-from gem2caom2 import main_app2, APPLICATION, ARCHIVE, SCHEME, COLLECTION
-from gem2caom2 import gemini_obs_metadata as gom
+from gem2caom2 import main_app2, APPLICATION, ARCHIVE, SCHEME
 from caom2.diff import get_differences
 from caom2pipe import manage_composable as mc
 
@@ -115,6 +114,7 @@ def pytest_generate_tests(metafunc):
     metafunc.parametrize('test_name', obs_id_list)
 
 
+@pytest.mark.slow
 def test_main_app(test_name):
     obs_id = test_name
     lineage = _get_lineage(obs_id)

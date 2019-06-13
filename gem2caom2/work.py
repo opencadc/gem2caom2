@@ -73,11 +73,16 @@ from caom2pipe import astro_composable as ac
 from gem2caom2 import gem_name
 
 
-def read_obs_ids_from_caom(config, prev_exec_date, exec_date):
+def read_obs_ids_from_caom(config, prev_exec_date, exec_date,
+                           proprietary_date):
     """
     Get the set of observation IDs that do not have preview or
     thumbnail artifacts. The results are chunked by timestamps.
 
+    :param config ManageComposable.Config for gem2caom2
+    :param prev_exec_date datetime start of the timestamp chunk
+    :param exec_date datetime end of the timestamp chunk
+    :param proprietary_date datetime when data goes public
     :return: a list of CAOM Observation IDs.
     """
     logging.debug('Entering read_obs_ids_from_caom')
@@ -95,9 +100,11 @@ def read_obs_ids_from_caom(config, prev_exec_date, exec_date):
             "  HAVING COUNT(A.artifactID) = 1 )" \
             "AND O.maxLastModified >= '{}'" \
             "AND O.maxLastModified < '{}'" \
+            "AND AND P.dataRelease <= '{}'" \
             "ORDER BY O.maxLastModified ASC" \
             "LIMIT 10".format(config.collection, gem_name.SCHEME,
-                              config.archive, prev_exec_date, exec_date)
+                              config.archive, prev_exec_date, exec_date,
+                              proprietary_date)
     result = ac.query_tap(query, config)
     logging.debug(result)
     return [ii.decode() for ii in result['observationID']]

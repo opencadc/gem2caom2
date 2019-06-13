@@ -85,16 +85,27 @@ meta_visitors = [preview_augmentation]
 data_visitors = []
 
 
+def _run():
+    """
+    Uses a todo file with observation IDs, which is how Gemini provides
+    information about existing data.
+    """
+    config = mc.Config()
+    config.get_executors()
+    ec.run_by_file_prime(config, GemName, APPLICATION, meta_visitors,
+                         data_visitors, chooser=None)
+
+
 def run():
-    proxy = '/usr/src/app/cadcproxy.pem'
-    ec.run_by_file(GemName, APPLICATION, COLLECTION, proxy,
-                   meta_visitors, data_visitors, archive=ARCHIVE)
-
-
-def run_proxy():
-    proxy = '/usr/src/app/cadcproxy.pem'
-    ec.run_by_file(GemName, APPLICATION, COLLECTION, proxy,
-                   meta_visitors, data_visitors, archive=ARCHIVE)
+    """Wraps _run in exception handling, with sys.exit calls."""
+    try:
+        _run()
+        sys.exit(0)
+    except Exception as e:
+        logging.error(e)
+        tb = traceback.format_exc()
+        logging.debug(tb)
+        sys.exit(-1)
 
 
 def run_single():
@@ -173,21 +184,22 @@ def _run_query():
 
     prev_exec_date = start_time
     exec_date = start_time
-    now_s = datetime.utcnow()
+    now_dt = datetime.utcnow()
 
     logging.debug('Starting at {}'.format(start_time))
 
     result = 0
     count = 0
-    while exec_date < now_s:
+    while exec_date < now_dt:
         logging.debug(
             'Processing from {} to {}'.format(prev_exec_date, exec_date))
-        obs_ids = work.read_obs_ids_from_caom(config, prev_exec_date, exec_date)
+        obs_ids = work.read_obs_ids_from_caom(config, prev_exec_date, exec_date,
+                                              now_dt)
         if len(obs_ids) > 0:
+            logging.error('running {}'.format(len(obs_ids)))
             mc.write_to_file(config.work_fqn, '\n'.join(obs_ids))
-            result |= ec.run_by_file(GemName, APPLICATION, COLLECTION,
-                                     config.proxy_fqn, meta_visitors,
-                                     data_visitors, archive=ARCHIVE)
+            result |= ec.run_by_file_prime(config, GemName, APPLICATION,
+                                           meta_visitors, data_visitors)
             count += 1
             if count % config.interval == 0:
                 state.save_state('gemini_timestamp', prev_exec_date)

@@ -69,9 +69,10 @@
 import os
 import pytest
 
-from mock import patch
+from datetime import datetime
+from mock import patch, Mock
 
-from caom2 import ChecksumURI, Dimension2D
+from caom2 import ChecksumURI, Dimension2D, Artifact, ReleaseType, ProductType
 from gem2caom2 import preview_augmentation, GemName, plane_augmentation, \
     SCHEME, ARCHIVE
 from caom2pipe import manage_composable as mc
@@ -79,30 +80,32 @@ from caom2pipe import manage_composable as mc
 
 pytest.main(args=['-s', os.path.abspath(__file__)])
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
-TESTDATA_DIR = os.path.join(THIS_DIR, 'data')
+TEST_DATA_DIR = os.path.join(THIS_DIR, 'data')
 TEST_OBS = 'GN-2013B-Q-28-150-002'
 TEST_FILE = 'N20131203S0006.jpg'
 # TEST_FP_OBS = 'GN-2015A-Q-91-5-002'
 TEST_FP_OBS = 'GN-2015A-C-1-20-001'
 # TEST_FP_FILE = 'N20150216S0142.fits'
 TEST_FP_FILE = 'N20150404S0726.fits'
+TEST_OBS_FILE = '{}/{}'.format(TEST_DATA_DIR, 'visit_obs_start.xml')
+TEST_PRODUCT_ID = 'GN2001BQ013-04'
 
 
 @pytest.mark.skip(reason='Decide what to do about GemName.obs_id value first')
 @patch('gem2caom2.GemName._get_obs_id')
 def test_preview_augment_plane(mock_obs_id):
     mock_obs_id.return_value = TEST_OBS
-    thumb = os.path.join(TESTDATA_DIR,
+    thumb = os.path.join(TEST_DATA_DIR,
                          'GMOS/{}'.format(GemName(TEST_FILE).thumb))
     if os.path.exists(thumb):
         os.remove(thumb)
-    test_fqn = os.path.join(TESTDATA_DIR, '{}/{}.in.xml'.format(
+    test_fqn = os.path.join(TEST_DATA_DIR, '{}/{}.in.xml'.format(
         'GMOS', TEST_OBS))
     test_obs = mc.read_obs_from_file(test_fqn)
     assert len(test_obs.planes[TEST_OBS].artifacts) == 2
     thumba = '{}:{}/N20131203S0006_th.jpg'.format(SCHEME, ARCHIVE)
 
-    test_kwargs = {'working_directory': '{}/GMOS'.format(TESTDATA_DIR),
+    test_kwargs = {'working_directory': '{}/GMOS'.format(TEST_DATA_DIR),
                    'cadc_client': None,
                    'stream': 'default'}
     test_result = preview_augmentation.visit(test_obs, **test_kwargs)
@@ -128,49 +131,96 @@ def test_preview_augment_plane(mock_obs_id):
         'thumb update failed'
 
 
-@pytest.mark.skip(reason='Possibly not needed')
-@patch('gem2caom2.GemName._get_obs_id')
-def test_bounds_augment_plane(mock_obs_id):
-    mock_obs_id.return_value = TEST_OBS
-    test_fqn = os.path.join(TESTDATA_DIR, '{}.in.xml'.format(TEST_FP_OBS))
-    test_obs = mc.read_obs_from_file(test_fqn)
-    assert len(test_obs.planes[TEST_FP_OBS].artifacts) == 2
+def test_preview_augment():
+    obs = mc.read_obs_from_file(TEST_OBS_FILE)
+    obs.planes[TEST_PRODUCT_ID].data_release = datetime.utcnow()
+    assert len(obs.planes[TEST_PRODUCT_ID].artifacts) == 1, 'initial condition'
 
-    test_kwargs = {'working_directory': TESTDATA_DIR,
-                   'science_file': TEST_FP_FILE,
-                   'cadc_client': None}
-    test_result = plane_augmentation.visit(test_obs, **test_kwargs)
+    cadc_client_mock = Mock()
+    kwargs = {'working_directory': TEST_DATA_DIR,
+              'cadc_client': cadc_client_mock,
+              'stream': 'stream'}
 
-    # additional Plane metadata for AladinLite
-    # test_obs.planes[TEST_FP_OBS].position.dimension = Dimension2D(3107, 2302)
-    # test_obs.planes[TEST_FP_OBS].position.sample_size = 0.1455995277107371
+    with patch('caom2pipe.manage_composable.http_get') as http_mock, \
+            patch('caom2pipe.manage_composable.data_put') as ad_put_mock, \
+            patch('caom2pipe.manage_composable.get_artifact_metadata') as \
+            art_mock, \
+            patch('caom2pipe.manage_composable.exec_cmd') as exec_mock:
+        def _art_mock(fqn, product_type, release_type, uri, temp):
+            if '_th' in uri:
+                return Artifact(uri,
+                                ProductType.PREVIEW,
+                                ReleaseType.DATA,
+                                'image/jpeg',
+                                13,
+                                ChecksumURI('md5:13'))
+            else:
+                return Artifact(uri,
+                                ProductType.PREVIEW,
+                                ReleaseType.DATA,
+                                'image/jpeg',
+                                12,
+                                ChecksumURI('md5:12'))
 
-    validate(test_obs, True)
+        cadc_client_mock.return_value.data_get.return_value = mc.CadcException(
+            'test')
+        art_mock.side_effect = _art_mock
+        result = preview_augmentation.visit(obs, **kwargs)
+        assert http_mock.is_called_with('', '{}{}.fits'.format(
+            preview_augmentation.PREVIEW_URL,
+            TEST_PRODUCT_ID)), 'http mock not called'
+        assert ad_put_mock.called, 'ad put mock not called'
+        assert art_mock.called, 'art mock not called'
+        assert exec_mock.called, 'exec mock not called'
+        assert result is not None, 'expect a result'
+        assert result['artifacts'] == 2, 'no artifacts should be updated'
+        assert len(obs.planes[TEST_PRODUCT_ID].artifacts) == 3, \
+            'two new artifacts'
 
-    # mc.write_obs_to_file(test_obs, '{}-fp.xml'.format(TEST_FP_OBS))
 
-    assert test_result is not None, 'expected update visit return value'
-    assert test_result['planes'] == 1
-
-    assert len(test_obs.planes) == 1
-    assert test_obs.planes[TEST_FP_OBS].position is not None, \
-        'expected Plane.position'
-    assert test_obs.planes[TEST_FP_OBS].position.bounds is not None, \
-        'expected.Plane.position.bounds'
-
-    bounds = test_obs.planes[TEST_FP_OBS].position.bounds
-    assert bounds.samples is not None, 'expected bounds.samples'
-    assert len(bounds.samples.vertices) == 24, 'expected 24 bounds samples'
-    assert bounds.points is not None, 'expected bounds.points'
-    assert len(bounds.points) == 8, 'expected 8 bounds points'
-
-    assert len(test_obs.planes[TEST_FP_OBS].artifacts) == 2
-    fits_uri = 'gemini:GEM/{}'.format(TEST_FP_FILE)
-    artifact = test_obs.planes[TEST_FP_OBS].artifacts[fits_uri]
-    assert artifact.content_type == 'application/fits', \
-        'expected ContentType application/fits'
-    assert artifact.content_length == 15102720, \
-        'expected ContentLength 15102720'
-    assert artifact.content_checksum.checksum == \
-           '5c4f933788ae79553951d10cb5cbedd6', \
-        'expected ContentChecksum 5c4f933788ae79553951d10cb5cbedd6'
+# @pytest.mark.skip(reason='Possibly not needed')
+# @patch('gem2caom2.GemName._get_obs_id')
+# def test_bounds_augment_plane(mock_obs_id):
+#     mock_obs_id.return_value = TEST_OBS
+#     test_fqn = os.path.join(TESTDATA_DIR, '{}.in.xml'.format(TEST_FP_OBS))
+#     test_obs = mc.read_obs_from_file(test_fqn)
+#     assert len(test_obs.planes[TEST_FP_OBS].artifacts) == 2
+#
+#     test_kwargs = {'working_directory': TESTDATA_DIR,
+#                    'science_file': TEST_FP_FILE,
+#                    'cadc_client': None}
+#     test_result = plane_augmentation.visit(test_obs, **test_kwargs)
+#
+#     # additional Plane metadata for AladinLite
+#     # test_obs.planes[TEST_FP_OBS].position.dimension = Dimension2D(3107, 2302)
+#     # test_obs.planes[TEST_FP_OBS].position.sample_size = 0.1455995277107371
+#
+#     validate(test_obs, True)
+#
+#     # mc.write_obs_to_file(test_obs, '{}-fp.xml'.format(TEST_FP_OBS))
+#
+#     assert test_result is not None, 'expected update visit return value'
+#     assert test_result['planes'] == 1
+#
+#     assert len(test_obs.planes) == 1
+#     assert test_obs.planes[TEST_FP_OBS].position is not None, \
+#         'expected Plane.position'
+#     assert test_obs.planes[TEST_FP_OBS].position.bounds is not None, \
+#         'expected.Plane.position.bounds'
+#
+#     bounds = test_obs.planes[TEST_FP_OBS].position.bounds
+#     assert bounds.samples is not None, 'expected bounds.samples'
+#     assert len(bounds.samples.vertices) == 24, 'expected 24 bounds samples'
+#     assert bounds.points is not None, 'expected bounds.points'
+#     assert len(bounds.points) == 8, 'expected 8 bounds points'
+#
+#     assert len(test_obs.planes[TEST_FP_OBS].artifacts) == 2
+#     fits_uri = 'gemini:GEM/{}'.format(TEST_FP_FILE)
+#     artifact = test_obs.planes[TEST_FP_OBS].artifacts[fits_uri]
+#     assert artifact.content_type == 'application/fits', \
+#         'expected ContentType application/fits'
+#     assert artifact.content_length == 15102720, \
+#         'expected ContentLength 15102720'
+#     assert artifact.content_checksum.checksum == \
+#            '5c4f933788ae79553951d10cb5cbedd6', \
+#         'expected ContentChecksum 5c4f933788ae79553951d10cb5cbedd6'

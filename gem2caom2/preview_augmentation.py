@@ -69,12 +69,17 @@
 import logging
 import os
 
+from datetime import datetime
+
 from caom2 import Observation, ProductType, ReleaseType
 from caom2pipe import execute_composable as ec
 from caom2pipe import manage_composable as mc
 from gem2caom2.gem_name import GemName, ARCHIVE
 
 __all__ = ['visit']
+
+
+PREVIEW_URL = 'https://archive.gemini.edu/preview/'
 
 
 def visit(observation, **kwargs):
@@ -93,10 +98,15 @@ def visit(observation, **kwargs):
         raise mc.CadcException('Visitor needs a stream parameter.')
 
     count = 0
-    for i in observation.planes:
-        plane = observation.planes[i]
-        for j in plane.artifacts:
-            artifact = plane.artifacts[j]
+    for plane in observation.planes.values():
+        if (plane.data_release is None or
+                plane.data_release > datetime.utcnow()):
+            logging.info('Plane {} is proprietary. No preview access or '
+                         'thumbnail creation.'.format(plane.product_id))
+            continue
+        for artifact in plane.artifacts.values():
+            if artifact.uri.endswith('jpg'):
+                continue
             file_id = ec.CaomName(artifact.uri).file_id
             logging.debug('Generate thumbnail for file id {}'.format(file_id))
             count += _do_prev(file_id, working_dir, plane, cadc_client, stream)
@@ -107,15 +117,31 @@ def visit(observation, **kwargs):
 
 
 def _do_prev(file_id, working_dir, plane, cadc_client, stream):
+    """Retrieve the preview file, so that a thumbnail can be made,
+    store the preview if necessary, and the thumbnail, to ad.
+    Then augment the CAOM observation with the two additionall artifacts.
+    """
+    count = 0
     gem_name = GemName('{}.jpg'.format(file_id))
     preview = gem_name.prev
     preview_fqn = os.path.join(working_dir, preview)
     thumb = gem_name.thumb
     thumb_fqn = os.path.join(working_dir, thumb)
 
+    # get the file - try disk first, then CADC, then Gemini
     if not os.access(preview_fqn, 0):
-        mc.data_get(cadc_client, working_dir, preview, ARCHIVE)
+        try:
+            mc.data_get(cadc_client, working_dir, preview, ARCHIVE)
+        except mc.CadcException as e:
+            preview_url = '{}{}.fits'.format(PREVIEW_URL, file_id)
+            mc.http_get(preview_url, preview_fqn)
+            if cadc_client is not None:
+                mc.data_put(cadc_client, working_dir, preview, ARCHIVE, stream)
+        prev_uri = gem_name.prev_uri
+        _augment(plane, prev_uri, preview_fqn, ProductType.PREVIEW)
+        count = 1
 
+    # make a thumbnail from the preview
     if os.access(thumb_fqn, 0):
         os.remove(thumb_fqn)
     convert_cmd = 'convert -resize 256x256 {} {}'.format(
@@ -126,7 +152,8 @@ def _do_prev(file_id, working_dir, plane, cadc_client, stream):
     _augment(plane, thumb_uri, thumb_fqn, ProductType.THUMBNAIL)
     if cadc_client is not None:
         mc.data_put(cadc_client, working_dir, thumb, ARCHIVE, stream)
-    return 1
+    count += 1
+    return count
 
 
 def _augment(plane, uri, fqn, product_type):

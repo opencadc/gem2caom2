@@ -69,6 +69,9 @@
 """
 Notes on the GEM archive/GEMINI collection:
 
+# TODO - none of this is really true anymore, so figure out what needs
+to be captured here for documentation ..... ;)
+
 1. Must use the file name as the starting point for work, because that's
 what is coming back from the ad query, and the ad query is what is being
 used to trigger the work.
@@ -108,16 +111,11 @@ from caom2pipe import caom_composable as cc
 from caom2pipe import astro_composable as ac
 
 import gem2caom2.external_metadata as em
-from gem2caom2.gem_name import GemName, COLLECTION, ARCHIVE, SCHEME
+from gem2caom2.gem_name import GemName, COLLECTION
 from gem2caom2.svofps import FilterMetadata
 from gem2caom2.obs_file_relationship import GemObsFileRelationship
 
 __all__ = ['main_app2', 'update', 'APPLICATION']
-
-# TODO LIST:
-#
-# PI information
-# spectroscopy check
 
 APPLICATION = 'gem2caom2'
 

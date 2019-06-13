@@ -367,6 +367,9 @@ class GemObsFileRelationship(object):
                     repaired = '{}-{}'.format(repaired, ii.upper())
             else:
                 repaired = file_id if repaired is None else repaired
+
+            if file_id == 'N20181217S0266':
+                repaired = 'GN-2018B-Q-133-20-001'
         else:
             logging.warning(
                 'File name {} not found in the Gemini list.'.format(file_id))
