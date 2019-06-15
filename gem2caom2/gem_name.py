@@ -110,6 +110,7 @@ class GemName(ec.StorageName):
         # because the GEM files are stored uncompressed,
         # while the files available from Gemini are bz2.
         self._file_name = None
+        self._file_id = None
         if file_name is not None:
             self._file_id = GemName.get_file_id(file_name)
             self.file_name = file_name
@@ -127,17 +128,27 @@ class GemName(ec.StorageName):
             scheme=SCHEME)
         if self._obs_id is None:
             self._obs_id = em.gofr.get_obs_id(self._file_id)
-            logging.error('obs id is {} '.format(self._obs_id))
         if file_id is not None:
             self._file_id = file_id
         temp = em.gofr.get_args(self._obs_id)
         if len(temp) == 1:
             self._lineage = temp[0].lineage
             self._external_urls = temp[0].urls
+            # formast is GEMINI 'obs id'
+            self._obs_id = temp[0].obs_id.split()[1]
         else:
             if len(temp) == 0:
-                raise mc.CadcException(
-                    'obs id {} unknown at Gemini'.format(self._obs_id))
+                if self._file_id is None:
+                    raise mc.CadcException(
+                        'obs id {} unknown at Gemini'.format(self._obs_id))
+                else:
+                    # Gemini obs id values are repaired from what
+                    # archive.gemini.edu publishes, so check for the
+                    # un-repaired value
+                    repaired = em.gofr.get_obs_id(self._file_id)
+                    x = em.gofr.get_args(repaired)
+                    self._lineage = x[0].lineage
+                    self._external_urls = x[0].urls
             else:
                 found = False
                 for bits in temp:
@@ -155,6 +166,10 @@ class GemName(ec.StorageName):
                     raise mc.CadcException(
                         'Could not find obs id for file name {}'.format(
                             self._file_name))
+        logging.debug('members fname_on_disk {} file_name {}'
+                      ' obs id {} file id {}'.format(
+                        self._fname_on_disk, self._file_name, self._obs_id,
+                        self._file_id))
 
     @property
     def file_uri(self):

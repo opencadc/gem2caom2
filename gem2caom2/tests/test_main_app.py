@@ -454,6 +454,7 @@ def pytest_generate_tests(metafunc):
         # metafunc.parametrize('test_name', file_list[0:3])
         metafunc.parametrize('test_name', file_list)
 
+
 def test_main_app(test_name):
     basename = os.path.basename(test_name)
     dirname = os.path.dirname(test_name)

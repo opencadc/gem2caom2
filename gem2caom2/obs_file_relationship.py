@@ -479,9 +479,6 @@ class GemObsFileRelationship(object):
             # if the data label is missing, the file name, including
             # extensions, is treated as the data label, so get rid of .fits
             repaired = gem_name.GemName.remove_extensions(repaired)
-            self.logger.debug(
-                'Gemini says data label is {} for file {}'.format(repaired,
-                                                                  file_id))
             if (GemObsFileRelationship.is_processed(file_id) or
                     file_id.startswith('TX2')):
                 if not file_id.startswith('TX2'):
@@ -495,8 +492,6 @@ class GemObsFileRelationship(object):
                     removals = [prefix] + suffix
                 else:
                     removals = removals + suffix
-                self.logger.debug(
-                    'repaired {} removals {}'.format(repaired, removals))
                 for ii in removals:
                     # rreplace
                     temp = repaired.rsplit(ii, 1)
@@ -522,8 +517,6 @@ class GemObsFileRelationship(object):
             else:
                 repaired = file_id if repaired is None else repaired
 
-            if file_id == 'N20181217S0266':
-                repaired = 'GN-2018B-Q-133-20-001'
         else:
             logging.warning(
                 'File name {} not found in the Gemini list.'.format(file_id))
