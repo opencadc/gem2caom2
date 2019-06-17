@@ -86,22 +86,22 @@ def read_obs_ids_from_caom(config, prev_exec_date, exec_date,
     :return: a list of CAOM Observation IDs.
     """
     logging.debug('Entering read_obs_ids_from_caom')
-    query = "SELECT O.observationID" \
-            "FROM caom2.Observation AS O" \
-            "JOIN caom2.Plane AS P ON O.obsID = P.obsID" \
-            "WHERE P.planeID IN (" \
-            "  SELECT A.planeID" \
-            "  FROM caom2.Observation AS O" \
-            "  JOIN caom2.Plane AS P ON O.obsID = P.obsID" \
-            "  JOIN caom2.Artifact AS A ON P.planeID = A.planeID" \
-            "  WHERE O.collection = '{}'" \
-            "  AND A.uri like '{}:{}%fits'" \
-            "  GROUP BY A.planeID" \
-            "  HAVING COUNT(A.artifactID) = 1 )" \
-            "AND O.maxLastModified >= '{}'" \
-            "AND O.maxLastModified < '{}'" \
-            "AND AND P.dataRelease <= '{}'" \
-            "ORDER BY O.maxLastModified ASC" \
+    query = "SELECT O.observationID " \
+            "FROM caom2.Observation AS O " \
+            "JOIN caom2.Plane AS P ON O.obsID = P.obsID " \
+            "WHERE P.planeID IN ( " \
+            "  SELECT A.planeID " \
+            "  FROM caom2.Observation AS O " \
+            "  JOIN caom2.Plane AS P ON O.obsID = P.obsID " \
+            "  JOIN caom2.Artifact AS A ON P.planeID = A.planeID " \
+            "  WHERE O.collection = '{}' " \
+            "  AND A.uri like '{}:{}%fits' " \
+            "  GROUP BY A.planeID " \
+            "  HAVING COUNT(A.artifactID) = 1 ) " \
+            "AND O.maxLastModified >= '{}' " \
+            "AND O.maxLastModified < '{}' " \
+            "AND P.dataRelease <= '{}' " \
+            "ORDER BY O.maxLastModified ASC " \
             "LIMIT 10".format(config.collection, gem_name.SCHEME,
                               config.archive, prev_exec_date, exec_date,
                               proprietary_date)

@@ -80,6 +80,7 @@ __all__ = ['visit']
 
 
 PREVIEW_URL = 'https://archive.gemini.edu/preview/'
+MIME_TYPE = 'image/jpeg'
 
 
 def visit(observation, **kwargs):
@@ -137,7 +138,8 @@ def _do_prev(obs_id, file_id, working_dir, plane, cadc_client, stream):
             preview_url = '{}{}.fits'.format(PREVIEW_URL, file_id)
             mc.http_get(preview_url, preview_fqn)
             if cadc_client is not None:
-                mc.data_put(cadc_client, working_dir, preview, ARCHIVE, stream)
+                mc.data_put(cadc_client, working_dir, preview, ARCHIVE,
+                            stream, MIME_TYPE)
         _augment(plane, gem_name.prev_uri, preview_fqn, ProductType.PREVIEW)
         count = 1
 
@@ -151,7 +153,8 @@ def _do_prev(obs_id, file_id, working_dir, plane, cadc_client, stream):
     thumb_uri = gem_name.thumb_uri
     _augment(plane, thumb_uri, thumb_fqn, ProductType.THUMBNAIL)
     if cadc_client is not None:
-        mc.data_put(cadc_client, working_dir, thumb, ARCHIVE, stream)
+        mc.data_put(
+            cadc_client, working_dir, thumb, ARCHIVE, stream, MIME_TYPE)
     count += 1
     return count
 
