@@ -2,12 +2,14 @@ working_directory: /usr/src/app
 proxy_file_name: /usr/src/app/cadcproxy.pem
 state_file_name: state.yml
 # operational value is ivo://cadc.nrc.ca/ams
-resource_id: ivo://cadc.nrc.ca/sc2repo
+# resource_id: ivo://cadc.nrc.ca/sc2repo
+resource_id: ivo://cadc.nrc.ca/ams
+tap_id: ivo://cadc.nrc.ca/ams/gemini
 todo_file_name: todo.txt
 # values True False
 use_local_files: False
 # values DEBUG INFO WARN ERROR
-logging_level: DEBUG
+logging_level: INFO
 # values True False
 log_to_file: True
 # fully qualified name for a directory to write log files
@@ -40,3 +42,4 @@ task_types:
   - ingest
 features:
   use_file_names: False
+  use_urls: False
