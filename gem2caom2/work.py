@@ -102,9 +102,8 @@ def read_obs_ids_from_caom(config, prev_exec_date, exec_date,
             "AND O.maxLastModified < '{}' " \
             "AND P.dataRelease <= '{}' " \
             "ORDER BY O.maxLastModified ASC " \
-            "LIMIT 10".format(config.collection, gem_name.SCHEME,
-                              config.archive, prev_exec_date, exec_date,
-                              proprietary_date)
+            "".format(config.collection, gem_name.SCHEME,
+                      config.archive, prev_exec_date, exec_date,
+                      proprietary_date)
     result = ac.query_tap(query, config)
-    logging.debug(result)
-    return [ii.decode() for ii in result['observationID']]
+    return [ii for ii in result['observationID']]

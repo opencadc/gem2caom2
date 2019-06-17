@@ -92,15 +92,15 @@ def _run():
     """
     config = mc.Config()
     config.get_executors()
-    ec.run_by_file_prime(config, GemName, APPLICATION, meta_visitors,
-                         data_visitors, chooser=None)
+    return ec.run_by_file_prime(config, GemName, APPLICATION, meta_visitors,
+                                data_visitors, chooser=None)
 
 
 def run():
     """Wraps _run in exception handling, with sys.exit calls."""
     try:
-        _run()
-        sys.exit(0)
+        result = _run()
+        sys.exit(result)
     except Exception as e:
         logging.error(e)
         tb = traceback.format_exc()
@@ -191,12 +191,12 @@ def _run_query():
     result = 0
     count = 0
     while exec_date < now_dt:
-        logging.debug(
+        logging.info(
             'Processing from {} to {}'.format(prev_exec_date, exec_date))
         obs_ids = work.read_obs_ids_from_caom(config, prev_exec_date, exec_date,
                                               now_dt)
         if len(obs_ids) > 0:
-            logging.error('running {}'.format(len(obs_ids)))
+            logging.info('Processing {} observations.'.format(len(obs_ids)))
             mc.write_to_file(config.work_fqn, '\n'.join(obs_ids))
             result |= ec.run_by_file_prime(config, GemName, APPLICATION,
                                            meta_visitors, data_visitors)
@@ -204,6 +204,10 @@ def _run_query():
             if count % config.interval == 0:
                 state.save_state('gemini_timestamp', prev_exec_date)
                 logging.info('Saving timestamp {}'.format(prev_exec_date))
+            break
+        else:
+            logging.info('No observations in interval from {} to {}.'.format(
+                prev_exec_date, exec_date))
         prev_exec_date = exec_date
         exec_date = mc.increment_time(prev_exec_date, config.interval)
 

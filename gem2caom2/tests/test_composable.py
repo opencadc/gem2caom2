@@ -206,6 +206,50 @@ def test_run_errors():
         os.getcwd = getcwd_orig
 
 
+@pytest.mark.skipif(not sys.version.startswith(PY_VERSION),
+                    reason='support single version')
+@patch('sys.exit', Mock(return_value=MyExitError))
+def test_run_query():
+    test_obs_id = 'GS-2017A-Q-58-66-027'
+    test_f_id = 'S20170905S0318'
+    start_time = os.path.getmtime(STATE_FILE)
+    getcwd_orig = os.getcwd
+    os.getcwd = Mock(return_value=TEST_DATA_DIR)
+    try:
+        # execution
+        with patch('caom2pipe.execute_composable._do_one') as run_mock, \
+                patch('gem2caom2.work.read_obs_ids_from_caom') as query_mock:
+            query_mock.return_value = [test_obs_id]
+            composable.run_query()
+            assert run_mock.called, 'should have been called'
+            args, kwargs = run_mock.call_args
+            assert args[3] == 'gem2caom2', 'wrong command'
+            test_storage = args[2]
+            assert isinstance(test_storage, GemName), type(test_storage)
+            assert test_storage.obs_id == test_obs_id, 'wrong obs id'
+            assert test_storage.file_name is None, 'wrong file name'
+            assert test_storage.fname_on_disk is None, 'wrong fname on disk'
+            assert test_storage.url is None, 'wrong url'
+            assert test_storage.lineage == \
+                   '{}/gemini:GEM/{}.fits'.format(test_f_id, test_f_id), \
+                'wrong lineage'
+            assert test_storage.external_urls == \
+                   'https://archive.gemini.edu/fullheader/{}.fits'.format(
+                       test_f_id), 'wrong external urls'
+
+            args, kwargs = query_mock.call_args
+            test_config = args[0]
+            assert isinstance(test_config, mc.Config), 'wrong arg type'
+            assert test_config.state_fqn == STATE_FILE, 'wrong state file'
+            end_time = os.path.getmtime(STATE_FILE)
+            assert end_time > start_time, 'state file not updated'
+    except Exception as e:
+        logging.error(traceback.format_exc())
+        assert False
+    finally:
+        os.getcwd = getcwd_orig
+
+
 def _write_todo(test_obs_id):
     with open(TODO_FILE, 'w') as f:
         f.write('{}\n'.format(test_obs_id))
