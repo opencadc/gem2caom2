@@ -969,6 +969,8 @@ def update(observation, **kwargs):
         headers = kwargs['headers']
     if 'product_id' in kwargs:
         current_product_id = kwargs['product_id']
+    else:
+        current_product_id = None
 
     # processed files
     if is_composite(headers):
@@ -999,15 +1001,20 @@ def update(observation, **kwargs):
             return None
 
     try:
-        for p in observation.planes:
-            if current_product_id != observation.planes[p].product_id:
+        for plane in observation.planes.values():
+            if (current_product_id is not None and
+                    current_product_id != plane.product_id):
                 continue
 
-            for a in observation.planes[p].artifacts:
+            for artifact in plane.artifacts.values():
 
-                caom_name = ec.CaomName(observation.planes[p].artifacts[a].uri)
+                if GemName.is_preview(artifact.uri):
+                    continue
+
+                caom_name = ec.CaomName(artifact.uri)
                 em.om.reset_index(caom_name.uri)
-                processed = em.gofr.is_processed(caom_name.file_name)
+                processed = em.GemObsFileRelationship.is_processed(
+                    caom_name.file_name)
                 if (instrument in
                         [em.Inst.MICHELLE, em.Inst.TRECS, em.Inst.GNIRS]):
                     # Michelle is a retired visitor instrument.
@@ -1021,10 +1028,10 @@ def update(observation, **kwargs):
                     # DB - 01-18-19 - GNIRS has no WCS info in extension; use
                     # primary header
                     _update_position_from_zeroth_header(
-                        observation.planes[p].artifacts[a], headers,
+                        artifact, headers,
                         instrument, observation.observation_id)
 
-                for part in observation.planes[p].artifacts[a].parts:
+                for part in artifact.parts:
 
                     if part == '2' and instrument is em.Inst.GPI:
                         # GPI data sets have two extensions. First is science
@@ -1033,78 +1040,76 @@ def update(observation, **kwargs):
                         logging.info(
                             'GPI: Setting chunks to None for part {} for {}'.format(
                                 part, observation.observation_id))
-                        observation.planes[p].artifacts[a].parts[part].chunks \
-                            = TypedList(Chunk, )
+                        artifact.parts[part].chunks = TypedList(Chunk, )
                         continue
-                    for c in observation.planes[p].artifacts[a].parts[
-                        part].chunks:
+                    for c in artifact.parts[part].chunks:
                         header = headers[int(part)]
 
                         # energy WCS
                         filter_name = get_filter_name(
                             headers[0], header, observation.observation_id,
                             instrument)
-                        if _reset_energy(observation.type, p, instrument,
-                                         filter_name):
+                        if _reset_energy(observation.type, plane.product_id,
+                                         instrument, filter_name):
                             c.energy = None
                             c.energy_axis = None
                         else:
                             if instrument is em.Inst.NIRI:
                                 _update_chunk_energy_niri(
-                                    c, observation.planes[p].data_product_type,
+                                    c, plane.data_product_type,
                                     observation.observation_id, filter_name)
                             elif instrument is em.Inst.GPI:
                                 _update_chunk_energy_gpi(
-                                    c, observation.planes[p].data_product_type,
+                                    c, plane.data_product_type,
                                     observation.observation_id, filter_name)
                             elif instrument is em.Inst.F2:
                                 _update_chunk_energy_f2(
                                     c, headers[0],
-                                    observation.planes[p].data_product_type,
+                                    plane.data_product_type,
                                     observation.observation_id,
                                     filter_name)
                             elif instrument is em.Inst.GSAOI:
                                 _update_chunk_energy_general(
                                     c, instrument, [DataProductType.IMAGE],
-                                    observation.planes[p].data_product_type,
+                                    plane.data_product_type,
                                     observation.observation_id,
                                     filter_name)
                             elif instrument is em.Inst.HRWFS:
                                 _update_chunk_energy_hrwfs(
-                                    c, observation.planes[p].data_product_type,
+                                    c, plane.data_product_type,
                                     observation.observation_id,
                                     filter_name)
                             elif instrument is em.Inst.NICI:
                                 _update_chunk_energy_nici(
-                                    c, observation.planes[p].data_product_type,
+                                    c, plane.data_product_type,
                                     observation.observation_id, filter_name)
                             elif instrument is em.Inst.TRECS:
                                 _update_chunk_energy_trecs(
-                                    c, observation.planes[p].data_product_type,
+                                    c, plane.data_product_type,
                                     observation.observation_id,
                                     filter_name)
                             elif instrument is em.Inst.MICHELLE:
                                 _update_chunk_energy_michelle(
-                                    c, observation.planes[p].data_product_type,
+                                    c, plane.data_product_type,
                                     observation.observation_id,
                                     filter_name)
                             elif instrument is em.Inst.NIFS:
                                 _update_chunk_energy_nifs(
-                                    c, observation.planes[p].data_product_type,
+                                    c, plane.data_product_type,
                                     observation.observation_id,
                                     filter_name)
                             elif instrument is em.Inst.GNIRS:
                                 _update_chunk_energy_gnirs(
-                                    c, observation.planes[p].data_product_type,
+                                    c, plane.data_product_type,
                                     observation.observation_id,
                                     filter_name)
                             elif instrument is em.Inst.PHOENIX:
                                 _update_chunk_energy_phoenix(
-                                    c, observation.planes[p].data_product_type,
+                                    c, plane.data_product_type,
                                     observation.observation_id, filter_name)
                             elif instrument is em.Inst.FLAMINGOS:
                                 _update_chunk_energy_flamingos(
-                                    c, observation.planes[p].data_product_type,
+                                    c, plane.data_product_type,
                                     observation.observation_id,
                                     filter_name)
                                 ignore, obs_type = _get_flamingos_mode(header)
@@ -1113,35 +1118,33 @@ def update(observation, **kwargs):
                                     observation.type = obs_type
                             elif instrument is em.Inst.HOKUPAA:
                                 _update_chunk_energy_hokupaa(
-                                    c, observation.planes[p].data_product_type,
+                                    c, plane.data_product_type,
                                     observation.observation_id, filter_name)
                             elif instrument is em.Inst.OSCIR:
                                 _update_chunk_energy_oscir(
-                                    c, observation.planes[p].data_product_type,
+                                    c, plane.data_product_type,
                                     observation.observation_id, filter_name)
                             elif instrument is em.Inst.BHROS:
                                 _update_chunk_energy_bhros(
-                                    c, header,
-                                    observation.planes[p].data_product_type,
+                                    c, header, plane.data_product_type,
                                     observation.observation_id)
                             elif instrument is em.Inst.GRACES:
                                 _update_chunk_energy_graces(
-                                    c, observation.planes[p].data_product_type,
+                                    c, plane.data_product_type,
                                     observation.observation_id)
                             elif instrument in [em.Inst.GMOS, em.Inst.GMOSN,
                                                 em.Inst.GMOSS]:
                                 _update_chunk_energy_gmos(
-                                    c, observation.planes[p].data_product_type,
+                                    c, plane.data_product_type,
                                     observation.observation_id, filter_name,
                                     instrument)
                             elif instrument is em.Inst.CIRPASS:
                                 _update_chunk_energy_cirpass(
-                                    c, observation.planes[p].data_product_type,
+                                    c, plane.data_product_type,
                                     observation.observation_id)
                             elif instrument is em.Inst.TEXES:
                                 _update_chunk_energy_texes(
-                                    c, headers[0],
-                                    observation.planes[p].data_product_type,
+                                    c, headers[0], plane.data_product_type,
                                     observation.observation_id)
 
                         # position WCS
@@ -1197,9 +1200,8 @@ def update(observation, **kwargs):
                             _update_chunk_time_f2(c, observation.observation_id)
 
                 if isinstance(observation, CompositeObservation):
-                    cc.update_plane_provenance(observation.planes[p],
-                                               headers[1:],
-                                               'IMCMB', COLLECTION,
+                    cc.update_plane_provenance(plane, headers[1:], 'IMCMB',
+                                               COLLECTION,
                                                _repair_provenance_value,
                                                observation.observation_id)
 
@@ -1208,8 +1210,8 @@ def update(observation, **kwargs):
                      instrument is em.Inst.TEXES)
                         and 'jpg' not in caom_name.file_name):
                     # not the preview artifact
-                    if observation.planes[p].provenance is not None:
-                        observation.planes[p].provenance.reference = \
+                    if plane.provenance is not None:
+                        plane.provenance.reference = \
                             'http://archive.gemini.edu/searchform/' \
                             'filepre={}'.format(caom_name.file_name)
 
@@ -3410,7 +3412,7 @@ def _repair_provenance_value(imcmb_value, obs_id):
         return None, None
 
     prov_file_id = temp1[:14]
-    prov_obs_id = em.gofr.get_obs_id(prov_file_id)
+    prov_obs_id = em.get_gofr().get_obs_id(prov_file_id)
     if prov_obs_id is None:
         return None, prov_file_id
     return prov_obs_id, prov_file_id
@@ -3490,8 +3492,6 @@ def change_to_composite(observation):
 
 def main_app2():
     args = get_gen_proc_arg_parser().parse_args()
-    if em.gofr is None:
-        em.gofr = GemObsFileRelationship()
     try:
         uris = _get_uris(args)
         blueprints = _build_blueprints(uris)

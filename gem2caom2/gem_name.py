@@ -70,7 +70,6 @@ from caom2pipe import manage_composable as mc
 from caom2pipe import execute_composable as ec
 
 from gem2caom2 import external_metadata as em
-from gem2caom2.obs_file_relationship import GemObsFileRelationship
 
 
 import logging
@@ -96,9 +95,6 @@ class GemName(ec.StorageName):
 
     def __init__(self, fname_on_disk=None, file_name=None, obs_id=None,
                  file_id=None):
-        if em.gofr is None:
-            em.gofr = GemObsFileRelationship()
-
         logging.debug('parameters fname_on_disk {} file_name {}'
                       ' obs id {} file id {}'.format(fname_on_disk,
                                                      file_name,
@@ -127,14 +123,19 @@ class GemName(ec.StorageName):
             fname_on_disk=self.file_name,
             scheme=SCHEME)
         if self._obs_id is None:
-            self._obs_id = em.gofr.get_obs_id(self._file_id)
+            self._obs_id = em.get_gofr().get_obs_id(self._file_id)
         if file_id is not None:
             self._file_id = file_id
-        temp = em.gofr.get_args(self._obs_id)
+        self._lineage = None
+        self._external_urls = None
+
+    def _get_args(self):
+        temp = em.get_gofr().get_args(self._obs_id)
         if len(temp) == 1:
             self._lineage = temp[0].lineage
             self._external_urls = temp[0].urls
-            # formast is GEMINI 'obs id'
+            # format is GEMINI 'obs id'
+            # use the repaired value
             self._obs_id = temp[0].obs_id.split()[1]
         else:
             if len(temp) == 0:
@@ -145,8 +146,8 @@ class GemName(ec.StorageName):
                     # Gemini obs id values are repaired from what
                     # archive.gemini.edu publishes, so check for the
                     # un-repaired value
-                    repaired = em.gofr.get_obs_id(self._file_id)
-                    x = em.gofr.get_args(repaired)
+                    repaired = em.get_gofr().get_obs_id(self._file_id)
+                    x = em.get_gofr().get_args(repaired)
                     self._lineage = x[0].lineage
                     self._external_urls = x[0].urls
             else:
@@ -205,10 +206,14 @@ class GemName(ec.StorageName):
 
     @property
     def lineage(self):
+        if self._lineage is None:
+            self._get_args()
         return self._lineage
 
     @property
     def external_urls(self):
+        if self._external_urls is None:
+            self._get_args()
         return self._external_urls
 
     @property

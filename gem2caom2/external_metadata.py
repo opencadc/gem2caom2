@@ -79,6 +79,11 @@ from bs4 import BeautifulSoup
 from caom2pipe import manage_composable as mc
 from gem2caom2.svofps import filter_metadata
 from gem2caom2 import gemini_obs_metadata as gom
+from gem2caom2.obs_file_relationship import GemObsFileRelationship
+
+
+__all__ = ['get_gofr', 'Inst', 'get_obs_metadata', 'get_pi_metadata',
+           'get_filter_metadata']
 
 
 GEMINI_METADATA_URL = \
@@ -93,6 +98,13 @@ fm = {}
 pm = {}
 # lazy initialization for the Gemini listing of files
 gofr = None
+
+
+def get_gofr():
+    global gofr
+    if gofr is None:
+        gofr = GemObsFileRelationship()
+    return gofr
 
 
 class Inst(Enum):

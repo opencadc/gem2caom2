@@ -74,6 +74,7 @@ import sys
 import traceback
 
 from datetime import datetime
+from shutil import copyfile
 from mock import patch, Mock
 
 from caom2pipe import manage_composable as mc
@@ -89,6 +90,12 @@ TODO_FILE = '/usr/src/app/todo.txt'
 
 class MyExitError(Exception):
     pass
+
+
+@pytest.fixture(scope='session', autouse=True)
+def write_gemini_data_file():
+    copyfile(os.path.join(TEST_DATA_DIR, 'from_paul.txt'),
+             '/app/data/from_paul.txt')
 
 
 @pytest.mark.skipif(not sys.version.startswith(PY_VERSION),

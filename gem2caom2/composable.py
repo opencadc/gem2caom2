@@ -76,10 +76,8 @@ from datetime import datetime
 
 from caom2pipe import execute_composable as ec
 from caom2pipe import manage_composable as mc
-from gem2caom2 import APPLICATION, work
-from gem2caom2 import preview_augmentation
+from gem2caom2 import APPLICATION, work, preview_augmentation
 from gem2caom2.gem_name import GemName, COLLECTION, ARCHIVE
-
 
 meta_visitors = [preview_augmentation]
 data_visitors = []
@@ -183,13 +181,12 @@ def _run_query():
     logger.setLevel(config.logging_level)
 
     prev_exec_date = start_time
-    exec_date = start_time
+    exec_date = mc.increment_time(prev_exec_date, config.interval)
     now_dt = datetime.utcnow()
 
     logging.debug('Starting at {}'.format(start_time))
 
     result = 0
-    count = 0
     while exec_date < now_dt:
         logging.info(
             'Processing from {} to {}'.format(prev_exec_date, exec_date))
@@ -200,14 +197,11 @@ def _run_query():
             mc.write_to_file(config.work_fqn, '\n'.join(obs_ids))
             result |= ec.run_by_file_prime(config, GemName, APPLICATION,
                                            meta_visitors, data_visitors)
-            count += 1
-            if count % config.interval == 0:
-                state.save_state('gemini_timestamp', prev_exec_date)
-                logging.info('Saving timestamp {}'.format(prev_exec_date))
-            break
+            logging.info('Saving timestamp {}'.format(prev_exec_date))
         else:
             logging.info('No observations in interval from {} to {}.'.format(
                 prev_exec_date, exec_date))
+        state.save_state('gemini_timestamp', prev_exec_date)
         prev_exec_date = exec_date
         exec_date = mc.increment_time(prev_exec_date, config.interval)
 

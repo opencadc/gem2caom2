@@ -73,10 +73,8 @@ from datetime import datetime
 from mock import patch, Mock
 
 from caom2 import ChecksumURI, Dimension2D, Artifact, ReleaseType, ProductType
-from gem2caom2 import preview_augmentation, GemName, plane_augmentation, \
-    SCHEME, ARCHIVE
+from gem2caom2 import preview_augmentation, GemName, SCHEME, ARCHIVE
 from caom2pipe import manage_composable as mc
-# from caom2utils.caomvalidator import validate
 
 pytest.main(args=['-s', os.path.abspath(__file__)])
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))

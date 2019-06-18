@@ -106,7 +106,7 @@ def visit(observation, **kwargs):
                          'thumbnail creation.'.format(plane.product_id))
             continue
         for artifact in plane.artifacts.values():
-            if artifact.uri.endswith('jpg'):
+            if GemName.is_preview(artifact.uri):
                 continue
             file_id = ec.CaomName(artifact.uri).file_id
             logging.debug('Generate thumbnail for file id {}'.format(file_id))
@@ -121,7 +121,7 @@ def visit(observation, **kwargs):
 def _do_prev(obs_id, file_id, working_dir, plane, cadc_client, stream):
     """Retrieve the preview file, so that a thumbnail can be made,
     store the preview if necessary, and the thumbnail, to ad.
-    Then augment the CAOM observation with the two additionall artifacts.
+    Then augment the CAOM observation with the two additional artifacts.
     """
     count = 0
     gem_name = GemName(obs_id=obs_id, file_id=file_id)
