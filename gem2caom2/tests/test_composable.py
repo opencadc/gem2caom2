@@ -71,7 +71,6 @@ import logging
 import os
 import pytest
 import sys
-import traceback
 
 from datetime import datetime
 from shutil import copyfile
@@ -86,6 +85,8 @@ THIS_DIR = os.path.dirname(os.path.realpath(__file__))
 TEST_DATA_DIR = os.path.join(THIS_DIR, 'data')
 STATE_FILE = '/usr/src/app/state.yml'
 TODO_FILE = '/usr/src/app/todo.txt'
+REJECTED_FILE = '/usr/src/app/logs/rejected.yml'
+PROGRESS_FILE = '/usr/src/app/logs/progress.txt'
 
 
 class MyExitError(Exception):
@@ -103,15 +104,7 @@ def write_gemini_data_file():
 @patch('sys.exit', Mock(return_value=MyExitError))
 def test_run_query():
     # preconditions
-    now = datetime.utcnow()
-    test_start_time = datetime(year=now.year, month=now.month,
-                               day=now.day, hour=now.hour,
-                               minute=now.minute - 1, second=now.second,
-                               microsecond=now.microsecond,
-                               tzinfo=now.tzinfo)
-    test_bookmark = {'bookmarks': {'gemini_timestamp':
-                                   {'last_record': test_start_time}}}
-    mc.write_as_yaml(test_bookmark, STATE_FILE)
+    _write_state()
     start_time = os.path.getmtime(STATE_FILE)
 
     getcwd_orig = os.getcwd
@@ -124,14 +117,11 @@ def test_run_query():
                 patch('caom2pipe.execute_composable.run_by_file_prime') \
                 as run_mock:
             query_endpoint_mock.return_value = {
-                'observationID': [b'GS-2004A-Q-6-27-0255']}
+                'observationID': ['GS-2004A-Q-6-27-0255']}
             composable.run_query()
             assert run_mock.called, 'should have been called'
         end_time = os.path.getmtime(STATE_FILE)
         assert end_time > start_time, 'no execution'
-    except Exception as e:
-        logging.error(traceback.format_exc())
-        assert False
     finally:
         os.getcwd = getcwd_orig
 
@@ -165,9 +155,6 @@ def test_run():
             assert test_storage.external_urls == \
                    'https://archive.gemini.edu/fullheader/{}.fits'.format(
                        test_f_id), 'wrong external urls'
-    except Exception as e:
-        logging.error(traceback.format_exc())
-        assert False
     finally:
         os.getcwd = getcwd_orig
 
@@ -206,9 +193,6 @@ def test_run_errors():
             assert test_storage.external_urls == \
                    'https://archive.gemini.edu/fullheader/{}.fits'.format(
                        test_f_id), 'wrong external urls'
-    except Exception as e:
-        logging.error(traceback.format_exc())
-        assert False
     finally:
         os.getcwd = getcwd_orig
 
@@ -216,9 +200,10 @@ def test_run_errors():
 @pytest.mark.skipif(not sys.version.startswith(PY_VERSION),
                     reason='support single version')
 @patch('sys.exit', Mock(return_value=MyExitError))
-def test_run_query():
+def test_run_query_2():
     test_obs_id = 'GS-2017A-Q-58-66-027'
     test_f_id = 'S20170905S0318'
+    _write_state()
     start_time = os.path.getmtime(STATE_FILE)
     getcwd_orig = os.getcwd
     os.getcwd = Mock(return_value=TEST_DATA_DIR)
@@ -250,13 +235,62 @@ def test_run_query():
             assert test_config.state_fqn == STATE_FILE, 'wrong state file'
             end_time = os.path.getmtime(STATE_FILE)
             assert end_time > start_time, 'state file not updated'
-    except Exception as e:
-        logging.error(traceback.format_exc())
-        assert False
     finally:
         os.getcwd = getcwd_orig
+
+
+@pytest.mark.skipif(not sys.version.startswith(PY_VERSION),
+                    reason='support single version')
+@patch('sys.exit', Mock(return_value=MyExitError))
+def test_run_query_rejected_bad_metadata():
+    test_obs_id = 'GS-2017A-Q-58-66-027'
+    _write_state()
+    _write_rejected(test_obs_id)
+    start_time = os.path.getmtime(STATE_FILE)
+    rejected_start_time = os.path.getmtime(REJECTED_FILE)
+
+    if os.path.exists(PROGRESS_FILE):
+        os.unlink(PROGRESS_FILE)
+
+    getcwd_orig = os.getcwd
+    os.getcwd = Mock(return_value=TEST_DATA_DIR)
+    try:
+        # execution
+        with patch('gem2caom2.work.read_obs_ids_from_caom') as query_mock:
+            query_mock.return_value = [test_obs_id]
+            composable.run_query()
+            args, kwargs = query_mock.call_args
+            test_config = args[0]
+            assert isinstance(test_config, mc.Config), 'wrong arg type'
+            assert test_config.state_fqn == STATE_FILE, 'wrong state file'
+            end_time = os.path.getmtime(STATE_FILE)
+            assert end_time > start_time, 'state file not updated'
+            rejected_end_time = os.path.getmtime(REJECTED_FILE)
+            assert rejected_end_time > rejected_start_time, \
+                'rejected file not updated'
+            assert os.path.exists(PROGRESS_FILE), 'should log'
+    finally:
+        os.getcwd = getcwd_orig
+        if os.path.exists(REJECTED_FILE):
+            os.unlink(REJECTED_FILE)
 
 
 def _write_todo(test_obs_id):
     with open(TODO_FILE, 'w') as f:
         f.write('{}\n'.format(test_obs_id))
+
+
+def _write_state():
+    # to ensure at least one spin through the execution loop, test case
+    # must have a starting time greater than one config.interval prior
+    # to 'now', default interval is 10 minutes
+    prior_s = datetime.utcnow().timestamp() - 15 * 60
+    test_start_time = datetime.fromtimestamp(prior_s)
+    test_bookmark = {'bookmarks': {'gemini_timestamp':
+                                       {'last_record': test_start_time}}}
+    mc.write_as_yaml(test_bookmark, STATE_FILE)
+
+
+def _write_rejected(test_obs_id):
+    content = {'bad_metadata': [test_obs_id]}
+    mc.write_as_yaml(content, REJECTED_FILE)

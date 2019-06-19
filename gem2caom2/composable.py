@@ -82,6 +82,8 @@ from gem2caom2.gem_name import GemName, COLLECTION, ARCHIVE
 meta_visitors = [preview_augmentation]
 data_visitors = []
 
+GEM_BOOKMARK = 'gemini_timestamp'
+
 
 def _run():
     """
@@ -175,7 +177,7 @@ def _run_query():
     config = mc.Config()
     config.get()
     state = mc.State(config.state_fqn)
-    start_time = state.get_bookmark('gemini_timestamp')
+    start_time = state.get_bookmark(GEM_BOOKMARK)
 
     logger = logging.getLogger()
     logger.setLevel(config.logging_level)
@@ -187,6 +189,7 @@ def _run_query():
     logging.debug('Starting at {}'.format(start_time))
 
     result = 0
+    cumulative = 0
     while exec_date < now_dt:
         logging.info(
             'Processing from {} to {}'.format(prev_exec_date, exec_date))
@@ -197,15 +200,19 @@ def _run_query():
             mc.write_to_file(config.work_fqn, '\n'.join(obs_ids))
             result |= ec.run_by_file_prime(config, GemName, APPLICATION,
                                            meta_visitors, data_visitors)
-            logging.info('Saving timestamp {}'.format(prev_exec_date))
         else:
             logging.info('No observations in interval from {} to {}.'.format(
                 prev_exec_date, exec_date))
-        state.save_state('gemini_timestamp', prev_exec_date)
+
+        cumulative += len(obs_ids)
+        mc.record_progress(
+            config, APPLICATION, len(obs_ids), cumulative, start_time)
+
+        state.save_state(GEM_BOOKMARK, prev_exec_date)
         prev_exec_date = exec_date
         exec_date = mc.increment_time(prev_exec_date, config.interval)
 
-    state.save_state('gemini_timestamp', prev_exec_date)
+    state.save_state(GEM_BOOKMARK, prev_exec_date)
     logging.info(
         'Done {}, saved state is {}'.format(APPLICATION, prev_exec_date))
 
