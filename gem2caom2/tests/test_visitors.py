@@ -87,10 +87,10 @@ TEST_FP_OBS = 'GN-2015A-C-1-20-001'
 TEST_FP_FILE = 'N20150404S0726.fits'
 TEST_OBS_FILE = '{}/{}'.format(TEST_DATA_DIR, 'visit_obs_start.xml')
 TEST_PRODUCT_ID = 'GN2001BQ013-04'
+REJECTED_FILE = os.path.join(TEST_DATA_DIR, 'rejected.yml')
 
 
 @pytest.mark.skip(reason='Decide what to do about GemName.obs_id value first')
-@patch('gem2caom2.GemName._get_obs_id')
 def test_preview_augment_plane(mock_obs_id):
     mock_obs_id.return_value = TEST_OBS
     thumb = os.path.join(TEST_DATA_DIR,
@@ -134,10 +134,12 @@ def test_preview_augment():
     obs.planes[TEST_PRODUCT_ID].data_release = datetime.utcnow()
     assert len(obs.planes[TEST_PRODUCT_ID].artifacts) == 1, 'initial condition'
 
+    test_rejected = mc.Rejected(REJECTED_FILE)
     cadc_client_mock = Mock()
     kwargs = {'working_directory': TEST_DATA_DIR,
               'cadc_client': cadc_client_mock,
-              'stream': 'stream'}
+              'stream': 'stream',
+              'rejected': test_rejected}
 
     with patch('caom2pipe.manage_composable.http_get') as http_mock, \
             patch('caom2pipe.manage_composable.data_put') as ad_put_mock, \
@@ -164,9 +166,10 @@ def test_preview_augment():
             'test')
         art_mock.side_effect = _art_mock
         result = preview_augmentation.visit(obs, **kwargs)
-        assert http_mock.is_called_with('', '{}{}.fits'.format(
-            preview_augmentation.PREVIEW_URL,
-            TEST_PRODUCT_ID)), 'http mock not called'
+        test_url = '{}{}.fits'.format(preview_augmentation.PREVIEW_URL,
+                                      TEST_PRODUCT_ID)
+        test_prev = '{}/{}.jpg'.format(TEST_DATA_DIR, TEST_PRODUCT_ID)
+        http_mock.assert_called_with(test_url, test_prev),  'mock not called'
         assert ad_put_mock.called, 'ad put mock not called'
         assert art_mock.called, 'art mock not called'
         assert exec_mock.called, 'exec mock not called'
@@ -174,6 +177,85 @@ def test_preview_augment():
         assert result['artifacts'] == 2, 'no artifacts should be updated'
         assert len(obs.planes[TEST_PRODUCT_ID].artifacts) == 3, \
             'two new artifacts'
+
+
+def test_preview_augment_known_no_preview():
+    try:
+        obs = mc.read_obs_from_file(TEST_OBS_FILE)
+        obs.planes[TEST_PRODUCT_ID].data_release = datetime.utcnow()
+        assert len(obs.planes[TEST_PRODUCT_ID].artifacts) == 1, 'initial condition'
+
+        if os.path.exists(REJECTED_FILE):
+            os.unlink(REJECTED_FILE)
+        test_rejected = mc.Rejected(REJECTED_FILE)
+        test_rejected.record(
+            mc.Rejected.NO_PREVIEW, '{}.jpg'.format(TEST_PRODUCT_ID))
+
+        cadc_client_mock = Mock()
+        kwargs = {'working_directory': TEST_DATA_DIR,
+                  'cadc_client': cadc_client_mock,
+                  'stream': 'stream',
+                  'rejected': test_rejected}
+
+        with patch('caom2pipe.manage_composable.http_get') as http_mock, \
+                patch('caom2pipe.manage_composable.data_put') as ad_put_mock, \
+                patch('caom2pipe.manage_composable.get_artifact_metadata') as \
+                art_mock, \
+                patch('caom2pipe.manage_composable.exec_cmd') as exec_mock:
+            cadc_client_mock.return_value.data_get.return_value = mc.CadcException(
+                'test')
+            result = preview_augmentation.visit(obs, **kwargs)
+            assert not http_mock.called, 'http mock should not be called'
+            assert not ad_put_mock.called, 'ad put mock should not be called'
+            assert not art_mock.called, 'art mock should not be called'
+            assert not exec_mock.called, 'exec mock should not be called'
+            assert result is not None, 'expect a result'
+            assert result['artifacts'] == 0, 'no artifacts should be updated'
+            assert len(obs.planes[TEST_PRODUCT_ID].artifacts) == 1, \
+                'no new artifacts'
+
+        test_rejected.persist_state()
+        assert os.path.exists(REJECTED_FILE)
+    finally:
+        if os.path.exists(REJECTED_FILE):
+            os.unlink(REJECTED_FILE)
+
+
+def test_preview_augment_unknown_no_preview():
+    obs = mc.read_obs_from_file(TEST_OBS_FILE)
+    obs.planes[TEST_PRODUCT_ID].data_release = datetime.utcnow()
+    assert len(obs.planes[TEST_PRODUCT_ID].artifacts) == 1, 'initial condition'
+
+    if os.path.exists(REJECTED_FILE):
+        os.unlink(REJECTED_FILE)
+    test_rejected = mc.Rejected(REJECTED_FILE)
+
+    cadc_client_mock = Mock()
+    kwargs = {'working_directory': TEST_DATA_DIR,
+              'cadc_client': cadc_client_mock,
+              'stream': 'stream',
+              'rejected': test_rejected}
+
+    with patch('caom2pipe.manage_composable.http_get',
+               side_effect=mc.CadcException(
+                   '404 Client Error: Not Found for url')) as http_mock, \
+            patch('caom2pipe.manage_composable.data_put') as ad_put_mock, \
+            patch('caom2pipe.manage_composable.get_artifact_metadata') as \
+                art_mock, \
+            patch('caom2pipe.manage_composable.exec_cmd') as exec_mock:
+        cadc_client_mock.return_value.data_get.return_value = mc.CadcException(
+            'test')
+        try:
+            ignore = preview_augmentation.visit(obs, **kwargs)
+        except Exception as e:
+            pass  # should have got here
+        test_url = '{}{}.fits'.format(preview_augmentation.PREVIEW_URL,
+                                      TEST_PRODUCT_ID)
+        test_prev = '{}/{}.jpg'.format(TEST_DATA_DIR, TEST_PRODUCT_ID)
+        http_mock.assert_called_with(test_url, test_prev),  'mock not called'
+        assert not ad_put_mock.called, 'ad put mock should not be called'
+        assert not art_mock.called, 'art mock should not be called'
+        assert not exec_mock.called, 'exec mock should not be called'
 
 
 # @pytest.mark.skip(reason='Possibly not needed')

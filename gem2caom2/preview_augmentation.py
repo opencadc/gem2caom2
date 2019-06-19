@@ -97,6 +97,10 @@ def visit(observation, **kwargs):
         stream = kwargs['stream']
     else:
         raise mc.CadcException('Visitor needs a stream parameter.')
+    if 'rejected' in kwargs:
+        rejected = kwargs['rejected']
+    else:
+        raise mc.CadcException('Visitor needs a rejected parameter.')
 
     count = 0
     for plane in observation.planes.values():
@@ -111,14 +115,15 @@ def visit(observation, **kwargs):
             file_id = ec.CaomName(artifact.uri).file_id
             logging.debug('Generate thumbnail for file id {}'.format(file_id))
             count += _do_prev(observation.observation_id, file_id, working_dir,
-                              plane, cadc_client, stream)
+                              plane, cadc_client, stream, rejected)
             break
     logging.info('Completed preview augmentation for {}.'.format(
         observation.observation_id))
     return {'artifacts': count}
 
 
-def _do_prev(obs_id, file_id, working_dir, plane, cadc_client, stream):
+def _do_prev(obs_id, file_id, working_dir, plane, cadc_client, stream,
+             rejected):
     """Retrieve the preview file, so that a thumbnail can be made,
     store the preview if necessary, and the thumbnail, to ad.
     Then augment the CAOM observation with the two additional artifacts.
@@ -126,36 +131,45 @@ def _do_prev(obs_id, file_id, working_dir, plane, cadc_client, stream):
     count = 0
     gem_name = GemName(obs_id=obs_id, file_id=file_id)
     preview = gem_name.prev
-    preview_fqn = os.path.join(working_dir, preview)
-    thumb = gem_name.thumb
-    thumb_fqn = os.path.join(working_dir, thumb)
+    if rejected.is_no_preview(preview):
+        logging.info('Stopping visit because no preview exists for {} in '
+                     'observation {}.'.format(preview, obs_id))
+        rejected.record(mc.Rejected.NO_PREVIEW, preview)
+    else:
+        preview_fqn = os.path.join(working_dir, preview)
+        thumb = gem_name.thumb
+        thumb_fqn = os.path.join(working_dir, thumb)
 
-    # get the file - try disk first, then CADC, then Gemini
-    if not os.access(preview_fqn, 0):
-        try:
-            mc.data_get(cadc_client, working_dir, preview, ARCHIVE)
-        except mc.CadcException as e:
-            preview_url = '{}{}.fits'.format(PREVIEW_URL, file_id)
-            mc.http_get(preview_url, preview_fqn)
-            if cadc_client is not None:
-                mc.data_put(cadc_client, working_dir, preview, ARCHIVE,
-                            stream, MIME_TYPE)
-        _augment(plane, gem_name.prev_uri, preview_fqn, ProductType.PREVIEW)
-        count = 1
+        # get the file - try disk first, then CADC, then Gemini
+        if not os.access(preview_fqn, 0):
+            try:
+                mc.data_get(cadc_client, working_dir, preview, ARCHIVE)
+            except mc.CadcException as e:
+                preview_url = '{}{}.fits'.format(PREVIEW_URL, file_id)
+                try:
+                    mc.http_get(preview_url, preview_fqn)
+                    if cadc_client is not None:
+                        mc.data_put(cadc_client, working_dir, preview, ARCHIVE,
+                                    stream, MIME_TYPE)
+                except mc.CadcException as e:
+                    rejected.check_and_record(str(e), preview)
+                    raise e
+            _augment(plane, gem_name.prev_uri, preview_fqn, ProductType.PREVIEW)
+            count = 1
 
-    # make a thumbnail from the preview
-    if os.access(thumb_fqn, 0):
-        os.remove(thumb_fqn)
-    convert_cmd = 'convert -resize 256x256 {} {}'.format(
-        preview_fqn, thumb_fqn)
-    mc.exec_cmd(convert_cmd)
+        # make a thumbnail from the preview
+        if os.access(thumb_fqn, 0):
+            os.remove(thumb_fqn)
+        convert_cmd = 'convert -resize 256x256 {} {}'.format(
+            preview_fqn, thumb_fqn)
+        mc.exec_cmd(convert_cmd)
 
-    thumb_uri = gem_name.thumb_uri
-    _augment(plane, thumb_uri, thumb_fqn, ProductType.THUMBNAIL)
-    if cadc_client is not None:
-        mc.data_put(
-            cadc_client, working_dir, thumb, ARCHIVE, stream, MIME_TYPE)
-    count += 1
+        thumb_uri = gem_name.thumb_uri
+        _augment(plane, thumb_uri, thumb_fqn, ProductType.THUMBNAIL)
+        if cadc_client is not None:
+            mc.data_put(
+                cadc_client, working_dir, thumb, ARCHIVE, stream, MIME_TYPE)
+        count += 1
     return count
 
 
