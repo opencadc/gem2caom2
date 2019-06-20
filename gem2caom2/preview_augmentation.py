@@ -151,7 +151,7 @@ def _do_prev(obs_id, file_id, working_dir, plane, cadc_client, stream,
                     if cadc_client is not None:
                         mc.data_put(cadc_client, working_dir, preview, ARCHIVE,
                                     stream, MIME_TYPE)
-                except mc.CadcException as e:
+                except Exception as e:
                     rejected.check_and_record(str(e), preview)
                     raise e
             _augment(plane, gem_name.prev_uri, preview_fqn, ProductType.PREVIEW)

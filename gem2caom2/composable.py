@@ -68,6 +68,7 @@
 #
 
 import logging
+import os
 import sys
 import tempfile
 import traceback
@@ -185,6 +186,9 @@ def _run_query():
     prev_exec_date = start_time
     exec_date = mc.increment_time(prev_exec_date, config.interval)
     now_dt = datetime.utcnow()
+
+    if not os.path.exists(os.path.dirname(config.progress_fqn)):
+        os.makedirs(os.path.dirname(config.progress_fqn))
 
     logging.debug('Starting at {}'.format(start_time))
 
