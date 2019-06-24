@@ -1,11 +1,11 @@
 #!/bin/bash
 
-echo "${@}"
-script_name=$(basename $0)
 if [[ ! -e ${PWD}/config.yml ]]; then
-  if [[ ${script_name} == "gem_run_query" ]]; then
+  if [[ "${@}" == "gem_run_query" ]]; then
+    echo "visit"
     cp /config_with_visit.yml ${PWD}/config.yml
   else
+    echo "ingest"
     cp /config_with_ingest.yml ${PWD}/config.yml
   fi
 fi
