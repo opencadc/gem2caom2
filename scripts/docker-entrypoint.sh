@@ -1,7 +1,7 @@
 #!/bin/bash
 
+echo "${@}"
 script_name=$(basename $0)
-echo "${script_name}"
 if [[ ! -e ${PWD}/config.yml ]]; then
   if [[ ${script_name} == "gem_run_query" ]]; then
     cp /config_with_visit.yml ${PWD}/config.yml
