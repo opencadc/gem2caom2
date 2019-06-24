@@ -141,11 +141,11 @@ def _run_by_tap_query():
         is used by airflow for task instance management and reporting.
     """
     config = mc.Config()
-    config.get()
+    config.get_executors()
     return ec.run_from_state(config, GemName, APPLICATION, meta_visitors,
                              data_visitors, GEM_BOOKMARK,
                              work.TapNoPreviewQuery(
-                                 datetime.utcnow().timestamp(), config))
+                                 datetime.utcnow(), config))
 
 
 def run_by_tap_query():
@@ -166,7 +166,7 @@ def _run_by_in_memory():
         is used by airflow for task instance management and reporting.
     """
     config = mc.Config()
-    config.get()
+    config.get_executors()
     return ec.run_from_state(config, GemName, APPLICATION, meta_visitors,
                              data_visitors, GEM_BOOKMARK,
                              work.ObsFileRelationshipQuery())
