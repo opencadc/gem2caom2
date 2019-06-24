@@ -70,40 +70,75 @@
 import logging
 
 from caom2pipe import astro_composable as ac
+from caom2pipe import manage_composable as mc
+
+import gem2caom2.external_metadata as em
 from gem2caom2 import gem_name
 
+__all__ = ['TapNoPreviewQuery', 'ObsFileRelationshipQuery']
 
-def read_obs_ids_from_caom(config, prev_exec_date, exec_date,
-                           proprietary_date):
-    """
-    Get the set of observation IDs that do not have preview or
-    thumbnail artifacts. The results are chunked by timestamps.
 
-    :param config ManageComposable.Config for gem2caom2
-    :param prev_exec_date datetime start of the timestamp chunk
-    :param exec_date datetime end of the timestamp chunk
-    :param proprietary_date datetime when data goes public
-    :return: a list of CAOM Observation IDs.
-    """
-    logging.debug('Entering read_obs_ids_from_caom')
-    query = "SELECT O.observationID " \
-            "FROM caom2.Observation AS O " \
-            "JOIN caom2.Plane AS P ON O.obsID = P.obsID " \
-            "WHERE P.planeID IN ( " \
-            "  SELECT A.planeID " \
-            "  FROM caom2.Observation AS O " \
-            "  JOIN caom2.Plane AS P ON O.obsID = P.obsID " \
-            "  JOIN caom2.Artifact AS A ON P.planeID = A.planeID " \
-            "  WHERE O.collection = '{}' " \
-            "  AND A.uri like '{}:{}%fits' " \
-            "  GROUP BY A.planeID " \
-            "  HAVING COUNT(A.artifactID) = 1 ) " \
-            "AND O.maxLastModified >= '{}' " \
-            "AND O.maxLastModified < '{}' " \
-            "AND P.dataRelease <= '{}' " \
-            "ORDER BY O.maxLastModified ASC " \
-            "".format(config.collection, gem_name.SCHEME,
-                      config.archive, prev_exec_date, exec_date,
-                      proprietary_date)
-    result = ac.query_tap(query, config)
-    return [ii for ii in result['observationID']]
+class TapNoPreviewQuery(mc.Work):
+
+    def __init__(self, max_ts_s, config):
+        # using max_ts_s as the proprietary date - time when the data
+        # goes public
+        #
+        # limit the query for this, since the point is to work with previews
+        # that are only available after the proprietary period is complete
+        #
+        super(TapNoPreviewQuery, self).__init__(max_ts_s)
+        self.config = config
+
+    def todo(self, prev_exec_date, exec_date):
+        """
+        Get the set of observation IDs that do not have preview or
+        thumbnail artifacts. The results are chunked by timestamps, and
+        limited to those entries that are public.
+
+        :param config ManageComposable.Config for gem2caom2
+        :param prev_exec_date datetime start of the timestamp chunk
+        :param exec_date datetime end of the timestamp chunk
+        :return: a list of CAOM Observation IDs.
+        """
+        logging.debug('Entering todo')
+        query = "SELECT O.observationID " \
+                "FROM caom2.Observation AS O " \
+                "JOIN caom2.Plane AS P ON O.obsID = P.obsID " \
+                "WHERE P.planeID IN ( " \
+                "  SELECT A.planeID " \
+                "  FROM caom2.Observation AS O " \
+                "  JOIN caom2.Plane AS P ON O.obsID = P.obsID " \
+                "  JOIN caom2.Artifact AS A ON P.planeID = A.planeID " \
+                "  WHERE O.collection = '{}' " \
+                "  AND A.uri like '{}:{}%fits' " \
+                "  GROUP BY A.planeID " \
+                "  HAVING COUNT(A.artifactID) = 1 ) " \
+                "AND O.maxLastModified >= '{}' " \
+                "AND O.maxLastModified < '{}' " \
+                "AND P.dataRelease <= '{}' " \
+                "ORDER BY O.maxLastModified ASC " \
+                "".format(self.config.collection, gem_name.SCHEME,
+                          self.config.archive, prev_exec_date, exec_date,
+                          self.max_ts_s)
+        result = ac.query_tap(query, self.config)
+        return [ii for ii in result['observationID']]
+
+
+class ObsFileRelationshipQuery(mc.Work):
+
+    def __init__(self):
+        max_ts_s = em.get_gofr().get_max_timestamp()
+        super(ObsFileRelationshipQuery, self).__init__(max_ts_s)
+
+    def todo(self, config, prev_exec_date, exec_date):
+        """
+        Get the set of observation IDs from the in-memory storage of the
+        file from Paul. The results are chunked by timestamps.
+
+        :param config ManageComposable.Config for gem2caom2 - ignored
+        :param prev_exec_date datetime start of the timestamp chunk
+        :param exec_date datetime end of the timestamp chunk
+        :return: a list of CAOM Observation IDs.
+        """
+        return em.get_gofr().subset(prev_exec_date, exec_date)

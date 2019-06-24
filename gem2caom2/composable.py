@@ -68,7 +68,6 @@
 #
 
 import logging
-import os
 import sys
 import tempfile
 import traceback
@@ -78,7 +77,7 @@ from datetime import datetime
 from caom2pipe import execute_composable as ec
 from caom2pipe import manage_composable as mc
 from gem2caom2 import APPLICATION, work, preview_augmentation
-from gem2caom2.gem_name import GemName, COLLECTION, ARCHIVE
+from gem2caom2.gem_name import GemName
 
 meta_visitors = [preview_augmentation]
 data_visitors = []
@@ -134,98 +133,48 @@ def run_single():
     sys.exit(result)
 
 
-def run_query_2():
-    """
-    Run the processing for all the entries returned from a time-boxed ad
-    query.
-
-    :param sys.argv[1] the timestamp for the > comparison in the time-boxed
-        query
-    :param sys.argv[2] the timestamp for the <= comparison in the time-boxed
-        query
+def _run_by_tap_query():
+    """Run the processing for all the previews that are public, but there are
+    no artifacts representing those previews in CAOM.
 
     :return 0 if successful, -1 if there's any sort of failure. Return status
         is used by airflow for task instance management and reporting.
     """
-    prev_exec_date = sys.argv[1]
-    exec_date = sys.argv[2]
-
     config = mc.Config()
     config.get()
-    config.stream = 'default'
-
-    file_list = mc.read_file_list_from_archive(config, APPLICATION,
-                                               prev_exec_date, exec_date)
-    sys.argv = sys.argv[:1]
-    result = 0
-    if len(file_list) > 0:
-        mc.write_to_file(config.work_fqn, '\n'.join(file_list))
-        result |= ec.run_by_file(GemName, APPLICATION, COLLECTION,
-                                 config.proxy_fqn, meta_visitors,
-                                 data_visitors, archive=ARCHIVE)
-    sys.exit(result)
+    return ec.run_from_state(config, GemName, APPLICATION, meta_visitors,
+                             data_visitors, GEM_BOOKMARK,
+                             work.TapNoPreviewQuery(
+                                 datetime.utcnow().timestamp(), config))
 
 
-def _run_query():
-    """
-    Run the processing for all the entries returned from a time-boxed CAOM
-    query.
-
-    :return 0 if successful, -1 if there's any sort of failure. Return status
-        is used by airflow for task instance management and reporting.
-    """
-
-    config = mc.Config()
-    config.get()
-    state = mc.State(config.state_fqn)
-    start_time = state.get_bookmark(GEM_BOOKMARK)
-
-    logger = logging.getLogger()
-    logger.setLevel(config.logging_level)
-
-    prev_exec_date = start_time
-    exec_date = mc.increment_time(prev_exec_date, config.interval)
-    now_dt = datetime.utcnow()
-
-    if not os.path.exists(os.path.dirname(config.progress_fqn)):
-        os.makedirs(os.path.dirname(config.progress_fqn))
-
-    logging.debug('Starting at {}'.format(start_time))
-
-    result = 0
-    cumulative = 0
-    while exec_date < now_dt:
-        logging.info(
-            'Processing from {} to {}'.format(prev_exec_date, exec_date))
-        obs_ids = work.read_obs_ids_from_caom(config, prev_exec_date, exec_date,
-                                              now_dt)
-        if len(obs_ids) > 0:
-            logging.info('Processing {} observations.'.format(len(obs_ids)))
-            mc.write_to_file(config.work_fqn, '\n'.join(obs_ids))
-            result |= ec.run_by_file_prime(config, GemName, APPLICATION,
-                                           meta_visitors, data_visitors)
-        else:
-            logging.info('No observations in interval from {} to {}.'.format(
-                prev_exec_date, exec_date))
-
-        cumulative += len(obs_ids)
-        mc.record_progress(
-            config, APPLICATION, len(obs_ids), cumulative, start_time)
-
-        state.save_state(GEM_BOOKMARK, prev_exec_date)
-        prev_exec_date = exec_date
-        exec_date = mc.increment_time(prev_exec_date, config.interval)
-
-    state.save_state(GEM_BOOKMARK, prev_exec_date)
-    logging.info(
-        'Done {}, saved state is {}'.format(APPLICATION, prev_exec_date))
-
-    return result
-
-
-def run_query():
+def run_by_tap_query():
     try:
-        result = _run_query()
+        result = _run_by_tap_query()
+        sys.exit(result)
+    except Exception as e:
+        logging.error(e)
+        tb = traceback.format_exc()
+        logging.debug(tb)
+        sys.exit(-1)
+
+
+def _run_by_in_memory():
+    """Run the processing for the list of observations provided from Gemini.
+
+    :return 0 if successful, -1 if there's any sort of failure. Return status
+        is used by airflow for task instance management and reporting.
+    """
+    config = mc.Config()
+    config.get()
+    return ec.run_from_state(config, GemName, APPLICATION, meta_visitors,
+                             data_visitors, GEM_BOOKMARK,
+                             work.ObsFileRelationshipQuery())
+
+
+def run_by_in_memory():
+    try:
+        result = _run_by_in_memory()
         sys.exit(result)
     except Exception as e:
         logging.error(e)

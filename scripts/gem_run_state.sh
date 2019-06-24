@@ -10,7 +10,7 @@ echo "Get the container"
 docker pull ${CONTAINER} || exit $?
 
 echo "Run gem_run container"
-docker run --rm --name gem_run_query -v ${PWD}:/usr/src/app/ ${CONTAINER} gem_run_query || exit $?
+docker run --rm --name gem_run_query -v ${PWD}:/usr/src/app/ ${CONTAINER} gem_run_state || exit $?
 
 date
 exit 0

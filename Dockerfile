@@ -32,15 +32,16 @@ RUN pip install bs4
 
 RUN apk --no-cache add imagemagick
 
-RUN git clone https://github.com/opencadc-metadata-curation/caom2tools.git && \
+RUN git clone https://github.com/SharonGoliath/caom2tools.git && \
   cd caom2tools && git pull origin master && \
   pip install ./caom2 && \
   pip install ./caom2utils && pip install ./caom2pipe && cd ..
 
-RUN git clone https://github.com/opencadc-metadata-curation/gem2caom2.git && \
+RUN git clone https://github.com/SharonGoliath/gem2caom2.git && \
   pip install ./gem2caom2 && \
   cp ./gem2caom2/scripts/docker-entrypoint.sh / && \
-  cp ./gem2caom2/scripts/config.yml / && \
+  cp ./gem2caom2/scripts/config_with_ingest.yml / && \
+  cp ./gem2caom2/scripts/config_with_visit.yml / && \
   cp ./gem2caom2/scripts/state.yml /
 
 RUN mkdir /app && mkdir /app/data

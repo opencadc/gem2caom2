@@ -1,12 +1,16 @@
 #!/bin/bash
 
-if [[ ! -e ${PWD}/config.yml ]]
-then
-  cp /config.yml ${PWD}
+script_name=$(basename $0)
+echo "${script_name}"
+if [[ ! -e ${PWD}/config.yml ]]; then
+  if [[ ${script_name} == "gem_run_query" ]]; then
+    cp /config_with_visit.yml ${PWD}/config.yml
+  else
+    cp /config_with_ingest.yml ${PWD}/config.yml
+  fi
 fi
 
-if [[ ! -e ${PWD}/state.yml ]]
-then
+if [[ ! -e ${PWD}/state.yml ]]; then
   cp /state.yml ${PWD}
 fi
 

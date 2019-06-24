@@ -113,7 +113,6 @@ from caom2pipe import astro_composable as ac
 import gem2caom2.external_metadata as em
 from gem2caom2.gem_name import GemName, COLLECTION
 from gem2caom2.svofps import FilterMetadata
-from gem2caom2.obs_file_relationship import GemObsFileRelationship
 
 __all__ = ['main_app2', 'update', 'APPLICATION']
 

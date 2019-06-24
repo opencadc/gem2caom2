@@ -429,6 +429,9 @@ class GemObsFileRelationship(object):
         else:
             return timedelta()
 
+    def get_max_timestamp(self):
+        return list(self.time_list.keys())[-1]
+
     @staticmethod
     def is_processed(file_name):
         """Try to determine if a Gemini file is processed, based on naming
