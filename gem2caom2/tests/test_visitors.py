@@ -73,7 +73,7 @@ from datetime import datetime
 from mock import patch, Mock
 
 from caom2 import ChecksumURI, Dimension2D, Artifact, ReleaseType, ProductType
-from gem2caom2 import preview_augmentation, GemName, SCHEME, ARCHIVE
+from gem2caom2 import preview_augmentation, pull_visitor
 from caom2pipe import manage_composable as mc
 
 pytest.main(args=['-s', os.path.abspath(__file__)])
@@ -88,45 +88,6 @@ TEST_FP_FILE = 'N20150404S0726.fits'
 TEST_OBS_FILE = '{}/{}'.format(TEST_DATA_DIR, 'visit_obs_start.xml')
 TEST_PRODUCT_ID = 'GN2001BQ013-04'
 REJECTED_FILE = os.path.join(TEST_DATA_DIR, 'rejected.yml')
-
-
-@pytest.mark.skip(reason='Decide what to do about GemName.obs_id value first')
-def test_preview_augment_plane(mock_obs_id):
-    mock_obs_id.return_value = TEST_OBS
-    thumb = os.path.join(TEST_DATA_DIR,
-                         'GMOS/{}'.format(GemName(TEST_FILE).thumb))
-    if os.path.exists(thumb):
-        os.remove(thumb)
-    test_fqn = os.path.join(TEST_DATA_DIR, '{}/{}.in.xml'.format(
-        'GMOS', TEST_OBS))
-    test_obs = mc.read_obs_from_file(test_fqn)
-    assert len(test_obs.planes[TEST_OBS].artifacts) == 2
-    thumba = '{}:{}/N20131203S0006_th.jpg'.format(SCHEME, ARCHIVE)
-
-    test_kwargs = {'working_directory': '{}/GMOS'.format(TEST_DATA_DIR),
-                   'cadc_client': None,
-                   'stream': 'default'}
-    test_result = preview_augmentation.visit(test_obs, **test_kwargs)
-    assert test_result is not None, 'expected a visit return value'
-    assert test_result['artifacts'] == 1
-    assert len(test_obs.planes[TEST_OBS].artifacts) == 3
-    assert os.path.exists(thumb)
-    assert test_obs.planes[TEST_OBS].artifacts[thumba].content_checksum == \
-        ChecksumURI('md5:a8c106c04db4c148695787bfc364cbd8'), \
-        'thumb checksum failure'
-
-    # now do updates
-    test_obs.planes[TEST_OBS].artifacts[thumba].content_checksum = \
-        ChecksumURI('19661c3c2508ecc22425ee2a05881ed4')
-    test_result = preview_augmentation.visit(test_obs, **test_kwargs)
-    assert test_result is not None, 'expected update visit return value'
-    assert test_result['artifacts'] == 1
-    assert len(test_obs.planes) == 1
-    assert len(test_obs.planes[TEST_OBS].artifacts) == 3
-    assert os.path.exists(thumb)
-    assert test_obs.planes[TEST_OBS].artifacts[thumba].content_checksum == \
-        ChecksumURI('md5:a8c106c04db4c148695787bfc364cbd8'), \
-        'thumb update failed'
 
 
 def test_preview_augment():
@@ -258,49 +219,29 @@ def test_preview_augment_unknown_no_preview():
         assert not exec_mock.called, 'exec mock should not be called'
 
 
-# @pytest.mark.skip(reason='Possibly not needed')
-# @patch('gem2caom2.GemName._get_obs_id')
-# def test_bounds_augment_plane(mock_obs_id):
-#     mock_obs_id.return_value = TEST_OBS
-#     test_fqn = os.path.join(TESTDATA_DIR, '{}.in.xml'.format(TEST_FP_OBS))
-#     test_obs = mc.read_obs_from_file(test_fqn)
-#     assert len(test_obs.planes[TEST_FP_OBS].artifacts) == 2
-#
-#     test_kwargs = {'working_directory': TESTDATA_DIR,
-#                    'science_file': TEST_FP_FILE,
-#                    'cadc_client': None}
-#     test_result = plane_augmentation.visit(test_obs, **test_kwargs)
-#
-#     # additional Plane metadata for AladinLite
-#     # test_obs.planes[TEST_FP_OBS].position.dimension = Dimension2D(3107, 2302)
-#     # test_obs.planes[TEST_FP_OBS].position.sample_size = 0.1455995277107371
-#
-#     validate(test_obs, True)
-#
-#     # mc.write_obs_to_file(test_obs, '{}-fp.xml'.format(TEST_FP_OBS))
-#
-#     assert test_result is not None, 'expected update visit return value'
-#     assert test_result['planes'] == 1
-#
-#     assert len(test_obs.planes) == 1
-#     assert test_obs.planes[TEST_FP_OBS].position is not None, \
-#         'expected Plane.position'
-#     assert test_obs.planes[TEST_FP_OBS].position.bounds is not None, \
-#         'expected.Plane.position.bounds'
-#
-#     bounds = test_obs.planes[TEST_FP_OBS].position.bounds
-#     assert bounds.samples is not None, 'expected bounds.samples'
-#     assert len(bounds.samples.vertices) == 24, 'expected 24 bounds samples'
-#     assert bounds.points is not None, 'expected bounds.points'
-#     assert len(bounds.points) == 8, 'expected 8 bounds points'
-#
-#     assert len(test_obs.planes[TEST_FP_OBS].artifacts) == 2
-#     fits_uri = 'gemini:GEM/{}'.format(TEST_FP_FILE)
-#     artifact = test_obs.planes[TEST_FP_OBS].artifacts[fits_uri]
-#     assert artifact.content_type == 'application/fits', \
-#         'expected ContentType application/fits'
-#     assert artifact.content_length == 15102720, \
-#         'expected ContentLength 15102720'
-#     assert artifact.content_checksum.checksum == \
-#            '5c4f933788ae79553951d10cb5cbedd6', \
-#         'expected ContentChecksum 5c4f933788ae79553951d10cb5cbedd6'
+def test_pull_visitor():
+    obs = mc.read_obs_from_file(TEST_OBS_FILE)
+    obs.planes[TEST_PRODUCT_ID].data_release = datetime.utcnow()
+    assert len(obs.planes[TEST_PRODUCT_ID].artifacts) == 1, 'initial condition'
+
+    test_rejected = mc.Rejected(REJECTED_FILE)
+    cadc_client_mock = Mock()
+    kwargs = {'working_directory': TEST_DATA_DIR,
+              'cadc_client': cadc_client_mock,
+              'stream': 'stream',
+              'rejected': test_rejected}
+
+    with patch('caom2pipe.manage_composable.http_get') as http_mock, \
+            patch('caom2pipe.manage_composable.data_put') as ad_put_mock:
+        cadc_client_mock.return_value.data_get.return_value = mc.CadcException(
+            'test')
+        cadc_client_mock.get_file_info.return_value = {'md5sum': 'md5:1234'}
+        result = pull_visitor.visit(obs, **kwargs)
+        test_url = '{}/{}.fits'.format(pull_visitor.FILE_URL, TEST_PRODUCT_ID)
+        test_prev = '{}/{}.fits'.format(TEST_DATA_DIR, TEST_PRODUCT_ID)
+        http_mock.assert_called_with(test_url, test_prev),  'mock not called'
+        assert ad_put_mock.called, 'ad put mock not called'
+        assert result is not None, 'expect a result'
+        assert result['observation'] == 0, 'no updated metadata'
+        assert len(obs.planes[TEST_PRODUCT_ID].artifacts) == 1, \
+            'no new artifacts'

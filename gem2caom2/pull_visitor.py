@@ -3,7 +3,7 @@
 # ******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
 # *************  CENTRE CANADIEN DE DONNÉES ASTRONOMIQUES  **************
 #
-#  (c) 2018.                            (c) 2018.
+#  (c) 2019.                            (c) 2019.
 #  Government of Canada                 Gouvernement du Canada
 #  National Research Council            Conseil national de recherches
 #  Ottawa, Canada, K1A 0R6              Ottawa, Canada, K1A 0R6
@@ -66,24 +66,27 @@
 #
 # ***********************************************************************
 #
+
 import logging
 import os
 
 from datetime import datetime
 
-from caom2 import Observation, ProductType, ReleaseType
+from caom2 import Observation
 from caom2pipe import execute_composable as ec
 from caom2pipe import manage_composable as mc
-from gem2caom2.gem_name import GemName, ARCHIVE
 
-__all__ = ['visit']
+from gem2caom2 import GemName, ARCHIVE
 
-
-PREVIEW_URL = 'https://archive.gemini.edu/preview/'
-MIME_TYPE = 'image/jpeg'
+FILE_URL = 'https://archive.gemini.edu/file'
+MIME_TYPE = 'application/fits'
 
 
 def visit(observation, **kwargs):
+    """
+    If the observation says the data release date is past, attempt to
+    retrieve the fits file if it is not already at CADC.
+    """
     mc.check_param(observation, Observation)
 
     working_dir = './'
@@ -103,78 +106,29 @@ def visit(observation, **kwargs):
         raise mc.CadcException('Visitor needs a rejected parameter.')
 
     count = 0
-    for plane in observation.planes.values():
-        if (plane.data_release is None or
-                plane.data_release > datetime.utcnow()):
-            logging.info('Plane {} is proprietary. No preview access or '
-                         'thumbnail creation.'.format(plane.product_id))
-            continue
-        for artifact in plane.artifacts.values():
-            if GemName.is_preview(artifact.uri):
-                continue
-            file_id = ec.CaomName(artifact.uri).file_id
-            logging.debug('Generate thumbnail for file id {}'.format(file_id))
-            count += _do_prev(observation.observation_id, file_id, working_dir,
-                              plane, cadc_client, stream, rejected)
-            break
-    logging.info('Completed preview augmentation for {}.'.format(
-        observation.observation_id))
-    return {'artifacts': count}
-
-
-def _do_prev(obs_id, file_id, working_dir, plane, cadc_client, stream,
-             rejected):
-    """Retrieve the preview file, so that a thumbnail can be made,
-    store the preview if necessary, and the thumbnail, to ad.
-    Then augment the CAOM observation with the two additional artifacts.
-    """
-    count = 0
-    gem_name = GemName(obs_id=obs_id, file_id=file_id)
-    preview = gem_name.prev
-    if rejected.is_no_preview(preview):
-        logging.info('Stopping visit because no preview exists for {} in '
-                     'observation {}.'.format(preview, obs_id))
-        rejected.record(mc.Rejected.NO_PREVIEW, preview)
+    if rejected.is_bad_metadata(observation.observation_id):
+        logging.info('Stopping visit for {} because of bad metadata.'.format(
+            observation.observation_id))
     else:
-        preview_fqn = os.path.join(working_dir, preview)
-        thumb = gem_name.thumb
-        thumb_fqn = os.path.join(working_dir, thumb)
+        for plane in observation.planes.values():
+            if (plane.data_release is None or
+                    plane.data_release > datetime.utcnow()):
+                logging.info('Plane {} is proprietary. No file access.'.format(
+                    plane.product_id))
+                continue
 
-        # get the file - try disk first, then CADC, then Gemini
-        if not os.access(preview_fqn, 0):
-            try:
-                mc.data_get(cadc_client, working_dir, preview, ARCHIVE)
-            except mc.CadcException as e:
-                preview_url = '{}{}.fits'.format(PREVIEW_URL, file_id)
+            for artifact in plane.artifacts.values():
+                if GemName.is_preview(artifact.uri):
+                    continue
                 try:
-                    mc.http_get(preview_url, preview_fqn)
-                    mc.data_put(cadc_client, working_dir, preview, ARCHIVE,
-                                stream, MIME_TYPE)
+                    f_name = ec.CaomName(artifact.uri).file_name
+                    file_url = '{}/{}'.format(FILE_URL, f_name)
+                    mc.look_pull_and_put(f_name, working_dir, file_url, ARCHIVE,
+                                         stream, MIME_TYPE, cadc_client,
+                                         artifact.content_checksum)
                 except Exception as e:
-                    rejected.check_and_record(str(e), preview)
+                    rejected.check_and_record(str(e), observation.observation_id)
                     raise e
-            _augment(plane, gem_name.prev_uri, preview_fqn, ProductType.PREVIEW)
-            count = 1
-
-        # make a thumbnail from the preview
-        if os.access(thumb_fqn, 0):
-            os.remove(thumb_fqn)
-        convert_cmd = 'convert -resize 256x256 {} {}'.format(
-            preview_fqn, thumb_fqn)
-        mc.exec_cmd(convert_cmd)
-
-        thumb_uri = gem_name.thumb_uri
-        _augment(plane, thumb_uri, thumb_fqn, ProductType.THUMBNAIL)
-        if cadc_client is not None:
-            mc.data_put(
-                cadc_client, working_dir, thumb, ARCHIVE, stream, MIME_TYPE)
-        count += 1
-    return count
-
-
-def _augment(plane, uri, fqn, product_type):
-    temp = None
-    if uri in plane.artifacts:
-        temp = plane.artifacts[uri]
-    plane.artifacts[uri] = mc.get_artifact_metadata(
-        fqn, product_type, ReleaseType.DATA, uri, temp)
+    logging.info('Completed pull visitor for {}.'.format(
+        observation.observation_id))
+    return {'observation': count}
