@@ -79,8 +79,7 @@ from caom2pipe import manage_composable as mc
 from gem2caom2 import APPLICATION, work, preview_augmentation, pull_visitor
 from gem2caom2.gem_name import GemName
 
-# meta_visitors = [preview_augmentation, pull_visitor]
-meta_visitors = [preview_augmentation]
+meta_visitors = [preview_augmentation, pull_visitor]
 data_visitors = []
 
 GEM_BOOKMARK = 'gemini_timestamp'

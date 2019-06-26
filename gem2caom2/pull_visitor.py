@@ -125,7 +125,7 @@ def visit(observation, **kwargs):
                     mc.look_pull_and_put(f_name, working_dir, file_url,
                                          gem_name.ARCHIVE, stream, MIME_TYPE,
                                          cadc_client,
-                                         artifact.content_checksum)
+                                         artifact.content_checksum.checksum)
                 except Exception as e:
                     rejected.check_and_record(str(e), observation.observation_id)
                     raise e

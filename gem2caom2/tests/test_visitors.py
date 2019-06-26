@@ -235,7 +235,8 @@ def test_pull_visitor():
             patch('caom2pipe.manage_composable.data_put') as ad_put_mock:
         cadc_client_mock.return_value.data_get.return_value = mc.CadcException(
             'test')
-        cadc_client_mock.get_file_info.return_value = {'md5sum': 'md5:1234'}
+        # no scheme from cadc client
+        cadc_client_mock.get_file_info.return_value = {'md5sum': '1234'}
         result = pull_visitor.visit(obs, **kwargs)
         test_url = '{}/{}.fits'.format(pull_visitor.FILE_URL, TEST_PRODUCT_ID)
         test_prev = '{}/{}.fits'.format(TEST_DATA_DIR, TEST_PRODUCT_ID)
