@@ -112,15 +112,13 @@ class TapNoPreviewQuery(mc.Work):
                 "  JOIN caom2.Plane AS P ON O.obsID = P.obsID " \
                 "  JOIN caom2.Artifact AS A ON P.planeID = A.planeID " \
                 "  WHERE O.collection = '{}' " \
-                "  AND A.uri like '{}:{}%fits' " \
                 "  GROUP BY A.planeID " \
                 "  HAVING COUNT(A.artifactID) = 1 ) " \
                 "AND O.maxLastModified >= '{}' " \
                 "AND O.maxLastModified < '{}' " \
                 "AND P.dataRelease <= '{}' " \
                 "ORDER BY O.maxLastModified ASC " \
-                "".format(self.config.collection, gem_name.SCHEME,
-                          self.config.archive, prev_exec_date, exec_date,
+                "".format(self.config.collection, prev_exec_date, exec_date,
                           self.max_ts)
         result = ac.query_tap(query, self.config)
         return [ii for ii in result['observationID']]
