@@ -141,4 +141,10 @@ class ObsFileRelationshipQuery(mc.Work):
         :param exec_date datetime end of the timestamp chunk
         :return: a list of CAOM Observation IDs.
         """
-        return em.get_gofr().subset(prev_exec_date, exec_date)
+        subset = em.get_gofr().subset(prev_exec_date, exec_date)
+        # subset entries look like:
+        # GEMINI OBSID TIMESTAMP
+        # so extract the OBSID value
+        temp = [ii.split()[1] for ii in subset]
+        obs_ids = list(set(temp))
+        return obs_ids

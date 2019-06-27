@@ -273,19 +273,18 @@ def test_run_by_tap_query_rejected_bad_metadata():
 
 @patch('sys.exit', Mock(return_value=MyExitError))
 def test_run_by_in_memory_query():
-    _write_state()
-    test_obs_id = 'GS-2004A-Q-6-27-0255'
-    test_f_id = '2004may19_0255'
-    _write_todo(test_obs_id)
+    _write_state('2018-12-19T20:53:16')
+    test_obs_id = 'GN-2015A-Q-36-15-001'
+    test_f_id = 'N20150216S0129'
+    if os.path.exists(TODO_FILE):
+        os.unlink(TODO_FILE)
+
     getcwd_orig = os.getcwd
     os.getcwd = Mock(return_value=TEST_DATA_DIR)
     try:
         # execution
         with patch('caom2pipe.execute_composable._do_one') \
-                as run_mock, \
-                patch('gem2caom2.work.ObsFileRelationshipQuery') \
-                as query_mock:
-            query_mock.return_value.todo.return_value = [test_obs_id]
+                as run_mock:
             composable.run_by_in_memory()
             assert run_mock.called, 'should have been called'
             args, kwargs = run_mock.call_args
@@ -311,11 +310,14 @@ def _write_todo(test_obs_id):
         f.write('{}\n'.format(test_obs_id))
 
 
-def _write_state():
+def _write_state(prior_timestamp=None):
     # to ensure at least one spin through the execution loop, test case
     # must have a starting time greater than one config.interval prior
     # to 'now', default interval is 10 minutes
-    prior_s = datetime.utcnow().timestamp() - 15 * 60
+    if prior_timestamp is None:
+        prior_s = datetime.utcnow().timestamp() - 15 * 60
+    else:
+        prior_s = mc.make_seconds(prior_timestamp)
     test_start_time = datetime.fromtimestamp(prior_s)
     test_bookmark = {'bookmarks': {'gemini_timestamp':
                                        {'last_record': test_start_time}}}

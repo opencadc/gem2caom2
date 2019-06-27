@@ -137,6 +137,8 @@ def _run_by_tap_query():
     """Run the processing for all the previews that are public, but there are
     no artifacts representing those previews in CAOM.
 
+    Called as gem_run_query.
+
     :return 0 if successful, -1 if there's any sort of failure. Return status
         is used by airflow for task instance management and reporting.
     """
@@ -161,6 +163,8 @@ def run_by_tap_query():
 
 def _run_by_in_memory():
     """Run the processing for the list of observations provided from Gemini.
+
+    Called as gem_run_state.
 
     :return 0 if successful, -1 if there's any sort of failure. Return status
         is used by airflow for task instance management and reporting.
