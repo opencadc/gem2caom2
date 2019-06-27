@@ -46,7 +46,8 @@ RUN git clone https://github.com/opencadc-metadata-curation/gem2caom2.git && \
 
 RUN mkdir /app && mkdir /app/data
 
-COPY ./2018-12-17_from_paul.txt /app/data/from_paul.txt
+ADD https://www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/files/vault/cadcsw/2018-12-17_from_paul.txt /app/data/from_paul.txt
+COPY scripts/docker-entrypoint.sh /
 
 RUN apk --no-cache del git
 
