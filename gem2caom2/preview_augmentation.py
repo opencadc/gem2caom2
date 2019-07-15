@@ -97,10 +97,10 @@ def visit(observation, **kwargs):
         stream = kwargs['stream']
     else:
         raise mc.CadcException('Visitor needs a stream parameter.')
-    if 'rejected' in kwargs:
-        rejected = kwargs['rejected']
+    if 'observable' in kwargs:
+        observable = kwargs['observable']
     else:
-        raise mc.CadcException('Visitor needs a rejected parameter.')
+        raise mc.CadcException('Visitor needs a observable parameter.')
 
     count = 0
     for plane in observation.planes.values():
@@ -115,7 +115,7 @@ def visit(observation, **kwargs):
             file_id = ec.CaomName(artifact.uri).file_id
             logging.debug('Generate thumbnail for file id {}'.format(file_id))
             count += _do_prev(observation.observation_id, file_id, working_dir,
-                              plane, cadc_client, stream, rejected)
+                              plane, cadc_client, stream, observable)
             break
     logging.info('Completed preview augmentation for {}.'.format(
         observation.observation_id))
@@ -123,7 +123,7 @@ def visit(observation, **kwargs):
 
 
 def _do_prev(obs_id, file_id, working_dir, plane, cadc_client, stream,
-             rejected):
+             observable):
     """Retrieve the preview file, so that a thumbnail can be made,
     store the preview if necessary, and the thumbnail, to ad.
     Then augment the CAOM observation with the two additional artifacts.
@@ -131,10 +131,10 @@ def _do_prev(obs_id, file_id, working_dir, plane, cadc_client, stream,
     count = 0
     gem_name = GemName(obs_id=obs_id, file_id=file_id)
     preview = gem_name.prev
-    if rejected.is_no_preview(preview):
+    if observable.rejected.is_no_preview(preview):
         logging.info('Stopping visit because no preview exists for {} in '
                      'observation {}.'.format(preview, obs_id))
-        rejected.record(mc.Rejected.NO_PREVIEW, preview)
+        observable.rejected.record(mc.Rejected.NO_PREVIEW, preview)
     else:
         preview_fqn = os.path.join(working_dir, preview)
         thumb = gem_name.thumb
@@ -143,15 +143,17 @@ def _do_prev(obs_id, file_id, working_dir, plane, cadc_client, stream,
         # get the file - try disk first, then CADC, then Gemini
         if not os.access(preview_fqn, 0):
             try:
-                mc.data_get(cadc_client, working_dir, preview, ARCHIVE)
+                mc.data_get(cadc_client, working_dir, preview, ARCHIVE,
+                            observable.metrics)
             except mc.CadcException as e:
                 preview_url = '{}{}.fits'.format(PREVIEW_URL, file_id)
                 try:
                     mc.http_get(preview_url, preview_fqn)
                     mc.data_put(cadc_client, working_dir, preview, ARCHIVE,
-                                stream, MIME_TYPE)
+                                stream, MIME_TYPE, mime_encoding=None,
+                                metrics=observable.metrics)
                 except Exception as e:
-                    rejected.check_and_record(str(e), preview)
+                    observable.rejected.check_and_record(str(e), preview)
                     raise e
             _augment(plane, gem_name.prev_uri, preview_fqn, ProductType.PREVIEW)
             count = 1
@@ -166,8 +168,9 @@ def _do_prev(obs_id, file_id, working_dir, plane, cadc_client, stream,
         thumb_uri = gem_name.thumb_uri
         _augment(plane, thumb_uri, thumb_fqn, ProductType.THUMBNAIL)
         if cadc_client is not None:
-            mc.data_put(
-                cadc_client, working_dir, thumb, ARCHIVE, stream, MIME_TYPE)
+            mc.data_put(cadc_client, working_dir, thumb, ARCHIVE, stream,
+                        MIME_TYPE, mime_encoding=None,
+                        metrics=observable.metrics)
         count += 1
     return count
 

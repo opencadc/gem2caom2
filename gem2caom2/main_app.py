@@ -2065,17 +2065,6 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name):
     # wider slit so it’s a compromise between throughput and spectral
     # resolution).
 
-    # long slit mode information source:
-    # https://www.gemini.edu/sciops/instruments/gnirs/spectroscopy
-    # 0 - min wavelength
-    # 1 - max wavelength
-    # 2 - 'short' camera resolution
-    # 3 - 'long' camera resolution
-    # 4 - Since November 2012 and for the cross-dispersed mode with
-    # the 2 pix wide slit only resolving powers are somewhat lower, as
-    # follows: X-1400; J-1400, H-1400; K-1300, for 'short' camera
-    # resolution
-
     # cross-dispersion information:
     # Change xd_mode to include grating ID (e.g. ‘32’ or ‘10’ or ‘110’)
     # and two more configurations:
@@ -2119,6 +2108,24 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name):
     # shouldn’t affect transmission band.  Likely observing a bright
     # target and they need to reduce light by a factor of 100X.
 
+    # DB 10-07-19
+    # Info is available here:
+    # https://www.gemini.edu/sciops/instruments/gnirs/spectroscopy/orderblocking-acq-nd-filters.
+    # This filter is used for acquisition of targets in spectroscopy mode
+    # sometimes.  Use the central wavelength of 3.295 microns and width of
+    # 1.5% of that or 0.049425 microns.
+
+    # long slit mode information source:
+    # https://www.gemini.edu/sciops/instruments/gnirs/spectroscopy
+    # 0 - min wavelength
+    # 1 - max wavelength
+    # 2 - 'short' camera resolution
+    # 3 - 'long' camera resolution
+    # 4 - Since November 2012 and for the cross-dispersed mode with
+    # the 2 pix wide slit only resolving powers are somewhat lower, as
+    # follows: X-1400; J-1400, H-1400; K-1300, for 'short' camera
+    # resolution
+
     gnirs_lookup = {'10': {'X': [1.03, 1.17, 570, 2100],
                            'J': [1.17, 1.37, 570, 1600],
                            'H': [1.47, 1.80, 570, 1700],
@@ -2136,7 +2143,8 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name):
                            'SB+SXD': [0.9, 2.5, 1800, 1800],
                            'SB+LXD': [0.9, 2.5, 5400, 5400],
                            'LB+LXD': [0.9, 2.5, 5400, 5400],
-                           'LB+SXD': [1.2, 2.5, 1800, 1800]},
+                           'LB+SXD': [1.2, 2.5, 1800, 1800],
+                           'PAH': [3.270, 3.320, None, None]},
                     '111': {'X': [1.03, 1.17, 6600, 17800],
                             'J': [1.17, 1.37, 7200, 17000],
                             'H': [1.49, 1.80, 5900, 17800],
@@ -2145,7 +2153,8 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name):
                             'M': [4.40, 6.00, 4300, 12800],
                             'SB+SXD': [0.9, 2.5, 5400],
                             'LB+SXD': [0.9, 2.5, 5400],
-                            'LB+LXD': [0.9, 2.5, 17000]}}
+                            'LB+LXD': [0.9, 2.5, 17000],
+                            'PAH': [3.270, 3.320, None, None]}}
 
     reset_energy = False
     if 'Dark' in filter_name:
@@ -2159,7 +2168,7 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name):
     else:
         fm = FilterMetadata('GNIRS')
         if data_product_type == DataProductType.SPECTRUM:
-            logging.debug(
+            logging.error(
                 'gnirs: SpectralWCS Spectroscopy mode for {}.'.format(obs_id))
             disperser = em.om.get('disperser')
             if disperser is None:
@@ -2167,6 +2176,7 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name):
                 reset_energy = True
             else:
                 grating = disperser.split('_')[0]
+                logging.error('grating is {}'.format(grating))
                 # 'UNKNOWN' in grating test obs GS-CAL20040924-6-006
                 # 'ENG -' in grating test obs GN-CAL20130813-22-010
                 if ('UNKNOWN' in grating or 'Moving' in grating or
@@ -2240,35 +2250,42 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name):
                     else:
                         logging.debug('gnirs: long slit mode for {}.'.format(
                             obs_id))
-                        bandpass = filter_name[0]
-                        lookup = bandpass
-                        if camera.startswith('Long'):
-                            slit_table_value = 0.1
-                            lookup_index = 3
-                        elif camera.startswith('Short'):
-                            date_time = ac.get_datetime(em.om.get('ut_datetime'))
-                            if date_time > ac.get_datetime('2012-11-01T00:00:00'):
-                                slit_table_value = 0.3
-                                if grating == '32':
-                                    lookup_index = 4
-                                else:
-                                    lookup_index = 3
-                            else:
-                                slit_table_value = 0.3
-                                lookup_index = 2
+                        if filter_name == 'PAH':
+                            lookup = filter_name
                         else:
-                            raise mc.CadcException(
-                                'GNIRS: Mystery camera definition {} for {}'.format(
-                                    camera, obs_id))
+                            bandpass = filter_name[0]
+                            lookup = bandpass
+                            if camera.startswith('Long'):
+                                slit_table_value = 0.1
+                                lookup_index = 3
+                            elif camera.startswith('Short'):
+                                date_time = ac.get_datetime(em.om.get('ut_datetime'))
+                                if date_time > ac.get_datetime('2012-11-01T00:00:00'):
+                                    slit_table_value = 0.3
+                                    if grating == '32':
+                                        lookup_index = 4
+                                    else:
+                                        lookup_index = 3
+                                else:
+                                    slit_table_value = 0.3
+                                    lookup_index = 2
+                            else:
+                                raise mc.CadcException(
+                                    'GNIRS: Mystery camera definition {} for {}'.format(
+                                        camera, obs_id))
 
+                    lookup = lookup.upper()
                     if lookup not in gnirs_lookup[grating]:
                         raise mc.CadcException(
                             'GNIRS: Mystery lookup {} for grating {}, obs {}'.format(
                                 lookup, grating, obs_id))
                     bounds = gnirs_lookup[grating][lookup]
                     fm.set_bandpass(bounds[1], bounds[0])
-                    fm.resolving_power = slit_table_value * bounds[
-                        lookup_index] / slit_width
+                    if lookup == 'PAH':
+                        fm.resolving_power = None
+                    else:
+                        fm.resolving_power = slit_table_value * bounds[
+                            lookup_index] / slit_width
                     fm.set_central_wl(bounds[1], bounds[0])
         elif data_product_type == DataProductType.IMAGE:
             logging.debug('gnirs: SpectralWCS imaging mode for {}.'.format(obs_id))

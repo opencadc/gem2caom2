@@ -100,7 +100,6 @@ def write_gemini_data_file():
 def test_run_by_tap_query():
     # preconditions
     _write_state()
-    start_time = os.path.getmtime(STATE_FILE)
 
     getcwd_orig = os.getcwd
     os.getcwd = Mock(return_value=TEST_DATA_DIR)
@@ -109,14 +108,12 @@ def test_run_by_tap_query():
         # execution
         with patch('caom2pipe.astro_composable.query_tap') as \
                 query_endpoint_mock, \
-                patch('caom2pipe.execute_composable.run_by_file_prime') \
+                patch('caom2pipe.execute_composable.run_by_file') \
                 as run_mock:
             query_endpoint_mock.return_value = {
                 'observationID': ['GS-2004A-Q-6-27-0255']}
             composable.run_by_tap_query()
             assert run_mock.called, 'should have been called'
-        end_time = os.path.getmtime(STATE_FILE)
-        assert end_time > start_time, 'no execution'
     finally:
         os.getcwd = getcwd_orig
 
@@ -193,7 +190,6 @@ def test_run_by_tap_query_2():
     test_obs_id = 'GS-2017A-Q-58-66-027'
     test_f_id = 'S20170905S0318'
     _write_state()
-    start_time = os.path.getmtime(STATE_FILE)
     getcwd_orig = os.getcwd
     os.getcwd = Mock(return_value=TEST_DATA_DIR)
     try:
@@ -225,9 +221,6 @@ def test_run_by_tap_query_2():
             args, kwargs = query_mock.return_value.todo.call_args
             test_arg = args[0]
             assert isinstance(test_arg, datetime), type(test_arg)
-
-            end_time = os.path.getmtime(STATE_FILE)
-            assert end_time > start_time, 'state file not updated'
     finally:
         os.getcwd = getcwd_orig
 
@@ -237,8 +230,6 @@ def test_run_by_tap_query_rejected_bad_metadata():
     test_obs_id = 'GS-2017A-Q-58-66-027'
     _write_state()
     _write_rejected(test_obs_id)
-    start_time = os.path.getmtime(STATE_FILE)
-    rejected_start_time = os.path.getmtime(REJECTED_FILE)
 
     if os.path.exists(PROGRESS_FILE):
         os.unlink(PROGRESS_FILE)
@@ -253,15 +244,8 @@ def test_run_by_tap_query_rejected_bad_metadata():
             args, kwargs = query_mock.return_value.todo.call_args
             test_time = args[0]
             assert isinstance(test_time, datetime), type(test_time)
-            end_time = os.path.getmtime(STATE_FILE)
-            assert end_time > start_time, 'state file not updated'
-            rejected_end_time = os.path.getmtime(REJECTED_FILE)
-            assert rejected_end_time > rejected_start_time, \
-                'rejected file not updated'
             assert os.path.exists(PROGRESS_FILE), 'should log'
             args, kwargs = query_mock.call_args
-            import logging
-            logging.error(args)
             test_config = args[1]
             assert isinstance(test_config, mc.Config), type(test_config)
             assert test_config.state_fqn == STATE_FILE, 'wrong state file'

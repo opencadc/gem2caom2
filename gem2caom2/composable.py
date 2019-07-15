@@ -76,10 +76,11 @@ from datetime import datetime
 
 from caom2pipe import execute_composable as ec
 from caom2pipe import manage_composable as mc
-from gem2caom2 import APPLICATION, work, preview_augmentation, pull_visitor
+from gem2caom2 import APPLICATION, work, preview_augmentation
+from gem2caom2 import pull_augmentation
 from gem2caom2.gem_name import GemName
 
-meta_visitors = [preview_augmentation, pull_visitor]
+meta_visitors = [preview_augmentation, pull_augmentation]
 data_visitors = []
 
 GEM_BOOKMARK = 'gemini_timestamp'
@@ -92,8 +93,8 @@ def _run():
     """
     config = mc.Config()
     config.get_executors()
-    return ec.run_by_file_prime(config, GemName, APPLICATION, meta_visitors,
-                                data_visitors, chooser=None)
+    return ec.run_by_file(config, GemName, APPLICATION, meta_visitors,
+                          data_visitors, chooser=None)
 
 
 def run():

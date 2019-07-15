@@ -35,6 +35,8 @@ archive: GEM
 schema: gemini
 # how many minutes the run_query timestamp chunk is going to process
 interval: 10
+observe_execution: True
+obserable_directory: /usr/src/app/metrics
 # how to control the work that gets done
 # possible values are:
 # - scrape, store, ingest, modify, visit

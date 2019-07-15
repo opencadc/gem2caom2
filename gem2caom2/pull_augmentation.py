@@ -99,13 +99,13 @@ def visit(observation, **kwargs):
         stream = kwargs['stream']
     else:
         raise mc.CadcException('Visitor needs a stream parameter.')
-    if 'rejected' in kwargs:
-        rejected = kwargs['rejected']
+    if 'observable' in kwargs:
+        observable = kwargs['observable']
     else:
-        raise mc.CadcException('Visitor needs a rejected parameter.')
+        raise mc.CadcException('Visitor needs an observable parameter.')
 
     count = 0
-    if rejected.is_bad_metadata(observation.observation_id):
+    if observable.rejected.is_bad_metadata(observation.observation_id):
         logging.info('Stopping visit for {} because of bad metadata.'.format(
             observation.observation_id))
     else:
@@ -125,9 +125,11 @@ def visit(observation, **kwargs):
                     mc.look_pull_and_put(f_name, working_dir, file_url,
                                          gem_name.ARCHIVE, stream, MIME_TYPE,
                                          cadc_client,
-                                         artifact.content_checksum.checksum)
+                                         artifact.content_checksum.checksum,
+                                         observable.metrics)
                 except Exception as e:
-                    rejected.check_and_record(str(e), observation.observation_id)
+                    observable.rejected.check_and_record(
+                        str(e), observation.observation_id)
                     raise e
     logging.info('Completed pull visitor for {}.'.format(
         observation.observation_id))
