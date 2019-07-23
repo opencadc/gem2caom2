@@ -153,8 +153,10 @@ def _do_prev(obs_id, file_id, working_dir, plane, cadc_client, stream,
                                 stream, MIME_TYPE, mime_encoding=None,
                                 metrics=observable.metrics)
                 except Exception as e:
-                    observable.rejected.check_and_record(str(e), preview)
-                    raise e
+                    if observable.rejected.check_and_record(str(e), preview):
+                        return count
+                    else:
+                        raise e
             _augment(plane, gem_name.prev_uri, preview_fqn, ProductType.PREVIEW)
             count = 1
 

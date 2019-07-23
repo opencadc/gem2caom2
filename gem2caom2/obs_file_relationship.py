@@ -289,7 +289,7 @@ class GemObsFileRelationship(object):
         # 1 = timestamp
         # 2 = file name
         temp_content = {}
-        logging.error('well it started ....')
+        logging.info('Progress - file read ....')
         for ii in result:
             # re-organize to be able to answer list_observations queries
             ol_key = mc.make_seconds(ii[1])
@@ -309,17 +309,15 @@ class GemObsFileRelationship(object):
             else:
                 self.name_list[file_id] = [[ii[0], ol_key]]
 
-        logging.error('After the initial bits')
+        logging.info('Progress - now build the repaired lookups ...')
 
         self._build_repaired_lookups()
-
-        logging.error('After the repair bits')
 
         # this structure means an observation ID occurs more than once with
         # different last modified times
         self.time_list = collections.OrderedDict(sorted(temp_content.items(),
                                                         key=lambda t: t[0]))
-        self.logger.debug('Observation list initialized in memory.')
+        self.logger.info('Observation list initialized in memory.')
 
     def _read_file(self, fqn):
         """Read the .txt file from Gemini, and make it prettier ...
@@ -409,22 +407,39 @@ class GemObsFileRelationship(object):
         return temp
 
     def get_file_names(self, obs_id):
+        """Given an obs id, return the list of file names that make up
+        the observation."""
         if obs_id in self.id_list:
-            return self.id_list[obs_id]
+            temp_str = ''.join(self.id_list[obs_id])
+            if re.search(r'_BIAS|_FLAT', temp_str) is not None:
+                # all of this is to handle the approximately 5000 cases where
+                # the same data label refers to different file names, where
+                # the difference is in the case of the file name only
+                temp_set = set([ii.upper() for ii in self.id_list[obs_id]])
+                if len(temp_set) != len(self.id_list[obs_id]):
+                    temp_list = []
+                    for f_name in self.id_list[obs_id]:
+                        x = self._check_duplicate(f_name.replace('.fits', ''))
+                        temp_list.append('{}.fits'.format(x))
+                    return list(set(temp_list))
+            else:
+                return self.id_list[obs_id]
         else:
             return None
 
     def get_obs_id(self, file_id):
-        if file_id in self.name_list:
+        checked = self._check_duplicate(file_id)
+        if checked in self.name_list:
             # structure of the entry is ['obs id', timestamp], so return
             # only the obs_id of the first entry
-            return self.name_list[file_id][0][0]
+            return self.name_list[checked][0][0]
         else:
             return None
 
     def get_timestamp(self, file_id):
-        if file_id in self.name_list:
-            temp = self.name_list[file_id]
+        checked = self._check_duplicate(file_id)
+        if checked in self.name_list:
+            temp = self.name_list[checked]
             return temp[0][1]
         else:
             return timedelta()
@@ -656,6 +671,24 @@ class GemObsFileRelationship(object):
                 'Could not find observation ID {} in Gemini-provided '
                 'list.'.format(obs_id))
             return []
+
+    def _check_duplicate(self, file_id):
+        """There are data labels in the Gemini-supplied file, where the
+        only difference in the related file name is the case of the 'bias'
+        or 'flat' text. So look for that as well, when checking for
+        membership.
+
+        There are approximately 5500 entries of this duplicate sort - too
+        many to fix manually, but also too many to ignore.
+        """
+        if re.search(r'_BIAS|_FLAT', file_id) is not None:
+            duplicate_check = re.sub(
+                '_FLAT', '_flat', re.sub('_BIAS', '_bias', file_id))
+            if duplicate_check in self.name_list:
+                logging.warning('Replacing {} with {}'.format(
+                    file_id, duplicate_check))
+                file_id = duplicate_check
+        return file_id
 
 
 class CommandLineBits(object):

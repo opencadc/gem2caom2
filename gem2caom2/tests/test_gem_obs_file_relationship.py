@@ -851,3 +851,35 @@ def test_get_timestamp():
     test_result = gofr.get_timestamp('ag2003feb19_6.0001')
     assert test_result is not None, 'no result'
     assert test_result == 1498571069.924588, 'wrong result'
+
+
+@pytest.mark.skipif(not sys.version.startswith(PY_VERSION),
+                    reason='support 3.6 only')
+def test_mixed_case_file_names():
+    mixed_case_f_names_order_1 = os.path.join(
+        TEST_DATA_DIR, 'mixed_case_1.txt')
+    mixed_case_f_names_order_2 = os.path.join(
+        TEST_DATA_DIR, 'mixed_case_2.txt')
+    test_obs_id = 'GN-CAL20100415-6-086-BIAS'
+    test_file_id = 'N20100415S0452_bias'
+
+    for f_name in [mixed_case_f_names_order_1, mixed_case_f_names_order_2]:
+        import shutil
+        shutil.copy(f_name, '/app/data/from_paul.txt')
+        test_subject = GemObsFileRelationship()
+
+        result_obs_id = test_subject.get_obs_id(test_file_id)
+        assert result_obs_id is not None, 'expected result {}'.format(f_name)
+        assert result_obs_id == test_obs_id, 'wrong result {}'.format(f_name)
+
+        test_timestamp = test_subject.get_timestamp(test_file_id)
+        assert test_timestamp is not None, 'expected result {}'.format(f_name)
+        assert test_timestamp == 1498316473.885391, 'wrong timestamp'
+
+        result_file_names = test_subject.get_file_names(test_obs_id)
+        assert result_file_names is not None, 'expected result {}'.format(
+            f_name)
+        assert len(result_file_names) == 1, 'wrong size result {}'.format(
+            f_name)
+        assert result_file_names[0] == '{}.fits'.format(test_file_id), \
+            'wrong result {} {}'.format(f_name, result_file_names)

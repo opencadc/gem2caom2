@@ -213,10 +213,9 @@ def test_preview_augment_unknown_no_preview():
             patch('caom2pipe.manage_composable.exec_cmd') as exec_mock:
         cadc_client_mock.return_value.data_get.return_value = mc.CadcException(
             'test')
-        try:
-            ignore = preview_augmentation.visit(obs, **kwargs)
-        except Exception as e:
-            pass  # should have got here
+        result = preview_augmentation.visit(obs, **kwargs)
+        assert result is not None, 'expect result'
+        assert result['artifacts'] == 0, 'wrong result'
         test_url = '{}{}.fits'.format(preview_augmentation.PREVIEW_URL,
                                       TEST_PRODUCT_ID)
         test_prev = '{}/{}.jpg'.format(TEST_DATA_DIR, TEST_PRODUCT_ID)
