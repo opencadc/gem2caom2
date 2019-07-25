@@ -110,16 +110,29 @@ def visit(observation, **kwargs):
                          'thumbnail creation.'.format(plane.product_id))
             continue
         for artifact in plane.artifacts.values():
-            if GemName.is_preview(artifact.uri):
-                continue
             file_id = ec.CaomName(artifact.uri).file_id
-            logging.debug('Generate thumbnail for file id {}'.format(file_id))
-            count += _do_prev(observation.observation_id, file_id, working_dir,
-                              plane, cadc_client, stream, observable)
-            break
+            if GemName.is_preview(artifact.uri):
+                count += _check_for_delete(file_id, artifact.uri, observable, plane)
+            else:
+                logging.debug('Generate thumbnail for file id {}'.format(file_id))
+                count += _do_prev(observation.observation_id, file_id, working_dir,
+                                  plane, cadc_client, stream, observable)
     logging.info('Completed preview augmentation for {}.'.format(
         observation.observation_id))
     return {'artifacts': count}
+
+
+def _check_for_delete(file_name, uri, observable, plane):
+    """If the preview file doesn't exist, but the artifact that represents it
+    does, remove that artifact from the Observation instance."""
+    result = 0
+    if (observable.rejected.is_no_preview(
+            file_name) and uri in plane.artifacts.keys()):
+        logging.warning(
+            'Removing artifact for non-existent preview {}'.format(uri))
+        plane.artifacts.pop(uri)
+        result = 1
+    return result
 
 
 def _do_prev(obs_id, file_id, working_dir, plane, cadc_client, stream,
@@ -154,6 +167,8 @@ def _do_prev(obs_id, file_id, working_dir, plane, cadc_client, stream,
                                 metrics=observable.metrics)
                 except Exception as e:
                     if observable.rejected.check_and_record(str(e), preview):
+                        count += _check_for_delete(
+                            preview, gem_name.prev_uri, observable, plane)
                         return count
                     else:
                         raise e

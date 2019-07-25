@@ -73,7 +73,6 @@ from caom2pipe import astro_composable as ac
 from caom2pipe import manage_composable as mc
 
 import gem2caom2.external_metadata as em
-from gem2caom2 import gem_name
 
 __all__ = ['TapNoPreviewQuery', 'ObsFileRelationshipQuery']
 
@@ -97,7 +96,6 @@ class TapNoPreviewQuery(mc.Work):
         thumbnail artifacts. The results are chunked by timestamps, and
         limited to those entries that are public.
 
-        :param config ManageComposable.Config for gem2caom2
         :param prev_exec_date datetime start of the timestamp chunk
         :param exec_date datetime end of the timestamp chunk
         :return: a list of CAOM Observation IDs.
@@ -123,6 +121,52 @@ class TapNoPreviewQuery(mc.Work):
         result = ac.query_tap(query, self.config)
         return [ii for ii in result['observationID']]
 
+    def initialize(self):
+        """Do nothing."""
+        pass
+
+
+class TapRecentlyPublicQuery(mc.Work):
+
+    def __init__(self, max_ts, config):
+        super(TapRecentlyPublicQuery, self).__init__(max_ts.timestamp())
+        self.config = config
+        self.max_ts = max_ts  # type datetime
+
+    def todo(self, prev_exec_date, exec_date):
+        """
+        Get the set of observation IDs that do not have preview or
+        thumbnail artifacts. Limit the entries by time-boxing on
+        dataRelease.
+
+        :param prev_exec_date datetime start of the timestamp chunk
+        :param exec_date datetime end of the timestamp chunk
+        :return: a list of CAOM Observation IDs.
+        """
+
+        logging.debug('Entering todo')
+        query = "SELECT O.observationID " \
+                "FROM caom2.Observation AS O " \
+                "JOIN caom2.Plane AS P ON O.obsID = P.obsID " \
+                "WHERE P.planeID IN ( " \
+                "  SELECT A.planeID " \
+                "  FROM caom2.Observation AS O " \
+                "  JOIN caom2.Plane AS P ON O.obsID = P.obsID " \
+                "  JOIN caom2.Artifact AS A ON P.planeID = A.planeID " \
+                "  WHERE O.collection = '{}' " \
+                "  GROUP BY A.planeID " \
+                "  HAVING COUNT(A.artifactID) = 1 ) " \
+                "AND P.dataRelease <= '{}' " \
+                "AND P.dataRelease > '{}' " \
+                "ORDER BY O.maxLastModified ASC " \
+                "".format(self.config.collection, prev_exec_date, exec_date)
+        result = ac.query_tap(query, self.config)
+        return [ii for ii in result['observationID']]
+
+    def initialize(self):
+        """Do nothing."""
+        pass
+
 
 class ObsFileRelationshipQuery(mc.Work):
 
@@ -146,3 +190,7 @@ class ObsFileRelationshipQuery(mc.Work):
         temp = [ii.split()[1] for ii in subset]
         obs_ids = list(set(temp))
         return obs_ids
+
+    def initialize(self):
+        """Do nothing."""
+        pass

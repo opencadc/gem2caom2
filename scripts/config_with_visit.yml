@@ -37,6 +37,8 @@ schema: gemini
 interval: 10
 observe_execution: True
 obserable_directory: /usr/src/app/metrics
+rejected_file_name: rejected.yml
+rejected_directory: /usr/src/app/rejected
 # how to control the work that gets done
 # possible values are:
 # - scrape, store, ingest, modify, visit

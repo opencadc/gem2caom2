@@ -138,7 +138,8 @@ def _run_by_tap_query():
     """Run the processing for all the previews that are public, but there are
     no artifacts representing those previews in CAOM.
 
-    Called as gem_run_query.
+    Called as gem_run_query. The time-boxing is based on the timestamps in
+    the file provided by Gemini.
 
     :return 0 if successful, -1 if there's any sort of failure. Return status
         is used by airflow for task instance management and reporting.
@@ -180,6 +181,36 @@ def _run_by_in_memory():
 def run_by_in_memory():
     try:
         result = _run_by_in_memory()
+        sys.exit(result)
+    except Exception as e:
+        logging.error(e)
+        tb = traceback.format_exc()
+        logging.debug(tb)
+        sys.exit(-1)
+
+
+def _run_by_public():
+    """Run the processing for observations that are public, but there are
+    no artifacts representing the previews in CAOM, or a FITS file in ad.
+
+    Called as gem_run_public. The time-boxing is based on timestamps from a
+    state.yml file. Call once/day, since data release timestamps have times
+    of 00:00:00.000.
+
+    :return 0 if successful, -1 if there's any sort of failure. Return status
+        is used by airflow for task instance management and reporting.
+    """
+    config = mc.Config()
+    config.get_executors()
+    return ec.run_from_state(config, GemName, APPLICATION, meta_visitors,
+                             data_visitors, GEM_BOOKMARK,
+                             work.TapRecentlyPublicQuery(
+                                 datetime.utcnow(), config))
+
+
+def run_by_public():
+    try:
+        result = _run_by_public()
         sys.exit(result)
     except Exception as e:
         logging.error(e)

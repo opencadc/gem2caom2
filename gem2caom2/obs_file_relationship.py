@@ -605,7 +605,6 @@ class GemObsFileRelationship(object):
     def _build_repaired_lookups(self):
         # for each gemini observation ID, get the file names associated with
         # that observation ID
-        index = 0
         for ii in self.id_list:
             file_names = self.id_list[ii]
             # for each file name, repair the obs id, add repaired obs id
@@ -615,12 +614,7 @@ class GemObsFileRelationship(object):
                 repaired_obs_id = self.repair_data_label(file_id)
                 temp = gem_name.GemName.remove_extensions(ii)
                 self._add_repaired_element(temp, repaired_obs_id, file_id)
-            index += 1
 
-            if index % 100000 == 0:
-                logging.error('got to {} {}'.format(index, ii))
-
-        index = 0
         # for each file name, add repaired obs ids, if they're not already
         # in the list
         for file_name in self.name_list:
@@ -629,10 +623,6 @@ class GemObsFileRelationship(object):
                 file_id = gem_name.GemName.remove_extensions(file_name)
                 repaired_obs_id = self.repair_data_label(file_id)
                 self._add_repaired_element(obs_id, repaired_obs_id, file_id)
-            index += 1
-
-            if index % 100000 == 0:
-                logging.error('got to {} {}'.format(index, file_name))
 
     def _add_repaired_element(self, obs_id, repaired_obs_id, file_id):
         if obs_id in self.repaired_ids:

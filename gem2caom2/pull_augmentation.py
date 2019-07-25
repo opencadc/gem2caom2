@@ -128,10 +128,8 @@ def visit(observation, **kwargs):
                                          artifact.content_checksum.checksum,
                                          observable.metrics)
                 except Exception as e:
-                    if (observable.rejected.check_and_record(
+                    if not (observable.rejected.check_and_record(
                             str(e), observation.observation_id)):
-                        break
-                    else:
                         raise e
     logging.info('Completed pull visitor for {}.'.format(
         observation.observation_id))

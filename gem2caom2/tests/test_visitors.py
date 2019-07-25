@@ -215,6 +215,7 @@ def test_preview_augment_unknown_no_preview():
             'test')
         result = preview_augmentation.visit(obs, **kwargs)
         assert result is not None, 'expect result'
+        # 0 because the preview artifact doesn't already exist
         assert result['artifacts'] == 0, 'wrong result'
         test_url = '{}{}.fits'.format(preview_augmentation.PREVIEW_URL,
                                       TEST_PRODUCT_ID)
@@ -255,3 +256,28 @@ def test_pull_augmentation():
         assert result['observation'] == 0, 'no updated metadata'
         assert len(obs.planes[TEST_PRODUCT_ID].artifacts) == 1, \
             'no new artifacts'
+
+
+def test_preview_augment_delete_preview():
+    test_product_id = 'S20080610S0045'
+    fqn = os.path.join(TEST_DATA_DIR, 'GS-2008A-C-5-35-002.fits.xml')
+    obs = mc.read_obs_from_file(fqn)
+    assert len(obs.planes[test_product_id].artifacts) == 2, 'initial condition'
+    test_rejected = mc.Rejected('/tmp/nonexistent')
+    test_rejected.content = {
+        'bad_metadata': [],
+        'no_preview':
+            ['S20080610S0043.jpg',
+             'S20080610S0041.jpg',
+             'S20080610S0044.jpg',
+             'S20080610S0045.jpg']}
+    test_config = mc.Config()
+    test_observable = mc.Observable(test_rejected, mc.Metrics(test_config))
+    kwargs = {'working_directory': TEST_DATA_DIR,
+              'cadc_client': None,
+              'stream': 'stream',
+              'observable': test_observable}
+    result = preview_augmentation.visit(obs, **kwargs)
+    assert result is not None, 'expect a result'
+    assert result['artifacts'] == 1, 'wrong result'
+    assert len(obs.planes[test_product_id].artifacts) == 1, 'post condition'

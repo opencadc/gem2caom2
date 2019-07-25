@@ -124,6 +124,7 @@ class GemName(ec.StorageName):
             scheme=SCHEME)
         if self._obs_id is None:
             self._obs_id = em.get_gofr().get_obs_id(self._file_id)
+            # self._obs_id = em.get_repaired_obs_id(self._file_id)
         if file_id is not None:
             self._file_id = file_id
         self._lineage = None
@@ -139,6 +140,7 @@ class GemName(ec.StorageName):
             self._obs_id = temp[0].obs_id.split()[1]
         else:
             if len(temp) == 0:
+                logging.error('length is 0')
                 if self._file_id is None:
                     raise mc.CadcException(
                         'obs id {} unknown at Gemini'.format(self._obs_id))
@@ -147,6 +149,7 @@ class GemName(ec.StorageName):
                     # archive.gemini.edu publishes, so check for the
                     # un-repaired value
                     repaired = em.get_gofr().get_obs_id(self._file_id)
+                    # repaired = em.get_repaired_obs_id(self._file_id)
                     x = em.get_gofr().get_args(repaired)
                     self._lineage = x[0].lineage
                     self._external_urls = x[0].urls
@@ -155,7 +158,15 @@ class GemName(ec.StorageName):
                 for bits in temp:
                     urls = bits.urls.split()
                     for url in urls:
-                        if url.endswith(self._file_name):
+                        if self._file_name is None:
+                            if self._obs_id == bits.obs_id.split()[1].strip():
+                                logging.debug(
+                                    'Using existing obs id with {}'.format(self._obs_id))
+                                self._external_urls = bits.urls
+                                self._lineage = bits.lineage
+                                found = True
+                                break
+                        elif url.endswith(self._file_name):
                             self._obs_id = bits.obs_id.split()[1]
                             logging.debug(
                                 'Replaced obs id with {}'.format(self._obs_id))
