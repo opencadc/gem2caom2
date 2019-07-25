@@ -156,8 +156,8 @@ class TapRecentlyPublicQuery(mc.Work):
                 "  WHERE O.collection = '{}' " \
                 "  GROUP BY A.planeID " \
                 "  HAVING COUNT(A.artifactID) = 1 ) " \
-                "AND P.dataRelease <= '{}' " \
                 "AND P.dataRelease > '{}' " \
+                "AND P.dataRelease <= '{}' " \
                 "ORDER BY O.maxLastModified ASC " \
                 "".format(self.config.collection, prev_exec_date, exec_date)
         result = ac.query_tap(query, self.config)
