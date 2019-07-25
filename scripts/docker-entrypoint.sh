@@ -12,7 +12,15 @@ if [[ ! -e ${PWD}/config.yml ]]; then
 fi
 
 if [[ ! -e ${PWD}/state.yml ]]; then
-  cp /state.yml ${PWD}
+  if [[ "${@}" == "gem_run_public" ]]; then
+    yesterday=$(date -d yesterday "+%d-%b-%Y %H:%M")
+    echo "bookmarks:
+    vlass_timestamp:
+      last_record: $yesterday
+" > ${PWD}/state.yml
+  else
+    cp /state.yml ${PWD}
+  fi
 fi
 
 exec "${@}"
