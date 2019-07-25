@@ -15,7 +15,7 @@ if [[ ! -e ${PWD}/state.yml ]]; then
   if [[ "${@}" == "gem_run_public" ]]; then
     yesterday=$(date -d yesterday "+%d-%b-%Y %H:%M")
     echo "bookmarks:
-    vlass_timestamp:
+    gemini_timestamp:
       last_record: $yesterday
 " > ${PWD}/state.yml
   else
