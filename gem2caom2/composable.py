@@ -80,7 +80,8 @@ from gem2caom2 import APPLICATION, work, preview_augmentation
 from gem2caom2 import pull_augmentation
 from gem2caom2.gem_name import GemName
 
-meta_visitors = [preview_augmentation, pull_augmentation]
+# meta_visitors = [preview_augmentation, pull_augmentation]
+meta_visitors = []
 data_visitors = []
 
 GEM_BOOKMARK = 'gemini_timestamp'
