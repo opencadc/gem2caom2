@@ -1,3 +1,25 @@
+# How To Run gem2caom2
+
+In an empty directory (the 'working directory'), on a machine with Docker installed:
+
+1. In the master branch of this repository, find the scripts directory, and copy the file vlass_run_state.sh to the working directory. e.g.:
+
+  ```
+  wget https://raw.github.com/opencadc-metadata-curation/gem2caom2/master/scripts/gem_run_public.sh
+  ```
+
+2. Ensure the script is executable:
+
+```
+chmod +x gem_run_public.sh
+```
+
+3. To run the application:
+
+```
+./gem_run_public.sh
+```
+
 # gem2caom2
 An application to generate CAOM2 Observations from FITS file headers.
 
