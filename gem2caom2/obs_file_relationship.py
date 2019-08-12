@@ -505,7 +505,6 @@ class GemObsFileRelationship(object):
                 suffix = GemObsFileRelationship._get_suffix(file_id, repaired)
                 removals = GemObsFileRelationship._get_removals(file_id,
                                                                 repaired)
-
                 if len(prefix) > 0:
                     removals = [prefix] + suffix
                 else:
@@ -523,10 +522,21 @@ class GemObsFileRelationship(object):
                 # Basically any ‘mfrg’, ‘mrg’, or ‘rg’ file WITHOUT ‘add’
                 # in the datalabel or name is a processed version of a raw
                 # file without the datalabel suffix (filename prefix)
-                if 'mfrg' == prefix or 'mrg' == prefix or 'rg' == prefix:
-                    if not ('add' in suffix or 'ADD' in suffix):
-                        prefix = ''
-                        suffix = []
+                #
+                # DB - 19-07-31
+                # Assuming all such processed ‘arc’ files are processed
+                # identically then these should be different planes in the
+                # same observation.  The “_arc” file has had some basic
+                # processing carried out.
+                #
+                # r<file name> should be another plane of the same
+                # observation.
+                if ((('mfrg' == prefix or 'mrg' == prefix or 'rg' == prefix) and
+                     (not ('add' in suffix or 'ADD' in suffix))) or
+                        ('arc' in suffix or 'ARC' in suffix) or
+                        ('r' == prefix or 'R' == prefix)):
+                    prefix = ''
+                    suffix = []
 
                 if len(prefix) > 0:
                     repaired = '{}-{}'.format(repaired, prefix.upper())

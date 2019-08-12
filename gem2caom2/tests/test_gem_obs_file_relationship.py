@@ -99,7 +99,7 @@ def test_subset_all():
     assert temp[0].startswith(
         'GEMINI GN-CAL20170616-11-022 2017-06-19T03:21:29.345'), \
         'wrong content'
-    assert len(list(temp)) == 524, 'wrong count'
+    assert len(list(temp)) == 527, 'wrong count'
     result = gofr.get_file_names('GN-2015B-Q-1-12-1003')
     assert result == \
            ['N20150807G0044m.fits', 'N20150807G0044i.fits',
@@ -135,7 +135,7 @@ def test_subset_only_end():
     assert temp[0].startswith(
         'GEMINI GN-CAL20170616-11-022 2017-06-19T03:21:29.345'), \
         'wrong content'
-    assert len(list(temp)) == 427, 'wrong count'
+    assert len(list(temp)) == 430, 'wrong count'
 
     temp = gofr.subset(end=end, maxrec=3)
     assert temp is not None, 'should have content'
@@ -155,7 +155,7 @@ def test_subset_start_end():
     assert temp[0].startswith(
         'GEMINI GN-CAL20150925-2-007 2017-06-20T14:50:59.795'), \
         'wrong content'
-    assert len(list(temp)) == 324, 'wrong count'
+    assert len(list(temp)) == 327, 'wrong count'
 
     temp = test_subject.subset(start=start, end=end, maxrec=3)
     assert temp is not None, 'should have content'
@@ -706,10 +706,12 @@ x = {
             y, 'mrgS20120922S0406.fits', 'S20120922S0406.fits'),
         lineage='{1}/{0}{1}.fits {2}/{0}{2}.fits'.format(
             z, 'mrgS20120922S0406', 'S20120922S0406'))],
-    'GS-2012B-Q-90-366-003-R': [CommandLineBits(
-        obs_id='GEMINI GS-2012B-Q-90-366-003-R',
-        urls='{}{}'.format(y, 'rS20121030S0136.fits'),
-        lineage='{1}/{0}{1}.fits'.format(z, 'rS20121030S0136'))],
+    'GS-2012B-Q-90-366-003': [CommandLineBits(
+        obs_id='GEMINI GS-2012B-Q-90-366-003',
+        urls='{0}{1} {0}{2}'.format(
+            y, 'rS20121030S0136.fits', 'S20121030S0136.fits'),
+        lineage='{1}/{0}{1}.fits {2}/{0}{2}.fits'.format(
+            z, 'rS20121030S0136', 'S20121030S0136'))],
     'GS-2013B-Q-16-277-019_STACK': [CommandLineBits(
         obs_id='GEMINI GS-2013B-Q-16-277-019-DARK',
         urls='{}{}'.format(y, 'S20140124S0039_dark.fits'),
@@ -818,12 +820,16 @@ x = {
         lineage='{1}/{0}{1}.fits'.format(z, 'gS20150906S0222_bias'))],
     'GN-2012A-Q-124-1-003': [CommandLineBits(
         obs_id='GEMINI GN-2012A-Q-124-1-003',
-        urls='{0}{1}'.format(y, 'N20120905S0122.fits'),
-        lineage='{1}/{0}{1}.fits'.format(z, 'N20120905S0122')),
-        CommandLineBits(
-            obs_id='GEMINI GN-2012A-Q-124-1-003-ARC',
-            urls='{0}{1}'.format(y, 'N20120905S0122_arc.fits'),
-            lineage='{1}/{0}{1}.fits'.format(z, 'N20120905S0122_arc'))]
+        urls='{0}{1} {0}{2}'.format(
+            y, 'N20120905S0122_arc.fits', 'N20120905S0122.fits'),
+        lineage='{1}/{0}{1}.fits {2}/{0}{2}.fits'.format(
+            z, 'N20120905S0122_arc', 'N20120905S0122'))],
+    'GS-2011B-Q-11-32-005': [CommandLineBits(
+        obs_id='GEMINI GS-2011B-Q-11-32-005',
+        urls='{0}{1} {0}{2}'.format(
+            y, 'rS20111124S0053.fits', 'S20111124S0053.fits'),
+        lineage='{1}/{0}{1}.fits {2}/{0}{2}.fits'.format(
+            z, 'rS20111124S0053', 'S20111124S0053'))]
 }
 
 

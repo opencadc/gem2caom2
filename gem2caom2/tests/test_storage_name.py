@@ -112,6 +112,7 @@ def test_storage_name_2():
     test_sn._get_args()
     assert test_sn._external_urls is not None, 'should be initialized'
     assert test_sn._external_urls == \
+        'https://archive.gemini.edu/fullheader/N20120905S0122_arc.fits ' \
         'https://archive.gemini.edu/fullheader/N20120905S0122.fits', \
         'wrong value'
 

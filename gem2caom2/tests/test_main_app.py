@@ -70,6 +70,7 @@ import json
 import logging
 import pytest
 
+from shutil import copyfile
 
 from astropy.io.votable import parse_single_table
 
@@ -403,7 +404,7 @@ LOOKUP = {
                               'GS-2016B-Q-72'],
     'mrgS20181016S0184_fringe': ['GS-CAL20181016-5-001',
                                  em.Inst.GMOS, 'GS-CAL20181016'],
-    'rS20121030S0136': ['GS-2012B-Q-90-366-003-R', em.Inst.TRECS,
+    'rS20121030S0136': ['GS-2012B-Q-90-366-003', em.Inst.TRECS,
                         'GS-2012B-Q-90'],
     'rgS20100212S0301': ['GS-2010A-Q-36-5-246', em.Inst.GMOS,
                          'GS-2010A-Q-36'],
@@ -456,6 +457,11 @@ def pytest_generate_tests(metafunc):
 
 
 def test_main_app(test_name):
+    test_data_size = os.stat(os.path.join(TEST_DATA_DIR, 'from_paul.txt'))
+    app_size = os.stat('/app/data/from_paul.txt')
+    if test_data_size.st_size != app_size.st_size:
+        copyfile(os.path.join(TEST_DATA_DIR, 'from_paul.txt'),
+                 '/app/data/from_paul.txt')
     basename = os.path.basename(test_name)
     dirname = os.path.dirname(test_name)
     file_id = _get_file_id(basename)

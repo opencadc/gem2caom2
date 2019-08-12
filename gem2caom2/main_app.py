@@ -609,6 +609,10 @@ def get_target_moving(header):
     Calculate whether the Target moving.
     Non-sidereal tracking -> setting moving target to "True"
 
+    DB, 01-08-19
+    Many calibration observations are acquired with the telescope parked and
+    hence not tracking at sidereal rate.
+
     :param header:  The FITS header for the current extension.
     :return: The Target TargetType, or None if not found.
     """
