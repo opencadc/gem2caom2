@@ -1,0 +1,815 @@
+Filename: N20120905S0122_arc.fits.bz2
+
+AstroData Types: ['GMOS_LS_ARC', 'LS', 'GEMINI_NORTH', 'GMOS_LS', 'GMOS_N', 'GMOS_CAL', 'GEMINI', 'SIDEREAL', 'GMOS_SPECT', 'CAL', 'GMOS', 'SPECT', 'OVERSCAN_SUBTRACTED', 'PREPARED', 'OVERSCAN_TRIMMED', 'PROCESSED_ARC']
+
+
+--- HDU 0 ---
+SIMPLE  =                    T / Fits standard                                  
+BITPIX  =                   16 / Bits per pixel                                 
+NAXIS   =                    0 / Number of axes                                 
+EXTEND  =                    T / File may contain extensions                    
+ORIGIN  = 'NOAO-IRAF FITS Image Kernel July 2003' / FITS file originator        
+DATE    = '2012-09-05T19:01:48' / Date FITS file was generated                  
+IRAF-TLM= '2012-09-05T19:02:40' / Time of last modification                     
+COMMENT   FITS (Flexible Image Transport System) format is defined in 'Astronomy
+COMMENT   and Astrophysics', volume 376, page 359; bibcode: 2001A&A...376..359H 
+INSTRUME= 'GMOS-N  '           / Instrument used to acquire data                
+OBJECT  = 'CuAr    '           / Object Name                                    
+OBSTYPE = 'ARC     '           / Observation type                               
+OBSCLASS= 'progCal '           / Observe class                                  
+GEMPRGID= 'GN-2012A-Q-124'     / Gemini programme ID                            
+OBSID   = 'GN-2012A-Q-124-1'   / Observation ID / Data label                    
+DATALAB = 'GN-2012A-Q-124-1-003' / DHS data label                               
+OBSERVER= 'tgeballe'           / Observer                                       
+OBSERVAT= 'Gemini-North'       / Name of telescope (Gemini-North|Gemini-South)  
+TELESCOP= 'Gemini-North'       / Gemini-North                                   
+PARALLAX=                   0. / Parallax of Target                             
+RADVEL  =                   0. / Heliocentric Radial Velocity                   
+EPOCH   =                2000. / Epoch for Target coordinates                   
+EQUINOX =                2000. / Equinox of coordinate system                   
+TRKEQUIN=                2000. / Tracking equinox                               
+SSA     = 'amatulonis, jchavez' / SSA                                           
+RA      =             289.8775 / Right Ascension                                
+DEC     =              44.7622 / Declination of Target                          
+ELEVATIO=     63.1293541666667 / Current Elevation                              
+AZIMUTH =     19.1822652777778 / Current Azimuth                                
+CRPA    =    -233.769825869025 / Current Cass Rotator Position Angle            
+HA      = '-00:48:12.74'       / Telescope hour angle                           
+LT      = '19:54:35.5'         / Local time at start of observation             
+TRKFRAME= 'FK5     '           / Tracking co-ordinate                           
+DECTRACK=                   0. / Differential tracking rate Dec                 
+TRKEPOCH=         56175.219186 / Differential tracking reference epoch          
+RATRACK =                   0. / Differential tracking rate RA                  
+FRAME   = 'FK5     '           / Target coordinate system                       
+PMDEC   =                   0. / Proper Motion in Declination                   
+PMRA    =                   0. / Proper Motion in RA                            
+WAVELENG=                4750. / Effective Target Wavelength                    
+RAWIQ   = '70-percentile'      / Raw Image Quality                              
+RAWCC   = '70-percentile'      / Raw Cloud Cover                                
+RAWWV   = '80-percentile'      / Raw Water Vapour/Transparency                  
+RAWBG   = 'Any     '           / Raw Background                                 
+RAWPIREQ= 'UNKNOWN '           / PI Requirements Met                            
+RAWGEMQA= 'UNKNOWN '           / Gemini Quality Assessment                      
+CGUIDMOD= 'Basic   '           / Carousel Mode                                  
+UT      = '05:54:35.5'         / UT at observation start                        
+M2BAFFLE= 'VISIBLE '           / Position of M2 baffle                          
+M2CENBAF= 'CLOSED  '           / Position of M2 central hole baffle             
+ST      = '18:31:42.8'         / Sidereal time at the start of the exposure     
+XOFFSET =       -1.50186914177 / Telescope offset in x in arcsec                
+YOFFSET =       0.051834103018 / Telescope offset in y in arcsec                
+POFFSET =        -1.5018000044 / Telescope offset in p in arcsec                
+QOFFSET =      0.0538000001593 / Telescope offset in q in arcsec                
+RAOFFSET=        1.30075312869 / Telescope offset in RA in arcsec               
+DECOFFSE=      -0.752554975699 / Telescope offset in DEC in arcsec              
+RATRGOFF=                   0. / Target offset in RA in arcsec                  
+DECTRGOF=                   0. / Target offset in DEC in arcsec                 
+PA      =                 332. / Sky Position Angle at start of exposure        
+IAA     =              179.925 / Instrument Alignment Angle                     
+SFRT2   =              133.676 / Science fold rotation angle (degrees)          
+SFTILT  =                -0.07 / Science fold tilt angle (degrees)              
+SFLINEAR=                   8. / Science fold linear position (mm)              
+AOFOLD  = 'park-pos.'          / AO Pick-Off Mirror Position                    
+PWFS1_ST= 'parked  '           / PWFS1 probe state (frozen,guiding,parked)      
+PWFS2_ST= 'parked  '           / PWFS2 probe state (frozen,guiding,parked)      
+OIWFS_ST= 'guiding '           / OIWFS probe state (frozen,guiding,parked)      
+AOWFS_ST= 'parked  '           / AOWFS probe state (frozen,guiding,parked)      
+REQIQ   = 'Any     '           / Requested Image Quality                        
+REQCC   = '70-percentile'      / Requested Cloud Cover                          
+REQBG   = 'Any     '           / Requested Background                           
+REQWV   = 'Any     '           / Requested Water Vapour                         
+GCALLAMP= 'CuAr    '           / GCAL Lamp name                                 
+GCALFILT= 'CLEAR   '           / GCAL Filter name                               
+GCALDIFF= 'VISIBLE '           / GCAL Diffuser name                             
+GCALSHUT= 'CLOSED  '           / GCAL Shutter (OPEN or CLOSED)                  
+OIARA   =          289.7867625 / RA of OIWFS guide star                         
+OIARV   =                   0. / OIWFS Heliocentric Radial Velocity             
+OIAWAVEL=                6500. / OIWFS Effective Target Wavelength              
+OIADEC  =          44.77851944 / Declination of OIWFS guide star                
+OIAEPOCH=                2000. / Epoch for OIWFS guide star coordinates         
+OIAEQUIN=                2000. / Equinox for OIWFS guide star coordinates       
+OIAFRAME= 'FK5     '           / OIWFS Target co-ordinate system                
+OIAOBJEC= '270-159819'         / Object Name for OIWFS, Chop A                  
+OIAPMDEC=              -0.0048 / OIWFS Proper Motion in Declination             
+OIAPMRA =             -0.00042 / OIWFS Proper Motion in RA                      
+OIAPARAL=                   0. / OIWFS Parallax of Target                       
+HUMIDITY=                  10. / The Relative Humidity (fraction, 0..101).      
+TAMBIENT=                  1.9 / The ambient temp (C).                          
+TAMBIEN2=                35.42 / The ambient temp (F).                          
+PRESSURE=            464.42332 / The atmospheric pressure (mm Hg).              
+PRESSUR2=               61900. / The atmospheric pressure (Pa).                 
+DEWPOINT=                -26.7 / The dew point (C).                             
+DEWPOIN2=               -16.06 / The dew point (F).                             
+WINDSPEE=                  5.3 / The wind speed (m/s).                          
+WINDSPE2=              11.8561 / The wind speed (mph).                          
+WINDDIRE=                 117. / The wind direction (degrees).                  
+INPORT  =                    5 / Number of ISS port where GMOS was located      
+GMOSCC  = 'GMOS-N (V7-2)'      / GMOS components controller s/w                 
+CONID   = 'GMOS v8.0'          / Detector controller ID                         
+DETECTOR= 'GMOS + e2v DD CCD42-90' / Detector name                              
+DEWAR   = 'Cryostat A'         / Dewar name                                     
+DEW-TEMP=     -100.93896713615 / Dewar temperature (Celsius)                    
+DETSIZE = '[1:6144,1:4644]'    / Detector size                                  
+NCCDS   =                    3 / Number of CCD chips                            
+NAMPS   =                    2 / Number of amplifiers                           
+SHUTTER = 'OPEN    '           / Shutter state during observation               
+AMPINTEG=                 5000 / Amplifier integration time                     
+OBSEPOCH=     2012.67829226501 / Epoch at start of exposure                     
+TIMESYS = 'UT1     '           / Time system used                               
+DATE-OBS= '2012-09-05'         / UT Date of observation (YYYY-MM-DD)            
+TIME-OBS= '05:55:12.8'         / Time of observation                            
+GMOSTHT = 'GOOD    '           / Shutter health                                 
+NSUBEXP =                    1 / Number of sub exposures                        
+UTSTART = '05:55:12.8'         / UT at observation start                        
+UTEND   = '05:55:52.8'         / UT at observation end                          
+EXPTIME =     39.9992311000824 / Exposure time in seconds                       
+ELAPSED =     39.9992311000824 / Elapsed observation time in seconds            
+DARKTIME=     45.6197409629822 / Dark current integration in seconds            
+MASKID  =             10005353 / Mask/IFU barcode                               
+MASKNAME= '0.75arcsec'         / Mask name                                      
+MASKTYP =                    1 / Mask/IFU type (0=none/-1=IFU/1=mask)           
+MASKLOC =                    0 / Mask/IFU location (-1=unknown/0=FP/1=cassette) 
+FILTER1 = 'open1-6 '           / Filter 1 name                                  
+FILTID1 =             20000018 / Filter 1 barcode                               
+FILTER2 = 'open2-8 '           / Filter 2 name                                  
+FILTID2 =             20000008 / Filter 2 barcode                               
+GRATING = 'B1200+_G5301'       / Grating name                                   
+GRATID  =             30000013 / Grating barcode                                
+GRWLEN  =                 475. / Grating wavelength at slit (nm)                
+CENTWAVE=                 475. / Central wavelength (nm)                        
+GRORDER =                    1 / Grating order                                  
+GRTILT  =              46.6716 / Grating tilt angle (degrees)                   
+GRSTEP  =            4995.5438 / Requested grating motor step position          
+DTAX    =                 89.2 / Detector translation X position (microns)      
+DTAY    =                77.76 / Detector translation Y position (microns)      
+DTAZ    =                2696. / Detector translation Z position (microns)      
+DTAZST  =                2696. / Focus at observation start (microns)           
+DTAZEN  =                2696. / Focus at observation end (microns)             
+DTAZME  =                   0. / Mean focus during observation (microns)        
+DTMODE  = 'FOLLOW-XY'          / Detector translation stage mode                
+ADCMODE = 'STOP    '           / ADC mode                                       
+GMOSDC  = 'GMOS DC '           / GMOS detector controller s/w                   
+DETTYPE = 'SDSU II e2v DD CCD42-90' / Detector array type                       
+DETID   = 'e2v 10031-23-05,10031-01-03,10031-18-04' / Chip IDs                  
+EXPOSURE=                  40. / Requested exposure time in seconds             
+ADCUSED =                    1 / ADC used? (0=yes/1=no)                         
+DETNROI =                    1 / No. regions of interest                        
+ADCENPST=                   0. / Start entrance prism angle of ADC              
+ADCENPEN=                   0. / End entrance prism angle of ADC                
+ADCENPME=                   0. / Mean entrance prism angle of ADC               
+ADCEXPST=                   0. / Start exit prism angle of ADC                  
+ADCEXPEN=                   0. / End exit prism angle of ADC                    
+ADCEXPME=                   0. / Mean exit prism angle of ADC                   
+ADCWLEN1=                   0. / Lower wavelength for ADC calculation           
+ADCWLEN2=                   0. / Upper wavelength for ADC calculation           
+DETRO1X =                    1 / ROI 1 X start                                  
+DETRO1XS=                 3072 / ROI 1 X size                                   
+DETRO1Y =                 1793 / ROI 1 Y start                                  
+DETRO1YS=                  512 / ROI 1 Y size                                   
+AIRMASS =                 1.12 / Mean airmass for the observation               
+AMSTART =                1.121 / Airmass at start of exposure                   
+AMEND   =                 1.12 / Airmass at end of exposure                     
+VALDATA = '2012-09-05T09:01:40' / (NEW) UT Time stamp for VALDATA               
+GEM-TLM = '2012-09-05T09:02:15' / UT Last modification with GEMINI              
+ORIGNAME= 'N20120905S0122.fits' / (NEW) Original filename prior to processing   
+ADDMDF  = '2012-09-05T09:01:41' / (NEW) UT Time stamp for ADDMDF                
+SDZSTRUC= '2012-09-05T09:01:41' / (NEW) UT Time stamp for SDZSTRUC              
+NSCIEXT =                    1 / Number of science extensions                   
+NEXTEND =                    4 / Number of extensions                           
+SDZHDRSG= '2012-09-05T09:01:41' / (NEW) UT Time stamp for SDZHDRSG              
+SDZHDRSI= '2012-09-05T09:01:42' / (NEW) UT Time stamp for SDZHDRSI              
+PREPARE = '2012-09-05T09:01:42' / (NEW) UT Time stamp for PREPARE               
+ADDDQ   = '2012-09-05T09:01:43' / (NEW) UT Time stamp for ADDDQ                 
+ADDVAR  = '2012-09-05T09:01:57' / (UPDATED) UT Time stamp for ADDVAR            
+HISTORY New keyword VALDATA=2012-09-05T09:01:40 was written to the PHU          
+HISTORY New keyword GEM-TLM=2012-09-05T09:01:40 was written to the PHU          
+HISTORY New keyword ORIGNAME=N20120905S0122.fits was written to the PHU         
+HISTORY New keyword ADDMDF=2012-09-05T09:01:41 was written to the PHU           
+HISTORY = 'The keyword GEM-TLM=2012-09-05T09:01:40 was overwritten in the PHU &'
+CONTINUE  'with new value 2012-09-05T09:01:41&'                                 
+HISTORY New keyword SDZSTRUC=2012-09-05T09:01:41 was written to the PHU         
+HISTORY = 'The keyword GEM-TLM=2012-09-05T09:01:41 was overwritten in the PHU &'
+CONTINUE  'with new value 2012-09-05T09:01:41&'                                 
+HISTORY New keyword NSCIEXT=6 was written to the PHU                            
+HISTORY New keyword NEXTEND=7 was written to the PHU                            
+HISTORY New keyword BUNIT=adu was written to extension SCI,1                    
+HISTORY New keyword BUNIT=adu was written to extension SCI,2                    
+HISTORY New keyword BUNIT=adu was written to extension SCI,3                    
+HISTORY New keyword BUNIT=adu was written to extension SCI,4                    
+HISTORY New keyword BUNIT=adu was written to extension SCI,5                    
+HISTORY New keyword BUNIT=adu was written to extension SCI,6                    
+HISTORY New keyword SDZHDRSG=2012-09-05T09:01:41 was written to the PHU         
+HISTORY = 'The keyword GEM-TLM=2012-09-05T09:01:41 was overwritten in the PHU &'
+CONTINUE  'with new value 2012-09-05T09:01:41&'                                 
+HISTORY New keyword PIXSCALE=0.1454 was written to extension SCI,1              
+HISTORY New keyword PIXSCALE=0.1454 was written to extension SCI,2              
+HISTORY New keyword PIXSCALE=0.1454 was written to extension SCI,3              
+HISTORY New keyword PIXSCALE=0.1454 was written to extension SCI,4              
+HISTORY New keyword PIXSCALE=0.1454 was written to extension SCI,5              
+HISTORY New keyword PIXSCALE=0.1454 was written to extension SCI,6              
+HISTORY = 'The keyword RDNOISE=3.5 was overwritten in extension SCI,1 with &'   
+CONTINUE  'new value 3.17&'                                                     
+HISTORY = 'The keyword RDNOISE=3.5 was overwritten in extension SCI,2 with &'   
+CONTINUE  'new value 3.41&'                                                     
+HISTORY = 'The keyword RDNOISE=3.29999995232 was overwritten in extension &'    
+CONTINUE  'SCI,3 with new value 3.22&'                                          
+HISTORY = 'The keyword RDNOISE=3.5 was overwritten in extension SCI,4 with &'   
+CONTINUE  'new value 3.2&'                                                      
+HISTORY = 'The keyword RDNOISE=3.0 was overwritten in extension SCI,5 with &'   
+CONTINUE  'new value 3.46&'                                                     
+HISTORY = 'The keyword RDNOISE=3.29999995232 was overwritten in extension &'    
+CONTINUE  'SCI,6 with new value 3.44&'                                          
+HISTORY New keyword GAINSET=low was written to extension SCI,1                  
+HISTORY New keyword GAINSET=low was written to extension SCI,2                  
+HISTORY New keyword GAINSET=low was written to extension SCI,3                  
+HISTORY New keyword GAINSET=low was written to extension SCI,4                  
+HISTORY New keyword GAINSET=low was written to extension SCI,5                  
+HISTORY New keyword GAINSET=low was written to extension SCI,6                  
+HISTORY = 'The keyword GAIN=2.03999996185 was overwritten in extension SCI,1 &' 
+CONTINUE  'with new value 2.31&'                                                
+HISTORY = 'The keyword GAIN=2.1400001049 was overwritten in extension SCI,2 &'  
+CONTINUE  'with new value 2.31&'                                                
+HISTORY = 'The keyword GAIN=2.31999993324 was overwritten in extension SCI,3 &' 
+CONTINUE  'with new value 2.27&'                                                
+HISTORY = 'The keyword GAIN=2.22000002861 was overwritten in extension SCI,4 &' 
+CONTINUE  'with new value 2.21&'                                                
+HISTORY = 'The keyword GAIN=2.19000005722 was overwritten in extension SCI,5 &' 
+CONTINUE  'with new value 2.17&'                                                
+HISTORY = 'The keyword GAIN=2.18000006676 was overwritten in extension SCI,6 &' 
+CONTINUE  'with new value 2.32&'                                                
+HISTORY New keyword RAWBIAS=1176.0 was written to extension SCI,1               
+HISTORY New keyword RAWBIAS=1055.0 was written to extension SCI,2               
+HISTORY New keyword RAWBIAS=909.0 was written to extension SCI,3                
+HISTORY New keyword RAWBIAS=1099.0 was written to extension SCI,4               
+HISTORY New keyword RAWBIAS=1188.0 was written to extension SCI,5               
+HISTORY New keyword RAWBIAS=1105.0 was written to extension SCI,6               
+HISTORY New keyword SATLEVEL=65535 was written to extension SCI,1               
+HISTORY New keyword SATLEVEL=65535 was written to extension SCI,2               
+HISTORY New keyword SATLEVEL=65535 was written to extension SCI,3               
+HISTORY New keyword SATLEVEL=65535 was written to extension SCI,4               
+HISTORY New keyword SATLEVEL=65535 was written to extension SCI,5               
+HISTORY New keyword SATLEVEL=65535 was written to extension SCI,6               
+HISTORY New keyword DISPAXIS=1 was written to extension SCI,1                   
+HISTORY New keyword DISPAXIS=1 was written to extension SCI,2                   
+HISTORY New keyword DISPAXIS=1 was written to extension SCI,3                   
+HISTORY New keyword DISPAXIS=1 was written to extension SCI,4                   
+HISTORY New keyword DISPAXIS=1 was written to extension SCI,5                   
+HISTORY New keyword DISPAXIS=1 was written to extension SCI,6                   
+HISTORY New keyword SDZHDRSI=2012-09-05T09:01:42 was written to the PHU         
+HISTORY = 'The keyword GEM-TLM=2012-09-05T09:01:41 was overwritten in the PHU &'
+CONTINUE  'with new value 2012-09-05T09:01:42&'                                 
+HISTORY New keyword PREPARE=2012-09-05T09:01:42 was written to the PHU          
+HISTORY = 'The keyword GEM-TLM=2012-09-05T09:01:42 was overwritten in the PHU &'
+CONTINUE  'with new value 2012-09-05T09:01:42&'                                 
+HISTORY New keyword ADDDQ=2012-09-05T09:01:43 was written to the PHU            
+HISTORY = 'The keyword GEM-TLM=2012-09-05T09:01:42 was overwritten in the PHU &'
+CONTINUE  'with new value 2012-09-05T09:01:43&'                                 
+HISTORY New keyword ADDVAR=2012-09-05T09:01:44 was written to the PHU           
+HISTORY = 'The keyword GEM-TLM=2012-09-05T09:01:43 was overwritten in the PHU &'
+CONTINUE  'with new value 2012-09-05T09:01:44&'                                 
+HISTORY New keyword GPREPARE=2012-09-05T09:01:42 was written to the PHU         
+HISTORY New keyword OBSMODE=LONGSLIT was written to the PHU                     
+HISTORY New keyword SUBOVER=2012-09-05T09:01:52 was written to the PHU          
+HISTORY = 'The keyword GEM-TLM=2012-09-05T19:01:51 was overwritten in the PHU &'
+CONTINUE  'with new value 2012-09-05T09:01:52&'                                 
+HISTORY = 'The keyword NAXIS1=544 was overwritten in extension SCI,1 with new &'
+CONTINUE  'value 512&'                                                          
+HISTORY = 'The keyword NAXIS2=512 was overwritten in extension SCI,1 with new &'
+CONTINUE  'value 512&'                                                          
+HISTORY = 'The keyword DATASEC=[33:544,1:512] was overwritten in extension &'   
+CONTINUE  'SCI,1 with new value [1:512,1:512]&'                                 
+HISTORY New keyword TRIMSEC=[33:544,1:512] was written to extension SCI,1       
+HISTORY = 'The keyword CRPIX1=1076.93165466 was overwritten in extension &'     
+CONTINUE  'SCI,1 with new value 1044.93165466&'                                 
+HISTORY = 'The keyword CRPIX2=257.245887992 was overwritten in extension &'     
+CONTINUE  'SCI,1 with new value 257.245887992&'                                 
+HISTORY = 'The keyword NAXIS1=544 was overwritten in extension DQ,1 with new &' 
+CONTINUE  'value 512&'                                                          
+HISTORY = 'The keyword NAXIS2=512 was overwritten in extension DQ,1 with new &' 
+CONTINUE  'value 512&'                                                          
+HISTORY = 'The keyword DATASEC=[33:544,1:512] was overwritten in extension &'   
+CONTINUE  'DQ,1 with new value [1:512,1:512]&'                                  
+HISTORY New keyword TRIMSEC=[33:544,1:512] was written to extension DQ,1        
+HISTORY = 'The keyword CRPIX1=1076.93165466 was overwritten in extension DQ,1 &'
+CONTINUE  'with new value 1044.93165466&'                                       
+HISTORY = 'The keyword CRPIX2=257.245887992 was overwritten in extension DQ,1 &'
+CONTINUE  'with new value 257.245887992&'                                       
+HISTORY = 'The keyword NAXIS1=544 was overwritten in extension VAR,1 with new &'
+CONTINUE  'value 512&'                                                          
+HISTORY = 'The keyword NAXIS2=512 was overwritten in extension VAR,1 with new &'
+CONTINUE  'value 512&'                                                          
+HISTORY = 'The keyword DATASEC=[33:544,1:512] was overwritten in extension &'   
+CONTINUE  'VAR,1 with new value [1:512,1:512]&'                                 
+HISTORY New keyword TRIMSEC=[33:544,1:512] was written to extension VAR,1       
+HISTORY = 'The keyword CRPIX1=1076.93165466 was overwritten in extension &'     
+CONTINUE  'VAR,1 with new value 1044.93165466&'                                 
+HISTORY = 'The keyword CRPIX2=257.245887992 was overwritten in extension &'     
+CONTINUE  'VAR,1 with new value 257.245887992&'                                 
+HISTORY = 'The keyword NAXIS1=544 was overwritten in extension SCI,2 with new &'
+CONTINUE  'value 512&'                                                          
+HISTORY = 'The keyword NAXIS2=512 was overwritten in extension SCI,2 with new &'
+CONTINUE  'value 512&'                                                          
+HISTORY = 'The keyword DATASEC=[1:512,1:512] was overwritten in extension &'    
+CONTINUE  'SCI,2 with new value [1:512,1:512]&'                                 
+HISTORY New keyword TRIMSEC=[1:512,1:512] was written to extension SCI,2        
+HISTORY = 'The keyword CRPIX1=1556.93165466 was overwritten in extension &'     
+CONTINUE  'SCI,2 with new value 1556.93165466&'                                 
+HISTORY = 'The keyword CRPIX2=257.245887992 was overwritten in extension &'     
+CONTINUE  'SCI,2 with new value 257.245887992&'                                 
+HISTORY = 'The keyword NAXIS1=544 was overwritten in extension DQ,2 with new &' 
+CONTINUE  'value 512&'                                                          
+HISTORY = 'The keyword NAXIS2=512 was overwritten in extension DQ,2 with new &' 
+CONTINUE  'value 512&'                                                          
+HISTORY = 'The keyword DATASEC=[1:512,1:512] was overwritten in extension &'    
+CONTINUE  'DQ,2 with new value [1:512,1:512]&'                                  
+HISTORY New keyword TRIMSEC=[1:512,1:512] was written to extension DQ,2         
+HISTORY = 'The keyword CRPIX1=1556.93165466 was overwritten in extension DQ,2 &'
+CONTINUE  'with new value 1556.93165466&'                                       
+HISTORY = 'The keyword CRPIX2=257.245887992 was overwritten in extension DQ,2 &'
+CONTINUE  'with new value 257.245887992&'                                       
+HISTORY = 'The keyword NAXIS1=544 was overwritten in extension VAR,2 with new &'
+CONTINUE  'value 512&'                                                          
+HISTORY = 'The keyword NAXIS2=512 was overwritten in extension VAR,2 with new &'
+CONTINUE  'value 512&'                                                          
+HISTORY = 'The keyword DATASEC=[1:512,1:512] was overwritten in extension &'    
+CONTINUE  'VAR,2 with new value [1:512,1:512]&'                                 
+HISTORY New keyword TRIMSEC=[1:512,1:512] was written to extension VAR,2        
+HISTORY = 'The keyword CRPIX1=1556.93165466 was overwritten in extension &'     
+CONTINUE  'VAR,2 with new value 1556.93165466&'                                 
+HISTORY = 'The keyword CRPIX2=257.245887992 was overwritten in extension &'     
+CONTINUE  'VAR,2 with new value 257.245887992&'                                 
+HISTORY = 'The keyword NAXIS1=544 was overwritten in extension SCI,3 with new &'
+CONTINUE  'value 512&'                                                          
+HISTORY = 'The keyword NAXIS2=512 was overwritten in extension SCI,3 with new &'
+CONTINUE  'value 512&'                                                          
+HISTORY = 'The keyword DATASEC=[33:544,1:512] was overwritten in extension &'   
+CONTINUE  'SCI,3 with new value [1:512,1:512]&'                                 
+HISTORY New keyword TRIMSEC=[33:544,1:512] was written to extension SCI,3       
+HISTORY = 'The keyword CRPIX1=32.2569090515 was overwritten in extension &'     
+CONTINUE  'SCI,3 with new value 0.256909051521&'                                
+HISTORY = 'The keyword CRPIX2=255.678719936 was overwritten in extension &'     
+CONTINUE  'SCI,3 with new value 255.678719936&'                                 
+HISTORY = 'The keyword NAXIS1=544 was overwritten in extension DQ,3 with new &' 
+CONTINUE  'value 512&'                                                          
+HISTORY = 'The keyword NAXIS2=512 was overwritten in extension DQ,3 with new &' 
+CONTINUE  'value 512&'                                                          
+HISTORY = 'The keyword DATASEC=[33:544,1:512] was overwritten in extension &'   
+CONTINUE  'DQ,3 with new value [1:512,1:512]&'                                  
+HISTORY New keyword TRIMSEC=[33:544,1:512] was written to extension DQ,3        
+HISTORY = 'The keyword CRPIX1=32.2569090515 was overwritten in extension DQ,3 &'
+CONTINUE  'with new value 0.256909051521&'                                      
+HISTORY = 'The keyword CRPIX2=255.678719936 was overwritten in extension DQ,3 &'
+CONTINUE  'with new value 255.678719936&'                                       
+HISTORY = 'The keyword NAXIS1=544 was overwritten in extension VAR,3 with new &'
+CONTINUE  'value 512&'                                                          
+HISTORY = 'The keyword NAXIS2=512 was overwritten in extension VAR,3 with new &'
+CONTINUE  'value 512&'                                                          
+HISTORY = 'The keyword DATASEC=[33:544,1:512] was overwritten in extension &'   
+CONTINUE  'VAR,3 with new value [1:512,1:512]&'                                 
+HISTORY New keyword TRIMSEC=[33:544,1:512] was written to extension VAR,3       
+HISTORY = 'The keyword CRPIX1=32.2569090515 was overwritten in extension &'     
+CONTINUE  'VAR,3 with new value 0.256909051521&'                                
+HISTORY = 'The keyword CRPIX2=255.678719936 was overwritten in extension &'     
+CONTINUE  'VAR,3 with new value 255.678719936&'                                 
+HISTORY = 'The keyword NAXIS1=544 was overwritten in extension SCI,4 with new &'
+CONTINUE  'value 512&'                                                          
+HISTORY = 'The keyword NAXIS2=512 was overwritten in extension SCI,4 with new &'
+CONTINUE  'value 512&'                                                          
+HISTORY = 'The keyword DATASEC=[1:512,1:512] was overwritten in extension &'    
+CONTINUE  'SCI,4 with new value [1:512,1:512]&'                                 
+HISTORY New keyword TRIMSEC=[1:512,1:512] was written to extension SCI,4        
+HISTORY = 'The keyword CRPIX1=512.256909052 was overwritten in extension &'     
+CONTINUE  'SCI,4 with new value 512.256909052&'                                 
+HISTORY = 'The keyword CRPIX2=255.678719936 was overwritten in extension &'     
+CONTINUE  'SCI,4 with new value 255.678719936&'                                 
+HISTORY = 'The keyword NAXIS1=544 was overwritten in extension DQ,4 with new &' 
+CONTINUE  'value 512&'                                                          
+HISTORY = 'The keyword NAXIS2=512 was overwritten in extension DQ,4 with new &' 
+CONTINUE  'value 512&'                                                          
+HISTORY = 'The keyword DATASEC=[1:512,1:512] was overwritten in extension &'    
+CONTINUE  'DQ,4 with new value [1:512,1:512]&'                                  
+HISTORY New keyword TRIMSEC=[1:512,1:512] was written to extension DQ,4         
+HISTORY = 'The keyword CRPIX1=512.256909052 was overwritten in extension DQ,4 &'
+CONTINUE  'with new value 512.256909052&'                                       
+HISTORY = 'The keyword CRPIX2=255.678719936 was overwritten in extension DQ,4 &'
+CONTINUE  'with new value 255.678719936&'                                       
+HISTORY = 'The keyword NAXIS1=544 was overwritten in extension VAR,4 with new &'
+CONTINUE  'value 512&'                                                          
+HISTORY = 'The keyword NAXIS2=512 was overwritten in extension VAR,4 with new &'
+CONTINUE  'value 512&'                                                          
+HISTORY = 'The keyword DATASEC=[1:512,1:512] was overwritten in extension &'    
+CONTINUE  'VAR,4 with new value [1:512,1:512]&'                                 
+HISTORY New keyword TRIMSEC=[1:512,1:512] was written to extension VAR,4        
+HISTORY = 'The keyword CRPIX1=512.256909052 was overwritten in extension &'     
+CONTINUE  'VAR,4 with new value 512.256909052&'                                 
+HISTORY = 'The keyword CRPIX2=255.678719936 was overwritten in extension &'     
+CONTINUE  'VAR,4 with new value 255.678719936&'                                 
+HISTORY = 'The keyword NAXIS1=544 was overwritten in extension SCI,5 with new &'
+CONTINUE  'value 512&'                                                          
+HISTORY = 'The keyword NAXIS2=512 was overwritten in extension SCI,5 with new &'
+CONTINUE  'value 512&'                                                          
+HISTORY = 'The keyword DATASEC=[1:512,1:512] was overwritten in extension &'    
+CONTINUE  'SCI,5 with new value [1:512,1:512]&'                                 
+HISTORY New keyword TRIMSEC=[1:512,1:512] was written to extension SCI,5        
+HISTORY = 'The keyword CRPIX1=-533.381089142 was overwritten in extension &'    
+CONTINUE  'SCI,5 with new value -533.381089142&'                                
+HISTORY = 'The keyword CRPIX2=255.707196167 was overwritten in extension &'     
+CONTINUE  'SCI,5 with new value 255.707196167&'                                 
+HISTORY = 'The keyword NAXIS1=544 was overwritten in extension DQ,5 with new &' 
+CONTINUE  'value 512&'                                                          
+HISTORY = 'The keyword NAXIS2=512 was overwritten in extension DQ,5 with new &' 
+CONTINUE  'value 512&'                                                          
+HISTORY = 'The keyword DATASEC=[1:512,1:512] was overwritten in extension &'    
+CONTINUE  'DQ,5 with new value [1:512,1:512]&'                                  
+HISTORY New keyword TRIMSEC=[1:512,1:512] was written to extension DQ,5         
+HISTORY = 'The keyword CRPIX1=-533.381089142 was overwritten in extension &'    
+CONTINUE  'DQ,5 with new value -533.381089142&'                                 
+HISTORY = 'The keyword CRPIX2=255.707196167 was overwritten in extension DQ,5 &'
+CONTINUE  'with new value 255.707196167&'                                       
+HISTORY = 'The keyword NAXIS1=544 was overwritten in extension VAR,5 with new &'
+CONTINUE  'value 512&'                                                          
+HISTORY = 'The keyword NAXIS2=512 was overwritten in extension VAR,5 with new &'
+CONTINUE  'value 512&'                                                          
+HISTORY = 'The keyword DATASEC=[1:512,1:512] was overwritten in extension &'    
+CONTINUE  'VAR,5 with new value [1:512,1:512]&'                                 
+HISTORY New keyword TRIMSEC=[1:512,1:512] was written to extension VAR,5        
+HISTORY = 'The keyword CRPIX1=-533.381089142 was overwritten in extension &'    
+CONTINUE  'VAR,5 with new value -533.381089142&'                                
+HISTORY = 'The keyword CRPIX2=255.707196167 was overwritten in extension &'     
+CONTINUE  'VAR,5 with new value 255.707196167&'                                 
+HISTORY = 'The keyword NAXIS1=544 was overwritten in extension SCI,6 with new &'
+CONTINUE  'value 512&'                                                          
+HISTORY = 'The keyword NAXIS2=512 was overwritten in extension SCI,6 with new &'
+CONTINUE  'value 512&'                                                          
+HISTORY = 'The keyword DATASEC=[33:544,1:512] was overwritten in extension &'   
+CONTINUE  'SCI,6 with new value [1:512,1:512]&'                                 
+HISTORY New keyword TRIMSEC=[33:544,1:512] was written to extension SCI,6       
+HISTORY = 'The keyword CRPIX1=-1013.38108914 was overwritten in extension &'    
+CONTINUE  'SCI,6 with new value -1045.38108914&'                                
+HISTORY = 'The keyword CRPIX2=255.707196167 was overwritten in extension &'     
+CONTINUE  'SCI,6 with new value 255.707196167&'                                 
+HISTORY = 'The keyword NAXIS1=544 was overwritten in extension DQ,6 with new &' 
+CONTINUE  'value 512&'                                                          
+HISTORY = 'The keyword NAXIS2=512 was overwritten in extension DQ,6 with new &' 
+CONTINUE  'value 512&'                                                          
+HISTORY = 'The keyword DATASEC=[33:544,1:512] was overwritten in extension &'   
+CONTINUE  'DQ,6 with new value [1:512,1:512]&'                                  
+HISTORY New keyword TRIMSEC=[33:544,1:512] was written to extension DQ,6        
+HISTORY = 'The keyword CRPIX1=-1013.38108914 was overwritten in extension &'    
+CONTINUE  'DQ,6 with new value -1045.38108914&'                                 
+HISTORY = 'The keyword CRPIX2=255.707196167 was overwritten in extension DQ,6 &'
+CONTINUE  'with new value 255.707196167&'                                       
+HISTORY = 'The keyword NAXIS1=544 was overwritten in extension VAR,6 with new &'
+CONTINUE  'value 512&'                                                          
+HISTORY = 'The keyword NAXIS2=512 was overwritten in extension VAR,6 with new &'
+CONTINUE  'value 512&'                                                          
+HISTORY = 'The keyword DATASEC=[33:544,1:512] was overwritten in extension &'   
+CONTINUE  'VAR,6 with new value [1:512,1:512]&'                                 
+HISTORY New keyword TRIMSEC=[33:544,1:512] was written to extension VAR,6       
+HISTORY = 'The keyword CRPIX1=-1013.38108914 was overwritten in extension &'    
+CONTINUE  'VAR,6 with new value -1045.38108914&'                                
+HISTORY = 'The keyword CRPIX2=255.707196167 was overwritten in extension &'     
+CONTINUE  'VAR,6 with new value 255.707196167&'                                 
+HISTORY New keyword TRIMMED=yes was written to the PHU                          
+HISTORY New keyword TRIMOVER=2012-09-05T09:01:53 was written to the PHU         
+HISTORY = 'The keyword GEM-TLM=2012-09-05T09:01:52 was overwritten in the PHU &'
+CONTINUE  'with new value 2012-09-05T09:01:53&'                                 
+HISTORY New keyword BIASIM=N20120131S0830_stack_bias.fits was written to the PHU
+HISTORY New keyword SUBBIAS=2012-09-05T09:01:56 was written to the PHU          
+HISTORY = 'The keyword GEM-TLM=2012-09-05T09:01:53 was overwritten in the PHU &'
+CONTINUE  'with new value 2012-09-05T09:01:56&'                                 
+HISTORY = 'The keyword BUNIT=adu was overwritten in extension SCI,1 with new &' 
+CONTINUE  'value electron&'                                                     
+HISTORY = 'The keyword BUNIT=adu was overwritten in extension SCI,2 with new &' 
+CONTINUE  'value electron&'                                                     
+HISTORY = 'The keyword BUNIT=adu was overwritten in extension SCI,3 with new &' 
+CONTINUE  'value electron&'                                                     
+HISTORY = 'The keyword BUNIT=adu was overwritten in extension SCI,4 with new &' 
+CONTINUE  'value electron&'                                                     
+HISTORY = 'The keyword BUNIT=adu was overwritten in extension SCI,5 with new &' 
+CONTINUE  'value electron&'                                                     
+HISTORY = 'The keyword BUNIT=adu was overwritten in extension SCI,6 with new &' 
+CONTINUE  'value electron&'                                                     
+HISTORY = 'The keyword BUNIT=adu*adu was overwritten in extension VAR,1 with &' 
+CONTINUE  'new value electron*electron&'                                        
+HISTORY = 'The keyword BUNIT=adu*adu was overwritten in extension VAR,2 with &' 
+CONTINUE  'new value electron*electron&'                                        
+HISTORY = 'The keyword BUNIT=adu*adu was overwritten in extension VAR,3 with &' 
+CONTINUE  'new value electron*electron&'                                        
+HISTORY = 'The keyword BUNIT=adu*adu was overwritten in extension VAR,4 with &' 
+CONTINUE  'new value electron*electron&'                                        
+HISTORY = 'The keyword BUNIT=adu*adu was overwritten in extension VAR,5 with &' 
+CONTINUE  'new value electron*electron&'                                        
+HISTORY = 'The keyword BUNIT=adu*adu was overwritten in extension VAR,6 with &' 
+CONTINUE  'new value electron*electron&'                                        
+HISTORY New keyword ADUTOELE=2012-09-05T09:01:56 was written to the PHU         
+HISTORY = 'The keyword GEM-TLM=2012-09-05T09:01:56 was overwritten in the PHU &'
+CONTINUE  'with new value 2012-09-05T09:01:56&'                                 
+HISTORY = 'The keyword ADDVAR=2012-09-05T09:01:44 was overwritten in the PHU &' 
+CONTINUE  'with new value 2012-09-05T09:01:57&'                                 
+HISTORY = 'The keyword GEM-TLM=2012-09-05T09:01:56 was overwritten in the PHU &'
+CONTINUE  'with new value 2012-09-05T09:01:57&'                                 
+HISTORY New keyword GPREPARE=2012-09-05T09:01:42 was written to the PHU         
+HISTORY New keyword OBSMODE=LONGSLIT was written to the PHU                     
+HISTORY New keyword BUNIT=electron was written to extension SCI,1               
+HISTORY New keyword OVERSCAN=1093.43625 was written to extension SCI,1          
+HISTORY = 'New keyword AMPNAME=e2v 10031-23-05, right,e2v 10031-23-05, &'       
+CONTINUE  'left,e2v 10031-01-03, right,e2v 10031-01-03, left,e2v 10031-18-04, &'
+CONTINUE  'left,e2v 10031-18-04, right was written to extension SCI,1&'         
+HISTORY New keyword DETSEC=[1025:7240,1793:2816] was written to extension SCI,1 
+HISTORY New keyword CCDSEC=[1025:7240,1793:2816] was written to extension SCI,1 
+HISTORY New keyword DATASEC=[1:3108,1:512] was written to extension SCI,1       
+HISTORY New keyword BUNIT=electron*electron was written to extension VAR,1      
+HISTORY = 'New keyword AMPNAME=e2v 10031-23-05, right,e2v 10031-23-05, &'       
+CONTINUE  'left,e2v 10031-01-03, right,e2v 10031-01-03, left,e2v 10031-18-04, &'
+CONTINUE  'left,e2v 10031-18-04, right was written to extension VAR,1&'         
+HISTORY New keyword DETSEC=[1025:7240,1793:2816] was written to extension VAR,1 
+HISTORY New keyword CCDSEC=[1025:7240,1793:2816] was written to extension VAR,1 
+HISTORY New keyword DATASEC=[1:3108,1:512] was written to extension VAR,1       
+HISTORY New keyword DETSEC=[1025:7240,1793:2816] was written to extension DQ,1  
+HISTORY New keyword CCDSEC=[1025:7240,1793:2816] was written to extension DQ,1  
+HISTORY New keyword DATASEC=[1:3108,1:512] was written to extension DQ,1        
+HISTORY New keyword MOSAIC=2012-09-05T09:02:08 was written to the PHU           
+HISTORY = 'The keyword GEM-TLM=2012-09-05T19:02:06 was overwritten in the PHU &'
+CONTINUE  'with new value 2012-09-05T09:02:08&'                                 
+HISTORY New keyword GPREPARE=2012-09-05T09:01:42 was written to the PHU         
+HISTORY New keyword OBSMODE=LONGSLIT was written to the PHU                     
+HISTORY New keyword WAVESOLN=2012-09-05T09:02:15 was written to the PHU         
+HISTORY = 'The keyword GEM-TLM=2012-09-05T09:02:08 was overwritten in the PHU &'
+CONTINUE  'with new value 2012-09-05T09:02:15&'                                 
+HISTORY New keyword PROCARC=2012-09-05T09:02:15 was written to the PHU          
+HISTORY = 'The keyword GEM-TLM=2012-09-05T09:02:15 was overwritten in the PHU &'
+CONTINUE  'with new value 2012-09-05T09:02:15&'                                 
+GIREDUCE= '2012-09-05T19:01:51' / UT Time stamp for GIREDUCE                    
+SUBOVER = '2012-09-05T09:01:52' / (NEW) UT Time stamp for SUBOVER               
+TRIMMED = 'yes     '           / (NEW) Overscan section trimmed                 
+TRIMOVER= '2012-09-05T09:01:53' / (NEW) UT Time stamp for TRIMOVER              
+BIASIM  = 'N20120131S0830_stack_bias.fits' / (NEW) Bias image used              
+SUBBIAS = '2012-09-05T09:01:56' / (NEW) UT Time stamp for SUBBIAS               
+ADUTOELE= '2012-09-05T09:01:56' / (NEW) UT Time stamp for ADUTOELE              
+CTYPE1  = 'RA---TAN'           / R.A. in tangent plane projection               
+CTYPE2  = 'DEC--TAN'           / DEC. in tangent plane projection               
+CRPIX1  =        1554.25690905 / Ref pix of axis 1                              
+CRPIX2  =     255.678719936273 / Ref pix of axis 2                              
+CRVAL1  =     289.876971268823 / RA at Ref pix in decimal degrees               
+CRVAL2  =      44.762017250512 / DEC at Ref pix in decimal degrees              
+CD1_1   = -3.57434744598053E-05 / WCS matrix element 1 1                        
+CD1_2   = 1.90293045414958E-05 / WCS matrix element 1 2                         
+CD2_1   = -1.90347087768967E-05 / WCS matrix element 2 1                        
+CD2_2   = -3.5732335926095E-05 / WCS matrix element 2 2                         
+CCDSUM  = '2 2     '           / CCD sum                                        
+GAIN    =                 2.21 / (UPDATED) Gain [electrons/ADU]                 
+GAINSET = 'low     '           / (NEW) Gain setting (low / high)                
+RDNOISE =                  3.2 / (UPDATED) Estimated read noise [electrons]     
+RADECSYS= 'FK5     '           / R.A./DEC. coordinate system reference          
+EQUINOX =                2000. / Equinox of coordinate system                   
+MJD-OBS =     56175.2470157282 / MJD of start of obseration                     
+DISPAXIS=                    1 / (NEW) Dispersion axis                          
+GMOSAIC = '2012-09-05T19:02:06' / UT Time stamp for GMOSAIC                     
+GMSINTER= 'linear  '           / Interpolant used by GMOSAIC                    
+MOSAIC  = '2012-09-05T09:02:08' / (NEW) UT Time stamp for MOSAIC                
+WAVESOLN= '2012-09-05T09:02:15' / (NEW) UT Time stamp for WAVESOLN              
+PROCARC = '2012-09-05T09:02:15' / (NEW) UT Time stamp for PROCARC               
+
+--- HDU 1 ---
+XTENSION= 'BINTABLE'           / binary table extension                         
+BITPIX  =                    8 / 8-bit bytes                                    
+NAXIS   =                    2 / 2-dimensional binary table                     
+NAXIS1  =                   64 / width of table in bytes                        
+NAXIS2  =                    3                                                  
+PCOUNT  =                    0 / size of special data area                      
+GCOUNT  =                    1 / one data group (required keyword)              
+TFIELDS =                   12                                                  
+TTYPE1  = 'ID      '           / label for field   1                            
+TFORM1  = '1J      '           / data format of field: 4-byte INTEGER           
+TTYPE2  = 'x_ccd   '           / label for field   2                            
+TFORM2  = '1E      '           / data format of field: 4-byte REAL              
+TTYPE3  = 'y_ccd   '           / label for field   3                            
+TFORM3  = '1E      '           / data format of field: 4-byte REAL              
+TTYPE4  = 'slittype'           / label for field   4                            
+TFORM4  = '20A     '           / data format of field: ASCII Character          
+TTYPE5  = 'slitid  '           / label for field   5                            
+TFORM5  = '1J      '           / data format of field: 4-byte INTEGER           
+TTYPE6  = 'slitpos_mx'         / label for field   6                            
+TFORM6  = '1E      '           / data format of field: 4-byte REAL              
+TTYPE7  = 'slitpos_my'         / label for field   7                            
+TFORM7  = '1E      '           / data format of field: 4-byte REAL              
+TTYPE8  = 'slitsize_mx'        / label for field   8                            
+TFORM8  = '1E      '           / data format of field: 4-byte REAL              
+TTYPE9  = 'slitsize_my'        / label for field   9                            
+TFORM9  = '1E      '           / data format of field: 4-byte REAL              
+TTYPE10 = 'slittilt_m'         / label for field  10                            
+TFORM10 = '1E      '           / data format of field: 4-byte REAL              
+TTYPE11 = 'slitsize_mr'        / label for field  11                            
+TFORM11 = '1E      '           / data format of field: 4-byte REAL              
+TTYPE12 = 'slitsize_mw'        / label for field  12                            
+TFORM12 = '1E      '           / data format of field: 4-byte REAL              
+TDISP1  = 'A3      '           / display format                                 
+TNULL1  =          -2147483647 / undefined value for column                     
+TDISP2  = 'F8.2    '           / display format                                 
+TDISP3  = 'F8.2    '           / display format                                 
+TDISP4  = 'A10     '           / display format                                 
+TDISP5  = 'A3      '           / display format                                 
+TNULL5  =          -2147483647 / undefined value for column                     
+TDISP6  = 'F8.2    '           / display format                                 
+TDISP7  = 'F8.2    '           / display format                                 
+TDISP8  = 'F8.2    '           / display format                                 
+TDISP9  = 'F8.2    '           / display format                                 
+TDISP10 = 'F8.2    '           / display format                                 
+TDISP11 = 'F6.2    '           / display format                                 
+TDISP12 = 'F6.2    '           / display format                                 
+EXTNAME = 'MDF     '           / added by AstroData                             
+EXTVER  =                    1 / added by AstroData                             
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+PID_IMAG= 'NONE    '                                                            
+PI_IMAG = 'Gemini  '                                                            
+PID_SPEC= '0.75arcsec'                                                          
+PI_SPEC = 'Gemini  '                                                            
+DATE_MDF= '2001-11-12'                                                          
+TIME_MDF= '10:00:00 UT'                                                         
+PERS_MDF= 'Jorgensen'                                                           
+GEMSOFT = 'Manual creation'                                                     
+
+--- HDU 2 ---
+XTENSION= 'IMAGE   '           / Image extension                                
+BITPIX  =                  -32 / Bits per pixel                                 
+NAXIS   =                    2 / Number of axes                                 
+NAXIS1  =                 3108 / Axis length                                    
+NAXIS2  =                  512 / Axis length                                    
+PCOUNT  =                    0 / No 'random' parameters                         
+GCOUNT  =                    1 / Only one group                                 
+EXTNAME = 'SCI     '           / Extension name                                 
+EXTVER  =                    1 / Extension version                              
+ORIGIN  = 'NOAO-IRAF FITS Image Kernel July 2003' / FITS file originator        
+INHERIT =                    F / Inherits global header                         
+DATE    = '2012-09-05T19:02:04' / Date FITS file was generated                  
+IRAF-TLM= '2012-09-05T19:02:20' / Time of last modification                     
+CTYPE1  = 'RA---TAN'           / R.A. in tangent plane projection               
+CTYPE2  = 'DEC--TAN'           / DEC. in tangent plane projection               
+CRPIX1  =        1554.25690905 / Ref pix of axis 1                              
+CRPIX2  =     255.678719936273 / Ref pix of axis 2                              
+CRVAL1  =     289.876971268823 / RA at Ref pix in decimal degrees               
+CRVAL2  =      44.762017250512 / DEC at Ref pix in decimal degrees              
+CD1_1   = -3.57434744598053E-05 / WCS matrix element 1 1                        
+CD1_2   = 1.90293045414958E-05 / WCS matrix element 1 2                         
+CD2_1   = -1.90347087768967E-05 / WCS matrix element 2 1                        
+CD2_2   = -3.5732335926095E-05 / WCS matrix element 2 2                         
+CCDSUM  = '2 2     '           / CCD sum                                        
+GAIN    =                 2.21 / (UPDATED) Gain [electrons/ADU]                 
+GAINSET = 'low     '           / (NEW) Gain setting (low / high)                
+RDNOISE =                  3.2 / (UPDATED) Estimated read noise [electrons]     
+RADECSYS= 'FK5     '           / R.A./DEC. coordinate system reference          
+EQUINOX =                2000. / Equinox of coordinate system                   
+MJD-OBS =     56175.2470157282 / MJD of start of obseration                     
+DISPAXIS=                    1 / (NEW) Dispersion axis                          
+BUNIT   = 'electron'           / (NEW) Physical units of the array values       
+OVERSCAN=           1093.43625 / (NEW) Overscan mean value                      
+AMPNAME = 'e2v 10031-23-05, right,e2v 10031-23-05, left,e2v 10031-01-03, &'     
+CONTINUE  'right,e2v 10031-01-03, left,e2v 10031-18-04, left,e2v 10031-18-04, &'
+CONTINUE  'right&'                                                              
+DETSEC  = '[1025:7240,1793:2816]' / (NEW) Detector section(s)                   
+CCDSEC  = '[1025:7240,1793:2816]' / (NEW) CCD section(s)                        
+DATASEC = '[1:3108,1:512]'     / (NEW) Data section(s)                          
+
+--- HDU 3 ---
+XTENSION= 'IMAGE   '           / Image extension                                
+BITPIX  =                  -32 / Bits per pixel                                 
+NAXIS   =                    2 / Number of axes                                 
+NAXIS1  =                 3108 / Axis length                                    
+NAXIS2  =                  512 / Axis length                                    
+PCOUNT  =                    0 / No 'random' parameters                         
+GCOUNT  =                    1 / Only one group                                 
+EXTNAME = 'VAR     '           / Extension name                                 
+EXTVER  =                    1 / Extension version                              
+ORIGIN  = 'NOAO-IRAF FITS Image Kernel July 2003' / FITS file originator        
+INHERIT =                    F / Inherits global header                         
+DATE    = '2012-09-05T19:02:05' / Date FITS file was generated                  
+IRAF-TLM= '2012-09-05T19:02:20' / Time of last modification                     
+CTYPE1  = 'RA---TAN'           / R.A. in tangent plane projection               
+CTYPE2  = 'DEC--TAN'           / DEC. in tangent plane projection               
+CRPIX1  =        1554.25690905 / Ref pix of axis 1                              
+CRPIX2  =     255.678719936273 / Ref pix of axis 2                              
+CRVAL1  =     289.876971268823 / RA at Ref pix in decimal degrees               
+CRVAL2  =      44.762017250512 / DEC at Ref pix in decimal degrees              
+CD1_1   = -3.57434744598053E-05 / WCS matrix element 1 1                        
+CD1_2   = 1.90293045414958E-05 / WCS matrix element 1 2                         
+CD2_1   = -1.90347087768967E-05 / WCS matrix element 2 1                        
+CD2_2   = -3.5732335926095E-05 / WCS matrix element 2 2                         
+CCDSUM  = '2 2     '           / CCD sum                                        
+GAIN    =                 2.21 / (UPDATED) Gain [electrons/ADU]                 
+GAINSET = 'low     '           / (NEW) Gain setting (low / high)                
+RDNOISE =                  3.2 / (UPDATED) Estimated read noise [electrons]     
+RADECSYS= 'FK5     '           / R.A./DEC. coordinate system reference          
+EQUINOX =                2000. / Equinox of coordinate system                   
+MJD-OBS =     56175.2470157282 / MJD of start of obseration                     
+DISPAXIS=                    1 / (NEW) Dispersion axis                          
+BUNIT   = 'electron*electron'  / (NEW) Physical units of the array values       
+AMPNAME = 'e2v 10031-23-05, right,e2v 10031-23-05, left,e2v 10031-01-03, &'     
+CONTINUE  'right,e2v 10031-01-03, left,e2v 10031-18-04, left,e2v 10031-18-04, &'
+CONTINUE  'right&'                                                              
+DETSEC  = '[1025:7240,1793:2816]' / (NEW) Detector section(s)                   
+CCDSEC  = '[1025:7240,1793:2816]' / (NEW) CCD section(s)                        
+DATASEC = '[1:3108,1:512]'     / (NEW) Data section(s)                          
+
+--- HDU 4 ---
+XTENSION= 'IMAGE   '           / Image extension                                
+BITPIX  =                   16 / Bits per pixel                                 
+NAXIS   =                    2 / Number of axes                                 
+NAXIS1  =                 3108 / Axis length                                    
+NAXIS2  =                  512 / Axis length                                    
+PCOUNT  =                    0 / No 'random' parameters                         
+GCOUNT  =                    1 / Only one group                                 
+EXTNAME = 'DQ      '           / Extension name                                 
+EXTVER  =                    1 / Extension version                              
+ORIGIN  = 'NOAO-IRAF FITS Image Kernel July 2003' / FITS file originator        
+INHERIT =                    F / Inherits global header                         
+DATE    = '2012-09-05T19:02:05' / Date FITS file was generated                  
+IRAF-TLM= '2012-09-05T19:02:21' / Time of last modification                     
+CTYPE1  = 'RA---TAN'           / R.A. in tangent plane projection               
+CTYPE2  = 'DEC--TAN'           / DEC. in tangent plane projection               
+CRPIX1  =        1554.25690905 / Ref pix of axis 1                              
+CRPIX2  =     255.678719936273 / Ref pix of axis 2                              
+CRVAL1  =     289.876971268823 / RA at Ref pix in decimal degrees               
+CRVAL2  =      44.762017250512 / DEC at Ref pix in decimal degrees              
+CD1_1   = -3.57434744598053E-05 / WCS matrix element 1 1                        
+CD1_2   = 1.90293045414958E-05 / WCS matrix element 1 2                         
+CD2_1   = -1.90347087768967E-05 / WCS matrix element 2 1                        
+CD2_2   = -3.5732335926095E-05 / WCS matrix element 2 2                         
+CCDSUM  = '2 2     '           / CCD sum                                        
+GAIN    =                 2.21 / (UPDATED) Gain [electrons/ADU]                 
+GAINSET = 'low     '           / (NEW) Gain setting (low / high)                
+RDNOISE =                  3.2 / (UPDATED) Estimated read noise [electrons]     
+RADECSYS= 'FK5     '           / R.A./DEC. coordinate system reference          
+EQUINOX =                2000. / Equinox of coordinate system                   
+MJD-OBS =     56175.2470157282 / MJD of start of obseration                     
+DISPAXIS=                    1 / (NEW) Dispersion axis                          
+DETSEC  = '[1025:7240,1793:2816]' / (NEW) Detector section(s)                   
+CCDSEC  = '[1025:7240,1793:2816]' / (NEW) CCD section(s)                        
+DATASEC = '[1:3108,1:512]'     / (NEW) Data section(s)                          
+                                                                                
+
+--- HDU 5 ---
+XTENSION= 'BINTABLE'           / binary table extension                         
+BITPIX  =                    8 / array data type                                
+NAXIS   =                    2 / number of array dimensions                     
+NAXIS1  =                  666 / length of dimension 1                          
+NAXIS2  =                   51 / length of dimension 2                          
+PCOUNT  =                    0 / number of group parameters                     
+GCOUNT  =                    1 / number of groups                               
+TFIELDS =                    5 / number of table fields                         
+EXTNAME = 'WAVECAL '           / added by AstroData                             
+EXTVER  =                    1 / added by AstroData                             
+TTYPE1  = 'spatial_coord'                                                       
+TFORM1  = 'I       '                                                            
+TTYPE2  = 'spectral_coord'                                                      
+TFORM2  = '54E     '                                                            
+TTYPE3  = 'fit_wavelength'                                                      
+TFORM3  = '54E     '                                                            
+TTYPE4  = 'ref_wavelength'                                                      
+TFORM4  = '54E     '                                                            
+TTYPE5  = 'fit_coefficients'                                                    
+TFORM5  = '4E      '                                                            
+RECORDNM= 'N20120905S0122_001'                                                  
+IDUNITS = 'Angstroms'                                                           
+IDFUNCTN= 'chebyshev'                                                           
+IDORDER =                  4.0                                                  
+IDSAMPLE= '*       '                                                            
+IDNAVER = '1       '                                                            
+IDNITER = '10      '                                                            
+IDREJECT= '3. 3.   '                                                            
+IDGROW  = '0.      '                                                            
+IDRANGE = '68.6015396118 3078.62084961'                                         
+FCUNITS = 'angstroms'                                                           
+FCAXIS  = '1       '                                                            
+FCFUNCTN= 'chebyshev'                                                           
+FCXORDER=                  4.0                                                  
+FCYORDER=                  4.0                                                  
+FCXRANGE= '1.0 3108.0'                                                          
+FCYRANGE= '1.0 512.0'                                                           
+FCCOEF0 =    4750.022820212398                                                  
+FCCOEF1 =   -731.6749514453275                                                  
+FCCOEF2 =     1.97466095619716                                                  
+FCCOEF3 =   0.2313065870845879                                                  
+FCCOEF4 =  0.04405358776021079                                                  
+FCCOEF5 =  0.01330947840883697                                                  
+FCCOEF6 = -0.00238232639094042                                                  
+FCCOEF7 = -0.00218526325681262                                                  
+FCCOEF8 =  -0.2529438257402978                                                  
+FCCOEF9 =  0.01158378823700916                                                  
+FCCOEF10= -0.00112291458248257                                                  
+FCCOEF11= -0.00178045173388520                                                  
+FCCOEF12= 0.000767739283692767                                                  
+FCCOEF13= -0.00095373352347078                                                  
+FCCOEF14= 0.001079416328660793                                                  
+FCCOEF15= 0.001075567316584401                                                  

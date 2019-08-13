@@ -442,13 +442,28 @@ def get_exposure(header):
     return result
 
 
-def get_meta_release(header):
+def get_meta_release(parameters):
     """
     Determine the metadata release date (Observation and Plane-level).
 
-    :param header:  The FITS header for the current extension.
+    :param parameters:  A dictionary container the FITS header for the
+        current extension, as well as the URI for the .
     :return: The Observation/Plane release date, or None if not found.
     """
+    uri = parameters.get('uri')
+    if uri is None:
+        raise mc.CadcException('uri missing from parameters.')
+
+    # make sure the metadata is for the correct plane/file
+    # combination - this location happens to be the first function called
+    # during blueprint evaluation, which is why reset is
+    # called here
+    em.om.reset_index(uri)
+
+    header = parameters.get('header')
+    if header is None:
+        raise mc.CadcException('header missing from parameters.')
+
     meta_release = header.get('DATE-OBS')
     if meta_release is None:
         meta_release = em.om.get('release')
@@ -630,7 +645,6 @@ def get_target_type(uri):
     :param header:  The FITS header for the current extension.
     :return: The Target TargetType, or None if not found.
     """
-    em.om.reset_index(uri)
     result = TargetType.FIELD
     spectroscopy = em.om.get('spectroscopy')
     instrument = _get_instrument()
@@ -875,9 +889,9 @@ def accumulate_fits_bp(bp, file_id, uri):
     Observation level."""
     logging.debug('Begin accumulate_fits_bp for {}.'.format(file_id))
     em.get_obs_metadata(file_id)
-    bp.set('Observation.intent', 'get_obs_intent(header)')
     bp.set('Observation.type', 'get_obs_type(header)')
-    bp.set('Observation.metaRelease', 'get_meta_release(header)')
+    bp.set('Observation.intent', 'get_obs_intent(header)')
+    bp.set('Observation.metaRelease', 'get_meta_release(parameters)')
     bp.set('Observation.target.type', 'get_target_type(uri)')
     bp.set('Observation.target.moving', 'get_target_moving(header)')
     bp.set('Observation.proposal.id', 'get_proposal_id(header)')
@@ -895,7 +909,7 @@ def accumulate_fits_bp(bp, file_id, uri):
     bp.set('Plane.productID', file_id)
     bp.set('Plane.dataProductType', 'get_data_product_type(header)')
     bp.set('Plane.calibrationLevel', 'get_calibration_level(uri)')
-    bp.set('Plane.metaRelease', 'get_meta_release(header)')
+    bp.set('Plane.metaRelease', 'get_meta_release(parameters)')
     bp.set('Plane.dataRelease', 'get_data_release(header)')
 
     bp.set('Plane.provenance.name', 'Gemini Observatory Data')

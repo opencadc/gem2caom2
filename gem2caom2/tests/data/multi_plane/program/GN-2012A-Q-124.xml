@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GN-2012A-Q-124</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GN-2012A-Q-124</h1>
+
+<table>
+ <tr><td>Title:<td>Determining the System Parameters for Poorly Studied Binary Central Stars of Planetary Nebulae -- Spectroscopy</tr>
+ <tr><td>PI:<td>Todd Hillwig</tr>
+ <tr><td>Co-I(s):<td> Steven Marghiem,  George Jacoby,  Orsola  De Marco</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+Current estimates of the impact of close binary stars on the shaping and ejection of planetary nebulae include a large fraction of systems for which no published data exists other than discovery notations and orbital periods. Only a small number of currently catalogued binary systems have had reliable binary parameters calculated. With the current emphasis in planetary nebula research on determining the role of binarity in the planetary nebula process, it is imperative that we understand as well as possible the small number of detected binary systems.  We propose here to obtain spectroscopy of three systems identified as binaries due to their light curves (two of these were found to be periodic variables through Kepler data).  The spectra will allow us to identify if each is a single or double-lined binary system, to determine radial velocity curves, and pair with the existing photometry to produce physical parameters for the binary systems. 
+
+
+</div>
+
+
+<h2>Publications using this program's data</h2>
+<ul>
+<li>
+<a href="/searchform/publication=2015MNRAS.448.3587D" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2015MNRAS.448.3587D/abstract" target="_blank">[ADS]</a> Identifying close binary central stars of PN with Kepler
+</ul>
+
+
+</body>
+</html>
