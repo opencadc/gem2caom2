@@ -8,7 +8,7 @@ tap_id: ivo://cadc.nrc.ca/ams/gemini
 todo_file_name: todo.txt
 # values True False
 use_local_files: False
-# values DEBUG INFO WARN ERROR
+# values DEBUG INFO WARNING ERROR
 logging_level: INFO
 # values True False
 log_to_file: True

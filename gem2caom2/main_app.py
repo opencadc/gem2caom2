@@ -2553,7 +2553,10 @@ def _update_chunk_energy_hokupaa(chunk, data_product_type, obs_id, filter_name):
                           'FeI/17': 'FeII'}
     reset_energy = False
 
-    if 'LowFlx' in filter_name:
+    # DB 14-08-19
+    # no energy since ‘home’ might either be an open position or a blocked
+    # position.
+    if 'LowFlx' in filter_name or 'home' in filter_name:
         reset_energy = True
     else:
         if filter_name in filter_name_repair:
