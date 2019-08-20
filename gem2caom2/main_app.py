@@ -709,7 +709,7 @@ def _get_pix_scale(header):
     if pix_scale is None:
         result = None
     else:
-        result = pix_scale / 3600.0
+        result = mc.to_float(pix_scale) / 3600.0
     return result
 
 
@@ -788,7 +788,9 @@ def _get_instrument():
 def _get_sky_coord(header, ra_key, dec_key):
     ra_hours = header.get(ra_key)
     dec_hours = header.get(dec_key)
-    if ra_hours is None or dec_hours is None:
+    if (ra_hours is None or dec_hours is None or ra_hours == 'INDEF' or
+            dec_hours == 'INDEF' or ra_hours == 'Unknown' or
+            dec_hours == 'Unknown'):
         ra_deg = None
         dec_deg = None
     else:
@@ -2175,7 +2177,7 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name):
                             'PAH': [3.270, 3.320, None, None]}}
 
     reset_energy = False
-    if 'Dark' in filter_name:
+    if 'Dark' in filter_name or 'DARK' in filter_name:
         # 'Dark' test obs is GN-2013B-Q-93-147-036
         # DB 13-05-19
         # GNIRS “Dark” trumps the “L” filter, so no energy.
@@ -2223,6 +2225,7 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name):
                     else:
                         slit_width = float(focal_plane_mask.split('arcsec')[0])
 
+                    logging.error('disperser is {}'.format(disperser))
                     if 'XD' in disperser:
                         logging.debug(
                             'gnirs: cross dispersed mode for {}.'.format(obs_id))
@@ -2293,6 +2296,7 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name):
                                         camera, obs_id))
 
                     lookup = lookup.upper()
+                    logging.error('lookup is {}'.format(lookup))
                     if lookup not in gnirs_lookup[grating]:
                         raise mc.CadcException(
                             'GNIRS: Mystery lookup {} for grating {}, obs {}'.format(
@@ -2345,6 +2349,7 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name):
             else:
                 bandpass = filter_name[0]
 
+            bandpass = bandpass.upper()
             if bandpass in imaging:
                 bounds = imaging[bandpass]
             else:
@@ -2550,7 +2555,8 @@ def _update_chunk_energy_hokupaa(chunk, data_product_type, obs_id, filter_name):
                           'HKnotch': 'H+K notch',
                           '1.56/120': 'methane low',
                           '1.71/120': 'methane high',
-                          'FeI/17': 'FeII'}
+                          'FeI/17': 'FeII',
+                          '2.26/60': 'K-continuum'}
     reset_energy = False
 
     # DB 14-08-19
@@ -3070,6 +3076,8 @@ def _reset_position(headers, instrument):
         ra_tel = headers[0].get('RA_TEL')
         if ra_tel == 'Unavailable':
             result = True
+    elif instrument is em.Inst.HOKUPAA and ra is None:
+        result = True
     return result
 
 

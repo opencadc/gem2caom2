@@ -243,8 +243,10 @@ class GemName(ec.StorageName):
     @staticmethod
     def remove_extensions(name):
         """How to get the file_id from a file_name."""
+        # Note the .gz extension is on some TRECS files, not that it is
+        # an accepted GEMINI extension
         return name.replace('.fits', '').replace('.bz2', ''). \
-            replace('.header', '').replace('.jpg', '')
+            replace('.header', '').replace('.jpg', '').replace('.gz', '')
 
     @staticmethod
     def is_preview(entry):
