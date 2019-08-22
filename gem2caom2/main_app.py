@@ -1296,6 +1296,12 @@ def _build_chunk_energy(chunk, filter_name, fm):
 # types of observations for other grisms that are not ‘blank’
 # observations and so don’t have energy WCS.
 
+# DB 22-08-19
+# Guesstimate from changes in values for L filter/grism centered and blue
+# combinations.
+# M: 1100 for f6-2pixBl, 860 for f6-4pixBl and 490 for f6-6pixBl.
+# Skip energy for INVALID f-ratio.
+
 NIRI_RESOLVING_POWER = {
     'J': {
         'f6-2pix': 770.0,
@@ -1331,7 +1337,10 @@ NIRI_RESOLVING_POWER = {
     'M': {
         'f6-2pix': 1100.0,
         'f6-4pix': 770.0,
-        'f6-6pix': 460.0
+        'f6-6pix': 460.0,
+        'f6-2pixBl': 1100.0,
+        'f6-4pixBl': 860.0,
+        'f6-6pixBl': 490.0,
     },
     'K': {
         'f6-2pix': 1300.0,
@@ -1440,6 +1449,11 @@ def _update_chunk_energy_niri(chunk, data_product_type, obs_id, filter_name):
             elif 'pinhole' in f_ratio:
                 logging.info(
                     'Pinhole. Setting energy to None for {}'.format(obs_id))
+                reset_energy = True
+            elif f_ratio == 'INVALID':
+                logging.info(
+                    'INVALID f_ratio. Setting energy to None for {}'.format(
+                        obs_id))
                 reset_energy = True
             else:
                 raise mc.CadcException(
@@ -1867,7 +1881,19 @@ def _update_chunk_energy_trecs(chunk, data_product_type, obs_id, filter_name):
     # might take some string manipulation to match filter names with SVO
     # filters.
 
-    filter_md = em.get_filter_metadata(em.Inst.TRECS, filter_name)
+    if filter_name == 'Qone-17.8um':
+        # DB 22-08-19
+        # Qone-17.8um filter.  I can find no info about the bandpass for that
+        # filter on the web but this info was in the old gsa_filters table.
+        # Hardcode lower/upper bandpasses of 17.3 and 18.17 microns.
+        w_min = 17.3
+        w_max = 18.17
+        filter_md = FilterMetadata()
+        filter_md.set_bandpass(w_max, w_min)
+        filter_md.set_central_wl(w_max, w_min)
+        filter_md.set_resolving_power(w_max, w_min)
+    else:
+        filter_md = em.get_filter_metadata(em.Inst.TRECS, filter_name)
     if filter_md is None:
         raise mc.CadcException(
             '{}: Mystery filter {}'.format(em.Inst.TRECS, filter_name))
