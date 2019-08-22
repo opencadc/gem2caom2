@@ -2,7 +2,7 @@
 <caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:CompositeObservation" caom2:id="00000000-0000-0000-912a-262c725d2ce1">
   <caom2:collection>GEMINI</caom2:collection>
   <caom2:observationID>GS-2013B-Q-16-277-019-DARK</caom2:observationID>
-  <caom2:metaRelease>2014-01-23T00:00:00.000</caom2:metaRelease>
+  <caom2:metaRelease>2014-01-23T19:58:24.600</caom2:metaRelease>
   <caom2:algorithm>
     <caom2:name>composite</caom2:name>
   </caom2:algorithm>
@@ -30,7 +30,7 @@
   <caom2:planes>
     <caom2:plane caom2:id="00000000-0000-0000-80b4-a0aa5ddc1d05">
       <caom2:productID>S20140124S0039_dark</caom2:productID>
-      <caom2:metaRelease>2014-01-23T00:00:00.000</caom2:metaRelease>
+      <caom2:metaRelease>2014-01-23T19:58:24.600</caom2:metaRelease>
       <caom2:dataRelease>2014-01-23T00:00:00.000</caom2:dataRelease>
       <caom2:dataProductType>image</caom2:dataProductType>
       <caom2:calibrationLevel>2</caom2:calibrationLevel>
@@ -41,11 +41,11 @@
         <caom2:reference>http://archive.gemini.edu/searchform/filepre=S20140124S0039_dark.fits</caom2:reference>
         <caom2:inputs>
           <caom2:planeURI>caom:GEMINI/GS-2013B-Q-16-277-023/S20140124S0043</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/GS-2013B-Q-16-277-022/S20140124S0042</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/GS-2013B-Q-16-277-021/S20140124S0041</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/GS-2013B-Q-16-277-024/S20140124S0044</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/GS-2013B-Q-16-277-020/S20140124S0040</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GS-2013B-Q-16-277-021/S20140124S0041</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GS-2013B-Q-16-277-022/S20140124S0042</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/GS-2013B-Q-16-277-019/S20140124S0039</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GS-2013B-Q-16-277-020/S20140124S0040</caom2:planeURI>
         </caom2:inputs>
       </caom2:provenance>
       <caom2:artifacts>
@@ -172,11 +172,11 @@
     </caom2:plane>
   </caom2:planes>
   <caom2:members>
+    <caom2:observationURI>caom:GEMINI/GS-2013B-Q-16-277-023</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GS-2013B-Q-16-277-022</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GS-2013B-Q-16-277-019</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GS-2013B-Q-16-277-024</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GS-2013B-Q-16-277-020</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GS-2013B-Q-16-277-023</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GS-2013B-Q-16-277-021</caom2:observationURI>
   </caom2:members>
 </caom2:Observation>

@@ -2,7 +2,7 @@
 <caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="00000000-0000-0000-b31b-014ba5494013" caom2:lastModified="2018-01-30T18:07:49.050" caom2:maxLastModified="2018-01-30T18:07:49.050" caom2:metaChecksum="md5:7134ef578ffd7426d4f05590c82beb4c" caom2:accMetaChecksum="md5:8ac110b6349b2f2af584f53a8331644b">
   <caom2:collection>GEMINI</caom2:collection>
   <caom2:observationID>GN-2015A-C-2-96-002</caom2:observationID>
-  <caom2:metaRelease>2015-02-17T00:00:00.000</caom2:metaRelease>
+  <caom2:metaRelease>2015-02-17T22:46:11.300</caom2:metaRelease>
   <caom2:algorithm>
     <caom2:name>exposure</caom2:name>
   </caom2:algorithm>
@@ -30,7 +30,7 @@
   <caom2:planes>
     <caom2:plane caom2:id="00000000-0000-0000-b31b-014ba54942ad" caom2:lastModified="2015-02-20T04:40:18.303" caom2:maxLastModified="2018-01-30T18:07:49.050" caom2:metaChecksum="md5:ced3f201ea6f23462832de3e2e3b9d6a" caom2:accMetaChecksum="md5:dd79a02e1517a72887ac193dbd6995d8">
       <caom2:productID>N20150217S0380</caom2:productID>
-      <caom2:metaRelease>2015-02-17T00:00:00.000</caom2:metaRelease>
+      <caom2:metaRelease>2015-02-17T22:46:11.300</caom2:metaRelease>
       <caom2:dataRelease>2015-02-17T00:00:00.000</caom2:dataRelease>
       <caom2:dataProductType>image</caom2:dataProductType>
       <caom2:calibrationLevel>1</caom2:calibrationLevel>

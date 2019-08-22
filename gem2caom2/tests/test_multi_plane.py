@@ -211,7 +211,7 @@ def test_multi_plane(test_name):
         actual = mc.read_obs_from_file(actual_fqn)
         result = get_differences(expected, actual, 'Observation')
         if result:
-            msg = 'Differences found obs id {} n{}'.format(
+            msg = 'Differences found obs id {} \n{}'.format(
                 expected.observation_id, '\n'.join([r for r in result]))
             raise AssertionError(msg)
         # assert False  # cause I want to see logging messages

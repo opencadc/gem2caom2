@@ -460,12 +460,17 @@ def get_meta_release(parameters):
     # called here
     em.om.reset_index(uri)
 
+    # DB 21-08-19
+    # If PROP_MD is T, use JSON ‘release’ value for metadata release date.
+    # If no PROP_MD present or value is F use the JSON ut_datetime value.
     header = parameters.get('header')
     if header is None:
         raise mc.CadcException('header missing from parameters.')
 
-    meta_release = header.get('DATE-OBS')
-    if meta_release is None:
+    prop_md = header.get('PROP_MD')
+    if prop_md is None or prop_md == 'F':
+        meta_release = em.om.get('ut_datetime')
+    else:
         meta_release = em.om.get('release')
     return meta_release
 
@@ -2146,6 +2151,12 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name):
     # follows: X-1400; J-1400, H-1400; K-1300, for 'short' camera
     # resolution
 
+    # DB 21-08-19
+    # GN-2010B-SV-142-300-002:  add a line in the ‘10’ section of
+    # gnirs_lookup similar to the ‘L’ entry but with the PAH filter
+    # bandpass:  ‘PAH’: [3.270, 3.320, 570, 1800].  These are likely
+    # mis-identified acquisition observations rather than science.
+
     gnirs_lookup = {'10': {'X': [1.03, 1.17, 570, 2100],
                            'J': [1.17, 1.37, 570, 1600],
                            'H': [1.47, 1.80, 570, 1700],
@@ -2153,7 +2164,8 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name):
                            'L': [2.80, 4.20, 570, 1800],
                            'M': [4.40, 6.00, 570, 1200],
                            'LB+LXD': [0.9, 2.5, 1800],
-                           'LB+SXD': [1.2, 2.5, 1800]},
+                           'LB+SXD': [1.2, 2.5, 1800],
+                           'PAH': [3.270, 3.320, 570, 1800]},
                     '32': {'X': [1.03, 1.17, 1700, 5100, 1400],
                            'J': [1.17, 1.37, 1600, 4800, 1400],
                            'H': [1.49, 1.80, 1700, 5100, 1400],
@@ -2185,6 +2197,17 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name):
         logging.warning(
             'GNIRS: filter is {}. No spectral WCS for {}.'.format(
                 filter_name, obs_id))
+    elif 'open' in filter_name:
+        # DB 21-08-19
+        # GS-2004A-DD-8-10-001:  set the bandpass to between 1 micron and 6
+        # microns, same as for GMOS imaging with ‘open’ filter.  This is just
+        # an acquisition observation.
+        w_min = 1.0
+        w_max = 6.0
+        fm = FilterMetadata()
+        fm.set_bandpass(w_max, w_min)
+        fm.set_central_wl(w_max, w_min)
+        fm.set_resolving_power(w_max, w_min)
     else:
         fm = FilterMetadata('GNIRS')
         if data_product_type == DataProductType.SPECTRUM:
@@ -2213,104 +2236,119 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name):
                 else:
                     if grating not in gnirs_lookup:
                         raise mc.CadcException(
-                            'GNIRS: Mystery grating {} for {}'.format(grating, obs_id))
+                            'GNIRS: Mystery grating {} for {}'.format(
+                                grating, obs_id))
 
                     camera = em.om.get('camera')
-                    focal_plane_mask = em.om.get('focal_plane_mask')
-                    if focal_plane_mask is None or 'arcsec' not in focal_plane_mask:
-                        # DB 24-04-19
-                        # Assume slit width of 1.0 for GNIRS observation
-                        # without a focal plane mask value.
-                        slit_width = 1.0
+                    if camera == 'Moving':
+                        # DB 21-08-19
+                        # No energy for the ‘moving’ camera
+                        logging.info(
+                            'Camera is moving. No energy for {}'.format(
+                                obs_id))
+                        reset_energy = True
                     else:
-                        slit_width = float(focal_plane_mask.split('arcsec')[0])
-
-                    logging.error('disperser is {}'.format(disperser))
-                    if 'XD' in disperser:
-                        logging.debug(
-                            'gnirs: cross dispersed mode for {}.'.format(obs_id))
-                        # https://www.gemini.edu/sciops/instruments/gnirs/spectroscopy/
-                        # crossdispersed-xd-spectroscopy/xd-prisms
-                        # 0 = lower
-                        # 1 = upper
-                        # 2 = spectral resolution with 2-pix wide slit
-                        # DB - 04-03-19 - Change the last number in each row to
-                        # 1800.0 since the resolving power is the same for all 3
-                        # cases
-                        #
-                        # Add line to find grating ID (from long-slit code):
-                        # grating = disperser.split(‘_’)[0]
-                        #
-                        # Then change ‘lookup’ to include grating.
-                        #
-                        # I can’t find any other combinations (e.g. ‘LB+LXD+32’)
-                        # but no guarantee that I won’t have to add another line
-                        # or two if we see failures.   Wavelength coverage isn’t
-                        # correct for the R=5400 entries because only about
-                        # 1/3rd of the full band pass is covered but in bits
-                        # and pieces that we can’t identify in raw image.
-
-                        lookup = None
-                        coverage = disperser[-3:]
-                        if camera.startswith('Short'):
-                            lookup = '{}+{}'.format('SB', coverage)
-                        elif camera.startswith('Long'):
-                            lookup = '{}+{}'.format('LB', coverage)
-
-                        if camera.startswith('Long'):
-                            slit_table_value = 0.1
-                            lookup_index = 2
-                        elif camera.startswith('Short'):
-                            slit_table_value = 0.3
-                            lookup_index = 2
+                        focal_plane_mask = em.om.get('focal_plane_mask')
+                        if (focal_plane_mask is None or
+                                'arcsec' not in focal_plane_mask):
+                            # DB 24-04-19
+                            # Assume slit width of 1.0 for GNIRS observation
+                            # without a focal plane mask value.
+                            slit_width = 1.0
                         else:
-                            raise mc.CadcException(
-                                'GNIRS: Mystery camera definition {} for {}'.format(
-                                    camera,
-                                                                                    obs_id))
-                    else:
-                        logging.debug('gnirs: long slit mode for {}.'.format(
-                            obs_id))
-                        if filter_name == 'PAH':
-                            lookup = filter_name
-                        else:
-                            bandpass = filter_name[0]
-                            lookup = bandpass
+                            slit_width = float(focal_plane_mask.split(
+                                'arcsec')[0])
+
+                        logging.error('disperser is {}'.format(disperser))
+                        if 'XD' in disperser:
+                            logging.debug(
+                                'gnirs: cross dispersed mode for {}.'.format(
+                                    obs_id))
+                            # https://www.gemini.edu/sciops/instruments/gnirs/spectroscopy/crossdispersed-xd-spectroscopy/xd-prisms
+                            #
+                            # 0 = lower
+                            # 1 = upper
+                            # 2 = spectral resolution with 2-pix wide slit
+                            # DB - 04-03-19 - Change the last number in each
+                            # row to 1800.0 since the resolving power is the
+                            # same for all 3 cases
+                            #
+                            # Add line to find grating ID (from long-slit code):
+                            # grating = disperser.split(‘_’)[0]
+                            #
+                            # Then change ‘lookup’ to include grating.
+                            #
+                            # I can’t find any other combinations (e.g.
+                            # ‘LB+LXD+32’) but no guarantee that I won’t have
+                            # to add another line or two if we see failures.
+                            # Wavelength coverage isn’t correct for the R=5400
+                            # entries because only about 1/3rd of the full
+                            # band pass is covered but in bits and pieces that
+                            # we can’t identify in raw image.
+
+                            lookup = None
+                            coverage = disperser[-3:]
+                            if camera.startswith('Short'):
+                                lookup = '{}+{}'.format('SB', coverage)
+                            elif camera.startswith('Long'):
+                                lookup = '{}+{}'.format('LB', coverage)
+
                             if camera.startswith('Long'):
                                 slit_table_value = 0.1
-                                lookup_index = 3
+                                lookup_index = 2
                             elif camera.startswith('Short'):
-                                date_time = ac.get_datetime(em.om.get('ut_datetime'))
-                                if date_time > ac.get_datetime('2012-11-01T00:00:00'):
-                                    slit_table_value = 0.3
-                                    if grating == '32':
-                                        lookup_index = 4
-                                    else:
-                                        lookup_index = 3
-                                else:
-                                    slit_table_value = 0.3
-                                    lookup_index = 2
+                                slit_table_value = 0.3
+                                lookup_index = 2
                             else:
                                 raise mc.CadcException(
-                                    'GNIRS: Mystery camera definition {} for {}'.format(
-                                        camera, obs_id))
+                                    'GNIRS: Mystery camera definition {} '
+                                    'for {}'.format(camera, obs_id))
+                        else:
+                            logging.debug('gnirs: long slit mode for '
+                                          '{}.'.format(obs_id))
+                            if filter_name == 'PAH':
+                                lookup = filter_name
+                            else:
+                                bandpass = filter_name[0]
+                                lookup = bandpass
+                                if camera.startswith('Long'):
+                                    slit_table_value = 0.1
+                                    lookup_index = 3
+                                elif camera.startswith('Short'):
+                                    date_time = ac.get_datetime(
+                                        em.om.get('ut_datetime'))
+                                    if date_time > ac.get_datetime(
+                                            '2012-11-01T00:00:00'):
+                                        slit_table_value = 0.3
+                                        if grating == '32':
+                                            lookup_index = 4
+                                        else:
+                                            lookup_index = 3
+                                    else:
+                                        slit_table_value = 0.3
+                                        lookup_index = 2
+                                else:
+                                    raise mc.CadcException(
+                                        'GNIRS: Mystery camera definition '
+                                        '{} for {}'.format(camera, obs_id))
 
-                    lookup = lookup.upper()
-                    logging.error('lookup is {}'.format(lookup))
-                    if lookup not in gnirs_lookup[grating]:
-                        raise mc.CadcException(
-                            'GNIRS: Mystery lookup {} for grating {}, obs {}'.format(
-                                lookup, grating, obs_id))
-                    bounds = gnirs_lookup[grating][lookup]
-                    fm.set_bandpass(bounds[1], bounds[0])
-                    if lookup == 'PAH':
-                        fm.resolving_power = None
-                    else:
-                        fm.resolving_power = slit_table_value * bounds[
-                            lookup_index] / slit_width
-                    fm.set_central_wl(bounds[1], bounds[0])
+                        lookup = lookup.upper()
+                        logging.error('lookup is {}'.format(lookup))
+                        if lookup not in gnirs_lookup[grating]:
+                            raise mc.CadcException(
+                                'GNIRS: Mystery lookup {} for grating {}, '
+                                'obs {}'.format(lookup, grating, obs_id))
+                        bounds = gnirs_lookup[grating][lookup]
+                        fm.set_bandpass(bounds[1], bounds[0])
+                        if lookup == 'PAH':
+                            fm.resolving_power = None
+                        else:
+                            fm.resolving_power = slit_table_value * bounds[
+                                lookup_index] / slit_width
+                        fm.set_central_wl(bounds[1], bounds[0])
         elif data_product_type == DataProductType.IMAGE:
-            logging.debug('gnirs: SpectralWCS imaging mode for {}.'.format(obs_id))
+            logging.debug('gnirs: SpectralWCS imaging mode for {}.'.format(
+                obs_id))
             # https://www.gemini.edu/sciops/instruments/gnirs/imaging
             # https://www.gemini.edu/sciops/instruments/gnirs/spectroscopy/orderblocking-acq-nd-filters
 
@@ -2340,7 +2378,11 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name):
 
             # DB 30-04-19
             # GN-CAL20180607-27-001:  ignore ‘PupilViewer’ if possible.
-            filter_name = filter_name.replace('PupilViewer', '')
+            # DB 21-08-19
+            # PV+K: ‘PV’ = pupil viewer.  Shouldn’t affect transmission values
+            # (I think) so ignore when looking up lower/upper bandpasses.
+            filter_name = filter_name.replace(
+                'PupilViewer', '').replace('PV', '')
             filter_name = filter_name.strip('+')
 
             if (len(filter_name) == 1 or filter_name == 'H2' or
@@ -2551,12 +2593,32 @@ def _update_chunk_energy_hokupaa(chunk, data_product_type, obs_id, filter_name):
     # And I think FeI/17 is likely meant to be the FeII filter (just going by
     # the “17” in the bandpass.  I’m not aware of an IR Fe I filter…
 
+    # DB 21-08-19
+    # GN-2001A-C-23-38-613:  filter BrG/20 -> BrG = not sure what the ‘/20’
+    # denotes since it is not the correct bandpass if that’s what it’s for,
+    # but likely Br(gamma) filter, #11 on the list on the web page
+    #
+    # GN-2001B-C-3-75-110:   filter HeI/30 -> He I], #9 on the list.  In this
+    # case ‘/30’ might be the bandpass  RA/Dec values in the header look
+    # reasonable but archive suggests ‘invalid’ for some reason so no spatial
+    # WCS I guess.  DEC value might not agree with the telescope elevation
+    # value…
+    #
+    # GN-2001B-C-16-19-039:  2.26/60 - it’s K-continuum.
+    #
+    # GN-2001A-DD-2-1-537:  Much of the header info seems to be incorrect so
+    # no WCS.  But what’s odd is that searching Gemini’s archive for this data
+    # label returns 3 files with different file names:  23, 24 and 25
+    # February.  EQUINOX only seems to be incorrect in 01FEB23_537.fits.
+
     filter_name_repair = {'H2/23': '1-0 S(1) H2',
                           'HKnotch': 'H+K notch',
                           '1.56/120': 'methane low',
                           '1.71/120': 'methane high',
                           'FeI/17': 'FeII',
-                          '2.26/60': 'K-continuum'}
+                          '2.26/60': 'K-continuum',
+                          'BrG/20': 'H Br(gamma)',
+                          'HeI/30': 'HeI'}
     reset_energy = False
 
     # DB 14-08-19
@@ -3077,6 +3139,9 @@ def _reset_position(headers, instrument):
         if ra_tel == 'Unavailable':
             result = True
     elif instrument is em.Inst.HOKUPAA and ra is None:
+        # DB - 21-08-19
+        # GN-2001A-DD-2-3-1060:  header has UNKNOWN for values of coordinates
+        # so no spatial WCS
         result = True
     return result
 
@@ -3330,6 +3395,23 @@ def _update_chunk_position(chunk, header, instrument, extension, obs_id,
     # TEXES - DB - 07-03-19
     # Use header RA and DEC for crval1/2.  Use a fixed 5" x 5" FOV.
     # So NAXIS=1 and cd11=cd22 = 5.0/3600.0
+
+    # DB - 21-08-19
+    # GN-2001A-DD-2-1-537:  Much of the header info seems to be incorrect so
+    # no WCS.  But what’s odd is that searching Gemini’s archive for this data
+    # label returns 3 files with different file names:  23, 24 and 25
+    # February.  EQUINOX only seems to be incorrect in 01FEB23_537.fits.
+    #
+    # GN-2001A-DD-2-3-1060:  header has UNKNOWN for values of coordinates so
+    # no spatial WCS
+
+    if instrument is em.Inst.HOKUPAA:
+        equinox = header.get('EQUINOX')
+        if not 1800.0 <= equinox <= 2500.0:
+            logging.warning(
+                'EQUINOX value is wrong ({}), no spatial WCS for {}'.format(
+                    equinox, obs_id))
+            return
 
     header['CTYPE1'] = 'RA---TAN'
     header['CTYPE2'] = 'DEC--TAN'

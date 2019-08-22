@@ -24,6 +24,7 @@ RUN pip install aenum && \
     pip install numpy && \
     pip install PyYAML && \
     pip install spherical-geometry && \
+    pip install vos && \
     pip install xml-compare
 
 WORKDIR /usr/src/app

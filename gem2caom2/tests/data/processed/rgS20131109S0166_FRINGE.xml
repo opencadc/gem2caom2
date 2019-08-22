@@ -2,7 +2,7 @@
 <caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="00000000-0000-0000-949f-624cbff2d4a9">
   <caom2:collection>GEMINI</caom2:collection>
   <caom2:observationID>GS-CAL20131109-17-001</caom2:observationID>
-  <caom2:metaRelease>2013-11-09T00:00:00.000</caom2:metaRelease>
+  <caom2:metaRelease>2013-11-09T07:47:01.200</caom2:metaRelease>
   <caom2:algorithm>
     <caom2:name>exposure</caom2:name>
   </caom2:algorithm>
@@ -27,7 +27,7 @@
   <caom2:planes>
     <caom2:plane caom2:id="00000000-0000-0000-9857-666f041e4948">
       <caom2:productID>rgS20131109S0166_FRINGE</caom2:productID>
-      <caom2:metaRelease>2013-11-09T00:00:00.000</caom2:metaRelease>
+      <caom2:metaRelease>2013-11-09T07:47:01.200</caom2:metaRelease>
       <caom2:dataRelease>2013-11-09T00:00:00.000</caom2:dataRelease>
       <caom2:dataProductType>image</caom2:dataProductType>
       <caom2:calibrationLevel>2</caom2:calibrationLevel>
