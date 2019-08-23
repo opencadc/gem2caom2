@@ -7,7 +7,6 @@ RUN apk --no-cache add \
         git \
         g++ \
         libffi-dev \
-        libmagic \
         libxml2-dev \
         libxslt-dev \
         make \
@@ -31,7 +30,9 @@ WORKDIR /usr/src/app
 
 RUN pip install bs4
 
-RUN apk --no-cache add imagemagick
+RUN apk --no-cache add \
+	imagemagick \
+        libmagic
 
 RUN mkdir /app && mkdir /app/data
 

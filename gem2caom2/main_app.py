@@ -942,7 +942,7 @@ def accumulate_fits_bp(bp, file_id, uri):
         bp.set_default('Observation.telescope.name', 'Gemini-South')
     mode = em.om.get('mode')
     if not (instrument in [em.Inst.GPI, em.Inst.PHOENIX, em.Inst.HOKUPAA,
-                           em.Inst.OSCIR, em.Inst.BHROS] or
+                           em.Inst.OSCIR, em.Inst.BHROS, em.Inst.TRECS] or
             (instrument is em.Inst.GRACES and mode is not None and
              mode != 'imaging')):
         bp.configure_position_axes((1, 2))
@@ -1218,6 +1218,15 @@ def update(observation, **kwargs):
                             elif instrument is em.Inst.FLAMINGOS:
                                 _update_chunk_position_flamingos(
                                     c, header, observation.observation_id)
+                            elif instrument is em.Inst.TRECS:
+                                # DB 22-08-19
+                                # For the file with CTYPE1 = 0 in HDU 1, all
+                                # of the other WCS info appears to be fine
+                                # (i.e. identical with the primary header).
+                                # Use the HDU 0 values.
+                                _update_chunk_position_trecs(
+                                    c, headers, int(part),
+                                    observation.observation_id)
 
                         # time WCS
                         if instrument is em.Inst.F2:
@@ -1831,7 +1840,14 @@ def _update_chunk_energy_nici(chunk, data_product_type, obs_id, filter_name):
     logging.debug('Begin _update_chunk_energy_nici')
     mc.check_param(chunk, Chunk)
 
+    # DB 22-08-19
+    # Duplicate the line “‘FeII’: [1.644000, 1.631670, 1.656330]” in the
+    # NICI filters replacing “FeII” with “[FeII]“?   Although it would be
+    # better to have only [FeII] show up in the pick list and not both
+    # Fe II and [Fe II]…
+
     filter_name = filter_name.split('_G')[0]
+    filter_name = filter_name.replace('[FeII]', 'FeII')
     if filter_name == 'Block':
         # DB 04-04-19
         # If one of the NICI filters is ‘Block’ then energy WCS should be
@@ -1860,6 +1876,7 @@ def _update_chunk_energy_nici(chunk, data_product_type, obs_id, filter_name):
             # the bandpass name for the plane.  Add code to combine the two
             # chunk bandpass names to create a plane bandpass name only for
             # this instrument
+            temp = temp.replace('[FeII]', 'FeII')
             _build_chunk_energy(chunk, temp, fm)
         else:
             raise mc.CadcException(
@@ -1881,37 +1898,45 @@ def _update_chunk_energy_trecs(chunk, data_product_type, obs_id, filter_name):
     # might take some string manipulation to match filter names with SVO
     # filters.
 
-    if filter_name == 'Qone-17.8um':
+    if filter_name == 'Datum+Datum':
         # DB 22-08-19
-        # Qone-17.8um filter.  I can find no info about the bandpass for that
-        # filter on the web but this info was in the old gsa_filters table.
-        # Hardcode lower/upper bandpasses of 17.3 and 18.17 microns.
-        w_min = 17.3
-        w_max = 18.17
-        filter_md = FilterMetadata()
-        filter_md.set_bandpass(w_max, w_min)
-        filter_md.set_central_wl(w_max, w_min)
-        filter_md.set_resolving_power(w_max, w_min)
+        # I think it might be better to not provide wavelength info rather
+        # than a very wide range.  That’s how some other TReCS data with null
+        # filter names are treated.
+        logging.info('Filter is {}, no Spectral WCS for {}'.format(
+            filter_name, obs_id))
     else:
-        filter_md = em.get_filter_metadata(em.Inst.TRECS, filter_name)
-    if filter_md is None:
-        raise mc.CadcException(
-            '{}: Mystery filter {}'.format(em.Inst.TRECS, filter_name))
-    if data_product_type == DataProductType.IMAGE:
-        logging.debug('TRECS: imaging mode for {}.'.format(obs_id))
-    elif data_product_type == DataProductType.SPECTRUM:
-        logging.debug('TReCS: LS|Spectroscopy mode for {}.'.format(obs_id))
-        disperser = em.om.get('disperser')
-        if disperser is not None:
-            if disperser == 'LowRes-20':
-                filter_md.resolving_power = 80.0
-            elif disperser == 'LowRes-10':
-                filter_md.resolving_power = 100.0
-    else:
-        raise mc.CadcException(
-            'TReCS: Do not understand mode {} for {}'.format(data_product_type,
-                                                             obs_id))
-    _build_chunk_energy(chunk, filter_name, filter_md)
+        if filter_name == 'Qone-17.8um':
+            # DB 22-08-19
+            # Qone-17.8um filter.  I can find no info about the bandpass for
+            # that filter on the web but this info was in the old gsa_filters
+            # table. Hardcode lower/upper bandpasses of 17.3 and 18.17 microns.
+            w_min = 17.3
+            w_max = 18.17
+            filter_md = FilterMetadata()
+            filter_md.set_bandpass(w_max, w_min)
+            filter_md.set_central_wl(w_max, w_min)
+            filter_md.set_resolving_power(w_max, w_min)
+        else:
+            filter_md = em.get_filter_metadata(em.Inst.TRECS, filter_name)
+        if filter_md is None:
+            raise mc.CadcException(
+                '{}: Mystery filter {}'.format(em.Inst.TRECS, filter_name))
+        if data_product_type == DataProductType.IMAGE:
+            logging.debug('TRECS: imaging mode for {}.'.format(obs_id))
+        elif data_product_type == DataProductType.SPECTRUM:
+            logging.debug('TReCS: LS|Spectroscopy mode for {}.'.format(obs_id))
+            disperser = em.om.get('disperser')
+            if disperser is not None:
+                if disperser == 'LowRes-20':
+                    filter_md.resolving_power = 80.0
+                elif disperser == 'LowRes-10':
+                    filter_md.resolving_power = 100.0
+        else:
+            raise mc.CadcException(
+                'TReCS: Do not understand mode {} for {}'.format(
+                    data_product_type, obs_id))
+        _build_chunk_energy(chunk, filter_name, filter_md)
     logging.debug('End _update_chunk_energy_trecs')
 
 
@@ -2237,7 +2262,7 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name):
     else:
         fm = FilterMetadata('GNIRS')
         if data_product_type == DataProductType.SPECTRUM:
-            logging.error(
+            logging.info(
                 'gnirs: SpectralWCS Spectroscopy mode for {}.'.format(obs_id))
             disperser = em.om.get('disperser')
             if disperser is None:
@@ -2245,7 +2270,6 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name):
                 reset_energy = True
             else:
                 grating = disperser.split('_')[0]
-                logging.error('grating is {}'.format(grating))
                 # 'UNKNOWN' in grating test obs GS-CAL20040924-6-006
                 # 'ENG -' in grating test obs GN-CAL20130813-22-010
                 if ('UNKNOWN' in grating or 'Moving' in grating or
@@ -2285,7 +2309,6 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name):
                             slit_width = float(focal_plane_mask.split(
                                 'arcsec')[0])
 
-                        logging.error('disperser is {}'.format(disperser))
                         if 'XD' in disperser:
                             logging.debug(
                                 'gnirs: cross dispersed mode for {}.'.format(
@@ -2359,7 +2382,6 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name):
                                         '{} for {}'.format(camera, obs_id))
 
                         lookup = lookup.upper()
-                        logging.error('lookup is {}'.format(lookup))
                         if lookup not in gnirs_lookup[grating]:
                             raise mc.CadcException(
                                 'GNIRS: Mystery lookup {} for grating {}, '
@@ -3359,6 +3381,26 @@ def _update_chunk_position_flamingos(chunk, header, obs_id):
         logging.info('FLAMINGOS: Missing spatial wcs for {}'.format(obs_id))
 
 
+def _update_chunk_position_trecs(chunk, headers, extension, obs_id):
+    if len(headers) > 1:
+        ctype1 = headers[extension].get('CTYPE1')
+        if isinstance(ctype1, str):
+            wcs_parser = WcsParser(headers[extension], obs_id, extension)
+        else:
+            wcs_parser = WcsParser(headers[0], obs_id, extension)
+    else:
+        wcs_parser = WcsParser(headers[0], obs_id, extension)
+
+    if chunk is None:
+        chunk = Chunk()
+
+    wcs_parser.augment_position(chunk)
+    chunk.position_axis_1 = 1
+    chunk.position_axis_2 = 2
+    chunk.position.coordsys = headers[0].get('FRAME')
+    chunk.position.equinox = mc.to_float(headers[0].get('EQUINOX'))
+
+
 def _update_chunk_position(chunk, header, instrument, extension, obs_id,
                            n_axis1=None, n_axis2=None):
     logging.debug('Begin _update_chunk_position')
@@ -3497,7 +3539,7 @@ def _update_chunk_position(chunk, header, instrument, extension, obs_id,
 
     if instrument is em.Inst.OSCIR:
         chunk.position.coordsys = header.get('FRAMEPA')
-        chunk.position.equinox = float(header.get('EQUINOX'))
+        chunk.position.equinox = mc.to_float(header.get('EQUINOX'))
     elif instrument is em.Inst.BHROS:
         chunk.position.coordsys = header.get('TRKFRAME')
     elif instrument is em.Inst.GPI:

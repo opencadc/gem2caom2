@@ -1,0 +1,330 @@
+Filename: rS20060412S0056.fits.bz2
+
+AstroData Types: ['TRECS', 'GEMINI', 'SIDEREAL', 'TRECS_IMAGE', 'IMAGE', 'GEMINI_SOUTH', 'PREPARED']
+
+
+--- HDU 0 ---
+SIMPLE  =                    T / Fits standard                                  
+BITPIX  =                   16 / Bits per pixel                                 
+NAXIS   =                    0 / Number of axes                                 
+EXTEND  =                    T / File may contain extensions                    
+ORIGIN  = 'NOAO-IRAF FITS Image Kernel July 2003' / FITS file originator        
+DATE    = '2006-04-12T14:13:50' / Date FITS file was generated                  
+IRAF-TLM= '19:52:06 (18/04/2006)' / Time of last modification                   
+COMMENT   FITS (Flexible Image Transport System) format defined in Astronomy and
+COMMENT   Astrophysics Supplement Series v44/p363, v44/p371, v73/p359, v73/p365.
+COMMENT   Contact the NASA Science Office of Standards and Technology for the   
+COMMENT   FITS Definition document #100 and other FITS information.             
+INSTRUME= 'TReCS   '           / Instrument used to acquire data.               
+OBJECT  = 'WR48a - 12um imaging' / Target Name                                  
+OBSTYPE = 'OBJECT  '           / Observation type                               
+OBSCLASS= 'science '           / Observe class                                  
+GEMPRGID= 'GS-2006A-Q-60'      / Gemini Science Program ID                      
+OBSID   = 'GS-2006A-Q-60-11'   / Gemini Observation ID                          
+DATALAB = 'GS-2006A-Q-60-11-001-r' / DHS Data Label                             
+OBSERVER= 'J. De Buizer, J. Elias' / Gemini Observers                           
+OBSERVAT= 'Gemini-South'       / Gemini North or Gemini South                   
+TELESCOP= 'Gemini-South'       / Telescope where data taken                     
+PARALLAX=                   0. / Target Parallax                                
+RADVEL  =                   0. / Target Heliocentric Radial Velocity            
+EPOCH   =                2000. / Target Coordinate Epoch                        
+EQUINOX =                2000. / Equinox of coordinate system                   
+TRKEQUIN=                2000. / Tracking equinox                               
+SSA     = 'E. Wenderoth'       / Gemini SSAs                                    
+RA      =              198.165 / Target Right Ascension                         
+DEC     =         -62.71555556 / Target Declination                             
+ELEVATIO=     40.0850958333333 / Telescope Elevation at start                   
+AZIMUTH =          148.6227625 / Telescope Azimuth at start                     
+CRPA    =    -98.9954768951637 / Cass Rotator Position Angle at start           
+HA      = '-04:02:01.98'       / Telescope Hour Angle at start                  
+LT      = '20:33:40.9'         / Local time at observation start                
+TRKFRAME= 'FK5     '           / Tracking co-ordinate                           
+DECTRACK=                   0. / Differential tracking rate Dec                 
+TRKEPOCH=         53837.022046 / Differential tracking reference epoch          
+RATRACK =                   0. / Differential tracking rate RA                  
+FRAME   = 'FK5     '           / Target coordinate system                       
+PMDEC   =                   0. / Target Proper Motion in Declination            
+PMRA    =                   0. / Target Proper Motion in RA                     
+WAVELENG=              123300. / Effective Target Wavelength                    
+RAWIQ   = '70-percentile'      / Raw Image Quality                              
+RAWCC   = '50-percentile'      / Raw Cloud Cover                                
+RAWWV   = '50-percentile'      / Raw Water Vapour/Transparency                  
+RAWBG   = 'Any     '           / Raw Background                                 
+RAWPIREQ= 'UNKNOWN '           / PI Requirements Met                            
+RAWGEMQA= 'UNKNOWN '           / Gemini Quality Assessment                      
+CGUIDMOD= 'Basic   '           / Carousel Mode                                  
+UT      = '00:33:41.4'         / UT of Observation                              
+M2BAFFLE= 'RETRACTED'          / Position of M2 baffle                          
+M2CENBAF= 'OPEN    '           / Position of M2 central hole baffle             
+ST      = '09:11:04.1'         / Sidereal time at observation start             
+XOFFSET =                   0. / Instrument offset in x in arcsec               
+YOFFSET =                   0. / Instrument offset in y in arcsec               
+POFFSET =                  -0. / Telescope offset in p in arcsec                
+QOFFSET =                   0. / Telescope offset in q in arcsec                
+RAOFFSET=                   0. / Instrument offset in RA in arcsec              
+DECOFFSE=                   0. / Instrument offset in DEC in arcsec             
+RATRGOFF=                   0. / Target offset in RA in arcsec                  
+DECTRGOF=                   0. / Target offset in DEC in arcsec                 
+PA      =                   0. / Instrument Position Angle at start (degrees)   
+IAA     =               357.88 / Instrument Alignment Angle                     
+SFRT2   =              134.511 / Science fold rotation angle (degrees)          
+SFTILT  =                 2.92 / Science fold tilt angle (degrees)              
+SFLINEAR=              -357.07 / Science fold linear position (mm)              
+AOFOLD  = 'park-pos.'          / AO Pick-Off Mirror Position                    
+P2ARA   =         198.01657083 / RA of PWFS2 guide star                         
+P2ARV   =                   0. / PWFS2 Heliocentric Radial Velocity             
+P2AWAVEL=                6000. / PWFS2 Effective Target Wavelength              
+P2ADEC  =         -62.75196111 / Declination of PWFS2 guide star                
+P2AEPOCH=                2000. / Epoch for PWFS2 guide star coordinates         
+P2AEQUIN=                2000. / Equinox for PWFS2 guide star coordinates       
+P2AFRAME= 'FK5     '           / PWFS2 Target co-ordinate system                
+P2AOBJEC= 'GSC0899401338'      / Object Name for PWFS 2, Chop A                 
+P2APMDEC=                   0. / PWFS2 Proper Motion in Declination             
+P2APMRA =                   0. / PWFS2 Proper Motion in RA                      
+P2APARAL=                   0. / PWFS2 Parallax of Target                       
+HUMIDITY=                  19. / The Relative Humidity (fraction, 0..101).      
+TAMBIENT=                   9. / The ambient temp (C).                          
+TAMBIEN2=                 48.2 / The ambient temp (F).                          
+PRESSURE=            546.20384 / The atmospheric pressure (mm Hg).              
+PRESSUR2=               72800. / The atmospheric pressure (Pa).                 
+DEWPOINT=                -13.8 / The dew point (C).                             
+DEWPOIN2=                 7.16 / The dew point (F).                             
+WINDSPEE=                  7.1 / The wind speed (m/s).                          
+WINDSPE2=              15.8827 / The wind speed (mph).                          
+WINDDIRE=                 311. / The wind direction (degrees).                  
+INPORT  =                    1 / Number of ISS port where T-ReCS was located    
+DATE-OBS= '2006-04-12'         / UT Date of Observation (YYYY-MM-DD)            
+TIME-OBS= '00:33:41.4'         / UT of Observation                              
+UTSTART = '00:33:41.4'         / UT at observation start                        
+CHPTHROW=                   7. / M2 chop throw (arcsec)                         
+CHPDUTY =              71.4286 / Chop duty cycle (%)                            
+CHPPA   =                  45. / M2 chop PA (degrees)                           
+TELFOC  =              0.04605 / M2 focus at start                              
+INSTALIG=               357.88 / Instrument Alignment Angle (degrees)           
+FOCOFFS =               -0.075 / Offset from nominal focus                      
+UTEND   = '00:41:39.4'         / UT at observation end                          
+AZIMEND =     148.876416666667 / Telescope Azimuth at end                       
+ELEVEND =     40.9801222222222 / Telescope Elevation at end                     
+HAEND   = '-03:54:01.95'       / Telescope Hour Angle at end                    
+CRPAEND =    -100.937091114372 / Cass Rotator Position Angle at end             
+TELFOCEN=              0.05032 / M2 focus at end                                
+AIRMASS =                1.537 / Mean airmass for the observation               
+AMSTART =                1.551 / Airmass at start of exposure                   
+AMEND   =                1.523 / Airmass at end of exposure                     
+APERPOS =                  167 / Aperture Position                              
+BKAEND  =                43053 / Background at end of obs. (ADU)                
+BKAMAX  =                43532 / Max. background during obs. (ADU)              
+BKAMIN  =                43048 / Min. background during obs. (ADU)              
+BKASTART=                43312 / Background at start of obs. (ADU)              
+CHPCOADD=                   28 / Coadded chop cycles per saveset                
+CHPSETTL=                    2 / Frames discarded per chop settle               
+FILT1POS=                  886 / Filter#1 Position                              
+FILT2POS=                  530 / Filter#2 Position                              
+FRMCOADD=                    5 / Coadded frames per chop phase                  
+GRATPOS =                -1001 / Grating Position                               
+LYOTPOS =                 1331 / Lyot Position                                  
+NCHOPS  =                    2 / Number of Chop Phases (NAXIS3: 1 or 2)         
+NNODS   =                    2 / Number of Nod Phases (1 or 2)                  
+NNODSETS=                    6 / Number of Nod Sets                             
+NODSETS =                    6 / Nod cycles per total integration               
+NODSETTL=                   23 / Chop cycles per nod settle                     
+NODSETTR=                  322 / Chop cycles coadded per nod                    
+NSAVSETS=                    3 / Number of Chop Sets (NAXIS4)                   
+PIXCLOCK=                    3 / MCE4 Pixel Base Clock (PBC)                    
+PRECHPS =                   20 / Pre-valid throwaway chop cycles                
+PSTCHPS =                    9 / Post-valid throwaway chop cycles               
+PUPILPOS=                   35 / PupilImaging Position                          
+RDAEND  =                 7684 / Detector clamp level at end of obs. (ADU)      
+RDAMAX  =                 7684 / Max. Detector clamp level during obs. (ADU)    
+RDAMIN  =                 7666 / Min. Detector clamp level during obs. (ADU)    
+RDASTART=                 7672 / Detector clamp level at start of obs. (ADU)    
+SAVESETS=                    3 / Savesets per nod phase                         
+SECTPOS =                  841 / SectorWheel Position                           
+SLITPOS =                -2196 / Slit Position                                  
+WINDPOS =                 2578 / Window Position                                
+CD1_1   = -2.47268617385998E-05 / WCS matrix element 1,1                        
+CD1_2   = 9.62876995913575E-08 / WCS matrix element 1,2                         
+CD2_1   = 9.89605837276031E-08 / WCS matrix element 2,1                         
+CD2_2   = 2.47202533500968E-05 / WCS matrix element 2,2                         
+CHPDELAY=     51.7116012573242 / Chop settle time (ms)                          
+CHPFREQ =     2.76256990432739 / Chop frequency (Hz)                            
+COLDFING=     6.94719982147217 / (Kelvin)                                       
+COLDPLAT=     7.43200016021729 / (Kelvin)                                       
+CRPIX1  =                 160. / Ref pix of axis 1                              
+CRPIX2  =                 120. / Ref pix of axis 2                              
+CRVAL1  =     198.163192749023 / RA at Ref pix in decimal degrees               
+CRVAL2  =    -62.7149238586426 / DEC at Ref pix in decimal degrees              
+DETARRAY=     7.75610017776489 / Detector Actual Temp (Kelvin)                  
+DETSET  =                  -1. / Detector Set Temp (Kelvin)                     
+EFF_CHP =      71.428596496582 / Chop duty cycle (%)                            
+EFF_FRM =                 100. / Frame duty cycle (%)                           
+EFF_NOD =     78.5046997070312 / Nod duty cycle (%)                             
+EQUINOX =                2000. / Equinox of coordinate system                   
+FIRSTSTG=     39.2200012207031 / (Kelvin)                                       
+FRMTIME =     25.8558006286621 / Frame time (ms)                                
+GRATMOT =     76.7350006103516 / (Kelvin)                                       
+HRCENWL =     8.60000038146973 / HiRes-10 mode central wavelength (microns)     
+MJD-OBS =        53837.0234375 / MJD at observation start                       
+NODDELAY=     8.32557010650635 / Nod settle time (sec)                          
+NODTIME =      30.406400680542 / Nod time (sec)                                 
+OBJTIME =     130.313003540039 / On-source time (sec)                           
+OBSEPOCH=     2006.28002929688 / Epoch at observation start                     
+PRECHPT =     7.23962020874023 / Time before valid chopping (sec)               
+PSTCHPT =     3.25782990455627 / Time after valid chopping (sec)                
+SAVETIME=     10.1354999542236 / SaveSet Time (sec)                             
+SIGFMAX =     178.386001586914 / Maximum Std. Dev. of total noise (ADU)         
+SIGFMIN =      50.247200012207 / Minimum Std. Dev. of total noise (ADU)         
+SIGFRM  =     63.4449005126953 / Std. Dev. of total noise in last frame (ADU)   
+SIGREAD =     2.93542003631592 / Std. Dev. of read noise in last frame (ADU)    
+SIGRMAX =     12.1646995544434 / Maximum Std. Dev. of read noise (ADU)          
+SIGRMIN =     2.93542003631592 / Minimum Std. Dev. of read noise (ADU)          
+VACUUM  = 4.48000001540549E-08 / (Torr)                                         
+APERTURE= 'Matched '           / Aperture Name                                  
+BIASLEVL= '2       '           / Detector Bias (V_detgrv): 0=off, 1=low, 2=med, 
+COMPSTAT= 'COMPLETE'           / Observation completion status                  
+CTYPE1  = 'RA---TAN'           / R.A. in tangent plane projection               
+CTYPE2  = 'DEC--TAN'           / DEC. in tangent plane projection               
+FILTER1 = 'Si6-12.3um'         / Filter#1 Name                                  
+FILTER2 = 'Open    '           / Filter#2 Name                                  
+GRATING = 'Mirror  '           / Grating Name                                   
+LYOT    = 'Circ-2  '           / Lyot Name                                      
+OBSMODE = 'chop-nod'           / Observing mode: chop, nod, stare, chop-nod     
+PUPILIMA= 'Open-1  '           / PupilImaging Name                              
+RADECSYS= 'FK5     '           / R.A./DEC. coordinate system reference          
+READMODE= 'S1R3    '           / Detector Readout mode                          
+SECTOR  = 'Open    '           / SectorWheel Name                               
+SLIT    = 'Open    '           / Slit Name                                      
+TIMESYS = 'UT1     '           / Time System                                    
+USRNOTE = '        '           / Observation Note                               
+WELLDPTH= '0       '           / Detector Well Depth: 0=shallow, 1=deep         
+WINDOW  = 'ZnSe    '           / Window Name                                    
+GEM-TLM = '2006-04-12T15:14:04' / UT Last modification with GEMINI IRAF         
+TPREPARE= '2006-04-12T15:13:58' / UT Time stamp for TPREPARE                    
+FILECHK = 'TRUE              ' / TPREPARE was run with file checks.             
+PREPARE = '2006-04-12T15:13:58' / UT Time stamp for PREPARE                     
+NEXTEND =                    1                                                  
+WMEF    = '2006-04-12T15:14:00' / UT Time stamp for WMEF                        
+MISTACK = '2006-04-12T15:14:00' / UT Time stamp for MISTACK                     
+MIREDUCE= '2006-04-12T15:14:01' / UT Time stamp for MIREDUCE                    
+FINALINT= 'pass              ' / Requested total integration time               
+FINALIQ = 'pass              ' / Requested final image quality                  
+PICONFIG= 'pass              ' / Requested instrument configuration             
+PITARGET= 'pass              ' / Requested target                               
+RELEASE = '2007-10-12        ' / End of proprietary period YYYY-MM-DD           
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+
+--- HDU 1 ---
+XTENSION= 'IMAGE   '           / Image extension                                
+BITPIX  =                  -64 / Bits per pixel                                 
+NAXIS   =                    2 / Number of axes                                 
+NAXIS1  =                  320 / Axis length                                    
+NAXIS2  =                  240 / Axis length                                    
+PCOUNT  =                    0 / No 'random' parameters                         
+GCOUNT  =                    1 / Only one group                                 
+EXTNAME = 'SCI     '           / Extension name                                 
+EXTVER  =                    1 / Extension version                              
+INHERIT =                    F / Inherits global header                         
+ORIGIN  = 'NOAO-IRAF FITS Image Kernel July 2003' / FITS file originator        
+DATE    = '2006-04-12T14:14:00' / Date FITS file was generated                  
+IRAF-TLM= '20:23:36 (18/04/2006)' / Time of last modification                   
+OBJECT  = 'WR48a - 12um imaging' / Name of the object observed                  
+AXISLAB1= 'Xaxis   '           / Axis label                                     
+AXISLAB2= 'Yaxis   '           / Axis label                                     
+NODSET  =                    1 / Index of NodSet                                
+AMSTART =      1.5490000247955 / Airmass at start of exposure                   
+NOD     = 'A       '           / Name of Nod Phase (A or B)                     
+UTEND   = '00:34:19.704642'    / UT at observation end                          
+UTSTART = '00:34:00.704700'    / UT at observation start                        
+FRMNAME = ' 6 of 72'           / Name assigned to a frame of data.              
+FRAMEID = '5       '           / Frame ID                                       
+DATATYP = 'Intensity'          / Type of data frame                             
+WCSDIM  =                    4                                                  
+LTM1_1  =                   1.                                                  
+LTM2_2  =                   1.                                                  
+LTM3_3  =                   1.                                                  
+LTM4_4  =                   1.                                                  
+WAXMAP01= '1 0 2 0 0 0 0 2 '                                                    
+WAT0_001= 'system=physical'                                                     
+WAT1_001= 'wtype=linear'                                                        
+WAT2_001= 'wtype=linear'                                                        
+WAT3_001= 'wtype=linear'                                                        
+WAT4_001= 'wtype=linear'                                                        
+NCOMBINE=                   18                                                  
+SAVESETS=                    3                                                  
+LTV4    =                  -2.                                                  
+IMCMB001= 'tmpfile16361bd'                                                      
+IMCMB002= 'tmpfile16361dd'                                                      
+IMCMB003= 'tmpfile16361fd'                                                      
+IMCMB004= 'tmpfile16361hd'                                                      
+IMCMB005= 'tmpfile16361jd'                                                      
+IMCMB006= 'tmpfile16361ld'                                                      
+WCSAXES =                    2 / Number of WCS axes in the image                
+CTYPE1  =                    0 / R.A. in tangent plane projection               
+CRPIX1  =                 160. / Ref pix of axis 1                              
+CRVAL1  =     198.163192749023 / RA at Ref pix in decimal degrees               
+CTYPE2  = 'DEC--TAN          ' / DEC. in tangent plane projection               
+CRPIX2  =                 120. / Ref pix of axis 2                              
+CRVAL2  =    -62.7149238586426 / DEC at Ref pix in decimal degrees              
+CD1_1   = -2.4726861738599E-05 / WCS matrix element 1 1                         
+CD1_2   = 9.62876995913575E-08 / WCS matrix element 1 2                         
+CD2_1   = 9.89605837276031E-08 / WCS matrix element 2 1                         
+CD2_2   = 2.47202533500968E-05 / WCS matrix element 2 2                         
+RADECSYS= 'FK5               ' / R.A./DEC. coordinate system reference          
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                

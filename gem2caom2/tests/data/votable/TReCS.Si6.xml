@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<VOTABLE version="1.1" xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <INFO name="QUERY_STATUS" value="OK"/>
+  <RESOURCE type="results">
+    <TABLE utype="photdm:PhotometryFilter.transmissionCurve.spectrum">
+    <PARAM name="FilterProfileService" value="ivo://svo/fps" ucd="meta.ref.ivorn" utype="PhotometryFilter.fpsIdentifier" datatype="char" arraysize="*"/>
+    <PARAM name="filterID" value="Gemini/TReCS.Si6" ucd="meta.id" utype="photdm:PhotometryFilter.identifier" datatype="char" arraysize="*"/>
+    <PARAM name="WavelengthUnit" value="Angstrom" ucd="meta.unit" utype="PhotometryFilter.SpectralAxis.unit" datatype="char" arraysize="*"/>
+    <PARAM name="WavelengthUCD" value="em.wl" ucd="meta.ucd" utype="PhotometryFilter.SpectralAxis.UCD" datatype="char" arraysize="*"/>
+    <PARAM name="Description" value="TReCS Si6" ucd="meta.note" utype="photdm:PhotometryFilter.description" datatype="char" arraysize="*"/>
+    <PARAM name="PhotSystem" value="TReCS" utype="photdm:PhotometricSystem.description" datatype="char" arraysize="*"/>
+    <PARAM name="Instrument" value="TReCS" ucd="instr" datatype="char" arraysize="*"/>
+    <PARAM name="Facility" value="Gemini" ucd="instr.obsty" datatype="char" arraysize="*"/>
+    <PARAM name="ProfileReference" value="http://www.gemini.edu/sciops/instruments/trecs/imaging/filters" datatype="char" arraysize="*"/>
+    <PARAM name="Description" value="TReCS Si6" ucd="meta.note" utype="photdm:PhotometryFilter.description" datatype="char" arraysize="*"/>
+    <PARAM name="Comments" value="trecs_fSi6.dat
+ Transmission curve for T-ReCS Si-6 12.3 um filter
+ No blocking element needed.
+ Measurement temperature = 77K
+ Author: James De Buizer, digitized from info from OCLI
+ Created: 2003 Apr 9
+" ucd="meta.note" datatype="char" arraysize="*"/>
+    <PARAM name="WavelengthMean" value="123453.304214" unit="Angstrom" ucd="em.wl" utype="photdm:PhotometryFilter.SpectralAxis.Coverage.Location.Value" datatype="float" />
+    <PARAM name="WavelengthEff" value="123018.444121" unit="Angstrom" ucd="em.wl.effective" datatype="float" />
+    <PARAM name="WavelengthMin" value="114490" unit="Angstrom" ucd="em.wl;stat.min" utype="photdm:PhotometryFilter.SpectralAxis.Coverage.Bounds.Start" datatype="float" />
+    <PARAM name="WavelengthMax" value="131940" unit="Angstrom" ucd="em.wl;stat.max" utype="photdm:PhotometryFilter.SpectralAxis.Coverage.Bounds.Stop" datatype="float" />
+    <PARAM name="WidthEff" value="11793.1449748" unit="Angstrom" ucd="instr.bandwidth" utype="photdm:PhotometryFilter.SpectralAxis.Coverage.Bounds.Extent" datatype="float" />
+    <PARAM name="WavelengthCen" value="123297.728254" unit="Angstrom" ucd="em.wl" datatype="float" />
+    <PARAM name="WavelengthPivot" value="123290.46160208" unit="Angstrom" ucd="em.wl" datatype="float" />
+    <PARAM name="WavelengthPeak" value="122320" unit="Angstrom" ucd="em.wl" datatype="float" />
+    <PARAM name="WavelengthPhot" value="123126.982372" unit="Angstrom" ucd="em.wl" datatype="float" />
+    <PARAM name="FWHM" value="11815.523885" unit="Angstrom" ucd="instr.bandwidth" datatype="float" />
+    <PARAM name="PhotCalID" value="Gemini/TReCS.Si6/Vega" ucd="meta.id" utype="photdm:PhotCal.identifier" datatype="char" arraysize="*"/>
+    <PARAM name="MagSys" value="Vega" ucd="meta.code" utype="photdm:PhotCal.MagnitudeSystem.type" datatype="char" arraysize="*"/>
+    <PARAM name="ZeroPoint" value="25.6896327914" unit="Jy" ucd="phot.flux.density" utype="photdm:PhotCal.ZeroPoint.Flux.value" datatype="float" />
+    <PARAM name="ZeroPointUnit" value="Jy" ucd="meta.unit" utype="photdm:PhotCal.ZeroPoint.Flux.unit" datatype="char" arraysize="*"/>
+    <PARAM name="ZeroPointType" value="Pogson" ucd="meta.code" utype="photdm:PhotCal.ZeroPoint.type" datatype="char" arraysize="*"/>
+    </TABLE>
+  </RESOURCE>
+</VOTABLE>

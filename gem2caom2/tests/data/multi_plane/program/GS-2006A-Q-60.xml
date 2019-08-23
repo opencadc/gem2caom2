@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GS-2006A-Q-60</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-2006A-Q-60</h1>
+
+<table>
+ <tr><td>Title:<td>Chemistry and Survival of Freshly Formed Dust in Carbon-Rich WR Stars</tr>
+ <tr><td>PI:<td>Anthony Moffat</tr>
+ <tr><td>Co-I(s):<td> Sergey Marchenko,  Peredur Williams</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+In March-July 2004 we acquired high-quality 12.3um T-ReCS/Gemini images of the intricately shaped dust envelopes around the dust-forming Wolf-Rayet binaries WR112 and WR48a, proving that these particular objects may serve as a test-bed for studies of dust production in the early Universe. Here we propose to complement these spectacular images by spatially-resolved spectra of the freshly formed dust obtained with the MIR TReCS/Gemini spectrograph. This will help to solve the long-standing problem of the chemical pathways of dust formation in the extremely hostile environments of Wolf-Rayet winds, which resemble the shocked, chemically enriched ejecta of type-II Supernovae, presumably the dominant dust-producing sources in the high-redshift Universe.
+</div>
+
+
+<h2>Publications using this program's data</h2>
+<ul>
+<li>
+<a href="/searchform/publication=2017MNRAS.468.2416M" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2017MNRAS.468.2416M/abstract" target="_blank">[ADS]</a> Search for polycyclic aromatic hydrocarbons in the outflows from dust-producing Wolf-Rayet stars
+</ul>
+
+
+</body>
+</html>
