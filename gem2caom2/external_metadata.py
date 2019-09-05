@@ -226,6 +226,8 @@ def get_filter_metadata(instrument, filter_name):
         return None
     if repaired_inst in fm and repaired_filters in fm[repaired_inst]:
         result = fm[repaired_inst][repaired_filters]
+        if result is not None:
+            result.adjust_resolving_power()
     else:
         result = filter_metadata(repaired_inst, repaired_filters)
         if repaired_inst in fm:

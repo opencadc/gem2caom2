@@ -381,7 +381,11 @@ def get_data_release(header):
     # every instrument has a 'release' keyword in the JSON summary
     # not every instrument (Michelle) has a RELEASE keyword in
     # the appropriate headers
-    return em.om.get('release')
+    result = em.om.get('release')
+    if result.startswith('0001'):
+        # because obs id GN-2008A-Q-39-69-015
+        result = result.replace('0001', '2001')
+    return result
 
 
 def get_dec(header):
@@ -997,7 +1001,8 @@ def update(observation, **kwargs):
         current_product_id = None
 
     # processed files
-    if is_composite(headers):
+    if (is_composite(headers) and not
+            isinstance(observation, CompositeObservation)):
         logging.info('{} is a Composite Observation.'.format(
             observation.observation_id))
         observation = _update_composite(observation)
@@ -3584,9 +3589,13 @@ def _repair_provenance_value(imcmb_value, obs_id):
     """There are several naming patterns in the provenance for
     processed files. Try to extract meaningful raw file names.
     Return None if the encountered pattern is unexpected."""
+
+    # e.g.
+    # IMCMB001 = 'tmpimgwsk9476kd_5.fits[SCI,1]'
+
     if 'N' in imcmb_value:
         temp = 'N' + imcmb_value.split('N', 1)[1]
-    elif 'S' in imcmb_value:
+    elif 'S' in imcmb_value and '[SCI' not in imcmb_value:
         temp = 'S' + imcmb_value.split('S', 1)[1]
     elif '$' in imcmb_value:
         temp = imcmb_value.split('$', 1)[1]

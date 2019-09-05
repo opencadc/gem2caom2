@@ -152,7 +152,7 @@ def _do_prev(obs_id, working_dir, plane, cadc_client, stream, observable):
             try:
                 mc.data_get(cadc_client, working_dir, preview, ARCHIVE,
                             observable.metrics)
-            except mc.CadcException as e:
+            except mc.CadcException:
                 preview_url = '{}{}.fits'.format(PREVIEW_URL, plane.product_id)
                 try:
                     mc.http_get(preview_url, preview_fqn)
