@@ -40,7 +40,6 @@ ADD https://www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/files/vault/cadcsw/2019-07-03_f
 
 RUN git clone https://github.com/opencadc-metadata-curation/caom2tools.git && \
   cd caom2tools && git pull origin master && \
-  pip install ./caom2 && \
   pip install ./caom2utils && pip install ./caom2pipe && cd ..
 
 RUN git clone https://github.com/opencadc-metadata-curation/gem2caom2.git && \
