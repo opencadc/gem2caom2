@@ -31,7 +31,7 @@ WORKDIR /usr/src/app
 RUN pip install bs4
 
 RUN apk --no-cache add \
-	imagemagick \
+        imagemagick \
         libmagic
 
 RUN mkdir /app && mkdir /app/data

@@ -101,7 +101,7 @@ from astropy.coordinates import SkyCoord
 
 from caom2 import Observation, ObservationIntentType, DataProductType
 from caom2 import CalibrationLevel, TargetType, ProductType, Chunk, Axis
-from caom2 import SpectralWCS, CoordAxis1D, CoordFunction1D, RefCoord
+from caom2 import SpectralWCS, CoordAxis1D, RefCoord, Instrument
 from caom2 import TypedList, CoordRange1D, CompositeObservation, Algorithm
 from caom2utils import ObsBlueprint, get_gen_proc_arg_parser, gen_proc
 from caom2utils import WcsParser
@@ -1007,6 +1007,19 @@ def update(observation, **kwargs):
             observation.observation_id))
         observation = _update_composite(observation)
 
+    if observation.instrument.name == 'oscir':
+        # for these observations:
+        # GN-2001A-C-16-3-016
+        # GN-2001A-C-2-14-015
+        # GN-2001A-C-2-2-002
+        # GN-2001A-C-2-3-003
+        # GN-2001A-C-2-4-004
+        # GN-2001A-C-2-5-005
+        # GN-2001A-C-2-6-006
+        # GN-2001A-C-2-7-007
+        # GN-2001A-C-2-8-009
+        # GN-2001A-C-2-9-010
+        observation.instrument = Instrument(name='OSCIR')
     instrument = em.Inst(observation.instrument.name)
 
     if instrument in [em.Inst.MICHELLE, em.Inst.GNIRS]:
@@ -3592,11 +3605,18 @@ def _repair_provenance_value(imcmb_value, obs_id):
 
     # e.g.
     # IMCMB001 = 'tmpimgwsk9476kd_5.fits[SCI,1]'
+    # tmpfile22889S20141226S0203.fits[SCI,1]
 
     if 'N' in imcmb_value:
         temp = 'N' + imcmb_value.split('N', 1)[1]
-    elif 'S' in imcmb_value and '[SCI' not in imcmb_value:
-        temp = 'S' + imcmb_value.split('S', 1)[1]
+    elif 'S' in imcmb_value:
+        x = imcmb_value.split('S')
+        if len(x) == 2 and '[SCI' in imcmb_value:
+            logging.warning(
+                'Unrecognized IMCMB value {}'.format(imcmb_value))
+            return None, None
+        else:
+            temp = 'S' + imcmb_value.split('S', 1)[1]
     elif '$' in imcmb_value:
         temp = imcmb_value.split('$', 1)[1]
     else:
