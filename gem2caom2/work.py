@@ -69,12 +69,24 @@
 
 import logging
 
+from datetime import datetime
+
+from astropy.table import Table
+
 from caom2pipe import astro_composable as ac
 from caom2pipe import manage_composable as mc
 
 import gem2caom2.external_metadata as em
+import gem2caom2.gem_name as gem_name
+import gem2caom2.obs_file_relationship as ofr
 
 __all__ = ['TapNoPreviewQuery', 'ObsFileRelationshipQuery']
+
+# See the definition of 'canonical' here, for why it matters in the URL:
+# https://archive.gemini.edu/help/api.html
+# ssummary = smallest query result containing file names and data labels
+GEMINI_SSUMMARY_DATA = \
+    'https://archive.gemini.edu/ssummary/notengineering/notFail/canonical'
 
 
 class TapNoPreviewQuery(mc.Work):
@@ -194,3 +206,88 @@ class ObsFileRelationshipQuery(mc.Work):
     def initialize(self):
         """Do nothing."""
         pass
+
+
+class ArchiveGeminiEduQuery(mc.Work):
+
+    def __init__(self, max_ts_s):
+        super(ArchiveGeminiEduQuery, self).__init__(max_ts_s.timestamp())
+        self._current_work_list = None
+
+    def todo(self, prev_exec_date, exec_date):
+        """
+        Get the set of observation IDs from the in-memory storage of the
+        file from Paul. The results are chunked by timestamps.
+
+        :param prev_exec_date datetime start of the timestamp chunk
+        :param exec_date datetime end of the timestamp chunk
+        :return: a list of GemName instances, where GemName is an
+            extension of ec.StorageName
+        """
+        # queries that includes times are not supported, so strip that
+        # information from the query URL
+        date_str = datetime.strftime(prev_exec_date, '%Y%m%d')
+        obs_ids = {}
+        for ii in range(0, 10):
+            for prefix in ['S', 'N']:
+                ssummary_url = f'{GEMINI_SSUMMARY_DATA}/{date_str}/' \
+                               f'filepre={prefix}{date_str}S{ii}'
+                logging.info('Querying {}'.format(ssummary_url))
+                response = None
+                try:
+                    response = mc.query_endpoint(ssummary_url)
+                    if response is None:
+                        logging.warning(
+                            'Could not query {}'.format(ssummary_url))
+                    else:
+                        temp, max_date = self._parse_ssummary_page(
+                            response.text, prev_exec_date)
+                        response.close()
+                        temp_obs_ids = obs_ids
+                        obs_ids = {**temp, **temp_obs_ids}
+                finally:
+                    if response is not None:
+                        response.close()
+
+        self._current_work_list = obs_ids
+        # unique-ify the GemName instances
+        temp = list(set(obs_ids.keys()))
+        return [obs_ids[ii] for ii in temp]
+
+    def initialize(self):
+        logging.error('initialization called')
+        pofr = ofr.PartialObsFileRelationship(
+            self._current_work_list, self.max_ts_s)
+        em.set_ofr(pofr)
+
+    @staticmethod
+    def _parse_ssummary_page(html_string, start_date):
+        """Parse the html returned from archive.gemini.edu.
+        :return list of GemName instances for processing, plus the max
+            last modified time of the files associated with the StorageName
+            instances. A GemName instance captures the relationship
+            between a file name and an observation ID.
+        """
+        work_list = {}
+        max_date = start_date
+        # column 0 == file name
+        # column 1 == data label
+        # column 2 == last modified
+        if 'Your search returned no results' not in html_string:
+            temp = Table.read(html_string, format='html')
+            work_list_array = temp.as_array(
+                names=[temp.colnames[0], temp.colnames[1]])
+            date_array = temp[temp.colnames[2]]
+            datetimes = date_array.data
+            max_date_index = date_array.argmax()
+            max_date = datetimes[max_date_index]
+
+            # make StorageName instances
+            for ii in work_list_array:
+                file_id = gem_name.GemName.remove_extensions(
+                    ii[0].replace('-md!', '').replace('-fits!', ''))
+                storage_name = gem_name.GemName(
+                    obs_id=ii[1], file_name=f'{file_id}.fits',
+                    file_id=file_id)
+                work_list[file_id] = storage_name
+        return work_list, max_date

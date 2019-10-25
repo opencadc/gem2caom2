@@ -228,7 +228,8 @@ from caom2pipe import manage_composable as mc
 from gem2caom2 import gem_name
 
 
-__all__ = ['GemObsFileRelationship', 'CommandLineBits', 'FILE_NAME']
+__all__ = ['GemObsFileRelationship', 'CommandLineBits', 'FILE_NAME',
+           'PartialObsFileRelationship']
 
 FILE_NAME = '/app/data/from_paul.txt'
 HEADER_URL = 'https://archive.gemini.edu/fullheader/'
@@ -689,6 +690,67 @@ class GemObsFileRelationship(object):
                     file_id, duplicate_check))
                 file_id = duplicate_check
         return file_id
+
+
+# noinspection PyMissingConstructor
+class PartialObsFileRelationship(GemObsFileRelationship):
+    """
+    Provides the same functionality as GemObsFileRelationship using incomplete
+    query results from archive.gemini.edu, instead of a hand-crafted file
+    delivered from Gemini.
+    """
+
+    def __init__(self, work_list, max_date):
+        self._work_list = work_list.values()
+        self._max_ts_s = max_date
+        self.id_list = {}
+        self.name_list = {}
+        self.repaired_ids = {}
+        self.repaired_names = {}
+        self.inverted_repaired_ids = {}
+        self._initialize_partial_content()
+
+    def _initialize_partial_content(self):
+        for entry in self._work_list:
+            # keep the structure the same as for the parent class
+            self.name_list[entry.file_id] = [[entry.obs_id, self._max_ts_s]]
+            if entry.obs_id in self.id_list:
+                self.id_list[entry.obs_id].append(entry.file_name)
+            else:
+                self.id_list[entry.obs_id] = [entry.file_name]
+        self._build_repaired_lookups()
+        for key in self.repaired_ids.keys():
+            self.inverted_repaired_ids[self.repaired_ids[key][0]] = key
+
+    def subset(self, start=None, end=None, maxrec=None):
+        raise NotImplementedError
+
+    def get_file_names(self, obs_id):
+        repaired_obs_id = self._look_up_twice(obs_id)
+        return GemObsFileRelationship.get_file_names(self, repaired_obs_id)
+
+    def get_obs_id(self, file_id):
+        result = None
+        temp_obs_id = GemObsFileRelationship.get_obs_id(self, file_id)
+        if temp_obs_id is not None:
+            result = self.repaired_ids.get(temp_obs_id)
+            if result is not None:
+                result = result[0]
+        return result
+
+    def get_max_timestamp(self):
+        return self._max_ts_s
+
+    def get_args(self, obs_id):
+        repaired_obs_id = self._look_up_twice(obs_id)
+        return GemObsFileRelationship.get_args(self, repaired_obs_id)
+
+    def _look_up_twice(self, obs_id):
+        if obs_id in self.id_list:
+            result = obs_id
+        else:
+            result = self.inverted_repaired_ids.get(obs_id)
+        return result
 
 
 class CommandLineBits(object):

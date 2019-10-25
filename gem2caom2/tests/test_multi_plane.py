@@ -66,25 +66,18 @@
 #
 # ***********************************************************************
 #
-import json
 import logging
 import pytest
-
-
-from astropy.io.votable import parse_single_table
-
-import gem2caom2.external_metadata as em
 
 from gem2caom2 import main_app2, APPLICATION, ARCHIVE, SCHEME
 from caom2.diff import get_differences
 from caom2pipe import manage_composable as mc
 
-
-from hashlib import md5
 import os
 import sys
 
 from mock import patch
+import gem_mocks
 
 pytest.main(args=['-s', os.path.abspath(__file__)])
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
@@ -130,71 +123,11 @@ def test_multi_plane(test_name):
             patch('gem2caom2.external_metadata.get_pi_metadata') as gemini_pi_mock, \
             patch('gem2caom2.svofps.get_vo_table') as svofps_mock:
 
-        def get_file_info(archive, file_id):
-            if '_prev' in file_id:
-                return {'size': 10290,
-                        'md5sum': 'md5:{}'.format(
-                            md5('-37'.encode()).hexdigest()),
-                        'type': 'image/jpeg'}
-            else:
-                return {'size': 665345,
-                        'md5sum': 'md5:a347f2754ff2fd4b6209e7566637efad',
-                        'type': 'application/fits'}
-
-        def get_obs_metadata(file_id):
-            try:
-                logging.error('obs metadata file_id {}'.format(file_id))
-                fname = '{}/{}/json/{}.json'.format(TEST_DATA_DIR, DIR_NAME,
-                                                    file_id)
-                with open(fname) as f:
-                    y = json.loads(f.read())
-                    em.om.add(y, file_id)
-            except Exception as e:
-                logging.error(e)
-                import traceback
-                tb = traceback.format_exc()
-                logging.error(tb)
-
-        def get_pi_metadata(program_id):
-            try:
-                logging.error('program id is {}'.format(program_id))
-                fname = '{}/{}/program/{}.xml'.format(TEST_DATA_DIR, DIR_NAME,
-                                                      program_id)
-                with open(fname) as f:
-                    y = f.read()
-                    from bs4 import BeautifulSoup
-                    soup = BeautifulSoup(y, 'lxml')
-                    tds = soup.find_all('td')
-                    if len(tds) > 0:
-                        title = tds[1].contents[0].replace('\n', ' ')
-                        pi_name = tds[3].contents[0]
-                        metadata = {'title': title,
-                                    'pi_name': pi_name}
-                        return metadata
-                return None
-            except Exception as e:
-                logging.error(e)
-                import traceback
-                tb = traceback.format_exc()
-                logging.error(tb)
-
-        def mock_get_votable(url):
-            try:
-                x = url.split('/')
-                filter_name = x[-1].replace('&VERB=0', '')
-                votable = parse_single_table(
-                    '{}/votable/{}.xml'.format(TEST_DATA_DIR, filter_name))
-                return votable, None
-            except Exception as e:
-                logging.error('get_vo_table failure for url {}'.format(url))
-                logging.error(e)
-                return None, None
-
         data_client_mock.return_value.get_file_info.side_effect = \
-            get_file_info
-        gemini_client_mock.side_effect = get_obs_metadata
-        gemini_pi_mock.side_effect = get_pi_metadata
-        svofps_mock.side_effect = mock_get_votable
+            gem_mocks.mock_get_file_info
+        gemini_client_mock.side_effect = gem_mocks.mock_get_obs_metadata
+        gemini_pi_mock.side_effect = gem_mocks.mock_get_pi_metadata
+        svofps_mock.side_effect = gem_mocks.mock_get_votable
 
         if os.path.exists(actual_fqn):
             os.remove(actual_fqn)
@@ -208,13 +141,8 @@ def test_multi_plane(test_name):
         print(sys.argv)
         main_app2()
         expected_fqn = '{}/{}/{}.xml'.format(TEST_DATA_DIR, DIR_NAME, obs_id)
-        expected = mc.read_obs_from_file(expected_fqn)
-        actual = mc.read_obs_from_file(actual_fqn)
-        result = get_differences(expected, actual, 'Observation')
-        if result:
-            msg = 'Differences found obs id {} \n{}'.format(
-                expected.observation_id, '\n'.join([r for r in result]))
-            raise AssertionError(msg)
+        compare_result = gem_mocks.compare(expected_fqn, actual_fqn)
+        assert compare_result is None, 'compare fail'
         # assert False  # cause I want to see logging messages
 
 

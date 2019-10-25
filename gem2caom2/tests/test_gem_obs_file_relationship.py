@@ -75,14 +75,14 @@ from datetime import datetime
 from shutil import copyfile
 
 from gem2caom2 import GemObsFileRelationship, CommandLineBits
-from gem2caom2 import obs_file_relationship
+from gem2caom2 import PartialObsFileRelationship
+from gem2caom2 import obs_file_relationship, work
 from gem2caom2.main_app import _repair_provenance_value
 import gem2caom2.external_metadata as em
 
 import test_main_app
 
 ISO_DATE = '%Y-%m-%dT%H:%M:%S.%f'
-PY_VERSION = '3.6'
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
 TEST_DATA_DIR = os.path.join(THIS_DIR, 'data')
 TEST_FILE = os.path.join(TEST_DATA_DIR, 'from_paul.txt')
@@ -90,7 +90,6 @@ TEST_FILE = os.path.join(TEST_DATA_DIR, 'from_paul.txt')
 single_test = False
 
 
-@pytest.mark.skipif(single_test, reason='Single test mode')
 def test_subset_all():
     copyfile(TEST_FILE, obs_file_relationship.FILE_NAME)
     gofr = GemObsFileRelationship()
@@ -107,7 +106,6 @@ def test_subset_all():
         'entry missing {}'.format(result)
 
 
-@pytest.mark.skipif(single_test, reason='Single test mode')
 def test_subset_only_start():
     start = datetime.strptime('2018-12-16T03:47:03.939488', ISO_DATE)
     gofr = GemObsFileRelationship()
@@ -126,7 +124,6 @@ def test_subset_only_start():
     assert len(list(temp)) == 3, 'wrong maxrec count'
 
 
-@pytest.mark.skipif(single_test, reason='Single test mode')
 def test_subset_only_end():
     end = datetime.strptime('2018-12-16T18:12:26.16614', ISO_DATE)
     gofr = GemObsFileRelationship()
@@ -145,7 +142,6 @@ def test_subset_only_end():
     assert len(list(temp)) == 3, 'wrong maxrec count'
 
 
-@pytest.mark.skipif(single_test, reason='Single test mode')
 def test_subset_start_end():
     start = datetime.strptime('2017-06-20T12:36:35.681662', ISO_DATE)
     end = datetime.strptime('2017-12-17T20:13:56.572387', ISO_DATE)
@@ -165,7 +161,6 @@ def test_subset_start_end():
     assert len(list(temp)) == 3, 'wrong maxrec count'
 
 
-@pytest.mark.skipif(single_test, reason='Single test mode')
 def test_is_processed():
     tests = {
         'c2016may18_sci128': False,
@@ -214,10 +209,9 @@ def test_is_processed():
             'failed {}'.format(ii)
 
 
-@pytest.mark.skipif(single_test, reason='Single test mode')
 def test_repair_data_label():
-    if em.gofr is None:
-        em.gofr = GemObsFileRelationship()
+    em.set_ofr(None)
+    em.get_gofr()
     for ii in test_main_app.LOOKUP:
         test_result = em.gofr.repair_data_label(ii)
         if ii == 'S20181230S0025':
@@ -590,10 +584,9 @@ test_subjects = [
 ]
 
 
-@pytest.mark.skipif(single_test, reason='Single test mode')
 def test_repair_provenance():
-    if em.gofr is None:
-        em.gofr = GemObsFileRelationship()
+    em.set_ofr(None)
+    em.get_gofr()
     for ii in test_subjects:
         ignore, test_fid = _repair_provenance_value(ii[1], 'test obs')
         assert test_fid is not None, 'failed lookup {}'.format(ii)
@@ -833,8 +826,6 @@ x = {
 }
 
 
-@pytest.mark.skipif(not sys.version.startswith(PY_VERSION),
-                    reason='support 3.6 only')
 def test_make_gem2caom2_args():
     gofr = GemObsFileRelationship()
 
@@ -858,8 +849,6 @@ def test_make_gem2caom2_args():
             assert found, 'new obs id {}'.format(jj.obs_id)
 
 
-@pytest.mark.skipif(not sys.version.startswith(PY_VERSION),
-                    reason='support 3.6 only')
 def test_get_timestamp():
     gofr = GemObsFileRelationship()
     test_result = gofr.get_timestamp('ag2003feb19_6.0001')
@@ -867,8 +856,6 @@ def test_get_timestamp():
     assert test_result == 1498571069.924588, 'wrong result'
 
 
-@pytest.mark.skipif(not sys.version.startswith(PY_VERSION),
-                    reason='support 3.6 only')
 def test_mixed_case_file_names():
     mixed_case_f_names_order_1 = os.path.join(
         TEST_DATA_DIR, 'mixed_case_1.txt')
@@ -897,3 +884,78 @@ def test_mixed_case_file_names():
             f_name)
         assert result_file_names[0] == '{}.fits'.format(test_file_id), \
             'wrong result {} {}'.format(f_name, result_file_names)
+
+
+def test_partial():
+    work_list_in = os.path.join(TEST_DATA_DIR, 'data_label_fix.html')
+    work_list, max_date = work.ArchiveGeminiEduQuery._parse_ssummary_page(
+        open(work_list_in).read(), None)
+    assert max_date == '2014-11-29 09:21:13', 'wrong max date'
+    assert len(work_list) == 9, 'wrong number of test files'
+
+    test_subject = PartialObsFileRelationship(work_list, max_date)
+    with pytest.raises(NotImplementedError):
+        test_subject.subset('start', 'end', 'maxrec')
+
+    file_names = test_subject.get_file_names('GS-CAL20141129-1-001_DARK')
+    assert len(file_names) == 1, 'wrong number of file names, original id'
+    assert file_names[0] == 'S20141129S0331_dark.fits', 'wrong file name'
+
+    file_names = test_subject.get_file_names('GS-CAL20141129-1-001-DARK')
+    assert len(file_names) == 1, 'wrong number of file names, repaired id'
+    assert file_names[0] == 'S20141129S0331_dark.fits', \
+        'wrong repaired file name'
+
+    repaired_obs_id = test_subject.repair_data_label('S20141129S0331_dark')
+    assert repaired_obs_id == 'GS-CAL20141129-1-001-DARK', \
+        'wrong repaired data label value'
+
+    obs_id = test_subject.get_obs_id('S20141129S0331_dark')
+    assert obs_id == 'GS-CAL20141129-1-001-DARK', 'wrong obs id value'
+
+    test_args = test_subject.get_args('GS-CAL20141129-1-001_DARK')
+    assert test_args is not None, 'expected result'
+    assert len(test_args) == 1, 'wrong number of results'
+    assert test_args[0].lineage == \
+        'S20141129S0331_dark/gemini:GEM/S20141129S0331_dark.fits', \
+        'wrong first lineage'
+    assert test_args[0].urls == \
+        'https://archive.gemini.edu/fullheader/S20141129S0331_dark.fits', \
+        'wrong first url'
+
+    test_args = test_subject.get_args('GS-CAL20141129-1-001-DARK')
+    assert test_args is not None, 'expected repaired result'
+    assert len(test_args) == 1, 'wrong number of repaired results'
+    assert test_args[0].lineage == \
+        'S20141129S0331_dark/gemini:GEM/S20141129S0331_dark.fits', \
+        'wrong repaired first lineage'
+    assert test_args[0].urls == \
+        'https://archive.gemini.edu/fullheader/S20141129S0331_dark.fits', \
+        'wrong repaired first url'
+
+
+def test_partial_processed():
+    work_list_in = os.path.join(TEST_DATA_DIR, 'processed.html')
+    work_list, max_date = work.ArchiveGeminiEduQuery._parse_ssummary_page(
+        open(work_list_in).read(), None)
+    assert len(work_list) == 798, 'wrong number of test files'
+
+    test_subject = PartialObsFileRelationship(work_list, max_date)
+    file_names = test_subject.get_file_names('GN-2012A-Q-124-1-003')
+    file_names.sort()
+    assert len(file_names) == 2, \
+        'wrong number of file names, original id'
+    assert file_names[0] == 'N20120905S0122.fits', 'wrong first file name'
+    assert file_names[1] == 'N20120905S0122_arc.fits', 'wrong second file name'
+
+    test_args = test_subject.get_args('GN-2012A-Q-124-1-003')
+    assert test_args is not None, 'expected repaired result'
+    assert len(test_args) == 1, 'wrong number of repaired results'
+    assert test_args[0].lineage == \
+        'N20120905S0122/gemini:GEM/N20120905S0122.fits ' \
+        'N20120905S0122_arc/gemini:GEM/N20120905S0122_arc.fits', \
+        'wrong repaired first lineage'
+    assert test_args[0].urls == \
+        'https://archive.gemini.edu/fullheader/N20120905S0122.fits ' \
+        'https://archive.gemini.edu/fullheader/N20120905S0122_arc.fits', \
+        'wrong repaired first url'

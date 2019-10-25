@@ -83,7 +83,7 @@ from gem2caom2.obs_file_relationship import GemObsFileRelationship
 
 
 __all__ = ['get_gofr', 'Inst', 'get_obs_metadata', 'get_pi_metadata',
-           'get_filter_metadata']
+           'get_filter_metadata', 'set_ofr']
 
 
 GEMINI_METADATA_URL = \
@@ -98,7 +98,6 @@ fm = {}
 pm = {}
 # lazy initialization for the Gemini listing of files
 gofr = None
-# repaired_lookup = None
 
 
 def get_gofr():
@@ -108,20 +107,11 @@ def get_gofr():
     return gofr
 
 
-# def get_repaired_obs_id(from_file_id):
-#     global repaired_lookup
-#     if repaired_lookup is None:
-#         repaired_lookup = {}
-#         logging.error('and now this:')
-#         count = 0
-#         with open('/app/data/repaired_file_obs_id.csv') as f:
-#             for line in f:
-#                 temp = line.split(',')
-#                 repaired_lookup[temp[0]] = temp[1]
-#                 count += 1
-#                 if count % 10000 == 0:
-#                     logging.error('count is {}'.format(count))
-#     return repaired_lookup.get(from_file_id)
+def set_ofr(value):
+    # replace the lookup functionality of the listing of file from Gemini,
+    # with the query results from archive.gemini.edu
+    global gofr
+    gofr = value
 
 
 class Inst(Enum):

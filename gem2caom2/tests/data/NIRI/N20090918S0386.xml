@@ -10,6 +10,8 @@
   <caom2:intent>science</caom2:intent>
   <caom2:proposal>
     <caom2:id>GN-2009B-Q-52</caom2:id>
+    <caom2:pi>Patrick Irwin</caom2:pi>
+    <caom2:title>Uranus Cloud Structure after 2007 equinox - NIFS and NIRI</caom2:title>
   </caom2:proposal>
   <caom2:target>
     <caom2:name>Uranus</caom2:name>

@@ -3,7 +3,7 @@
 # ******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
 # *************  CENTRE CANADIEN DE DONNÉES ASTRONOMIQUES  **************
 #
-#  (c) 2018.                            (c) 2018.
+#  (c) 2019.                            (c) 2019.
 #  Government of Canada                 Gouvernement du Canada
 #  National Research Council            Conseil national de recherches
 #  Ottawa, Canada, K1A 0R6              Ottawa, Canada, K1A 0R6
@@ -66,66 +66,45 @@
 #
 # ***********************************************************************
 #
+import os
+import sys
 
-from gem2caom2 import GemName, SCHEME, ARCHIVE
-from gem2caom2 import external_metadata as em
+from datetime import datetime, timedelta
+from mock import patch, Mock
+import gem_mocks
 
+from gem2caom2 import main_app, composable, gem_name, external_metadata
 
-def test_is_valid():
-    mock_obs_id = 'GN-2013B-Q-28-150-002'
-    assert GemName(file_name='anything.fits',
-                   obs_id=mock_obs_id).is_valid()
-    assert GemName(file_name='anything.jpg',
-                   obs_id=mock_obs_id).is_valid()
-
-
-def test_storage_name():
-    em.set_ofr(None)
-    mock_obs_id = 'GN-2013B-Q-28-150-002'
-    test_sn = GemName(file_name='N20131203S0006i.fits.bz2',
-                      obs_id=mock_obs_id)
-    assert test_sn.file_uri == '{}:{}/N20131203S0006i.fits'.format(SCHEME,
-                                                                   ARCHIVE)
-    assert test_sn.file_name == 'N20131203S0006i.fits'
-    assert test_sn.prev == 'N20131203S0006i.jpg'
-    assert test_sn.thumb == 'N20131203S0006i_th.jpg'
-    assert test_sn.compressed_file_name is None
-    assert test_sn.get_file_id(test_sn.file_name) == 'N20131203S0006i'
-
-    test_sn = GemName(file_name='S20060920S0137.jpg',
-                      obs_id=mock_obs_id)
-    assert test_sn.file_uri == '{}:{}/S20060920S0137.jpg'.format(SCHEME,
-                                                                 ARCHIVE)
-    assert test_sn.file_name == 'S20060920S0137.jpg'
-    assert test_sn.prev == 'S20060920S0137.jpg'
-    assert test_sn.thumb == 'S20060920S0137_th.jpg'
-    assert test_sn.compressed_file_name is None
-
-    test_sn = GemName(fname_on_disk='N20100104S0208.fits.header')
-    assert test_sn.obs_id == 'GN-2009B-Q-121-15-001', 'wrong obs id'
-    assert test_sn.file_uri == '{}:{}/N20100104S0208.fits'.format(SCHEME,
-                                                                  ARCHIVE)
+STATE_FILE = '/usr/src/app/state.yml'
+THIS_DIR = os.path.dirname(os.path.realpath(__file__))
+TEST_DATA_DIR = os.path.join(THIS_DIR, 'data')
 
 
-def test_storage_name_2():
-    em.set_ofr(None)
-    mock_obs_id = 'GN-2012A-Q-124-1-003'
-    test_sn = GemName(obs_id=mock_obs_id)
-    assert test_sn._external_urls is None, 'should be uninitialized'
-    test_sn._get_args()
-    assert test_sn._external_urls is not None, 'should be initialized'
-    assert test_sn._external_urls == \
-        'https://archive.gemini.edu/fullheader/N20120905S0122_arc.fits ' \
-        'https://archive.gemini.edu/fullheader/N20120905S0122.fits', \
-        'wrong value'
-
-    # TODO: need to figure out how to make this case work:
-    #
-    # mock_obs_id = 'GN-2012A-Q-124-1-003-ARC'
-    # test_sn = GemName(obs_id=mock_obs_id)
-    # assert test_sn._external_urls is None, 'should be uninitialized'
-    # test_sn._get_args()
-    # assert test_sn._external_urls is not None, 'should be initialized'
-    # assert test_sn._external_urls == \
-    #        'https://archive.gemini.edu/fullheader/N20120905S0122.fits', \
-    #     'wrong value'
+def test_run_edu():
+    gem_mocks.call_count = 0
+    now_minus_15_min = datetime.utcnow()
+    now_minus_15_min = now_minus_15_min - timedelta(minutes=15)
+    gem_mocks.mock_write_state(now_minus_15_min)
+    # execution
+    with patch('caom2pipe.manage_composable.query_endpoint') as \
+            query_endpoint_mock, \
+            patch('caom2pipe.execute_composable._do_one') as run_mock:
+        query_endpoint_mock.side_effect = gem_mocks.mock_query_endpoint
+        getcwd_orig = os.getcwd
+        os.getcwd = Mock(return_value=TEST_DATA_DIR)
+        try:
+            sys.argv = ['test_command']
+            composable._run_by_edu_query()
+            assert run_mock.called, 'should have been called'
+            args, kwargs = run_mock.call_args
+            assert args[3] == main_app.APPLICATION, 'wrong command'
+            test_storage = args[2]
+            assert isinstance(
+                test_storage, gem_name.GemName), type(test_storage)
+            assert test_storage.file_id.startswith('S20191010S0'), \
+                test_storage.file_id
+            assert test_storage.file_name.endswith('.fits'), \
+                test_storage.file_name
+            assert run_mock.call_count == 1, 'wrong call count'
+        finally:
+            os.getcwd = getcwd_orig

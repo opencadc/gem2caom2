@@ -67,16 +67,18 @@
 # ***********************************************************************
 #
 
+import logging
 import os
 import pytest
 
 from datetime import datetime
 from shutil import copyfile
 from mock import patch, Mock
+import gem_mocks
 
+from caom2pipe import execute_composable as ec
 from caom2pipe import manage_composable as mc
 from gem2caom2 import composable, GemName
-
 
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
 TEST_DATA_DIR = os.path.join(THIS_DIR, 'data')
@@ -287,6 +289,54 @@ def test_run_by_in_memory_query():
                        test_f_id), 'wrong external urls'
     finally:
         os.getcwd = getcwd_orig
+
+
+@patch('sys.exit', Mock(return_value=MyExitError))
+@patch('caom2pipe.manage_composable.query_endpoint')
+@patch('caom2pipe.manage_composable.exec_cmd')
+@patch('caom2pipe.execute_composable.CAOM2RepoClient')
+@patch('caom2pipe.execute_composable.CadcDataClient')
+def test_run_by_edu_query(data_client_mock, repo_mock, exec_mock, query_mock):
+    data_client_mock.return_value.get_file_info.side_effect = \
+        gem_mocks.mock_get_file_info
+    data_client_mock.return_value.get_file.side_effect = Mock()
+    exec_mock.side_effect = Mock()
+    query_mock.side_effect = gem_mocks.mock_query_endpoint
+    repo_mock.return_value.create.side_effect = gem_mocks.mock_repo_create
+    repo_mock.return_value.read.side_effect = gem_mocks.mock_repo_read
+    repo_mock.return_value.update.side_effect = gem_mocks.mock_repo_update
+
+    _write_state()
+    getcwd_orig = os.getcwd
+    os.getcwd = Mock(return_value=f'{TEST_DATA_DIR}/edu_query')
+    try:
+        # execution
+        test_result = composable._run_by_edu_query()
+        assert test_result == 0, 'wrong result'
+    finally:
+        os.getcwd = getcwd_orig
+
+    assert repo_mock.return_value.create.called, 'create not called'
+    assert repo_mock.return_value.read.called, 'read not called'
+    assert query_mock.called, 'query mock not called'
+    assert exec_mock.called, 'exec mock not called'
+    param, level_as = ec.CaomExecute._specify_logging_level_param(logging.ERROR)
+    exec_mock.assert_called_with(
+        ('gem2caom2 --quiet --cert /usr/src/app/cadcproxy.pem '
+         '--observation GEMINI GS-2019B-Q-222-181-001 '
+         '--out /usr/src/app/logs/GS-2019B-Q-222-181-001.fits.xml '
+         '--external_url '
+         'https://archive.gemini.edu/fullheader/S20191010S0030.fits '
+         '--plugin '
+         '/usr/local/lib/python3.6/site-packages/gem2caom2/gem2caom2.py '
+         '--module '
+         '/usr/local/lib/python3.6/site-packages/gem2caom2/gem2caom2.py '
+         '--lineage S20191010S0030/gemini:GEM/S20191010S0030.fits'),
+        level_as), \
+        'exec mock wrong parameters'
+    assert data_client_mock.return_value.get_file_info.called, \
+        'data client mock get file info called'
+    # assert False
 
 
 def _write_todo(test_obs_id):
