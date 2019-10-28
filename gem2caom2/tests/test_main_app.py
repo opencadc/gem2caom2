@@ -74,7 +74,6 @@ from shutil import copyfile
 import gem2caom2.external_metadata as em
 
 from gem2caom2 import main_app2, APPLICATION, ARCHIVE, SCHEME, COLLECTION
-from caom2.diff import get_differences
 from caom2pipe import manage_composable as mc
 
 import os

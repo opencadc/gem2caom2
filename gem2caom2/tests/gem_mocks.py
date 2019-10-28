@@ -88,7 +88,7 @@ TEST_DATA_DIR = os.path.join(THIS_DIR, 'data')
 FIRST_FILE_LIST = os.path.join(TEST_DATA_DIR, 'S20191010S0.html')
 SECOND_FILE_LIST = os.path.join(TEST_DATA_DIR, 'S20191010S3.html')
 STATE_FILE = '/usr/src/app/state.yml'
-TOO_MANY_FILE_LIST = ''
+TOO_MANY_FILE_LIST = os.path.join(TEST_DATA_DIR, 'too_many_rows.html')
 
 call_count = 0
 
@@ -168,18 +168,23 @@ def mock_query_endpoint(url, timeout=-1):
     result.text = None
     global call_count
 
-    file_pre = url.split('/')[-1].replace('filepre=', '')
-    if file_pre.startswith('S') and file_pre.endswith('0') and call_count < 2:
+    if call_count == 0 and '20030106' not in url:
         with open(FIRST_FILE_LIST, 'r') as f:
-            result.text = f.read()
-    elif file_pre.startswith('S') or file_pre.startswith('N'):
+            temp = f.read()
+            now_date_str = datetime.strftime(datetime.now(), '%Y-%m-%d')
+            logging.error(f'{now_date_str}')
+            result.text = temp.replace('2019-10-10', now_date_str)
+    elif call_count == 1 and '20030106' not in url:
         with open(SECOND_FILE_LIST, 'r') as f:
             result.text = f.read()
-    elif url == TOO_MANY_FILE_LIST:
+    elif '20030106' in url:
         with open(TOO_MANY_FILE_LIST, 'r') as f:
             result.text = f.read()
     else:
-        raise Exception('wut {}'.format(url))
+        if '20030107' in url or '20030105' in url:
+            pass
+        else:
+            raise Exception('wut {} count {}'.format(url, call_count))
     call_count += 1
     return result
 

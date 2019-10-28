@@ -306,7 +306,8 @@ def test_run_by_edu_query(data_client_mock, repo_mock, exec_mock, query_mock):
     repo_mock.return_value.read.side_effect = gem_mocks.mock_repo_read
     repo_mock.return_value.update.side_effect = gem_mocks.mock_repo_update
 
-    _write_state()
+    prior_s = datetime.utcnow().timestamp() - 1440 * 60
+    _write_state(prior_s)
     getcwd_orig = os.getcwd
     os.getcwd = Mock(return_value=f'{TEST_DATA_DIR}/edu_query')
     try:
@@ -351,7 +352,10 @@ def _write_state(prior_timestamp=None):
     if prior_timestamp is None:
         prior_s = datetime.utcnow().timestamp() - 15 * 60
     else:
-        prior_s = mc.make_seconds(prior_timestamp)
+        if type(prior_timestamp) is float:
+            prior_s = prior_timestamp
+        else:
+            prior_s = mc.make_seconds(prior_timestamp)
     test_start_time = datetime.fromtimestamp(prior_s)
     test_bookmark = {'bookmarks': {'gemini_timestamp':
                                        {'last_record': test_start_time}}}

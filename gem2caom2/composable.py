@@ -149,7 +149,7 @@ def _run_by_tap_query():
     return ec.run_from_state(config, GemName, APPLICATION, meta_visitors,
                              data_visitors, GEM_BOOKMARK,
                              work.TapNoPreviewQuery(
-                                 datetime.utcnow(), config))
+                                 _get_utcnow(), config))
 
 
 def run_by_tap_query():
@@ -205,7 +205,7 @@ def _run_by_public():
     return ec.run_from_state(config, GemName, APPLICATION, meta_visitors,
                              data_visitors, GEM_BOOKMARK,
                              work.TapRecentlyPublicQuery(
-                                 datetime.utcnow(), config))
+                                 _get_utcnow(), config))
 
 
 def run_by_public():
@@ -230,9 +230,16 @@ def _run_by_edu_query():
     """
     config = mc.Config()
     config.get_executors()
-    return ec.run_from_storage_name_instance(
-        config, APPLICATION, meta_visitors, data_visitors, GEM_BOOKMARK,
-        work.ArchiveGeminiEduQuery(datetime.utcnow()))
+    current_work = work.ArchiveGeminiEduQuery(_get_utcnow())
+    result = ec.run_from_storage_name_instance(config, APPLICATION,
+                                               meta_visitors, data_visitors,
+                                               GEM_BOOKMARK, current_work)
+    if current_work.record_count() == 2500:
+        # retrieved the maximum number of rows - need to try to back-fill
+        raise mc.CadcException(
+            'Retrieved the maximum number of query rows from '
+            'archive.gemini.edu. Run gem_run_edu_filepre_query.')
+    return result
 
 
 def run_by_edu_query():
@@ -244,3 +251,37 @@ def run_by_edu_query():
         tb = traceback.format_exc()
         logging.debug(tb)
         sys.exit(-1)
+
+
+def _run_by_edu_filepre_query():
+    """Run the processing for observations that are posted on the site
+    archive.gemini.edu in the specified interval. The time-boxing is based on
+    timestamps from a state.yml file. Call once/day, since the query can only
+    be done with date values, not time values. This uses the 'filepre'
+    URL query facility, and should be run only if _run_by_edu_query exceeds
+    it's 2500 query result limit.
+
+    :return 0 if successful, -1 if there's any sort of failure. Return status
+        is used by airflow for task instance management and reporting.
+    """
+    config = mc.Config()
+    config.get_executors()
+    return ec.run_from_storage_name_instance(
+        config, APPLICATION, meta_visitors, data_visitors, GEM_BOOKMARK,
+        work.EduQueryFilePre(_get_utcnow()))
+
+
+def run_by_edu_filepre_query():
+    try:
+        result = _run_by_edu_query()
+        sys.exit(result)
+    except Exception as e:
+        logging.error(e)
+        tb = traceback.format_exc()
+        logging.debug(tb)
+        sys.exit(-1)
+
+
+def _get_utcnow():
+    """So that utcnow can be mocked."""
+    return datetime.utcnow()

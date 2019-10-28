@@ -32,6 +32,7 @@ stream: default
 archive: GEM
 collection: GEMINI
 state_file_name: state.yml
+interval: 1440
 # how to control the work that gets done
 # possible values are:
 # - scrape - read the headers, write out the xml - kind of a test mode

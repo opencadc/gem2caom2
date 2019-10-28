@@ -69,10 +69,11 @@
 
 import os
 import pytest
-import sys
 
 from datetime import datetime
 from shutil import copyfile
+
+from caom2pipe import manage_composable as mc
 
 from gem2caom2 import GemObsFileRelationship, CommandLineBits
 from gem2caom2 import PartialObsFileRelationship
@@ -887,10 +888,12 @@ def test_mixed_case_file_names():
 
 
 def test_partial():
+    start_date = datetime.strptime('2014-11-28T09:21:13.0', mc.ISO_8601_FORMAT)
+    end_date = datetime.strptime('2014-11-29T13:21:13.0', mc.ISO_8601_FORMAT)
     work_list_in = os.path.join(TEST_DATA_DIR, 'data_label_fix.html')
-    work_list, max_date = work.ArchiveGeminiEduQuery._parse_ssummary_page(
-        open(work_list_in).read(), None)
-    assert max_date == '2014-11-29 09:21:13', 'wrong max date'
+    work_list, max_date = work.ArchiveGeminiEduQuery.parse_ssummary_page(
+        open(work_list_in).read(), start_date, end_date)
+    assert max_date == datetime(2014, 11, 29, 9, 21, 13), 'wrong max date'
     assert len(work_list) == 9, 'wrong number of test files'
 
     test_subject = PartialObsFileRelationship(work_list, max_date)
@@ -935,9 +938,11 @@ def test_partial():
 
 
 def test_partial_processed():
+    start_date = datetime.strptime('2012-09-04T09:21:13.0', mc.ISO_8601_FORMAT)
+    end_date = datetime.strptime('2012-09-06T13:21:13.0', mc.ISO_8601_FORMAT)
     work_list_in = os.path.join(TEST_DATA_DIR, 'processed.html')
-    work_list, max_date = work.ArchiveGeminiEduQuery._parse_ssummary_page(
-        open(work_list_in).read(), None)
+    work_list, max_date = work.ArchiveGeminiEduQuery.parse_ssummary_page(
+        open(work_list_in).read(), start_date, end_date)
     assert len(work_list) == 798, 'wrong number of test files'
 
     test_subject = PartialObsFileRelationship(work_list, max_date)
