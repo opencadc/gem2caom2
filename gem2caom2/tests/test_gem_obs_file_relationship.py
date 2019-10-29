@@ -966,3 +966,30 @@ def test_partial_processed():
         'https://archive.gemini.edu/fullheader/N20120905S0122.fits ' \
         'https://archive.gemini.edu/fullheader/N20120905S0122_arc.fits', \
         'wrong repaired first url'
+
+
+def test_data_label_none():
+    # sometimes there is no data label for a file
+    start_date = datetime.strptime('2019-10-16T00:00:0.0', mc.ISO_8601_FORMAT)
+    end_date = datetime.strptime('2019-10-18T00:00:00.0', mc.ISO_8601_FORMAT)
+    work_list_in = os.path.join(TEST_DATA_DIR, 'data_label_none.html')
+    query_subject = work.ArchiveGeminiEduQuery(datetime.utcnow())
+    work_list, max_date = query_subject.parse_ssummary_page(
+        open(work_list_in).read(), start_date, end_date)
+    assert len(work_list) == 6, 'wrong number of test files'
+
+    test_subject = PartialObsFileRelationship(work_list, max_date)
+    file_names = test_subject.get_file_names('S20191017S0001')
+    file_names.sort()
+    assert len(file_names) == 1, 'wrong number of file names, original id'
+    assert file_names[0] == 'S20191017S0001.fits', 'wrong first file name'
+
+    test_args = test_subject.get_args('S20191017S0007')
+    assert test_args is not None, 'expected repaired result'
+    assert len(test_args) == 1, 'wrong number of repaired results'
+    assert test_args[0].lineage == \
+        'S20191017S0007/gemini:GEM/S20191017S0007.fits', \
+        'wrong repaired first lineage'
+    assert test_args[0].urls == \
+        'https://archive.gemini.edu/fullheader/S20191017S0007.fits', \
+        f'wrong repaired first url {test_args[0].urls}'

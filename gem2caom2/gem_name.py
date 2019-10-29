@@ -124,7 +124,10 @@ class GemName(ec.StorageName):
             scheme=SCHEME)
         if self._obs_id is None:
             self._obs_id = em.get_gofr().get_obs_id(self._file_id)
-            # self._obs_id = em.get_repaired_obs_id(self._file_id)
+        if self._obs_id == 'None':
+            # occurs when the html returned from archive.gemini.edu does not
+            # have a data label defined
+            self._obs_id = self._file_id
         if file_id is not None:
             self._file_id = file_id
         self._lineage = None
