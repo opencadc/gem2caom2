@@ -891,7 +891,8 @@ def test_partial():
     start_date = datetime.strptime('2014-11-28T09:21:13.0', mc.ISO_8601_FORMAT)
     end_date = datetime.strptime('2014-11-29T13:21:13.0', mc.ISO_8601_FORMAT)
     work_list_in = os.path.join(TEST_DATA_DIR, 'data_label_fix.html')
-    work_list, max_date = work.ArchiveGeminiEduQuery.parse_ssummary_page(
+    query_subject = work.ArchiveGeminiEduQuery(datetime.utcnow())
+    work_list, max_date = query_subject.parse_ssummary_page(
         open(work_list_in).read(), start_date, end_date)
     assert max_date == datetime(2014, 11, 29, 9, 21, 13), 'wrong max date'
     assert len(work_list) == 9, 'wrong number of test files'
@@ -941,7 +942,8 @@ def test_partial_processed():
     start_date = datetime.strptime('2012-09-04T09:21:13.0', mc.ISO_8601_FORMAT)
     end_date = datetime.strptime('2012-09-06T13:21:13.0', mc.ISO_8601_FORMAT)
     work_list_in = os.path.join(TEST_DATA_DIR, 'processed.html')
-    work_list, max_date = work.ArchiveGeminiEduQuery.parse_ssummary_page(
+    query_subject = work.ArchiveGeminiEduQuery(datetime.utcnow())
+    work_list, max_date = query_subject.parse_ssummary_page(
         open(work_list_in).read(), start_date, end_date)
     assert len(work_list) == 798, 'wrong number of test files'
 

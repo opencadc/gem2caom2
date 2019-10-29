@@ -70,6 +70,7 @@
 import logging
 import os
 import pytest
+import shutil
 
 from datetime import datetime
 from shutil import copyfile
@@ -297,6 +298,8 @@ def test_run_by_in_memory_query():
 @patch('caom2pipe.execute_composable.CAOM2RepoClient')
 @patch('caom2pipe.execute_composable.CadcDataClient')
 def test_run_by_edu_query(data_client_mock, repo_mock, exec_mock, query_mock):
+    global call_count
+    call_count = 0
     data_client_mock.return_value.get_file_info.side_effect = \
         gem_mocks.mock_get_file_info
     data_client_mock.return_value.get_file.side_effect = Mock()
@@ -305,6 +308,14 @@ def test_run_by_edu_query(data_client_mock, repo_mock, exec_mock, query_mock):
     repo_mock.return_value.create.side_effect = gem_mocks.mock_repo_create
     repo_mock.return_value.read.side_effect = gem_mocks.mock_repo_read
     repo_mock.return_value.update.side_effect = gem_mocks.mock_repo_update
+
+    if not os.path.exists('/usr/src/app/logs/GS-2019B-Q-222-181-001.fits.xml'):
+        shutil.copy(f'{TEST_DATA_DIR}/GS-2019B-Q-222-181-001.expected.xml',
+                    '/usr/src/app/logs/GS-2019B-Q-222-181-001.fits.xml')
+
+    if not os.path.exists('/usr/src/app/cadcproxy.pem'):
+        with open('/usr/src/app/cadcproxy.pem', 'w') as f:
+            f.write('cadc proxy content')
 
     prior_s = datetime.utcnow().timestamp() - 1440 * 60
     _write_state(prior_s)

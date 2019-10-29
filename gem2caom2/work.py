@@ -214,6 +214,7 @@ class ArchiveGeminiEduQuery(mc.Work):
     def __init__(self, max_ts):
         super(ArchiveGeminiEduQuery, self).__init__(max_ts.timestamp())
         self._current_work_list = None
+        self._encountered_max_records = False
 
     def todo(self, prev_exec_date, exec_date):
         """
@@ -238,7 +239,7 @@ class ArchiveGeminiEduQuery(mc.Work):
                 logging.warning(
                     'Could not query {}'.format(ssummary_url))
             else:
-                obs_ids, max_date = ArchiveGeminiEduQuery.parse_ssummary_page(
+                obs_ids, max_date = self.parse_ssummary_page(
                     response.text, prev_exec_date, exec_date)
                 response.close()
         finally:
@@ -254,11 +255,14 @@ class ArchiveGeminiEduQuery(mc.Work):
             self._current_work_list, self.max_ts_s)
         em.set_ofr(pofr)
 
-    def record_count(self):
-        return len(self._current_work_list)
+    def check_max_records(self):
+        if self._encountered_max_records:
+            # retrieved the maximum number of rows - need to try to back-fill
+            raise mc.CadcException(
+                'Retrieved the maximum number of query rows from '
+                'archive.gemini.edu. Run gem_run_edu_filepre_query.')
 
-    @staticmethod
-    def parse_ssummary_page(html_string, start_date, end_date):
+    def parse_ssummary_page(self, html_string, start_date, end_date):
         """Parse the html returned from archive.gemini.edu.
 
         :param html_string - response.text
@@ -293,6 +297,10 @@ class ArchiveGeminiEduQuery(mc.Work):
                         file_id=file_id)
                     work_list[file_id] = storage_name
                     max_date = max(max_date, file_time)
+
+        if (html_string is not None and
+                'search generated more than the limit of 2500' in html_string):
+            self._encountered_max_records = True
         return work_list, max_date
 
 
@@ -330,8 +338,7 @@ class EduQueryFilePre(mc.Work):
                         logging.warning(
                             'Could not query {}'.format(ssummary_url))
                     else:
-                        temp, max_date = \
-                            ArchiveGeminiEduQuery.parse_ssummary_page(
+                        temp, max_date = self.parse_ssummary_page(
                                 response.text, prev_exec_date, exec_date)
                         response.close()
                         temp_obs_ids = obs_ids

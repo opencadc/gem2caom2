@@ -234,11 +234,7 @@ def _run_by_edu_query():
     result = ec.run_from_storage_name_instance(config, APPLICATION,
                                                meta_visitors, data_visitors,
                                                GEM_BOOKMARK, current_work)
-    if current_work.record_count() == 2500:
-        # retrieved the maximum number of rows - need to try to back-fill
-        raise mc.CadcException(
-            'Retrieved the maximum number of query rows from '
-            'archive.gemini.edu. Run gem_run_edu_filepre_query.')
+    current_work.check_max_records()
     return result
 
 
@@ -266,9 +262,12 @@ def _run_by_edu_filepre_query():
     """
     config = mc.Config()
     config.get_executors()
-    return ec.run_from_storage_name_instance(
+    current_work = work.EduQueryFilePre(_get_utcnow())
+    result = ec.run_from_storage_name_instance(
         config, APPLICATION, meta_visitors, data_visitors, GEM_BOOKMARK,
-        work.EduQueryFilePre(_get_utcnow()))
+        current_work)
+    current_work.check_max_records()
+    return result
 
 
 def run_by_edu_filepre_query():

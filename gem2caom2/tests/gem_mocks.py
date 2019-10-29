@@ -171,9 +171,11 @@ def mock_query_endpoint(url, timeout=-1):
     if call_count == 0 and '20030106' not in url:
         with open(FIRST_FILE_LIST, 'r') as f:
             temp = f.read()
-            now_date_str = datetime.strftime(datetime.now(), '%Y-%m-%d')
-            logging.error(f'{now_date_str}')
-            result.text = temp.replace('2019-10-10', now_date_str)
+            now_dt = datetime.utcnow()
+            now_date_str = datetime.strftime(now_dt, '%Y-%m-%d')
+            now_time_str = datetime.strftime(now_dt, '%H:%M:%S')
+            result.text = temp.replace(
+                '2019-10-10', now_date_str).replace('05:09:24', now_time_str)
     elif call_count == 1 and '20030106' not in url:
         with open(SECOND_FILE_LIST, 'r') as f:
             result.text = f.read()

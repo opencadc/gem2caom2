@@ -92,9 +92,9 @@ def test_run_edu_parse():
         '2019-10-10T06:04:24.000', mc.ISO_8601_FORMAT)
     # execution
     html_string = open(gem_mocks.FIRST_FILE_LIST, 'r').read()
-    work_list_result, max_date_result =\
-        work.ArchiveGeminiEduQuery.parse_ssummary_page(
-            html_string, start_time, end_time)
+    query_subject = work.ArchiveGeminiEduQuery(datetime.utcnow())
+    work_list_result, max_date_result = query_subject.parse_ssummary_page(
+        html_string, start_time, end_time)
     assert work_list_result is not None, 'expected result'
     assert max_date_result is not None, 'expected result'
     assert len(work_list_result) == 1, 'wrong number of results'
