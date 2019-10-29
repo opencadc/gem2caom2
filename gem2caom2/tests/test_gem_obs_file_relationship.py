@@ -73,6 +73,9 @@ import pytest
 from datetime import datetime
 from shutil import copyfile
 
+from mock import Mock, patch
+
+from caom2pipe import execute_composable as ec
 from caom2pipe import manage_composable as mc
 
 from gem2caom2 import GemObsFileRelationship, CommandLineBits
@@ -936,6 +939,37 @@ def test_partial():
     assert test_args[0].urls == \
         'https://archive.gemini.edu/fullheader/S20141129S0331_dark.fits', \
         'wrong repaired first url'
+
+    query_subject._set_current_work_list(work_list)
+    with patch('caom2pipe.manage_composable.repo_get') as caom_mock:
+        getcwd_orig = os.getcwd
+        os.getcwd = Mock(return_value=f'{TEST_DATA_DIR}/edu_query')
+        caom_mock.return_value = None
+        try:
+            # execution
+            test_config = mc.Config()
+            test_config.get_executors()
+            test_organizer = ec.OrganizeExecutes(test_config, chooser=None)
+            import logging
+            logging.error(work_list['S20141129S0347'])
+            test_executors = test_organizer.choose(
+                work_list['S20141129S0347'], 'TEST_COMMAND_NAME',
+                meta_visitors=[], data_visitors=[])
+            assert test_executors is not None, 'expected result'
+            assert len(test_executors) == 2, 'wrong number of executors'
+            assert isinstance(test_executors[0], ec.MetaCreateClient), \
+                'wrong choose result'
+            assert isinstance(test_executors[1], ec.ClientVisit), \
+                'wrong choose result'
+            assert test_executors[0].lineage == \
+                'S20141129S0347/gemini:GEM/S20141129S0347.fits', \
+                'wrong lineage for ingest'
+            assert test_executors[0].external_urls_param == \
+                '--external_url ' \
+                'https://archive.gemini.edu/fullheader/S20141129S0347.fits', \
+                'wrong external url parameter for ingest'
+        finally:
+            os.getcwd = getcwd_orig
 
 
 def test_partial_processed():

@@ -43,6 +43,7 @@ interval: 1440
 # - pull - put a file retrieved from a URL
 task_types:
   - ingest
+  - visit
 features:
   use_file_names: False
   use_urls: False

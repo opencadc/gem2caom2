@@ -214,6 +214,7 @@ class ArchiveGeminiEduQuery(mc.Work):
     def __init__(self, max_ts):
         super(ArchiveGeminiEduQuery, self).__init__(max_ts.timestamp())
         self._current_work_list = None
+        self._pofr = None
         self._encountered_max_records = False
 
     def todo(self, prev_exec_date, exec_date):
@@ -246,14 +247,19 @@ class ArchiveGeminiEduQuery(mc.Work):
             if response is not None:
                 response.close()
 
-        self._current_work_list = obs_ids
-        # unique-ify the GemName instances
+        self._set_current_work_list(obs_ids)
+        # return type is a list
         return [obs_ids[ii] for ii in obs_ids]
 
     def initialize(self):
-        pofr = ofr.PartialObsFileRelationship(
-            self._current_work_list, self.max_ts_s)
-        em.set_ofr(pofr)
+        em.set_ofr(self._pofr)
+
+    def _set_current_work_list(self, obs_ids):
+        self._current_work_list = obs_ids
+        self._pofr = ofr.PartialObsFileRelationship(self._current_work_list,
+                                                    self.max_ts_s)
+        for key, value in obs_ids.items():
+            value.set_partial_args(self._pofr)
 
     def check_max_records(self):
         if self._encountered_max_records:
@@ -309,6 +315,7 @@ class EduQueryFilePre(mc.Work):
     def __init__(self, max_ts):
         super(EduQueryFilePre, self).__init__(max_ts.timestamp())
         self._current_work_list = None
+        self._pofr = None
 
     def todo(self, prev_exec_date, exec_date):
         """
@@ -347,7 +354,5 @@ class EduQueryFilePre(mc.Work):
                     if response is not None:
                         response.close()
 
-        self._current_work_list = obs_ids
-        # unique-ify the GemName instances
-        temp = list(set(obs_ids.keys()))
-        return [obs_ids[ii] for ii in temp]
+        self._set_current_work_list(obs_ids)
+        return [obs_ids[ii] for ii in obs_ids]

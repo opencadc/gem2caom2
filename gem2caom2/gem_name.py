@@ -133,58 +133,73 @@ class GemName(ec.StorageName):
         self._lineage = None
         self._external_urls = None
 
-    def _get_args(self):
-        temp = em.get_gofr().get_args(self._obs_id)
+    def __str__(self):
+        return f'obs_id {self._obs_id}, ' \
+               f'file_id {self._file_id}, ' \
+               f'file_name {self._file_name}, ' \
+               f'lineage {self._lineage}, ' \
+               f'external urls {self._external_urls}'
+
+    def set_partial_args(self, pofr):
+        temp = pofr.get_args(self._obs_id)
         if len(temp) == 1:
             self._lineage = temp[0].lineage
             self._external_urls = temp[0].urls
-            # format is GEMINI 'obs id'
-            # use the repaired value
-            self._obs_id = temp[0].obs_id.split()[1]
         else:
-            if len(temp) == 0:
-                logging.error('length is 0')
-                if self._file_id is None:
-                    raise mc.CadcException(
-                        'obs id {} unknown at Gemini'.format(self._obs_id))
-                else:
-                    # Gemini obs id values are repaired from what
-                    # archive.gemini.edu publishes, so check for the
-                    # un-repaired value
-                    repaired = em.get_gofr().get_obs_id(self._file_id)
-                    # repaired = em.get_repaired_obs_id(self._file_id)
-                    x = em.get_gofr().get_args(repaired)
-                    self._lineage = x[0].lineage
-                    self._external_urls = x[0].urls
+            raise mc.CadcException(
+                f'Unexpected arguments for observation {self._obs_id} '
+                f'file {self._file_id}')
+
+    def _get_args(self):
+        if self._lineage is None and self._external_urls is None:
+            temp = em.get_gofr().get_args(self._obs_id)
+            if len(temp) == 1:
+                self._lineage = temp[0].lineage
+                self._external_urls = temp[0].urls
+                # format is GEMINI 'obs id'
+                # use the repaired value
+                self._obs_id = temp[0].obs_id.split()[1]
             else:
-                found = False
-                for bits in temp:
-                    urls = bits.urls.split()
-                    for url in urls:
-                        if self._file_name is None:
-                            if self._obs_id == bits.obs_id.split()[1].strip():
+                if len(temp) == 0:
+                    logging.error('length is 0')
+                    if self._file_id is None:
+                        raise mc.CadcException(
+                            'obs id {} unknown at Gemini'.format(self._obs_id))
+                    else:
+                        # Gemini obs id values are repaired from what
+                        # archive.gemini.edu publishes, so check for the
+                        # un-repaired value
+                        repaired = em.get_gofr().get_obs_id(self._file_id)
+                        # repaired = em.get_repaired_obs_id(self._file_id)
+                        x = em.get_gofr().get_args(repaired)
+                        self._lineage = x[0].lineage
+                        self._external_urls = x[0].urls
+                else:
+                    found = False
+                    for bits in temp:
+                        urls = bits.urls.split()
+                        for url in urls:
+                            if self._file_name is None:
+                                if self._obs_id == bits.obs_id.split()[1].strip():
+                                    logging.debug(
+                                        'Using existing obs id with {}'.format(self._obs_id))
+                                    self._external_urls = bits.urls
+                                    self._lineage = bits.lineage
+                                    found = True
+                                    break
+                            elif url.endswith(self._file_name):
+                                self._obs_id = bits.obs_id.split()[1]
                                 logging.debug(
-                                    'Using existing obs id with {}'.format(self._obs_id))
+                                    'Replaced obs id with {}'.format(self._obs_id))
                                 self._external_urls = bits.urls
                                 self._lineage = bits.lineage
                                 found = True
                                 break
-                        elif url.endswith(self._file_name):
-                            self._obs_id = bits.obs_id.split()[1]
-                            logging.debug(
-                                'Replaced obs id with {}'.format(self._obs_id))
-                            self._external_urls = bits.urls
-                            self._lineage = bits.lineage
-                            found = True
-                            break
-                if not found:
-                    raise mc.CadcException(
-                        'Could not find obs id for file name {}'.format(
-                            self._file_name))
-        logging.debug('members fname_on_disk {} file_name {}'
-                      ' obs id {} file id {}'.format(
-                        self._fname_on_disk, self._file_name, self._obs_id,
-                        self._file_id))
+                    if not found:
+                        raise mc.CadcException(
+                            'Could not find obs id for file name {}'.format(
+                                self._file_name))
+        logging.debug(self)
 
     @property
     def file_uri(self):

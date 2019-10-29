@@ -221,12 +221,21 @@ def mock_repo_create(arg1):
         assert False, result
 
 
+read_call_count = 0
+
+
 def mock_repo_read(arg1, arg2):
     # arg1 GEMINI arg2 GS-CAL20191010-3-034
-    return None
+    global read_call_count
+    if read_call_count == 0:
+        read_call_count = 1
+        return None
+    else:
+        return mc.read_obs_from_file(
+            f'{TEST_DATA_DIR}/GS-2019B-Q-222-181-001.expected.xml')
 
 
-def mock_repo_update():
+def mock_repo_update(ignore1):
     return None
 
 
