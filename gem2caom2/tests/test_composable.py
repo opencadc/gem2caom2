@@ -346,8 +346,9 @@ def test_run_by_edu_query(data_client_mock, repo_mock, exec_mock, query_mock):
          '--lineage S20191010S0030/gemini:GEM/S20191010S0030.fits'),
         level_as), \
         'exec mock wrong parameters'
-    assert data_client_mock.return_value.get_file_info.called, \
-        'data client mock get file info called'
+    assert not data_client_mock.return_value.get_file_info.called, \
+        'data client mock get file info should not be called, GemName.fileName' \
+        'should be None'
     # assert False
 
 

@@ -906,11 +906,11 @@ def test_partial():
 
     file_names = test_subject.get_file_names('GS-CAL20141129-1-001_DARK')
     assert len(file_names) == 1, 'wrong number of file names, original id'
-    assert file_names[0] == 'S20141129S0331_dark.fits', 'wrong file name'
+    assert file_names[0] == 'S20141129S0331_dark', 'wrong file name'
 
     file_names = test_subject.get_file_names('GS-CAL20141129-1-001-DARK')
     assert len(file_names) == 1, 'wrong number of file names, repaired id'
-    assert file_names[0] == 'S20141129S0331_dark.fits', \
+    assert file_names[0] == 'S20141129S0331_dark', \
         'wrong repaired file name'
 
     repaired_obs_id = test_subject.repair_data_label('S20141129S0331_dark')
@@ -986,8 +986,8 @@ def test_partial_processed():
     file_names.sort()
     assert len(file_names) == 2, \
         'wrong number of file names, original id'
-    assert file_names[0] == 'N20120905S0122.fits', 'wrong first file name'
-    assert file_names[1] == 'N20120905S0122_arc.fits', 'wrong second file name'
+    assert file_names[0] == 'N20120905S0122', 'wrong first file name'
+    assert file_names[1] == 'N20120905S0122_arc', 'wrong second file name'
 
     test_args = test_subject.get_args('GN-2012A-Q-124-1-003')
     assert test_args is not None, 'expected repaired result'
@@ -1016,7 +1016,7 @@ def test_data_label_none():
     file_names = test_subject.get_file_names('S20191017S0001')
     file_names.sort()
     assert len(file_names) == 1, 'wrong number of file names, original id'
-    assert file_names[0] == 'S20191017S0001.fits', 'wrong first file name'
+    assert file_names[0] == 'S20191017S0001', 'wrong first file name'
 
     test_args = test_subject.get_args('S20191017S0007')
     assert test_args is not None, 'expected repaired result'

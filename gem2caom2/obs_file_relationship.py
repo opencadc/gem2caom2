@@ -704,7 +704,7 @@ class PartialObsFileRelationship(GemObsFileRelationship):
         self._work_list = work_list.values()
         self._max_ts_s = max_date
         self.id_list = {}
-        self.name_list = {}
+        self.name_list = {}  # use file ids as keys
         self.repaired_ids = {}
         self.repaired_names = {}
         self.inverted_repaired_ids = {}
@@ -715,9 +715,9 @@ class PartialObsFileRelationship(GemObsFileRelationship):
             # keep the structure the same as for the parent class
             self.name_list[entry.file_id] = [[entry.obs_id, self._max_ts_s]]
             if entry.obs_id in self.id_list:
-                self.id_list[entry.obs_id].append(entry.file_name)
+                self.id_list[entry.obs_id].append(entry.file_id)
             else:
-                self.id_list[entry.obs_id] = [entry.file_name]
+                self.id_list[entry.obs_id] = [entry.file_id]
         self._build_repaired_lookups()
         for key in self.repaired_ids.keys():
             self.inverted_repaired_ids[self.repaired_ids[key][0]] = key

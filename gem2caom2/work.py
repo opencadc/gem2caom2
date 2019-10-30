@@ -299,8 +299,7 @@ class ArchiveGeminiEduQuery(mc.Work):
                     logging.debug(
                         f'Adding {file_id} with timestamp {file_time} to list.')
                     storage_name = gem_name.GemName(
-                        obs_id=ii[1], file_name=f'{file_id}.fits',
-                        file_id=file_id)
+                        obs_id=ii[1], file_id=file_id)
                     work_list[file_id] = storage_name
                     max_date = max(max_date, file_time)
 
