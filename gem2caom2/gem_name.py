@@ -136,6 +136,7 @@ class GemName(ec.StorageName):
             self._file_id = file_id
         self._lineage = None
         self._external_urls = None
+        logging.debug(self)
 
     def __str__(self):
         return f'obs_id {self._obs_id}, ' \
