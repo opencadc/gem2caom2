@@ -272,7 +272,33 @@ def _run_by_edu_filepre_query():
 
 def run_by_edu_filepre_query():
     try:
-        result = _run_by_edu_query()
+        result = _run_by_edu_filepre_query()
+        sys.exit(result)
+    except Exception as e:
+        logging.error(e)
+        tb = traceback.format_exc()
+        logging.debug(tb)
+        sys.exit(-1)
+
+
+def _run_direct():
+    """Run the processing for observations that are posted on the site
+    archive.gemini.edu as specified in todo.txt.
+
+    :return 0 if successful, -1 if there's any sort of failure. Return status
+        is used by airflow for task instance management and reporting.
+    """
+    config = mc.Config()
+    config.get_executors()
+    result = ec.run_by_file_storage_name(
+        config, APPLICATION, meta_visitors, data_visitors,
+        work.QueryByFileName(config))
+    return result
+
+
+def run_direct():
+    try:
+        result = _run_direct()
         sys.exit(result)
     except Exception as e:
         logging.error(e)

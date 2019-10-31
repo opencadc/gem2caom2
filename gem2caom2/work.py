@@ -87,7 +87,7 @@ __all__ = ['TapNoPreviewQuery', 'ObsFileRelationshipQuery',
 # https://archive.gemini.edu/help/api.html
 # ssummary = smallest query result containing file names and data labels
 GEMINI_SSUMMARY_DATA = \
-    'https://archive.gemini.edu/ssummary/notengineering/notFail/canonical'
+    'https://archive.gemini.edu/ssummary/notengineering/NotFail/canonical'
 
 
 class TapNoPreviewQuery(mc.Work):
@@ -355,3 +355,40 @@ class EduQueryFilePre(mc.Work):
 
         self._set_current_work_list(obs_ids)
         return [obs_ids[ii] for ii in obs_ids]
+
+
+class QueryByFileName(mc.Work):
+    """
+    Get the file metadata by querying archive.gemini.edu. The set of input
+    work is identified by the content of the todo.txt file, and the content
+    of that file is expected to be file ids (i.e. no fits extension).
+    """
+
+    def __init__(self, config):
+        super(QueryByFileName, self).__init__(datetime.utcnow().timestamp())
+        self._config = config
+        self._work_list = {}
+
+    def initialize(self):
+        file_ids = []
+        with open(self._config.work_fqn) as f:
+            for line in f:
+                file_ids.append(line.strip())
+        # first, initialize the list of StorageName instances with obs ids and
+        # file ids
+        for f_id in file_ids:
+            em.get_obs_metadata(f_id)
+            storage_name = gem_name.GemName(
+                obs_id=em.om.get('data_label'), file_id=f_id)
+            self._work_list[f_id] = storage_name
+
+        # second, get the lineage and external urls information for each of
+        # the storage name instances
+        pofr = ofr.PartialObsFileRelationship(self._work_list,
+                                              self.max_ts_s)
+        for key, value in self._work_list.items():
+            value.set_partial_args(pofr)
+        em.set_ofr(pofr)
+
+    def todo(self):
+        return self._work_list.values()

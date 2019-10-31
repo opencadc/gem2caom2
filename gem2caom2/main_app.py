@@ -472,7 +472,7 @@ def get_meta_release(parameters):
         raise mc.CadcException('header missing from parameters.')
 
     prop_md = header.get('PROP_MD')
-    if prop_md is None or prop_md == 'F':
+    if prop_md is None or prop_md is False or prop_md == 'F':
         meta_release = em.om.get('ut_datetime')
     else:
         meta_release = em.om.get('release')

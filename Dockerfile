@@ -1,38 +1,25 @@
-FROM python:3.6-alpine
+FROM opencadc/astropy:3.6-alpine
 
 RUN apk --no-cache add \
         bash \
-        coreutils \
-        gcc \
         git \
         g++ \
-        libffi-dev \
-        libxml2-dev \
-        libxslt-dev \
-        make \
-        musl-dev \
-        openssl-dev
+        libmagic \
+        wget
 
-RUN pip install aenum && \
-    pip install astropy && \
-    pip install cadcdata && \
+RUN pip install cadcdata && \
     pip install cadctap && \
     pip install caom2repo && \
-    pip install funcsigs && \
-    pip install future && \
-    pip install numpy && \
+    pip install ftputil && \
     pip install PyYAML && \
     pip install spherical-geometry && \
-    pip install vos && \
-    pip install xml-compare
+    pip install vos
 
 WORKDIR /usr/src/app
 
 RUN pip install bs4
 
-RUN apk --no-cache add \
-        imagemagick \
-        libmagic
+RUN apk --no-cache add imagemagick
 
 RUN mkdir /app && mkdir /app/data
 

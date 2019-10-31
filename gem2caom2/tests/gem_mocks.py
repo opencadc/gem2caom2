@@ -216,7 +216,7 @@ def mock_repo_create(arg1):
     act_fqn = f'{TEST_DATA_DIR}/{arg1.observation_id}.actual.xml'
     ex_fqn = f'{TEST_DATA_DIR}/{arg1.observation_id}.expected.xml'
     mc.write_obs_to_file(arg1, act_fqn)
-    result = compare(ex_fqn, act_fqn)
+    result = compare(ex_fqn, act_fqn, arg1.observation_id)
     if result is not None:
         assert False, result
 
@@ -239,15 +239,14 @@ def mock_repo_update(ignore1):
     return None
 
 
-def compare(ex_fqn, act_fqn):
+def compare(ex_fqn, act_fqn, entry):
     ex = mc.read_obs_from_file(ex_fqn)
     act = mc.read_obs_from_file(act_fqn)
     result = get_differences(ex, act, 'Observation')
     if result:
         result_str = '\n'.join([r for r in result])
-        ex_plane = ex.planes.pop()
         msg = f'Differences found obs id {ex.observation_id} ' \
-              f'file id {ex_plane.product_id} ' \
+              f'file id {entry} ' \
               f'instr {ex.instrument.name}\n{result_str}'
         return msg
     return None

@@ -118,8 +118,10 @@ def test_multi_plane(test_name):
     plugin = PLUGIN
 
     with patch('caom2utils.fits2caom2.CadcDataClient') as data_client_mock, \
-            patch('gem2caom2.external_metadata.get_obs_metadata') as gemini_client_mock, \
-            patch('gem2caom2.external_metadata.get_pi_metadata') as gemini_pi_mock, \
+            patch('gem2caom2.external_metadata.get_obs_metadata') as \
+            gemini_client_mock, \
+            patch('gem2caom2.external_metadata.get_pi_metadata') as \
+            gemini_pi_mock, \
             patch('gem2caom2.svofps.get_vo_table') as svofps_mock:
 
         data_client_mock.return_value.get_file_info.side_effect = \
@@ -140,7 +142,8 @@ def test_multi_plane(test_name):
         print(sys.argv)
         main_app2()
         expected_fqn = '{}/{}/{}.xml'.format(TEST_DATA_DIR, DIR_NAME, obs_id)
-        compare_result = gem_mocks.compare(expected_fqn, actual_fqn)
+        compare_result = gem_mocks.compare(
+            expected_fqn, actual_fqn, obs_id)
         assert compare_result is None, 'compare fail'
         # assert False  # cause I want to see logging messages
 

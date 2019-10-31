@@ -2,7 +2,7 @@
 <caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:CompositeObservation" caom2:id="00000000-0000-0000-8159-e92b43a1a527">
   <caom2:collection>GEMINI</caom2:collection>
   <caom2:observationID>GS-CAL20181219-4-021-G-FLAT</caom2:observationID>
-  <caom2:metaRelease>2018-12-19T00:00:00.000</caom2:metaRelease>
+  <caom2:metaRelease>2018-12-19T00:18:50.300</caom2:metaRelease>
   <caom2:algorithm>
     <caom2:name>composite</caom2:name>
   </caom2:algorithm>
@@ -27,7 +27,7 @@
   <caom2:planes>
     <caom2:plane caom2:id="00000000-0000-0000-a304-32cd23d265a8">
       <caom2:productID>gS20181219S0216_flat</caom2:productID>
-      <caom2:metaRelease>2018-12-19T00:00:00.000</caom2:metaRelease>
+      <caom2:metaRelease>2018-12-19T00:18:50.300</caom2:metaRelease>
       <caom2:dataRelease>2018-12-19T00:00:00.000</caom2:dataRelease>
       <caom2:dataProductType>image</caom2:dataProductType>
       <caom2:calibrationLevel>2</caom2:calibrationLevel>
