@@ -88,7 +88,6 @@ __all__ = ['get_gofr', 'Inst', 'get_obs_metadata', 'get_pi_metadata',
 
 GEMINI_METADATA_URL = \
     'https://archive.gemini.edu/jsonsummary/canonical/filepre='
-GEMINI_FITS_HEADER_URL = 'https://archive.gemini.edu/fullheader/'
 
 # lazy initialization for jsonsummary metadata from Gemini
 om = gom.GeminiObsMetadata()

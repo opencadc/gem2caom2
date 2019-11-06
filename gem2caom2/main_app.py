@@ -111,6 +111,7 @@ from caom2pipe import caom_composable as cc
 from caom2pipe import astro_composable as ac
 
 import gem2caom2.external_metadata as em
+import gem2caom2.obs_file_relationship as ofr
 from gem2caom2.gem_name import GemName, COLLECTION
 from gem2caom2.svofps import FilterMetadata
 
@@ -1055,8 +1056,7 @@ def update(observation, **kwargs):
 
                 caom_name = ec.CaomName(artifact.uri)
                 em.om.reset_index(caom_name.uri)
-                processed = em.GemObsFileRelationship.is_processed(
-                    caom_name.file_name)
+                processed = ofr.is_processed(caom_name.file_name)
                 if (instrument in
                         [em.Inst.MICHELLE, em.Inst.TRECS, em.Inst.GNIRS]):
                     # Michelle is a retired visitor instrument.

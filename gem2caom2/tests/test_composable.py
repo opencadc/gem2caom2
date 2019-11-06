@@ -71,6 +71,7 @@ import logging
 import os
 import pytest
 import shutil
+import sys
 
 from datetime import datetime
 from shutil import copyfile
@@ -79,7 +80,7 @@ import gem_mocks
 
 from caom2pipe import execute_composable as ec
 from caom2pipe import manage_composable as mc
-from gem2caom2 import composable, GemName
+from gem2caom2 import composable, gem_name, main_app, GemName
 
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
 TEST_DATA_DIR = os.path.join(THIS_DIR, 'data')
@@ -258,7 +259,6 @@ def test_run_by_tap_query_rejected_bad_metadata():
             os.unlink(REJECTED_FILE)
 
 
-@patch('sys.exit', Mock(return_value=MyExitError))
 def test_run_by_in_memory_query():
     _write_state('2018-12-19T20:53:16')
     test_obs_id = 'GN-2015A-Q-36-15-001'
@@ -272,10 +272,11 @@ def test_run_by_in_memory_query():
         # execution
         with patch('caom2pipe.execute_composable._do_one') \
                 as run_mock:
-            composable.run_by_in_memory()
+            sys.argv = ['mock']
+            composable._run_by_in_memory()
             assert run_mock.called, 'should have been called'
             args, kwargs = run_mock.call_args
-            assert args[3] == 'gem2caom2', 'wrong command'
+            assert args[3] == main_app.APPLICATION, 'wrong command'
             test_storage = args[2]
             assert isinstance(test_storage, GemName), type(test_storage)
             assert test_storage.obs_id == test_obs_id, 'wrong obs id'
@@ -293,25 +294,32 @@ def test_run_by_in_memory_query():
 
 
 @patch('sys.exit', Mock(return_value=MyExitError))
-@patch('caom2pipe.manage_composable.query_endpoint')
 @patch('caom2pipe.manage_composable.exec_cmd')
 @patch('caom2pipe.execute_composable.CAOM2RepoClient')
 @patch('caom2pipe.execute_composable.CadcDataClient')
-def test_run_by_edu_query(data_client_mock, repo_mock, exec_mock, query_mock):
-    global call_count
-    call_count = 0
+@patch('gem2caom2.scrape.read_json_file_list_page')
+@patch('gem2caom2.external_metadata.get_obs_metadata')
+def test_run_by_builder(obs_md_mock, scrape_mock, data_client_mock,
+                        repo_mock, exec_mock):
     data_client_mock.return_value.get_file_info.side_effect = \
         gem_mocks.mock_get_file_info
     data_client_mock.return_value.get_file.side_effect = Mock()
     exec_mock.side_effect = Mock()
-    query_mock.side_effect = gem_mocks.mock_query_endpoint
     repo_mock.return_value.create.side_effect = gem_mocks.mock_repo_create
     repo_mock.return_value.read.side_effect = gem_mocks.mock_repo_read
     repo_mock.return_value.update.side_effect = gem_mocks.mock_repo_update
 
-    if not os.path.exists('/usr/src/app/logs/GS-2019B-Q-222-181-001.fits.xml'):
-        shutil.copy(f'{TEST_DATA_DIR}/GS-2019B-Q-222-181-001.expected.xml',
-                    '/usr/src/app/logs/GS-2019B-Q-222-181-001.fits.xml')
+    def _scrape_mock(ignore1, ignore2):
+        return gem_mocks.TEST_TODO_LIST
+    scrape_mock.side_effect = _scrape_mock
+
+    obs_md_mock.side_effect = gem_mocks.mock_get_obs_metadata
+
+    if not os.path.exists(
+            f'/usr/src/app/logs/{gem_mocks.TEST_BUILDER_OBS_ID}.fits.xml'):
+        shutil.copy(
+            f'{TEST_DATA_DIR}/expected.xml',
+            f'/usr/src/app/logs/{gem_mocks.TEST_BUILDER_OBS_ID}.fits.xml')
 
     if not os.path.exists('/usr/src/app/cadcproxy.pem'):
         with open('/usr/src/app/cadcproxy.pem', 'w') as f:
@@ -323,33 +331,32 @@ def test_run_by_edu_query(data_client_mock, repo_mock, exec_mock, query_mock):
     os.getcwd = Mock(return_value=f'{TEST_DATA_DIR}/edu_query')
     try:
         # execution
-        test_result = composable._run_by_edu_query()
+        test_result = composable._run_by_builder()
         assert test_result == 0, 'wrong result'
     finally:
         os.getcwd = getcwd_orig
 
     assert repo_mock.return_value.create.called, 'create not called'
     assert repo_mock.return_value.read.called, 'read not called'
-    assert query_mock.called, 'query mock not called'
     assert exec_mock.called, 'exec mock not called'
     param, level_as = ec.CaomExecute._specify_logging_level_param(logging.ERROR)
     exec_mock.assert_called_with(
         ('gem2caom2 --quiet --cert /usr/src/app/cadcproxy.pem '
-         '--observation GEMINI GS-2019B-Q-222-181-001 '
-         '--out /usr/src/app/logs/GS-2019B-Q-222-181-001.fits.xml '
+         '--in /usr/src/app/logs/GN-2019B-ENG-1-160-008.fits.xml '
+         '--out /usr/src/app/logs/GN-2019B-ENG-1-160-008.fits.xml '
          '--external_url '
-         'https://archive.gemini.edu/fullheader/S20191010S0030.fits '
+         'https://archive.gemini.edu/fullheader/N20191101S0007.fits '
          '--plugin '
          '/usr/local/lib/python3.6/site-packages/gem2caom2/gem2caom2.py '
          '--module '
          '/usr/local/lib/python3.6/site-packages/gem2caom2/gem2caom2.py '
-         '--lineage S20191010S0030/gemini:GEM/S20191010S0030.fits'),
+         '--lineage N20191101S0007/gemini:GEM/N20191101S0007.fits'),
         level_as), \
         'exec mock wrong parameters'
-    assert not data_client_mock.return_value.get_file_info.called, \
-        'data client mock get file info should not be called, GemName.fileName' \
-        'should be None'
-    # assert False
+    assert data_client_mock.return_value.get_file_info.called, \
+        'data client mock get file info not called'
+    assert obs_md_mock.called, 'obs mock not called'
+    assert scrape_mock.called, 'scrape mock not called'
 
 
 def _write_todo(test_obs_id):

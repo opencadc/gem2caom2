@@ -76,9 +76,8 @@ from datetime import datetime
 
 from caom2pipe import execute_composable as ec
 from caom2pipe import manage_composable as mc
-from gem2caom2 import APPLICATION, work, preview_augmentation
-from gem2caom2 import pull_augmentation
-from gem2caom2.gem_name import GemName
+from gem2caom2 import main_app, work, preview_augmentation, builder
+from gem2caom2 import pull_augmentation, gem_name
 
 meta_visitors = [preview_augmentation, pull_augmentation]
 data_visitors = []
@@ -93,8 +92,8 @@ def _run():
     """
     config = mc.Config()
     config.get_executors()
-    return ec.run_by_file(config, GemName, APPLICATION, meta_visitors,
-                          data_visitors, chooser=None)
+    return ec.run_by_file(config, gem_name.GemName, main_app.APPLICATION,
+                          meta_visitors, data_visitors, chooser=None)
 
 
 def run():
@@ -126,11 +125,11 @@ def run_single():
         config.proxy = sys.argv[2]
     config.stream = 'default'
     if config.features.use_file_names:
-        storage_name = GemName(file_name=sys.argv[1])
+        storage_name = gem_name.GemName(file_name=sys.argv[1])
     else:
         raise mc.CadcException('No code to handle running GEM by obs id.')
-    result = ec.run_single(config, storage_name, APPLICATION, meta_visitors,
-                           data_visitors)
+    result = ec.run_single(config, storage_name, main_app.APPLICATION,
+                           meta_visitors, data_visitors)
     sys.exit(result)
 
 
@@ -146,8 +145,8 @@ def _run_by_tap_query():
     """
     config = mc.Config()
     config.get_executors()
-    return ec.run_from_state(config, GemName, APPLICATION, meta_visitors,
-                             data_visitors, GEM_BOOKMARK,
+    return ec.run_from_state(config, gem_name.GemName, main_app.APPLICATION,
+                             meta_visitors, data_visitors, GEM_BOOKMARK,
                              work.TapNoPreviewQuery(
                                  _get_utcnow(), config))
 
@@ -173,8 +172,8 @@ def _run_by_in_memory():
     """
     config = mc.Config()
     config.get_executors()
-    return ec.run_from_state(config, GemName, APPLICATION, meta_visitors,
-                             data_visitors, GEM_BOOKMARK,
+    return ec.run_from_state(config, gem_name.GemName, main_app.APPLICATION,
+                             meta_visitors, data_visitors, GEM_BOOKMARK,
                              work.ObsFileRelationshipQuery())
 
 
@@ -202,8 +201,8 @@ def _run_by_public():
     """
     config = mc.Config()
     config.get_executors()
-    return ec.run_from_state(config, GemName, APPLICATION, meta_visitors,
-                             data_visitors, GEM_BOOKMARK,
+    return ec.run_from_state(config, gem_name.GemName, main_app.APPLICATION,
+                             meta_visitors, data_visitors, GEM_BOOKMARK,
                              work.TapRecentlyPublicQuery(
                                  _get_utcnow(), config))
 
@@ -219,86 +218,27 @@ def run_by_public():
         sys.exit(-1)
 
 
-def _run_by_edu_query():
+def _run_by_builder():
     """Run the processing for observations that are posted on the site
-    archive.gemini.edu in the specified interval. The time-boxing is based on
-    timestamps from a state.yml file. Call once/day, since the query can only
-    be done with date values, not time values.
+    archive.gemini.edu.
 
     :return 0 if successful, -1 if there's any sort of failure. Return status
         is used by airflow for task instance management and reporting.
     """
     config = mc.Config()
     config.get_executors()
-    current_work = work.ArchiveGeminiEduQuery(_get_utcnow())
-    result = ec.run_from_storage_name_instance(config, APPLICATION,
-                                               meta_visitors, data_visitors,
-                                               GEM_BOOKMARK, current_work)
-    current_work.check_max_records()
+    state = mc.State(config.state_fqn)
+    last_processed_time = state.get_bookmark(GEM_BOOKMARK)
+    builder_work = work.FileListingQuery(last_processed_time)
+    result = ec.run_by_builder(
+        config, main_app.APPLICATION, GEM_BOOKMARK, meta_visitors,
+        data_visitors, builder_work, builder.EduQueryBuilder(config))
     return result
 
 
-def run_by_edu_query():
+def run_by_builder():
     try:
-        result = _run_by_edu_query()
-        sys.exit(result)
-    except Exception as e:
-        logging.error(e)
-        tb = traceback.format_exc()
-        logging.debug(tb)
-        sys.exit(-1)
-
-
-def _run_by_edu_filepre_query():
-    """Run the processing for observations that are posted on the site
-    archive.gemini.edu in the specified interval. The time-boxing is based on
-    timestamps from a state.yml file. Call once/day, since the query can only
-    be done with date values, not time values. This uses the 'filepre'
-    URL query facility, and should be run only if _run_by_edu_query exceeds
-    it's 2500 query result limit.
-
-    :return 0 if successful, -1 if there's any sort of failure. Return status
-        is used by airflow for task instance management and reporting.
-    """
-    config = mc.Config()
-    config.get_executors()
-    current_work = work.EduQueryFilePre(_get_utcnow())
-    result = ec.run_from_storage_name_instance(
-        config, APPLICATION, meta_visitors, data_visitors, GEM_BOOKMARK,
-        current_work)
-    current_work.check_max_records()
-    return result
-
-
-def run_by_edu_filepre_query():
-    try:
-        result = _run_by_edu_filepre_query()
-        sys.exit(result)
-    except Exception as e:
-        logging.error(e)
-        tb = traceback.format_exc()
-        logging.debug(tb)
-        sys.exit(-1)
-
-
-def _run_direct():
-    """Run the processing for observations that are posted on the site
-    archive.gemini.edu as specified in todo.txt.
-
-    :return 0 if successful, -1 if there's any sort of failure. Return status
-        is used by airflow for task instance management and reporting.
-    """
-    config = mc.Config()
-    config.get_executors()
-    result = ec.run_by_file_storage_name(
-        config, APPLICATION, meta_visitors, data_visitors,
-        work.QueryByFileName(config))
-    return result
-
-
-def run_direct():
-    try:
-        result = _run_direct()
+        result = _run_by_builder()
         sys.exit(result)
     except Exception as e:
         logging.error(e)

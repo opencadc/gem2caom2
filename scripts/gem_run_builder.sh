@@ -9,7 +9,7 @@ echo "Get image ${IMAGE}"
 docker pull ${IMAGE} || exit $?
 
 echo "Run image ${IMAGE}"
-docker run -m=7g --rm --name gem_run_query -v ${PWD}:/usr/src/app/ ${IMAGE} gem_run_direct || exit $?
+docker run -m=7g --rm --name gem_run_builder -v ${PWD}:/usr/src/app/ ${IMAGE} gem_run_builder || exit $?
 
 date
 exit 0

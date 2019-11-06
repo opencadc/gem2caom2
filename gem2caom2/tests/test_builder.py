@@ -66,99 +66,31 @@
 #
 # ***********************************************************************
 #
-import pytest
-
-from gem2caom2 import main_app, gem_name
-from caom2pipe import manage_composable as mc
 
 import os
-import sys
 
-from mock import patch
-import gem_mocks
+from caom2pipe import manage_composable as mc
+from gem2caom2 import builder
 
-pytest.main(args=['-s', os.path.abspath(__file__)])
-
-# structured by observation id, list of file ids that make up a multi-plane
-# observation
-DIR_NAME = 'multi_plane'
-LOOKUP = {'GS-CAL20101028-5-004': ['mrgS20101028S0134', 'S20101028S0134'],
-          'GN-2007B-C-6-5-005': ['TX20071021_RAW.2037', 'TX20071021_SUM.2037'],
-          'TX20170321.2505': ['TX20170321_raw.2505', 'TX20170321_red.2505',
-                              'TX20170321_sum.2505'],
-          'TX20170321.2507': ['TX20170321_raw.2507', 'TX20170321_red.2507'],
-          'GS-2002B-Q-22-13-0161': ['2002dec02_0161',
-                                    'P2002DEC02_0161_SUB.0001',
-                                    'P2002DEC02_0161_SUB'],
-          'GN-2015B-Q-1-12-1003': ['N20150807G0044', 'N20150807G0044i',
-                                   'N20150807G0044m'],
-          'GN-2012A-Q-124-1-003': ['N20120905S0122', 'N20120905S0122_arc'],
-          'GS-2006A-Q-60-11-001': ['S20060412S0056', 'rS20060412S0056']
-          }
+from mock import Mock, patch
+import gem_mocks as gm
 
 
-def pytest_generate_tests(metafunc):
-    obs_id_list = []
-    for ii in LOOKUP:
-        obs_id_list.append(ii)
-    metafunc.parametrize('test_name', obs_id_list)
-
-
-def test_multi_plane(test_name):
-    obs_id = test_name
-    lineage = _get_lineage(obs_id)
-    input_file = '{}/{}/{}.in.xml'.format(
-        gem_mocks.TEST_DATA_DIR, DIR_NAME, obs_id)
-    actual_fqn = '{}/{}/{}.actual.xml'.format(
-        gem_mocks.TEST_DATA_DIR, DIR_NAME, obs_id)
-
-    local = _get_local(test_name)
-    plugin = gem_mocks.PLUGIN
-
-    with patch('caom2utils.fits2caom2.CadcDataClient') as data_client_mock, \
-            patch('gem2caom2.external_metadata.get_obs_metadata') as \
-            gemini_client_mock, \
-            patch('gem2caom2.external_metadata.get_pi_metadata') as \
-            gemini_pi_mock, \
-            patch('gem2caom2.svofps.get_vo_table') as svofps_mock:
-
-        data_client_mock.return_value.get_file_info.side_effect = \
-            gem_mocks.mock_get_file_info
-        gemini_client_mock.side_effect = gem_mocks.mock_get_obs_metadata
-        gemini_pi_mock.side_effect = gem_mocks.mock_get_pi_metadata
-        svofps_mock.side_effect = gem_mocks.mock_get_votable
-
-        if os.path.exists(actual_fqn):
-            os.remove(actual_fqn)
-
-        sys.argv = \
-            ('{} --quiet --no_validate --local {} '
-             '--plugin {} --module {} --in {} --out {} --lineage {}'.
-             format(main_app.APPLICATION, local, plugin, plugin,
-                    input_file, actual_fqn, lineage)).split()
-        print(sys.argv)
-        main_app.main_app2()
-        expected_fqn = '{}/{}/{}.xml'.format(
-            gem_mocks.TEST_DATA_DIR, DIR_NAME, obs_id)
-        compare_result = gem_mocks.compare(
-            expected_fqn, actual_fqn, obs_id)
-        assert compare_result is None, 'compare fail'
-        # assert False  # cause I want to see logging messages
-
-
-def _get_lineage(obs_id):
-    result = ''
-    for ii in LOOKUP[obs_id]:
-        fits = mc.get_lineage(gem_name.ARCHIVE, ii, '{}.fits'.format(ii),
-                              gem_name.SCHEME)
-        result = '{} {}'.format(result, fits)
-    return result
-
-
-def _get_local(obs_id):
-    result = ''
-    for ii in LOOKUP[obs_id]:
-        result = '{} {}/{}/{}.fits.header'.format(result,
-                                                  gem_mocks.TEST_DATA_DIR,
-                                                  DIR_NAME, ii)
-    return result
+@patch('gem2caom2.external_metadata.get_obs_metadata')
+def test_edu_query_builder(em_om_mock):
+    em_om_mock.side_effect = gm.mock_get_obs_metadata
+    getcwd_orig = os.getcwd
+    os.getcwd = Mock(return_value=gm.TEST_DATA_DIR)
+    try:
+        test_config = mc.Config()
+        test_config.get_executors()
+        test_subject = builder.EduQueryBuilder(test_config)
+        test_subject.todo_list = gm.TEST_TODO_LIST
+        test_result = test_subject.build('N20191101S0002.fits')
+        assert test_result is not None, 'expected a result'
+        assert test_result.file_name == 'N20191101S0002.fits', 'wrong file name'
+        assert test_result.obs_id == 'GN-2019B-ENG-1-160-003', 'wrong obs id'
+        assert test_result.last_modified_s == 1572566500.951468, \
+            'wrong last modified'
+    finally:
+        os.getcwd = getcwd_orig

@@ -66,99 +66,58 @@
 #
 # ***********************************************************************
 #
-import pytest
 
-from gem2caom2 import main_app, gem_name
+import logging
+
+from astropy.table import Table
+from collections import OrderedDict
+from datetime import datetime
+
 from caom2pipe import manage_composable as mc
 
-import os
-import sys
 
-from mock import patch
-import gem_mocks
-
-pytest.main(args=['-s', os.path.abspath(__file__)])
-
-# structured by observation id, list of file ids that make up a multi-plane
-# observation
-DIR_NAME = 'multi_plane'
-LOOKUP = {'GS-CAL20101028-5-004': ['mrgS20101028S0134', 'S20101028S0134'],
-          'GN-2007B-C-6-5-005': ['TX20071021_RAW.2037', 'TX20071021_SUM.2037'],
-          'TX20170321.2505': ['TX20170321_raw.2505', 'TX20170321_red.2505',
-                              'TX20170321_sum.2505'],
-          'TX20170321.2507': ['TX20170321_raw.2507', 'TX20170321_red.2507'],
-          'GS-2002B-Q-22-13-0161': ['2002dec02_0161',
-                                    'P2002DEC02_0161_SUB.0001',
-                                    'P2002DEC02_0161_SUB'],
-          'GN-2015B-Q-1-12-1003': ['N20150807G0044', 'N20150807G0044i',
-                                   'N20150807G0044m'],
-          'GN-2012A-Q-124-1-003': ['N20120905S0122', 'N20120905S0122_arc'],
-          'GS-2006A-Q-60-11-001': ['S20060412S0056', 'rS20060412S0056']
-          }
+JSON_FILE_LIST = \
+    'https://archive.gemini.edu/jsonfilelist/notengineering/NotFail/filepre='
 
 
-def pytest_generate_tests(metafunc):
-    obs_id_list = []
-    for ii in LOOKUP:
-        obs_id_list.append(ii)
-    metafunc.parametrize('test_name', obs_id_list)
+def read_json_file_list_page(start_time_s, end_time_s):
+    file_names = {}
+    date_str = datetime.fromtimestamp(start_time_s).strftime('%Y%m%d')
+    for telescope_str in ['S', 'N']:
+        file_list_url = f'{JSON_FILE_LIST}{telescope_str}{date_str}/'
+        logging.debug('Querying {}'.format(file_list_url))
+        response = None
+        try:
+            response = mc.query_endpoint(file_list_url)
+            if response is None:
+                logging.warning(
+                    'Could not query {}'.format(file_list_url))
+            else:
+                temp = parse_json_file_list(response.text, end_time_s)
+                temp_file_names = file_names
+                file_names = {**temp, **temp_file_names}
+                response.close()
+        finally:
+            if response is not None:
+                response.close()
+    # order the list of work to be done by time
+    ordered_file_names = OrderedDict(file_names.items())
+    return ordered_file_names
 
 
-def test_multi_plane(test_name):
-    obs_id = test_name
-    lineage = _get_lineage(obs_id)
-    input_file = '{}/{}/{}.in.xml'.format(
-        gem_mocks.TEST_DATA_DIR, DIR_NAME, obs_id)
-    actual_fqn = '{}/{}/{}.actual.xml'.format(
-        gem_mocks.TEST_DATA_DIR, DIR_NAME, obs_id)
+def parse_json_file_list(json_string, end_time_s):
+    work_list = {}
+    # column 0 == last mod
+    # column 1 == file name
+    temp = Table.read(json_string, format='pandas.json')
+    work_list_array = temp.as_array(names=[temp.colnames[0], temp.colnames[1]])
 
-    local = _get_local(test_name)
-    plugin = gem_mocks.PLUGIN
+    for entry in work_list_array:
+        # e.g. 2019-11-01 00:01:34.610517+00:00, and yes, I know about %z
+        entry_ts_s = datetime.strptime(entry[0].replace('+00:00', ''),
+                                       '%Y-%m-%d %H:%M:%S.%f').timestamp()
+        if entry_ts_s <= end_time_s:
+            logging.debug(f'Adding {entry[1]} to work list.')
+            work_list[entry_ts_s] = entry[1]
 
-    with patch('caom2utils.fits2caom2.CadcDataClient') as data_client_mock, \
-            patch('gem2caom2.external_metadata.get_obs_metadata') as \
-            gemini_client_mock, \
-            patch('gem2caom2.external_metadata.get_pi_metadata') as \
-            gemini_pi_mock, \
-            patch('gem2caom2.svofps.get_vo_table') as svofps_mock:
-
-        data_client_mock.return_value.get_file_info.side_effect = \
-            gem_mocks.mock_get_file_info
-        gemini_client_mock.side_effect = gem_mocks.mock_get_obs_metadata
-        gemini_pi_mock.side_effect = gem_mocks.mock_get_pi_metadata
-        svofps_mock.side_effect = gem_mocks.mock_get_votable
-
-        if os.path.exists(actual_fqn):
-            os.remove(actual_fqn)
-
-        sys.argv = \
-            ('{} --quiet --no_validate --local {} '
-             '--plugin {} --module {} --in {} --out {} --lineage {}'.
-             format(main_app.APPLICATION, local, plugin, plugin,
-                    input_file, actual_fqn, lineage)).split()
-        print(sys.argv)
-        main_app.main_app2()
-        expected_fqn = '{}/{}/{}.xml'.format(
-            gem_mocks.TEST_DATA_DIR, DIR_NAME, obs_id)
-        compare_result = gem_mocks.compare(
-            expected_fqn, actual_fqn, obs_id)
-        assert compare_result is None, 'compare fail'
-        # assert False  # cause I want to see logging messages
-
-
-def _get_lineage(obs_id):
-    result = ''
-    for ii in LOOKUP[obs_id]:
-        fits = mc.get_lineage(gem_name.ARCHIVE, ii, '{}.fits'.format(ii),
-                              gem_name.SCHEME)
-        result = '{} {}'.format(result, fits)
-    return result
-
-
-def _get_local(obs_id):
-    result = ''
-    for ii in LOOKUP[obs_id]:
-        result = '{} {}/{}/{}.fits.header'.format(result,
-                                                  gem_mocks.TEST_DATA_DIR,
-                                                  DIR_NAME, ii)
-    return result
+    return work_list

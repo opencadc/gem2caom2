@@ -69,19 +69,16 @@
 
 import logging
 
+from collections import OrderedDict
 from datetime import datetime
-
-from astropy.table import Table
 
 from caom2pipe import astro_composable as ac
 from caom2pipe import manage_composable as mc
 
-import gem2caom2.external_metadata as em
-import gem2caom2.gem_name as gem_name
-import gem2caom2.obs_file_relationship as ofr
+from gem2caom2 import scrape, external_metadata
 
-__all__ = ['TapNoPreviewQuery', 'ObsFileRelationshipQuery',
-           'ArchiveGeminiEduQuery', 'EduQueryFilePre']
+__all__ = ['TapNoPreviewQuery', 'TapRecentlyPublicQuery',
+           'ObsFileRelationshipQuery', 'FileListingQuery']
 
 # See the definition of 'canonical' here, for why it matters in the URL:
 # https://archive.gemini.edu/help/api.html
@@ -184,7 +181,7 @@ class TapRecentlyPublicQuery(mc.Work):
 class ObsFileRelationshipQuery(mc.Work):
 
     def __init__(self):
-        max_ts_s = em.get_gofr().get_max_timestamp()
+        max_ts_s = external_metadata.get_gofr().get_max_timestamp()
         super(ObsFileRelationshipQuery, self).__init__(max_ts_s)
 
     def todo(self, prev_exec_date, exec_date):
@@ -196,7 +193,7 @@ class ObsFileRelationshipQuery(mc.Work):
         :param exec_date datetime end of the timestamp chunk
         :return: a list of CAOM Observation IDs.
         """
-        subset = em.get_gofr().subset(prev_exec_date, exec_date)
+        subset = external_metadata.get_gofr().subset(prev_exec_date, exec_date)
         # subset entries look like:
         # GEMINI OBSID TIMESTAMP
         # so extract the OBSID value
@@ -209,186 +206,74 @@ class ObsFileRelationshipQuery(mc.Work):
         pass
 
 
-class ArchiveGeminiEduQuery(mc.Work):
-
-    def __init__(self, max_ts):
-        super(ArchiveGeminiEduQuery, self).__init__(max_ts.timestamp())
-        self._current_work_list = None
-        self._pofr = None
-        self._encountered_max_records = False
-
-    def todo(self, prev_exec_date, exec_date):
-        """
-        Get the set of observation IDs by querying archive.gemini.edu. The
-        results are chunked by timestamps.
-
-        :param prev_exec_date datetime start of the timestamp chunk
-        :param exec_date datetime end of the timestamp chunk
-        :return: a list of GemName instances, where GemName is an
-            extension of ec.StorageName
-        """
-        # queries that includes times are not supported, so strip that
-        # information from the query URL
-        date_str = datetime.strftime(prev_exec_date, '%Y%m%d')
-        obs_ids = {}
-        ssummary_url = f'{GEMINI_SSUMMARY_DATA}/{date_str}/'
-        logging.debug('Querying {}'.format(ssummary_url))
-        response = None
-        try:
-            response = mc.query_endpoint(ssummary_url)
-            if response is None:
-                logging.warning(
-                    'Could not query {}'.format(ssummary_url))
-            else:
-                obs_ids, max_date = self.parse_ssummary_page(
-                    response.text, prev_exec_date, exec_date)
-                response.close()
-        finally:
-            if response is not None:
-                response.close()
-
-        self._set_current_work_list(obs_ids)
-        # return type is a list
-        return [obs_ids[ii] for ii in obs_ids]
-
-    def initialize(self):
-        em.set_ofr(self._pofr)
-
-    def _set_current_work_list(self, obs_ids):
-        self._current_work_list = obs_ids
-        self._pofr = ofr.PartialObsFileRelationship(self._current_work_list,
-                                                    self.max_ts_s)
-        for key, value in obs_ids.items():
-            value.set_partial_args(self._pofr)
-
-    def check_max_records(self):
-        if self._encountered_max_records:
-            # retrieved the maximum number of rows - need to try to back-fill
-            raise mc.CadcException(
-                'Retrieved the maximum number of query rows from '
-                'archive.gemini.edu. Run gem_run_edu_filepre_query.')
-
-    def parse_ssummary_page(self, html_string, start_date, end_date):
-        """Parse the html returned from archive.gemini.edu.
-
-        :param html_string - response.text
-        :param start_date datetime.datetime
-        :param end_date datetime.datetime
-        :return list of GemName instances for processing, plus the max
-            last modified time of the files associated with the StorageName
-            instances. A GemName instance captures the relationship
-            between a file name and an observation ID.
-        """
-        work_list = {}
-        max_date = start_date
-        # column 0 == file name
-        # column 1 == data label
-        # column 2 == last modified
-        if (html_string is not None and len(html_string) > 0 and
-                'Your search returned no results' not in html_string):
-            temp = Table.read(html_string, format='html')
-            work_list_array = temp.as_array(
-                names=[temp.colnames[0], temp.colnames[1], temp.colnames[2]])
-
-            # make StorageName instances
-            for ii in work_list_array:
-                file_id = gem_name.GemName.remove_extensions(
-                    ii[0].replace('-md!', '').replace('-fits!', ''))
-                file_time = datetime.strptime(ii[2], '%Y-%m-%d %H:%M:%S')
-                if start_date < file_time <= end_date:
-                    logging.debug(
-                        f'Adding {file_id} with timestamp {file_time} to list.')
-                    storage_name = gem_name.GemName(
-                        obs_id=ii[1], file_id=file_id)
-                    work_list[file_id] = storage_name
-                    max_date = max(max_date, file_time)
-
-        if (html_string is not None and
-                'search generated more than the limit of 2500' in html_string):
-            self._encountered_max_records = True
-        return work_list, max_date
-
-
-class EduQueryFilePre(mc.Work):
-
-    def __init__(self, max_ts):
-        super(EduQueryFilePre, self).__init__(max_ts.timestamp())
-        self._current_work_list = None
-        self._pofr = None
-
-    def todo(self, prev_exec_date, exec_date):
-        """
-        Get the set of observation IDs by querying archive.gemini.edu. The
-        results are chunked by timestamps. This class also chunks by
-        filename prefix, in case the original query for the day exceeds
-        the current limit of records retrieved (2500).
-
-        :param prev_exec_date datetime start of the timestamp chunk
-        :param exec_date datetime end of the timestamp chunk
-        :return: a list of GemName instances, where GemName is an
-            extension of ec.StorageName
-        """
-        # queries that includes times are not supported, so strip that
-        # information from the query URL
-        date_str = datetime.strftime(prev_exec_date, '%Y%m%d')
-        obs_ids = {}
-        for ii in range(0, 10):
-            for prefix in ['S', 'N']:
-                ssummary_url = f'{GEMINI_SSUMMARY_DATA}/{date_str}/' \
-                               f'filepre={prefix}{date_str}S{ii}'
-                logging.debug('Querying {}'.format(ssummary_url))
-                response = None
-                try:
-                    response = mc.query_endpoint(ssummary_url)
-                    if response is None:
-                        logging.warning(
-                            'Could not query {}'.format(ssummary_url))
-                    else:
-                        temp, max_date = self.parse_ssummary_page(
-                                response.text, prev_exec_date, exec_date)
-                        response.close()
-                        temp_obs_ids = obs_ids
-                        obs_ids = {**temp, **temp_obs_ids}
-                finally:
-                    if response is not None:
-                        response.close()
-
-        self._set_current_work_list(obs_ids)
-        return [obs_ids[ii] for ii in obs_ids]
-
-
-class QueryByFileName(mc.Work):
+class FileListingQuery(mc.Work):
     """
-    Get the file metadata by querying archive.gemini.edu. The set of input
-    work is identified by the content of the todo.txt file, and the content
-    of that file is expected to be file ids (i.e. no fits extension).
+    Get the set of file ids to process by querying archive.gemini.edu.
+
+    Time-based querying of that site is limited to either a single UT Date, or
+    a UT Date Range.
+
+    The site also modifies files during post-processing, so querying a
+    particular UT Date at one point in time is not guaranteed to return the
+    same results as querying that same UT Date at a later point in time.
+
+    This class attempts to deal with these two issues by querying from
+    'now - 14 days' to 'now', and identifying for processing the files that
+    have last modified timestamps greater than the bookmarked last processed
+    time, as stored in the state file.
     """
 
-    def __init__(self, config):
-        super(QueryByFileName, self).__init__(datetime.utcnow().timestamp())
-        self._config = config
-        self._work_list = {}
-
-    def initialize(self):
-        file_ids = []
-        with open(self._config.work_fqn) as f:
-            for line in f:
-                file_ids.append(line.strip())
-        # first, initialize the list of StorageName instances with obs ids and
-        # file ids
-        for f_id in file_ids:
-            em.get_obs_metadata(f_id)
-            storage_name = gem_name.GemName(
-                obs_id=em.om.get('data_label'), file_id=f_id)
-            self._work_list[f_id] = storage_name
-
-        # second, get the lineage and external urls information for each of
-        # the storage name instances
-        pofr = ofr.PartialObsFileRelationship(self._work_list,
-                                              self.max_ts_s)
-        for key, value in self._work_list.items():
-            value.set_partial_args(pofr)
-        em.set_ofr(pofr)
+    def __init__(self, last_processed_time):
+        # last_processed_time is a datetime.datetime
+        self._last_processed_time = last_processed_time
+        self._max_records_encountered = False
+        self._max_ts_s = datetime.utcnow().timestamp()
 
     def todo(self):
-        return self._work_list.values()
+        # now decide on a timestamp for when to start ingestion
+        # for this attempt, say 14 days prior to the last ingestion
+        # timestamp - WAG
+        now = datetime.utcnow()
+        start_time_ts = self._last_processed_time.timestamp() - 14 * 1440 * 60
+
+        # this list of work is the query for the day, where there are no time
+        # considerations, because they is no accurate timestamp information
+        # to be had from the summary pages
+
+        prev_exec_time_ts = start_time_ts
+        # work in intervals of days, because those are the units of query from
+        # archive.gemini.edu
+        exec_time_ts = min(
+            mc.increment_time(prev_exec_time_ts, 1440).timestamp(),
+            self._max_ts_s)
+
+        entries = {}  # dict - keys are last modified, file names are value
+        logging.info(f'Querying archive.gemini.edu from '
+                     f'{self._last_processed_time} to {now}')
+        if prev_exec_time_ts < self._max_ts_s:
+            while exec_time_ts <= self._max_ts_s:
+                logging.debug(f'Checking time-box from '
+                              f'{datetime.fromtimestamp(prev_exec_time_ts)} to '
+                              f'{datetime.fromtimestamp(exec_time_ts)}')
+                temp = scrape.read_json_file_list_page(
+                    prev_exec_time_ts, exec_time_ts)
+                if len(temp) == 2500:
+                    self._max_records_encountered = True
+                temp_entries = entries
+                entries = {**temp, **temp_entries}
+
+                if exec_time_ts == self._max_ts_s:
+                    break
+
+                prev_exec_time_ts = exec_time_ts
+                exec_time_ts = min(
+                    mc.increment_time(prev_exec_time_ts, 1440).timestamp(),
+                    self._max_ts_s)
+
+                # TODO - size and metadata checks, to see if those have
+                # changed, before adding an entry to the todo list
+                # no work has been done yet, so don't save any state anywhere
+
+        ordered_file_names = OrderedDict(entries.items())
+        logging.info(f'Found {len(ordered_file_names)} entries to process.')
+        return ordered_file_names
