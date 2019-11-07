@@ -76,8 +76,12 @@ from datetime import datetime
 from caom2pipe import manage_composable as mc
 
 
+__all__ = ['read_json_file_list_page', 'parse_json_file_list', 'find_direct']
+
 JSON_FILE_LIST = \
     'https://archive.gemini.edu/jsonfilelist/notengineering/NotFail/filepre='
+JSON_METADATA = \
+    'https://archive.gemini.edu/jsonsummary/canonical/notengineering/NotFail/'
 
 
 def read_json_file_list_page(start_time_s, end_time_s):
@@ -121,3 +125,21 @@ def parse_json_file_list(json_string, end_time_s):
             work_list[entry_ts_s] = entry[1]
 
     return work_list
+
+
+def find_direct(data_label):
+    metadata = None
+    data_label_url = f'{JSON_METADATA}{data_label}'
+    logging.debug(f'Querying {data_label_url}')
+    response = None
+    try:
+        response = mc.query_endpoint(data_label_url)
+        if response is None:
+            logging.warning(f'Could not query {data_label_url}')
+        else:
+            metadata = response.json()
+            response.close()
+    finally:
+        if response is not None:
+            response.close()
+    return metadata

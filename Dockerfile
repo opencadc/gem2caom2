@@ -17,7 +17,8 @@ RUN pip install cadcdata && \
 
 WORKDIR /usr/src/app
 
-RUN pip install bs4
+RUN pip install bs4 && \
+    pip install pandas
 
 RUN apk --no-cache add imagemagick
 

@@ -67,12 +67,14 @@
 # ***********************************************************************
 #
 
+import json
 import logging
 import os
 import pytest
 import shutil
 import sys
 
+from astropy.table import Column, Table
 from datetime import datetime
 from shutil import copyfile
 from mock import patch, Mock
@@ -80,15 +82,13 @@ import gem_mocks
 
 from caom2pipe import execute_composable as ec
 from caom2pipe import manage_composable as mc
-from gem2caom2 import composable, gem_name, main_app, GemName
+from gem2caom2 import composable, main_app, gem_name
 
-THIS_DIR = os.path.dirname(os.path.realpath(__file__))
-TEST_DATA_DIR = os.path.join(THIS_DIR, 'data')
 STATE_FILE = '/usr/src/app/state.yml'
 TODO_FILE = '/usr/src/app/todo.txt'
 REJECTED_FILE = '/usr/src/app/logs/rejected.yml'
 PROGRESS_FILE = '/usr/src/app/logs/progress.txt'
-
+PUBLIC_TEST_JSON = f'{gem_mocks.TEST_DATA_DIR}/json/GN-2019B-ENG-1-160-008.json'
 
 class MyExitError(Exception):
     pass
@@ -96,7 +96,7 @@ class MyExitError(Exception):
 
 @pytest.fixture(scope='session', autouse=True)
 def write_gemini_data_file():
-    copyfile(os.path.join(TEST_DATA_DIR, 'from_paul.txt'),
+    copyfile(os.path.join(gem_mocks.TEST_DATA_DIR, 'from_paul.txt'),
              '/app/data/from_paul.txt')
 
 
@@ -106,7 +106,7 @@ def test_run_by_tap_query():
     _write_state()
 
     getcwd_orig = os.getcwd
-    os.getcwd = Mock(return_value=TEST_DATA_DIR)
+    os.getcwd = Mock(return_value=gem_mocks.TEST_DATA_DIR)
 
     try:
         # execution
@@ -128,7 +128,7 @@ def test_run():
     test_f_id = '2004may19_0255'
     _write_todo(test_obs_id)
     getcwd_orig = os.getcwd
-    os.getcwd = Mock(return_value=TEST_DATA_DIR)
+    os.getcwd = Mock(return_value=gem_mocks.TEST_DATA_DIR)
     try:
         # execution
         with patch('caom2pipe.execute_composable._do_one') \
@@ -138,7 +138,8 @@ def test_run():
             args, kwargs = run_mock.call_args
             assert args[3] == 'gem2caom2', 'wrong command'
             test_storage = args[2]
-            assert isinstance(test_storage, GemName), type(test_storage)
+            assert isinstance(
+                test_storage, gem_name.GemName), type(test_storage)
             assert test_storage.obs_id == test_obs_id, 'wrong obs id'
             assert test_storage.file_name is None, 'wrong file name'
             assert test_storage.fname_on_disk is None, 'wrong fname on disk'
@@ -164,7 +165,7 @@ def test_run_errors():
     test_f_id = 'TX20131117_flt.3002'
     _write_todo(test_obs_id)
     getcwd_orig = os.getcwd
-    os.getcwd = Mock(return_value=TEST_DATA_DIR)
+    os.getcwd = Mock(return_value=gem_mocks.TEST_DATA_DIR)
     try:
         # execution
         with patch('caom2pipe.execute_composable._do_one') \
@@ -174,7 +175,8 @@ def test_run_errors():
             args, kwargs = run_mock.call_args
             assert args[3] == 'gem2caom2', 'wrong command'
             test_storage = args[2]
-            assert isinstance(test_storage, GemName), type(test_storage)
+            assert isinstance(
+                test_storage, gem_name.GemName), type(test_storage)
             assert test_storage.obs_id == test_obs_id, 'wrong obs id'
             assert test_storage.file_name is None, 'wrong file name'
             assert test_storage.fname_on_disk is None, 'wrong fname on disk'
@@ -195,7 +197,7 @@ def test_run_by_tap_query_2():
     test_f_id = 'S20170905S0318'
     _write_state()
     getcwd_orig = os.getcwd
-    os.getcwd = Mock(return_value=TEST_DATA_DIR)
+    os.getcwd = Mock(return_value=gem_mocks.TEST_DATA_DIR)
     try:
         # execution
         with patch('caom2pipe.execute_composable._do_one') as run_mock, \
@@ -206,7 +208,7 @@ def test_run_by_tap_query_2():
             args, kwargs = run_mock.call_args
             assert args[3] == 'gem2caom2', 'wrong command'
             test_storage = args[2]
-            assert isinstance(test_storage, GemName), type(test_storage)
+            assert isinstance(test_storage, gem_name.GemName), type(test_storage)
             assert test_storage.obs_id == test_obs_id, 'wrong obs id'
             assert test_storage.file_name is None, 'wrong file name'
             assert test_storage.fname_on_disk is None, 'wrong fname on disk'
@@ -239,7 +241,7 @@ def test_run_by_tap_query_rejected_bad_metadata():
         os.unlink(PROGRESS_FILE)
 
     getcwd_orig = os.getcwd
-    os.getcwd = Mock(return_value=TEST_DATA_DIR)
+    os.getcwd = Mock(return_value=gem_mocks.TEST_DATA_DIR)
     try:
         # execution
         with patch('gem2caom2.work.TapNoPreviewQuery') as query_mock:
@@ -267,7 +269,7 @@ def test_run_by_in_memory_query():
         os.unlink(TODO_FILE)
 
     getcwd_orig = os.getcwd
-    os.getcwd = Mock(return_value=TEST_DATA_DIR)
+    os.getcwd = Mock(return_value=gem_mocks.TEST_DATA_DIR)
     try:
         # execution
         with patch('caom2pipe.execute_composable._do_one') \
@@ -278,7 +280,7 @@ def test_run_by_in_memory_query():
             args, kwargs = run_mock.call_args
             assert args[3] == main_app.APPLICATION, 'wrong command'
             test_storage = args[2]
-            assert isinstance(test_storage, GemName), type(test_storage)
+            assert isinstance(test_storage, gem_name.GemName), type(test_storage)
             assert test_storage.obs_id == test_obs_id, 'wrong obs id'
             assert test_storage.file_name is None, 'wrong file name'
             assert test_storage.fname_on_disk is None, 'wrong fname on disk'
@@ -318,7 +320,7 @@ def test_run_by_builder(obs_md_mock, scrape_mock, data_client_mock,
     if not os.path.exists(
             f'/usr/src/app/logs/{gem_mocks.TEST_BUILDER_OBS_ID}.fits.xml'):
         shutil.copy(
-            f'{TEST_DATA_DIR}/expected.xml',
+            f'{gem_mocks.TEST_DATA_DIR}/expected.xml',
             f'/usr/src/app/logs/{gem_mocks.TEST_BUILDER_OBS_ID}.fits.xml')
 
     if not os.path.exists('/usr/src/app/cadcproxy.pem'):
@@ -328,7 +330,7 @@ def test_run_by_builder(obs_md_mock, scrape_mock, data_client_mock,
     prior_s = datetime.utcnow().timestamp() - 1440 * 60
     _write_state(prior_s)
     getcwd_orig = os.getcwd
-    os.getcwd = Mock(return_value=f'{TEST_DATA_DIR}/edu_query')
+    os.getcwd = Mock(return_value=f'{gem_mocks.TEST_DATA_DIR}/edu_query')
     try:
         # execution
         test_result = composable._run_by_builder()
@@ -356,6 +358,85 @@ def test_run_by_builder(obs_md_mock, scrape_mock, data_client_mock,
     assert data_client_mock.return_value.get_file_info.called, \
         'data client mock get file info not called'
     assert obs_md_mock.called, 'obs mock not called'
+    assert scrape_mock.called, 'scrape mock not called'
+
+
+@patch('sys.exit', Mock(return_value=MyExitError))
+@patch('caom2pipe.manage_composable.exec_cmd')
+@patch('caom2pipe.execute_composable.CAOM2RepoClient')
+@patch('caom2pipe.execute_composable.CadcDataClient')
+@patch('caom2pipe.astro_composable.query_tap')
+@patch('caom2pipe.manage_composable.query_endpoint')
+def test_run_by_public(scrape_mock, tap_mock, data_client_mock,
+                       repo_mock, exec_mock):
+    data_client_mock.return_value.get_file_info.side_effect = \
+        gem_mocks.mock_get_file_info
+    data_client_mock.return_value.get_file.side_effect = Mock()
+    exec_mock.side_effect = Mock()
+    repo_mock.return_value.create.side_effect = gem_mocks.mock_repo_create
+    repo_mock.return_value.read.side_effect = gem_mocks.mock_repo_read
+    repo_mock.return_value.update.side_effect = gem_mocks.mock_repo_update
+
+    def _tap_mock(ignore1, ignore2):
+        c = Column(name='observationID', data=['GN-2019B-ENG-1-160-008'])
+        t = Table()
+        t.add_column(c)
+        return t
+    tap_mock.side_effect = _tap_mock
+
+    def _scrape_mock(ignore1):
+        result = gem_mocks.Object()
+
+        def _mock_json_return():
+            with open(PUBLIC_TEST_JSON) as f:
+                stuff = json.loads(f.read())
+            return stuff
+        result.json = _mock_json_return
+
+        return result
+    scrape_mock.side_effect = _scrape_mock
+
+    if not os.path.exists(
+            f'/usr/src/app/logs/{gem_mocks.TEST_BUILDER_OBS_ID}.fits.xml'):
+        shutil.copy(
+            f'{gem_mocks.TEST_DATA_DIR}/expected.xml',
+            f'/usr/src/app/logs/{gem_mocks.TEST_BUILDER_OBS_ID}.fits.xml')
+
+    if not os.path.exists('/usr/src/app/cadcproxy.pem'):
+        with open('/usr/src/app/cadcproxy.pem', 'w') as f:
+            f.write('cadc proxy content')
+
+    prior_s = datetime.utcnow().timestamp() - 1440 * 60
+    _write_state(prior_s)
+    getcwd_orig = os.getcwd
+    os.getcwd = Mock(return_value=f'{gem_mocks.TEST_DATA_DIR}/edu_query')
+    try:
+        # execution
+        test_result = composable._run_by_public()
+        assert test_result == 0, 'wrong result'
+    finally:
+        os.getcwd = getcwd_orig
+
+    assert repo_mock.return_value.update.called, 'update not called'
+    assert repo_mock.return_value.read.called, 'read not called'
+    assert exec_mock.called, 'exec mock not called'
+    param, level_as = ec.CaomExecute._specify_logging_level_param(logging.ERROR)
+    exec_mock.assert_called_with(
+        ('gem2caom2 --quiet --cert /usr/src/app/cadcproxy.pem '
+         '--in /usr/src/app/logs/GN-2019B-ENG-1-160-008.fits.xml '
+         '--out /usr/src/app/logs/GN-2019B-ENG-1-160-008.fits.xml '
+         '--external_url '
+         'https://archive.gemini.edu/fullheader/N20191101S0007.fits '
+         '--plugin '
+         '/usr/local/lib/python3.6/site-packages/gem2caom2/gem2caom2.py '
+         '--module '
+         '/usr/local/lib/python3.6/site-packages/gem2caom2/gem2caom2.py '
+         '--lineage N20191101S0007/gemini:GEM/N20191101S0007.fits'),
+        level_as), \
+        'exec mock wrong parameters'
+    assert not data_client_mock.return_value.get_file_info.called, \
+        'data client mock get file info should not be called, file_name is None'
+    assert tap_mock.called, 'tap mock not called'
     assert scrape_mock.called, 'scrape mock not called'
 
 

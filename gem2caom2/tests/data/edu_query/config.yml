@@ -2,7 +2,7 @@ working_directory: /usr/src/app/
 # test value is ivo://cadc.nrc.ca/sc2repo
 resource_id: ivo://cadc.nrc.ca/sc2repo
 # test value is ivo://cadc.nrc.ca/sc2tap
-tap_id: ivo://cadc.nrc.ca/sc2repo
+tap_id: ivo://cadc.nrc.ca/sc2tap
 proxy_file_name: /usr/src/app/cadcproxy.pem
 todo_file_name: todo.txt
 # values True False

@@ -66,14 +66,15 @@
 #
 # ***********************************************************************
 #
+
+import logging
+
 from caom2pipe import manage_composable as mc
 from caom2pipe import execute_composable as ec
 
 from gem2caom2 import external_metadata as em
 from gem2caom2 import obs_file_relationship as ofr
-
-
-import logging
+from gem2caom2 import scrape
 
 
 __all__ = ['GemName', 'COLLECTION', 'ARCHIVE', 'SCHEME', 'GemNameBuilder']
@@ -167,10 +168,34 @@ class GemName(ec.StorageName):
                 self._obs_id = temp[0].obs_id.split()[1]
             else:
                 if len(temp) == 0:
-                    logging.error('length is 0')
                     if self._file_id is None:
-                        raise mc.CadcException(
-                            'obs id {} unknown at Gemini'.format(self._obs_id))
+                        logging.warning(
+                            f'Try a direct query for {self._obs_id}')
+                        metadata = scrape.find_direct(self._obs_id)
+                        if metadata is None:
+                            raise mc.CadcException(
+                                'obs id {} unknown at Gemini'.format(
+                                    self._obs_id))
+                        else:
+                            # assume filename from 0th entry, which
+                            # should be ok, since the external urls and
+                            # lineage will use all file names present
+                            # in the returned metadata
+                            self._file_id = GemName.remove_extensions(
+                                metadata[0].get('filename'))
+                            self._file_name = f'{self._file_id}.fits'
+                            em.om.add(metadata, self._file_id)
+                            temp_l = []
+                            temp_e = []
+                            for entry in metadata:
+                                f_id = GemName.remove_extensions(
+                                    entry.get('filename'))
+                                f_name = f'{f_id}.fits'
+                                temp_l.append(mc.get_lineage(
+                                    ARCHIVE, f_id, f_name, SCHEME))
+                                temp_e.append(f'{ofr.HEADER_URL}{f_name}')
+                            self._lineage = ' '.join(ii for ii in temp_l)
+                            self._external_urls = ' '.join(ii for ii in temp_e)
                     else:
                         # Gemini obs id values are repaired from what
                         # archive.gemini.edu publishes, so check for the
@@ -186,17 +211,18 @@ class GemName(ec.StorageName):
                         urls = bits.urls.split()
                         for url in urls:
                             if self._file_name is None:
-                                if self._obs_id == bits.obs_id.split()[1].strip():
-                                    logging.debug(
-                                        'Using existing obs id with {}'.format(self._obs_id))
+                                if (self._obs_id ==
+                                        bits.obs_id.split()[1].strip()):
+                                    logging.debug(f'Using existing obs id '
+                                                  f'with {self._obs_id}')
                                     self._external_urls = bits.urls
                                     self._lineage = bits.lineage
                                     found = True
                                     break
                             elif url.endswith(self._file_name):
                                 self._obs_id = bits.obs_id.split()[1]
-                                logging.debug(
-                                    'Replaced obs id with {}'.format(self._obs_id))
+                                logging.debug(f'Replaced obs id with '
+                                              f'{self._obs_id}')
                                 self._external_urls = bits.urls
                                 self._lineage = bits.lineage
                                 found = True
