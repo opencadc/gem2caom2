@@ -80,6 +80,7 @@ from shutil import copyfile
 from mock import patch, Mock
 import gem_mocks
 
+from caom2 import SimpleObservation, Algorithm
 from caom2pipe import execute_composable as ec
 from caom2pipe import manage_composable as mc
 from gem2caom2 import composable, main_app, gem_name
@@ -301,7 +302,8 @@ def test_run_by_in_memory_query():
 @patch('caom2pipe.execute_composable.CadcDataClient')
 @patch('gem2caom2.scrape.read_json_file_list_page')
 @patch('gem2caom2.external_metadata.get_obs_metadata')
-def test_run_by_builder(obs_md_mock, scrape_mock, data_client_mock,
+@patch('caom2pipe.manage_composable.read_obs_from_file')
+def test_run_by_builder(read_mock, obs_md_mock, scrape_mock, data_client_mock,
                         repo_mock, exec_mock):
     data_client_mock.return_value.get_file_info.side_effect = \
         gem_mocks.mock_get_file_info
@@ -317,16 +319,13 @@ def test_run_by_builder(obs_md_mock, scrape_mock, data_client_mock,
 
     obs_md_mock.side_effect = gem_mocks.mock_get_obs_metadata
 
-    if not os.path.exists(
-            f'/usr/src/app/logs/{gem_mocks.TEST_BUILDER_OBS_ID}.fits.xml'):
-        shutil.copy(
-            f'{gem_mocks.TEST_DATA_DIR}/expected.xml',
-            f'/usr/src/app/logs/{gem_mocks.TEST_BUILDER_OBS_ID}.fits.xml')
+    def _read_mock(ignore_fqn):
+        return SimpleObservation(collection='TEST',
+                                 observation_id='TEST_OBS_ID',
+                                 algorithm=Algorithm('exposure'))
+    read_mock.side_effect = _read_mock
 
-    if not os.path.exists('/usr/src/app/cadcproxy.pem'):
-        with open('/usr/src/app/cadcproxy.pem', 'w') as f:
-            f.write('cadc proxy content')
-
+    _write_cert()
     prior_s = datetime.utcnow().timestamp() - 1440 * 60
     _write_state(prior_s)
     getcwd_orig = os.getcwd
@@ -402,10 +401,7 @@ def test_run_by_public(scrape_mock, tap_mock, data_client_mock,
             f'{gem_mocks.TEST_DATA_DIR}/expected.xml',
             f'/usr/src/app/logs/{gem_mocks.TEST_BUILDER_OBS_ID}.fits.xml')
 
-    if not os.path.exists('/usr/src/app/cadcproxy.pem'):
-        with open('/usr/src/app/cadcproxy.pem', 'w') as f:
-            f.write('cadc proxy content')
-
+    _write_cert()
     prior_s = datetime.utcnow().timestamp() - 1440 * 60
     _write_state(prior_s)
     getcwd_orig = os.getcwd
@@ -465,3 +461,9 @@ def _write_state(prior_timestamp=None):
 def _write_rejected(test_obs_id):
     content = {'bad_metadata': [test_obs_id]}
     mc.write_as_yaml(content, REJECTED_FILE)
+
+
+def _write_cert():
+    if not os.path.exists('/usr/src/app/cadcproxy.pem'):
+        with open('/usr/src/app/cadcproxy.pem', 'w') as f:
+            f.write('cadc proxy content')

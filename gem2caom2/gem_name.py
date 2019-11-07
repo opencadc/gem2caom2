@@ -196,6 +196,8 @@ class GemName(ec.StorageName):
                                 temp_e.append(f'{ofr.HEADER_URL}{f_name}')
                             self._lineage = ' '.join(ii for ii in temp_l)
                             self._external_urls = ' '.join(ii for ii in temp_e)
+                            self._obs_id = ofr.repair_data_label(
+                                self._file_name, self._obs_id)
                     else:
                         # Gemini obs id values are repaired from what
                         # archive.gemini.edu publishes, so check for the

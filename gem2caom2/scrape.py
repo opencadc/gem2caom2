@@ -84,7 +84,7 @@ JSON_METADATA = \
     'https://archive.gemini.edu/jsonsummary/canonical/notengineering/NotFail/'
 
 
-def read_json_file_list_page(start_time_s, end_time_s):
+def read_json_file_list_page(start_time_s, last_processed_time_s):
     file_names = {}
     date_str = datetime.fromtimestamp(start_time_s).strftime('%Y%m%d')
     for telescope_str in ['S', 'N']:
@@ -97,7 +97,8 @@ def read_json_file_list_page(start_time_s, end_time_s):
                 logging.warning(
                     'Could not query {}'.format(file_list_url))
             else:
-                temp = parse_json_file_list(response.text, end_time_s)
+                temp = parse_json_file_list(
+                    response.text, last_processed_time_s)
                 temp_file_names = file_names
                 file_names = {**temp, **temp_file_names}
                 response.close()
@@ -109,7 +110,7 @@ def read_json_file_list_page(start_time_s, end_time_s):
     return ordered_file_names
 
 
-def parse_json_file_list(json_string, end_time_s):
+def parse_json_file_list(json_string, last_processed_time_s):
     work_list = {}
     # column 0 == last mod
     # column 1 == file name
@@ -120,7 +121,7 @@ def parse_json_file_list(json_string, end_time_s):
         # e.g. 2019-11-01 00:01:34.610517+00:00, and yes, I know about %z
         entry_ts_s = datetime.strptime(entry[0].replace('+00:00', ''),
                                        '%Y-%m-%d %H:%M:%S.%f').timestamp()
-        if entry_ts_s <= end_time_s:
+        if entry_ts_s >= last_processed_time_s:
             logging.debug(f'Adding {entry[1]} to work list.')
             work_list[entry_ts_s] = entry[1]
 

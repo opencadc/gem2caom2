@@ -87,12 +87,12 @@ def test_parse_json_file_list():
     test_time_end = _get_end_time()
     result = scrape.parse_json_file_list(json_string, test_time_end)
     assert result is not None, 'expected result'
-    assert len(result) == 1282, 'wrong number of results'
+    assert len(result) == 346, 'wrong number of results'
     assert result[test_time_end] == test_file_name, 'wrong entries'
 
 
 def test_read_json_file_list_page():
-    test_file_name = 'N20191101S0001.fits'
+    test_file_name = 'N20191101S0119.fits'
     test_end_time = _get_end_time()
     test_start_time = test_end_time - 100000
 
@@ -102,7 +102,7 @@ def test_read_json_file_list_page():
             test_start_time,
             test_end_time)
         assert test_work_list is not None, 'expected result'
-        assert len(test_work_list) == 1282
+        assert len(test_work_list) == 346
         first_entry = test_work_list.popitem(last=False)
         assert first_entry[1] == test_file_name
 

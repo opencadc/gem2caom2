@@ -252,11 +252,10 @@ class FileListingQuery(mc.Work):
                      f'{self._last_processed_time} to {now}')
         if prev_exec_time_ts < self._max_ts_s:
             while exec_time_ts <= self._max_ts_s:
-                logging.debug(f'Checking time-box from '
-                              f'{datetime.fromtimestamp(prev_exec_time_ts)} to '
-                              f'{datetime.fromtimestamp(exec_time_ts)}')
+                logging.debug(f'Checking time-box for day '
+                              f'{datetime.fromtimestamp(prev_exec_time_ts)}')
                 temp = scrape.read_json_file_list_page(
-                    prev_exec_time_ts, exec_time_ts)
+                    prev_exec_time_ts, self._last_processed_time.timestamp())
                 if len(temp) == 2500:
                     self._max_records_encountered = True
                 temp_entries = entries
