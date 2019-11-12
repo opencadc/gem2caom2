@@ -3719,7 +3719,8 @@ def main_app2():
     try:
         uris = _get_uris(args)
         blueprints = _build_blueprints(uris)
-        gen_proc(args, blueprints)
+        result = gen_proc(args, blueprints)
+        sys.exit(result)
     except Exception as e:
         logging.error('Failed {} execution for {}.'.format(APPLICATION, args))
         tb = traceback.format_exc()

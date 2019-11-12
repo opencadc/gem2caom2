@@ -1,4 +1,4 @@
-FROM opencadc/astropy:3.6-alpine
+FROM opencadc/pandas:3.6-alpine
 
 RUN apk --no-cache add \
         bash \
@@ -18,8 +18,7 @@ RUN pip install cadcdata && \
 
 WORKDIR /usr/src/app
 
-RUN pip install bs4 && \
-    pip install pandas
+RUN pip install bs4
 
 RUN apk --no-cache add imagemagick
 

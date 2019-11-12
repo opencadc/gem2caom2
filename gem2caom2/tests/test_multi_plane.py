@@ -74,7 +74,7 @@ from caom2pipe import manage_composable as mc
 import os
 import sys
 
-from mock import patch
+from mock import patch, Mock
 import gem_mocks
 
 pytest.main(args=['-s', os.path.abspath(__file__)])
@@ -104,6 +104,7 @@ def pytest_generate_tests(metafunc):
     metafunc.parametrize('test_name', obs_id_list)
 
 
+@patch('sys.exit', Mock())
 def test_multi_plane(test_name):
     obs_id = test_name
     lineage = _get_lineage(obs_id)

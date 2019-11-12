@@ -79,7 +79,7 @@ import gem2caom2.external_metadata as em
 from gem2caom2 import main_app, gem_name
 from caom2pipe import manage_composable as mc
 
-from mock import patch
+from mock import patch, Mock
 import gem_mocks
 
 
@@ -106,6 +106,7 @@ def pytest_generate_tests(metafunc):
         metafunc.parametrize('test_name', file_list)
 
 
+@patch('sys.exit', Mock())
 def test_main_app(test_name):
     em.set_ofr(None)
     test_data_size = os.stat(
