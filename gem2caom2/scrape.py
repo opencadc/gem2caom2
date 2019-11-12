@@ -140,6 +140,15 @@ def find_direct(data_label):
         else:
             metadata = response.json()
             response.close()
+            if metadata is None or len(metadata) == 0:
+                file_url = f'{JSON_METADATA}/filepre={data_label}'
+                logging.warning(f'Try by file name {file_url}')
+                response = mc.query_endpoint(file_url)
+            if response is None:
+                logging.warning(f'Could not query {file_url}')
+            else:
+                metadata = response.json()
+                response.close()
     finally:
         if response is not None:
             response.close()

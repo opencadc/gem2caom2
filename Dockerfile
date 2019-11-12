@@ -2,6 +2,7 @@ FROM opencadc/astropy:3.6-alpine
 
 RUN apk --no-cache add \
         bash \
+        coreutils \
         git \
         g++ \
         libmagic \

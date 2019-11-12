@@ -172,10 +172,10 @@ class GemName(ec.StorageName):
                         logging.warning(
                             f'Try a direct query for {self._obs_id}')
                         metadata = scrape.find_direct(self._obs_id)
-                        if metadata is None:
+                        if metadata is None or len(metadata) == 0:
                             raise mc.CadcException(
-                                'obs id {} unknown at Gemini'.format(
-                                    self._obs_id))
+                                f'Direct query for obs id {self._obs_id}'
+                                f' failed at Gemini')
                         else:
                             # assume filename from 0th entry, which
                             # should be ok, since the external urls and
