@@ -323,13 +323,16 @@ class GemNameBuilder(GemName):
         logging.debug(f'parameters file_name {file_name} obs id {obs_id}')
         super(GemNameBuilder, self).__init__(
             obs_id=obs_id,fname_on_disk=file_name)
-        self._file_name = file_name
+        # purposefully do not set self._file_name, since that indicates
+        # later in processing that the file already exists in ad, and
+        # naming patterns can be found by querying there
         self._file_id = GemName.remove_extensions(file_name)
         self._obs_id = ofr.repair_data_label(file_name, obs_id)
         self._last_modified_s = last_modified_s
-        self._lineage = mc.get_lineage(ARCHIVE, self._file_id, self._file_name,
-                                       SCHEME)
-        self._external_urls = f'{ofr.HEADER_URL}{self._file_name}'
+        self._lineage = mc.get_lineage(
+            ARCHIVE, self._file_id, file_name, SCHEME)
+        self._external_urls = f'{ofr.HEADER_URL}{file_name}'
+        self._file_name = None
         logging.debug(self)
 
     @property

@@ -114,16 +114,18 @@ def parse_json_file_list(json_string, last_processed_time_s):
     work_list = {}
     # column 0 == last mod
     # column 1 == file name
-    temp = Table.read(json_string, format='pandas.json')
-    work_list_array = temp.as_array(names=[temp.colnames[0], temp.colnames[1]])
+    if not json_string.startswith('[]'):
+        temp = Table.read(json_string, format='pandas.json')
+        work_list_array = temp.as_array(
+            names=[temp.colnames[0], temp.colnames[1]])
 
-    for entry in work_list_array:
-        # e.g. 2019-11-01 00:01:34.610517+00:00, and yes, I know about %z
-        entry_ts_s = datetime.strptime(entry[0].replace('+00:00', ''),
-                                       '%Y-%m-%d %H:%M:%S.%f').timestamp()
-        if entry_ts_s >= last_processed_time_s:
-            logging.debug(f'Adding {entry[1]} to work list.')
-            work_list[entry_ts_s] = entry[1]
+        for entry in work_list_array:
+            # e.g. 2019-11-01 00:01:34.610517+00:00, and yes, I know about %z
+            entry_ts_s = datetime.strptime(entry[0].replace('+00:00', ''),
+                                           '%Y-%m-%d %H:%M:%S.%f').timestamp()
+            if entry_ts_s >= last_processed_time_s:
+                logging.debug(f'Adding {entry[1]} to work list.')
+                work_list[entry_ts_s] = entry[1]
 
     return work_list
 
