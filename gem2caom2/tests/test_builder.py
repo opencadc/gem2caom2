@@ -88,9 +88,10 @@ def test_edu_query_builder(em_om_mock):
         test_subject.todo_list = gm.TEST_TODO_LIST
         test_result = test_subject.build('N20191101S0002.fits')
         assert test_result is not None, 'expected a result'
-        assert test_result.file_name == 'N20191101S0002.fits', 'wrong file name'
+        assert test_result.file_id == 'N20191101S0002', 'wrong file id'
         assert test_result.obs_id == 'GN-2019B-ENG-1-160-003', 'wrong obs id'
         assert test_result.last_modified_s == 1572566500.951468, \
             'wrong last modified'
+        assert test_result.file_name is None, 'should have no file name'
     finally:
         os.getcwd = getcwd_orig

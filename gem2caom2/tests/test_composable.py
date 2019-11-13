@@ -354,8 +354,8 @@ def test_run_by_builder(read_mock, obs_md_mock, scrape_mock, data_client_mock,
          '--lineage N20191101S0007/gemini:GEM/N20191101S0007.fits'),
         level_as), \
         'exec mock wrong parameters'
-    assert data_client_mock.return_value.get_file_info.called, \
-        'data client mock get file info not called'
+    assert not data_client_mock.return_value.get_file_info.called, \
+        'data client mock get file info should not be not called'
     assert obs_md_mock.called, 'obs mock not called'
     assert scrape_mock.called, 'scrape mock not called'
 
