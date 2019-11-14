@@ -95,5 +95,5 @@ def test_file_listing_parse():
         assert len(work_list_result) == 6, 'wrong number of results'
         expected_key = 'N20191101S0002.fits'
         first_result = work_list_result.popitem(last=False)
-        assert first_result[1] == 'N20191101S0002.fits', 'wrong file name'
+        assert first_result[1] == expected_key, 'wrong file name'
         assert first_result[0] == 1572566500.951468, 'wrong timestamp'
