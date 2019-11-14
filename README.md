@@ -2,7 +2,7 @@
 
 In an empty directory (the 'working directory'), on a machine with Docker installed:
 
-1. In the master branch of this repository, find the scripts directory, and copy the file vlass_run_state.sh to the working directory. e.g.:
+1. In the master branch of this repository, find the scripts directory, and copy the file gem_run_public.sh to the working directory. e.g.:
 
   ```
   wget https://raw.github.com/opencadc-metadata-curation/gem2caom2/master/scripts/gem_run_public.sh
@@ -19,6 +19,32 @@ chmod +x gem_run_public.sh
 ```
 ./gem_run_public.sh
 ```
+Running this will pull newly public FITS files and preview images from Gemini, and will generate thumbnail images from the preview.
+
+
+# How To Run gem2caom2 Incrementally
+
+In an empty directory (the 'working directory'), on a machine with Docker installed:
+
+1. In the master branch of this repository, find the scripts directory, and copy the file gem_run_incremental.sh to the working directory. e.g.:
+
+  ```
+  wget https://raw.github.com/opencadc-metadata-curation/gem2caom2/master/scripts/gem_run_incremental.sh
+  ```
+
+2. Ensure the script is executable:
+
+```
+chmod +x gem_run_incremental.sh
+```
+
+3. To run the application:
+
+```
+./gem_run_incremental.sh
+```
+
+Running this will generate CAOM observations for newly observed data at archive.gemini.edu.
 
 # gem2caom2
 An application to generate CAOM2 Observations from FITS file headers.
