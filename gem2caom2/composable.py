@@ -218,7 +218,7 @@ def run_by_public():
         sys.exit(-1)
 
 
-def _run_by_builder():
+def _run_by_incremental():
     """Run the processing for observations that are posted on the site
     archive.gemini.edu.
 
@@ -236,9 +236,9 @@ def _run_by_builder():
     return result
 
 
-def run_by_builder():
+def run_by_incremental():
     try:
-        result = _run_by_builder()
+        result = _run_by_incremental()
         sys.exit(result)
     except Exception as e:
         logging.error(e)

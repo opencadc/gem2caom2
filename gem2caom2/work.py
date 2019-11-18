@@ -273,6 +273,6 @@ class FileListingQuery(mc.Work):
                 # changed, before adding an entry to the todo list
                 # no work has been done yet, so don't save any state anywhere
 
-        ordered_file_names = OrderedDict(entries.items())
+        ordered_file_names = OrderedDict(sorted(entries.items()))
         logging.info(f'Found {len(ordered_file_names)} entries to process.')
         return ordered_file_names

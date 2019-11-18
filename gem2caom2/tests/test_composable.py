@@ -303,8 +303,8 @@ def test_run_by_in_memory_query():
 @patch('gem2caom2.scrape.read_json_file_list_page')
 @patch('gem2caom2.external_metadata.get_obs_metadata')
 @patch('caom2pipe.manage_composable.read_obs_from_file')
-def test_run_by_builder(read_mock, obs_md_mock, scrape_mock, data_client_mock,
-                        repo_mock, exec_mock):
+def test_run_by_incremental(read_mock, obs_md_mock, scrape_mock,
+                            data_client_mock, repo_mock, exec_mock):
     data_client_mock.return_value.get_file_info.side_effect = \
         gem_mocks.mock_get_file_info
     data_client_mock.return_value.get_file.side_effect = Mock()
@@ -332,7 +332,7 @@ def test_run_by_builder(read_mock, obs_md_mock, scrape_mock, data_client_mock,
     os.getcwd = Mock(return_value=f'{gem_mocks.TEST_DATA_DIR}/edu_query')
     try:
         # execution
-        test_result = composable._run_by_builder()
+        test_result = composable._run_by_incremental()
         assert test_result == 0, 'wrong result'
     finally:
         os.getcwd = getcwd_orig
@@ -340,7 +340,8 @@ def test_run_by_builder(read_mock, obs_md_mock, scrape_mock, data_client_mock,
     assert repo_mock.return_value.create.called, 'create not called'
     assert repo_mock.return_value.read.called, 'read not called'
     assert exec_mock.called, 'exec mock not called'
-    param, level_as = ec.CaomExecute._specify_logging_level_param(logging.ERROR)
+    param, level_as = ec.CaomExecute._specify_logging_level_param(
+        logging.ERROR)
     exec_mock.assert_called_with(
         ('gem2caom2 --quiet --cert /usr/src/app/cadcproxy.pem '
          '--in /usr/src/app/logs/GN-2019B-ENG-1-160-008.fits.xml '
