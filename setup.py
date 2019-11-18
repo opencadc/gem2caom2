@@ -30,7 +30,7 @@ DESCRIPTION = metadata.get('description', 'CADC package')
 AUTHOR = metadata.get('author', 'CADC')
 AUTHOR_EMAIL = metadata.get('author_email', 'cadc@nrc.gc.ca')
 LICENSE = metadata.get('license', 'unknown')
-URL = metadata.get('url', 'http://www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca')
+URL = metadata.get('url', 'https://www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca')
 
 # VERSION should be PEP386 compatible (http://www.python.org/dev/peps/pep-0386)
 VERSION = metadata.get('version', 'none')
