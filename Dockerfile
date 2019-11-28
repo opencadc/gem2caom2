@@ -10,7 +10,9 @@ RUN apk --no-cache add \
 
 RUN pip install cadcdata && \
     pip install cadctap && \
+    pip install caom2 && \
     pip install caom2repo && \
+    pip install caom2utils && \
     pip install ftputil && \
     pip install PyYAML && \
     pip install spherical-geometry && \
@@ -26,9 +28,8 @@ RUN mkdir /app && mkdir /app/data
 
 ADD https://www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/files/vault/cadcsw/2019-07-03_from_paul.txt /app/data/from_paul.txt
 
-RUN git clone https://github.com/opencadc-metadata-curation/caom2tools.git && \
-  cd caom2tools && git pull origin master && \
-  pip install ./caom2utils && pip install ./caom2pipe && cd ..
+RUN git clone https://github.com/opencadc-metadata-curation/caom2pipe.git && \
+  pip install ./caom2pipe
 
 RUN git clone https://github.com/opencadc-metadata-curation/gem2caom2.git && \
   pip install ./gem2caom2 && \
