@@ -79,13 +79,12 @@ import gem_mocks
 
 
 @patch('cadcdata.core.net.BaseWsClient.post')
-@patch('cadcdata.core.net.BaseWsClient.get')
 @patch('cadcutils.net.ws.WsCapabilities.get_access_url')
-def test_validator(caps_mock, ad_mock, tap_mock):
+def test_validator(caps_mock, tap_mock):
     caps_mock.return_value = 'https://sc2.canfar.net/sc2repo'
-    response = Mock()
-    response.status_code = 200
-    response.iter_content.return_value = \
+    tap_response = Mock()
+    tap_response.status_code = 200
+    tap_response.iter_content.return_value = \
         [b'<?xml version="1.0" encoding="UTF-8"?>\n'
          b'<VOTABLE xmlns="http://www.ivoa.net/xml/VOTable/v1.3" '
          b'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" '
@@ -128,12 +127,48 @@ def test_validator(caps_mock, ad_mock, tap_mock):
          b'<INFO name="QUERY_STATUS" value="OK" />\n'
          b'</RESOURCE>\n'
          b'</VOTABLE>\n']
-    tap_mock.return_value.__enter__.return_value = response
 
     ad_response = Mock()
     ad_response.status_code = 200
-    ad_response.text = []
-    ad_mock.return_value = ad_response
+    ad_response.iter_content.return_value = \
+        [b'<?xml version="1.0" encoding="UTF-8"?>\n'
+         b'<VOTABLE xmlns="http://www.ivoa.net/xml/VOTable/v1.3" '
+         b'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" '
+         b'version="1.3">\n'
+         b'<RESOURCE type="results">\n'
+         b'<INFO name="QUERY_STATUS" value="OK" />\n'
+         b'<INFO name="QUERY_TIMESTAMP" value="2019-11-27T00:07:08.736" />\n'
+         b'<INFO name="QUERY" value="SELECT ingestDate, fileName&#xA;FROM '
+         b'archive_files&#xA;WHERE archiveName = \'NEOSS\'&#xA;AND '
+         b'fileName = \'xEOS_SCI_2019319035900.fits\'" />\n'
+         b'<TABLE>\n'
+         b'<FIELD name="ingestDate" datatype="char" arraysize="*" '
+         b'xtype="timestamp">\n'
+         b'<DESCRIPTION>file ingest date</DESCRIPTION>\n'
+         b'</FIELD>\n'
+         b'<FIELD name="fileName" datatype="char" arraysize="255*">\n'
+         b'<DESCRIPTION>file name</DESCRIPTION>\n'
+         b'</FIELD>\n'
+         b'<DATA>\n'
+         b'<TABLEDATA />\n'
+         b'</DATA>\n'
+         b'</TABLE>\n'
+         b'<INFO name="QUERY_STATUS" value="OK" />\n'
+         b'</RESOURCE>\n'
+         b'</VOTABLE>\n']
+
+    global count
+    count = 0
+
+    def _mock_return():
+        global count
+        if count == 0:
+            count = 1
+            return tap_response
+        else:
+            return ad_response
+
+    tap_mock.return_value.__enter__.side_effect = _mock_return
 
     if not os.path.exists('/usr/src/app/cadcproxy.pem'):
         with open('/usr/src/app/cadcproxy.pem', 'w') as f:
@@ -152,11 +187,14 @@ def test_validator(caps_mock, ad_mock, tap_mock):
 
         test_rejected = f'{gem_mocks.TEST_DATA_DIR}/validate/' \
                         f'test_rejected.yml'
+        import logging
+        logging.error(f'test_rejected {test_rejected}, rejected_fqn '
+                      f'{test_subject._config.rejected_fqn}')
         shutil.copy(test_rejected, test_subject._config.rejected_fqn)
 
         test_source, test_meta, test_data = test_subject.validate()
         assert test_source is not None, 'expected source result'
-        assert len(test_source) == 1036, 'wrong number of source results'
+        assert len(test_source) == 1037, 'wrong number of source results'
         assert 'rS20111124S0053.fits' in test_source, 'wrong result content'
         assert 'rS20111124S0053.jpg' in test_source, 'wrong result content'
 
