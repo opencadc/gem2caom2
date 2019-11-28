@@ -70,7 +70,6 @@
 import logging
 
 from caom2pipe import manage_composable as mc
-from caom2pipe import execute_composable as ec
 
 from gem2caom2 import external_metadata as em
 from gem2caom2 import obs_file_relationship as ofr
@@ -85,7 +84,7 @@ ARCHIVE = 'GEM'
 SCHEME = 'gemini'
 
 
-class GemName(ec.StorageName):
+class GemName(mc.StorageName):
     """Naming rules:
     - support mixed-case file name storage, exception for extensions, and
             mixed-case obs id values - the case the inputs are provided in are

@@ -68,7 +68,6 @@
 #
 
 from caom2pipe import manage_composable as mc
-from caom2pipe import execute_composable as ec
 from gem2caom2.gem_name import GemName
 
 
@@ -99,7 +98,7 @@ class GeminiObsMetadata(object):
         return self.current[self.index].get(lookup)
 
     def reset_index(self, uri):
-        file_id = GemName.remove_extensions(ec.CaomName(uri).file_name)
+        file_id = GemName.remove_extensions(mc.CaomName(uri).file_name)
         self._reset_index(file_id)
 
     def _reset_index(self, file_id):

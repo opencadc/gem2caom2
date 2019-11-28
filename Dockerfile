@@ -1,4 +1,4 @@
-FROM opencadc/pandas:3.6-alpine
+FROM opencadc/pandas:latest
 
 RUN apk --no-cache add \
         bash \

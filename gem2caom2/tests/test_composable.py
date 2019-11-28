@@ -91,6 +91,7 @@ REJECTED_FILE = '/usr/src/app/logs/rejected.yml'
 PROGRESS_FILE = '/usr/src/app/logs/progress.txt'
 PUBLIC_TEST_JSON = f'{gem_mocks.TEST_DATA_DIR}/json/GN-2019B-ENG-1-160-008.json'
 
+
 class MyExitError(Exception):
     pass
 
@@ -155,11 +156,6 @@ def test_run():
         os.getcwd = getcwd_orig
 
 
-# gem2caom2 --verbose --cert /usr/src/app/cadcproxy.pem --observation GEMINI
-# TX20131117_flt.3002 --out /usr/src/app/logs/TX20131117_flt.3002.fits.xml
-# --plugin /usr/local/lib/python3.6/site-packages/gem2caom2/gem2caom2.py
-# --module /usr/local/lib/python3.6/site-packages/gem2caom2/gem2caom2.py
-# --lineage TX20131117_flt.3002/gemini:GEM/TX20131117_flt.3002.fits
 @patch('sys.exit', Mock(return_value=MyExitError))
 def test_run_errors():
     test_obs_id = 'TX20131117_flt.3002'
@@ -342,17 +338,20 @@ def test_run_by_incremental(read_mock, obs_md_mock, scrape_mock,
     assert exec_mock.called, 'exec mock not called'
     param, level_as = ec.CaomExecute._specify_logging_level_param(
         logging.ERROR)
+    py_version = f'{sys.version_info.major}.{sys.version_info.minor}'
     exec_mock.assert_called_with(
-        ('gem2caom2 --quiet --cert /usr/src/app/cadcproxy.pem '
-         '--in /usr/src/app/logs/GN-2019B-ENG-1-160-008.fits.xml '
-         '--out /usr/src/app/logs/GN-2019B-ENG-1-160-008.fits.xml '
-         '--external_url '
-         'https://archive.gemini.edu/fullheader/N20191101S0007.fits '
-         '--plugin '
-         '/usr/local/lib/python3.6/site-packages/gem2caom2/gem2caom2.py '
-         '--module '
-         '/usr/local/lib/python3.6/site-packages/gem2caom2/gem2caom2.py '
-         '--lineage N20191101S0007/gemini:GEM/N20191101S0007.fits'),
+        (f'gem2caom2 --quiet --cert /usr/src/app/cadcproxy.pem '
+         f'--in /usr/src/app/logs/GN-2019B-ENG-1-160-008.fits.xml '
+         f'--out /usr/src/app/logs/GN-2019B-ENG-1-160-008.fits.xml '
+         f'--external_url '
+         f'https://archive.gemini.edu/fullheader/N20191101S0007.fits '
+         f'--plugin '
+         f'/usr/local/lib/python{py_version}/site-packages/gem2caom2/'
+         f'gem2caom2.py '
+         f'--module '
+         f'/usr/local/lib/python{py_version}/site-packages/gem2caom2/'
+         f'gem2caom2.py '
+         f'--lineage N20191101S0007/gemini:GEM/N20191101S0007.fits'),
         level_as), \
         'exec mock wrong parameters'
     assert not data_client_mock.return_value.get_file_info.called, \
@@ -418,17 +417,20 @@ def test_run_by_public(scrape_mock, tap_mock, data_client_mock,
     assert repo_mock.return_value.read.called, 'read not called'
     assert exec_mock.called, 'exec mock not called'
     param, level_as = ec.CaomExecute._specify_logging_level_param(logging.ERROR)
+    py_version = f'{sys.version_info.major}.{sys.version_info.minor}'
     exec_mock.assert_called_with(
-        ('gem2caom2 --quiet --cert /usr/src/app/cadcproxy.pem '
-         '--in /usr/src/app/logs/GN-2019B-ENG-1-160-008.fits.xml '
-         '--out /usr/src/app/logs/GN-2019B-ENG-1-160-008.fits.xml '
-         '--external_url '
-         'https://archive.gemini.edu/fullheader/N20191101S0007.fits '
-         '--plugin '
-         '/usr/local/lib/python3.6/site-packages/gem2caom2/gem2caom2.py '
-         '--module '
-         '/usr/local/lib/python3.6/site-packages/gem2caom2/gem2caom2.py '
-         '--lineage N20191101S0007/gemini:GEM/N20191101S0007.fits'),
+        (f'gem2caom2 --quiet --cert /usr/src/app/cadcproxy.pem '
+         f'--in /usr/src/app/logs/GN-2019B-ENG-1-160-008.fits.xml '
+         f'--out /usr/src/app/logs/GN-2019B-ENG-1-160-008.fits.xml '
+         f'--external_url '
+         f'https://archive.gemini.edu/fullheader/N20191101S0007.fits '
+         f'--plugin '
+         f'/usr/local/lib/python{py_version}/site-packages/gem2caom2/'
+         f'gem2caom2.py '
+         f'--module '
+         f'/usr/local/lib/python{py_version}/site-packages/gem2caom2/'
+         f'gem2caom2.py '
+         f'--lineage N20191101S0007/gemini:GEM/N20191101S0007.fits'),
         level_as), \
         'exec mock wrong parameters'
     assert not data_client_mock.return_value.get_file_info.called, \

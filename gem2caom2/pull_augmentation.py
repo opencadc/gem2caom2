@@ -72,7 +72,6 @@ import logging
 from datetime import datetime
 
 from caom2 import Observation
-from caom2pipe import execute_composable as ec
 from caom2pipe import manage_composable as mc
 
 from gem2caom2 import gem_name
@@ -120,7 +119,7 @@ def visit(observation, **kwargs):
                 if gem_name.GemName.is_preview(artifact.uri):
                     continue
                 try:
-                    f_name = ec.CaomName(artifact.uri).file_name
+                    f_name = mc.CaomName(artifact.uri).file_name
                     file_url = '{}/{}'.format(FILE_URL, f_name)
                     mc.look_pull_and_put(f_name, working_dir, file_url,
                                          gem_name.ARCHIVE, stream, MIME_TYPE,

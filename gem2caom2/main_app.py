@@ -106,7 +106,6 @@ from caom2 import TypedList, CoordRange1D, CompositeObservation, Algorithm
 from caom2utils import ObsBlueprint, get_gen_proc_arg_parser, gen_proc
 from caom2utils import WcsParser
 from caom2pipe import manage_composable as mc
-from caom2pipe import execute_composable as ec
 from caom2pipe import caom_composable as cc
 from caom2pipe import astro_composable as ac
 
@@ -164,7 +163,7 @@ def get_calibration_level(uri):
             (instrument is em.Inst.TEXES and
              ('_red' in uri.lower() or '_sum' in uri.lower())) or
             (instrument is em.Inst.PHOENIX and
-             ec.CaomName(uri.lower()).file_id.startswith('p'))):
+             mc.CaomName(uri.lower()).file_id.startswith('p'))):
         result = CalibrationLevel.CALIBRATED
     return result
 
@@ -1054,7 +1053,7 @@ def update(observation, **kwargs):
                 if GemName.is_preview(artifact.uri):
                     continue
 
-                caom_name = ec.CaomName(artifact.uri)
+                caom_name = mc.CaomName(artifact.uri)
                 em.om.reset_index(caom_name.uri)
                 processed = ofr.is_processed(caom_name.file_name)
                 if (instrument in
@@ -3659,7 +3658,7 @@ def _build_blueprints(uris):
     for uri in uris:
         blueprint = ObsBlueprint(module=module)
         if not GemName.is_preview(uri):
-            file_id = GemName.remove_extensions(ec.CaomName(uri).file_name)
+            file_id = GemName.remove_extensions(mc.CaomName(uri).file_name)
             accumulate_fits_bp(blueprint, file_id, uri)
         blueprints[uri] = blueprint
     return blueprints
