@@ -33,6 +33,8 @@ archive: GEM
 collection: GEMINI
 state_file_name: state.yml
 interval: 1440
+rejected_directory: /usr/src/app/gem2caom2/gem2caom2/tests/data/rejected
+rejected_file_name: rejected.yml
 # how to control the work that gets done
 # possible values are:
 # - scrape - read the headers, write out the xml - kind of a test mode

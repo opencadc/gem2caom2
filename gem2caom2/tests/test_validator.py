@@ -187,9 +187,6 @@ def test_validator(caps_mock, tap_mock):
 
         test_rejected = f'{gem_mocks.TEST_DATA_DIR}/validate/' \
                         f'test_rejected.yml'
-        import logging
-        logging.error(f'test_rejected {test_rejected}, rejected_fqn '
-                      f'{test_subject._config.rejected_fqn}')
         shutil.copy(test_rejected, test_subject._config.rejected_fqn)
 
         test_source, test_meta, test_data = test_subject.validate()
