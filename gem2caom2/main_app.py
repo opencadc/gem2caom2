@@ -93,6 +93,7 @@ import importlib
 import logging
 import math
 import os
+import re
 import sys
 import traceback
 
@@ -382,7 +383,7 @@ def get_data_release(header):
     # not every instrument (Michelle) has a RELEASE keyword in
     # the appropriate headers
     result = em.om.get('release')
-    if result.startswith('0001'):
+    if result is not None and result.startswith('0001'):
         # because obs id GN-2008A-Q-39-69-015
         result = result.replace('0001', '2001')
     return result
@@ -1299,6 +1300,18 @@ def _build_chunk_energy(chunk, filter_name, fm):
     # both sides of the ‘+’.
     bandpass_name = None if len(filter_name) == 0 \
         else filter_name.replace('+', ' + ')
+
+    if bandpass_name is not None and 'empty' in bandpass_name:
+        # DB 02-12-19 - But some files have filters open1-6 and empty_01.
+        # So likely less confusing to remove ‘empty*’ completely.
+        #
+        # Remove the 'empty' string here, now that min/max wavelength
+        # calculations have been completed.
+        bandpass_name = bandpass_name.replace('empty', '')
+        if len(bandpass_name) == 0:
+            bandpass_name = None
+        elif '+' in bandpass_name:
+            bandpass_name = bandpass_name.replace('+', '').strip()
 
     energy = SpectralWCS(axis=axis,
                          specsys='TOPOCENT',
@@ -2863,7 +2876,8 @@ def _update_chunk_energy_gmos(chunk, data_product_type, obs_id, filter_name,
               'OG515': [0.52000, 1.10000],
               'RG610': [0.61500, 1.10000],
               'RG780': [0.07800, 1.10000],
-              'open': [0.35000, 1.10000]}
+              'open': [0.35000, 1.10000],
+              'empty': [0.35000, 1.10000]}
 
     # DB - 04-04-19
 
@@ -2884,11 +2898,27 @@ def _update_chunk_energy_gmos(chunk, data_product_type, obs_id, filter_name,
     # Lots of missing header data for the GMOS observation
     # GN-2005B-Q-60-11-011 so ignore energy WCS
 
+    # DB 02-12-19
+    #
+    # One problem is 186 files with filter values of empty_0[134].  The
+    # ‘empty*’ component should be treated like ‘open’ as far as bandpass is
+    # concerned.   And ‘empty_*’ could be stripped out of the displayed filter
+    # name.
+    #
+    #  So likely less confusing to remove ‘empty*’ completely.   And I meant
+    #  treat wavelength limits the same as for ‘open’.
+
     reset_energy = False
 
     filter_md = None
-    if 'open' not in filter_name and 'No_Value' not in filter_name:
+    if ('open' not in filter_name and 'No_Value' not in filter_name and
+            'empty' not in filter_name):
         filter_md = em.get_filter_metadata(instrument, filter_name)
+
+    if 'empty' in filter_name:
+        # set to 'empty' string here, so can still use lookup logic
+        filter_name = re.sub('empty_\\d*', 'empty', filter_name)
+
     w_max = 10.0
     w_min = 0.0
     for ii in filter_name.split('+'):
