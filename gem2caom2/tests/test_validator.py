@@ -85,77 +85,18 @@ def test_validator(caps_mock, tap_mock):
     tap_response = Mock()
     tap_response.status_code = 200
     tap_response.iter_content.return_value = \
-        [b'<?xml version="1.0" encoding="UTF-8"?>\n'
-         b'<VOTABLE xmlns="http://www.ivoa.net/xml/VOTable/v1.3" '
-         b'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" '
-         b'version="1.3">\n'
-         b'<RESOURCE type="results">\n'
-         b'<INFO name="QUERY_STATUS" value="OK" />\n'
-         b'<INFO name="QUERY_TIMESTAMP" value="2019-11-14T16:26:46.274" />\n'
-         b'<INFO name="QUERY" value="SELECT distinct A.uri&#xA;FROM '
-         b'caom2.Observation as O&#xA;JOIN caom2.Plane as P on O.obsID = '
-         b'P.obsID&#xA;JOIN caom2.Artifact as A on P.planeID = A.planeID&#xA;'
-         b'WHERE O.collection = \'GEMINI\'&#xA;" />\n'
-         b'<TABLE>\n'
-         b'<FIELD name="uri" datatype="char" arraysize="*" '
-         b'utype="caom2:Artifact.uri" xtype="uri">\n'
-         b'<DESCRIPTION>external URI for the physical artifact</DESCRIPTION>\n'
-         b'</FIELD>\n'
-         b'<DATA>\n'
-         b'<TABLEDATA>\n'
-         b'<TR>\n'
-         b'<TD>gemini:GEM/S20170102S0663.fits</TD>\n'
-         b'</TR>\n'
-         b'<TR>\n'
-         b'<TD>gemini:GEM/S20170102S0663.jpg</TD>\n'
-         b'</TR>\n'
-         b'<TR>\n'
-         b'<TD>gemini:GEM/N20120102S0663.fits</TD>\n'
-         b'</TR>\n'
-         b'<TR>\n'
-         b'<TD>gemini:GEM/N20120102S0663.jpg</TD>\n'
-         b'</TR>\n'
-         b'<TR>\n'
-         b'<TD>gemini:GEM/N20191102S0665.fits</TD>\n'
-         b'</TR>\n'
-         b'<TR>\n'
-         b'<TD>gemini:GEM/N20191102S0665.jpg</TD>\n'
-         b'</TR>\n'
-         b'</TABLEDATA>\n'
-         b'</DATA>\n'
-         b'</TABLE>\n'
-         b'<INFO name="QUERY_STATUS" value="OK" />\n'
-         b'</RESOURCE>\n'
-         b'</VOTABLE>\n']
+        [b'uri\n'
+         b'gemini:GEM/S20170102S0663.fits\n'
+         b'gemini:GEM/S20170102S0663.jpg\n'
+         b'gemini:GEM/N20120102S0663.fits\n'
+         b'gemini:GEM/N20120102S0663.jpg\n'
+         b'gemini:GEM/N20191102S0665.fits\n'
+         b'gemini:GEM/N20191102S0665.jpg\n']
 
     ad_response = Mock()
     ad_response.status_code = 200
     ad_response.iter_content.return_value = \
-        [b'<?xml version="1.0" encoding="UTF-8"?>\n'
-         b'<VOTABLE xmlns="http://www.ivoa.net/xml/VOTable/v1.3" '
-         b'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" '
-         b'version="1.3">\n'
-         b'<RESOURCE type="results">\n'
-         b'<INFO name="QUERY_STATUS" value="OK" />\n'
-         b'<INFO name="QUERY_TIMESTAMP" value="2019-11-27T00:07:08.736" />\n'
-         b'<INFO name="QUERY" value="SELECT ingestDate, fileName&#xA;FROM '
-         b'archive_files&#xA;WHERE archiveName = \'NEOSS\'&#xA;AND '
-         b'fileName = \'xEOS_SCI_2019319035900.fits\'" />\n'
-         b'<TABLE>\n'
-         b'<FIELD name="ingestDate" datatype="char" arraysize="*" '
-         b'xtype="timestamp">\n'
-         b'<DESCRIPTION>file ingest date</DESCRIPTION>\n'
-         b'</FIELD>\n'
-         b'<FIELD name="fileName" datatype="char" arraysize="255*">\n'
-         b'<DESCRIPTION>file name</DESCRIPTION>\n'
-         b'</FIELD>\n'
-         b'<DATA>\n'
-         b'<TABLEDATA />\n'
-         b'</DATA>\n'
-         b'</TABLE>\n'
-         b'<INFO name="QUERY_STATUS" value="OK" />\n'
-         b'</RESOURCE>\n'
-         b'</VOTABLE>\n']
+        [b'uri\n']
 
     global count
     count = 0
@@ -219,17 +160,35 @@ def test_date_file_name():
     os.getcwd = Mock(return_value=gem_mocks.TEST_DATA_DIR)
     try:
         # because randomness in naming
-        fnames = ['S20170905S0318.fits', 'rgS20130103S0098_FRINGE.jpg',
-                  'GS20141226S0203_BIAS.fits', 'mrgS20160901S0122_add.jpg',
-                  'N20160403S0236_flat_pasted.fits', 'N20141109S0266_BIAS',
-                  'TX20170321_red.2507.fits', 'N20170616S0540.fits',
-                  '02jul07.0186.fits', 'GN2001BQ013-04.fits',
-                  '2002APR23_591.fits', 'r01dec05_007.fits',
-                  'p2004may20_0048_FLAT.fits', 'P2003JAN14_0148_DARK.fits',
-                  'ag2003feb19_6.0001.fits', '02jun25.0071.fits']
+        fnames = {'S20170905S0318.fits': date(2017, 9, 1),
+                  'rgS20130103S0098_FRINGE.jpg': date(2013, 1, 1),
+                  'GS20141226S0203_BIAS.fits': date(2014, 12, 1),
+                  'mrgS20160901S0122_add.jpg': date(2016, 9, 1),
+                  'N20160403S0236_flat_pasted.fits': date(2016, 4, 1),
+                  'N20141109S0266_BIAS': date(2014, 11, 1),
+                  'TX20170321_red.2507.fits': date(2017, 3, 1),
+                  'N20170616S0540.fits': date(2017, 6, 1),
+                  '02jul07.0186.fits': date(2002, 7, 1),
+                  'GN2001BQ013-04.fits': date(2001, 1, 1),
+                  '2002APR23_591.fits': date(2002, 4, 1),
+                  'r01dec05_007.fits': date(2001, 12, 1),
+                  'p2004may20_0048_FLAT.fits': date(2004, 5, 1),
+                  'P2003JAN14_0148_DARK.fits': date(2003, 1, 1),
+                  'ag2003feb19_6.0001.fits': date(2003, 2, 1),
+                  '02jun25.0071.fits': date(2002, 6, 1),
+                  '01dec10_1078.fits': date(2001, 12, 1),
+                  'c2016may18_sci121.fits': date(2016, 5, 1),
+                  '01JUN23_1021.jpg': date(2001, 6, 1),
+                  'GS2003BQ031-06.fits': date(2003, 1, 1),
+                  'GS2004add003-01.fits': date(2004, 1, 1),
+                  'GS2005AQ019-01.fits': date(2005, 1, 1)}
         validate = validator.GeminiValidator()
-        for f_name in fnames:
+        for f_name, expected_date in fnames.items():
             result = validate._date_file_name(f_name)
+            import logging
+            logging.error(f'{result} input {f_name}')
             assert isinstance(result, date), f'{f_name}'
+            assert result.year == expected_date.year, f'year fail {f_name}'
+            assert result.month == expected_date.month, f'month fail {f_name}'
     finally:
         os.getcwd = getcwd_orig

@@ -102,12 +102,13 @@ class GeminiValidator(mc.Validator):
             index = 0
             candidate = file_name.split('_')[0]
             if candidate[0].isdigit():
+                pattern = '%y%b%d'
                 if candidate.count('.') == 2:
-                    pattern = '%y%b%d'
                     splitter = '.'
                 else:
-                    pattern = '%Y%b%d'
                     splitter = '_'
+                    if candidate[2].isdigit():
+                        pattern = '%Y%b%d'
             elif candidate[0].lower() == 'p':
                 pattern = '%Y%b%d'
                 index = 1
@@ -127,13 +128,21 @@ class GeminiValidator(mc.Validator):
             elif candidate.count('TX') == 1:
                 index = candidate.index('TX') + 2
             elif candidate[0] == 'r':
-                pattern = '%d%b%y'
+                pattern = '%y%b%d'
+                index = 1
+                splitter = '_'
+            elif candidate[0] == 'c':
+                pattern = '%Y%b%d'
                 index = 1
                 splitter = '_'
             elif candidate[0] == 'a' and candidate[1] == 'g':
                 pattern = '%Y%b%d'
                 index = 2
                 splitter = '_'
+            elif candidate[0] == 'G':
+                pattern = '%Y'
+                index = 2
+                splitter = candidate[6]
             else:
                 logging.warning(
                     f'Pretty sure this is an unexpected file name format '
@@ -147,17 +156,15 @@ class GeminiValidator(mc.Validator):
         except ValueError as ex:
             self._logger.error(
                 f'Do not understand date format in file name {file_name}')
-            raise mc.CadcException(
-                f'Validation Error: do not understand date format in '
-                f'{file_name} '
-                f'{ex}')
+            result = None
+
         return result
 
     def _get_date_remove_set(self, coll, coll_name):
         remove = set()
         for f_name in coll:
             f_date = self._date_file_name(f_name)
-            if f_date > self._max_date:
+            if f_date is not None and f_date > self._max_date:
                 remove.add(f_name)
                 logging.warning(f'Removing {f_name} from {coll_name}.')
         return remove
