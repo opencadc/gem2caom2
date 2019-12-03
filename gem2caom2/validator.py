@@ -151,6 +151,9 @@ class GeminiValidator(mc.Validator):
             candidate = candidate[index:]
             if candidate.count('G') == 1:
                 splitter = 'G'
+            logging.error(f'candidate {candidate} splitter {splitter} '
+                          f'file_name {file_name} pattern {pattern} '
+                          f'index {index}')
             result = datetime.strptime(
                 candidate.split(splitter)[0], pattern).date()
         except ValueError as ex:

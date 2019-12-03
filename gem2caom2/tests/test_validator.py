@@ -96,7 +96,7 @@ def test_validator(caps_mock, tap_mock):
     ad_response = Mock()
     ad_response.status_code = 200
     ad_response.iter_content.return_value = \
-        [b'uri\n']
+        [b'fileName, ingestDate\n']
 
     global count
     count = 0

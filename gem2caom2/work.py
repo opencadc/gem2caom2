@@ -68,11 +68,11 @@
 #
 
 import logging
+import operator
 
 from collections import OrderedDict
 from datetime import datetime
 
-from caom2pipe import astro_composable as ac
 from caom2pipe import manage_composable as mc
 
 from gem2caom2 import scrape, external_metadata
@@ -111,9 +111,10 @@ class TapNoPreviewQuery(mc.Work):
         :return: a list of CAOM Observation IDs.
         """
         logging.debug('Entering todo')
-        query = "SELECT O.observationID " \
+        query = "SELECT A.uri " \
                 "FROM caom2.Observation AS O " \
                 "JOIN caom2.Plane AS P ON O.obsID = P.obsID " \
+                "JOIN caom2.Artifact AS A ON P.planeID = A.planeID " \
                 "WHERE P.planeID IN ( " \
                 "  SELECT A.planeID " \
                 "  FROM caom2.Observation AS O " \
@@ -128,8 +129,10 @@ class TapNoPreviewQuery(mc.Work):
                 "ORDER BY O.maxLastModified ASC " \
                 "".format(self.config.collection, prev_exec_date, exec_date,
                           self.max_ts)
-        result = ac.query_tap(query, self.config)
-        return [ii for ii in result['observationID']]
+        result = mc.query_tap(query, self.config.proxy_fqn, self.config.tap_id)
+        # results look like:
+        # gemini:GEM/N20191202S0125.fits
+        return mc.Validator.filter_meta(result)
 
     def initialize(self):
         """Do nothing."""
@@ -155,9 +158,10 @@ class TapRecentlyPublicQuery(mc.Work):
         """
 
         logging.debug('Entering todo')
-        query = "SELECT O.observationID " \
+        query = "SELECT A.uri " \
                 "FROM caom2.Observation AS O " \
                 "JOIN caom2.Plane AS P ON O.obsID = P.obsID " \
+                "JOIN caom2.Artifact AS A ON P.planeID = A.planeID " \
                 "WHERE P.planeID IN ( " \
                 "  SELECT A.planeID " \
                 "  FROM caom2.Observation AS O " \
@@ -170,8 +174,10 @@ class TapRecentlyPublicQuery(mc.Work):
                 "AND P.dataRelease <= '{}' " \
                 "ORDER BY O.maxLastModified ASC " \
                 "".format(self.config.collection, prev_exec_date, exec_date)
-        result = ac.query_tap(query, self.config)
-        return [ii for ii in result['observationID']]
+        result = mc.query_tap(query, self.config.proxy_fqn, self.config.tap_id)
+        # results look like:
+        # gemini:GEM/N20191202S0125.fits
+        return mc.Validator.filter_meta(result)
 
     def initialize(self):
         """Do nothing."""
@@ -196,10 +202,14 @@ class ObsFileRelationshipQuery(mc.Work):
         subset = external_metadata.get_gofr().subset(prev_exec_date, exec_date)
         # subset entries look like:
         # GEMINI OBSID TIMESTAMP
-        # so extract the OBSID value
-        temp = [ii.split()[1] for ii in subset]
-        obs_ids = list(set(temp))
-        return obs_ids
+        # so extract the OBSID value, then turn that into file names
+        obs_ids = [ii.split()[1] for ii in subset]
+        temp = []
+        for obs_id in obs_ids:
+            f_names = external_metadata.get_gofr().get_file_names(obs_id)
+            temp = operator.concat(temp, f_names)
+        f_names = list(set(temp))
+        return f_names
 
     def initialize(self):
         """Do nothing."""

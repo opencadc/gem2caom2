@@ -229,7 +229,7 @@ from gem2caom2 import gem_name
 
 
 __all__ = ['GemObsFileRelationship', 'CommandLineBits', 'FILE_NAME',
-           'PartialObsFileRelationship']
+           'PartialObsFileRelationship', 'get_command_line_bits']
 
 FILE_NAME = '/app/data/from_paul.txt'
 HEADER_URL = 'https://archive.gemini.edu/fullheader/'
@@ -819,3 +819,24 @@ def repair_data_label(file_name, data_label):
     else:
         repaired = file_id if repaired is None else repaired
     return repaired
+
+
+def get_command_line_bits(storage_name, em_data_label, em_file_name):
+    clb = None
+    if storage_name.obs_id == em_data_label:
+        lineage = ''
+        urls = ''
+        if em_file_name == storage_name.file_name:
+            # works because the file id == product id
+            lineage += mc.get_lineage(gem_name.ARCHIVE, storage_name.file_id,
+                                      storage_name.file_name,
+                                      gem_name.SCHEME)
+            urls += '{}{}.fits'.format(HEADER_URL, storage_name.file_id)
+        clb = CommandLineBits(
+            '{} {}'.format(gem_name.COLLECTION, em_data_label),
+            lineage, urls)
+    else:
+        logging.warning(
+            f'These observation ids do not match: SN {storage_name.obs_id}, '
+            f'EM: {em_data_label}')
+    return clb
