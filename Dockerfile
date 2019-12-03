@@ -1,4 +1,4 @@
-FROM opencadc/pandas:latest
+FROM opencadc/pandas
 
 RUN apk --no-cache add \
         bash \
