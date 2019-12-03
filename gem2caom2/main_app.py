@@ -1313,12 +1313,20 @@ def _build_chunk_energy(chunk, filter_name, fm):
         elif '+' in bandpass_name:
             bandpass_name = bandpass_name.replace('+', '').strip()
 
-    energy = SpectralWCS(axis=axis,
-                         specsys='TOPOCENT',
-                         ssyssrc='TOPOCENT',
-                         ssysobs='TOPOCENT',
-                         bandpass_name=bandpass_name,
-                         resolving_power=fm.resolving_power)
+    if math.isclose(fm.central_wl, 0.0):
+        energy = SpectralWCS(axis=CoordAxis1D(axis=Axis(ctype='WAVE',
+                                                        cunit='um')),
+                             specsys='TOPOCENT',
+                             ssyssrc=None,
+                             ssysobs=None,
+                             bandpass_name=bandpass_name)
+    else:
+        energy = SpectralWCS(axis=axis,
+                             specsys='TOPOCENT',
+                             ssyssrc='TOPOCENT',
+                             ssysobs='TOPOCENT',
+                             bandpass_name=bandpass_name,
+                             resolving_power=fm.resolving_power)
     chunk.energy = energy
     chunk.energy_axis = 4
 
@@ -2869,6 +2877,15 @@ def _update_chunk_energy_gmos(chunk, data_product_type, obs_id, filter_name,
         'R400': 1918.0,
         'R150': 631.0
     }
+
+    # DB 02-12-19
+    # Found basic info for the Lya395 filter in a published paper.
+    # Central wavelength is .3955 microns and FWHM is 0.00327 microns.
+    #
+    # The Hartmann ‘filter’ is actually a mask that blocks off half of the
+    # light path to the detector but is ‘open’ on the other half.  So same
+    # ‘bandpass’ as ‘open’ or ‘empty’.    It’s used when focusing the camera.
+
     # 0 = min
     # 1 = max
     # units are microns
@@ -2876,8 +2893,14 @@ def _update_chunk_energy_gmos(chunk, data_product_type, obs_id, filter_name,
               'OG515': [0.52000, 1.10000],
               'RG610': [0.61500, 1.10000],
               'RG780': [0.07800, 1.10000],
+              'Lya395': [0.393865, 0.397135],
               'open': [0.35000, 1.10000],
-              'empty': [0.35000, 1.10000]}
+              'open2-8': [0.35000, 1.10000],
+              'empty': [0.35000, 1.10000],
+              'HartmannA': [0.35000, 1.1000],
+              'HartmannB': [0.35000, 1.1000],
+              'HartmannC': [0.35000, 1.1000],
+              'HartmannD': [0.35000, 1.1000]}
 
     # DB - 04-04-19
 
@@ -2903,10 +2926,7 @@ def _update_chunk_energy_gmos(chunk, data_product_type, obs_id, filter_name,
     # One problem is 186 files with filter values of empty_0[134].  The
     # ‘empty*’ component should be treated like ‘open’ as far as bandpass is
     # concerned.   And ‘empty_*’ could be stripped out of the displayed filter
-    # name.
-    #
-    #  So likely less confusing to remove ‘empty*’ completely.   And I meant
-    #  treat wavelength limits the same as for ‘open’.
+    # name. Likely less confusing to remove ‘empty*’ completely.
 
     reset_energy = False
 
@@ -2922,9 +2942,7 @@ def _update_chunk_energy_gmos(chunk, data_product_type, obs_id, filter_name,
     w_max = 10.0
     w_min = 0.0
     for ii in filter_name.split('+'):
-        if 'Hartmann' in ii:
-            continue
-        elif ii in lookup:
+        if ii in lookup:
             wl_max = lookup[ii][1]
             wl_min = lookup[ii][0]
             if wl_max < w_max:

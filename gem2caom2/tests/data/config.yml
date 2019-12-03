@@ -45,5 +45,5 @@ rejected_file_name: rejected.yml
 task_types:
   - visit
 features:
-  use_file_names: False
+  use_file_names: True
   use_urls: False

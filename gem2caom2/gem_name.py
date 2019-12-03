@@ -124,19 +124,27 @@ class GemName(mc.StorageName):
             fname_on_disk=self.file_name,
             scheme=SCHEME)
         if self._obs_id is None:
-            self._obs_id = em.get_gofr().get_obs_id(self._file_id)
-        if self._obs_id == 'None':
-            # occurs when the html returned from archive.gemini.edu does not
-            # have a data label defined
-            self._obs_id = self._file_id
+            temp = em.get_gofr().get_obs_id(self._file_id)
+            if temp is not None:
+                self._obs_id = GemName.remove_extensions(temp)
+        if self._obs_id is None or self._obs_id == 'None':
+            # check with Gemini now
+            logging.warning(f'Check directly with GEMINI for {self.file_name}')
+            em.get_obs_metadata(self._file_id)
+            self._obs_id = ofr.repair_data_label(
+                file_name, em.om.get('data_label'))
+            clb = ofr.get_command_line_bits(self, self._obs_id, self.file_name)
+            self._lineage = clb.lineage
+            self._external_urls = clb.urls
+        else:
+            self._lineage = None
+            self._external_urls = None
         if (self._file_id is None and self._obs_id is None and
                 file_id is not None):
             self._file_id = file_id
             self._obs_id = file_id
         if file_id is not None:
             self._file_id = file_id
-        self._lineage = None
-        self._external_urls = None
         logging.debug(self)
 
     def __str__(self):
