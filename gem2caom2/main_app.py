@@ -2892,7 +2892,7 @@ def _update_chunk_energy_gmos(chunk, data_product_type, obs_id, filter_name,
     lookup = {'GG455': [0.46000, 1.10000],
               'OG515': [0.52000, 1.10000],
               'RG610': [0.61500, 1.10000],
-              'RG780': [0.07800, 1.10000],
+              'RG780': [0.7800, 1.10000],
               'Lya395': [0.393865, 0.397135],
               'open': [0.35000, 1.10000],
               'open2-8': [0.35000, 1.10000],
@@ -3427,23 +3427,37 @@ def _update_chunk_position_flamingos(chunk, header, obs_id):
     if (chunk is not None and chunk.position is not None and
             chunk.position.axis is not None and
             chunk.position.axis.function is not None):
-        c_delt1 = header.get('CDELT1')
-        c_delt2 = header.get('CDELT2')
-        c_rota1 = header.get('CROTA1')
-        if c_delt1 is not None and c_delt2 is not None and c_rota1 is not None:
-            chunk.position.axis.function.cd11 = c_delt1 * math.cos(c_rota1)
-            chunk.position.axis.function.cd12 = -c_delt2 * math.sin(c_rota1)
-            chunk.position.axis.function.cd21 = c_delt1 * math.sin(c_rota1)
-            chunk.position.axis.function.cd22 = c_delt2 * math.cos(c_rota1)
+        crval1 = header.get('CRVAL1')
+        crval2 = header.get('CRVAL2')
+        if 0.0 <= crval1 <= 360.0 and -90.0 <= crval2 <= 90.0:
+            c_delt1 = header.get('CDELT1')
+            c_delt2 = header.get('CDELT2')
+            c_rota1 = header.get('CROTA1')
+            if (c_delt1 is not None and c_delt2 is not None and
+                    c_rota1 is not None):
+                chunk.position.axis.function.cd11 = c_delt1 * math.cos(c_rota1)
+                chunk.position.axis.function.cd12 = -c_delt2 * math.sin(c_rota1)
+                chunk.position.axis.function.cd21 = c_delt1 * math.sin(c_rota1)
+                chunk.position.axis.function.cd22 = c_delt2 * math.cos(c_rota1)
+            else:
+                logging.info(
+                    f'FLAMINGOS: Missing spatial wcs inputs for {obs_id}')
+                chunk.position.axis.function.cd11 = None
+                chunk.position.axis.function.cd12 = None
+                chunk.position.axis.function.cd21 = None
+                chunk.position.axis.function.cd22 = None
         else:
-            logging.info(
-                'FLAMINGOS: Missing spatial wcs inputs for {}'.format(obs_id))
-            chunk.position.axis.function.cd11 = None
-            chunk.position.axis.function.cd12 = None
-            chunk.position.axis.function.cd21 = None
-            chunk.position.axis.function.cd22 = None
+            # DB 04-12-19
+            # FLAMINGOS GS-CAL20020623-14-0080 02jun23.0080.fits
+            # The header has “CRVAL1  =           3581.13808 ” which is
+            # supposed to be in degrees and shouldn’t be > 360. Skip spatial
+            # WCS if errors like this occur.
+            logging.warning(f'FLAMINGOS: Spatial WCS set to None for {obs_id} '
+                            f'because CRVAL1 == {crval1} '
+                            f'and CRVAL2 == {crval2}.')
+            cc.reset_position(chunk)
     else:
-        logging.info('FLAMINGOS: Missing spatial wcs for {}'.format(obs_id))
+        logging.info(f'FLAMINGOS: Missing spatial wcs for {obs_id}')
 
 
 def _update_chunk_position_trecs(chunk, headers, extension, obs_id):
