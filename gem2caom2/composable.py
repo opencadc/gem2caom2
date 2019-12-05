@@ -108,7 +108,7 @@ def run():
         sys.exit(-1)
 
 
-def run_single():
+def _run_single():
     """
     Run the processing for a single entry.
     :return 0 if successful, -1 if there's any sort of failure. Return status
@@ -128,9 +128,24 @@ def run_single():
         storage_name = gem_name.GemName(file_name=sys.argv[1])
     else:
         raise mc.CadcException('No code to handle running GEM by obs id.')
-    result = ec.run_single(config, storage_name, main_app.APPLICATION,
-                           meta_visitors, data_visitors)
-    sys.exit(result)
+    return ec.run_single(config, storage_name, main_app.APPLICATION,
+                         meta_visitors, data_visitors)
+
+
+def run_single():
+    """
+    Run the processing for a single entry.
+    :return 0 if successful, -1 if there's any sort of failure. Return status
+        is used by airflow for task instance management and reporting.
+    """
+    try:
+        result = _run_single()
+        sys.exit(result)
+    except Exception as e:
+        logging.error(e)
+        tb = traceback.format_exc()
+        logging.debug(tb)
+        sys.exit(-1)
 
 
 def _run_by_tap_query():

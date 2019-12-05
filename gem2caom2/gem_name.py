@@ -329,10 +329,9 @@ class GemNameBuilder(GemName):
         # which is aware of Gemini data label/file name relationships
         logging.debug(f'parameters file_name {file_name} obs id {obs_id}')
         super(GemNameBuilder, self).__init__(
-            obs_id=obs_id,fname_on_disk=file_name)
+            obs_id=obs_id, fname_on_disk=file_name)
         # purposefully do not set self._file_name, since that indicates
-        # later in processing that the file already exists in ad, and
-        # naming patterns can be found by querying there
+        # later in processing that the file already exists in ad
         self._file_id = GemName.remove_extensions(file_name)
         self._obs_id = ofr.repair_data_label(file_name, obs_id)
         self._last_modified_s = last_modified_s

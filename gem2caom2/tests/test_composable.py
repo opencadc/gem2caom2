@@ -68,14 +68,12 @@
 # ***********************************************************************
 #
 
-import json
 import logging
 import os
 import pytest
 import shutil
 import sys
 
-from astropy.table import Column, Table
 from datetime import datetime
 from shutil import copyfile
 from mock import patch, Mock
