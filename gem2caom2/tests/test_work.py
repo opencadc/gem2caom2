@@ -66,18 +66,18 @@
 #
 # ***********************************************************************
 #
-import os
+import json
 
 from datetime import datetime
 from mock import patch, Mock
 
 import gem_mocks
 
-from gem2caom2 import work
+from caom2utils.fits2caom2 import ObsBlueprint
+from caom2pipe import manage_composable as mc
+from gem2caom2 import work, external_metadata, gem_name, main_app
 
-STATE_FILE = '/usr/src/app/state.yml'
-THIS_DIR = os.path.dirname(os.path.realpath(__file__))
-TEST_DATA_DIR = os.path.join(THIS_DIR, 'data')
+DATA_FILE = f'{gem_mocks.TEST_DATA_DIR}/edu_query/incremental.json'
 
 
 def test_file_listing_parse():
@@ -97,3 +97,50 @@ def test_file_listing_parse():
         first_result = work_list_result.popitem(last=False)
         assert first_result[1] == expected_key, 'wrong file name'
         assert first_result[0] == 1572566500.951468, 'wrong timestamp'
+
+
+def test_gemini_incremental_query():
+    external_metadata.init_global(incremental=True)
+    with patch('caom2pipe.manage_composable.query_endpoint') as query_mock:
+        query_mock.side_effect = _mock_endpoint
+        test_config = mc.Config()
+        test_start_time = datetime(year=2019, month=12, day=1)
+        test_end_time = datetime(year=2020, month=12, day=1)
+        test_subject = work.GeminiIncrementalQuery(
+            datetime.utcnow(), test_config)
+        test_result = test_subject.todo(test_start_time, test_end_time)
+        assert test_result is not None, 'expect a result'
+        assert len(test_result) == 500, 'wrong number of results'
+        assert isinstance(test_result[0], gem_name.GemNameBuilder), \
+            'wrong result content'
+        assert test_result[0].obs_id == 'GN-2001A-C-24-1-073', 'wrong obs id'
+        assert test_result[0].file_id == '01APR19_073', 'wrong file id'
+        assert test_result[0].last_modified_s == 1576541884.426377, \
+            'wrong last modified'
+
+        test_blueprint = ObsBlueprint()
+        test_uri = mc.build_uri(
+            gem_name.ARCHIVE, f'{test_result[0].file_id}.fits.gz')
+        main_app.accumulate_fits_bp(
+            test_blueprint, test_result[0].file_id, test_uri)
+        assert test_blueprint._get('Chunk.time.exposure') == \
+               'get_exposure(header)', 'wrong blueprint'
+        assert main_app.get_proposal_id(None) == 'GN-2001A-C-24', \
+            'wrong proposal id'
+
+
+def _mock_endpoint(url, timeout=-1):
+    def x():
+        with open(DATA_FILE, 'r') as f:
+            temp = f.read()
+        return json.loads(temp)
+
+    result = gem_mocks.Object()
+    result.json = x
+
+    if url.startswith('http://arcdev'):
+        assert '2019-12-01T00:00:00.000000%202020-12-01T00:00:00.000000' in \
+               url, 'wrong url format'
+    else:
+        raise mc.CadcException('wut?')
+    return result

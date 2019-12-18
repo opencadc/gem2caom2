@@ -75,10 +75,11 @@ from datetime import datetime
 
 from caom2pipe import manage_composable as mc
 
-from gem2caom2 import scrape, external_metadata
+from gem2caom2 import scrape, external_metadata, gem_name
 
 __all__ = ['TapNoPreviewQuery', 'TapRecentlyPublicQuery',
-           'ObsFileRelationshipQuery', 'FileListingQuery']
+           'ObsFileRelationshipQuery', 'FileListingQuery',
+           'GeminiIncrementalQuery']
 
 # See the definition of 'canonical' here, for why it matters in the URL:
 # https://archive.gemini.edu/help/api.html
@@ -286,3 +287,80 @@ class FileListingQuery(mc.Work):
         ordered_file_names = OrderedDict(sorted(entries.items()))
         logging.info(f'Found {len(ordered_file_names)} entries to process.')
         return ordered_file_names
+
+
+class GeminiIncrementalQuery(mc.Work):
+
+    def __init__(self, max_ts, config):
+        super(GeminiIncrementalQuery, self).__init__(max_ts.timestamp())
+        self.config = config
+        self.max_ts = max_ts  # type datetime
+
+    def todo(self, prev_exec_date, exec_date):
+        """
+        Get the set of observation IDs that do not have preview or
+        thumbnail artifacts. Limit the entries by time-boxing on
+        dataRelease.
+
+        :param prev_exec_date datetime start of the timestamp chunk
+        :param exec_date datetime end of the timestamp chunk
+        :return: a list of CAOM Observation IDs.
+        """
+
+        logging.debug('Entering todo')
+        # datetime format 2019-12-01T00:00:00.000000
+        prev_dt_str = prev_exec_date.strftime(mc.ISO_8601_FORMAT)
+        exec_dt_str = exec_date.strftime(mc.ISO_8601_FORMAT)
+        url = f'http://arcdev.gemini.edu/jsonsummary/sr=179/notengineering/' \
+              f'NotFail/entrytime={prev_dt_str}%20{exec_dt_str}?order_by=' \
+              f'entrytime'
+
+        # needs to be ordered by timestamps when processed
+        # key timestamp
+        # value list of StorageName instancec
+        entries = {}
+        response = None
+        try:
+            response = mc.query_endpoint(url)
+            if response is None:
+                logging.warning(f'Could not query {url}.')
+            else:
+                metadata = response.json()
+                response.close()
+                if metadata is not None:
+                    if len(metadata) == 0:
+                        logging.warning(f'No query results returned for '
+                                        f'interval from {prev_exec_date} to '
+                                        f'{exec_date}.')
+                    else:
+                        # results have file names and data labels, so
+                        # StorageName instances can be created
+                        for entry in metadata:
+                            file_name = entry.get('name')
+                            file_id = gem_name.GemName.remove_extensions(
+                                file_name)
+                            obs_id = entry.get('data_label')
+                            last_modified_s = mc.make_seconds(
+                                entry.get('lastmod'))
+                            external_metadata.om.add(entry, file_id)
+                            storage_name = gem_name.GemNameBuilder(
+                                obs_id, file_name, last_modified_s)
+                            mc.append_as_array(
+                                entries, last_modified_s, storage_name)
+        finally:
+            if response is not None:
+                response.close()
+
+        # this works because in 3.7 insertion order for dicts is preserved, so
+        # sort by the timestamps, then create a list based on that order,
+        # concatenating the lists that are the values of entries
+        temp = sorted(entries.items())
+        temp_return = {}
+        for entries in temp:
+            for entry in entries[1]:
+                temp_return[entry] = 0
+        return [ii for ii in temp_return.keys()]
+
+    def initialize(self):
+        """Do nothing."""
+        pass

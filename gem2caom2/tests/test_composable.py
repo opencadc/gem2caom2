@@ -68,6 +68,7 @@
 # ***********************************************************************
 #
 
+import json
 import logging
 import os
 import pytest
@@ -302,11 +303,10 @@ def test_run_by_in_memory_query():
 @patch('caom2pipe.manage_composable.exec_cmd')
 @patch('caom2pipe.execute_composable.CAOM2RepoClient')
 @patch('caom2pipe.execute_composable.CadcDataClient')
-@patch('gem2caom2.scrape.read_json_file_list_page')
-@patch('gem2caom2.external_metadata.get_obs_metadata')
 @patch('caom2pipe.manage_composable.read_obs_from_file')
-def test_run_by_incremental(read_mock, obs_md_mock, scrape_mock,
-                            data_client_mock, repo_mock, exec_mock):
+@patch('caom2pipe.manage_composable.query_endpoint')
+def test_run_by_incremental2(query_mock, read_mock,
+                             data_client_mock, repo_mock, exec_mock):
     data_client_mock.return_value.get_file_info.side_effect = \
         gem_mocks.mock_get_file_info
     data_client_mock.return_value.get_file.side_effect = Mock()
@@ -315,20 +315,88 @@ def test_run_by_incremental(read_mock, obs_md_mock, scrape_mock,
     repo_mock.return_value.read.side_effect = gem_mocks.mock_repo_read
     repo_mock.return_value.update.side_effect = gem_mocks.mock_repo_update
 
-    def _scrape_mock(ignore1, ignore2):
-        return gem_mocks.TEST_TODO_LIST
-    scrape_mock.side_effect = _scrape_mock
-
-    obs_md_mock.side_effect = gem_mocks.mock_get_obs_metadata
-
     def _read_mock(ignore_fqn):
         return SimpleObservation(collection='TEST',
                                  observation_id='TEST_OBS_ID',
                                  algorithm=Algorithm('exposure'))
     read_mock.side_effect = _read_mock
 
+    def _query_mock():
+        x = json.loads("""[{
+        "name": "2002feb11_0180.fits",
+        "filename": "2002feb11_0180.fits.bz2",
+        "path": "",
+        "compressed": true,
+        "file_size": 397169,
+        "data_size": 1056960,
+        "file_md5": "850d2df8b71c894984b4ff9d89cebcd8",
+        "data_md5": "cf3ccf17539b23c4aa68c80308f885e2",
+        "lastmod": "2019-12-17 00:21:08.159934+00:00",
+        "mdready": true,
+        "entrytime": "2019-12-17 00:21:08.178516+00:00",
+        "size": 397169,
+        "md5": "850d2df8b71c894984b4ff9d89cebcd8",
+        "program_id": "GS-2002A-Q-8",
+        "engineering": false,
+        "science_verification": false,
+        "calibration_program": false,
+        "observation_id": "GS-2002A-Q-8-4",
+        "data_label": "GS-2002A-Q-8-4-0180",
+        "telescope": "Gemini-South",
+        "instrument": "PHOENIX",
+        "ut_datetime": "2002-04-04 21:47:53",
+        "local_time": null,
+        "observation_type": null,
+        "observation_class": null,
+        "object": "SZ Cha",
+        "ra": 164.574204166667,
+        "dec": -77.287963888889,
+        "azimuth": null,
+        "elevation": null,
+        "cass_rotator_pa": null,
+        "airmass": 1.478,
+        "filter_name": "2150_(2)",
+        "exposure_time": 240.0,
+        "disperser": null,
+        "camera": null,
+        "central_wavelength": null,
+        "wavelength_band": null,
+        "focal_plane_mask": "107u_1.0-5.0 (8)",
+        "detector_binning": "1x1",
+        "detector_gain_setting": null,
+        "detector_roi_setting": "Fixed",
+        "detector_readspeed_setting": null,
+        "detector_welldepth_setting": null,
+        "detector_readmode_setting": "None",
+        "spectroscopy": true,
+        "mode": "spectroscopy",
+        "adaptive_optics": false,
+        "laser_guide_star": false,
+        "wavefront_sensor": null,
+        "gcal_lamp": null,
+        "raw_iq": 50,
+        "raw_cc": 50,
+        "raw_wv": 80,
+        "raw_bg": 80,
+        "requested_iq": null,
+        "requested_cc": null,
+        "requested_wv": null,
+        "requested_bg": null,
+        "qa_state": "Undefined",
+        "release": "2003-08-11",
+        "reduction": "RAW",
+        "types": "{'UNPREPARED', 'SOUTH', 'RAW', 'PHOENIX', 'GEMINI', 'SPECT'}",
+        "phot_standard": null,
+        "results_truncated": true
+    }]""")
+        return x
+
+    query_result = gem_mocks.Object()
+    query_result.json = _query_mock
+    query_mock.return_value = query_result
+
     _write_cert()
-    prior_s = datetime.utcnow().timestamp() - 1440 * 60
+    prior_s = datetime.utcnow().timestamp() - 60
     _write_state(prior_s)
     getcwd_orig = os.getcwd
     os.getcwd = Mock(return_value=f'{gem_mocks.TEST_DATA_DIR}/edu_query')
@@ -347,23 +415,22 @@ def test_run_by_incremental(read_mock, obs_md_mock, scrape_mock,
     py_version = f'{sys.version_info.major}.{sys.version_info.minor}'
     exec_mock.assert_called_with(
         (f'gem2caom2 --quiet --cert /usr/src/app/cadcproxy.pem '
-         f'--in /usr/src/app/logs/GN-2019B-ENG-1-160-008.fits.xml '
-         f'--out /usr/src/app/logs/GN-2019B-ENG-1-160-008.fits.xml '
+         f'--observation GEMINI GS-2002A-Q-8-4-0180 '
+         f'--out /usr/src/app/logs/GS-2002A-Q-8-4-0180.fits.xml '
          f'--external_url '
-         f'https://archive.gemini.edu/fullheader/N20191101S0007.fits '
+         f'https://archive.gemini.edu/fullheader/2002feb11_0180.fits '
          f'--plugin '
          f'/usr/local/lib/python{py_version}/site-packages/gem2caom2/'
          f'gem2caom2.py '
          f'--module '
          f'/usr/local/lib/python{py_version}/site-packages/gem2caom2/'
          f'gem2caom2.py '
-         f'--lineage N20191101S0007/gemini:GEM/N20191101S0007.fits'),
+         f'--lineage 2002feb11_0180/gemini:GEM/2002feb11_0180.fits'),
         level_as), \
-        'exec mock wrong parameters'
+    'exec mock wrong parameters'
     assert not data_client_mock.return_value.get_file_info.called, \
         'data client mock get file info should not be not called'
-    assert obs_md_mock.called, 'obs mock not called'
-    assert scrape_mock.called, 'scrape mock not called'
+    assert query_mock.called, 'query mock not called'
 
 
 @patch('sys.exit', Mock(return_value=MyExitError))

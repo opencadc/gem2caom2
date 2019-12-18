@@ -463,7 +463,8 @@ def get_meta_release(parameters):
     # combination - this location happens to be the first function called
     # during blueprint evaluation, which is why reset is
     # called here
-    em.om.reset_index(uri)
+    file_id = GemName.remove_extensions(mc.CaomName(uri).file_name)
+    em.om.reset_index(file_id)
 
     # DB 21-08-19
     # If PROP_MD is T, use JSON ‘release’ value for metadata release date.
@@ -1002,7 +1003,7 @@ def update(observation, **kwargs):
         current_product_id = None
 
     # processed files
-    if (is_composite(headers) and not
+    if (cc.is_composite(headers) and not
             isinstance(observation, CompositeObservation)):
         logging.info('{} is a Composite Observation.'.format(
             observation.observation_id))
@@ -1055,7 +1056,9 @@ def update(observation, **kwargs):
                     continue
 
                 caom_name = mc.CaomName(artifact.uri)
-                em.om.reset_index(caom_name.uri)
+                file_id = GemName.remove_extensions(
+                    mc.CaomName(caom_name.uri).file_name)
+                em.om.reset_index(file_id)
                 processed = ofr.is_processed(caom_name.file_name)
                 if (instrument in
                         [em.Inst.MICHELLE, em.Inst.TRECS, em.Inst.GNIRS]):
@@ -3655,7 +3658,7 @@ def _update_chunk_time_gmos(chunk, obs_id):
 
 
 def _update_composite(obs):
-    comp_obs = change_to_composite(obs)
+    comp_obs = cc.change_to_composite(obs)
     return comp_obs
 
 
@@ -3740,39 +3743,6 @@ def _get_uris(args):
         raise mc.CadcException(
             'Could not define uri from these args {}'.format(args))
     return result
-
-
-def is_composite(headers):
-    """All the logic to determine if a file name is part of a
-    CompositeObservation, in one marvelous function."""
-    result = False
-
-    # look in the last header - IMCMB keywords are not in the zero'th header
-    header = headers[-1]
-    for ii in header:
-        if ii.startswith('IMCMB'):
-            result = True
-            break
-    return result
-
-
-def change_to_composite(observation):
-    """For the case where a SimpleObservation needs to become a
-    CompositeObservation."""
-    return CompositeObservation(observation.collection,
-                                observation.observation_id,
-                                Algorithm('composite'),
-                                observation.sequence_number,
-                                observation.intent,
-                                observation.type,
-                                observation.proposal,
-                                observation.telescope,
-                                observation.instrument,
-                                observation.target,
-                                observation.meta_release,
-                                observation.planes,
-                                observation.environment,
-                                observation.target_position)
 
 
 def main_app2():

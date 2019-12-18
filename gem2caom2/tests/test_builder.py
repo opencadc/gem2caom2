@@ -70,7 +70,7 @@
 import os
 
 from caom2pipe import manage_composable as mc
-from gem2caom2 import builder
+from gem2caom2 import builder, external_metadata
 
 from mock import Mock, patch
 import gem_mocks as gm
@@ -82,6 +82,7 @@ def test_edu_query_builder(em_om_mock):
     getcwd_orig = os.getcwd
     os.getcwd = Mock(return_value=gm.TEST_DATA_DIR)
     try:
+        external_metadata.init_global(incremental=False)
         test_config = mc.Config()
         test_config.get_executors()
         test_subject = builder.EduQueryBuilder(test_config)

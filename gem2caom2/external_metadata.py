@@ -83,14 +83,14 @@ from gem2caom2.obs_file_relationship import GemObsFileRelationship
 
 
 __all__ = ['get_gofr', 'Inst', 'get_obs_metadata', 'get_pi_metadata',
-           'get_filter_metadata', 'set_ofr']
+           'get_filter_metadata', 'set_ofr', 'init_global']
 
 
 GEMINI_METADATA_URL = \
     'https://archive.gemini.edu/jsonsummary/canonical/filepre='
 
 # lazy initialization for jsonsummary metadata from Gemini
-om = gom.GeminiObsMetadata()
+om = None
 # lazy initialization for filter metadata from SVO
 fm = {}
 # lazy initialization for program metadata from Gemini
@@ -111,6 +111,14 @@ def set_ofr(value):
     # with the query results from archive.gemini.edu
     global gofr
     gofr = value
+
+
+def init_global(incremental):
+    global om
+    if incremental:
+        om = gom.GeminiObsMetadataIncremental()
+    else:
+        om = gom.GeminiObsMetadata()
 
 
 class Inst(Enum):
@@ -146,26 +154,30 @@ def get_obs_metadata(file_id):
     :return: Dictionary of observation metadata.
     """
     logging.debug('Begin get_obs_metadata for {}'.format(file_id))
-    gemini_url = '{}{}'.format(GEMINI_METADATA_URL, file_id)
-
-    # Open the URL and fetch the JSON document for the observation
-    session = requests.Session()
-    retries = 10
-    retry = Retry(total=retries, read=retries, connect=retries,
-                  backoff_factor=0.5)
-    adapter = HTTPAdapter(max_retries=retry)
-    session.mount('http://', adapter)
-    session.mount('https://', adapter)
-    try:
-        response = session.get(gemini_url, timeout=20)
-        metadata = response.json()
-        response.close()
-    except Exception as e:
-        raise mc.CadcException(
-            'Unable to download Gemini observation metadata from {} because {}'
-                .format(gemini_url, str(e)))
     global om
-    om.add(metadata, file_id)
+    if om.contains(file_id):
+        logging.error('contains is true')
+        om.reset_index(file_id)
+    else:
+        gemini_url = '{}{}'.format(GEMINI_METADATA_URL, file_id)
+
+        # Open the URL and fetch the JSON document for the observation
+        session = requests.Session()
+        retries = 10
+        retry = Retry(total=retries, read=retries, connect=retries,
+                      backoff_factor=0.5)
+        adapter = HTTPAdapter(max_retries=retry)
+        session.mount('http://', adapter)
+        session.mount('https://', adapter)
+        try:
+            response = session.get(gemini_url, timeout=20)
+            metadata = response.json()
+            response.close()
+        except Exception as e:
+            raise mc.CadcException(
+                f'Unable to download Gemini observation metadata from '
+                f'{gemini_url} because {str(e)}')
+        om.add(metadata, file_id)
     logging.debug('End get_obs_metadata for {}'.format(file_id))
 
 

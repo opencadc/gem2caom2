@@ -76,7 +76,7 @@ from datetime import datetime
 
 from caom2pipe import execute_composable as ec
 from caom2pipe import manage_composable as mc
-from gem2caom2 import main_app, work, preview_augmentation, builder
+from gem2caom2 import main_app, work, preview_augmentation, external_metadata
 from gem2caom2 import pull_augmentation, gem_name
 
 meta_visitors = [preview_augmentation, pull_augmentation]
@@ -92,6 +92,7 @@ def _run():
     """
     config = mc.Config()
     config.get_executors()
+    external_metadata.init_global(incremental=False)
     return ec.run_by_file(config, gem_name.GemName, main_app.APPLICATION,
                           meta_visitors, data_visitors, chooser=None)
 
@@ -128,6 +129,7 @@ def _run_single():
         storage_name = gem_name.GemName(file_name=sys.argv[1])
     else:
         raise mc.CadcException('No code to handle running GEM by obs id.')
+    external_metadata.init_global(incremental=False)
     return ec.run_single(config, storage_name, main_app.APPLICATION,
                          meta_visitors, data_visitors)
 
@@ -160,6 +162,7 @@ def _run_by_tap_query():
     """
     config = mc.Config()
     config.get_executors()
+    external_metadata.init_global(incremental=False)
     return ec.run_from_state(config, gem_name.GemName, main_app.APPLICATION,
                              meta_visitors, data_visitors, GEM_BOOKMARK,
                              work.TapNoPreviewQuery(
@@ -187,6 +190,7 @@ def _run_by_in_memory():
     """
     config = mc.Config()
     config.get_executors()
+    external_metadata.init_global(incremental=False)
     return ec.run_from_state(config, gem_name.GemName, main_app.APPLICATION,
                              meta_visitors, data_visitors, GEM_BOOKMARK,
                              work.ObsFileRelationshipQuery())
@@ -216,6 +220,7 @@ def _run_by_public():
     """
     config = mc.Config()
     config.get_executors()
+    external_metadata.init_global(incremental=False)
     return ec.run_from_state(config, gem_name.GemName, main_app.APPLICATION,
                              meta_visitors, data_visitors, GEM_BOOKMARK,
                              work.TapRecentlyPublicQuery(
@@ -242,13 +247,10 @@ def _run_by_incremental():
     """
     config = mc.Config()
     config.get_executors()
-    state = mc.State(config.state_fqn)
-    last_processed_time = state.get_bookmark(GEM_BOOKMARK)
-    builder_work = work.FileListingQuery(last_processed_time)
-    result = ec.run_by_builder(
-        config, main_app.APPLICATION, GEM_BOOKMARK, meta_visitors,
-        data_visitors, builder_work, builder.EduQueryBuilder(config))
-    return result
+    external_metadata.init_global(incremental=True)
+    return ec.run_from_storage_name_instance(
+        config, main_app.APPLICATION, meta_visitors, data_visitors,
+        GEM_BOOKMARK, work.GeminiIncrementalQuery(_get_utcnow(), config))
 
 
 def run_by_incremental():
