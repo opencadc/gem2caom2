@@ -68,7 +68,7 @@
 #
 import pytest
 
-from gem2caom2 import main_app, gem_name
+from gem2caom2 import main_app, gem_name, external_metadata
 from caom2pipe import manage_composable as mc
 
 import os
@@ -106,6 +106,7 @@ def pytest_generate_tests(metafunc):
 
 @patch('sys.exit', Mock())
 def test_multi_plane(test_name):
+    external_metadata.init_global(False)
     obs_id = test_name
     lineage = _get_lineage(obs_id)
     input_file = '{}/{}/{}.in.xml'.format(
@@ -121,7 +122,7 @@ def test_multi_plane(test_name):
             gemini_client_mock, \
             patch('gem2caom2.external_metadata.get_pi_metadata') as \
             gemini_pi_mock, \
-            patch('gem2caom2.svofps.get_vo_table') as svofps_mock:
+            patch('caom2pipe.astro_composable.get_vo_table') as svofps_mock:
 
         data_client_mock.return_value.get_file_info.side_effect = \
             gem_mocks.mock_get_file_info

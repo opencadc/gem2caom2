@@ -103,7 +103,7 @@ from astropy.coordinates import SkyCoord
 from caom2 import Observation, ObservationIntentType, DataProductType
 from caom2 import CalibrationLevel, TargetType, ProductType, Chunk, Axis
 from caom2 import SpectralWCS, CoordAxis1D, RefCoord, Instrument
-from caom2 import TypedList, CoordRange1D, CompositeObservation, Algorithm
+from caom2 import TypedList, CoordRange1D, CompositeObservation
 from caom2utils import ObsBlueprint, get_gen_proc_arg_parser, gen_proc
 from caom2utils import WcsParser
 from caom2pipe import manage_composable as mc
@@ -1096,8 +1096,7 @@ def update(observation, **kwargs):
                             instrument)
                         if _reset_energy(observation.type, plane.product_id,
                                          instrument, filter_name):
-                            c.energy = None
-                            c.energy_axis = None
+                            cc.reset_energy(c)
                         else:
                             if instrument is em.Inst.NIRI:
                                 _update_chunk_energy_niri(
@@ -1198,9 +1197,7 @@ def update(observation, **kwargs):
                             logging.debug(
                                 'Setting Spatial WCS to None for {}'.format(
                                     observation.observation_id))
-                            c.position_axis_2 = None
-                            c.position_axis_1 = None
-                            c.position = None
+                            cc.reset_position(c)
                         else:
                             if (instrument in [em.Inst.PHOENIX, em.Inst.HOKUPAA,
                                                em.Inst.OSCIR] or
@@ -1519,8 +1516,7 @@ def _update_chunk_energy_niri(chunk, data_product_type, obs_id, filter_name):
                 data_product_type, obs_id))
 
     if reset_energy:
-        chunk.energy_axis = None
-        chunk.energy = None
+        cc.reset_energy(chunk)
     else:
         _build_chunk_energy(chunk, filter_name, fm)
     logging.debug('End _update_chunk_energy_niri')
@@ -1659,8 +1655,7 @@ def _update_chunk_energy_f2(chunk, header, data_product_type, obs_id,
         logging.info(
             'Setting spectral WCs to none for {} instrument {}'.format(
                 obs_id, em.Inst.F2))
-        chunk.energy_axis = None
-        chunk.energy = None
+        cc.reset_energy(chunk)
     else:
         _build_chunk_energy(chunk, filter_name, fm)
     logging.debug('End _update_chunk_energy_f2')
@@ -1893,8 +1888,7 @@ def _update_chunk_energy_nici(chunk, data_product_type, obs_id, filter_name):
         # DB 04-04-19
         # If one of the NICI filters is ‘Block’ then energy WCS should be
         # ignored for that extension.
-        chunk.energy = None
-        chunk.energy_axis = None
+        cc.reset_energy(chunk)
     else:
         filter_md = em.get_filter_metadata(em.Inst.NICI, filter_name)
 
@@ -2097,8 +2091,7 @@ def _update_chunk_energy_nifs(chunk, data_product_type, obs_id, filter_name):
                     data_product_type, obs_id))
 
     if fm is None:
-        chunk.energy_axis = None
-        chunk.energy = None
+        cc.reset_energy(chunk)
     else:
         _build_chunk_energy(chunk, filter_name, fm)
 
@@ -2496,8 +2489,7 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name):
                     data_product_type, obs_id))
 
     if reset_energy:
-        chunk.energy_axis = None
-        chunk.energy = None
+        cc.reset_energy(chunk)
     else:
         _build_chunk_energy(chunk, filter_name, fm)
     logging.debug('End _update_chunk_energy_gnirs')
@@ -2733,8 +2725,7 @@ def _update_chunk_energy_hokupaa(chunk, data_product_type, obs_id, filter_name):
                     data_product_type, obs_id))
 
     if reset_energy:
-        chunk.energy_axis = None
-        chunk.energy = None
+        cc.reset_energy(chunk)
     else:
         _build_chunk_energy(chunk, filter_name, fm)
     logging.debug('End _update_chunk_energy_hokupaa')
@@ -3031,8 +3022,7 @@ def _update_chunk_energy_gmos(chunk, data_product_type, obs_id, filter_name,
             '{}: mystery data product type {} for {}'.format(
                 instrument, data_product_type, obs_id))
     if reset_energy:
-        chunk.energy_axis = None
-        chunk.energy = None
+        cc.reset_energy(chunk)
     else:
         _build_chunk_energy(chunk, filter_name, fm)
     logging.debug('End _update_chunk_energy_gmos')

@@ -67,45 +67,12 @@
 # ***********************************************************************
 #
 
-import io
 import logging
 
-import requests
-from astropy.io.votable import parse_single_table
-from requests.adapters import HTTPAdapter
-from requests.packages.urllib3.util.retry import Retry
+from caom2pipe import astro_composable as ac
 
-SVO_URL = 'http://svo2.cab.inta-csic.es/svo/theory/fps/fps.php?ID=Gemini/'
-SVO_KPNO_URL = 'http://svo2.cab.inta-csic.es/svo/theory/fps/fps.php?ID=KPNO/'
-
-
-def get_vo_table(url):
-    """
-    Download the VOTable XML for the given url and return a astropy.io.votable
-    object.
-
-    :param url: query url for the SVO service
-    :return: astropy.io.votable of the first table and
-             an error_message if there was an error downloading the data
-    """
-    session = requests.Session()
-    retry = Retry(connect=3, backoff_factor=0.5)
-    adapter = HTTPAdapter(max_retries=retry)
-    session.mount('http://', adapter)
-    session.mount('https://', adapter)
-    vo_table = None
-    response = None
-    error_message = None
-    try:
-        response = session.get(url)
-        fh = io.BytesIO(bytes(response.text, 'utf-8'))
-        response.close()
-        vo_table = parse_single_table(fh)
-    except Exception as e:
-        error_message = str(e)
-    if response:
-        response.close()
-    return vo_table, error_message
+# SVO_URL = 'http://svo2.cab.inta-csic.es/svo/theory/fps/fps.php?ID=Gemini/'
+# SVO_KPNO_URL = 'http://svo2.cab.inta-csic.es/svo/theory/fps/fps.php?ID=KPNO/'
 
 
 def filter_metadata(instrument, filters):
@@ -139,22 +106,22 @@ def filter_metadata(instrument, filters):
             filter_id = "{}.{}".format(instrument, filter_name)
             # VERB=0 parameter means the smallest amount returned
             if instrument == 'Flamingos':
-                url = "{}{}&VERB=0".format(SVO_KPNO_URL, filter_id)
+                url = "{}KPNO/{}&VERB=0".format(ac.SVO_URL, filter_id)
             else:
-                url = "{}{}&VERB=0".format(SVO_URL, filter_id)
+                url = "{}Gemini/{}&VERB=0".format(ac.SVO_URL, filter_id)
 
             # Open the URL and fetch the VOTable document.
             # Some Gemini filters in SVO filter database have bandpass info
             # only for 'w'arm filters.  First check for filter without 'w'
             # appended to the ID (which I assume means bandpass is for cold
             # filter), then search for 'w' if nothing is found...
-            votable, error_message = get_vo_table(url)
+            votable, error_message = ac.get_vo_table(url)
             if not votable:
                 if instrument == 'Flamingos':
-                    url = "{}{}w&VERB=0".format(SVO_KPNO_URL, filter_id)
+                    url = "{}KPNO/{}w&VERB=0".format(ac.SVO_URL, filter_id)
                 else:
-                    url = "{}{}w&VERB=0".format(SVO_URL, filter_id)
-                votable, error_message = get_vo_table(url)
+                    url = "{}Gemini/{}w&VERB=0".format(ac.SVO_URL, filter_id)
+                votable, error_message = ac.get_vo_table(url)
             if not votable:
                 logging.error(
                     'Unable to download SVO filter data from {} because {}'

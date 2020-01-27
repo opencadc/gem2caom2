@@ -109,6 +109,7 @@ def pytest_generate_tests(metafunc):
 @patch('sys.exit', Mock())
 def test_main_app(test_name):
     em.set_ofr(None)
+    em.init_global(False)
     test_data_size = os.stat(
         os.path.join(gem_mocks.TEST_DATA_DIR, 'from_paul.txt'))
     app_size = os.stat('/app/data/from_paul.txt')
@@ -132,7 +133,7 @@ def test_main_app(test_name):
             gemini_client_mock, \
             patch('gem2caom2.external_metadata.get_pi_metadata') as \
             gemini_pi_mock, \
-            patch('gem2caom2.svofps.get_vo_table') as svofps_mock:
+            patch('caom2pipe.astro_composable.get_vo_table') as svofps_mock:
 
         data_client_mock.return_value.get_file_info.side_effect = \
             gem_mocks.mock_get_file_info
