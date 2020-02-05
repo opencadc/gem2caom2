@@ -173,3 +173,13 @@ def find_data_label_by_file_name(f_name):
         if response is not None:
             response.close()
     return metadata
+
+
+def parse_for_data_label(json_string, f_name):
+    obs_id = None
+    last_mod_s = None
+    for entry in json_string:
+        if entry.get('name') == f_name:
+            obs_id = entry.get('data_label')
+            last_mod_s = mc.make_seconds(entry.get('lastmod'))
+    return obs_id, last_mod_s

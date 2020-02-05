@@ -132,7 +132,7 @@ class GemName(mc.StorageName):
             logging.warning(f'Check directly with GEMINI for {self.file_name}')
             em.get_obs_metadata(self._file_id)
             self._obs_id = ofr.repair_data_label(
-                file_name, em.om.get('data_label'))
+                self.file_name, em.om.get('data_label'))
             clb = ofr.get_command_line_bits(self, self._obs_id, self.file_name)
             self._lineage = clb.lineage
             self._external_urls = clb.urls
@@ -333,7 +333,8 @@ class GemNameBuilder(GemName):
         # purposefully do not set self._file_name, since that indicates
         # later in processing that the file already exists in ad
         self._file_id = GemName.remove_extensions(file_name)
-        self._obs_id = ofr.repair_data_label(file_name, obs_id)
+        if self._obs_id is None:
+            self._obs_id = ofr.repair_data_label(file_name, obs_id)
         self._last_modified_s = last_modified_s
         self._lineage = mc.get_lineage(
             ARCHIVE, self._file_id, file_name, SCHEME)

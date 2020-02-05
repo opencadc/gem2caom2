@@ -758,7 +758,9 @@ def repair_data_label(file_name, data_label):
     Some special code will be needed for datalabels/planes.  There are no
     datalabels in the FITS header.  json metadata (limited) must be
     obtained with URL like
-    https://archive.gemini.edu/jsonsummary/canonical/filepre=TX20170321_flt.2507.fits.
+    'https://archive.gemini.edu/jsonsummary/canonical/filepre=
+     TX20170321_flt.2507.fits.'
+
     Use TX20170321_flt.2507 as datalabel.  But NOTE:  *raw.2507.fits and
     *red.2507.fits are two planes of the same observation. I’d suggest we
     use ‘*raw*’ as the datalabel and ‘*red*’ or ‘*raw*’ as the appropriate

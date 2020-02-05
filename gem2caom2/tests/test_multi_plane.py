@@ -139,7 +139,7 @@ def test_multi_plane(test_name):
              format(main_app.APPLICATION, local, plugin, plugin,
                     input_file, actual_fqn, lineage)).split()
         print(sys.argv)
-        main_app.main_app2()
+        main_app.gem_main_app()
         expected_fqn = '{}/{}/{}.xml'.format(
             gem_mocks.TEST_DATA_DIR, DIR_NAME, obs_id)
         compare_result = gem_mocks.compare(

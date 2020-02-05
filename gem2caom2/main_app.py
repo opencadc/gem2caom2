@@ -115,7 +115,7 @@ import gem2caom2.obs_file_relationship as ofr
 from gem2caom2.gem_name import GemName, COLLECTION
 from gem2caom2.svofps import FilterMetadata
 
-__all__ = ['main_app2', 'update', 'APPLICATION']
+__all__ = ['gem_main_app', 'to_caom2', 'update', 'APPLICATION']
 
 APPLICATION = 'gem2caom2'
 
@@ -3706,8 +3706,7 @@ def _build_blueprints(uris):
     between the blueprint entries and the model attributes.
 
     :param uris The list of artifact URIs for the files to be processed.
-    :param obs_id The Observation ID of the file.
-    :param file_id The file ID."""
+    """
     module = importlib.import_module(__name__)
     blueprints = {}
     for uri in uris:
@@ -3735,17 +3734,26 @@ def _get_uris(args):
     return result
 
 
-def main_app2():
-    args = get_gen_proc_arg_parser().parse_args()
+def to_caom2():
     try:
+        args = get_gen_proc_arg_parser().parse_args()
         uris = _get_uris(args)
         blueprints = _build_blueprints(uris)
         result = gen_proc(args, blueprints)
+        return result
+    except Exception as e:
+        logging.error(traceback.format_exc())
+        raise e
+
+
+def gem_main_app():
+    args = get_gen_proc_arg_parser().parse_args()
+    try:
+        result = to_caom2()
+        logging.debug('Done {} processing.'.format(APPLICATION))
         sys.exit(result)
     except Exception as e:
         logging.error('Failed {} execution for {}.'.format(APPLICATION, args))
         tb = traceback.format_exc()
         logging.error(tb)
         sys.exit(-1)
-
-    logging.debug('Done {} processing.'.format(APPLICATION))

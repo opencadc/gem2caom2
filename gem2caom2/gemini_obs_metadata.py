@@ -144,7 +144,14 @@ class GeminiObsMetadataIncremental(GeminiObsMetadata):
         self.current = None  # file_id of the last added entry
 
     def add(self, metadata, file_id):
-        self.lookup[file_id] = metadata
+        if isinstance(metadata, list):
+            for entry in metadata:
+                temp_file_id = GemName.remove_extensions(entry.get('filename'))
+                if temp_file_id is not None and file_id == temp_file_id:
+                    self.lookup[file_id] = entry
+                    break
+        else:
+            self.lookup[file_id] = metadata
         self.current = file_id
 
     def contains(self, file_id):

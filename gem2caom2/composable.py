@@ -73,11 +73,13 @@ import tempfile
 import traceback
 
 from datetime import datetime
+from deprecated import deprecated
 
 from caom2pipe import execute_composable as ec
 from caom2pipe import manage_composable as mc
+from caom2pipe import run_composable as rc
 from gem2caom2 import main_app, work, preview_augmentation, external_metadata
-from gem2caom2 import pull_augmentation, gem_name
+from gem2caom2 import pull_augmentation, gem_name, builder, data_source
 
 meta_visitors = [preview_augmentation, pull_augmentation]
 data_visitors = []
@@ -87,14 +89,16 @@ GEM_BOOKMARK = 'gemini_timestamp'
 
 def _run():
     """
-    Uses a todo file with observation IDs, which is how Gemini provides
-    information about existing data.
+    Uses a todo file with file names, even though Gemini provides
+    information about existing data referenced by observation ID.
     """
     config = mc.Config()
     config.get_executors()
     external_metadata.init_global(incremental=False)
-    return ec.run_by_file(config, gem_name.GemName, main_app.APPLICATION,
-                          meta_visitors, data_visitors, chooser=None)
+    gem_builder = builder.GemBuilder()
+    return rc.run_by_todo(config, gem_builder, chooser=None,
+                          command_name=main_app.APPLICATION,
+                          meta_visitors=meta_visitors)
 
 
 def run():
@@ -264,6 +268,70 @@ def run_by_incremental():
         sys.exit(-1)
 
 
+def _run_rc_state():
+    """Run incremental processing for observations that are posted on the site
+    archive.gemini.edu. This assumes the existence of the incremental
+    query endpoint.
+
+    :return 0 if successful, -1 if there's any sort of failure. Return status
+        is used by airflow for task instance management and reporting.
+    """
+    external_metadata.init_global(incremental=True)
+    name_builder = builder.NameBuilderIncremental()
+    incremental_source = data_source.IncrementalSource()
+    return rc.run_by_state(config=None, name_builder=name_builder,
+                           command_name=main_app.APPLICATION,
+                           bookmark_name=GEM_BOOKMARK,
+                           meta_visitors=meta_visitors,
+                           data_visitors=data_visitors,
+                           end_time=None, source=incremental_source,
+                           chooser=None)
+
+
+def run_by_rc_state():
+    try:
+        result = _run_rc_state()
+        sys.exit(result)
+    except Exception as e:
+        logging.error(e)
+        tb = traceback.format_exc()
+        logging.debug(tb)
+        sys.exit(-1)
+
+
+def _run_rc_state_public():
+    """Run incremental processing for observations that went public recently,
+    so the preview is now available.
+
+    :return 0 if successful, -1 if there's any sort of failure. Return status
+        is used by airflow for task instance management and reporting.
+    """
+    config = mc.Config()
+    config.get_executors()
+    external_metadata.init_global(incremental=True)
+    name_builder = builder.NameBuilderIncremental()
+    incremental_source = data_source.PublicIncremental(config)
+    return rc.run_by_state(config=config, name_builder=name_builder,
+                           command_name=main_app.APPLICATION,
+                           bookmark_name=GEM_BOOKMARK,
+                           meta_visitors=meta_visitors,
+                           data_visitors=data_visitors,
+                           end_time=None, source=incremental_source,
+                           chooser=None)
+
+
+def run_by_rc_public():
+    try:
+        result = _run_rc_state_public()
+        sys.exit(result)
+    except Exception as e:
+        logging.error(e)
+        tb = traceback.format_exc()
+        logging.debug(tb)
+        sys.exit(-1)
+
+
+@deprecated
 def _get_utcnow():
     """So that utcnow can be mocked."""
     return datetime.utcnow()

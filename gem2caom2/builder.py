@@ -67,14 +67,16 @@
 # ***********************************************************************
 #
 
-from caom2pipe import manage_composable as mc
-from gem2caom2 import gem_name, external_metadata
+import logging
+
+from caom2pipe import name_builder_composable as nbc
+from gem2caom2 import gem_name, external_metadata, scrape
 
 
-__all__ = ['EduQueryBuilder']
+__all__ = ['EduQueryBuilder', 'NameBuilderIncremental', 'GemBuilder']
 
 
-class EduQueryBuilder(mc.Builder):
+class EduQueryBuilder(nbc.Builder):
     """
     Get the file metadata by querying archive.gemini.edu. This information is
     required to find the data label for a file name, so that a StorageName
@@ -114,3 +116,43 @@ class EduQueryBuilder(mc.Builder):
             file_name=entry,
             last_modified_s=self._todo_list.get(entry))
         return storage_name
+
+
+class GemBuilder(nbc.StorageNameBuilder):
+
+    def __init__(self):
+        super(GemBuilder, self).__init__()
+
+    def build(self, entry):
+        """
+
+        :param entry: an entry is a file name
+        :return:
+        """
+        # TODO - query the file, then the gemini site for the obs_id,
+        #  last_modified_s
+        return gem_name.GemName(file_name=entry)
+
+
+class NameBuilderIncremental(nbc.StorageNameBuilder):
+    """Works with the archive.gemini.edu incremental query endpoint.
+    """
+
+    def __init__(self):
+        super(NameBuilderIncremental, self).__init__()
+        self._logger = logging.getLogger(__name__)
+
+    def build(self, entry):
+        """
+
+        :param entry: an entry is a file name
+        :return: an instance of a StorageName extension
+        """
+        self._logger.debug(f'Begin build for {entry}.')
+        json_string = scrape.find_data_label_by_file_name(entry)
+        obs_id, last_modified_s = scrape.parse_for_data_label(json_string,
+                                                              entry)
+        logging.error(f'builder obs_id {obs_id}')
+        return gem_name.GemNameBuilder(obs_id=obs_id,
+                                       file_name=entry,
+                                       last_modified_s=last_modified_s)

@@ -159,7 +159,7 @@ def test_main_app(test_name):
                         main_app.COLLECTION, obs_id, actual_fqn,
                         lineage)).split()
         print(sys.argv)
-        main_app.main_app2()
+        main_app.to_caom2()
         expected_fqn = _get_expected_file_name(dirname, product_id)
         compare_result = gem_mocks.compare(
             expected_fqn, actual_fqn, product_id)

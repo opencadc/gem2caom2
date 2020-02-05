@@ -494,7 +494,6 @@ def mock_get_file_info(archive, file_id):
 
 def mock_get_obs_metadata(file_id):
     try:
-        logging.error(f'obs metadata file_id {file_id}')
         fname = f'{TEST_DATA_DIR}/json/{file_id}.json'
         with open(fname) as f:
             y = json.loads(f.read())
@@ -541,6 +540,43 @@ def mock_query_endpoint(url, timeout=-1):
     return result
 
 
+def mock_query_endpoint_2(url, timeout=-1):
+    def x():
+        if url.startswith('http://arcdev'):
+            with open(f'{TEST_DATA_DIR}/jsonfilelist_composable_test.json',
+                      'r') as f:
+                temp = f.read()
+        elif url == 'https://archive.gemini.edu/jsonsummary/canonical/' \
+                    'notengineering/NotFail//filepre=N20191101S0001.fits':
+            with open(f'{TEST_DATA_DIR}/json/N20191101S0001.json',
+                      'r') as f:
+                temp = f.read()
+        else:
+            # raise mc.CadcException(f'more wut? {url}')
+            fid = url.split('filepre=')[1]
+            # temp = [{"filename": "{fid}.bz2",
+            #          "data_label": "GN-2019B-ENG-1-160-002",
+            #          "lastmod": "2019-11-01 00:01:34.610517+00:00"}]
+            temp = '[{"filename": "' + fid + '.bz2",' \
+                   '"data_label": "GN-2019B-ENG-1-160-002",' \
+                   '"lastmod": "2019-11-01 00:01:34.610517+00:00"}]'
+            logging.error(f'wtf 2 {url}')
+        return json.loads(temp)
+
+    result = Object()
+    result.json = x
+
+    if url.startswith('http://arcdev'):
+        pass
+    elif url == 'https://archive.gemini.edu/jsonsummary/canonical/' \
+                'notengineering/NotFail//filepre=N20191101S0001.fits':
+        pass
+    else:
+        # raise mc.CadcException(f'wut? {url}')
+        pass
+    return result
+
+
 def mock_write_state(start_time):
     test_bookmark = {'bookmarks': {composable.GEM_BOOKMARK:
                                    {'last_record': start_time}}}
@@ -575,9 +611,12 @@ read_call_count = 0
 
 
 def mock_repo_read(arg1, arg2):
+    logging.error(f'arg1 {arg1} arg2 {arg2}')
     # arg1 GEMINI arg2 GS-CAL20191010-3-034
     global read_call_count
-    if read_call_count == 0:
+    if arg1 == 'GEMINI' and arg2 == 'GS-2004A-Q-6-27-0255':
+        return ''
+    elif read_call_count == 0:
         read_call_count = 1
         return None
     else:
