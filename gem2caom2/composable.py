@@ -72,9 +72,6 @@ import sys
 import tempfile
 import traceback
 
-from datetime import datetime
-from deprecated import deprecated
-
 from caom2pipe import execute_composable as ec
 from caom2pipe import manage_composable as mc
 from caom2pipe import run_composable as rc
@@ -170,7 +167,7 @@ def _run_by_tap_query():
     return ec.run_from_state(config, gem_name.GemName, main_app.APPLICATION,
                              meta_visitors, data_visitors, GEM_BOOKMARK,
                              work.TapNoPreviewQuery(
-                                 _get_utcnow(), config))
+                                 rc.get_utc_now(), config))
 
 
 def run_by_tap_query():
@@ -228,7 +225,7 @@ def _run_by_public():
     return ec.run_from_state(config, gem_name.GemName, main_app.APPLICATION,
                              meta_visitors, data_visitors, GEM_BOOKMARK,
                              work.TapRecentlyPublicQuery(
-                                 _get_utcnow(), config))
+                                 rc.get_utc_now(), config))
 
 
 def run_by_public():
@@ -254,7 +251,7 @@ def _run_by_incremental():
     external_metadata.init_global(incremental=True)
     return ec.run_from_storage_name_instance(
         config, main_app.APPLICATION, meta_visitors, data_visitors,
-        GEM_BOOKMARK, work.GeminiIncrementalQuery(_get_utcnow(), config))
+        GEM_BOOKMARK, work.GeminiIncrementalQuery(rc.get_utc_now(), config))
 
 
 def run_by_incremental():
@@ -329,9 +326,3 @@ def run_by_rc_public():
         tb = traceback.format_exc()
         logging.debug(tb)
         sys.exit(-1)
-
-
-@deprecated
-def _get_utcnow():
-    """So that utcnow can be mocked."""
-    return datetime.utcnow()

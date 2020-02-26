@@ -74,6 +74,7 @@ from collections import OrderedDict
 from datetime import datetime
 
 from caom2pipe import manage_composable as mc
+from caom2pipe import work_composable as wc
 
 from gem2caom2 import scrape, external_metadata, gem_name
 
@@ -88,7 +89,7 @@ GEMINI_SSUMMARY_DATA = \
     'https://archive.gemini.edu/ssummary/notengineering/NotFail/canonical'
 
 
-class TapNoPreviewQuery(mc.Work):
+class TapNoPreviewQuery(wc.Work):
 
     def __init__(self, max_ts, config):
         # using max_ts_s as the proprietary date - time when the data
@@ -140,7 +141,7 @@ class TapNoPreviewQuery(mc.Work):
         pass
 
 
-class TapRecentlyPublicQuery(mc.Work):
+class TapRecentlyPublicQuery(wc.Work):
 
     def __init__(self, max_ts, config):
         super(TapRecentlyPublicQuery, self).__init__(max_ts.timestamp())
@@ -185,7 +186,7 @@ class TapRecentlyPublicQuery(mc.Work):
         pass
 
 
-class ObsFileRelationshipQuery(mc.Work):
+class ObsFileRelationshipQuery(wc.Work):
 
     def __init__(self):
         max_ts_s = external_metadata.get_gofr().get_max_timestamp()
@@ -217,7 +218,7 @@ class ObsFileRelationshipQuery(mc.Work):
         pass
 
 
-class FileListingQuery(mc.Work):
+class FileListingQuery(wc.Work):
     """
     Get the set of file ids to process by querying archive.gemini.edu.
 
@@ -289,7 +290,7 @@ class FileListingQuery(mc.Work):
         return ordered_file_names
 
 
-class GeminiIncrementalQuery(mc.Work):
+class GeminiIncrementalQuery(wc.Work):
 
     def __init__(self, max_ts, config):
         super(GeminiIncrementalQuery, self).__init__(max_ts.timestamp())
@@ -317,7 +318,7 @@ class GeminiIncrementalQuery(mc.Work):
 
         # needs to be ordered by timestamps when processed
         # key timestamp
-        # value list of StorageName instancec
+        # value list of StorageName instances
         entries = {}
         response = None
         try:
