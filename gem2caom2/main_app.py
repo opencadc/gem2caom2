@@ -1002,6 +1002,11 @@ def update(observation, **kwargs):
     else:
         current_product_id = None
 
+    if headers is None:
+        logging.info(f'Returning an un-modified observation '
+                     f'{observation.observation_id}.')
+        return observation
+
     # processed files
     if (cc.is_composite(headers) and not
             isinstance(observation, CompositeObservation)):

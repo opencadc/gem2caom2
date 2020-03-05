@@ -86,7 +86,7 @@ class IncrementalSource(dsc.DataSource):
         super(IncrementalSource, self).__init__(config=None)
         self._logger = logging.getLogger(__name__)
 
-    def get_work(self, prev_exec_time, exec_time):
+    def get_time_box_work(self, prev_exec_time, exec_time):
         """
         :param prev_exec_time datetime start of the timestamp chunk
         :param exec_time datetime end of the timestamp chunk
@@ -136,11 +136,11 @@ class PublicIncremental(dsc.QueryTimeBoxDataSource):
 
     def __init__(self, config):
         super(PublicIncremental, self).__init__(config)
-        self._logger = logging.getLogger(__name__)
         subject = mc.define_subject(config)
         self._client = CadcTapClient(subject, resource_id=self._config.tap_id)
+        self._logger = logging.getLogger(__name__)
 
-    def get_work(self, prev_exec_time, exec_time):
+    def get_time_box_work(self, prev_exec_time, exec_time):
         """
         :param prev_exec_time datetime start of the timestamp chunk
         :param exec_time datetime end of the timestamp chunk
@@ -175,6 +175,7 @@ class PublicIncremental(dsc.QueryTimeBoxDataSource):
         entries = Table(names=('fileName', 'ingestDate'),
                         dtype=('S64', 'S32'))
         for row in result:
+            logging.error(mc.CaomName(row['uri']).file_name)
             entries.add_row((mc.CaomName(row['uri']).file_name,
                              row['lastModified']))
         return entries
