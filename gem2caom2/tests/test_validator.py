@@ -153,6 +153,7 @@ def test_validator(caps_mock, tap_mock):
         # assert False
     finally:
         os.getcwd = getcwd_orig
+    assert False
 
 
 def test_date_file_name():
