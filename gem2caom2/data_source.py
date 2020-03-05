@@ -175,7 +175,6 @@ class PublicIncremental(dsc.QueryTimeBoxDataSource):
         entries = Table(names=('fileName', 'ingestDate'),
                         dtype=('S64', 'S32'))
         for row in result:
-            logging.error(mc.CaomName(row['uri']).file_name)
             entries.add_row((mc.CaomName(row['uri']).file_name,
                              row['lastModified']))
         return entries
