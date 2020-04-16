@@ -148,7 +148,7 @@ class PublicIncremental(dsc.QueryTimeBoxDataSource):
             structured as an astropy Table (for now).
         """
 
-        self._logger.debug('Entering todo')
+        self._logger.debug('Entering get_time_box_work')
         # datetime format 2019-12-01T00:00:00.000000
         prev_dt_str = prev_exec_time.strftime(mc.ISO_8601_FORMAT)
         exec_dt_str = exec_time.strftime(mc.ISO_8601_FORMAT)
