@@ -3214,7 +3214,7 @@ def _reset_position(headers, instrument):
         if ra is None and dec is None:
             result = True
         elif (ra is not None and math.isclose(ra, 0.0) and
-              dec is not None and  math.isclose(dec, 0.0)):
+              dec is not None and math.isclose(dec, 0.0)):
             result = True
     elif _is_gmos_mask(headers[0]):
         # DB - 04-03-19
@@ -3665,6 +3665,7 @@ def _repair_provenance_value(imcmb_value, obs_id):
     # e.g.
     # IMCMB001 = 'tmpimgwsk9476kd_5.fits[SCI,1]'
     # tmpfile22889S20141226S0203.fits[SCI,1]
+    logging.debug(f'Being _repair_provenance_value for {obs_id}.')
 
     if 'N' in imcmb_value:
         temp = 'N' + imcmb_value.split('N', 1)[1]
@@ -3696,8 +3697,8 @@ def _repair_provenance_value(imcmb_value, obs_id):
 
     prov_file_id = temp1[:14]
     prov_obs_id = em.get_gofr().get_obs_id(prov_file_id)
-    if prov_obs_id is None:
-        return None, prov_file_id
+    logging.debug(f'End _repair_provenance_value. {prov_obs_id} '
+                  f'{prov_file_id}')
     return prov_obs_id, prov_file_id
 
 

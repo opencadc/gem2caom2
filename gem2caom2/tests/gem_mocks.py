@@ -438,6 +438,8 @@ LOOKUP = {
     '2004may19_0255': ['GS-2004A-Q-6-27-0255', em.Inst.PHOENIX, 'GS-2004A-Q-6'],
     'S20181016S0184': ['GS-CAL20181016-5-001', em.Inst.GMOS,
                        'GS-CAL20181016-5'],
+    'N20200210S0077_bias': ['GN-CAL20200210-22-076-BIAS', em.Inst.GMOS,
+                            'GN-CAL20200210']
 }
 
 call_count = 0
@@ -465,8 +467,12 @@ def mock_get_pi_metadata(program_id):
             soup = BeautifulSoup(y, 'lxml')
             tds = soup.find_all('td')
             if len(tds) > 0:
-                title = tds[1].contents[0].replace('\n', ' ')
-                pi_name = tds[3].contents[0]
+                title = None
+                if len(tds[1].contents) > 0:
+                    title = tds[1].contents[0].replace('\n', ' ')
+                pi_name = None
+                if len(tds[3].contents) > 0:
+                    pi_name = tds[3].contents[0]
                 metadata = {'title': title,
                             'pi_name': pi_name}
                 return metadata

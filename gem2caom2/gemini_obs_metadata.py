@@ -113,13 +113,14 @@ class GeminiObsMetadata(object):
 
     def _find_index(self, file_id):
         result = -1
-        for index, value in enumerate(self.current):
-            indexed_f_name = value.get('filename')
-            if indexed_f_name is not None:
-                temp = GemName.remove_extensions(indexed_f_name)
-                if temp == file_id:
-                    result = index
-                    break
+        if self.current is not None:
+            for index, value in enumerate(self.current):
+                indexed_f_name = value.get('filename')
+                if indexed_f_name is not None:
+                    temp = GemName.remove_extensions(indexed_f_name)
+                    if temp == file_id:
+                        result = index
+                        break
         return result
 
     def _get_index(self, file_id):
@@ -141,7 +142,7 @@ class GeminiObsMetadataIncremental(GeminiObsMetadata):
         # key = file_id
         # value = respective JSON
         self.lookup = {}
-        self.current = None  # file_id of the last added entry
+        self._current = None  # file_id of the last added entry
 
     def add(self, metadata, file_id):
         if isinstance(metadata, list):
@@ -152,13 +153,25 @@ class GeminiObsMetadataIncremental(GeminiObsMetadata):
                     break
         else:
             self.lookup[file_id] = metadata
-        self.current = file_id
+        self._current = file_id
+
+    @property
+    def current(self):
+        return self._current
+
+    @current.setter
+    def current(self, value):
+        self._current = value
 
     def contains(self, file_id):
         return file_id in self.lookup
 
     def get(self, look_for):
-        return self.lookup[self.current].get(look_for)
+        temp = self.lookup.get(self.current)
+        result = None
+        if temp is not None:
+            result = temp.get(look_for)
+        return result
 
     def reset_index(self, file_id):
         self.current = file_id
