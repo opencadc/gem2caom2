@@ -66,7 +66,9 @@
 #
 # ***********************************************************************
 #
+
 import json
+import os
 
 from datetime import datetime
 from mock import patch, Mock
@@ -100,33 +102,41 @@ def test_file_listing_parse():
 
 
 def test_gemini_incremental_query():
-    external_metadata.init_global(incremental=True)
-    with patch('caom2pipe.manage_composable.query_endpoint') as query_mock:
-        query_mock.side_effect = _mock_endpoint
+    getcwd_orig = os.getcwd
+    os.getcwd = Mock(return_value=gem_mocks.TEST_DATA_DIR)
+    try:
         test_config = mc.Config()
-        test_start_time = datetime(year=2019, month=12, day=1)
-        test_end_time = datetime(year=2020, month=12, day=1)
-        test_subject = work.GeminiIncrementalQuery(
-            datetime.utcnow(), test_config)
-        test_result = test_subject.todo(test_start_time, test_end_time)
-        assert test_result is not None, 'expect a result'
-        assert len(test_result) == 500, 'wrong number of results'
-        assert isinstance(test_result[0], gem_name.GemNameBuilder), \
-            'wrong result content'
-        assert test_result[0].obs_id == 'GN-2001A-C-24-1-073', 'wrong obs id'
-        assert test_result[0].file_id == '01APR19_073', 'wrong file id'
-        assert test_result[0].last_modified_s == 1576541884.426377, \
-            'wrong last modified'
+        test_config.get_executors()
+        external_metadata.init_global(incremental=True, config=test_config)
+        with patch('caom2pipe.manage_composable.query_endpoint') as query_mock:
+            query_mock.side_effect = _mock_endpoint
+            test_config = mc.Config()
+            test_start_time = datetime(year=2019, month=12, day=1)
+            test_end_time = datetime(year=2020, month=12, day=1)
+            test_subject = work.GeminiIncrementalQuery(
+                datetime.utcnow(), test_config)
+            test_result = test_subject.todo(test_start_time, test_end_time)
+            assert test_result is not None, 'expect a result'
+            assert len(test_result) == 500, 'wrong number of results'
+            assert isinstance(test_result[0], gem_name.GemNameBuilder), \
+                'wrong result content'
+            assert test_result[0].obs_id == 'GN-2001A-C-24-1-073', \
+                'wrong obs id'
+            assert test_result[0].file_id == '01APR19_073', 'wrong file id'
+            assert test_result[0].last_modified_s == 1576541884.426377, \
+                'wrong last modified'
 
-        test_blueprint = ObsBlueprint()
-        test_uri = mc.build_uri(
-            gem_name.ARCHIVE, f'{test_result[0].file_id}.fits.gz')
-        main_app.accumulate_fits_bp(
-            test_blueprint, test_result[0].file_id, test_uri)
-        assert test_blueprint._get('Chunk.time.exposure') == \
-               'get_exposure(header)', 'wrong blueprint'
-        assert main_app.get_proposal_id(None) == 'GN-2001A-C-24', \
-            'wrong proposal id'
+            test_blueprint = ObsBlueprint()
+            test_uri = mc.build_uri(
+                gem_name.ARCHIVE, f'{test_result[0].file_id}.fits.gz')
+            main_app.accumulate_fits_bp(
+                test_blueprint, test_result[0].file_id, test_uri)
+            assert test_blueprint._get('Chunk.time.exposure') == \
+                   'get_exposure(header)', 'wrong blueprint'
+            assert main_app.get_proposal_id(None) == 'GN-2001A-C-24', \
+                'wrong proposal id'
+    finally:
+        os.getcwd = getcwd_orig
 
 
 def _mock_endpoint(url, timeout=-1):

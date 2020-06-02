@@ -72,6 +72,7 @@ import logging
 import os
 
 from astropy.io.votable import parse_single_table
+from astropy.table import Table
 from bs4 import BeautifulSoup
 from collections import OrderedDict
 from datetime import datetime
@@ -101,6 +102,46 @@ TEST_TODO_LIST = OrderedDict([(1572566500.951468, 'N20191101S0002.fits'),
                               (1572566666.679175, 'N20191101S0006.fits'),
                               (1572566670.978142, 'N20191101S0007.fits')])
 TEST_BUILDER_OBS_ID = 'GS-2019B-Q-222-181-001'
+
+
+# key - filename
+# value - data label/observation id
+TAP_QUERY_LOOKUP = {
+    'S20161227S0051': 'GS-CAL20161227-5-001',
+    'S20161227S0052': 'GS-CAL20161227-5-002',
+    'S20161227S0053': 'GS-CAL20161227-5-003',
+    'S20161227S0054': 'GS-CAL20161227-5-004',
+    'S20161227S0055': 'GS-CAL20161227-5-005',
+    'S20161227S0056': 'GS-CAL20161227-5-006',
+    'S20161227S0057': 'GS-CAL20161227-5-007',
+    '2004may20_0048': 'GS-CAL20040520-7-0048',
+    '2004may20_0049': 'GS-CAL20040520-7-0049',
+    '2004may20_0050': 'GS-CAL20040520-7-0050',
+    '2004may20_0051': 'GS-CAL20040520-7-0051',
+    '2004may20_0052': 'GS-CAL20040520-7-0052',
+    '2004may20_0053': 'GS-CAL20040520-7-0053',
+    '2004may20_0054': 'GS-CAL20040520-7-0054',
+    '2004may20_0055': 'GS-CAL20040520-7-0055',
+    '2004may20_0056': 'GS-CAL20040520-7-0056',
+    '2004may20_0057': 'GS-CAL20040520-7-0057',
+    '2004may20_0058': 'GS-CAL20040520-7-0058',
+    '2004may20_0059': 'GS-CAL20040520-7-0059',
+    '2004may20_0060': 'GS-CAL20040520-7-0060',
+    '2004may20_0061': 'GS-CAL20040520-7-0061',
+    '2004may20_0062': 'GS-CAL20040520-7-0062',
+    'N20191101S0007': 'GN-2019B-ENG-1-160-008',
+    'S20181219S0216': 'GS-CAL20181219-4-012',
+    'S20181219S0217': 'GS-CAL20181219-4-013',
+    'S20181219S0218': 'GS-CAL20181219-4-014',
+    'S20181219S0219': 'GS-CAL20181219-4-015',
+    'S20181219S0220': 'GS-CAL20181219-4-016',
+    'S20181219S0221': 'GS-CAL20181219-4-017',
+    'S20181219S0222': 'GS-CAL20181219-4-018',
+    'S20181219S0223': 'GS-CAL20181219-4-019',
+    'S20181219S0224': 'GS-CAL20181219-4-020',
+    'S20181219S0225': 'GS-CAL20181219-4-021',
+}
+
 
 # structured by file id, observation id, filter_name (when looking up
 # from SVOFPS for imaging files - x means there's no filter name), and
@@ -501,9 +542,16 @@ def mock_get_file_info(archive, file_id):
 def mock_get_obs_metadata(file_id):
     try:
         fname = f'{TEST_DATA_DIR}/json/{file_id}.json'
-        with open(fname) as f:
-            y = json.loads(f.read())
-            em.om.add(y, file_id)
+        if os.path.exists(fname):
+            with open(fname) as f:
+                y = json.loads(f.read())
+        else:
+            # TODO
+            y = [{'data_label': TAP_QUERY_LOOKUP.get(
+                                    file_id, 'test_data_label'),
+                  'filename': f'{file_id}.fits.bz2',
+                  'lastmod': '2020-02-25T20:36:31.230'}]
+        em.om.add(y, file_id)
     except Exception as e:
         logging.error(e)
         import traceback
@@ -645,3 +693,29 @@ def compare(ex_fqn, act_fqn, entry):
               f'instr {ex.instrument.name}\n{result_str}'
         return msg
     return None
+
+
+def _query_mock_none(ignore1, ignore2):
+    return Table.read('observationID,lastModified\n'.split('\n'), format='csv')
+
+
+def _query_mock_one(ignore1, ignore2):
+    return Table.read('observationID,lastModified\n'
+                      'test_data_label,2020-02-25T20:36:31.230\n'.split('\n'),
+                      format='csv')
+
+
+def mock_query_tap(query_string, mock_tap_client):
+    # logging.error(query_string)
+    if query_string.startswith('SELECT A.uri'):
+        return Table.read(
+            f'uri,lastModified\n'
+            f'gemini:GEMINI/N20191101S0007.fits,'
+            f'2020-02-25T20:36:31.230\n'.split('\n'), format='csv')
+    else:
+        file_id = query_string.split('GEMINI/')[1].replace('\'', '').strip()
+        result = TAP_QUERY_LOOKUP.get(file_id, 'test_data_label')
+        logging.error(f'file_id is {file_id} result is {result}')
+        return Table.read(f'observationID,lastModified\n'
+                          f'{result},2020-02-25T20:36:31.230\n'.split('\n'),
+                          format='csv')

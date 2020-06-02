@@ -76,11 +76,13 @@ from urllib3 import Retry
 
 from bs4 import BeautifulSoup
 
+from cadctap import CadcTapClient
 from caom2pipe import caom_composable as cc
 from caom2pipe import manage_composable as mc
 from gem2caom2.svofps import filter_metadata
 from gem2caom2 import gemini_obs_metadata as gom
 from gem2caom2.obs_file_relationship import GemObsFileRelationship
+from gem2caom2.obs_file_relationship import repair_data_label
 from gem2caom2 import gem_name
 
 
@@ -105,7 +107,7 @@ gofr = None
 def get_gofr():
     global gofr
     if gofr is None:
-        gofr = GemObsFileRelationship()
+        gofr = CachingObsFileRelationship()
     return gofr
 
 
@@ -116,12 +118,18 @@ def set_ofr(value):
     gofr = value
 
 
-def init_global(incremental):
+def init_global(incremental, config):
     global om
     if incremental:
         om = gom.GeminiObsMetadataIncremental()
     else:
         om = gom.GeminiObsMetadata()
+    get_gofr()
+    global gofr
+    if gofr.tap_client is None:
+        subject = mc.define_subject(config)
+        tap_client = CadcTapClient(subject=subject, resource_id=config.tap_id)
+        gofr.tap_client = tap_client
 
 
 class Inst(Enum):
@@ -458,7 +466,7 @@ class CachingObsFileRelationship(GemObsFileRelationship):
         artifact_uri = cc.build_artifact_uri(
             file_name, gem_name.COLLECTION, gem_name.SCHEME)
         query_string = f"""
-        SELECT O.observationID 
+        SELECT O.observationID, A.lastModified 
         FROM caom2.Observation AS O
         JOIN caom2.Plane AS P on P.obsID = O.obsID
         JOIN caom2.Artifact AS A on A.planeID = P.planeID
@@ -467,9 +475,9 @@ class CachingObsFileRelationship(GemObsFileRelationship):
         table = mc.query_tap_client(query_string, self._tap_client)
         result = None
         if len(table) == 1:
-            result = table[0]['observationID']
-            # TODO don't know if the timestamp needs to be useful
-            self._update_cache(file_id, result, 1.0)
+            obs_id = table[0]['observationID']
+            ut_datetime_str = table[0]['lastModified']
+            self._update_cache(file_id, obs_id, ut_datetime_str)
         self._logger.debug('End _get_obs_id_from_cadc')
         return result
 
@@ -483,14 +491,21 @@ class CachingObsFileRelationship(GemObsFileRelationship):
         get_obs_metadata(file_id)
         obs_id = om.get('data_label')
         ut_datetime_str = om.get('lastmod')
-        ut_datetime_s = mc.make_seconds(ut_datetime_str)
-        self._update_cache(file_id, obs_id, ut_datetime_s)
-        om.reset_index(current_file_id)
+        self._update_cache(file_id, obs_id, ut_datetime_str)
+        if current_file_id is not None:
+            om.reset_index(current_file_id)
         self._logger.error(f'End _get_obs_id_from_gemini.')
         return obs_id
 
-    def _update_cache(self, file_id, obs_id, dt_s):
+    def _update_cache(self, file_id, obs_id, dt_str):
+        dt_s = mc.make_seconds(dt_str)
+        # name_list:
+        # key is file_id,
+        # value is array
+        #
         # array contents are:
         # 0 - data label / observation ID
         # 1 - timestamp
         mc.append_as_array(self.name_list, file_id, [obs_id, dt_s])
+        repaired_obs_id = repair_data_label(file_id, obs_id)
+        self._add_repaired_element(obs_id, repaired_obs_id, file_id)

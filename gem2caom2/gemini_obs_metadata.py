@@ -84,7 +84,7 @@ class GeminiObsMetadata(object):
     def __init__(self):
         # a dictionary of all the jsonsummary results
         self.lookup = {}
-        # which dictionary entry is of current lookup interest
+        # pointer to which dictionary entry is of current lookup interest
         self.current = None
         # the json summary results are a list, track which entry in the
         # list has the information for a particular file_id
@@ -99,7 +99,9 @@ class GeminiObsMetadata(object):
         return result != -1
 
     def get(self, lookup):
-        return self.current[self.index].get(lookup)
+        if self.current is None:
+            raise mc.CadcException(f'Not initialized for {lookup}')
+        return self.lookup[self.current][self.index].get(lookup)
 
     def reset_index(self, file_id):
         self._reset_index(file_id)
@@ -108,13 +110,13 @@ class GeminiObsMetadata(object):
         if file_id not in self.lookup:
             raise mc.CadcException(
                 'ObsMetadata: Mystery file id {}'.format(file_id))
-        self.current = self.lookup[file_id]
+        self.current = file_id
         self.index = self._get_index(file_id)
 
     def _find_index(self, file_id):
         result = -1
-        if self.current is not None:
-            for index, value in enumerate(self.current):
+        if self.lookup.get(self.current) is not None:
+            for index, value in enumerate(self.lookup.get(self.current)):
                 indexed_f_name = value.get('filename')
                 if indexed_f_name is not None:
                     temp = GemName.remove_extensions(indexed_f_name)

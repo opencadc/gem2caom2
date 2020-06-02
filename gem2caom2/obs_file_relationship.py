@@ -229,7 +229,7 @@ from gem2caom2 import gem_name
 
 
 __all__ = ['GemObsFileRelationship', 'CommandLineBits', 'FILE_NAME',
-           'get_command_line_bits']
+           'get_command_line_bits', 'repair_data_label']
            # 'PartialObsFileRelationship', 'get_command_line_bits']
 
 FILE_NAME = '/app/data/from_paul.txt'

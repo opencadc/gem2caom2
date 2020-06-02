@@ -104,48 +104,56 @@ def pytest_generate_tests(metafunc):
     metafunc.parametrize('test_name', obs_id_list)
 
 
-@patch('sys.exit', Mock())
-def test_multi_plane(test_name):
-    external_metadata.init_global(False)
-    obs_id = test_name
-    lineage = _get_lineage(obs_id)
-    input_file = '{}/{}/{}.in.xml'.format(
-        gem_mocks.TEST_DATA_DIR, DIR_NAME, obs_id)
-    actual_fqn = '{}/{}/{}.actual.xml'.format(
-        gem_mocks.TEST_DATA_DIR, DIR_NAME, obs_id)
-
-    local = _get_local(test_name)
-    plugin = gem_mocks.PLUGIN
-
-    with patch('caom2utils.fits2caom2.CadcDataClient') as data_client_mock, \
-            patch('gem2caom2.external_metadata.get_obs_metadata') as \
-            gemini_client_mock, \
-            patch('gem2caom2.external_metadata.get_pi_metadata') as \
-            gemini_pi_mock, \
-            patch('caom2pipe.astro_composable.get_vo_table') as svofps_mock:
-
-        data_client_mock.return_value.get_file_info.side_effect = \
-            gem_mocks.mock_get_file_info
-        gemini_client_mock.side_effect = gem_mocks.mock_get_obs_metadata
-        gemini_pi_mock.side_effect = gem_mocks.mock_get_pi_metadata
-        svofps_mock.side_effect = gem_mocks.mock_get_votable
-
-        if os.path.exists(actual_fqn):
-            os.remove(actual_fqn)
-
-        sys.argv = \
-            ('{} --quiet --no_validate --local {} '
-             '--plugin {} --module {} --in {} --out {} --lineage {}'.
-             format(main_app.APPLICATION, local, plugin, plugin,
-                    input_file, actual_fqn, lineage)).split()
-        print(sys.argv)
-        main_app.gem_main_app()
-        expected_fqn = '{}/{}/{}.xml'.format(
+@patch('gem2caom2.external_metadata.CadcTapClient')
+def test_multi_plane(tap_mock, test_name):
+    getcwd_orig = os.getcwd
+    os.getcwd = Mock(return_value=gem_mocks.TEST_DATA_DIR)
+    try:
+        test_config = mc.Config()
+        test_config.get_executors()
+        external_metadata.init_global(False, test_config)
+        obs_id = test_name
+        lineage = _get_lineage(obs_id)
+        input_file = '{}/{}/{}.in.xml'.format(
             gem_mocks.TEST_DATA_DIR, DIR_NAME, obs_id)
-        compare_result = gem_mocks.compare(
-            expected_fqn, actual_fqn, obs_id)
-        assert compare_result is None, 'compare fail'
-        # assert False  # cause I want to see logging messages
+        actual_fqn = '{}/{}/{}.actual.xml'.format(
+            gem_mocks.TEST_DATA_DIR, DIR_NAME, obs_id)
+
+        local = _get_local(test_name)
+        plugin = gem_mocks.PLUGIN
+
+        with patch('caom2utils.fits2caom2.CadcDataClient') as data_client_mock, \
+                patch('gem2caom2.external_metadata.get_obs_metadata') as \
+                gemini_client_mock, \
+                patch('gem2caom2.external_metadata.get_pi_metadata') as \
+                gemini_pi_mock, \
+                patch('caom2pipe.astro_composable.get_vo_table') as svofps_mock:
+
+            data_client_mock.return_value.get_file_info.side_effect = \
+                gem_mocks.mock_get_file_info
+            gemini_client_mock.side_effect = gem_mocks.mock_get_obs_metadata
+            gemini_pi_mock.side_effect = gem_mocks.mock_get_pi_metadata
+            svofps_mock.side_effect = gem_mocks.mock_get_votable
+
+            if os.path.exists(actual_fqn):
+                os.remove(actual_fqn)
+
+            sys.argv = \
+                ('{} --quiet --no_validate --local {} '
+                 '--plugin {} --module {} --in {} --out {} --lineage {}'.
+                 format(main_app.APPLICATION, local, plugin, plugin,
+                        input_file, actual_fqn, lineage)).split()
+            print(sys.argv)
+            main_app.to_caom2()
+            expected_fqn = '{}/{}/{}.xml'.format(
+                gem_mocks.TEST_DATA_DIR, DIR_NAME, obs_id)
+
+            compare_result = mc.compare_observations(actual_fqn, expected_fqn)
+            if compare_result is not None:
+                raise AssertionError(compare_result)
+            # assert False  # cause I want to see logging messages
+    finally:
+        os.getcwd = getcwd_orig
 
 
 def _get_lineage(obs_id):

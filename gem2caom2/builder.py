@@ -122,6 +122,7 @@ class GemBuilder(nbc.StorageNameBuilder):
 
     def __init__(self):
         super(GemBuilder, self).__init__()
+        self._logger = logging.getLogger(__name__)
 
     def build(self, entry):
         """
@@ -129,11 +130,12 @@ class GemBuilder(nbc.StorageNameBuilder):
         :param entry: an entry is a file name
         :return:
         """
-        # TODO - query the file, then the gemini site for the obs_id,
-        #  last_modified_s
+        self._logger.debug(f'Building StorageName for {entry}')
         return gem_name.GemName(file_name=entry)
 
 
+# TODO - is this class still required? Because the query that's happening
+# here is already caused in the GemName class
 class NameBuilderIncremental(nbc.StorageNameBuilder):
     """Works with the archive.gemini.edu incremental query endpoint.
     """

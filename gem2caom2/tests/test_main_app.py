@@ -106,65 +106,77 @@ def pytest_generate_tests(metafunc):
         metafunc.parametrize('test_name', file_list)
 
 
-@patch('sys.exit', Mock())
-def test_main_app(test_name):
-    em.set_ofr(None)
-    em.init_global(False)
-    test_data_size = os.stat(
-        os.path.join(gem_mocks.TEST_DATA_DIR, 'from_paul.txt'))
-    app_size = os.stat('/app/data/from_paul.txt')
-    if test_data_size.st_size != app_size.st_size:
-        copyfile(os.path.join(gem_mocks.TEST_DATA_DIR, 'from_paul.txt'),
-                 '/app/data/from_paul.txt')
-    basename = os.path.basename(test_name)
-    dirname = os.path.dirname(test_name)
-    file_id = _get_file_id(basename)
-    obs_id = _get_obs_id(file_id)
-    product_id = file_id
-    lineage = _get_lineage(dirname, basename, product_id, file_id)
-    input_file = '{}.in.xml'.format(product_id)
-    actual_fqn = _get_actual_file_name(dirname, product_id)
+@patch('caom2pipe.manage_composable.query_tap_client')
+def test_main_app(tap_mock, test_name):
+    getcwd_orig = os.getcwd
+    os.getcwd = Mock(return_value=gem_mocks.TEST_DATA_DIR)
 
-    local = _get_local(test_name)
-    plugin = gem_mocks.PLUGIN
+    tap_mock.side_effect = gem_mocks.mock_query_tap
 
-    with patch('caom2utils.fits2caom2.CadcDataClient') as data_client_mock, \
-        patch('gem2caom2.external_metadata.get_obs_metadata') as \
-            gemini_client_mock, \
-            patch('gem2caom2.external_metadata.get_pi_metadata') as \
-            gemini_pi_mock, \
-            patch('caom2pipe.astro_composable.get_vo_table') as svofps_mock:
+    try:
+        test_config = mc.Config()
+        test_config.get_executors()
 
-        data_client_mock.return_value.get_file_info.side_effect = \
-            gem_mocks.mock_get_file_info
-        gemini_client_mock.side_effect = gem_mocks.mock_get_obs_metadata
-        gemini_pi_mock.side_effect = gem_mocks.mock_get_pi_metadata
-        svofps_mock.side_effect = gem_mocks.mock_get_votable
+        em.set_ofr(None)
+        em.init_global(False, test_config)
+        test_data_size = os.stat(
+            os.path.join(gem_mocks.TEST_DATA_DIR, 'from_paul.txt'))
+        app_size = os.stat('/app/data/from_paul.txt')
+        if test_data_size.st_size != app_size.st_size:
+            copyfile(os.path.join(gem_mocks.TEST_DATA_DIR, 'from_paul.txt'),
+                     '/app/data/from_paul.txt')
+        basename = os.path.basename(test_name)
+        dirname = os.path.dirname(test_name)
+        file_id = _get_file_id(basename)
+        obs_id = _get_obs_id(file_id)
+        product_id = file_id
+        lineage = _get_lineage(dirname, basename, product_id, file_id)
+        input_file = '{}.in.xml'.format(product_id)
+        actual_fqn = _get_actual_file_name(dirname, product_id)
 
-        if os.path.exists(actual_fqn):
-            os.remove(actual_fqn)
+        local = _get_local(test_name)
+        plugin = gem_mocks.PLUGIN
 
-        if os.path.exists(os.path.join(dirname, input_file)):
-            sys.argv = \
-                ('{} --quiet --no_validate --local {} '
-                 '--plugin {} --module {} --in {}/{} --out {} --lineage {}'.
-                 format(main_app.APPLICATION, local, plugin, plugin, dirname,
-                        input_file, actual_fqn, lineage)).split()
-        else:
-            sys.argv = \
-                ('{} --quiet --no_validate --local {} '
-                 '--plugin {} --module {} --observation {} {} --out {} '
-                 '--lineage {}'.
-                 format(main_app.APPLICATION, local, plugin, plugin,
-                        main_app.COLLECTION, obs_id, actual_fqn,
-                        lineage)).split()
-        print(sys.argv)
-        main_app.to_caom2()
-        expected_fqn = _get_expected_file_name(dirname, product_id)
-        compare_result = gem_mocks.compare(
-            expected_fqn, actual_fqn, product_id)
-        assert compare_result is None, 'compare fail'
-        # assert False  # cause I want to see logging messages
+        with patch('caom2utils.fits2caom2.CadcDataClient') as data_client_mock, \
+            patch('gem2caom2.external_metadata.get_obs_metadata') as \
+                gemini_client_mock, \
+                patch('gem2caom2.external_metadata.get_pi_metadata') as \
+                gemini_pi_mock, \
+                patch('caom2pipe.astro_composable.get_vo_table') as svofps_mock:
+
+            data_client_mock.return_value.get_file_info.side_effect = \
+                gem_mocks.mock_get_file_info
+            gemini_client_mock.side_effect = gem_mocks.mock_get_obs_metadata
+            gemini_pi_mock.side_effect = gem_mocks.mock_get_pi_metadata
+            svofps_mock.side_effect = gem_mocks.mock_get_votable
+
+            if os.path.exists(actual_fqn):
+                os.remove(actual_fqn)
+
+            if os.path.exists(os.path.join(dirname, input_file)):
+                sys.argv = \
+                    ('{} --quiet --no_validate --local {} '
+                     '--plugin {} --module {} --in {}/{} --out {} --lineage {}'.
+                     format(main_app.APPLICATION, local, plugin, plugin, dirname,
+                            input_file, actual_fqn, lineage)).split()
+            else:
+                sys.argv = \
+                    ('{} --quiet --no_validate --local {} '
+                     '--plugin {} --module {} --observation {} {} --out {} '
+                     '--lineage {}'.
+                     format(main_app.APPLICATION, local, plugin, plugin,
+                            main_app.COLLECTION, obs_id, actual_fqn,
+                            lineage)).split()
+            print(sys.argv)
+            main_app.to_caom2()
+            expected_fqn = _get_expected_file_name(dirname, product_id)
+
+            compare_result = mc.compare_observations(actual_fqn, expected_fqn)
+            if compare_result is not None:
+                raise AssertionError(compare_result)
+            # assert False  # cause I want to see logging messages
+    finally:
+        os.getcwd = getcwd_orig
 
 
 def _get_obs_id(file_id):

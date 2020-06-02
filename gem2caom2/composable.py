@@ -91,7 +91,7 @@ def _run():
     """
     config = mc.Config()
     config.get_executors()
-    external_metadata.init_global(incremental=False)
+    external_metadata.init_global(incremental=False, config=config)
     gem_builder = builder.GemBuilder()
     return rc.run_by_todo(config, gem_builder, chooser=None,
                           command_name=main_app.APPLICATION,
@@ -130,7 +130,7 @@ def _run_single():
         storage_name = gem_name.GemName(file_name=sys.argv[1])
     else:
         raise mc.CadcException('No code to handle running GEM by obs id.')
-    external_metadata.init_global(incremental=False)
+    external_metadata.init_global(incremental=False, config=config)
     return ec.run_single(config, storage_name, main_app.APPLICATION,
                          meta_visitors, data_visitors)
 
@@ -163,7 +163,7 @@ def _run_by_tap_query():
     """
     config = mc.Config()
     config.get_executors()
-    external_metadata.init_global(incremental=False)
+    external_metadata.init_global(incremental=False, config=config)
     return ec.run_from_state(config, gem_name.GemName, main_app.APPLICATION,
                              meta_visitors, data_visitors, GEM_BOOKMARK,
                              work.TapNoPreviewQuery(
@@ -191,7 +191,7 @@ def _run_by_in_memory():
     """
     config = mc.Config()
     config.get_executors()
-    external_metadata.init_global(incremental=False)
+    external_metadata.init_global(incremental=False, config=config)
     return ec.run_from_state(config, gem_name.GemName, main_app.APPLICATION,
                              meta_visitors, data_visitors, GEM_BOOKMARK,
                              work.ObsFileRelationshipQuery())
@@ -221,7 +221,7 @@ def _run_by_public():
     """
     config = mc.Config()
     config.get_executors()
-    external_metadata.init_global(incremental=False)
+    external_metadata.init_global(incremental=False, config=config)
     return ec.run_from_state(config, gem_name.GemName, main_app.APPLICATION,
                              meta_visitors, data_visitors, GEM_BOOKMARK,
                              work.TapRecentlyPublicQuery(
@@ -248,7 +248,7 @@ def _run_by_incremental():
     """
     config = mc.Config()
     config.get_executors()
-    external_metadata.init_global(incremental=True)
+    external_metadata.init_global(incremental=True, config=config)
     return ec.run_from_storage_name_instance(
         config, main_app.APPLICATION, meta_visitors, data_visitors,
         GEM_BOOKMARK, work.GeminiIncrementalQuery(rc.get_utc_now(), config))
@@ -273,7 +273,9 @@ def _run_rc_state():
     :return 0 if successful, -1 if there's any sort of failure. Return status
         is used by airflow for task instance management and reporting.
     """
-    external_metadata.init_global(incremental=True)
+    config = mc.Config()
+    config.get_executors()
+    external_metadata.init_global(incremental=True, config=config)
     name_builder = builder.NameBuilderIncremental()
     incremental_source = data_source.IncrementalSource()
     return rc.run_by_state(config=None, name_builder=name_builder,
@@ -305,8 +307,8 @@ def _run_rc_state_public():
     """
     config = mc.Config()
     config.get_executors()
-    external_metadata.init_global(incremental=True)
-    name_builder = builder.NameBuilderIncremental()
+    external_metadata.init_global(incremental=True, config=config)
+    name_builder = builder.GemBuilder()
     incremental_source = data_source.PublicIncremental(config)
     return rc.run_by_state(config=config, name_builder=name_builder,
                            command_name=main_app.APPLICATION,

@@ -186,10 +186,12 @@ def test_run_errors(run_mock):
 @patch('caom2pipe.execute_composable.OrganizeExecutesWithDoOne.do_one')
 @patch('caom2pipe.manage_composable.query_endpoint')
 @patch('gem2caom2.external_metadata.get_obs_metadata')
-def test_run_incremental_rc(get_obs_mock, query_mock, run_mock):
+@patch('caom2pipe.manage_composable.query_tap_client')
+def test_run_incremental_rc(tap_mock, get_obs_mock, query_mock, run_mock):
 
     get_obs_mock.side_effect = gem_mocks.mock_get_obs_metadata
     query_mock.side_effect = gem_mocks.mock_query_endpoint_2
+    tap_mock.side_effect = gem_mocks.mock_query_tap
 
     test_obs_id = 'GN-2019B-ENG-1-160-007'
     test_f_id = 'N20191101S0006'
@@ -468,94 +470,11 @@ def test_run_by_incremental2(query_mock, read_mock,
     assert query_mock.called, 'query mock not called'
 
 
-@patch('sys.exit', Mock(return_value=MyExitError))
-@patch('gem2caom2.external_metadata.get_obs_metadata')
-@patch('caom2pipe.manage_composable.exec_cmd')
-@patch('caom2pipe.execute_composable.CAOM2RepoClient')
-@patch('caom2pipe.execute_composable.CadcDataClient')
-@patch('cadcdata.core.net.BaseWsClient.post')
-@patch('cadcutils.net.ws.WsCapabilities.get_access_url')
-def test_run_by_public(caps_mock, tap_mock, data_client_mock,
-                       repo_mock, exec_mock, obs_md_mock):
-    caps_mock.return_value = 'https://sc2.canfar.net/sc2repo'
-    data_client_mock.return_value.get_file_info.side_effect = \
-        gem_mocks.mock_get_file_info
-    data_client_mock.return_value.get_file.side_effect = Mock()
-    exec_mock.side_effect = Mock()
-    repo_mock.return_value.create.side_effect = gem_mocks.mock_repo_create
-    repo_mock.return_value.read.side_effect = gem_mocks.mock_repo_read
-    repo_mock.return_value.update.side_effect = gem_mocks.mock_repo_update
-
-    tap_response = Mock()
-    tap_response.status_code = 200
-    tap_response.iter_content.return_value = \
-        [b'uri\n'
-         b'gemini:GEM/N20191101S0007.fits\n']
-    tap_mock.return_value.__enter__.return_value = tap_response
-
-    obs_md_mock.side_effect = gem_mocks.mock_get_obs_metadata
-
-    expected_fqn = f'/usr/src/app/logs/{gem_mocks.TEST_BUILDER_OBS_ID}' \
-                   f'.expected.xml'
-    if not os.path.exists(expected_fqn):
-        shutil.copy(
-            f'{gem_mocks.TEST_DATA_DIR}/expected.xml', expected_fqn)
-
-    _write_cert()
-    prior_s = datetime.utcnow().timestamp() - 1440 * 60
-    _write_state(prior_s)
-    getcwd_orig = os.getcwd
-    os.getcwd = Mock(return_value=f'{gem_mocks.TEST_DATA_DIR}/edu_query')
-    try:
-        # execution
-        sys.argv = ['test command']
-        test_result = composable._run_by_public()
-        assert test_result == 0, 'wrong result'
-    finally:
-        os.getcwd = getcwd_orig
-
-    assert repo_mock.return_value.update.called, 'update not called'
-    assert repo_mock.return_value.read.called, 'read not called'
-    assert exec_mock.called, 'exec mock not called'
-    param, level_as = ec.CaomExecute._specify_logging_level_param(logging.ERROR)
-    py_version = f'{sys.version_info.major}.{sys.version_info.minor}'
-    exec_mock.assert_called_with(
-        (f'gem2caom2 --quiet --cert /usr/src/app/cadcproxy.pem '
-         f'--in /usr/src/app/logs/GN-2019B-ENG-1-160-008.fits.xml '
-         f'--out /usr/src/app/logs/GN-2019B-ENG-1-160-008.fits.xml '
-         f'--external_url '
-         f'https://archive.gemini.edu/fullheader/N20191101S0007.fits '
-         f'--plugin '
-         f'/usr/local/lib/python{py_version}/site-packages/gem2caom2/'
-         f'gem2caom2.py '
-         f'--module '
-         f'/usr/local/lib/python{py_version}/site-packages/gem2caom2/'
-         f'gem2caom2.py '
-         f'--lineage N20191101S0007/gemini:GEM/N20191101S0007.fits'),
-        level_as), \
-        'exec mock wrong parameters'
-    assert data_client_mock.return_value.get_file_info.called, \
-        'data client mock get file info not called'
-    assert tap_mock.called, 'tap mock not called'
-
-
-@patch('gem2caom2.external_metadata.get_obs_metadata')
 @patch('caom2pipe.execute_composable.OrganizeExecutesWithDoOne.do_one')
-@patch('cadcdata.core.net.BaseWsClient.post')
-@patch('cadcutils.net.ws.WsCapabilities.get_access_url')
-def test_run_by_rc_public(caps_mock, tap_mock, exec_mock, obs_md_mock):
-    caps_mock.return_value = 'https://sc2.canfar.net/sc2repo'
+@patch('caom2pipe.manage_composable.query_tap_client')
+def test_run_by_rc_public(tap_mock, exec_mock):
     exec_mock.side_effect = Mock(return_value=0)
-
-    tap_response = Mock()
-    tap_response.status_code = 200
-    tap_response.iter_content.return_value = \
-        [b'uri,lastModified\n'
-         b'gemini:GEM/N20191101S0007.fits,2019-12-01T00:00:00.000000\n']
-    tap_mock.return_value.__enter__.return_value = tap_response
-
-    obs_md_mock.side_effect = gem_mocks.mock_get_obs_metadata
-
+    tap_mock.side_effect = gem_mocks.mock_query_tap
     expected_fqn = f'/usr/src/app/logs/{gem_mocks.TEST_BUILDER_OBS_ID}' \
                    f'.expected.xml'
     if not os.path.exists(expected_fqn):
@@ -586,15 +505,15 @@ def test_run_by_rc_public(caps_mock, tap_mock, exec_mock, obs_md_mock):
     assert isinstance(
         test_storage, gem_name.GemName), type(test_storage)
     assert test_storage.obs_id == 'GN-2019B-ENG-1-160-008', 'wrong obs id'
-    assert test_storage.file_name is None, 'expect file_name to not be set'
+    assert test_storage.file_name == 'N20191101S0007.fits', 'wrong file_name'
     assert test_storage.file_id == test_f_id, 'wrong file_id'
     assert test_storage.fname_on_disk == f'{test_f_id}.fits', \
         'wrong fname on disk'
     assert test_storage.url is None, 'wrong url'
     assert test_storage.lineage == \
-           f'{test_f_id}/gemini:GEM/{test_f_id}.fits', 'wrong lineage'
+        f'{test_f_id}/gemini:GEM/{test_f_id}.fits', 'wrong lineage'
     assert test_storage.external_urls == \
-           f'https://archive.gemini.edu/fullheader/{test_f_id}.fits', \
+        f'https://archive.gemini.edu/fullheader/{test_f_id}.fits', \
         'wrong external urls'
     assert tap_mock.called, 'tap mock not called'
 

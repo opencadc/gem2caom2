@@ -3665,6 +3665,7 @@ def _repair_provenance_value(imcmb_value, obs_id):
     # e.g.
     # IMCMB001 = 'tmpimgwsk9476kd_5.fits[SCI,1]'
     # tmpfile22889S20141226S0203.fits[SCI,1]
+    # IMCMB001= 'rawdir$2004may20_0048.fits'
     logging.debug(f'Being _repair_provenance_value for {obs_id}.')
 
     if 'N' in imcmb_value:
@@ -3684,7 +3685,7 @@ def _repair_provenance_value(imcmb_value, obs_id):
             'Unrecognized IMCMB value {}'.format(imcmb_value))
         return None, None
 
-    if '_' in temp:
+    if '_' in temp and (temp.startswith('S') or temp.startswith('N')):
         temp1 = temp.split('_')[0]
     elif '.fits' in temp:
         temp1 = temp.split('.fits')[0]
