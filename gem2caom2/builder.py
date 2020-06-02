@@ -154,7 +154,6 @@ class NameBuilderIncremental(nbc.StorageNameBuilder):
         json_string = scrape.find_data_label_by_file_name(entry)
         obs_id, last_modified_s = scrape.parse_for_data_label(json_string,
                                                               entry)
-        logging.error(f'builder obs_id {obs_id}')
         return gem_name.GemNameBuilder(obs_id=obs_id,
                                        file_name=entry,
                                        last_modified_s=last_modified_s)

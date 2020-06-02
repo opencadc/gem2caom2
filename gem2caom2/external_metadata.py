@@ -470,7 +470,7 @@ class CachingObsFileRelationship(GemObsFileRelationship):
         FROM caom2.Observation AS O
         JOIN caom2.Plane AS P on P.obsID = O.obsID
         JOIN caom2.Artifact AS A on A.planeID = P.planeID
-        WHERE A.artifact_uri = '{artifact_uri}'
+        WHERE A.uri = '{artifact_uri}'
         """
         table = mc.query_tap_client(query_string, self._tap_client)
         result = None
