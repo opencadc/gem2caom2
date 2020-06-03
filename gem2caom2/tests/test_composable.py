@@ -197,7 +197,7 @@ def test_run_incremental_rc(tap_mock, get_obs_mock, query_mock, run_mock):
     getcwd_orig = os.getcwd
     os.getcwd = Mock(return_value=gem_mocks.TEST_DATA_DIR)
     try:
-        composable._run_rc_state()
+        composable._run_by_incremental()
         assert run_mock.called, 'should have been called'
         args, kwargs = run_mock.call_args
         test_storage = args[0]

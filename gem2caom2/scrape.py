@@ -127,9 +127,22 @@ def parse_json_file_list(json_string, last_processed_time_s):
             entry_ts_s = datetime.strptime(
                 entry['lastmod'].replace('+00:00', ''),
                 '%Y-%m-%d %H:%M:%S.%f').timestamp()
+            f_name = entry['filename']
+            # the same file name can be in the list returned more than once
             if entry_ts_s >= last_processed_time_s:
-                logging.debug(f'Adding {entry["filename"]} to work list.')
-                work_list[entry_ts_s] = entry['filename']
+                if f_name in work_list.values():
+                    for key, value in work_list.items():
+                        if f_name == value:
+                            existing_ts = key
+                            break
+                    if entry_ts_s > existing_ts:
+                        del work_list[existing_ts]
+                        work_list[entry_ts_s] = f_name
+                        logging.debug(f'Replacing {entry["filename"]} in work '
+                                      f'list.')
+                else:
+                    work_list[entry_ts_s] = f_name
+                    logging.debug(f'Adding {entry["filename"]} to work list.')
     return work_list
 
 

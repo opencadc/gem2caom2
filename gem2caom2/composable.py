@@ -241,35 +241,8 @@ def run_by_public():
 
 
 def _run_by_incremental():
-    """Run the processing for observations that are posted on the site
-    archive.gemini.edu.
-
-    :return 0 if successful, -1 if there's any sort of failure. Return status
-        is used by airflow for task instance management and reporting.
-    """
-    config = mc.Config()
-    config.get_executors()
-    external_metadata.init_global(incremental=True, config=config)
-    return ec.run_from_storage_name_instance(
-        config, main_app.APPLICATION, META_VISITORS, DATA_VISITORS,
-        data_source.GEM_BOOKMARK,
-        work.GeminiIncrementalQuery(rc.get_utc_now(), config))
-
-
-def run_by_incremental():
-    try:
-        result = _run_by_incremental()
-        sys.exit(result)
-    except Exception as e:
-        logging.error(e)
-        tb = traceback.format_exc()
-        logging.debug(tb)
-        sys.exit(-1)
-
-
-def _run_rc_state():
     """Run incremental processing for observations that are posted on the site
-    archive.gemini.edu. This assumes the existence of the incremental
+    archive.gemini.edu. TODO in the future this will depend on the incremental
     query endpoint.
 
     :return 0 if successful, -1 if there's any sort of failure. Return status
@@ -295,9 +268,9 @@ def _run_rc_state():
     return result
 
 
-def run_by_rc_state():
+def run_by_incremental():
     try:
-        result = _run_rc_state()
+        result = _run_by_incremental()
         sys.exit(result)
     except Exception as e:
         logging.error(e)
