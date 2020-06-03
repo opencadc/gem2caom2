@@ -78,10 +78,8 @@ from caom2pipe import run_composable as rc
 from gem2caom2 import main_app, work, preview_augmentation, external_metadata
 from gem2caom2 import pull_augmentation, gem_name, builder, data_source
 
-meta_visitors = [preview_augmentation, pull_augmentation]
-data_visitors = []
-
-GEM_BOOKMARK = 'gemini_timestamp'
+META_VISITORS = [preview_augmentation, pull_augmentation]
+DATA_VISITORS = []
 
 
 def _run():
@@ -95,7 +93,7 @@ def _run():
     gem_builder = builder.GemBuilder()
     return rc.run_by_todo(config, gem_builder, chooser=None,
                           command_name=main_app.APPLICATION,
-                          meta_visitors=meta_visitors)
+                          meta_visitors=META_VISITORS)
 
 
 def run():
@@ -132,7 +130,7 @@ def _run_single():
         raise mc.CadcException('No code to handle running GEM by obs id.')
     external_metadata.init_global(incremental=False, config=config)
     return ec.run_single(config, storage_name, main_app.APPLICATION,
-                         meta_visitors, data_visitors)
+                         META_VISITORS, DATA_VISITORS)
 
 
 def run_single():
@@ -165,7 +163,8 @@ def _run_by_tap_query():
     config.get_executors()
     external_metadata.init_global(incremental=False, config=config)
     return ec.run_from_state(config, gem_name.GemName, main_app.APPLICATION,
-                             meta_visitors, data_visitors, GEM_BOOKMARK,
+                             META_VISITORS, DATA_VISITORS,
+                             data_source.GEM_BOOKMARK,
                              work.TapNoPreviewQuery(
                                  rc.get_utc_now(), config))
 
@@ -193,7 +192,8 @@ def _run_by_in_memory():
     config.get_executors()
     external_metadata.init_global(incremental=False, config=config)
     return ec.run_from_state(config, gem_name.GemName, main_app.APPLICATION,
-                             meta_visitors, data_visitors, GEM_BOOKMARK,
+                             META_VISITORS, DATA_VISITORS,
+                             data_source.GEM_BOOKMARK,
                              work.ObsFileRelationshipQuery())
 
 
@@ -223,7 +223,8 @@ def _run_by_public():
     config.get_executors()
     external_metadata.init_global(incremental=False, config=config)
     return ec.run_from_state(config, gem_name.GemName, main_app.APPLICATION,
-                             meta_visitors, data_visitors, GEM_BOOKMARK,
+                             META_VISITORS, DATA_VISITORS,
+                             data_source.GEM_BOOKMARK,
                              work.TapRecentlyPublicQuery(
                                  rc.get_utc_now(), config))
 
@@ -250,8 +251,9 @@ def _run_by_incremental():
     config.get_executors()
     external_metadata.init_global(incremental=True, config=config)
     return ec.run_from_storage_name_instance(
-        config, main_app.APPLICATION, meta_visitors, data_visitors,
-        GEM_BOOKMARK, work.GeminiIncrementalQuery(rc.get_utc_now(), config))
+        config, main_app.APPLICATION, META_VISITORS, DATA_VISITORS,
+        data_source.GEM_BOOKMARK,
+        work.GeminiIncrementalQuery(rc.get_utc_now(), config))
 
 
 def run_by_incremental():
@@ -276,15 +278,21 @@ def _run_rc_state():
     config = mc.Config()
     config.get_executors()
     external_metadata.init_global(incremental=True, config=config)
-    name_builder = builder.NameBuilderIncremental()
-    incremental_source = data_source.IncrementalSource()
-    return rc.run_by_state(config=None, name_builder=name_builder,
-                           command_name=main_app.APPLICATION,
-                           bookmark_name=GEM_BOOKMARK,
-                           meta_visitors=meta_visitors,
-                           data_visitors=data_visitors,
-                           end_time=None, source=incremental_source,
-                           chooser=None)
+    name_builder = builder.GemBuilder()
+    incremental_source = data_source.FileListIncrementalSource(config)
+    result = rc.run_by_state(config=None, name_builder=name_builder,
+                             command_name=main_app.APPLICATION,
+                             bookmark_name=data_source.GEM_BOOKMARK,
+                             meta_visitors=META_VISITORS,
+                             data_visitors=DATA_VISITORS,
+                             end_time=None, source=incremental_source,
+                             chooser=None)
+    if incremental_source.max_records_encountered:
+        logging.warning('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+        logging.warning('Encountered more than 2500 records for a night')
+        logging.warning('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+        result |= -1
+    return result
 
 
 def run_by_rc_state():
@@ -312,9 +320,9 @@ def _run_rc_state_public():
     incremental_source = data_source.PublicIncremental(config)
     return rc.run_by_state(config=config, name_builder=name_builder,
                            command_name=main_app.APPLICATION,
-                           bookmark_name=GEM_BOOKMARK,
-                           meta_visitors=meta_visitors,
-                           data_visitors=data_visitors,
+                           bookmark_name=data_source.GEM_BOOKMARK,
+                           meta_visitors=META_VISITORS,
+                           data_visitors=DATA_VISITORS,
                            end_time=None, source=incremental_source,
                            chooser=None)
 

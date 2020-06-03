@@ -83,7 +83,7 @@ def test_parse_json_file_list():
     with open(DATA_FILE, 'r') as f:
         json_string = f.read()
 
-    test_file_name = 'N20191101S0376.fits'
+    test_file_name = 'N20191101S0376.fits.bz2'
     test_time_end = _get_end_time()
     result = scrape.parse_json_file_list(json_string, test_time_end)
     assert result is not None, 'expected result'
@@ -92,7 +92,7 @@ def test_parse_json_file_list():
 
 
 def test_read_json_file_list_page():
-    test_file_name = 'N20191101S0119.fits'
+    test_file_name = 'N20191101S0119.fits.bz2'
     test_end_time = _get_end_time()
     test_start_time = test_end_time - 100000
 

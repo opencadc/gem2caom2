@@ -190,13 +190,10 @@ def test_run_errors(run_mock):
 def test_run_incremental_rc(tap_mock, get_obs_mock, query_mock, run_mock):
 
     get_obs_mock.side_effect = gem_mocks.mock_get_obs_metadata
-    query_mock.side_effect = gem_mocks.mock_query_endpoint_2
+    query_mock.side_effect = gem_mocks.mock_query_endpoint_3
     tap_mock.side_effect = gem_mocks.mock_query_tap
 
-    test_obs_id = 'GN-2019B-ENG-1-160-007'
-    test_f_id = 'N20191101S0006'
-    test_f_name = f'{test_f_id}.fits'
-    _write_todo(test_f_name)
+    _write_state(prior_timestamp='2020-03-06 03:22:10.787835')
     getcwd_orig = os.getcwd
     os.getcwd = Mock(return_value=gem_mocks.TEST_DATA_DIR)
     try:
@@ -208,22 +205,32 @@ def test_run_incremental_rc(tap_mock, get_obs_mock, query_mock, run_mock):
             test_storage, gem_name.GemName), type(test_storage)
         import logging
         logging.error(test_storage)
-        assert test_storage.obs_id == test_obs_id, 'wrong obs id'
-        assert test_storage.file_name is None, 'expect file_name to not be set'
-        assert test_storage.file_id == test_f_id, 'wrong file_id'
-        assert test_storage.fname_on_disk == test_f_name, \
+        assert test_storage.obs_id == 'test_data_label', 'wrong obs id'
+        assert test_storage.file_name == 'S20200303S0353.fits', \
+            'wrong file_name'
+        assert test_storage.file_id == 'S20200303S0353', 'wrong file_id'
+        assert test_storage.fname_on_disk == 'S20200303S0353.fits', \
             'wrong fname on disk'
         assert test_storage.url is None, 'wrong url'
+        # there are six files returned by the mock, and they each have the
+        # same data label, so they all end up in this lineage
         assert test_storage.lineage == \
-               f'{test_f_id}/gemini:GEM/{test_f_id}.fits', 'wrong lineage'
+            'S20200303S0025/gemini:GEM/S20200303S0025.fits ' \
+            'S20200303S0026/gemini:GEM/S20200303S0026.fits ' \
+            'S20200303S0027/gemini:GEM/S20200303S0027.fits ' \
+            'S20200303S0351/gemini:GEM/S20200303S0351.fits ' \
+            'S20200303S0352/gemini:GEM/S20200303S0352.fits ' \
+            'S20200303S0353/gemini:GEM/S20200303S0353.fits', 'wrong lineage'
         assert test_storage.external_urls == \
-               f'https://archive.gemini.edu/fullheader/{test_f_id}.fits', \
+            'https://archive.gemini.edu/fullheader/S20200303S0025.fits ' \
+            'https://archive.gemini.edu/fullheader/S20200303S0026.fits ' \
+            'https://archive.gemini.edu/fullheader/S20200303S0027.fits ' \
+            'https://archive.gemini.edu/fullheader/S20200303S0351.fits ' \
+            'https://archive.gemini.edu/fullheader/S20200303S0352.fits ' \
+            'https://archive.gemini.edu/fullheader/S20200303S0353.fits', \
             'wrong external urls'
     except Exception as e:
-        import logging
-        import traceback
-        logging.error(traceback.format_exc())
-        raise e
+        assert False, e
     finally:
         os.getcwd = getcwd_orig
 
@@ -319,7 +326,8 @@ def test_run_by_in_memory_query():
             args, kwargs = run_mock.call_args
             assert args[3] == main_app.APPLICATION, 'wrong command'
             test_storage = args[2]
-            assert isinstance(test_storage, gem_name.GemName), type(test_storage)
+            assert isinstance(test_storage, gem_name.GemName), \
+                type(test_storage)
             assert test_storage.obs_id == test_obs_id, 'wrong obs id'
             assert test_storage.file_name == 'N20150216S0129.fits', \
                 'wrong file name'
@@ -342,6 +350,7 @@ def test_run_by_in_memory_query():
 @patch('caom2pipe.execute_composable.CadcDataClient')
 @patch('caom2pipe.manage_composable.read_obs_from_file')
 @patch('caom2pipe.manage_composable.query_endpoint')
+@pytest.mark.skip('waiting for gemini incremental endpoint')
 def test_run_by_incremental2(query_mock, read_mock,
                              data_client_mock, repo_mock, exec_mock):
     data_client_mock.return_value.get_file_info.side_effect = \
@@ -534,9 +543,13 @@ def _write_state(prior_timestamp=None):
             prior_s = prior_timestamp
         else:
             prior_s = mc.make_seconds(prior_timestamp)
-    test_start_time = datetime.fromtimestamp(prior_s)
-    test_bookmark = {'bookmarks': {'gemini_timestamp':
-                                       {'last_record': test_start_time}}}
+    test_start_time = datetime.fromtimestamp(prior_s).isoformat()
+    logging.error(f'test_start_time {test_start_time}')
+    test_bookmark = {'bookmarks':
+                         {'gemini_timestamp':
+                              {'last_record': test_start_time}
+                          }
+                     }
     mc.write_as_yaml(test_bookmark, STATE_FILE)
 
 

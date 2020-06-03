@@ -567,6 +567,7 @@ class Object(object):
 
 
 def mock_query_endpoint(url, timeout=-1):
+    # returns response.text
     result = Object()
     result.text = None
     global call_count
@@ -594,7 +595,20 @@ def mock_query_endpoint(url, timeout=-1):
     return result
 
 
+def mock_query_endpoint_3(url, timeout=-1):
+    # returns json via response.text, depending on url
+    result = Object()
+    result.text = '[]'
+    if 'jsonfilelist' in url:
+        if 'filepre=S20200602' in url:
+            with open(f'{TEST_DATA_DIR}/edu_query/S20200303_filepre.json',
+                      'r') as f:
+                result.text = f.read()
+    return result
+
+
 def mock_query_endpoint_2(url, timeout=-1):
+    # returns response.json
     def x():
         if url.startswith('http://arcdev'):
             with open(f'{TEST_DATA_DIR}/jsonfilelist_composable_test.json',

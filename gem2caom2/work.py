@@ -334,18 +334,11 @@ class GeminiIncrementalQuery(wc.Work):
                                         f'interval from {prev_exec_date} to '
                                         f'{exec_date}.')
                     else:
-                        # results have file names and data labels, so
-                        # StorageName instances can be created
                         for entry in metadata:
                             file_name = entry.get('name')
-                            file_id = gem_name.GemName.remove_extensions(
-                                file_name)
-                            obs_id = entry.get('data_label')
+                            storage_name = gem_name.GemName(file_name=file_name)
                             last_modified_s = mc.make_seconds(
                                 entry.get('lastmod'))
-                            external_metadata.om.add(entry, file_id)
-                            storage_name = gem_name.GemNameBuilder(
-                                obs_id, file_name, last_modified_s)
                             mc.append_as_array(
                                 entries, last_modified_s, storage_name)
         finally:

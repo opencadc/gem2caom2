@@ -69,6 +69,7 @@
 
 import json
 import os
+import pytest
 
 from datetime import datetime
 from mock import patch, Mock
@@ -101,6 +102,7 @@ def test_file_listing_parse():
         assert first_result[0] == 1572566500.951468, 'wrong timestamp'
 
 
+@pytest.mark.skip('waiting for working gemini endpoint')
 def test_gemini_incremental_query():
     getcwd_orig = os.getcwd
     os.getcwd = Mock(return_value=gem_mocks.TEST_DATA_DIR)

@@ -70,12 +70,18 @@
 import logging
 
 from astropy.table import Table
+from datetime import datetime
 
 from cadctap import CadcTapClient
 from caom2pipe import data_source_composable as dsc
 from caom2pipe import manage_composable as mc
+from gem2caom2.scrape import read_json_file_list_page
 
-__all__ = ['IncrementalSource', 'PublicIncremental']
+
+__all__ = ['FileListIncrementalSource', 'GEM_BOOKMARK', 'IncrementalSource',
+           'PublicIncremental']
+
+GEM_BOOKMARK = 'gemini_timestamp'
 
 
 class IncrementalSource(dsc.DataSource):
@@ -128,6 +134,56 @@ class IncrementalSource(dsc.DataSource):
             if response is not None:
                 response.close()
         return entries
+
+
+class FileListIncrementalSource(dsc.DataSource):
+    """Implements the identification of the work to be done, by querying
+    archive.gemini.edu's jsonfilelist endpoint, in time-boxed chunks."""
+
+    def __init__(self, config):
+        super(FileListIncrementalSource, self).__init__(config=None)
+        self._logger = logging.getLogger(__name__)
+        state = mc.State(config.state_fqn)
+        temp = state.get_bookmark(GEM_BOOKMARK)
+        # make sure last_processed_time is type float
+        self._last_processed_time = mc.increment_time(temp, 0).timestamp()
+        # now decide on a timestamp for when to start ingestion
+        # for this attempt, say 14 days prior to the last ingestion
+        # timestamp - WAG
+        self._start_time_ts = self._last_processed_time - 14 * 1440 * 60
+        self._max_records_encountered = False
+
+    def get_time_box_work(self, prev_exec_time, exec_time):
+        """
+        :param prev_exec_time datetime start of the timestamp chunk
+        :param exec_time datetime end of the timestamp chunk
+        :return: a list of file names with time they were modified from
+            archive.gemini.edu, structured as an astropy Table (for now).
+        """
+        self._logger.debug(f'Begin get_time_box_work from '
+                           f'{prev_exec_time} to {exec_time}.')
+        prev_ts = prev_exec_time.timestamp()
+        temp = read_json_file_list_page(prev_ts, self._last_processed_time)
+        if len(temp) == 2500:
+            self._max_records_encountered = True
+
+        # needs to be ordered by timestamps when processed
+        # key timestamp
+        # value list of file names
+        entries = Table(names=('fileName', 'ingestDate'),
+                        dtype=('S64', 'S32'))
+
+        # temp is a dict with:
+        # key - timestamp
+        # value - file name
+        for key, value in temp.items():
+            entries.add_row((value, datetime.fromtimestamp(key).isoformat()))
+        self._logger.debug('End get_time_box_work.')
+        return entries
+
+    @property
+    def max_records_encountered(self):
+        return self._max_records_encountered
 
 
 class PublicIncremental(dsc.QueryTimeBoxDataSource):
