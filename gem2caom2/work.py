@@ -78,8 +78,7 @@ from caom2pipe import work_composable as wc
 
 from gem2caom2 import scrape, external_metadata, gem_name
 
-__all__ = ['TapNoPreviewQuery', 'TapRecentlyPublicQuery',
-           'ObsFileRelationshipQuery', 'FileListingQuery',
+__all__ = ['TapNoPreviewQuery', 'ObsFileRelationshipQuery', 'FileListingQuery',
            'GeminiIncrementalQuery']
 
 # See the definition of 'canonical' here, for why it matters in the URL:
@@ -131,51 +130,6 @@ class TapNoPreviewQuery(wc.Work):
                 "ORDER BY O.maxLastModified ASC " \
                 "".format(self.config.collection, prev_exec_date, exec_date,
                           self.max_ts)
-        result = mc.query_tap(query, self.config.proxy_fqn, self.config.tap_id)
-        # results look like:
-        # gemini:GEM/N20191202S0125.fits
-        return mc.Validator.filter_meta(result)
-
-    def initialize(self):
-        """Do nothing."""
-        pass
-
-
-class TapRecentlyPublicQuery(wc.Work):
-
-    def __init__(self, max_ts, config):
-        super(TapRecentlyPublicQuery, self).__init__(max_ts.timestamp())
-        self.config = config
-        self.max_ts = max_ts  # type datetime
-
-    def todo(self, prev_exec_date, exec_date):
-        """
-        Get the set of observation IDs that do not have preview or
-        thumbnail artifacts. Limit the entries by time-boxing on
-        dataRelease.
-
-        :param prev_exec_date datetime start of the timestamp chunk
-        :param exec_date datetime end of the timestamp chunk
-        :return: a list of CAOM Observation IDs.
-        """
-
-        logging.debug('Entering todo')
-        query = "SELECT A.uri " \
-                "FROM caom2.Observation AS O " \
-                "JOIN caom2.Plane AS P ON O.obsID = P.obsID " \
-                "JOIN caom2.Artifact AS A ON P.planeID = A.planeID " \
-                "WHERE P.planeID IN ( " \
-                "  SELECT A.planeID " \
-                "  FROM caom2.Observation AS O " \
-                "  JOIN caom2.Plane AS P ON O.obsID = P.obsID " \
-                "  JOIN caom2.Artifact AS A ON P.planeID = A.planeID " \
-                "  WHERE O.collection = '{}' " \
-                "  GROUP BY A.planeID " \
-                "  HAVING COUNT(A.artifactID) = 1 ) " \
-                "AND P.dataRelease > '{}' " \
-                "AND P.dataRelease <= '{}' " \
-                "ORDER BY O.maxLastModified ASC " \
-                "".format(self.config.collection, prev_exec_date, exec_date)
         result = mc.query_tap(query, self.config.proxy_fqn, self.config.tap_id)
         # results look like:
         # gemini:GEM/N20191202S0125.fits

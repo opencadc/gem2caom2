@@ -221,12 +221,16 @@ def _run_by_public():
     """
     config = mc.Config()
     config.get_executors()
-    external_metadata.init_global(incremental=False, config=config)
-    return ec.run_from_state(config, gem_name.GemName, main_app.APPLICATION,
-                             META_VISITORS, DATA_VISITORS,
-                             data_source.GEM_BOOKMARK,
-                             work.TapRecentlyPublicQuery(
-                                 rc.get_utc_now(), config))
+    external_metadata.init_global(incremental=True, config=config)
+    name_builder = builder.GemBuilder()
+    incremental_source = data_source.PublicIncremental(config)
+    return rc.run_by_state(config=config, name_builder=name_builder,
+                           command_name=main_app.APPLICATION,
+                           bookmark_name=data_source.GEM_BOOKMARK,
+                           meta_visitors=META_VISITORS,
+                           data_visitors=DATA_VISITORS,
+                           end_time=None, source=incremental_source,
+                           chooser=None)
 
 
 def run_by_public():

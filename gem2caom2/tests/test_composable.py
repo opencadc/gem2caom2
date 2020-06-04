@@ -527,6 +527,48 @@ def test_run_by_rc_public(tap_mock, exec_mock):
     assert tap_mock.called, 'tap mock not called'
 
 
+@patch('caom2pipe.execute_composable.OrganizeExecutesWithDoOne.do_one')
+@patch('caom2pipe.manage_composable.query_endpoint')
+@patch('gem2caom2.external_metadata.get_obs_metadata')
+@patch('caom2pipe.manage_composable.query_tap_client')
+def test_run_by_public(tap_mock, get_obs_mock, query_mock, run_mock):
+
+    get_obs_mock.side_effect = gem_mocks.mock_get_obs_metadata
+    query_mock.side_effect = gem_mocks.mock_query_endpoint_3
+    tap_mock.side_effect = gem_mocks.mock_query_tap
+
+    _write_state(prior_timestamp='2020-03-06 03:22:10.787835')
+    getcwd_orig = os.getcwd
+    os.getcwd = Mock(return_value=gem_mocks.TEST_DATA_DIR)
+    try:
+        composable._run_by_public()
+        assert run_mock.called, 'should have been called'
+        args, kwargs = run_mock.call_args
+        test_storage = args[0]
+        assert isinstance(
+            test_storage, gem_name.GemName), type(test_storage)
+        import logging
+        logging.error(test_storage)
+        assert test_storage.obs_id == 'GN-2019B-ENG-1-160-008', 'wrong obs id'
+        assert test_storage.file_name == 'N20191101S0007.fits', \
+            'wrong file_name'
+        assert test_storage.file_id == 'N20191101S0007', 'wrong file_id'
+        assert test_storage.fname_on_disk == 'N20191101S0007.fits', \
+            'wrong fname on disk'
+        assert test_storage.url is None, 'wrong url'
+        # there are six files returned by the mock, and they each have the
+        # same data label, so they all end up in this lineage
+        assert test_storage.lineage == \
+            'N20191101S0007/gemini:GEM/N20191101S0007.fits', 'wrong lineage'
+        assert test_storage.external_urls == \
+            'https://archive.gemini.edu/fullheader/N20191101S0007.fits', \
+            'wrong external urls'
+    except Exception as e:
+        assert False, e
+    finally:
+        os.getcwd = getcwd_orig
+
+
 def _write_todo(test_id):
     with open(TODO_FILE, 'w') as f:
         f.write('{}\n'.format(test_id))
