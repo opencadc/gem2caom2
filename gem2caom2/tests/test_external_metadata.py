@@ -66,12 +66,18 @@
 #
 # ***********************************************************************
 #
-import pytest
 
+import os
+import shutil
+
+from mock import patch, Mock
+
+from caom2pipe import manage_composable as mc
 from gem2caom2 import external_metadata as ext_md
 
-single_test = False
+import gem_mocks
 
+from gem2caom2.tests.gem_mocks import _query_mock_none
 
 test_subjects = {
     'H2v=2-1S1_G0220': [ext_md.Inst.NIRI, 'H2S1v2-1-G0220'],
@@ -86,11 +92,51 @@ test_subjects = {
 }
 
 
-@pytest.mark.skipif(single_test, reason='Single test mode')
 def test_repair_filter_name():
     for ii in test_subjects:
-        import logging
-        logging.error(ii)
         test_result = ext_md._repair_filter_name_for_svo(test_subjects[ii][0],
                                                          ii)
         assert test_result == test_subjects[ii][1], 'wrong value'
+
+
+@patch('gem2caom2.external_metadata.get_obs_metadata')
+@patch('caom2pipe.manage_composable.query_tap_client')
+def test_caching_relationship(tap_mock, get_obs_mock):
+    shutil.copyfile(f'{gem_mocks.TEST_DATA_DIR}/from_paul.txt',
+                    '/app/data/from_paul.txt')
+    getcwd_orig = os.getcwd
+    os.getcwd = Mock(return_value=gem_mocks.TEST_DATA_DIR)
+    try:
+        test_config = mc.Config()
+        test_config.get_executors()
+        ext_md.init_global(incremental=True, config=test_config)
+        initial_length = 523
+        tap_mock.side_effect = _query_mock_none
+        get_obs_mock.side_effect = gem_mocks.mock_get_obs_metadata
+        test_subject = ext_md.CachingObsFileRelationship()
+        # test an entry that's not in the file, not at CADC, is at
+        # archive.gemini.edu
+        assert len(test_subject.name_list) == initial_length, \
+            'bad initial length'
+        test_result = test_subject.get_obs_id('N20200210S0077.fits')
+        assert test_result is not None, 'expect a gemini result'
+        assert test_result == 'GN-CAL20200210-22-076', 'wrong gemini result'
+        assert len(test_subject.name_list) == initial_length + 1, \
+            'bad updated length from Gemini'
+
+        # entry is not in file, but is at CADC
+        tap_mock.side_effect = gem_mocks.mock_query_tap
+        test_result = test_subject.get_obs_id('x.fits')
+        assert test_result is not None, 'expect a cadc result'
+        assert test_result == 'test_data_label', 'wrong cadc result'
+        assert len(test_subject.name_list) == initial_length + 2, \
+            'bad updated length from cadc'
+
+        # entry is in file
+        test_result = test_subject.get_obs_id('N20170616S0540.fits')
+        assert test_result is not None, 'expect a file result'
+        assert test_result == 'GN-CAL20170616-11-022', 'wrong file result'
+        assert len(test_subject.name_list) == initial_length + 2, \
+            'bad updated length from file'
+    finally:
+        os.getcwd = getcwd_orig

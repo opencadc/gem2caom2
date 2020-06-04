@@ -85,6 +85,14 @@ JSON_METADATA = \
 
 
 def read_json_file_list_page(start_time_s, last_processed_time_s):
+    """
+
+    :param start_time_s: Represents a timestamp for the day being queried.
+    :param last_processed_time_s: The archive.gemini.edu timestamp for the
+        last file to be processed at CADC. Anything newer should be
+        processed.
+    :return:
+    """
     file_names = {}
     date_str = datetime.fromtimestamp(start_time_s).strftime('%Y%m%d')
     for telescope_str in ['S', 'N']:
@@ -112,21 +120,29 @@ def read_json_file_list_page(start_time_s, last_processed_time_s):
 
 def parse_json_file_list(json_string, last_processed_time_s):
     work_list = {}
-    # column 0 == last mod
-    # column 1 == file name
     if not json_string.startswith('[]'):
         temp = Table.read(json_string, format='pandas.json')
-        work_list_array = temp.as_array(
-            names=[temp.colnames[0], temp.colnames[1]])
-
-        for entry in work_list_array:
+        for entry in temp:
             # e.g. 2019-11-01 00:01:34.610517+00:00, and yes, I know about %z
-            entry_ts_s = datetime.strptime(entry[0].replace('+00:00', ''),
-                                           '%Y-%m-%d %H:%M:%S.%f').timestamp()
+            entry_ts_s = datetime.strptime(
+                entry['lastmod'].replace('+00:00', ''),
+                '%Y-%m-%d %H:%M:%S.%f').timestamp()
+            f_name = entry['filename']
+            # the same file name can be in the list returned more than once
             if entry_ts_s >= last_processed_time_s:
-                logging.debug(f'Adding {entry[1]} to work list.')
-                work_list[entry_ts_s] = entry[1]
-
+                if f_name in work_list.values():
+                    for key, value in work_list.items():
+                        if f_name == value:
+                            existing_ts = key
+                            break
+                    if entry_ts_s > existing_ts:
+                        del work_list[existing_ts]
+                        work_list[entry_ts_s] = f_name
+                        logging.debug(f'Replacing {entry["filename"]} in work '
+                                      f'list.')
+                else:
+                    work_list[entry_ts_s] = f_name
+                    logging.debug(f'Adding {entry["filename"]} to work list.')
     return work_list
 
 
@@ -173,3 +189,13 @@ def find_data_label_by_file_name(f_name):
         if response is not None:
             response.close()
     return metadata
+
+
+def parse_for_data_label(json_string, f_name):
+    obs_id = None
+    last_mod_s = None
+    for entry in json_string:
+        if entry.get('name') == f_name:
+            obs_id = entry.get('data_label')
+            last_mod_s = mc.make_seconds(entry.get('lastmod'))
+    return obs_id, last_mod_s

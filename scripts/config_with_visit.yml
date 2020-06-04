@@ -45,5 +45,7 @@ rejected_directory: /usr/src/app/rejected
 task_types: 
   - visit
 features:
+  supports_latest_caom: False
+  supports_multiple_files: False
   use_file_names: True
   use_urls: False

@@ -1,4 +1,3 @@
-
 # -*- coding: utf-8 -*-
 # ***********************************************************************
 # ******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
@@ -68,6 +67,7 @@
 # ***********************************************************************
 #
 
+import json
 import logging
 import os
 import pytest
@@ -123,41 +123,39 @@ def test_run_by_tap_query():
         os.getcwd = getcwd_orig
 
 
-@patch('sys.exit', Mock(return_value=MyExitError))
-def test_run():
+@patch('caom2pipe.execute_composable.OrganizeExecutesWithDoOne.do_one')
+def test_run(run_mock):
     test_obs_id = 'GS-2004A-Q-6-27-0255'
     test_f_id = '2004may19_0255'
     test_f_name = f'{test_f_id}.fits'
     _write_todo(test_f_name)
+
     getcwd_orig = os.getcwd
     os.getcwd = Mock(return_value=gem_mocks.TEST_DATA_DIR)
     try:
         # execution
-        with patch('caom2pipe.execute_composable._do_one') \
-                as run_mock:
-            composable.run()
-            assert run_mock.called, 'should have been called'
-            args, kwargs = run_mock.call_args
-            assert args[3] == 'gem2caom2', 'wrong command'
-            test_storage = args[2]
-            assert isinstance(
-                test_storage, gem_name.GemName), type(test_storage)
-            assert test_storage.obs_id == test_obs_id, 'wrong obs id'
-            assert test_storage.file_name == test_f_name, 'wrong file name'
-            assert test_storage.fname_on_disk == test_f_name, \
-                'wrong fname on disk'
-            assert test_storage.url is None, 'wrong url'
-            assert test_storage.lineage == \
-                f'{test_f_id}/gemini:GEM/{test_f_name}', 'wrong lineage'
-            assert test_storage.external_urls == \
-                f'https://archive.gemini.edu/fullheader/{test_f_name}', \
-                'wrong external urls'
+        composable._run()
+        assert run_mock.called, 'should have been called'
+        args, kwargs = run_mock.call_args
+        test_storage = args[0]
+        assert isinstance(
+            test_storage, gem_name.GemName), type(test_storage)
+        assert test_storage.obs_id == test_obs_id, 'wrong obs id'
+        assert test_storage.file_name == test_f_name, 'wrong file name'
+        assert test_storage.fname_on_disk == test_f_name, \
+            'wrong fname on disk'
+        assert test_storage.url is None, 'wrong url'
+        assert test_storage.lineage == \
+            f'{test_f_id}/gemini:GEM/{test_f_name}', 'wrong lineage'
+        assert test_storage.external_urls == \
+            f'https://archive.gemini.edu/fullheader/{test_f_name}', \
+            'wrong external urls'
     finally:
         os.getcwd = getcwd_orig
 
 
-@patch('sys.exit', Mock(return_value=MyExitError))
-def test_run_errors():
+@patch('caom2pipe.execute_composable.OrganizeExecutesWithDoOne.do_one')
+def test_run_errors(run_mock):
     test_obs_id = 'TX20131117_flt.3002'
     test_f_id = 'TX20131117_flt.3002'
     test_f_name = f'{test_f_id}.fits'
@@ -165,27 +163,74 @@ def test_run_errors():
     getcwd_orig = os.getcwd
     os.getcwd = Mock(return_value=gem_mocks.TEST_DATA_DIR)
     try:
-        # execution
-        with patch('caom2pipe.execute_composable._do_one') \
-                as run_mock:
-            composable.run()
-            assert run_mock.called, 'should have been called'
-            args, kwargs = run_mock.call_args
-            assert args[3] == 'gem2caom2', 'wrong command'
-            test_storage = args[2]
-            assert isinstance(
-                test_storage, gem_name.GemName), type(test_storage)
-            assert test_storage.obs_id == test_obs_id, 'wrong obs id'
-            assert test_storage.file_name == test_f_name, 'wrong file name'
-            assert test_storage.fname_on_disk == test_f_name, \
-                'wrong fname on disk'
-            assert test_storage.url is None, 'wrong url'
-            assert test_storage.lineage == \
-                   '{}/gemini:GEM/{}.fits'.format(test_f_id, test_f_id), \
-                'wrong lineage'
-            assert test_storage.external_urls == \
-                   'https://archive.gemini.edu/fullheader/{}.fits'.format(
-                       test_f_id), 'wrong external urls'
+        composable._run()
+        assert run_mock.called, 'should have been called'
+        args, kwargs = run_mock.call_args
+        test_storage = args[0]
+        assert isinstance(
+            test_storage, gem_name.GemName), type(test_storage)
+        assert test_storage.obs_id == test_obs_id, 'wrong obs id'
+        assert test_storage.file_name == test_f_name, 'wrong file name'
+        assert test_storage.fname_on_disk == test_f_name, \
+            'wrong fname on disk'
+        assert test_storage.url is None, 'wrong url'
+        assert test_storage.lineage == \
+            f'{test_f_id}/gemini:GEM/{test_f_id}.fits', 'wrong lineage'
+        assert test_storage.external_urls == \
+            f'https://archive.gemini.edu/fullheader/{test_f_id}.fits', \
+            'wrong external urls'
+    finally:
+        os.getcwd = getcwd_orig
+
+
+@patch('caom2pipe.execute_composable.OrganizeExecutesWithDoOne.do_one')
+@patch('caom2pipe.manage_composable.query_endpoint')
+@patch('gem2caom2.external_metadata.get_obs_metadata')
+@patch('caom2pipe.manage_composable.query_tap_client')
+def test_run_incremental_rc(tap_mock, get_obs_mock, query_mock, run_mock):
+
+    get_obs_mock.side_effect = gem_mocks.mock_get_obs_metadata
+    query_mock.side_effect = gem_mocks.mock_query_endpoint_3
+    tap_mock.side_effect = gem_mocks.mock_query_tap
+
+    _write_state(prior_timestamp='2020-03-06 03:22:10.787835')
+    getcwd_orig = os.getcwd
+    os.getcwd = Mock(return_value=gem_mocks.TEST_DATA_DIR)
+    try:
+        composable._run_by_incremental()
+        assert run_mock.called, 'should have been called'
+        args, kwargs = run_mock.call_args
+        test_storage = args[0]
+        assert isinstance(
+            test_storage, gem_name.GemName), type(test_storage)
+        import logging
+        logging.error(test_storage)
+        assert test_storage.obs_id == 'test_data_label', 'wrong obs id'
+        assert test_storage.file_name == 'S20200303S0353.fits', \
+            'wrong file_name'
+        assert test_storage.file_id == 'S20200303S0353', 'wrong file_id'
+        assert test_storage.fname_on_disk == 'S20200303S0353.fits', \
+            'wrong fname on disk'
+        assert test_storage.url is None, 'wrong url'
+        # there are six files returned by the mock, and they each have the
+        # same data label, so they all end up in this lineage
+        assert test_storage.lineage == \
+            'S20200303S0025/gemini:GEM/S20200303S0025.fits ' \
+            'S20200303S0026/gemini:GEM/S20200303S0026.fits ' \
+            'S20200303S0027/gemini:GEM/S20200303S0027.fits ' \
+            'S20200303S0351/gemini:GEM/S20200303S0351.fits ' \
+            'S20200303S0352/gemini:GEM/S20200303S0352.fits ' \
+            'S20200303S0353/gemini:GEM/S20200303S0353.fits', 'wrong lineage'
+        assert test_storage.external_urls == \
+            'https://archive.gemini.edu/fullheader/S20200303S0025.fits ' \
+            'https://archive.gemini.edu/fullheader/S20200303S0026.fits ' \
+            'https://archive.gemini.edu/fullheader/S20200303S0027.fits ' \
+            'https://archive.gemini.edu/fullheader/S20200303S0351.fits ' \
+            'https://archive.gemini.edu/fullheader/S20200303S0352.fits ' \
+            'https://archive.gemini.edu/fullheader/S20200303S0353.fits', \
+            'wrong external urls'
+    except Exception as e:
+        assert False, e
     finally:
         os.getcwd = getcwd_orig
 
@@ -281,7 +326,8 @@ def test_run_by_in_memory_query():
             args, kwargs = run_mock.call_args
             assert args[3] == main_app.APPLICATION, 'wrong command'
             test_storage = args[2]
-            assert isinstance(test_storage, gem_name.GemName), type(test_storage)
+            assert isinstance(test_storage, gem_name.GemName), \
+                type(test_storage)
             assert test_storage.obs_id == test_obs_id, 'wrong obs id'
             assert test_storage.file_name == 'N20150216S0129.fits', \
                 'wrong file name'
@@ -302,11 +348,11 @@ def test_run_by_in_memory_query():
 @patch('caom2pipe.manage_composable.exec_cmd')
 @patch('caom2pipe.execute_composable.CAOM2RepoClient')
 @patch('caom2pipe.execute_composable.CadcDataClient')
-@patch('gem2caom2.scrape.read_json_file_list_page')
-@patch('gem2caom2.external_metadata.get_obs_metadata')
 @patch('caom2pipe.manage_composable.read_obs_from_file')
-def test_run_by_incremental(read_mock, obs_md_mock, scrape_mock,
-                            data_client_mock, repo_mock, exec_mock):
+@patch('caom2pipe.manage_composable.query_endpoint')
+@pytest.mark.skip('waiting for gemini incremental endpoint')
+def test_run_by_incremental2(query_mock, read_mock,
+                             data_client_mock, repo_mock, exec_mock):
     data_client_mock.return_value.get_file_info.side_effect = \
         gem_mocks.mock_get_file_info
     data_client_mock.return_value.get_file.side_effect = Mock()
@@ -315,20 +361,88 @@ def test_run_by_incremental(read_mock, obs_md_mock, scrape_mock,
     repo_mock.return_value.read.side_effect = gem_mocks.mock_repo_read
     repo_mock.return_value.update.side_effect = gem_mocks.mock_repo_update
 
-    def _scrape_mock(ignore1, ignore2):
-        return gem_mocks.TEST_TODO_LIST
-    scrape_mock.side_effect = _scrape_mock
-
-    obs_md_mock.side_effect = gem_mocks.mock_get_obs_metadata
-
     def _read_mock(ignore_fqn):
         return SimpleObservation(collection='TEST',
                                  observation_id='TEST_OBS_ID',
                                  algorithm=Algorithm('exposure'))
     read_mock.side_effect = _read_mock
 
+    def _query_mock():
+        x = json.loads("""[{
+        "name": "2002feb11_0180.fits",
+        "filename": "2002feb11_0180.fits.bz2",
+        "path": "",
+        "compressed": true,
+        "file_size": 397169,
+        "data_size": 1056960,
+        "file_md5": "850d2df8b71c894984b4ff9d89cebcd8",
+        "data_md5": "cf3ccf17539b23c4aa68c80308f885e2",
+        "lastmod": "2019-12-17 00:21:08.159934+00:00",
+        "mdready": true,
+        "entrytime": "2019-12-17 00:21:08.178516+00:00",
+        "size": 397169,
+        "md5": "850d2df8b71c894984b4ff9d89cebcd8",
+        "program_id": "GS-2002A-Q-8",
+        "engineering": false,
+        "science_verification": false,
+        "calibration_program": false,
+        "observation_id": "GS-2002A-Q-8-4",
+        "data_label": "GS-2002A-Q-8-4-0180",
+        "telescope": "Gemini-South",
+        "instrument": "PHOENIX",
+        "ut_datetime": "2002-04-04 21:47:53",
+        "local_time": null,
+        "observation_type": null,
+        "observation_class": null,
+        "object": "SZ Cha",
+        "ra": 164.574204166667,
+        "dec": -77.287963888889,
+        "azimuth": null,
+        "elevation": null,
+        "cass_rotator_pa": null,
+        "airmass": 1.478,
+        "filter_name": "2150_(2)",
+        "exposure_time": 240.0,
+        "disperser": null,
+        "camera": null,
+        "central_wavelength": null,
+        "wavelength_band": null,
+        "focal_plane_mask": "107u_1.0-5.0 (8)",
+        "detector_binning": "1x1",
+        "detector_gain_setting": null,
+        "detector_roi_setting": "Fixed",
+        "detector_readspeed_setting": null,
+        "detector_welldepth_setting": null,
+        "detector_readmode_setting": "None",
+        "spectroscopy": true,
+        "mode": "spectroscopy",
+        "adaptive_optics": false,
+        "laser_guide_star": false,
+        "wavefront_sensor": null,
+        "gcal_lamp": null,
+        "raw_iq": 50,
+        "raw_cc": 50,
+        "raw_wv": 80,
+        "raw_bg": 80,
+        "requested_iq": null,
+        "requested_cc": null,
+        "requested_wv": null,
+        "requested_bg": null,
+        "qa_state": "Undefined",
+        "release": "2003-08-11",
+        "reduction": "RAW",
+        "types": "{'UNPREPARED', 'SOUTH', 'RAW', 'PHOENIX', 'GEMINI', 'SPECT'}",
+        "phot_standard": null,
+        "results_truncated": true
+    }]""")
+        return x
+
+    query_result = gem_mocks.Object()
+    query_result.json = _query_mock
+    query_mock.return_value = query_result
+
     _write_cert()
-    prior_s = datetime.utcnow().timestamp() - 1440 * 60
+    prior_s = datetime.utcnow().timestamp() - 60
     _write_state(prior_s)
     getcwd_orig = os.getcwd
     os.getcwd = Mock(return_value=f'{gem_mocks.TEST_DATA_DIR}/edu_query')
@@ -347,52 +461,29 @@ def test_run_by_incremental(read_mock, obs_md_mock, scrape_mock,
     py_version = f'{sys.version_info.major}.{sys.version_info.minor}'
     exec_mock.assert_called_with(
         (f'gem2caom2 --quiet --cert /usr/src/app/cadcproxy.pem '
-         f'--in /usr/src/app/logs/GN-2019B-ENG-1-160-008.fits.xml '
-         f'--out /usr/src/app/logs/GN-2019B-ENG-1-160-008.fits.xml '
+         f'--observation GEMINI GS-2002A-Q-8-4-0180 '
+         f'--out /usr/src/app/logs/GS-2002A-Q-8-4-0180.fits.xml '
          f'--external_url '
-         f'https://archive.gemini.edu/fullheader/N20191101S0007.fits '
+         f'https://archive.gemini.edu/fullheader/2002feb11_0180.fits '
          f'--plugin '
          f'/usr/local/lib/python{py_version}/site-packages/gem2caom2/'
          f'gem2caom2.py '
          f'--module '
          f'/usr/local/lib/python{py_version}/site-packages/gem2caom2/'
          f'gem2caom2.py '
-         f'--lineage N20191101S0007/gemini:GEM/N20191101S0007.fits'),
+         f'--lineage 2002feb11_0180/gemini:GEM/2002feb11_0180.fits'),
         level_as), \
-        'exec mock wrong parameters'
+    'exec mock wrong parameters'
     assert not data_client_mock.return_value.get_file_info.called, \
         'data client mock get file info should not be not called'
-    assert obs_md_mock.called, 'obs mock not called'
-    assert scrape_mock.called, 'scrape mock not called'
+    assert query_mock.called, 'query mock not called'
 
 
-@patch('sys.exit', Mock(return_value=MyExitError))
-@patch('gem2caom2.external_metadata.get_obs_metadata')
-@patch('caom2pipe.manage_composable.exec_cmd')
-@patch('caom2pipe.execute_composable.CAOM2RepoClient')
-@patch('caom2pipe.execute_composable.CadcDataClient')
-@patch('cadcdata.core.net.BaseWsClient.post')
-@patch('cadcutils.net.ws.WsCapabilities.get_access_url')
-def test_run_by_public(caps_mock, tap_mock, data_client_mock,
-                       repo_mock, exec_mock, obs_md_mock):
-    caps_mock.return_value = 'https://sc2.canfar.net/sc2repo'
-    data_client_mock.return_value.get_file_info.side_effect = \
-        gem_mocks.mock_get_file_info
-    data_client_mock.return_value.get_file.side_effect = Mock()
-    exec_mock.side_effect = Mock()
-    repo_mock.return_value.create.side_effect = gem_mocks.mock_repo_create
-    repo_mock.return_value.read.side_effect = gem_mocks.mock_repo_read
-    repo_mock.return_value.update.side_effect = gem_mocks.mock_repo_update
-
-    tap_response = Mock()
-    tap_response.status_code = 200
-    tap_response.iter_content.return_value = \
-        [b'uri\n'
-         b'gemini:GEM/N20191101S0007.fits\n']
-    tap_mock.return_value.__enter__.return_value = tap_response
-
-    obs_md_mock.side_effect = gem_mocks.mock_get_obs_metadata
-
+@patch('caom2pipe.execute_composable.OrganizeExecutesWithDoOne.do_one')
+@patch('caom2pipe.manage_composable.query_tap_client')
+def test_run_by_rc_public(tap_mock, exec_mock):
+    exec_mock.side_effect = Mock(return_value=0)
+    tap_mock.side_effect = gem_mocks.mock_query_tap
     expected_fqn = f'/usr/src/app/logs/{gem_mocks.TEST_BUILDER_OBS_ID}' \
                    f'.expected.xml'
     if not os.path.exists(expected_fqn):
@@ -404,36 +495,35 @@ def test_run_by_public(caps_mock, tap_mock, data_client_mock,
     _write_state(prior_s)
     getcwd_orig = os.getcwd
     os.getcwd = Mock(return_value=f'{gem_mocks.TEST_DATA_DIR}/edu_query')
+    test_f_id = 'N20191101S0007'
     try:
         # execution
         sys.argv = ['test command']
-        test_result = composable._run_by_public()
+        test_result = composable._run_rc_state_public()
         assert test_result == 0, 'wrong result'
+    except Exception as e:
+        import logging
+        import traceback
+        logging.error(traceback.format_exc())
     finally:
         os.getcwd = getcwd_orig
 
-    assert repo_mock.return_value.update.called, 'update not called'
-    assert repo_mock.return_value.read.called, 'read not called'
     assert exec_mock.called, 'exec mock not called'
-    param, level_as = ec.CaomExecute._specify_logging_level_param(logging.ERROR)
-    py_version = f'{sys.version_info.major}.{sys.version_info.minor}'
-    exec_mock.assert_called_with(
-        (f'gem2caom2 --quiet --cert /usr/src/app/cadcproxy.pem '
-         f'--in /usr/src/app/logs/GN-2019B-ENG-1-160-008.fits.xml '
-         f'--out /usr/src/app/logs/GN-2019B-ENG-1-160-008.fits.xml '
-         f'--external_url '
-         f'https://archive.gemini.edu/fullheader/N20191101S0007.fits '
-         f'--plugin '
-         f'/usr/local/lib/python{py_version}/site-packages/gem2caom2/'
-         f'gem2caom2.py '
-         f'--module '
-         f'/usr/local/lib/python{py_version}/site-packages/gem2caom2/'
-         f'gem2caom2.py '
-         f'--lineage N20191101S0007/gemini:GEM/N20191101S0007.fits'),
-        level_as), \
-        'exec mock wrong parameters'
-    assert data_client_mock.return_value.get_file_info.called, \
-        'data client mock get file info not called'
+    args, kwargs = exec_mock.call_args
+    test_storage = args[0]
+    assert isinstance(
+        test_storage, gem_name.GemName), type(test_storage)
+    assert test_storage.obs_id == 'GN-2019B-ENG-1-160-008', 'wrong obs id'
+    assert test_storage.file_name == 'N20191101S0007.fits', 'wrong file_name'
+    assert test_storage.file_id == test_f_id, 'wrong file_id'
+    assert test_storage.fname_on_disk == f'{test_f_id}.fits', \
+        'wrong fname on disk'
+    assert test_storage.url is None, 'wrong url'
+    assert test_storage.lineage == \
+        f'{test_f_id}/gemini:GEM/{test_f_id}.fits', 'wrong lineage'
+    assert test_storage.external_urls == \
+        f'https://archive.gemini.edu/fullheader/{test_f_id}.fits', \
+        'wrong external urls'
     assert tap_mock.called, 'tap mock not called'
 
 
@@ -453,9 +543,13 @@ def _write_state(prior_timestamp=None):
             prior_s = prior_timestamp
         else:
             prior_s = mc.make_seconds(prior_timestamp)
-    test_start_time = datetime.fromtimestamp(prior_s)
-    test_bookmark = {'bookmarks': {'gemini_timestamp':
-                                       {'last_record': test_start_time}}}
+    test_start_time = datetime.fromtimestamp(prior_s).isoformat()
+    logging.error(f'test_start_time {test_start_time}')
+    test_bookmark = {'bookmarks':
+                         {'gemini_timestamp':
+                              {'last_record': test_start_time}
+                          }
+                     }
     mc.write_as_yaml(test_bookmark, STATE_FILE)
 
 

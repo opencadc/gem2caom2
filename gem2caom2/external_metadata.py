@@ -76,21 +76,26 @@ from urllib3 import Retry
 
 from bs4 import BeautifulSoup
 
+from cadctap import CadcTapClient
+from caom2pipe import caom_composable as cc
 from caom2pipe import manage_composable as mc
 from gem2caom2.svofps import filter_metadata
 from gem2caom2 import gemini_obs_metadata as gom
 from gem2caom2.obs_file_relationship import GemObsFileRelationship
+from gem2caom2.obs_file_relationship import repair_data_label
+from gem2caom2 import gem_name
 
 
 __all__ = ['get_gofr', 'Inst', 'get_obs_metadata', 'get_pi_metadata',
-           'get_filter_metadata', 'set_ofr']
+           'get_filter_metadata', 'set_ofr', 'init_global',
+           'CachingObsFileRelationship']
 
 
 GEMINI_METADATA_URL = \
     'https://archive.gemini.edu/jsonsummary/canonical/filepre='
 
 # lazy initialization for jsonsummary metadata from Gemini
-om = gom.GeminiObsMetadata()
+om = None
 # lazy initialization for filter metadata from SVO
 fm = {}
 # lazy initialization for program metadata from Gemini
@@ -102,7 +107,7 @@ gofr = None
 def get_gofr():
     global gofr
     if gofr is None:
-        gofr = GemObsFileRelationship()
+        gofr = CachingObsFileRelationship()
     return gofr
 
 
@@ -111,6 +116,20 @@ def set_ofr(value):
     # with the query results from archive.gemini.edu
     global gofr
     gofr = value
+
+
+def init_global(incremental, config):
+    global om
+    if incremental:
+        om = gom.GeminiObsMetadataIncremental()
+    else:
+        om = gom.GeminiObsMetadata()
+    get_gofr()
+    global gofr
+    if gofr.tap_client is None:
+        subject = mc.define_subject(config)
+        tap_client = CadcTapClient(subject=subject, resource_id=config.tap_id)
+        gofr.tap_client = tap_client
 
 
 class Inst(Enum):
@@ -146,26 +165,29 @@ def get_obs_metadata(file_id):
     :return: Dictionary of observation metadata.
     """
     logging.debug('Begin get_obs_metadata for {}'.format(file_id))
-    gemini_url = '{}{}'.format(GEMINI_METADATA_URL, file_id)
-
-    # Open the URL and fetch the JSON document for the observation
-    session = requests.Session()
-    retries = 10
-    retry = Retry(total=retries, read=retries, connect=retries,
-                  backoff_factor=0.5)
-    adapter = HTTPAdapter(max_retries=retry)
-    session.mount('http://', adapter)
-    session.mount('https://', adapter)
-    try:
-        response = session.get(gemini_url, timeout=20)
-        metadata = response.json()
-        response.close()
-    except Exception as e:
-        raise mc.CadcException(
-            'Unable to download Gemini observation metadata from {} because {}'
-                .format(gemini_url, str(e)))
     global om
-    om.add(metadata, file_id)
+    if om.contains(file_id):
+        om.reset_index(file_id)
+    else:
+        gemini_url = '{}{}'.format(GEMINI_METADATA_URL, file_id)
+
+        # Open the URL and fetch the JSON document for the observation
+        session = requests.Session()
+        retries = 10
+        retry = Retry(total=retries, read=retries, connect=retries,
+                      backoff_factor=0.5)
+        adapter = HTTPAdapter(max_retries=retry)
+        session.mount('http://', adapter)
+        session.mount('https://', adapter)
+        try:
+            response = session.get(gemini_url, timeout=20)
+            metadata = response.json()
+            response.close()
+        except Exception as e:
+            raise mc.CadcException(
+                f'Unable to download Gemini observation metadata from '
+                f'{gemini_url} because {str(e)}')
+        om.add(metadata, file_id)
     logging.debug('End get_obs_metadata for {}'.format(file_id))
 
 
@@ -196,8 +218,14 @@ def get_pi_metadata(program_id):
         soup = BeautifulSoup(xml_metadata, 'lxml')
         tds = soup.find_all('td')
         if len(tds) > 0:
-            title = tds[1].contents[0].replace('\n', ' ')
-            pi_name = tds[3].contents[0]
+            # sometimes the program id points to an html page with an empty
+            # table, see e.g. N20200210S0077_bias
+            title = None
+            if len(tds[1].contents) > 0:
+                title = tds[1].contents[0].replace('\n', ' ')
+            pi_name = None
+            if len(tds[3].contents) > 0:
+                pi_name = tds[3].contents[0]
             metadata = {'title': title,
                         'pi_name': pi_name}
             pm[program_id] = metadata
@@ -393,3 +421,91 @@ def _repair_filter_name_for_svo(instrument, filter_names):
         return '+'.join(i for i in result)
     else:
         return None
+
+
+class CachingObsFileRelationship(GemObsFileRelationship):
+    """
+    The locations in which the relationship between an observationID (data
+    label) and a file name can be determined are:
+    1 - the specifically constructed file from Paul, which is time-limited
+    2 - CAOM entries
+    3 - archive.gemini.edu entries
+
+    This class queries each of these locations in the declared order, and
+    then if the answer comes from either 2 or 3, adds to the cache of the
+    file.
+    """
+
+    def __init__(self):
+        super(CachingObsFileRelationship, self).__init__()
+        # use accessor methods for _tap_client, because of how this class
+        # will eventually be used - as a global, accessible by all and
+        # everywhere, and initialized before there's a config
+        self._tap_client = None
+        self._logger = logging.getLogger(__name__)
+
+    @property
+    def tap_client(self):
+        return self._tap_client
+
+    @tap_client.setter
+    def tap_client(self, value):
+        self._tap_client = value
+
+    def get_obs_id(self, file_name):
+        file_id = gem_name.GemName.remove_extensions(file_name)
+        result = super(CachingObsFileRelationship, self).get_obs_id(file_id)
+        if result is None:
+            result = self._get_obs_id_from_cadc(file_name, file_id)
+            if result is None:
+                result = self._get_obs_id_from_gemini(file_id)
+        return result
+
+    def _get_obs_id_from_cadc(self, file_name, file_id):
+        self._logger.debug(f'Begin _get_obs_id_from_cadc for {file_id}')
+        artifact_uri = cc.build_artifact_uri(
+            file_name, gem_name.COLLECTION, gem_name.SCHEME)
+        query_string = f"""
+        SELECT O.observationID, A.lastModified 
+        FROM caom2.Observation AS O
+        JOIN caom2.Plane AS P on P.obsID = O.obsID
+        JOIN caom2.Artifact AS A on A.planeID = P.planeID
+        WHERE A.uri = '{artifact_uri}'
+        """
+        table = mc.query_tap_client(query_string, self._tap_client)
+        result = None
+        if len(table) == 1:
+            obs_id = table[0]['observationID']
+            ut_datetime_str = table[0]['lastModified']
+            self._update_cache(file_id, obs_id, ut_datetime_str)
+        self._logger.debug('End _get_obs_id_from_cadc')
+        return result
+
+    def _get_obs_id_from_gemini(self, file_id):
+        # using the global om structure to look up and store
+        # metadata will modify the internal index of the class - maintain
+        # that index here with a save/restore
+        self._logger.debug(f'Begin _get_obs_id_from_gemini for {file_id}')
+        global om
+        current_file_id = om.current
+        get_obs_metadata(file_id)
+        obs_id = om.get('data_label')
+        ut_datetime_str = om.get('lastmod')
+        self._update_cache(file_id, obs_id, ut_datetime_str)
+        if current_file_id is not None:
+            om.reset_index(current_file_id)
+        self._logger.error(f'End _get_obs_id_from_gemini.')
+        return obs_id
+
+    def _update_cache(self, file_id, obs_id, dt_str):
+        dt_s = mc.make_seconds(dt_str)
+        # name_list:
+        # key is file_id,
+        # value is array
+        #
+        # array contents are:
+        # 0 - data label / observation ID
+        # 1 - timestamp
+        mc.append_as_array(self.name_list, file_id, [obs_id, dt_s])
+        repaired_obs_id = repair_data_label(file_id, obs_id)
+        self._add_repaired_element(obs_id, repaired_obs_id, file_id)

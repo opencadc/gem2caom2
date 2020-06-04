@@ -72,28 +72,28 @@ import sys
 import tempfile
 import traceback
 
-from datetime import datetime
-
 from caom2pipe import execute_composable as ec
 from caom2pipe import manage_composable as mc
-from gem2caom2 import main_app, work, preview_augmentation, builder
-from gem2caom2 import pull_augmentation, gem_name
+from caom2pipe import run_composable as rc
+from gem2caom2 import main_app, work, preview_augmentation, external_metadata
+from gem2caom2 import pull_augmentation, gem_name, builder, data_source
 
-meta_visitors = [preview_augmentation, pull_augmentation]
-data_visitors = []
-
-GEM_BOOKMARK = 'gemini_timestamp'
+META_VISITORS = [preview_augmentation, pull_augmentation]
+DATA_VISITORS = []
 
 
 def _run():
     """
-    Uses a todo file with observation IDs, which is how Gemini provides
-    information about existing data.
+    Uses a todo file with file names, even though Gemini provides
+    information about existing data referenced by observation ID.
     """
     config = mc.Config()
     config.get_executors()
-    return ec.run_by_file(config, gem_name.GemName, main_app.APPLICATION,
-                          meta_visitors, data_visitors, chooser=None)
+    external_metadata.init_global(incremental=False, config=config)
+    gem_builder = builder.GemBuilder()
+    return rc.run_by_todo(config, gem_builder, chooser=None,
+                          command_name=main_app.APPLICATION,
+                          meta_visitors=META_VISITORS)
 
 
 def run():
@@ -128,8 +128,9 @@ def _run_single():
         storage_name = gem_name.GemName(file_name=sys.argv[1])
     else:
         raise mc.CadcException('No code to handle running GEM by obs id.')
+    external_metadata.init_global(incremental=False, config=config)
     return ec.run_single(config, storage_name, main_app.APPLICATION,
-                         meta_visitors, data_visitors)
+                         META_VISITORS, DATA_VISITORS)
 
 
 def run_single():
@@ -160,10 +161,12 @@ def _run_by_tap_query():
     """
     config = mc.Config()
     config.get_executors()
+    external_metadata.init_global(incremental=False, config=config)
     return ec.run_from_state(config, gem_name.GemName, main_app.APPLICATION,
-                             meta_visitors, data_visitors, GEM_BOOKMARK,
+                             META_VISITORS, DATA_VISITORS,
+                             data_source.GEM_BOOKMARK,
                              work.TapNoPreviewQuery(
-                                 _get_utcnow(), config))
+                                 rc.get_utc_now(), config))
 
 
 def run_by_tap_query():
@@ -187,8 +190,10 @@ def _run_by_in_memory():
     """
     config = mc.Config()
     config.get_executors()
+    external_metadata.init_global(incremental=False, config=config)
     return ec.run_from_state(config, gem_name.GemName, main_app.APPLICATION,
-                             meta_visitors, data_visitors, GEM_BOOKMARK,
+                             META_VISITORS, DATA_VISITORS,
+                             data_source.GEM_BOOKMARK,
                              work.ObsFileRelationshipQuery())
 
 
@@ -216,10 +221,12 @@ def _run_by_public():
     """
     config = mc.Config()
     config.get_executors()
+    external_metadata.init_global(incremental=False, config=config)
     return ec.run_from_state(config, gem_name.GemName, main_app.APPLICATION,
-                             meta_visitors, data_visitors, GEM_BOOKMARK,
+                             META_VISITORS, DATA_VISITORS,
+                             data_source.GEM_BOOKMARK,
                              work.TapRecentlyPublicQuery(
-                                 _get_utcnow(), config))
+                                 rc.get_utc_now(), config))
 
 
 def run_by_public():
@@ -234,20 +241,30 @@ def run_by_public():
 
 
 def _run_by_incremental():
-    """Run the processing for observations that are posted on the site
-    archive.gemini.edu.
+    """Run incremental processing for observations that are posted on the site
+    archive.gemini.edu. TODO in the future this will depend on the incremental
+    query endpoint.
 
     :return 0 if successful, -1 if there's any sort of failure. Return status
         is used by airflow for task instance management and reporting.
     """
     config = mc.Config()
     config.get_executors()
-    state = mc.State(config.state_fqn)
-    last_processed_time = state.get_bookmark(GEM_BOOKMARK)
-    builder_work = work.FileListingQuery(last_processed_time)
-    result = ec.run_by_builder(
-        config, main_app.APPLICATION, GEM_BOOKMARK, meta_visitors,
-        data_visitors, builder_work, builder.EduQueryBuilder(config))
+    external_metadata.init_global(incremental=True, config=config)
+    name_builder = builder.GemBuilder()
+    incremental_source = data_source.FileListIncrementalSource(config)
+    result = rc.run_by_state(config=None, name_builder=name_builder,
+                             command_name=main_app.APPLICATION,
+                             bookmark_name=data_source.GEM_BOOKMARK,
+                             meta_visitors=META_VISITORS,
+                             data_visitors=DATA_VISITORS,
+                             end_time=None, source=incremental_source,
+                             chooser=None)
+    if incremental_source.max_records_encountered:
+        logging.warning('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+        logging.warning('Encountered more than 2500 records for a night')
+        logging.warning('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+        result |= -1
     return result
 
 
@@ -262,6 +279,33 @@ def run_by_incremental():
         sys.exit(-1)
 
 
-def _get_utcnow():
-    """So that utcnow can be mocked."""
-    return datetime.utcnow()
+def _run_rc_state_public():
+    """Run incremental processing for observations that went public recently,
+    so the preview is now available.
+
+    :return 0 if successful, -1 if there's any sort of failure. Return status
+        is used by airflow for task instance management and reporting.
+    """
+    config = mc.Config()
+    config.get_executors()
+    external_metadata.init_global(incremental=True, config=config)
+    name_builder = builder.GemBuilder()
+    incremental_source = data_source.PublicIncremental(config)
+    return rc.run_by_state(config=config, name_builder=name_builder,
+                           command_name=main_app.APPLICATION,
+                           bookmark_name=data_source.GEM_BOOKMARK,
+                           meta_visitors=META_VISITORS,
+                           data_visitors=DATA_VISITORS,
+                           end_time=None, source=incremental_source,
+                           chooser=None)
+
+
+def run_by_rc_public():
+    try:
+        result = _run_rc_state_public()
+        sys.exit(result)
+    except Exception as e:
+        logging.error(e)
+        tb = traceback.format_exc()
+        logging.debug(tb)
+        sys.exit(-1)

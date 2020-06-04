@@ -86,8 +86,9 @@ class GeminiValidator(mc.Validator):
         self._gofr = external_metadata.get_gofr()
         self._max_date = datetime.fromtimestamp(
             self._gofr.get_max_timestamp()).date()
+        logging.error(f'max date is {self._max_date}')
         self._rejected = mc.Rejected(self._config.rejected_fqn)
-        self._logger = logging.getLogger()
+        self._logger = logging.getLogger(__name__)
 
     def _date_file_name(self, file_name):
         """Extract the date from the file name. Use this value to compare

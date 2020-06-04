@@ -103,7 +103,7 @@ from astropy.coordinates import SkyCoord
 from caom2 import Observation, ObservationIntentType, DataProductType
 from caom2 import CalibrationLevel, TargetType, ProductType, Chunk, Axis
 from caom2 import SpectralWCS, CoordAxis1D, RefCoord, Instrument
-from caom2 import TypedList, CoordRange1D, CompositeObservation, Algorithm
+from caom2 import TypedList, CoordRange1D, CompositeObservation
 from caom2utils import ObsBlueprint, get_gen_proc_arg_parser, gen_proc
 from caom2utils import WcsParser
 from caom2pipe import manage_composable as mc
@@ -115,7 +115,7 @@ import gem2caom2.obs_file_relationship as ofr
 from gem2caom2.gem_name import GemName, COLLECTION
 from gem2caom2.svofps import FilterMetadata
 
-__all__ = ['main_app2', 'update', 'APPLICATION']
+__all__ = ['gem_main_app', 'to_caom2', 'update', 'APPLICATION']
 
 APPLICATION = 'gem2caom2'
 
@@ -463,7 +463,8 @@ def get_meta_release(parameters):
     # combination - this location happens to be the first function called
     # during blueprint evaluation, which is why reset is
     # called here
-    em.om.reset_index(uri)
+    file_id = GemName.remove_extensions(mc.CaomName(uri).file_name)
+    em.om.reset_index(file_id)
 
     # DB 21-08-19
     # If PROP_MD is T, use JSON ‘release’ value for metadata release date.
@@ -1001,8 +1002,13 @@ def update(observation, **kwargs):
     else:
         current_product_id = None
 
+    if headers is None:
+        logging.info(f'Returning an un-modified observation '
+                     f'{observation.observation_id}.')
+        return observation
+
     # processed files
-    if (is_composite(headers) and not
+    if (cc.is_composite(headers) and not
             isinstance(observation, CompositeObservation)):
         logging.info('{} is a Composite Observation.'.format(
             observation.observation_id))
@@ -1055,7 +1061,9 @@ def update(observation, **kwargs):
                     continue
 
                 caom_name = mc.CaomName(artifact.uri)
-                em.om.reset_index(caom_name.uri)
+                file_id = GemName.remove_extensions(
+                    mc.CaomName(caom_name.uri).file_name)
+                em.om.reset_index(file_id)
                 processed = ofr.is_processed(caom_name.file_name)
                 if (instrument in
                         [em.Inst.MICHELLE, em.Inst.TRECS, em.Inst.GNIRS]):
@@ -1093,8 +1101,7 @@ def update(observation, **kwargs):
                             instrument)
                         if _reset_energy(observation.type, plane.product_id,
                                          instrument, filter_name):
-                            c.energy = None
-                            c.energy_axis = None
+                            cc.reset_energy(c)
                         else:
                             if instrument is em.Inst.NIRI:
                                 _update_chunk_energy_niri(
@@ -1195,9 +1202,7 @@ def update(observation, **kwargs):
                             logging.debug(
                                 'Setting Spatial WCS to None for {}'.format(
                                     observation.observation_id))
-                            c.position_axis_2 = None
-                            c.position_axis_1 = None
-                            c.position = None
+                            cc.reset_position(c)
                         else:
                             if (instrument in [em.Inst.PHOENIX, em.Inst.HOKUPAA,
                                                em.Inst.OSCIR] or
@@ -1516,8 +1521,7 @@ def _update_chunk_energy_niri(chunk, data_product_type, obs_id, filter_name):
                 data_product_type, obs_id))
 
     if reset_energy:
-        chunk.energy_axis = None
-        chunk.energy = None
+        cc.reset_energy(chunk)
     else:
         _build_chunk_energy(chunk, filter_name, fm)
     logging.debug('End _update_chunk_energy_niri')
@@ -1656,8 +1660,7 @@ def _update_chunk_energy_f2(chunk, header, data_product_type, obs_id,
         logging.info(
             'Setting spectral WCs to none for {} instrument {}'.format(
                 obs_id, em.Inst.F2))
-        chunk.energy_axis = None
-        chunk.energy = None
+        cc.reset_energy(chunk)
     else:
         _build_chunk_energy(chunk, filter_name, fm)
     logging.debug('End _update_chunk_energy_f2')
@@ -1890,8 +1893,7 @@ def _update_chunk_energy_nici(chunk, data_product_type, obs_id, filter_name):
         # DB 04-04-19
         # If one of the NICI filters is ‘Block’ then energy WCS should be
         # ignored for that extension.
-        chunk.energy = None
-        chunk.energy_axis = None
+        cc.reset_energy(chunk)
     else:
         filter_md = em.get_filter_metadata(em.Inst.NICI, filter_name)
 
@@ -2094,8 +2096,7 @@ def _update_chunk_energy_nifs(chunk, data_product_type, obs_id, filter_name):
                     data_product_type, obs_id))
 
     if fm is None:
-        chunk.energy_axis = None
-        chunk.energy = None
+        cc.reset_energy(chunk)
     else:
         _build_chunk_energy(chunk, filter_name, fm)
 
@@ -2493,8 +2494,7 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name):
                     data_product_type, obs_id))
 
     if reset_energy:
-        chunk.energy_axis = None
-        chunk.energy = None
+        cc.reset_energy(chunk)
     else:
         _build_chunk_energy(chunk, filter_name, fm)
     logging.debug('End _update_chunk_energy_gnirs')
@@ -2730,8 +2730,7 @@ def _update_chunk_energy_hokupaa(chunk, data_product_type, obs_id, filter_name):
                     data_product_type, obs_id))
 
     if reset_energy:
-        chunk.energy_axis = None
-        chunk.energy = None
+        cc.reset_energy(chunk)
     else:
         _build_chunk_energy(chunk, filter_name, fm)
     logging.debug('End _update_chunk_energy_hokupaa')
@@ -3028,8 +3027,7 @@ def _update_chunk_energy_gmos(chunk, data_product_type, obs_id, filter_name,
             '{}: mystery data product type {} for {}'.format(
                 instrument, data_product_type, obs_id))
     if reset_energy:
-        chunk.energy_axis = None
-        chunk.energy = None
+        cc.reset_energy(chunk)
     else:
         _build_chunk_energy(chunk, filter_name, fm)
     logging.debug('End _update_chunk_energy_gmos')
@@ -3216,7 +3214,7 @@ def _reset_position(headers, instrument):
         if ra is None and dec is None:
             result = True
         elif (ra is not None and math.isclose(ra, 0.0) and
-              dec is not None and  math.isclose(dec, 0.0)):
+              dec is not None and math.isclose(dec, 0.0)):
             result = True
     elif _is_gmos_mask(headers[0]):
         # DB - 04-03-19
@@ -3655,7 +3653,7 @@ def _update_chunk_time_gmos(chunk, obs_id):
 
 
 def _update_composite(obs):
-    comp_obs = change_to_composite(obs)
+    comp_obs = cc.change_to_composite(obs)
     return comp_obs
 
 
@@ -3667,6 +3665,8 @@ def _repair_provenance_value(imcmb_value, obs_id):
     # e.g.
     # IMCMB001 = 'tmpimgwsk9476kd_5.fits[SCI,1]'
     # tmpfile22889S20141226S0203.fits[SCI,1]
+    # IMCMB001= 'rawdir$2004may20_0048.fits'
+    logging.debug(f'Being _repair_provenance_value for {obs_id}.')
 
     if 'N' in imcmb_value:
         temp = 'N' + imcmb_value.split('N', 1)[1]
@@ -3685,7 +3685,7 @@ def _repair_provenance_value(imcmb_value, obs_id):
             'Unrecognized IMCMB value {}'.format(imcmb_value))
         return None, None
 
-    if '_' in temp:
+    if '_' in temp and (temp.startswith('S') or temp.startswith('N')):
         temp1 = temp.split('_')[0]
     elif '.fits' in temp:
         temp1 = temp.split('.fits')[0]
@@ -3698,8 +3698,8 @@ def _repair_provenance_value(imcmb_value, obs_id):
 
     prov_file_id = temp1[:14]
     prov_obs_id = em.get_gofr().get_obs_id(prov_file_id)
-    if prov_obs_id is None:
-        return None, prov_file_id
+    logging.debug(f'End _repair_provenance_value. {prov_obs_id} '
+                  f'{prov_file_id}')
     return prov_obs_id, prov_file_id
 
 
@@ -3713,8 +3713,7 @@ def _build_blueprints(uris):
     between the blueprint entries and the model attributes.
 
     :param uris The list of artifact URIs for the files to be processed.
-    :param obs_id The Observation ID of the file.
-    :param file_id The file ID."""
+    """
     module = importlib.import_module(__name__)
     blueprints = {}
     for uri in uris:
@@ -3742,50 +3741,26 @@ def _get_uris(args):
     return result
 
 
-def is_composite(headers):
-    """All the logic to determine if a file name is part of a
-    CompositeObservation, in one marvelous function."""
-    result = False
-
-    # look in the last header - IMCMB keywords are not in the zero'th header
-    header = headers[-1]
-    for ii in header:
-        if ii.startswith('IMCMB'):
-            result = True
-            break
-    return result
-
-
-def change_to_composite(observation):
-    """For the case where a SimpleObservation needs to become a
-    CompositeObservation."""
-    return CompositeObservation(observation.collection,
-                                observation.observation_id,
-                                Algorithm('composite'),
-                                observation.sequence_number,
-                                observation.intent,
-                                observation.type,
-                                observation.proposal,
-                                observation.telescope,
-                                observation.instrument,
-                                observation.target,
-                                observation.meta_release,
-                                observation.planes,
-                                observation.environment,
-                                observation.target_position)
-
-
-def main_app2():
-    args = get_gen_proc_arg_parser().parse_args()
+def to_caom2():
     try:
+        args = get_gen_proc_arg_parser().parse_args()
         uris = _get_uris(args)
         blueprints = _build_blueprints(uris)
         result = gen_proc(args, blueprints)
+        return result
+    except Exception as e:
+        logging.error(traceback.format_exc())
+        raise e
+
+
+def gem_main_app():
+    args = get_gen_proc_arg_parser().parse_args()
+    try:
+        result = to_caom2()
+        logging.debug('Done {} processing.'.format(APPLICATION))
         sys.exit(result)
     except Exception as e:
         logging.error('Failed {} execution for {}.'.format(APPLICATION, args))
         tb = traceback.format_exc()
         logging.error(tb)
         sys.exit(-1)
-
-    logging.debug('Done {} processing.'.format(APPLICATION))

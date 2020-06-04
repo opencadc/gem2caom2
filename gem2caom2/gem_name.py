@@ -76,7 +76,7 @@ from gem2caom2 import obs_file_relationship as ofr
 from gem2caom2 import scrape
 
 
-__all__ = ['GemName', 'COLLECTION', 'ARCHIVE', 'SCHEME', 'GemNameBuilder']
+__all__ = ['GemName', 'COLLECTION', 'ARCHIVE', 'SCHEME']
 
 
 COLLECTION = 'GEMINI'
@@ -132,7 +132,7 @@ class GemName(mc.StorageName):
             logging.warning(f'Check directly with GEMINI for {self.file_name}')
             em.get_obs_metadata(self._file_id)
             self._obs_id = ofr.repair_data_label(
-                file_name, em.om.get('data_label'))
+                self.file_name, em.om.get('data_label'))
             clb = ofr.get_command_line_bits(self, self._obs_id, self.file_name)
             self._lineage = clb.lineage
             self._external_urls = clb.urls
@@ -310,45 +310,3 @@ class GemName(mc.StorageName):
     @staticmethod
     def is_preview(entry):
         return '.jpg' in entry
-
-
-class GemNameBuilder(GemName):
-    """Naming rules:
-    - support mixed-case file name storage, exception for extensions, and
-            mixed-case obs id values - the case the inputs are provided in are
-            assumed to be correct.
-    - support uncompressed files in storage
-    """
-
-    GEM_NAME_PATTERN = '*'
-
-    def __init__(self,  obs_id, file_name, last_modified_s):
-        # in this case there is no need to provide an init signature that's
-        # consistent with other StorageName extensions, because the
-        # constructor is used only in the builder class,
-        # which is aware of Gemini data label/file name relationships
-        logging.debug(f'parameters file_name {file_name} obs id {obs_id}')
-        super(GemNameBuilder, self).__init__(
-            obs_id=obs_id, fname_on_disk=file_name)
-        # purposefully do not set self._file_name, since that indicates
-        # later in processing that the file already exists in ad
-        self._file_id = GemName.remove_extensions(file_name)
-        self._obs_id = ofr.repair_data_label(file_name, obs_id)
-        self._last_modified_s = last_modified_s
-        self._lineage = mc.get_lineage(
-            ARCHIVE, self._file_id, file_name, SCHEME)
-        self._external_urls = f'{ofr.HEADER_URL}{file_name}'
-        self._file_name = None
-        logging.debug(self)
-
-    @property
-    def external_urls(self):
-        return self._external_urls
-
-    @property
-    def last_modified_s(self):
-        return self._last_modified_s
-
-    @property
-    def lineage(self):
-        return self._lineage

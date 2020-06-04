@@ -70,6 +70,7 @@
 import os
 
 from datetime import datetime
+from mock import patch, Mock
 from shutil import copyfile
 
 from caom2pipe import manage_composable as mc
@@ -208,6 +209,11 @@ def test_repair_data_label():
         if ii == 'S20181230S0025':
             # what happens when an entry is not found
             assert test_result == 'S20181230S0025', \
+                'repair failed for {} actual {} expected {}'.format(
+                    ii, test_result, gem_mocks.LOOKUP[ii][0])
+        elif ii == 'N20200210S0077_bias':
+            # what happens when an entry is not found
+            assert test_result == 'N20200210S0077_bias', \
                 'repair failed for {} actual {} expected {}'.format(
                     ii, test_result, gem_mocks.LOOKUP[ii][0])
         else:
@@ -571,18 +577,35 @@ test_subjects = [
     ['S20160901S0122', 'mrgS20160901S0122_trn'],
     ['S20160901S0123', 'mrgS20160901S0123_trn'],
     ['S20160901S0124', 'mrgS20160901S0124_trn'],
-    ['S20160901S0125', 'mrgS20160901S0125_trn']
+    ['S20160901S0125', 'mrgS20160901S0125_trn'],
+    ['2004may20_0048', 'rawdir$2004may20_0048.fits'],
+    ['2004may20_0049', 'rawdir$2004may20_0049.fits'],
+    ['2004may20_0050', 'rawdir$2004may20_0050.fits']
 ]
 
 
-def test_repair_provenance():
-    external_metadata.set_ofr(None)
-    external_metadata.get_gofr()
-    for ii in test_subjects:
-        ignore, test_fid = main_app._repair_provenance_value(ii[1], 'test obs')
-        assert test_fid is not None, 'failed lookup {}'.format(ii)
-        assert test_fid == ii[0], 'error {}'.format(ii[1])
-
+@patch('caom2pipe.manage_composable.query_tap_client')
+@patch('gem2caom2.external_metadata.get_obs_metadata')
+def test_repair_provenance(gem_mock, tap_mock):
+    copyfile(f'{gem_mocks.TEST_DATA_DIR}/from_paul.txt',
+             '/app/data/from_paul.txt')
+    getcwd_orig = os.getcwd
+    os.getcwd = Mock(return_value=gem_mocks.TEST_DATA_DIR)
+    try:
+        gem_mock.side_effect = gem_mocks.mock_get_obs_metadata
+        tap_mock.side_effect = gem_mocks.mock_query_tap
+        external_metadata.set_ofr(None)
+        external_metadata.get_gofr()
+        test_config = mc.Config()
+        test_config.get_executors()
+        external_metadata.init_global(incremental=False, config=test_config)
+        for ii in test_subjects:
+            ignore, test_fid = main_app._repair_provenance_value(ii[1],
+                                                                 'test obs')
+            assert test_fid is not None, 'failed lookup {}'.format(ii)
+            assert test_fid == ii[0], 'error {}'.format(ii[1])
+    finally:
+        os.getcwd = getcwd_orig
 
 y = 'https://archive.gemini.edu/fullheader/'
 z = 'gemini:GEM/'

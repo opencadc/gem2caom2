@@ -229,7 +229,8 @@ from gem2caom2 import gem_name
 
 
 __all__ = ['GemObsFileRelationship', 'CommandLineBits', 'FILE_NAME',
-           'PartialObsFileRelationship', 'get_command_line_bits']
+           'get_command_line_bits', 'repair_data_label']
+           # 'PartialObsFileRelationship', 'get_command_line_bits']
 
 FILE_NAME = '/app/data/from_paul.txt'
 HEADER_URL = 'https://archive.gemini.edu/fullheader/'
@@ -645,67 +646,6 @@ def is_processed(file_name):
     return result
 
 
-# noinspection PyMissingConstructor
-class PartialObsFileRelationship(GemObsFileRelationship):
-    """
-    Provides the same functionality as GemObsFileRelationship using incomplete
-    query results from archive.gemini.edu, instead of a hand-crafted file
-    delivered from Gemini.
-    """
-
-    def __init__(self, work_list, max_date):
-        self._work_list = work_list.values()
-        self._max_ts_s = max_date
-        self.id_list = {}
-        self.name_list = {}  # use file ids as keys
-        self.repaired_ids = {}
-        self.repaired_names = {}
-        self.inverted_repaired_ids = {}
-        self._initialize_partial_content()
-
-    def _initialize_partial_content(self):
-        for entry in self._work_list:
-            # keep the structure the same as for the parent class
-            self.name_list[entry.file_id] = [[entry.obs_id, self._max_ts_s]]
-            if entry.obs_id in self.id_list:
-                self.id_list[entry.obs_id].append(entry.file_id)
-            else:
-                self.id_list[entry.obs_id] = [entry.file_id]
-        self._build_repaired_lookups()
-        for key in self.repaired_ids.keys():
-            self.inverted_repaired_ids[self.repaired_ids[key][0]] = key
-
-    def subset(self, start=None, end=None, maxrec=None):
-        raise NotImplementedError
-
-    def get_file_names(self, obs_id):
-        repaired_obs_id = self._look_up_twice(obs_id)
-        return GemObsFileRelationship.get_file_names(self, repaired_obs_id)
-
-    def get_obs_id(self, file_id):
-        result = None
-        temp_obs_id = GemObsFileRelationship.get_obs_id(self, file_id)
-        if temp_obs_id is not None:
-            result = self.repaired_ids.get(temp_obs_id)
-            if result is not None:
-                result = result[0]
-        return result
-
-    def get_max_timestamp(self):
-        return self._max_ts_s
-
-    def get_args(self, obs_id):
-        repaired_obs_id = self._look_up_twice(obs_id)
-        return GemObsFileRelationship.get_args(self, repaired_obs_id)
-
-    def _look_up_twice(self, obs_id):
-        if obs_id in self.id_list:
-            result = obs_id
-        else:
-            result = self.inverted_repaired_ids.get(obs_id)
-        return result
-
-
 class CommandLineBits(object):
     """Convenience class to keep the bits of command-line that are
     inter-connected together."""
@@ -758,7 +698,9 @@ def repair_data_label(file_name, data_label):
     Some special code will be needed for datalabels/planes.  There are no
     datalabels in the FITS header.  json metadata (limited) must be
     obtained with URL like
-    https://archive.gemini.edu/jsonsummary/canonical/filepre=TX20170321_flt.2507.fits.
+    'https://archive.gemini.edu/jsonsummary/canonical/filepre=
+     TX20170321_flt.2507.fits.'
+
     Use TX20170321_flt.2507 as datalabel.  But NOTE:  *raw.2507.fits and
     *red.2507.fits are two planes of the same observation. I’d suggest we
     use ‘*raw*’ as the datalabel and ‘*red*’ or ‘*raw*’ as the appropriate

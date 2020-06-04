@@ -115,6 +115,10 @@ def test_validator(caps_mock, tap_mock):
         with open('/usr/src/app/cadcproxy.pem', 'w') as f:
             f.write('proxy content')
 
+    rejected_file = f'{gem_mocks.TEST_DATA_DIR}/rejected/rejected.yml'
+    if os.path.exists(rejected_file):
+        os.unlink(rejected_file)
+
     getcwd_orig = os.getcwd
     os.getcwd = Mock(return_value=gem_mocks.TEST_DATA_DIR)
     try:
@@ -132,7 +136,7 @@ def test_validator(caps_mock, tap_mock):
 
         test_source, test_meta, test_data = test_subject.validate()
         assert test_source is not None, 'expected source result'
-        assert len(test_source) == 1037, 'wrong number of source results'
+        assert len(test_source) == 1040, 'wrong number of source results'
         assert 'rS20111124S0053.fits' in test_source, 'wrong result content'
         assert 'rS20111124S0053.jpg' in test_source, 'wrong result content'
 

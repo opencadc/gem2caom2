@@ -72,6 +72,7 @@ import logging
 import os
 
 from astropy.io.votable import parse_single_table
+from astropy.table import Table
 from bs4 import BeautifulSoup
 from collections import OrderedDict
 from datetime import datetime
@@ -101,6 +102,46 @@ TEST_TODO_LIST = OrderedDict([(1572566500.951468, 'N20191101S0002.fits'),
                               (1572566666.679175, 'N20191101S0006.fits'),
                               (1572566670.978142, 'N20191101S0007.fits')])
 TEST_BUILDER_OBS_ID = 'GS-2019B-Q-222-181-001'
+
+
+# key - filename
+# value - data label/observation id
+TAP_QUERY_LOOKUP = {
+    'S20161227S0051': 'GS-CAL20161227-5-001',
+    'S20161227S0052': 'GS-CAL20161227-5-002',
+    'S20161227S0053': 'GS-CAL20161227-5-003',
+    'S20161227S0054': 'GS-CAL20161227-5-004',
+    'S20161227S0055': 'GS-CAL20161227-5-005',
+    'S20161227S0056': 'GS-CAL20161227-5-006',
+    'S20161227S0057': 'GS-CAL20161227-5-007',
+    '2004may20_0048': 'GS-CAL20040520-7-0048',
+    '2004may20_0049': 'GS-CAL20040520-7-0049',
+    '2004may20_0050': 'GS-CAL20040520-7-0050',
+    '2004may20_0051': 'GS-CAL20040520-7-0051',
+    '2004may20_0052': 'GS-CAL20040520-7-0052',
+    '2004may20_0053': 'GS-CAL20040520-7-0053',
+    '2004may20_0054': 'GS-CAL20040520-7-0054',
+    '2004may20_0055': 'GS-CAL20040520-7-0055',
+    '2004may20_0056': 'GS-CAL20040520-7-0056',
+    '2004may20_0057': 'GS-CAL20040520-7-0057',
+    '2004may20_0058': 'GS-CAL20040520-7-0058',
+    '2004may20_0059': 'GS-CAL20040520-7-0059',
+    '2004may20_0060': 'GS-CAL20040520-7-0060',
+    '2004may20_0061': 'GS-CAL20040520-7-0061',
+    '2004may20_0062': 'GS-CAL20040520-7-0062',
+    'N20191101S0007': 'GN-2019B-ENG-1-160-008',
+    'S20181219S0216': 'GS-CAL20181219-4-012',
+    'S20181219S0217': 'GS-CAL20181219-4-013',
+    'S20181219S0218': 'GS-CAL20181219-4-014',
+    'S20181219S0219': 'GS-CAL20181219-4-015',
+    'S20181219S0220': 'GS-CAL20181219-4-016',
+    'S20181219S0221': 'GS-CAL20181219-4-017',
+    'S20181219S0222': 'GS-CAL20181219-4-018',
+    'S20181219S0223': 'GS-CAL20181219-4-019',
+    'S20181219S0224': 'GS-CAL20181219-4-020',
+    'S20181219S0225': 'GS-CAL20181219-4-021',
+}
+
 
 # structured by file id, observation id, filter_name (when looking up
 # from SVOFPS for imaging files - x means there's no filter name), and
@@ -438,6 +479,8 @@ LOOKUP = {
     '2004may19_0255': ['GS-2004A-Q-6-27-0255', em.Inst.PHOENIX, 'GS-2004A-Q-6'],
     'S20181016S0184': ['GS-CAL20181016-5-001', em.Inst.GMOS,
                        'GS-CAL20181016-5'],
+    'N20200210S0077_bias': ['GN-CAL20200210-22-076-BIAS', em.Inst.GMOS,
+                            'GN-CAL20200210']
 }
 
 call_count = 0
@@ -465,8 +508,12 @@ def mock_get_pi_metadata(program_id):
             soup = BeautifulSoup(y, 'lxml')
             tds = soup.find_all('td')
             if len(tds) > 0:
-                title = tds[1].contents[0].replace('\n', ' ')
-                pi_name = tds[3].contents[0]
+                title = None
+                if len(tds[1].contents) > 0:
+                    title = tds[1].contents[0].replace('\n', ' ')
+                pi_name = None
+                if len(tds[3].contents) > 0:
+                    pi_name = tds[3].contents[0]
                 metadata = {'title': title,
                             'pi_name': pi_name}
                 return metadata
@@ -494,11 +541,17 @@ def mock_get_file_info(archive, file_id):
 
 def mock_get_obs_metadata(file_id):
     try:
-        logging.error(f'obs metadata file_id {file_id}')
         fname = f'{TEST_DATA_DIR}/json/{file_id}.json'
-        with open(fname) as f:
-            y = json.loads(f.read())
-            em.om.add(y, file_id)
+        if os.path.exists(fname):
+            with open(fname) as f:
+                y = json.loads(f.read())
+        else:
+            # TODO
+            y = [{'data_label': TAP_QUERY_LOOKUP.get(
+                                    file_id, 'test_data_label'),
+                  'filename': f'{file_id}.fits.bz2',
+                  'lastmod': '2020-02-25T20:36:31.230'}]
+        em.om.add(y, file_id)
     except Exception as e:
         logging.error(e)
         import traceback
@@ -514,6 +567,7 @@ class Object(object):
 
 
 def mock_query_endpoint(url, timeout=-1):
+    # returns response.text
     result = Object()
     result.text = None
     global call_count
@@ -538,6 +592,56 @@ def mock_query_endpoint(url, timeout=-1):
         else:
             raise Exception('wut {} count {}'.format(url, call_count))
     call_count += 1
+    return result
+
+
+def mock_query_endpoint_3(url, timeout=-1):
+    # returns json via response.text, depending on url
+    result = Object()
+    result.text = '[]'
+    if 'jsonfilelist' in url:
+        if 'filepre=S20200602' in url:
+            with open(f'{TEST_DATA_DIR}/edu_query/S20200303_filepre.json',
+                      'r') as f:
+                result.text = f.read()
+    return result
+
+
+def mock_query_endpoint_2(url, timeout=-1):
+    # returns response.json
+    def x():
+        if url.startswith('http://arcdev'):
+            with open(f'{TEST_DATA_DIR}/jsonfilelist_composable_test.json',
+                      'r') as f:
+                temp = f.read()
+        elif url == 'https://archive.gemini.edu/jsonsummary/canonical/' \
+                    'notengineering/NotFail//filepre=N20191101S0001.fits':
+            with open(f'{TEST_DATA_DIR}/json/N20191101S0001.json',
+                      'r') as f:
+                temp = f.read()
+        else:
+            # raise mc.CadcException(f'more wut? {url}')
+            fid = url.split('filepre=')[1]
+            # temp = [{"filename": "{fid}.bz2",
+            #          "data_label": "GN-2019B-ENG-1-160-002",
+            #          "lastmod": "2019-11-01 00:01:34.610517+00:00"}]
+            temp = '[{"filename": "' + fid + '.bz2",' \
+                   '"data_label": "GN-2019B-ENG-1-160-002",' \
+                   '"lastmod": "2019-11-01 00:01:34.610517+00:00"}]'
+            logging.error(f'wtf 2 {url}')
+        return json.loads(temp)
+
+    result = Object()
+    result.json = x
+
+    if url.startswith('http://arcdev'):
+        pass
+    elif url == 'https://archive.gemini.edu/jsonsummary/canonical/' \
+                'notengineering/NotFail//filepre=N20191101S0001.fits':
+        pass
+    else:
+        # raise mc.CadcException(f'wut? {url}')
+        pass
     return result
 
 
@@ -575,9 +679,12 @@ read_call_count = 0
 
 
 def mock_repo_read(arg1, arg2):
+    logging.error(f'arg1 {arg1} arg2 {arg2}')
     # arg1 GEMINI arg2 GS-CAL20191010-3-034
     global read_call_count
-    if read_call_count == 0:
+    if arg1 == 'GEMINI' and arg2 == 'GS-2004A-Q-6-27-0255':
+        return ''
+    elif read_call_count == 0:
         read_call_count = 1
         return None
     else:
@@ -600,3 +707,29 @@ def compare(ex_fqn, act_fqn, entry):
               f'instr {ex.instrument.name}\n{result_str}'
         return msg
     return None
+
+
+def _query_mock_none(ignore1, ignore2):
+    return Table.read('observationID,lastModified\n'.split('\n'), format='csv')
+
+
+def _query_mock_one(ignore1, ignore2):
+    return Table.read('observationID,lastModified\n'
+                      'test_data_label,2020-02-25T20:36:31.230\n'.split('\n'),
+                      format='csv')
+
+
+def mock_query_tap(query_string, mock_tap_client):
+    # logging.error(query_string)
+    if query_string.startswith('SELECT A.uri'):
+        return Table.read(
+            f'uri,lastModified\n'
+            f'gemini:GEMINI/N20191101S0007.fits,'
+            f'2020-02-25T20:36:31.230\n'.split('\n'), format='csv')
+    else:
+        file_id = query_string.split('GEMINI/')[1].replace('\'', '').strip()
+        result = TAP_QUERY_LOOKUP.get(file_id, 'test_data_label')
+        logging.error(f'file_id is {file_id} result is {result}')
+        return Table.read(f'observationID,lastModified\n'
+                          f'{result},2020-02-25T20:36:31.230\n'.split('\n'),
+                          format='csv')

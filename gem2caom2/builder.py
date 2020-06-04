@@ -67,14 +67,16 @@
 # ***********************************************************************
 #
 
-from caom2pipe import manage_composable as mc
-from gem2caom2 import gem_name, external_metadata
+import logging
+
+from caom2pipe import name_builder_composable as nbc
+from gem2caom2 import gem_name, external_metadata, scrape
 
 
-__all__ = ['EduQueryBuilder']
+__all__ = ['EduQueryBuilder', 'GemBuilder']
 
 
-class EduQueryBuilder(mc.Builder):
+class EduQueryBuilder(nbc.Builder):
     """
     Get the file metadata by querying archive.gemini.edu. This information is
     required to find the data label for a file name, so that a StorageName
@@ -114,3 +116,19 @@ class EduQueryBuilder(mc.Builder):
             file_name=entry,
             last_modified_s=self._todo_list.get(entry))
         return storage_name
+
+
+class GemBuilder(nbc.StorageNameBuilder):
+
+    def __init__(self):
+        super(GemBuilder, self).__init__()
+        self._logger = logging.getLogger(__name__)
+
+    def build(self, entry):
+        """
+
+        :param entry: an entry is a file name
+        :return:
+        """
+        self._logger.debug(f'Building StorageName for {entry}')
+        return gem_name.GemName(file_name=entry)
