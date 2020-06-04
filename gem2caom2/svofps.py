@@ -71,9 +71,6 @@ import logging
 
 from caom2pipe import astro_composable as ac
 
-# SVO_URL = 'http://svo2.cab.inta-csic.es/svo/theory/fps/fps.php?ID=Gemini/'
-# SVO_KPNO_URL = 'http://svo2.cab.inta-csic.es/svo/theory/fps/fps.php?ID=KPNO/'
-
 
 def filter_metadata(instrument, filters):
     """
@@ -221,7 +218,7 @@ class FilterMetadata(object):
         if self.instrument in ['Phoenix', 'TEXES']:
             return None
         elif self._resolving_power is None:
-            if self.instrument is 'NIRI':
+            if self.instrument == 'NIRI':
                 return None
             else:
                 self.adjust_resolving_power()
