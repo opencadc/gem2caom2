@@ -300,6 +300,11 @@ class GemName(mc.StorageName):
         return GemName.remove_extensions(file_name)
 
     @staticmethod
+    def get_file_name_from(file_id):
+        # makes the assumption that stored data is un-compressed
+        return f'{file_id}.fits'
+
+    @staticmethod
     def remove_extensions(name):
         """How to get the file_id from a file_name."""
         # Note the .gz extension is on some TRECS files, not that it is

@@ -580,7 +580,8 @@ test_subjects = [
     ['S20160901S0125', 'mrgS20160901S0125_trn'],
     ['2004may20_0048', 'rawdir$2004may20_0048.fits'],
     ['2004may20_0049', 'rawdir$2004may20_0049.fits'],
-    ['2004may20_0050', 'rawdir$2004may20_0050.fits']
+    ['2004may20_0050', 'rawdir$2004may20_0050.fits'],
+    ['N20060130S0149', 'mrgN20060130S0149_trn']
 ]
 
 
