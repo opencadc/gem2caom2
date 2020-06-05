@@ -4,7 +4,7 @@ AstroData Tags: {'PROCESSED_SCIENCE', 'GMOS', 'SIDEREAL', 'PREPARED', 'IMAGE', '
 
 
 --- PHU ---
-SIMPLE  =                    T / Fits standard                                  
+SIMPLE  =                    T / Fits standard
 BITPIX  =                   16 / Bits per pixel                                 
 NAXIS   =                    0 / Number of axes                                 
 EXTEND  =                    T / File may contain extensions                    
@@ -208,7 +208,7 @@ PITARGET= 'pass              ' / Requested target
 ORIGNAME= 'mrgN20060130S0149_add.fits' / Original filename prior to processing
 
 --- HDU 0 ---
-XTENSION= 'IMAGE   '           / Image extension                                
+XTENSION= 'IMAGE   '           / Image extension
 BITPIX  =                  -32 / Bits per pixel                                 
 NAXIS   =                    2 / Number of axes                                 
 NAXIS1  =                 3108 / Axis length                                    

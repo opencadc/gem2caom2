@@ -37,57 +37,56 @@
         <caom2:producer>NOAO-IRAF FITS Image Kernel July 2003</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/filepre=N20200210S0077_bias.fits</caom2:reference>
         <caom2:inputs>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200214S1424</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200223S0385</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200210S0077</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200220S0418</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200222S0729</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200223S0388</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200221S0428</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200217S0697</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200215S0157</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200220S0419</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200214S1426</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200210S0078</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200223S0387</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200215S0161</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200222S0727</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/GN-CAL20200210-22-076/N20200210S0077</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200210S0079</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200214S1422</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200217S0700</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200220S0420</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200214S1425</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200218S0095</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200222S0726</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200221S0429</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/test_data_label/N20200220S0422</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200219S0291</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200223S0386</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200215S0158</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200218S0099</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200221S0427</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200210S0081</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200223S0384</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200218S0095</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/test_data_label/N20200217S0698</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200222S0730</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200223S0385</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200215S0161</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200219S0291</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200210S0081</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200218S0099</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200221S0431</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/test_data_label/N20200219S0290</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200218S0097</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200218S0096</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200219S0287</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200220S0421</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/test_data_label/N20200217S0701</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200219S0288</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200218S0097</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200214S1423</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200223S0387</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200210S0080</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200219S0287</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200222S0730</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200221S0428</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/test_data_label/N20200215S0160</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/test_data_label/N20200215S0159</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200220S0421</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200214S1423</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200221S0430</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200222S0728</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200218S0096</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/test_data_label/N20200219S0289</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200210S0080</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200217S0700</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200219S0288</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200223S0388</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200220S0419</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200214S1425</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200223S0386</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200214S1424</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/test_data_label/N20200217S0699</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200214S1422</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/test_data_label/N20200218S0098</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200222S0726</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200221S0431</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200221S0429</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200221S0427</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200222S0729</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200210S0079</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200214S1426</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200210S0077</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200215S0157</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200217S0697</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200223S0384</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200220S0420</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200222S0728</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200221S0430</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200215S0158</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200220S0418</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200222S0727</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200210S0078</caom2:planeURI>
         </caom2:inputs>
       </caom2:provenance>
       <caom2:artifacts>
@@ -110,7 +109,6 @@
                   <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -178,7 +176,6 @@
                   <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -246,7 +243,6 @@
                   <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -314,7 +310,6 @@
                   <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -382,7 +377,6 @@
                   <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -450,7 +444,6 @@
                   <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -518,7 +511,6 @@
                   <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -586,7 +578,6 @@
                   <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -654,7 +645,6 @@
                   <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -722,7 +712,6 @@
                   <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -790,7 +779,6 @@
                   <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -858,7 +846,6 @@
                   <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -925,7 +912,6 @@
     </caom2:plane>
   </caom2:planes>
   <caom2:members>
-    <caom2:observationURI>caom:GEMINI/GN-CAL20200210-22-076</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/test_data_label</caom2:observationURI>
   </caom2:members>
 </caom2:Observation>
