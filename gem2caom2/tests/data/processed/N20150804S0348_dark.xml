@@ -69,8 +69,6 @@
               <caom2:name>1</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-a44f-e56efa9d4859">
-                  <caom2:naxis>2</caom2:naxis>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
@@ -101,8 +99,6 @@
               <caom2:name>2</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-896b-2551abd312a1">
-                  <caom2:naxis>2</caom2:naxis>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
@@ -133,8 +129,6 @@
               <caom2:name>3</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-86ae-4deaafecc959">
-                  <caom2:naxis>2</caom2:naxis>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>

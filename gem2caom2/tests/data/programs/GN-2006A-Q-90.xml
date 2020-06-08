@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+
+<title>Detail for Program: GN-2006A-Q-90</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GN-2006A-Q-90</h1>
+
+<table>
+ <tr><td>Title:<td>Impact of cluster formation on ages, metallicities and nuclear activity.</tr>
+ <tr><td>PI:<td>Ilona Soechting</tr>
+ <tr><td>Co-I(s):<td> Anne Sansom,  Ewan O'Sullivan,  Robert Proctor,  K.M. Bird</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+What are the age and metalicity distributions of galaxies in a FORMING cluster? Are all subclusters contributing similar populations and what is the impact of subcluster mergers on star formation and nuclear activity? To address these questions we propose to observe galaxies in an optically selected rich cluster (Abell class ~2) in formation, looking back one quarter of the age of the universe (at z=0.32). Using multi-object (GMOS) spectroscopy we will measure luminosity weighted ages and abundances for individual galaxies in subclusters, covering 3 magnitudes (I=17 to 20). This will allow us to relate the parameters of age and abundance to spatial location within the cluster and position in the colour-magnitude diagram and hence progress our understanding of what influences this important diagnostic diagram, which is widely used in cosmology. Using the radial velocity profiles of subclusters and stellar velocity dispersions of their member galaxies we will map the exact 3D mass distribution of luminous and dark matter. The maps of age, metalicity and mass distributions accross the cluster will allow us to address the connection between structure formation and nuclear activity with a high level of clarity.
+
+</div>
+
+
+
+</body>
+</html>

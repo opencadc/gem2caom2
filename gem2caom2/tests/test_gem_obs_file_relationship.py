@@ -216,6 +216,16 @@ def test_repair_data_label():
             assert test_result == 'N20200210S0077_bias', \
                 'repair failed for {} actual {} expected {}'.format(
                     ii, test_result, gem_mocks.LOOKUP[ii][0])
+        elif ii == 'mrgN20060130S0149_add':
+            # what happens when an entry is not found
+            # note that the answer should actually be
+            # GN-2006A-Q-90-1-001-MRG-ADD, but because the
+            # cadc tap lookup, and the archive.gemini.edu query are not
+            # mocked here, the default behaviour of returning the
+            # file name is what actually occurs
+            assert test_result == 'mrgN20060130S0149_add', \
+                'repair failed for {} actual {} expected {}'.format(
+                    ii, test_result, gem_mocks.LOOKUP[ii][0])
         else:
             assert test_result == gem_mocks.LOOKUP[ii][0], \
                 'repair failed for {} actual {} expected {}'.format(
@@ -580,7 +590,8 @@ test_subjects = [
     ['S20160901S0125', 'mrgS20160901S0125_trn'],
     ['2004may20_0048', 'rawdir$2004may20_0048.fits'],
     ['2004may20_0049', 'rawdir$2004may20_0049.fits'],
-    ['2004may20_0050', 'rawdir$2004may20_0050.fits']
+    ['2004may20_0050', 'rawdir$2004may20_0050.fits'],
+    ['N20060130S0149', 'mrgN20060130S0149_trn']
 ]
 
 

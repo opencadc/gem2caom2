@@ -452,17 +452,17 @@ class CachingObsFileRelationship(GemObsFileRelationship):
     def tap_client(self, value):
         self._tap_client = value
 
-    def get_obs_id(self, file_name):
-        file_id = gem_name.GemName.remove_extensions(file_name)
+    def get_obs_id(self, file_id):
         result = super(CachingObsFileRelationship, self).get_obs_id(file_id)
         if result is None:
-            result = self._get_obs_id_from_cadc(file_name, file_id)
+            result = self._get_obs_id_from_cadc(file_id)
             if result is None:
                 result = self._get_obs_id_from_gemini(file_id)
         return result
 
-    def _get_obs_id_from_cadc(self, file_name, file_id):
+    def _get_obs_id_from_cadc(self, file_id):
         self._logger.debug(f'Begin _get_obs_id_from_cadc for {file_id}')
+        file_name = gem_name.GemName.get_file_name_from(file_id)
         artifact_uri = cc.build_artifact_uri(
             file_name, gem_name.COLLECTION, gem_name.SCHEME)
         query_string = f"""
@@ -478,6 +478,7 @@ class CachingObsFileRelationship(GemObsFileRelationship):
             obs_id = table[0]['observationID']
             ut_datetime_str = table[0]['lastModified']
             self._update_cache(file_id, obs_id, ut_datetime_str)
+            result = obs_id
         self._logger.debug('End _get_obs_id_from_cadc')
         return result
 
@@ -494,7 +495,7 @@ class CachingObsFileRelationship(GemObsFileRelationship):
         self._update_cache(file_id, obs_id, ut_datetime_str)
         if current_file_id is not None:
             om.reset_index(current_file_id)
-        self._logger.error(f'End _get_obs_id_from_gemini.')
+        self._logger.debug(f'End _get_obs_id_from_gemini.')
         return obs_id
 
     def _update_cache(self, file_id, obs_id, dt_str):

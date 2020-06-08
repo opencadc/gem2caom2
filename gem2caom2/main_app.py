@@ -1010,8 +1010,8 @@ def update(observation, **kwargs):
     # processed files
     if (cc.is_composite(headers) and not
             isinstance(observation, CompositeObservation)):
-        logging.info('{} is a Composite Observation.'.format(
-            observation.observation_id))
+        logging.info(f'{observation.observation_id} is a Composite '
+                     f'Observation.')
         observation = _update_composite(observation)
 
     if observation.instrument.name == 'oscir':
@@ -1087,9 +1087,9 @@ def update(observation, **kwargs):
                         # GPI data sets have two extensions. First is science
                         # image (with WCS), second is data quality for each
                         # pixel (no WCS).
-                        logging.info(
-                            'GPI: Setting chunks to None for part {} for {}'.format(
-                                part, observation.observation_id))
+                        logging.info(f'GPI: Setting chunks to None for part '
+                                     f'{part} for '
+                                     f'{observation.observation_id}')
                         artifact.parts[part].chunks = TypedList(Chunk, )
                         continue
                     for c in artifact.parts[part].chunks:
@@ -1237,7 +1237,8 @@ def update(observation, **kwargs):
                                 if part == '1':
                                     # equinox information only available from
                                     # 0th header
-                                    c.position.equinox = headers[0].get('TRKEQUIN')
+                                    c.position.equinox = headers[0].get(
+                                        'TRKEQUIN')
                             elif instrument is em.Inst.FLAMINGOS:
                                 _update_chunk_position_flamingos(
                                     c, header, observation.observation_id)
@@ -1253,7 +1254,12 @@ def update(observation, **kwargs):
 
                         # time WCS
                         if instrument is em.Inst.F2:
-                            _update_chunk_time_f2(c, observation.observation_id)
+                            _update_chunk_time_f2(
+                                c, observation.observation_id)
+                        if c.naxis <= 2:
+                            if c.position_axis_1 is None:
+                                c.naxis = None
+                            c.time_axis = None
 
                 if isinstance(observation, CompositeObservation):
                     cc.update_plane_provenance(plane, headers[1:], 'IMCMB',
@@ -1333,7 +1339,10 @@ def _build_chunk_energy(chunk, filter_name, fm):
                              bandpass_name=bandpass_name,
                              resolving_power=fm.resolving_power)
     chunk.energy = energy
-    chunk.energy_axis = 4
+    if chunk.naxis > 2:
+        chunk.energy_axis = 4
+    else:
+        chunk.energy_axis = None
 
 
 # values from

@@ -140,6 +140,11 @@ TAP_QUERY_LOOKUP = {
     'S20181219S0223': 'GS-CAL20181219-4-019',
     'S20181219S0224': 'GS-CAL20181219-4-020',
     'S20181219S0225': 'GS-CAL20181219-4-021',
+    'mrgN20060130S0149_add': 'GN-2006A-Q-90-1-001-MRG-ADD',
+    'N20060130S0149': 'GN-2006A-Q-90-1-001',
+    'N20060130S0150': 'GN-2006A-Q-90-1-002',
+    'N20060130S0151': 'GN-2006A-Q-90-1-003',
+    'N20200210S0077_bias': 'GN-CAL20200210-22-076-BIAS',
 }
 
 
@@ -477,6 +482,8 @@ LOOKUP = {
     'P2002DEC02_0075_SUB.0001': ['GS-CAL20021202-3-0075', em.Inst.PHOENIX,
                                  'GS-CAL2002120'],
     '2004may19_0255': ['GS-2004A-Q-6-27-0255', em.Inst.PHOENIX, 'GS-2004A-Q-6'],
+    'mrgN20060130S0149_add': ['GN-2006A-Q-90-1-001-MRG-ADD', em.Inst.GMOS,
+                              'GS-2006A-Q-90'],
     'S20181016S0184': ['GS-CAL20181016-5-001', em.Inst.GMOS,
                        'GS-CAL20181016-5'],
     'N20200210S0077_bias': ['GN-CAL20200210-22-076-BIAS', em.Inst.GMOS,
@@ -501,7 +508,6 @@ def mock_get_votable(url):
 
 def mock_get_pi_metadata(program_id):
     try:
-        logging.error(f'program id is {program_id}')
         fname = f'{TEST_DATA_DIR}/programs/{program_id}.xml'
         with open(fname) as f:
             y = f.read()
@@ -727,9 +733,9 @@ def mock_query_tap(query_string, mock_tap_client):
             f'gemini:GEMINI/N20191101S0007.fits,'
             f'2020-02-25T20:36:31.230\n'.split('\n'), format='csv')
     else:
-        file_id = query_string.split('GEMINI/')[1].replace('\'', '').strip()
+        file_id = query_string.split(
+            'GEMINI/')[1].replace('\'', '').replace('.fits', '').strip()
         result = TAP_QUERY_LOOKUP.get(file_id, 'test_data_label')
-        logging.error(f'file_id is {file_id} result is {result}')
         return Table.read(f'observationID,lastModified\n'
                           f'{result},2020-02-25T20:36:31.230\n'.split('\n'),
                           format='csv')
