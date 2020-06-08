@@ -77,8 +77,6 @@ from gem2caom2 import external_metadata as ext_md
 
 import gem_mocks
 
-from gem2caom2.tests.gem_mocks import _query_mock_none
-
 test_subjects = {
     'H2v=2-1S1_G0220': [ext_md.Inst.NIRI, 'H2S1v2-1-G0220'],
     'Kprime_G0206': [ext_md.Inst.NIRI, 'Kprime-G0206'],
@@ -111,14 +109,14 @@ def test_caching_relationship(tap_mock, get_obs_mock):
         test_config.get_executors()
         ext_md.init_global(incremental=True, config=test_config)
         initial_length = 523
-        tap_mock.side_effect = _query_mock_none
+        tap_mock.side_effect = gem_mocks._query_mock_none
         get_obs_mock.side_effect = gem_mocks.mock_get_obs_metadata
         test_subject = ext_md.CachingObsFileRelationship()
         # test an entry that's not in the file, not at CADC, is at
         # archive.gemini.edu
         assert len(test_subject.name_list) == initial_length, \
             'bad initial length'
-        test_result = test_subject.get_obs_id('N20200210S0077.fits')
+        test_result = test_subject.get_obs_id('N20200210S0077')
         assert test_result is not None, 'expect a gemini result'
         assert test_result == 'GN-CAL20200210-22-076', 'wrong gemini result'
         assert len(test_subject.name_list) == initial_length + 1, \
@@ -126,14 +124,14 @@ def test_caching_relationship(tap_mock, get_obs_mock):
 
         # entry is not in file, but is at CADC
         tap_mock.side_effect = gem_mocks.mock_query_tap
-        test_result = test_subject.get_obs_id('x.fits')
+        test_result = test_subject.get_obs_id('x')
         assert test_result is not None, 'expect a cadc result'
         assert test_result == 'test_data_label', 'wrong cadc result'
         assert len(test_subject.name_list) == initial_length + 2, \
             'bad updated length from cadc'
 
         # entry is in file
-        test_result = test_subject.get_obs_id('N20170616S0540.fits')
+        test_result = test_subject.get_obs_id('N20170616S0540')
         assert test_result is not None, 'expect a file result'
         assert test_result == 'GN-CAL20170616-11-022', 'wrong file result'
         assert len(test_subject.name_list) == initial_length + 2, \

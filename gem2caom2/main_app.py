@@ -1010,8 +1010,8 @@ def update(observation, **kwargs):
     # processed files
     if (cc.is_composite(headers) and not
             isinstance(observation, CompositeObservation)):
-        logging.info('{} is a Composite Observation.'.format(
-            observation.observation_id))
+        logging.info(f'{observation.observation_id} is a Composite '
+                     f'Observation.')
         observation = _update_composite(observation)
 
     if observation.instrument.name == 'oscir':
@@ -1087,13 +1087,12 @@ def update(observation, **kwargs):
                         # GPI data sets have two extensions. First is science
                         # image (with WCS), second is data quality for each
                         # pixel (no WCS).
-                        logging.info(
-                            'GPI: Setting chunks to None for part {} for {}'.format(
-                                part, observation.observation_id))
+                        logging.info(f'GPI: Setting chunks to None for part '
+                                     f'{part} for '
+                                     f'{observation.observation_id}')
                         artifact.parts[part].chunks = TypedList(Chunk, )
                         continue
                     for c in artifact.parts[part].chunks:
-                        # logging.error(f'part {part} len headers {len(headers)}')
                         header = headers[int(part)]
 
                         # energy WCS
@@ -1261,7 +1260,6 @@ def update(observation, **kwargs):
                             if c.position_axis_1 is None:
                                 c.naxis = None
                             c.time_axis = None
-                        logging.error(f'naxis {c.naxis} time {c.time_axis}')
 
                 if isinstance(observation, CompositeObservation):
                     cc.update_plane_provenance(plane, headers[1:], 'IMCMB',

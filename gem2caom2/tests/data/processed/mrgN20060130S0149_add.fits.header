@@ -1,3 +1,9 @@
+Filename: mrgN20060130S0149_add.fits.bz2
+
+AstroData Tags: {'PROCESSED_SCIENCE', 'GMOS', 'SIDEREAL', 'PREPARED', 'IMAGE', 'GEMINI', 'NORTH', 'PROCESSED'}
+
+
+--- PHU ---
 SIMPLE  =                    T / Fits standard                                  
 BITPIX  =                   16 / Bits per pixel                                 
 NAXIS   =                    0 / Number of axes                                 
@@ -199,7 +205,9 @@ FINALINT= 'pass              ' / Requested total integration time
 FINALIQ = 'pass              ' / Requested final image quality                  
 PICONFIG= 'pass              ' / Requested instrument configuration             
 PITARGET= 'pass              ' / Requested target                               
-END                                                                             
+ORIGNAME= 'mrgN20060130S0149_add.fits' / Original filename prior to processing
+
+--- HDU 0 ---
 XTENSION= 'IMAGE   '           / Image extension                                
 BITPIX  =                  -32 / Bits per pixel                                 
 NAXIS   =                    2 / Number of axes                                 
@@ -245,5 +253,4 @@ MFWHM   =     0.84564644098282 / FWHM of PSF [arcsec], Moffat fit
 EED50   =      1.2896980047226 / 50-percent encircled energy diameter [arcsec]  
 EED85   =      2.3988091945648 / 85-percent encircled energy diameter [arcsec]  
 EPSPSF  =    0.090000003576279 / Ellipticity of PSF                             
-POSPSF  =                   5. / Position angle of PSF, CCW from X-axis         
-END                                                                             
+POSPSF  =                   5. / Position angle of PSF, CCW from X-axis
