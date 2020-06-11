@@ -223,7 +223,7 @@ def _get_lineage(dirname, basename, product_id, file_id):
 
 
 def _get_expected_file_name(dirname, product_id):
-    return '{}/{}.xml'.format(dirname, product_id)
+    return '{}/{}.expected.xml'.format(dirname, product_id)
 
 
 def _get_actual_file_name(dirname, product_id):

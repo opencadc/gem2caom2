@@ -602,6 +602,27 @@ def get_proposal_id(header):
     return em.om.get('program_id')
 
 
+def get_provenance_keywords(uri):
+    """
+    DB https://github.com/opencadc-metadata-curation/gem2caom2/issues/12
+    Currently there is no CAOM2 metadata that enables a user to distinguish
+    different spectroscopic modes of GMOS-N/S data. e.g. long-slit vs. IFU
+    vs. MOS (multi-object spectroscopy).
+
+    To enable this with at least a TAP query it would be useful to modify the
+    gem2caom2 code to add an Instrument.keywords value for GMOS-N/S spectra.
+
+    The jsonsummary 'mode' value is likely sufficient for this. It is
+    supposed to provide values of "imaging, spectroscopy, LS (Longslit
+    Spectroscopy), MOS (Multi Object Spectroscopy) or IFS (Integral Field
+    Spectroscopy)". There is likely no reason to change these values but
+    simply use them for the value of Instrument.keywords.
+    :param uri:
+    :return:
+    """
+    return em.om.get('mode')
+
+
 def get_ra(header):
     """
     Get the right ascension. Rely on the JSON metadata, because it's all in
@@ -793,7 +814,12 @@ def _get_data_label():
 
 
 def _get_instrument():
-    return em.Inst(em.om.get('instrument'))
+    inst = em.om.get('instrument')
+    if inst == 'ALOPEKE':
+        # because the value in JSON is a different case than the value in
+        # the FITS header
+        inst = 'Alopeke'
+    return em.Inst(inst)
 
 
 def _get_sky_coord(header, ra_key, dec_key):
@@ -935,6 +961,8 @@ def accumulate_fits_bp(bp, file_id, uri):
         data_label = _get_data_label()
         bp.set('Plane.provenance.reference',
                'http://archive.gemini.edu/searchform/{}'.format(data_label))
+    if instrument in [em.Inst.GMOSN, em.Inst.GMOSS, em.Inst.GMOS]:
+        bp.set('Plane.provenance.keywords', 'get_provenance_keywords(uri)')
 
     bp.set('Artifact.productType', 'get_art_product_type(header)')
     bp.set('Artifact.contentChecksum', 'md5:{}'.format(em.om.get('data_md5')))
@@ -1256,7 +1284,26 @@ def update(observation, **kwargs):
                         if instrument is em.Inst.F2:
                             _update_chunk_time_f2(
                                 c, observation.observation_id)
-                        if c.naxis <= 2:
+
+                        # DB - 05-06-20
+                        # That’s a composite observation (but with no way of
+                        # determining the 4 members from the header) and it is
+                        # an extracted spectrum and (despite some header info
+                        # suggesting otherwise) has no wavelength scale.
+                        # LINEAR must be a reference to the fact that the
+                        # spacing of each pixel is constant.  Since the scale
+                        # is simply in pixels….  CTYPE1 will refer to the
+                        # energy axis.   Would likely make more sense for a
+                        # value of PIXEL.
+                        if instrument is em.Inst.PHOENIX:
+                            ctype = headers[0].get('CTYPE1')
+                            if ctype is None or ctype in ['LINEAR', 'PIXEL']:
+                                c.naxis = None
+                                c.position_axis_1 = None
+                                c.position_axis_2 = None
+                                c.time_axis = None
+                                c.energy_axis = None
+                        if c.naxis is not None and c.naxis <= 2:
                             if c.position_axis_1 is None:
                                 c.naxis = None
                             c.time_axis = None

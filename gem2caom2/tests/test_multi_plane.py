@@ -93,7 +93,8 @@ LOOKUP = {'GS-CAL20101028-5-004': ['mrgS20101028S0134', 'S20101028S0134'],
           'GN-2015B-Q-1-12-1003': ['N20150807G0044', 'N20150807G0044i',
                                    'N20150807G0044m'],
           'GN-2012A-Q-124-1-003': ['N20120905S0122', 'N20120905S0122_arc'],
-          'GS-2006A-Q-60-11-001': ['S20060412S0056', 'rS20060412S0056']
+          'GS-2006A-Q-60-11-001': ['S20060412S0056', 'rS20060412S0056'],
+          'GN-2020A-Q-132-0-0': ['N20191219A0004b', 'N20191219A0004r']
           }
 
 
@@ -145,7 +146,7 @@ def test_multi_plane(tap_mock, test_name):
                         input_file, actual_fqn, lineage)).split()
             print(sys.argv)
             main_app.to_caom2()
-            expected_fqn = '{}/{}/{}.xml'.format(
+            expected_fqn = '{}/{}/{}.expected.xml'.format(
                 gem_mocks.TEST_DATA_DIR, DIR_NAME, obs_id)
 
             compare_result = mc.compare_observations(actual_fqn, expected_fqn)
@@ -158,10 +159,18 @@ def test_multi_plane(tap_mock, test_name):
 
 def _get_lineage(obs_id):
     result = ''
-    for ii in LOOKUP[obs_id]:
-        fits = mc.get_lineage(gem_name.ARCHIVE, ii, '{}.fits'.format(ii),
-                              gem_name.SCHEME)
-        result = '{} {}'.format(result, fits)
+    if obs_id == 'GN-2020A-Q-132-0-0':
+        product_id = LOOKUP[obs_id][0][:-1]
+        x = mc.get_lineage(gem_name.ARCHIVE, product_id,
+                           f'{LOOKUP[obs_id][0]}.fits', gem_name.SCHEME)
+        y = mc.get_lineage(gem_name.ARCHIVE, product_id,
+                           f'{LOOKUP[obs_id][1]}.fits', gem_name.SCHEME)
+        result = f'{x} {y}'
+    else:
+        for ii in LOOKUP[obs_id]:
+            fits = mc.get_lineage(gem_name.ARCHIVE, ii, f'{ii}.fits',
+                                  gem_name.SCHEME)
+            result = f'{result} {fits}'
     return result
 
 

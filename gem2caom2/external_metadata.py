@@ -134,6 +134,7 @@ def init_global(incremental, config):
 
 class Inst(Enum):
 
+    ALOPEKE = 'Alopeke'
     BHROS = 'bHROS'
     CIRPASS = 'CIRPASS'
     F2 = 'F2'
