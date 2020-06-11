@@ -41,6 +41,9 @@
         <caom2:project>Gemini Archive</caom2:project>
         <caom2:producer>Gemini Observatory</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/GN-2012A-Q-124-1-003</caom2:reference>
+        <caom2:keywords>
+          <caom2:keyword>LS</caom2:keyword>
+        </caom2:keywords>
       </caom2:provenance>
       <caom2:position/>
       <caom2:energy/>
@@ -620,6 +623,9 @@
         <caom2:project>Gemini Archive</caom2:project>
         <caom2:producer>NOAO-IRAF FITS Image Kernel July 2003</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/filepre=N20120905S0122_arc.fits</caom2:reference>
+        <caom2:keywords>
+          <caom2:keyword>LS</caom2:keyword>
+        </caom2:keywords>
       </caom2:provenance>
       <caom2:artifacts>
         <caom2:artifact caom2:id="51cf2470-5d66-4349-b8ad-617c76756b24">

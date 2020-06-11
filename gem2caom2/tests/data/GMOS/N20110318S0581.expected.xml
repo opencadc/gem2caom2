@@ -42,6 +42,9 @@
         <caom2:project>Gemini Archive</caom2:project>
         <caom2:producer>Gemini Observatory</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/GN-2011A-Q-87-69-001</caom2:reference>
+        <caom2:keywords>
+          <caom2:keyword>IFS</caom2:keyword>
+        </caom2:keywords>
       </caom2:provenance>
       <caom2:position/>
       <caom2:energy/>

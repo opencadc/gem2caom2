@@ -41,6 +41,9 @@
         <caom2:project>Gemini Archive</caom2:project>
         <caom2:producer>NOAO-IRAF FITS Image Kernel July 2003</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/GN-2009B-Q-121-15-003</caom2:reference>
+        <caom2:keywords>
+          <caom2:keyword>LS</caom2:keyword>
+        </caom2:keywords>
       </caom2:provenance>
       <caom2:position/>
       <caom2:energy/>

@@ -40,6 +40,9 @@
         <caom2:project>Gemini Archive</caom2:project>
         <caom2:producer>NOAO-IRAF FITS Image Kernel July 2003</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/filepre=N20141109S0266_bias.fits</caom2:reference>
+        <caom2:keywords>
+          <caom2:keyword>imaging</caom2:keyword>
+        </caom2:keywords>
         <caom2:inputs>
           <caom2:planeURI>caom:GEMINI/GN-CAL20141112-1-005/N20141112S0095</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/GN-CAL20141111-1-005/N20141112S0005</caom2:planeURI>
