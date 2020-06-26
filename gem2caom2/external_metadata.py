@@ -506,6 +506,7 @@ class CachingObsFileRelationship(GemObsFileRelationship):
                 temp = headers[0].get('DATALAB')
                 if temp is not None:
                     result = repair_data_label(file_id, temp)
+                    self._update_cache(file_id, result, headers[0].get('DATE'))
                 break
         self._logger.debug('End _get_obs_id_from_headers')
         return result
