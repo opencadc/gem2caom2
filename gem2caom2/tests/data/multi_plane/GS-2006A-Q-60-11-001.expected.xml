@@ -1,10 +1,10 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:CompositeObservation" caom2:id="fee1a6d7-c3b4-4636-9fd6-0f1829dbb5eb">
+<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="fee1a6d7-c3b4-4636-9fd6-0f1829dbb5eb">
   <caom2:collection>GEMINI</caom2:collection>
   <caom2:observationID>GS-2006A-Q-60-11-001</caom2:observationID>
   <caom2:metaRelease>2006-04-12T00:33:41.400</caom2:metaRelease>
   <caom2:algorithm>
-    <caom2:name>composite</caom2:name>
+    <caom2:name>exposure</caom2:name>
   </caom2:algorithm>
   <caom2:type>OBJECT</caom2:type>
   <caom2:intent>science</caom2:intent>

@@ -604,6 +604,14 @@ def get_suffix(file_id, data_label):
         else:
             temp = file_id.split('_')[1:]
             # logging.error('get here? suffix is {} for {}'.format(suffix, file_id))
+    if (data_label.endswith('-G') and
+            (file_id.startswith('rS') or file_id.startswith('rN'))):
+        # DB 16-06-20
+        # I think the ‘g’ prefix is used a little inconsistently.  It is
+        # supposed to be set whenever the IRAF GPREPARE is executed and I
+        # think this is normally done at the start of ALL Gemini processing.
+        # The ‘r’ prefix should appear in all processed files.
+        temp.append('g')
     for ii in temp:
         if re.match('[a-zA-Z]+', ii) is not None:
             suffix.append(ii)
@@ -745,6 +753,19 @@ def repair_data_label(file_name, data_label):
         #
         # r<file name> should be another plane of the same
         # observation.
+        #
+        # DB - 02-06-20
+        # r<file name> should NOT be composites. I believe processed TReCS
+        # files in Gemini's archive are derived by combining the
+        # NNODSETS x NSAVSETS contained within a single unprocessed image
+        # into a simpler image array.
+        #
+        # Most TReCS files are being processed correctly except for the
+        # 'composite' algorithm. The exceptions might be those with data
+        # labels ending in -G. The -G versions should show up as an additional
+        # plane in a single observation.
+        #
+        # SGo - this means make the data labels the same
         if ((('mfrg' == prefix or 'mrg' == prefix or 'rg' == prefix) and
              (not ('add' in suffix or 'ADD' in suffix))) or
                 ('arc' in suffix or 'ARC' in suffix) or

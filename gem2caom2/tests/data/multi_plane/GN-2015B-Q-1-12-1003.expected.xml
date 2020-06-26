@@ -169,9 +169,11 @@
       <caom2:calibrationLevel>2</caom2:calibrationLevel>
       <caom2:provenance>
         <caom2:name>Gemini Observatory Data</caom2:name>
+        <caom2:version>opera-1.0.1225</caom2:version>
         <caom2:project>Gemini Archive</caom2:project>
-        <caom2:producer>CFHT DetCom v3.60.15 (Apr 23 2015)</caom2:producer>
-        <caom2:reference>http://archive.gemini.edu/searchform/filepre=N20150807G0044i.fits</caom2:reference>
+        <caom2:producer>CFHT OPERA Open Source Pipeline</caom2:producer>
+        <caom2:reference>https://www.gemini.edu/instrumentation/graces/data-reduction</caom2:reference>
+        <caom2:lastExecuted>2016-09-20T13:59:24.000</caom2:lastExecuted>
       </caom2:provenance>
       <caom2:artifacts>
         <caom2:artifact caom2:id="00000000-0000-0000-9346-26b6046ce539">
@@ -287,9 +289,11 @@
       <caom2:calibrationLevel>2</caom2:calibrationLevel>
       <caom2:provenance>
         <caom2:name>Gemini Observatory Data</caom2:name>
+        <caom2:version>opera-1.0.1225</caom2:version>
         <caom2:project>Gemini Archive</caom2:project>
-        <caom2:producer>CFHT DetCom v3.60.15 (Apr 23 2015)</caom2:producer>
-        <caom2:reference>http://archive.gemini.edu/searchform/filepre=N20150807G0044m.fits</caom2:reference>
+        <caom2:producer>CFHT OPERA Open Source Pipeline</caom2:producer>
+        <caom2:reference>https://www.gemini.edu/instrumentation/graces/data-reduction</caom2:reference>
+        <caom2:lastExecuted>2016-09-20T13:59:29.000</caom2:lastExecuted>
       </caom2:provenance>
       <caom2:artifacts>
         <caom2:artifact caom2:id="00000000-0000-0000-aedc-050794bbff30">

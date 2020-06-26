@@ -192,8 +192,6 @@ class PublicIncremental(dsc.QueryTimeBoxDataSource):
 
     def __init__(self, config):
         super(PublicIncremental, self).__init__(config)
-        subject = mc.define_subject(config)
-        self._client = CadcTapClient(subject, resource_id=self._config.tap_id)
         self._logger = logging.getLogger(__name__)
 
     def get_time_box_work(self, prev_exec_time, exec_time):

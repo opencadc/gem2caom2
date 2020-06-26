@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+
+<title>Detail for Program: GN-2020A-Q-132</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GN-2020A-Q-132</h1>
+
+<table>
+ <tr><td>Title:<td>Validation and Characterization of TESS Exoplanets (North)</tr>
+ <tr><td>PI:<td>Steve Howell</tr>
+ <tr><td>Co-I(s):<td> Nic Scott,  Rachel Matson</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+The NASA TESS mission, building on the success of Kepler and K2, promises to once again change our view of exoplanets. TESS will observe the entire sky, finding candidate exoplanets orbiting bright and nearby stars. Validation and characterization of these exoplanets by high-resolution imaging has been shown to be absolutely necessary in order to not only prove the planets existence but to allow assignment of a correct radius and density to each exoplanet. The true nature of exoplanet host star binarity, in terms of their orbital period distribution, mass ratio, binary orbit, and even which star the postulated planet orbits are not known a priori but our imaging solves these dilemmas. We propose to continue our community-based speckle imaging program at Gemini and observe TESS exoplanet host stars as well as a few remaining high-value K2 candidates. Given that ~50% of exoplanet host stars are binaries, without high resolution images of the host star a) small planets, especially those in habitable zone orbits, can not be validated and properly characterized and b) any true exoplanet will have, on average, an incorrect radius by a factor of 1.5, that is, the planet will be larger than assumed. We will continue to make all of our reduced data immediately public at the Gemini and NASA Exoplanet Archive. 
+</div>
+
+
+<h2>Publications using this program's data</h2>
+<ul>
+<li>
+<a href="/searchform/publication=2020AJ....159..243P" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2020AJ....159..243P/abstract" target="_blank">[ADS]</a> TESS Reveals HD 118203 b to be a Transiting Planet 
+</ul>
+
+
+</body>
+</html>

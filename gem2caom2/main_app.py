@@ -623,6 +623,57 @@ def get_provenance_keywords(uri):
     return em.om.get('mode')
 
 
+def get_provenance_last_executed(parameters):
+    def breakout(comments):
+        result = None
+        temp = comments.split('\n')
+        if len(temp) > 6 and 'HST' in temp[6]:
+            # go from HST to UTC
+            result = mc.make_time(temp[6])
+            logging.error(f'hello> {result}')
+        return result
+    return _get_provenance_breakout(parameters, breakout)
+
+
+def get_provenance_producer(parameters):
+    result = None
+    uri = parameters.get('uri')
+    cal_level = get_calibration_level(uri)
+    header = parameters.get('header')
+    if cal_level in [CalibrationLevel.CALIBRATED, CalibrationLevel.PRODUCT,
+                     CalibrationLevel.ANALYSIS_PRODUCT]:
+        comments = str(header.get('COMMENT'))
+        result = comments.split('Processed by the')[1].split('|')[0]
+    else:
+        result = header.get('IMAGESWV')
+    return result
+
+
+def get_provenance_reference(parameters):
+    def breakout(comments):
+        return 'https://www.gemini.edu/instrumentation/graces/data-reduction'
+    return _get_provenance_breakout(parameters, breakout)
+
+
+def get_provenance_version(parameters):
+    def breakout(comments):
+        temp = comments.split('opera-')[1].split('build date')[0]
+        return f'opera-{temp}'
+    return _get_provenance_breakout(parameters, breakout)
+
+
+def _get_provenance_breakout(parameters, fn):
+    result = None
+    uri = parameters.get('uri')
+    cal_level = get_calibration_level(uri)
+    if cal_level in [CalibrationLevel.CALIBRATED, CalibrationLevel.PRODUCT,
+                     CalibrationLevel.ANALYSIS_PRODUCT]:
+        header = parameters.get('header')
+        comments = str(header.get('COMMENT'))
+        result = fn(comments)
+    return result
+
+
 def get_ra(header):
     """
     Get the right ascension. Rely on the JSON metadata, because it's all in
@@ -964,6 +1015,16 @@ def accumulate_fits_bp(bp, file_id, uri):
     if instrument in [em.Inst.GMOSN, em.Inst.GMOSS, em.Inst.GMOS]:
         bp.set('Plane.provenance.keywords', 'get_provenance_keywords(uri)')
 
+    if instrument is em.Inst.GRACES:
+        bp.set('Plane.provenance.lastExecuted',
+               'get_provenance_last_executed(parameters)')
+        bp.set('Plane.provenance.producer',
+               'get_provenance_producer(parameters)')
+        bp.set('Plane.provenance.reference',
+               'get_provenance_reference(parameters)')
+        bp.set('Plane.provenance.version',
+               'get_provenance_version(parameters)')
+
     bp.set('Artifact.productType', 'get_art_product_type(header)')
     bp.set('Artifact.contentChecksum', 'md5:{}'.format(em.om.get('data_md5')))
     bp.set('Artifact.contentLength', em.om.get('data_size'))
@@ -1035,13 +1096,6 @@ def update(observation, **kwargs):
                      f'{observation.observation_id}.')
         return observation
 
-    # processed files
-    if (cc.is_composite(headers) and not
-            isinstance(observation, CompositeObservation)):
-        logging.info(f'{observation.observation_id} is a Composite '
-                     f'Observation.')
-        observation = _update_composite(observation)
-
     if observation.instrument.name == 'oscir':
         # for these observations:
         # GN-2001A-C-16-3-016
@@ -1056,6 +1110,12 @@ def update(observation, **kwargs):
         # GN-2001A-C-2-9-010
         observation.instrument = Instrument(name='OSCIR')
     instrument = em.Inst(observation.instrument.name)
+
+    # processed files
+    if (cc.is_composite(headers) and not
+            isinstance(observation, CompositeObservation)):
+        observation = _update_composite(
+            observation, instrument, current_product_id)
 
     if instrument in [em.Inst.MICHELLE, em.Inst.GNIRS]:
         # DB 16-04-19
@@ -1320,9 +1380,10 @@ def update(observation, **kwargs):
                         and 'jpg' not in caom_name.file_name):
                     # not the preview artifact
                     if plane.provenance is not None:
-                        plane.provenance.reference = \
-                            'http://archive.gemini.edu/searchform/' \
-                            'filepre={}'.format(caom_name.file_name)
+                        if instrument is not em.Inst.GRACES:
+                            plane.provenance.reference = \
+                                'http://archive.gemini.edu/searchform/' \
+                                'filepre={}'.format(caom_name.file_name)
 
             program = em.get_pi_metadata(observation.proposal.id)
             if program is not None:
@@ -3708,9 +3769,24 @@ def _update_chunk_time_gmos(chunk, obs_id):
     logging.debug('End _update_chunk_time_gmos {}'.format(obs_id))
 
 
-def _update_composite(obs):
-    comp_obs = cc.change_to_composite(obs)
-    return comp_obs
+def _update_composite(obs, instrument, current_product_id):
+    if instrument is em.Inst.TRECS:
+        if (current_product_id is not None and
+                (current_product_id.startswith('rS') or
+                 (current_product_id.startswith('rN')))):
+            # DB 02-06-20
+            # processed TReCS files in Gemini's archive are derived by
+            # combining the NNODSETS x NSAVSETS contained within a single
+            # unprocessed image into a simpler image array.
+            #
+            # SGo - this means ignoring the IMCMB keywords that are an
+            # artifact of that, which is how Composite construction is
+            # otherwise determined.
+            result = obs
+    else:
+        result = cc.change_to_composite(obs)
+        logging.info(f'{obs.observation_id} is a Composite Observation.')
+    return result
 
 
 def _repair_provenance_value(imcmb_value, obs_id):
