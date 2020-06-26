@@ -245,6 +245,10 @@ class GemName(mc.StorageName):
         return self._product_id
 
     @property
+    def product_id(self):
+        return self._file_id
+
+    @property
     def thumb_uri(self):
         """Note the 'ad' scheme - the thumbnail is generated at CADC,
         so acknowledge that with the ad URI."""
