@@ -218,21 +218,9 @@ def test_run_incremental_rc(client_mock, tap_mock, get_obs_mock, query_mock,
         assert test_storage.fname_on_disk == 'S20200303S0353.fits', \
             'wrong fname on disk'
         assert test_storage.url is None, 'wrong url'
-        # there are six files returned by the mock, and they each have the
-        # same data label, so they all end up in this lineage
         assert test_storage.lineage == \
-            'S20200303S0025/gemini:GEM/S20200303S0025.fits ' \
-            'S20200303S0026/gemini:GEM/S20200303S0026.fits ' \
-            'S20200303S0027/gemini:GEM/S20200303S0027.fits ' \
-            'S20200303S0351/gemini:GEM/S20200303S0351.fits ' \
-            'S20200303S0352/gemini:GEM/S20200303S0352.fits ' \
             'S20200303S0353/gemini:GEM/S20200303S0353.fits', 'wrong lineage'
         assert test_storage.external_urls == \
-            'https://archive.gemini.edu/fullheader/S20200303S0025.fits ' \
-            'https://archive.gemini.edu/fullheader/S20200303S0026.fits ' \
-            'https://archive.gemini.edu/fullheader/S20200303S0027.fits ' \
-            'https://archive.gemini.edu/fullheader/S20200303S0351.fits ' \
-            'https://archive.gemini.edu/fullheader/S20200303S0352.fits ' \
             'https://archive.gemini.edu/fullheader/S20200303S0353.fits', \
             'wrong external urls'
     except Exception as e:

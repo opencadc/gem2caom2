@@ -105,27 +105,5 @@ def test_storage_name():
     assert test_sn.obs_id == 'GN-2009B-Q-121-15-001', 'wrong obs id'
     assert test_sn.file_uri == '{}:{}/N20100104S0208.fits'.format(SCHEME,
                                                                   ARCHIVE)
-
-
-def test_storage_name_2():
-    em.set_ofr(None)
-    mock_obs_id = 'GN-2012A-Q-124-1-003'
-    test_sn = GemName(obs_id=mock_obs_id)
-    assert test_sn._external_urls is None, 'should be uninitialized'
-    test_sn._get_args()
-    assert test_sn._external_urls is not None, 'should be initialized'
-    assert test_sn._external_urls == \
-        'https://archive.gemini.edu/fullheader/N20120905S0122_arc.fits ' \
-        'https://archive.gemini.edu/fullheader/N20120905S0122.fits', \
-        'wrong value'
-
-    # TODO: need to figure out how to make this case work:
-    #
-    # mock_obs_id = 'GN-2012A-Q-124-1-003-ARC'
-    # test_sn = GemName(obs_id=mock_obs_id)
-    # assert test_sn._external_urls is None, 'should be uninitialized'
-    # test_sn._get_args()
-    # assert test_sn._external_urls is not None, 'should be initialized'
-    # assert test_sn._external_urls == \
-    #        'https://archive.gemini.edu/fullheader/N20120905S0122.fits', \
-    #     'wrong value'
+    assert test_sn.external_urls == 'https://archive.gemini.edu/fullheader/' \
+                                    'N20100104S0208.fits'

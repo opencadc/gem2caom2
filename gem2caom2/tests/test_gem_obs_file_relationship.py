@@ -74,7 +74,7 @@ from mock import patch, Mock
 from shutil import copyfile
 
 from caom2pipe import manage_composable as mc
-from gem2caom2 import GemObsFileRelationship, CommandLineBits
+from gem2caom2 import GemObsFileRelationship
 from gem2caom2 import obs_file_relationship, external_metadata, main_app
 
 import gem_mocks
@@ -216,14 +216,14 @@ def test_repair_data_label():
             assert test_result == 'N20200210S0077_bias', \
                 'repair failed for {} actual {} expected {}'.format(
                     ii, test_result, gem_mocks.LOOKUP[ii][0])
-        elif ii == 'mrgN20060130S0149_add':
+        elif ii in ['mrgN20060130S0149_add', 'rgnN20140428S0171_flat']:
             # what happens when an entry is not found
             # note that the answer should actually be
             # GN-2006A-Q-90-1-001-MRG-ADD, but because the
             # cadc tap lookup, and the archive.gemini.edu query are not
             # mocked here, the default behaviour of returning the
             # file name is what actually occurs
-            assert test_result == 'mrgN20060130S0149_add', \
+            assert test_result == ii, \
                 'repair failed for {} actual {} expected {}'.format(
                     ii, test_result, gem_mocks.LOOKUP[ii][0])
         else:
@@ -237,6 +237,40 @@ def test_repair_data_label():
         'rS20050916S0159', 'GS-2003B-Q-23-17-001-G')
     assert test_result is not None, 'no result'
     assert test_result == 'GS-2003B-Q-23-17-001', 'wrong result'
+
+
+def test_repair_data_label_247():
+    # unprocessed
+    fid1 = 'S20131109S0166'
+    dl1 = ['GS-CAL20131109-17-001']
+
+    # processed with a correct data label that's maintained
+    fid2 = 'rgS20131109S0166_FRINGE'
+    dl2 = ['GS-CAL20131109-17-001-RG-FRINGE']
+    #
+    # should be GS-CAL20131109-17-001-RG-FRINGE
+
+    # processed with an incorrect data label that has to be fixed
+    fid3 = 'rgS20161227S0051_fringe'
+    dl3 = ['GS-CAL20161227-5-001', 'GS-CAL20161227-5-001-RG-FRINGE']
+    #
+    # should be GS-CAL20161227-5-001-RG-FRINGE
+
+    # the unprocessed that goes with the processed
+    fid4 = 'S20161227S0051'
+    dl4 = ['GS-CAL20161227-5-001']
+
+    d = {fid1: dl1,
+         fid2: dl2,
+         fid3: dl3,
+         fid4: dl4
+         }
+
+    for key, value in d.items():
+        index = 0 if len(value) == 1 else 1
+        temp = obs_file_relationship.repair_data_label(key, value[0])
+        assert temp == value[index], f'file id {key} expected {value[index]} ' \
+                                     f'actual {temp}'
 
 
 test_subjects = [
@@ -622,261 +656,6 @@ def test_repair_provenance(gem_mock, tap_mock):
     finally:
         os.getcwd = getcwd_orig
 
-y = 'https://archive.gemini.edu/fullheader/'
-z = 'gemini:GEM/'
-x = {
-    'GS-2002B-Q-22-13-0161': [CommandLineBits(
-        obs_id='GEMINI GS-2002B-Q-22-13-0161',
-        urls='{}{} {}{} {}{}'.format(
-            y, 'P2002DEC02_0161_SUB.0001.fits', y, 'P2002DEC02_0161_SUB.fits',
-            y, '2002dec02_0161.fits'),
-        lineage='{1}/{0}{1}.fits {2}/{0}{2}.fits {3}/{0}{3}.fits'.format(
-            z, 'P2002DEC02_0161_SUB.0001', 'P2002DEC02_0161_SUB',
-            '2002dec02_0161'))],
-    'GN-2015B-Q-1-12-1003': [CommandLineBits(
-        obs_id='GEMINI GN-2015B-Q-1-12-1003',
-        urls='{0}{1} {0}{2} {0}{3}'.format(
-            y, 'N20150807G0044m.fits', 'N20150807G0044i.fits',
-            'N20150807G0044.fits'),
-        lineage='{1}/{0}{1}.fits {2}/{0}{2}.fits {3}/{0}{3}.fits'.format(
-            z, 'N20150807G0044m', 'N20150807G0044i', 'N20150807G0044'))],
-    'GS-2010A-Q-36-5-246-RG': [CommandLineBits(
-        obs_id='GEMINI GS-2010A-Q-36-5-246',
-        urls='{}{}'.format(y, 'rgS20100212S0301.fits'),
-        lineage='{0}/{1}{0}.fits'.format('rgS20100212S0301', z))],
-    'GN-2002A-SV-78-7-003': [CommandLineBits(
-        obs_id='GEMINI GN-2002A-SV-78-7-003-FMRG-ADD',
-        urls='{}{}'.format(y, 'fmrgN20020413S0120_add.fits'),
-        lineage='{1}/{0}{1}.fits'.format(z, 'fmrgN20020413S0120_add'))],
-    'GN-2004B-Q-30-1-001-MRG': [CommandLineBits(
-        obs_id='GEMINI GN-2004B-Q-30-1-001',
-        urls='{}{}'.format(y, 'mrgN20041016S0095.fits'),
-        lineage='{1}/{0}{1}.fits'.format(z, 'mrgN20041016S0095'))],
-    'GN-2005B-Q-28-32-001-MRG': [CommandLineBits(
-        obs_id='GEMINI GN-2005B-Q-28-32-001-MRG-ADD',
-        urls='{}{}'.format(y, 'mrgN20050831S0770_add.fits'),
-        lineage='{1}/{0}{1}.fits'.format(z, 'mrgN20050831S0770_add'))],
-    'GN-2007B-Q-107-150-004_DARK': [CommandLineBits(
-        obs_id='GEMINI GN-2007B-Q-107-150-004-DARK',
-        urls='{}{}'.format(y, 'N20070819S0339_dark.fits'),
-        lineage='{1}/{0}{1}.fits'.format(z, 'N20070819S0339_dark'))],
-    'GN-2013A-Q-63-54-051_FLAT': [CommandLineBits(
-        obs_id='GEMINI GN-2013A-Q-63-54-051-FLAT',
-        urls='{}{}'.format(y, 'N20130404S0512_flat.fits'),
-        lineage='{1}/{0}{1}.fits'.format(z, 'N20130404S0512_flat'))],
-    'GN-2013B-Q-75-163-011_STACK': [CommandLineBits(
-        obs_id='GEMINI GN-2013B-Q-75-163-011-FLAT',
-        urls='{}{}'.format(y, 'N20140313S0072_flat.fits'),
-        lineage='{1}/{0}{1}.fits'.format(z, 'N20140313S0072_flat'))],
-    'GN-2015B-Q-53-138-061_STACK': [CommandLineBits(
-        obs_id='GEMINI GN-2015B-Q-53-138-061-DARK',
-        urls='{}{}'.format(y, 'N20150804S0348_dark.fits'),
-        lineage='{1}/{0}{1}.fits'.format(z, 'N20150804S0348_dark'))],
-    'GN-2016A-Q-68-46-001-MRG-ADD': [CommandLineBits(
-        obs_id='GEMINI GN-2016A-Q-68-46-001-MRG-ADD',
-        urls='{}{}'.format(y, 'mrgN20160311S0691_add.fits'),
-        lineage='{1}/{0}{1}.fits'.format(z, 'mrgN20160311S0691_add'))],
-    'GN-CAL20110927-900-170': [CommandLineBits(
-        obs_id='GEMINI GN-CAL20110927-900-170-FRINGE',
-        urls='{}{}'.format(y, 'N20110927S0170_fringe.fits'),
-        lineage='{1}/{0}{1}.fits'.format(z, 'N20110927S0170_fringe'))],
-    'GN-CAL20120320-900-328': [CommandLineBits(
-        obs_id='GEMINI GN-CAL20120320-900-328-STACK-FRINGE',
-        urls='{}{}'.format(y, 'N20120320S0328_stack_fringe.fits'),
-        lineage='{1}/{0}{1}.fits'.format(z, 'N20120320S0328_stack_fringe'))],
-    'GN-CAL20141109-2-001-BIAS': [CommandLineBits(
-        obs_id='GEMINI GN-CAL20141109-2-001-BIAS',
-        urls='{0}{1} {0}{2}'.format(
-            y, 'N20141109S0266_bias.fits', 'N20141109S0266_BIAS.fits'),
-        lineage='{1}/{0}{1}.fits {2}/{0}{2}.fits'.format(
-            z, 'N20141109S0266_bias', 'N20141109S0266_BIAS'))],
-    'GN-CAL20160404-7-017-FLAT': [
-        CommandLineBits(
-            obs_id='GEMINI GN-CAL20160404-7-017-FLAT',
-            urls='{0}{1}'.format(y, 'N20160403S0236_flat.fits'),
-            lineage='{1}/{0}{1}.fits'.format(z, 'N20160403S0236_flat')),
-        CommandLineBits(
-            obs_id='GEMINI GN-CAL20160404-7-017-FLAT-PASTED',
-            urls='{0}{1}'.format(y, 'N20160403S0236_flat_pasted.fits'),
-            lineage='{1}/{0}{1}.fits'.format(z, 'N20160403S0236_flat_pasted'))
-    ],
-    'GS-2004A-Q-6-27-0255': [CommandLineBits(
-        obs_id='GEMINI GS-2004A-Q-6-27-0255',
-        urls='{}{}'.format(y, '2004may19_0255.fits'),
-        lineage='{1}/{0}{1}.fits'.format(z, '2004may19_0255'))],
-    'GS-2004A-Q-6-27-0255-COMB-P': [CommandLineBits(
-        obs_id='GEMINI GS-2004A-Q-6-27-0255-P-COMB',
-        urls='{}{}'.format(y, 'p2004may19_0255_COMB.fits'),
-        lineage='{1}/{0}{1}.fits'.format(z, 'p2004may19_0255_COMB'))],
-    'GS-2004B-Q-42-1-001': [CommandLineBits(
-        obs_id='GEMINI GS-2004B-Q-42-1-001',
-        urls='{0}{1} {0}{2}'.format(
-            y, 'S20041117S0073.fits', 'rgS20041117S0073_FRINGE.fits'),
-        lineage='{1}/{0}{1}.fits {2}/{0}{2}.fits'.format(
-            z, 'S20041117S0073', 'rgS20041117S0073_FRINGE'))],
-    'GS-2004B-Q-42-1-001-MFRG': [CommandLineBits(
-        obs_id='GEMINI GS-2004B-Q-42-1-001-MFRG-ADD',
-        urls='{}{}'.format(y, 'mfrgS20041117S0073_add.fits'),
-        lineage='{1}/{0}{1}.fits'.format(z, 'mfrgS20041117S0073_add'))],
-    'GS-2010A-Q-36-6-358-RG': [CommandLineBits(
-        obs_id='GEMINI GS-2010A-Q-36-6-358',
-        urls='{}{}'.format(y, 'rgS20100316S0366.fits'),
-        lineage='{1}/{0}{1}.fits'.format(z, 'rgS20100316S0366'))],
-    'GS-2012B-Q-1-32-002-MRG': [CommandLineBits(
-        obs_id='GEMINI GS-2012B-Q-1-32-002',
-        urls='{0}{1} {0}{2}'.format(
-            y, 'mrgS20120922S0406.fits', 'S20120922S0406.fits'),
-        lineage='{1}/{0}{1}.fits {2}/{0}{2}.fits'.format(
-            z, 'mrgS20120922S0406', 'S20120922S0406'))],
-    'GS-2012B-Q-90-366-003': [CommandLineBits(
-        obs_id='GEMINI GS-2012B-Q-90-366-003',
-        urls='{0}{1} {0}{2}'.format(
-            y, 'rS20121030S0136.fits', 'S20121030S0136.fits'),
-        lineage='{1}/{0}{1}.fits {2}/{0}{2}.fits'.format(
-            z, 'rS20121030S0136', 'S20121030S0136'))],
-    'GS-2013B-Q-16-277-019_STACK': [CommandLineBits(
-        obs_id='GEMINI GS-2013B-Q-16-277-019-DARK',
-        urls='{}{}'.format(y, 'S20140124S0039_dark.fits'),
-        lineage='{1}/{0}{1}.fits'.format(z, 'S20140124S0039_dark'))],
-    'GS-2016A-Q-7-175-001-MFRG-ADD': [CommandLineBits(
-        obs_id='GEMINI GS-2016A-Q-7-175-001-MFRG-ADD',
-        urls='{}{}'.format(y, 'mfrgS20160310S0154_add.fits'),
-        lineage='{1}/{0}{1}.fits'.format(z, 'mfrgS20160310S0154_add'))],
-    'GS-2016B-Q-72-23-001-MRG-ADD': [CommandLineBits(
-        obs_id='GEMINI GS-2016B-Q-72-23-001-MRG-ADD',
-        urls='{}{}'.format(y, 'mrgS20160901S0122_add.fits'),
-        lineage='{1}/{0}{1}.fits'.format(z, 'mrgS20160901S0122_add'))],
-    'GS-CAL20020203-4-0045': [CommandLineBits(
-        obs_id='GEMINI GS-CAL20020203-4-0045',
-        urls='{}{}'.format(y, 'P2002FEB03_0045_DARK10SEC.fits'),
-        lineage='{1}/{0}{1}.fits'.format(z, 'P2002FEB03_0045_DARK10SEC'))],
-    'GS-CAL20021202-3-0075': [CommandLineBits(
-        obs_id='GEMINI GS-CAL20021202-3-0075',
-        urls='{0}{1} {0}{2}'.format(
-            y, 'P2002DEC02_0075_SUB.0001.fits', '2002dec02_0075.fits'),
-        lineage='{1}/{0}{1}.fits {2}/{0}{2}.fits'.format(
-            z, 'P2002DEC02_0075_SUB.0001', '2002dec02_0075'))],
-    'GS-CAL20030114-7-0148': [CommandLineBits(
-        obs_id='GEMINI GS-CAL20030114-7-0148',
-        urls='{}{}'.format(y, 'P2003JAN14_0148_DARK.fits'),
-        lineage='{1}/{0}{1}.fits'.format(z, 'P2003JAN14_0148_DARK'))],
-    'GS-CAL20040520-7-0048-FLAT-P': [CommandLineBits(
-        obs_id='GEMINI GS-CAL20040520-7-0048-P-FLAT',
-        urls='{}{}'.format(y, 'p2004may20_0048_FLAT.fits'),
-        lineage='{1}/{0}{1}.fits'.format(z, 'p2004may20_0048_FLAT'))],
-    'GS-CAL20130103-3-001': [CommandLineBits(
-        obs_id='GEMINI GS-CAL20130103-3-001',
-        urls='{0}{1} {0}{2}'.format(
-            y, 'rgS20130103S0098_FRINGE.fits', 'S20130103S0098.fits'),
-        lineage='{1}/{0}{1}.fits {2}/{0}{2}.fits'.format(
-            z, 'rgS20130103S0098_FRINGE', 'S20130103S0098'))],
-    'GS-CAL20131007-900-067': [CommandLineBits(
-        obs_id='GEMINI GS-CAL20131007-900-067-FRINGE',
-        urls='{}{}'.format(y, 'S20131007S0067_fringe.fits'),
-        lineage='{1}/{0}{1}.fits'.format(z, 'S20131007S0067_fringe'))],
-    'GS-CAL20131109-17-001': [CommandLineBits(
-        obs_id='GEMINI GS-CAL20131109-17-001',
-        urls='{0}{1} {0}{2}'.format(
-            y, 'rgS20131109S0166_FRINGE.fits', 'S20131109S0166.fits'),
-        lineage='{1}/{0}{1}.fits {2}/{0}{2}.fits'.format(
-            z, 'rgS20131109S0166_FRINGE', 'S20131109S0166'))],
-    'GS-CAL20141129-1-001_DARK': [CommandLineBits(
-        obs_id='GEMINI GS-CAL20141129-1-001-DARK',
-        urls='{}{}'.format(y, 'S20141129S0331_dark.fits'),
-        lineage='{1}/{0}{1}.fits'.format(z, 'S20141129S0331_dark'))],
-    'GS-CAL20141226-7-026-G-BIAS': [CommandLineBits(
-        obs_id='GEMINI GS-CAL20141226-7-026-G-BIAS',
-        urls='{}{}'.format(y, 'GS20141226S0203_BIAS.fits'),
-        lineage='{1}/{0}{1}.fits'.format(z, 'GS20141226S0203_BIAS'))],
-    'GS-CAL20161227-5-001': [CommandLineBits(
-        obs_id='GEMINI GS-CAL20161227-5-001',
-        urls='{0}{1} {0}{2}'.format(
-            y, 'S20161227S0051.fits', 'rgS20161227S0051_fringe.fits'),
-        lineage='{1}/{0}{1}.fits {2}/{0}{2}.fits'.format(
-            z, 'S20161227S0051', 'rgS20161227S0051_fringe'))],
-    'GS-CAL20181016-5-001': [CommandLineBits(
-        obs_id='GEMINI GS-CAL20181016-5-001',
-        urls='{0}{1} {0}{2}'.format(
-            y, 'mrgS20181016S0184_fringe.fits', 'S20181016S0184.fits'),
-        lineage='{1}/{0}{1}.fits {2}/{0}{2}.fits'.format(
-            z, 'mrgS20181016S0184_fringe', 'S20181016S0184'))],
-    'GS-CAL20181219-4-021-G-FLAT': [CommandLineBits(
-        obs_id='GEMINI GS-CAL20181219-4-021-G-FLAT',
-        urls='{}{}'.format(y, 'gS20181219S0216_flat.fits'),
-        lineage='{1}/{0}{1}.fits'.format(z, 'gS20181219S0216_flat'))],
-    'GS-CAL20190301-4-046-G-BIAS': [CommandLineBits(
-        obs_id='GEMINI GS-CAL20190301-4-046-G-BIAS',
-        urls='{}{}'.format(y, 'gS20190301S0556_bias.fits'),
-        lineage='{1}/{0}{1}.fits'.format(z, 'gS20190301S0556_bias'))],
-    'TX20170321_flt.2505': [CommandLineBits(
-        obs_id='GEMINI TX20170321_flt.2505',
-        urls='{}{}'.format(y, 'TX20170321_flt.2505.fits'),
-        lineage='{1}/{0}{1}.fits'.format(z, 'TX20170321_flt.2505'))],
-    'TX20170321_flt.2507': [CommandLineBits(
-        obs_id='GEMINI TX20170321_flt.2507',
-        urls='{}{}'.format(y, 'TX20170321_flt.2507.fits'),
-        lineage='{1}/{0}{1}.fits'.format(z, 'TX20170321_flt.2507'))],
-    'TX20170321_raw.2505': [CommandLineBits(
-        obs_id='GEMINI TX20170321.2505',
-        urls='{0}{1} {0}{2} {0}{3}'.format(
-            y, 'TX20170321_sum.2505.fits', 'TX20170321_raw.2505.fits',
-            'TX20170321_red.2505.fits'),
-        lineage='{1}/{0}{1}.fits {2}/{0}{2}.fits {3}/{0}{3}.fits'.format(
-            z, 'TX20170321_sum.2505', 'TX20170321_raw.2505',
-            'TX20170321_red.2505'))],
-    'TX20170321_red.2507': [CommandLineBits(
-        obs_id='GEMINI TX20170321.2507',
-        urls='{0}{1} {0}{2}'.format(
-            y, 'TX20170321_red.2507.fits', 'TX20170321_raw.2507.fits'),
-        lineage='{1}/{0}{1}.fits {2}/{0}{2}.fits'.format(
-            z, 'TX20170321_red.2507', 'TX20170321_raw.2507'))],
-    'GS-2003A-Q-43-3-20001': [CommandLineBits(
-        obs_id='GEMINI GS-2003A-Q-43-3-20001',
-        urls='{0}{1} {0}{2}'.format(
-            y, 'ag2003feb19_6.0001.fits', '2003feb19_6.0001.fits'),
-        lineage='{1}/{0}{1}.fits {2}/{0}{2}.fits'.format(
-            z, 'ag2003feb19_6.0001', '2003feb19_6.0001'))],
-    'GS-CAL20150906-1-001-G-BIAS': [CommandLineBits(
-        obs_id='GEMINI GS-CAL20150906-1-001-G-BIAS',
-        urls='{0}{1}'.format(y, 'gS20150906S0222_bias.fits'),
-        lineage='{1}/{0}{1}.fits'.format(z, 'gS20150906S0222_bias'))],
-    'GN-2012A-Q-124-1-003': [CommandLineBits(
-        obs_id='GEMINI GN-2012A-Q-124-1-003',
-        urls='{0}{1} {0}{2}'.format(
-            y, 'N20120905S0122_arc.fits', 'N20120905S0122.fits'),
-        lineage='{1}/{0}{1}.fits {2}/{0}{2}.fits'.format(
-            z, 'N20120905S0122_arc', 'N20120905S0122'))],
-    'GS-2011B-Q-11-32-005': [CommandLineBits(
-        obs_id='GEMINI GS-2011B-Q-11-32-005',
-        urls='{0}{1} {0}{2}'.format(
-            y, 'rS20111124S0053.fits', 'S20111124S0053.fits'),
-        lineage='{1}/{0}{1}.fits {2}/{0}{2}.fits'.format(
-            z, 'rS20111124S0053', 'S20111124S0053'))]
-}
-
-
-def test_make_gem2caom2_args():
-    gofr = GemObsFileRelationship()
-
-    for obs_id in x:
-        test_result = gofr.get_args(obs_id)
-        assert test_result is not None, 'no result'
-        assert len(test_result) == len(x[obs_id]), \
-            'wrong length for {}'.format(obs_id)
-        for jj in test_result:
-            found = False
-            for kk in x[obs_id]:
-                if jj.obs_id == kk.obs_id:
-                    found = True
-                    assert jj.lineage == kk.lineage, \
-                        '{} lineage {} expected {}'.format(
-                            jj.obs_id, jj.lineage, kk.lineage)
-                    assert jj.urls == kk.urls, \
-                        '{} urls {} expected {}'.format(
-                            jj.obs_id, jj.urls, kk.urls)
-                    break
-            assert found, 'new obs id {}'.format(jj.obs_id)
-
 
 def test_get_timestamp():
     gofr = GemObsFileRelationship()
@@ -917,7 +696,7 @@ def test_mixed_case_file_names():
 
 def test_repair_data_label_2():
     repairs = {'rgS20180122S0236_fringe.fits':
-               ['GS-CAL20180122-1-001-RG-FRINGE', 'GS-CAL20180122-1-001']}
+               ['GS-CAL20180122-1-001', 'GS-CAL20180122-1-001-RG-FRINGE']}
     for f_name in repairs.keys():
         result = obs_file_relationship.repair_data_label(
             f_name, repairs[f_name][0])

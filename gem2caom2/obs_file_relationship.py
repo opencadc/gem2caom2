@@ -228,8 +228,7 @@ from caom2pipe import manage_composable as mc
 from gem2caom2 import gem_name
 
 
-__all__ = ['GemObsFileRelationship', 'CommandLineBits', 'FILE_NAME',
-           'get_command_line_bits', 'repair_data_label']
+__all__ = ['GemObsFileRelationship', 'FILE_NAME', 'repair_data_label']
 
 FILE_NAME = '/app/data/from_paul.txt'
 HEADER_URL = 'https://archive.gemini.edu/fullheader/'
@@ -267,17 +266,7 @@ class GemObsFileRelationship(object):
 
         self.name_list = {}
 
-        # structure: a dict, keys are Gemini observation IDs, values are
-        # repaired observation IDs. This structure supports generation
-        # of the command line for invoking gem2caom2
-
-        self.repaired_ids = {}
-
-        # the repaired obs id to file name lookup
-
-        self.repaired_names = {}
-
-        self.logger = logging.getLogger('GemObsFileRelationship')
+        self.logger = logging.getLogger(__name__)
         self._initialize_content(FILE_NAME)
 
     def _initialize_content(self, fqn):
@@ -309,10 +298,6 @@ class GemObsFileRelationship(object):
                 self.name_list[file_id].append([ii[0], ol_key])
             else:
                 self.name_list[file_id] = [[ii[0], ol_key]]
-
-        logging.info('Progress - now build the repaired lookups ...')
-
-        self._build_repaired_lookups()
 
         # this structure means an observation ID occurs more than once with
         # different last modified times
@@ -484,66 +469,6 @@ class GemObsFileRelationship(object):
             repaired = file_id
         return repaired
 
-    def _build_repaired_lookups(self):
-        # for each gemini observation ID, get the file names associated with
-        # that observation ID
-        for ii in self.id_list:
-            file_names = self.id_list[ii]
-            # for each file name, repair the obs id, add repaired obs id
-            # and file name to new structure
-            for file_name in file_names:
-                file_id = gem_name.GemName.remove_extensions(file_name)
-                repaired_obs_id = self.repair_data_label(file_id)
-                temp = gem_name.GemName.remove_extensions(ii)
-                self._add_repaired_element(temp, repaired_obs_id, file_id)
-
-        # for each file name, add repaired obs ids, if they're not already
-        # in the list
-        for file_name in self.name_list:
-            for ii in self.name_list[file_name]:
-                obs_id = ii[0]
-                file_id = gem_name.GemName.remove_extensions(file_name)
-                repaired_obs_id = self.repair_data_label(file_id)
-                self._add_repaired_element(obs_id, repaired_obs_id, file_id)
-
-    def _add_repaired_element(self, obs_id, repaired_obs_id, file_id):
-        if obs_id in self.repaired_ids:
-            if repaired_obs_id not in self.repaired_ids[obs_id]:
-                self.repaired_ids[obs_id].append(repaired_obs_id)
-        else:
-            self.repaired_ids[obs_id] = [repaired_obs_id]
-        if repaired_obs_id in self.repaired_names:
-            if file_id not in self.repaired_names[repaired_obs_id]:
-                self.repaired_names[repaired_obs_id].append(file_id)
-        else:
-            self.repaired_names[repaired_obs_id] = [file_id]
-
-    def get_args(self, obs_id):
-        if obs_id in self.repaired_ids:
-            result = []
-            for repaired_id in self.repaired_ids[obs_id]:
-                lineage = ''
-                urls = ''
-                for file_id in self.repaired_names[repaired_id]:
-                    # works because the file id == product id
-                    lineage += mc.get_lineage(
-                        gem_name.ARCHIVE, file_id, '{}.fits'.format(file_id),
-                        gem_name.SCHEME)
-                    urls += '{}{}.fits'.format(HEADER_URL, file_id)
-                    if file_id != self.repaired_names[repaired_id][-1]:
-                        lineage += ' '
-                        urls += ' '
-                c = CommandLineBits(
-                    '{} {}'.format(gem_name.COLLECTION, repaired_id),
-                    lineage, urls)
-                result.append(c)
-            return result
-        else:
-            logging.warning(
-                'Could not find observation ID {} in Gemini-provided '
-                'list.'.format(obs_id))
-            return []
-
     def _check_duplicate(self, file_id):
         """There are data labels in the Gemini-supplied file, where the
         only difference in the related file name is the case of the 'bias'
@@ -652,43 +577,6 @@ def is_processed(file_name):
     return result
 
 
-class CommandLineBits(object):
-    """Convenience class to keep the bits of command-line that are
-    inter-connected together."""
-
-    def __init__(self, obs_id='', lineage='', urls=''):
-        self.obs_id = obs_id
-        self.lineage = lineage
-        self.urls = urls
-
-    def __str__(self):
-        return '{}\n{}\n{}'.format(self.obs_id, self.lineage, self.urls)
-
-    @property
-    def obs_id(self):
-        return self._obs_id
-
-    @obs_id.setter
-    def obs_id(self, value):
-        self._obs_id = value
-
-    @property
-    def lineage(self):
-        return self._lineage
-
-    @lineage.setter
-    def lineage(self, value):
-        self._lineage = value
-
-    @property
-    def urls(self):
-        return self._urls
-
-    @urls.setter
-    def urls(self, value):
-        self._urls = value
-
-
 def repair_data_label(file_name, data_label):
     """For processed files, try to provide a consistent naming pattern,
     because data labels aren't unique within Gemini, although the files
@@ -770,7 +658,6 @@ def repair_data_label(file_name, data_label):
         #
         # SGo - this means make the data labels the same
         if ((('mfrg' == prefix or 'mrg' == prefix or 'rg' == prefix) and
-             (not ('add' in suffix or 'ADD' in suffix))) or
              (not ('add' in suffix or 'ADD' in suffix or
                    'fringe' in suffix or 'FRINGE' in suffix))) or
                 ('arc' in suffix or 'ARC' in suffix) or
@@ -779,35 +666,12 @@ def repair_data_label(file_name, data_label):
             suffix = []
 
         if len(prefix) > 0:
-            repaired = '{}-{}'.format(repaired, prefix.upper())
             if f'-{prefix.upper()}' not in repaired:
                 repaired = f'{repaired}-{prefix.upper()}'
 
         for ii in suffix:
-            repaired = '{}-{}'.format(repaired, ii.upper())
             if f'-{ii.upper()}' not in repaired:
                 repaired = f'{repaired}-{ii.upper()}'
     else:
         repaired = file_id if repaired is None else repaired
     return repaired
-
-
-def get_command_line_bits(storage_name, em_data_label, em_file_name):
-    clb = None
-    if storage_name.obs_id == em_data_label:
-        lineage = ''
-        urls = ''
-        if em_file_name == storage_name.file_name:
-            # works because the file id == product id
-            lineage += mc.get_lineage(gem_name.ARCHIVE, storage_name.file_id,
-                                      storage_name.file_name,
-                                      gem_name.SCHEME)
-            urls += '{}{}.fits'.format(HEADER_URL, storage_name.file_id)
-        clb = CommandLineBits(
-            '{} {}'.format(gem_name.COLLECTION, em_data_label),
-            lineage, urls)
-    else:
-        logging.warning(
-            f'These observation ids do not match: SN {storage_name.obs_id}, '
-            f'EM: {em_data_label}')
-    return clb

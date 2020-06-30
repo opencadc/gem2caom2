@@ -728,7 +728,6 @@ def _query_mock_one(ignore1, ignore2):
 
 
 def mock_query_tap(query_string, mock_tap_client):
-    # logging.error(query_string)
     if query_string.startswith('SELECT A.uri'):
         return Table.read(
             f'uri,lastModified\n'

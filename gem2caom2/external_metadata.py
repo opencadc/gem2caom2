@@ -492,8 +492,7 @@ class CachingObsFileRelationship(GemObsFileRelationship):
         if len(table) == 1:
             obs_id = table[0]['observationID']
             ut_datetime_str = table[0]['lastModified']
-            self._update_cache(file_id, obs_id, ut_datetime_str)
-            result = obs_id
+            result = self._update_cache(file_id, obs_id, ut_datetime_str)
         self._logger.debug('End _get_obs_id_from_cadc')
         return result
 
@@ -510,8 +509,8 @@ class CachingObsFileRelationship(GemObsFileRelationship):
                 headers = fits2caom2.get_cadc_headers(f'file://{f_name}')
                 temp = headers[0].get('DATALAB')
                 if temp is not None:
-                    result = repair_data_label(file_id, temp)
-                    self._update_cache(file_id, result, headers[0].get('DATE'))
+                    result = self._update_cache(file_id, temp,
+                                                headers[0].get('DATE'))
                 break
         self._logger.debug('End _get_obs_id_from_headers')
         return result
@@ -526,7 +525,7 @@ class CachingObsFileRelationship(GemObsFileRelationship):
         get_obs_metadata(file_id)
         obs_id = om.get('data_label')
         ut_datetime_str = om.get('lastmod')
-        self._update_cache(file_id, obs_id, ut_datetime_str)
+        obs_id = self._update_cache(file_id, obs_id, ut_datetime_str)
         if current_file_id is not None:
             om.reset_index(current_file_id)
         self._logger.debug(f'End _get_obs_id_from_gemini.')
@@ -543,4 +542,4 @@ class CachingObsFileRelationship(GemObsFileRelationship):
         # 1 - timestamp
         mc.append_as_array(self.name_list, file_id, [obs_id, dt_s])
         repaired_obs_id = repair_data_label(file_id, obs_id)
-        self._add_repaired_element(obs_id, repaired_obs_id, file_id)
+        return repaired_obs_id
