@@ -139,9 +139,7 @@ class GemName(mc.StorageName):
     def __str__(self):
         return f'obs_id {self._obs_id}, ' \
                f'file_id {self._file_id}, ' \
-               f'file_name {self._file_name}, ' \
-               f'lineage {self._lineage}, ' \
-               f'external urls {self._external_urls}'
+               f'file_name {self._file_name}'
 
     @property
     def file_uri(self):

@@ -3,8 +3,7 @@ FROM opencadc/pandas:3.8-slim
 RUN apt-get update -y && apt-get dist-upgrade -y
 
 RUN apt-get install -y build-essential \
-    git \
-    imagemagick
+    git
 
 RUN pip install cadcdata && \
     pip install cadctap && \
@@ -21,7 +20,8 @@ RUN pip install cadcdata && \
 
 WORKDIR /usr/src/app
 
-RUN pip install bs4
+RUN pip install bs4 \
+    matplotlib
 
 RUN mkdir /app && mkdir /app/data
 

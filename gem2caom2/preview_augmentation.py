@@ -71,6 +71,8 @@ import os
 
 from datetime import datetime
 
+import matplotlib.image as image
+
 from caom2 import Observation, ProductType, ReleaseType
 from caom2pipe import manage_composable as mc
 from gem2caom2.gem_name import GemName, ARCHIVE
@@ -85,28 +87,23 @@ MIME_TYPE = 'image/jpeg'
 def visit(observation, **kwargs):
     mc.check_param(observation, Observation)
 
-    working_dir = './'
-    if 'working_directory' in kwargs:
-        working_dir = kwargs['working_directory']
-    if 'cadc_client' in kwargs:
-        cadc_client = kwargs['cadc_client']
-    else:
-        raise mc.CadcException('Visitor needs a cadc_client parameter.')
-    if 'stream' in kwargs:
-        stream = kwargs['stream']
-    else:
+    working_dir = kwargs.get('working_directory', './')
+    cadc_client = kwargs.get('cadc_client')
+    if cadc_client is None:
+        logging.warning('Need a cadc_client to update preview records.')
+    stream = kwargs.get('stream')
+    if stream is None:
         raise mc.CadcException('Visitor needs a stream parameter.')
-    if 'observable' in kwargs:
-        observable = kwargs['observable']
-    else:
+    observable = kwargs.get('observable')
+    if observable is None:
         raise mc.CadcException('Visitor needs a observable parameter.')
 
     count = 0
     for plane in observation.planes.values():
         if (plane.data_release is None or
                 plane.data_release > datetime.utcnow()):
-            logging.info('Plane {} is proprietary. No preview access or '
-                         'thumbnail creation.'.format(plane.product_id))
+            logging.info(f'Plane {plane.product_id} is proprietary. No '
+                         f'preview access or thumbnail creation.')
             continue
         count += _do_prev(observation.observation_id, working_dir,
                           plane, cadc_client, stream, observable)
@@ -121,8 +118,7 @@ def _check_for_delete(file_name, uri, observable, plane):
     result = 0
     if (observable.rejected.is_no_preview(
             file_name) and uri in plane.artifacts.keys()):
-        logging.warning(
-            'Removing artifact for non-existent preview {}'.format(uri))
+        logging.warning(f'Removing artifact for non-existent preview {uri}')
         plane.artifacts.pop(uri)
         result = 1
     return result
@@ -137,8 +133,8 @@ def _do_prev(obs_id, working_dir, plane, cadc_client, stream, observable):
     gem_name = GemName(obs_id=obs_id, file_id=plane.product_id)
     preview = gem_name.prev
     if observable.rejected.is_no_preview(preview):
-        logging.info('Stopping visit because no preview exists for {} in '
-                     'observation {}.'.format(preview, obs_id))
+        logging.info(f'Stopping visit because no preview exists for {preview} '
+                     f'in observation {obs_id}.')
         observable.rejected.record(mc.Rejected.NO_PREVIEW, preview)
         count += _check_for_delete(
             preview, gem_name.prev_uri, observable, plane)
@@ -148,7 +144,7 @@ def _do_prev(obs_id, working_dir, plane, cadc_client, stream, observable):
         thumb_fqn = os.path.join(working_dir, thumb)
 
         # get the file - try disk first, then CADC, then Gemini
-        if not os.access(preview_fqn, 0):
+        if not os.access(preview_fqn, 0) and cadc_client is not None:
             try:
                 mc.data_get(cadc_client, working_dir, preview, ARCHIVE,
                             observable.metrics)
@@ -171,13 +167,13 @@ def _do_prev(obs_id, working_dir, plane, cadc_client, stream, observable):
             _augment(plane, gem_name.prev_uri, preview_fqn, ProductType.PREVIEW)
             count = 1
 
-            logging.debug(
-                'Generate thumbnail for file id {}'.format(plane.product_id))
+            logging.debug(f'Generate thumbnail for file id {plane.product_id}')
             if os.access(thumb_fqn, 0):
                 os.remove(thumb_fqn)
-            convert_cmd = 'convert -resize 256x256 {} {}'.format(
-                preview_fqn, thumb_fqn)
-            mc.exec_cmd(convert_cmd)
+            thumb = image.thumbnail(preview_fqn, thumb_fqn,
+                                    scale=0.25)
+            if thumb is not None:
+                count = 1
 
             thumb_uri = gem_name.thumb_uri
             _augment(plane, thumb_uri, thumb_fqn, ProductType.THUMBNAIL)
@@ -188,8 +184,8 @@ def _do_prev(obs_id, working_dir, plane, cadc_client, stream, observable):
             count += 1
         else:
             raise mc.CadcException(
-                'Should not have reached this point in thumbnail generation '
-                'for {}'.format(plane.product_id))
+                f'Should not have reached this point in thumbnail generation '
+                f'for {plane.product_id}')
     return count
 
 
