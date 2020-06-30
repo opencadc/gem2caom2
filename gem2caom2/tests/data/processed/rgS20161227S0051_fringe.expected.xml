@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:CompositeObservation" caom2:id="00000000-0000-0000-ba0f-335b19752196">
   <caom2:collection>GEMINI</caom2:collection>
-  <caom2:observationID>GS-CAL20161227-5-001</caom2:observationID>
+  <caom2:observationID>GS-CAL20161227-5-001-RG-FRINGE</caom2:observationID>
   <caom2:metaRelease>2016-12-27T03:26:52.900</caom2:metaRelease>
   <caom2:algorithm>
     <caom2:name>composite</caom2:name>

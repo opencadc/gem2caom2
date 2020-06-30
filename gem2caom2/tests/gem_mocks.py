@@ -458,18 +458,18 @@ LOOKUP = {
                           'GS-2012B-Q-1'],
     'mrgS20160901S0122_add': ['GS-2016B-Q-72-23-001-MRG-ADD', em.Inst.GMOS,
                               'GS-2016B-Q-72'],
-    'mrgS20181016S0184_fringe': ['GS-CAL20181016-5-001',
+    'mrgS20181016S0184_fringe': ['GS-CAL20181016-5-001-MRG-FRINGE',
                                  em.Inst.GMOS, 'GS-CAL20181016'],
     'rS20121030S0136': ['GS-2012B-Q-90-366-003', em.Inst.TRECS,
                         'GS-2012B-Q-90'],
     'rgS20100212S0301': ['GS-2010A-Q-36-5-246', em.Inst.GMOS,
                          'GS-2010A-Q-36'],
     'rgS20100316S0366': ['GS-2010A-Q-36-6-358', em.Inst.GMOS, 'GS-2010A-Q-36'],
-    'rgS20130103S0098_FRINGE': ['GS-CAL20130103-3-001', em.Inst.GMOS,
+    'rgS20130103S0098_FRINGE': ['GS-CAL20130103-3-001-RG-FRINGE', em.Inst.GMOS,
                                 'GS-CAL20130103'],
-    'rgS20131109S0166_FRINGE': ['GS-CAL20131109-17-001', em.Inst.GMOS,
-                                'GS-CAL20131109'],
-    'rgS20161227S0051_fringe': ['GS-CAL20161227-5-001', em.Inst.GMOS,
+    'rgS20131109S0166_FRINGE': ['GS-CAL20131109-17-001-RG-FRINGE',
+                                em.Inst.GMOS, 'GS-CAL20131109'],
+    'rgS20161227S0051_fringe': ['GS-CAL20161227-5-001-RG-FRINGE', em.Inst.GMOS,
                                 'GS-CAL20161227'],
     'p2004may20_0048_FLAT': ['GS-CAL20040520-7-0048-P-FLAT', em.Inst.PHOENIX,
                              'GS-CAL20040520'],
@@ -487,7 +487,9 @@ LOOKUP = {
     'S20181016S0184': ['GS-CAL20181016-5-001', em.Inst.GMOS,
                        'GS-CAL20181016-5'],
     'N20200210S0077_bias': ['GN-CAL20200210-22-076-BIAS', em.Inst.GMOS,
-                            'GN-CAL20200210']
+                            'GN-CAL20200210'],
+    'rgnN20140428S0171_flat': ['GN-2014A-Q-85-16-003-RGN-FLAT', em.Inst.NIFS,
+                               'GN-2014A-Q-85']
 }
 
 call_count = 0

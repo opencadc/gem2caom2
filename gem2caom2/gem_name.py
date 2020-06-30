@@ -145,7 +145,8 @@ class GemName(mc.StorageName):
             self._obs_id = file_id
         if file_id is not None:
             self._file_id = file_id
-        logging.debug(self)
+        self._logger = logging.getLogger(__name__)
+        self._logger.error(self)
 
     def __str__(self):
         return f'obs_id {self._obs_id}, ' \
@@ -166,7 +167,7 @@ class GemName(mc.StorageName):
 
     def _get_args(self):
         if self._lineage is None and self._external_urls is None:
-            temp = em.get_gofr().get_args(self._obs_id)
+            temp = em.get_gofr().get_args(self._file_name, self._obs_id)
             if len(temp) == 1:
                 self._lineage = temp[0].lineage
                 self._external_urls = temp[0].urls
@@ -210,7 +211,6 @@ class GemName(mc.StorageName):
                         # archive.gemini.edu publishes, so check for the
                         # un-repaired value
                         repaired = em.get_gofr().get_obs_id(self._file_id)
-                        # repaired = em.get_repaired_obs_id(self._file_id)
                         x = em.get_gofr().get_args(repaired)
                         self._lineage = x[0].lineage
                         self._external_urls = x[0].urls

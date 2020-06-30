@@ -78,7 +78,7 @@ from urllib3 import Retry
 from bs4 import BeautifulSoup
 
 from cadctap import CadcTapClient
-from caom2pipe import astro_composable as ac
+from caom2utils import fits2caom2
 from caom2pipe import caom_composable as cc
 from caom2pipe import manage_composable as mc
 from gem2caom2.svofps import filter_metadata
@@ -430,14 +430,14 @@ class CachingObsFileRelationship(GemObsFileRelationship):
     """
     The locations in which the relationship between an observationID (data
     label) and a file name can be determined are:
-    'connected' order (i.e. not doing TaskType.SCRAPE):
-    1 - the specifically constructed file from Paul, which is time-limited
-    2 - CAOM entries
-    3 - archive.gemini.edu entries
+        'connected' order (i.e. not doing TaskType.SCRAPE):
+        1 - the specifically constructed file from Paul, which is time-limited
+        2 - CAOM entries
+        3 - archive.gemini.edu entries
 
-    'unconnected order':
-    1 - Paul's file
-    2 - file on disk
+        'unconnected order':
+        1 - Paul's file
+        2 - file on disk
 
     This class queries each of these locations in the declared order, and
     then if the answer comes from either 2 or 3, adds to the cache of the
@@ -461,12 +461,14 @@ class CachingObsFileRelationship(GemObsFileRelationship):
         self._tap_client = value
 
     def get_obs_id(self, file_id):
+        self._logger.debug(f'Entering get_obs_id for {file_id}.')
         result = super(CachingObsFileRelationship, self).get_obs_id(file_id)
         if result is None:
             if self._tap_client is None:
                 result = self._get_obs_id_from_headers(file_id)
-                self._logger.warning(f'No connection, could not obtain an '
-                                     f'Observation ID for {file_id}.')
+                if result is None:
+                    self._logger.warning(f'No connection, could not obtain an '
+                                         f'Observation ID for {file_id}.')
             else:
                 result = self._get_obs_id_from_cadc(file_id)
                 if result is None:
@@ -497,12 +499,15 @@ class CachingObsFileRelationship(GemObsFileRelationship):
 
     def _get_obs_id_from_headers(self, file_id):
         self._logger.debug(f'Begin _get_obs_id_from_headers for {file_id}')
-        try_these = [f'./{file_id}.fits', f'./{file_id}.fits.header',
-                     f'./{file_id}.fits.bz2', f'./{file_id}.fits.gz']
+        temp = gem_name.GemName.remove_extensions(file_id)
+        try_these = [f'{os.getcwd()}/{temp}.fits',
+                     f'{os.getcwd()}/{temp}.fits.header',
+                     f'{os.getcwd()}/{temp}.fits.bz2',
+                     f'{os.getcwd()}/{temp}.fits.gz']
         result = None
         for f_name in try_these:
             if os.path.exists(f_name):
-                headers = ac.read_fits_headers(f_name)
+                headers = fits2caom2.get_cadc_headers(f'file://{f_name}')
                 temp = headers[0].get('DATALAB')
                 if temp is not None:
                     result = repair_data_label(file_id, temp)

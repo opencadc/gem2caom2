@@ -603,7 +603,6 @@ def get_suffix(file_id, data_label):
                     temp = ['flt']
         else:
             temp = file_id.split('_')[1:]
-            # logging.error('get here? suffix is {} for {}'.format(suffix, file_id))
     if (data_label.endswith('-G') and
             (file_id.startswith('rS') or file_id.startswith('rN'))):
         # DB 16-06-20
@@ -731,6 +730,10 @@ def repair_data_label(file_name, data_label):
             removals = [prefix] + suffix
         else:
             removals = removals + suffix
+
+        if 'fringe' in removals or 'FRINGE' in removals:
+            removals = []
+
         for ii in removals:
             # rreplace
             temp = repaired.rsplit(ii, 1)
@@ -768,6 +771,8 @@ def repair_data_label(file_name, data_label):
         # SGo - this means make the data labels the same
         if ((('mfrg' == prefix or 'mrg' == prefix or 'rg' == prefix) and
              (not ('add' in suffix or 'ADD' in suffix))) or
+             (not ('add' in suffix or 'ADD' in suffix or
+                   'fringe' in suffix or 'FRINGE' in suffix))) or
                 ('arc' in suffix or 'ARC' in suffix) or
                 ('r' == prefix or 'R' == prefix)):
             prefix = ''
@@ -775,9 +780,13 @@ def repair_data_label(file_name, data_label):
 
         if len(prefix) > 0:
             repaired = '{}-{}'.format(repaired, prefix.upper())
+            if f'-{prefix.upper()}' not in repaired:
+                repaired = f'{repaired}-{prefix.upper()}'
 
         for ii in suffix:
             repaired = '{}-{}'.format(repaired, ii.upper())
+            if f'-{ii.upper()}' not in repaired:
+                repaired = f'{repaired}-{ii.upper()}'
     else:
         repaired = file_id if repaired is None else repaired
     return repaired
