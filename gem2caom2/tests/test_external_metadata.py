@@ -127,7 +127,7 @@ def test_caching_relationship(tap_mock, get_obs_mock):
         tap_mock.side_effect = gem_mocks.mock_query_tap
         test_result = test_subject.get_obs_id('x')
         assert test_result is not None, 'expect a cadc result'
-        assert test_result == 'test_data_label', 'wrong cadc result'
+        assert test_result == 'test', 'wrong cadc result'
         assert len(test_subject.name_list) == initial_length + 2, \
             'bad updated length from cadc'
 
