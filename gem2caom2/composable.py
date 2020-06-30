@@ -74,9 +74,10 @@ import traceback
 
 from caom2pipe import execute_composable as ec
 from caom2pipe import manage_composable as mc
+from caom2pipe import name_builder_composable as nbc
 from caom2pipe import run_composable as rc
 from gem2caom2 import main_app, work, preview_augmentation, external_metadata
-from gem2caom2 import pull_augmentation, gem_name, builder, data_source
+from gem2caom2 import pull_augmentation, gem_name, data_source
 
 META_VISITORS = [preview_augmentation, pull_augmentation]
 DATA_VISITORS = []
@@ -90,8 +91,8 @@ def _run():
     config = mc.Config()
     config.get_executors()
     external_metadata.init_global(incremental=False, config=config)
-    gem_builder = builder.GemBuilder()
-    return rc.run_by_todo(config, gem_builder, chooser=None,
+    name_builder = nbc.FileNameBuilder(gem_name.GemName)
+    return rc.run_by_todo(config, name_builder, chooser=None,
                           command_name=main_app.APPLICATION,
                           meta_visitors=META_VISITORS)
 
@@ -222,7 +223,7 @@ def _run_by_public():
     config = mc.Config()
     config.get_executors()
     external_metadata.init_global(incremental=True, config=config)
-    name_builder = builder.GemBuilder()
+    name_builder = nbc.FileNameBuilder(gem_name.GemName)
     incremental_source = data_source.PublicIncremental(config)
     return rc.run_by_state(config=config, name_builder=name_builder,
                            command_name=main_app.APPLICATION,
@@ -255,7 +256,7 @@ def _run_by_incremental():
     config = mc.Config()
     config.get_executors()
     external_metadata.init_global(incremental=True, config=config)
-    name_builder = builder.GemBuilder()
+    name_builder = nbc.FileNameBuilder(gem_name.GemName)
     incremental_source = data_source.FileListIncrementalSource(config)
     result = rc.run_by_state(config=None, name_builder=name_builder,
                              command_name=main_app.APPLICATION,
@@ -293,7 +294,7 @@ def _run_rc_state_public():
     config = mc.Config()
     config.get_executors()
     external_metadata.init_global(incremental=True, config=config)
-    name_builder = builder.GemBuilder()
+    name_builder = nbc.FileNameBuilder(gem_name.GemName)
     incremental_source = data_source.PublicIncremental(config)
     return rc.run_by_state(config=config, name_builder=name_builder,
                            command_name=main_app.APPLICATION,
