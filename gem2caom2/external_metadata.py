@@ -106,15 +106,15 @@ pm = {}
 gofr = None
 
 
-def get_gofr():
+def get_gofr(config=None):
     global gofr
     if gofr is None:
-        gofr = CachingObsFileRelationship()
+        gofr = CachingObsFileRelationship(config)
     return gofr
 
 
 def set_ofr(value):
-    # replace the lookup functionality of the listing of file from Gemini,
+    # replace the lookup functionality of the file listing from Gemini,
     # with the query results from archive.gemini.edu
     global gofr
     gofr = value
@@ -126,7 +126,7 @@ def init_global(incremental, config):
         om = gom.GeminiObsMetadataIncremental()
     else:
         om = gom.GeminiObsMetadata()
-    get_gofr()
+    get_gofr(config)
     global gofr
     if gofr.tap_client is None and config.is_connected:
         subject = mc.define_subject(config)
@@ -430,10 +430,16 @@ class CachingObsFileRelationship(GemObsFileRelationship):
     """
     The locations in which the relationship between an observationID (data
     label) and a file name can be determined are:
-        'connected' order (i.e. not doing TaskType.SCRAPE):
+        'connected' order, no files on disk (i.e. not doing TaskType.SCRAPE):
         1 - the specifically constructed file from Paul, which is time-limited
         2 - CAOM entries
         3 - archive.gemini.edu entries
+
+        'connected' order, files on disk (i.e. not doing TaskType.SCRAPE):
+        1 - the specifically constructed file from Paul, which is time-limited
+        2 - file on disk
+        3 - CAOM entries
+        4 - archive.gemini.edu entries
 
         'unconnected order':
         1 - Paul's file
@@ -444,8 +450,13 @@ class CachingObsFileRelationship(GemObsFileRelationship):
     file.
     """
 
-    def __init__(self):
+    def __init__(self, config=None):
         super(CachingObsFileRelationship, self).__init__()
+        self._use_local_files = False
+        self._is_connected = True
+        if config is not None:
+            self._use_local_files = config.use_local_files
+            self._is_connected = config.is_connected
         # use accessor methods for _tap_client, because of how this class
         # will eventually be used - as a global, accessible by all and
         # everywhere, and initialized before there's a config
@@ -461,25 +472,25 @@ class CachingObsFileRelationship(GemObsFileRelationship):
         self._tap_client = value
 
     def get_obs_id(self, file_id):
-        self._logger.debug(f'Entering get_obs_id for {file_id}.')
+        self._logger.error(f'Entering get_obs_id for {file_id}.')
         result = super(CachingObsFileRelationship, self).get_obs_id(file_id)
         if result is None:
-            if self._tap_client is None:
+            if self._use_local_files:
                 result = self._get_obs_id_from_headers(file_id)
                 if result is None:
-                    self._logger.warning(f'No connection, could not obtain an '
-                                         f'Observation ID for {file_id}.')
-            else:
+                    self._logger.warning(f'Could not obtain an Observation ID '
+                                         f'for {file_id} on disk.')
+            if self._is_connected and result is None:
                 result = self._get_obs_id_from_cadc(file_id)
                 if result is None:
                     result = self._get_obs_id_from_gemini(file_id)
         return result
 
     def _get_obs_id_from_cadc(self, file_id):
-        self._logger.debug(f'Begin _get_obs_id_from_cadc for {file_id}')
+        self._logger.error(f'Begin _get_obs_id_from_cadc for {file_id}')
         file_name = gem_name.GemName.get_file_name_from(file_id)
         artifact_uri = cc.build_artifact_uri(
-            file_name, gem_name.COLLECTION, gem_name.SCHEME)
+            file_name, gem_name.ARCHIVE, gem_name.SCHEME)
         query_string = f"""
         SELECT O.observationID, A.lastModified 
         FROM caom2.Observation AS O
@@ -487,17 +498,18 @@ class CachingObsFileRelationship(GemObsFileRelationship):
         JOIN caom2.Artifact AS A on A.planeID = P.planeID
         WHERE A.uri = '{artifact_uri}'
         """
+        logging.error(query_string)
         table = mc.query_tap_client(query_string, self._tap_client)
         result = None
         if len(table) == 1:
             obs_id = table[0]['observationID']
             ut_datetime_str = table[0]['lastModified']
             result = self._update_cache(file_id, obs_id, ut_datetime_str)
-        self._logger.debug('End _get_obs_id_from_cadc')
+        self._logger.debug(f'End _get_obs_id_from_cadc {result}')
         return result
 
     def _get_obs_id_from_headers(self, file_id):
-        self._logger.debug(f'Begin _get_obs_id_from_headers for {file_id}')
+        self._logger.error(f'Begin _get_obs_id_from_headers for {file_id}')
         temp = gem_name.GemName.remove_extensions(file_id)
         try_these = [f'{os.getcwd()}/{temp}.fits',
                      f'{os.getcwd()}/{temp}.fits.header',
@@ -512,14 +524,14 @@ class CachingObsFileRelationship(GemObsFileRelationship):
                     result = self._update_cache(file_id, temp,
                                                 headers[0].get('DATE'))
                 break
-        self._logger.debug('End _get_obs_id_from_headers')
+        self._logger.debug(f'End _get_obs_id_from_headers {result}')
         return result
 
     def _get_obs_id_from_gemini(self, file_id):
         # using the global om structure to look up and store
         # metadata will modify the internal index of the class - maintain
         # that index here with a save/restore
-        self._logger.debug(f'Begin _get_obs_id_from_gemini for {file_id}')
+        self._logger.error(f'Begin _get_obs_id_from_gemini for {file_id}')
         global om
         current_file_id = om.current
         get_obs_metadata(file_id)
@@ -528,7 +540,7 @@ class CachingObsFileRelationship(GemObsFileRelationship):
         obs_id = self._update_cache(file_id, obs_id, ut_datetime_str)
         if current_file_id is not None:
             om.reset_index(current_file_id)
-        self._logger.debug(f'End _get_obs_id_from_gemini.')
+        self._logger.debug(f'End _get_obs_id_from_gemini {obs_id}.')
         return obs_id
 
     def _update_cache(self, file_id, obs_id, dt_str):

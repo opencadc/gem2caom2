@@ -108,7 +108,7 @@ def test_caching_relationship(tap_mock, get_obs_mock):
         test_config = mc.Config()
         test_config.get_executors()
         ext_md.init_global(incremental=True, config=test_config)
-        initial_length = 523
+        initial_length = 525
         tap_mock.side_effect = gem_mocks._query_mock_none
         get_obs_mock.side_effect = gem_mocks.mock_get_obs_metadata
         test_subject = ext_md.CachingObsFileRelationship()
@@ -142,7 +142,10 @@ def test_caching_relationship(tap_mock, get_obs_mock):
 
 
 def test_caching_relationship_unconnected():
-    test_subject = ext_md.CachingObsFileRelationship()
+    test_config = mc.Config()
+    test_config.use_local_files = True
+    test_config.task_types = [mc.TaskType.SCRAPE]
+    test_subject = ext_md.CachingObsFileRelationship(test_config)
     # test an entry that's a file header on disk
     test_result = test_subject.get_obs_id('mrgN20060130S0149_add')
     assert test_result is not None, 'expected result'

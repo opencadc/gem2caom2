@@ -170,9 +170,8 @@ def _do_prev(obs_id, working_dir, plane, cadc_client, stream, observable):
             logging.debug(f'Generate thumbnail for file id {plane.product_id}')
             if os.access(thumb_fqn, 0):
                 os.remove(thumb_fqn)
-            thumb = image.thumbnail(preview_fqn, thumb_fqn,
-                                    scale=0.25)
-            if thumb is not None:
+            thumb_fig = image.thumbnail(preview_fqn, thumb_fqn, scale=0.25)
+            if thumb_fig is not None:
                 count = 1
 
             thumb_uri = gem_name.thumb_uri

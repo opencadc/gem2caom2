@@ -376,6 +376,8 @@ LOOKUP = {
     'S20080610S0045': ['GS-2008A-C-5-35-002', em.Inst.TRECS, 'GS-2008A-C-5'],
     'S20120922S0372': ['GS-2012A-Q-7-31-001', em.Inst.TRECS, 'GS-2012A-Q-7'],
     'S20050102S0024': ['GS-CAL20050102-1-001', em.Inst.TRECS, 'GS-CAL20050102'],
+    'rS20050916S0159': ['GS-2003B-Q-23-17-001', em.Inst.TRECS,
+                        'GS-2003B-Q-23'],
     # CIRPASS
     '2003mar09_1204': ['GS-2003A-Q-10-19-1204', em.Inst.CIRPASS,
                        'GS-2003A-Q-10'],

@@ -143,7 +143,7 @@ class GemName(mc.StorageName):
 
     @property
     def file_uri(self):
-        return '{}:{}/{}'.format(SCHEME, self.collection, self._file_name)
+        return '{}:{}/{}'.format(self.scheme, self.collection, self._file_name)
 
     @property
     def file_name(self):
@@ -175,7 +175,8 @@ class GemName(mc.StorageName):
 
     @property
     def lineage(self):
-        return mc.get_lineage(ARCHIVE, self._file_id, self._file_name, SCHEME)
+        return mc.get_lineage(ARCHIVE, self._file_id, self._file_name,
+                              self.scheme)
 
     @property
     def external_urls(self):

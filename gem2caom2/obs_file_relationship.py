@@ -214,6 +214,15 @@ plane.   I guess I should have given you the unprocessed versions of all
 of the non-co-added examples.
 
 <file id>_flat_pasted is a different observation than <file id>_flat.
+
+
+DB - 02-06-20
+
+Most TReCS files are being processed correctly except for the 'composite'
+algorithm. The exceptions might be those with data labels ending in -G. I may
+have only found examples with -R suffixes previously. The latter are correctly
+combined with the unprocessed observations (again, except for 'composite')
+whereas the -G versions show up as distinct observations.
 """
 
 import collections

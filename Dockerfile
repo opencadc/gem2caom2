@@ -21,7 +21,8 @@ RUN pip install cadcdata && \
 WORKDIR /usr/src/app
 
 RUN pip install bs4 \
-    matplotlib
+    matplotlib \
+    pillow
 
 RUN mkdir /app && mkdir /app/data
 
