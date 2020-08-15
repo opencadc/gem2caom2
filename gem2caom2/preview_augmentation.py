@@ -163,28 +163,32 @@ def _do_prev(obs_id, working_dir, plane, cadc_client, stream, observable):
                     else:
                         raise e
 
-        if os.access(preview_fqn, 0):
-            _augment(plane, gem_name.prev_uri, preview_fqn, ProductType.PREVIEW)
-            count = 1
-
-            logging.debug(f'Generate thumbnail for file id {plane.product_id}')
-            if os.access(thumb_fqn, 0):
-                os.remove(thumb_fqn)
-            thumb_fig = image.thumbnail(preview_fqn, thumb_fqn, scale=0.25)
-            if thumb_fig is not None:
-                count = 1
-
-            thumb_uri = gem_name.thumb_uri
-            _augment(plane, thumb_uri, thumb_fqn, ProductType.THUMBNAIL)
-            if cadc_client is not None:
-                mc.data_put(cadc_client, working_dir, thumb, ARCHIVE, stream,
-                            MIME_TYPE, mime_encoding=None,
-                            metrics=observable.metrics)
-            count += 1
-        else:
+        try:
+            fp = open(preview_fqn, 'r')
+        except PermissionError as e:
             raise mc.CadcException(
                 f'Should not have reached this point in thumbnail generation '
                 f'for {plane.product_id}')
+
+        logging.error(preview_fqn)
+        _augment(plane, gem_name.prev_uri, preview_fqn, ProductType.PREVIEW)
+        logging.error(plane.artifacts[gem_name.prev_uri])
+        count = 1
+
+        logging.debug(f'Generate thumbnail for file id {plane.product_id}')
+        if os.access(thumb_fqn, 0):
+            os.remove(thumb_fqn)
+        thumb_fig = image.thumbnail(preview_fqn, thumb_fqn, scale=0.25)
+        if thumb_fig is not None:
+            count = 1
+
+        thumb_uri = gem_name.thumb_uri
+        _augment(plane, thumb_uri, thumb_fqn, ProductType.THUMBNAIL)
+        if cadc_client is not None:
+            mc.data_put(cadc_client, working_dir, thumb, ARCHIVE, stream,
+                        MIME_TYPE, mime_encoding=None,
+                        metrics=observable.metrics)
+        count += 1
     return count
 
 

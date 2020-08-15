@@ -82,7 +82,7 @@ from caom2.diff import get_differences
 from caom2pipe import manage_composable as mc
 
 import gem2caom2.external_metadata as em
-from gem2caom2 import composable
+from gem2caom2 import composable, gem_name
 
 
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
@@ -737,7 +737,8 @@ def mock_query_tap(query_string, mock_tap_client):
             f'2020-02-25T20:36:31.230\n'.split('\n'), format='csv')
     else:
         file_id = query_string.split(
-            'GEMINI/')[1].replace('\'', '').replace('.fits', '').strip()
+            f'{gem_name.ARCHIVE}/')[1].replace('\'', '').replace(
+            '.fits', '').strip()
         result = TAP_QUERY_LOOKUP.get(file_id, 'test_data_label')
         return Table.read(f'observationID,lastModified\n'
                           f'{result},2020-02-25T20:36:31.230\n'.split('\n'),

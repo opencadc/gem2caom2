@@ -88,7 +88,8 @@ from gem2caom2.obs_file_relationship import repair_data_label
 from gem2caom2 import gem_name
 
 
-__all__ = ['get_gofr', 'Inst', 'get_obs_metadata', 'get_pi_metadata',
+__all__ = ['get_gofr', 'Inst', 'get_obs_id_from_cadc',
+           'get_obs_id_from_headers', 'get_obs_metadata', 'get_pi_metadata',
            'get_filter_metadata', 'set_ofr', 'init_global',
            'CachingObsFileRelationship']
 
@@ -487,45 +488,11 @@ class CachingObsFileRelationship(GemObsFileRelationship):
         return result
 
     def _get_obs_id_from_cadc(self, file_id):
-        self._logger.error(f'Begin _get_obs_id_from_cadc for {file_id}')
-        file_name = gem_name.GemName.get_file_name_from(file_id)
-        artifact_uri = cc.build_artifact_uri(
-            file_name, gem_name.ARCHIVE, gem_name.SCHEME)
-        query_string = f"""
-        SELECT O.observationID, A.lastModified 
-        FROM caom2.Observation AS O
-        JOIN caom2.Plane AS P on P.obsID = O.obsID
-        JOIN caom2.Artifact AS A on A.planeID = P.planeID
-        WHERE A.uri = '{artifact_uri}'
-        """
-        logging.error(query_string)
-        table = mc.query_tap_client(query_string, self._tap_client)
-        result = None
-        if len(table) == 1:
-            obs_id = table[0]['observationID']
-            ut_datetime_str = table[0]['lastModified']
-            result = self._update_cache(file_id, obs_id, ut_datetime_str)
-        self._logger.debug(f'End _get_obs_id_from_cadc {result}')
-        return result
+        return get_obs_id_from_cadc(
+            file_id, self._tap_client, self._update_cache)
 
     def _get_obs_id_from_headers(self, file_id):
-        self._logger.error(f'Begin _get_obs_id_from_headers for {file_id}')
-        temp = gem_name.GemName.remove_extensions(file_id)
-        try_these = [f'{os.getcwd()}/{temp}.fits',
-                     f'{os.getcwd()}/{temp}.fits.header',
-                     f'{os.getcwd()}/{temp}.fits.bz2',
-                     f'{os.getcwd()}/{temp}.fits.gz']
-        result = None
-        for f_name in try_these:
-            if os.path.exists(f_name):
-                headers = fits2caom2.get_cadc_headers(f'file://{f_name}')
-                temp = headers[0].get('DATALAB')
-                if temp is not None:
-                    result = self._update_cache(file_id, temp,
-                                                headers[0].get('DATE'))
-                break
-        self._logger.debug(f'End _get_obs_id_from_headers {result}')
-        return result
+        return get_obs_id_from_headers(file_id, self._update_cache)
 
     def _get_obs_id_from_gemini(self, file_id):
         # using the global om structure to look up and store
@@ -555,3 +522,46 @@ class CachingObsFileRelationship(GemObsFileRelationship):
         mc.append_as_array(self.name_list, file_id, [obs_id, dt_s])
         repaired_obs_id = repair_data_label(file_id, obs_id)
         return repaired_obs_id
+
+
+def get_obs_id_from_cadc(file_id, tap_client, update_cache=None):
+    logging.debug(f'Begin get_obs_id_from_cadc for {file_id}')
+    file_name = gem_name.GemName.get_file_name_from(file_id)
+    artifact_uri = cc.build_artifact_uri(
+        file_name, gem_name.ARCHIVE, gem_name.SCHEME)
+    query_string = f"""
+    SELECT O.observationID, A.lastModified 
+    FROM caom2.Observation AS O
+    JOIN caom2.Plane AS P on P.obsID = O.obsID
+    JOIN caom2.Artifact AS A on A.planeID = P.planeID
+    WHERE A.uri = '{artifact_uri}'
+    """
+    table = mc.query_tap_client(query_string, tap_client)
+    result = None
+    if len(table) == 1:
+        result = table[0]['observationID']
+        ut_datetime_str = table[0]['lastModified']
+        if update_cache is not None:
+            update_cache(file_id, result, ut_datetime_str)
+    logging.debug(f'End get_obs_id_from_cadc {result}')
+    return result
+
+
+def get_obs_id_from_headers(file_id, update_cache=None):
+    logging.debug(f'Begin get_obs_id_from_headers for {file_id}')
+    temp = gem_name.GemName.remove_extensions(file_id)
+    try_these = [f'{os.getcwd()}/{temp}.fits',
+                 f'{os.getcwd()}/{temp}.fits.header',
+                 f'{os.getcwd()}/{temp}.fits.bz2',
+                 f'{os.getcwd()}/{temp}.fits.gz']
+    result = None
+    for f_name in try_these:
+        if os.path.exists(f_name):
+            headers = fits2caom2.get_cadc_headers(f'file://{f_name}')
+            result = headers[0].get('DATALAB')
+            if result is not None:
+                if update_cache is not None:
+                    update_cache(file_id, result, headers[0].get('DATE'))
+                break
+    logging.debug(f'End get_obs_id_from_headers {result}')
+    return result
