@@ -67,11 +67,14 @@
 # ***********************************************************************
 #
 
+import logging
+
+from caom2pipe import manage_composable as mc
 from caom2pipe import name_builder_composable as nbc
 from gem2caom2 import gem_name, external_metadata
 
 
-__all__ = ['EduQueryBuilder']
+__all__ = ['EduQueryBuilder', 'GemObsIDBuilder']
 
 
 class EduQueryBuilder(nbc.Builder):
@@ -111,3 +114,29 @@ class EduQueryBuilder(nbc.Builder):
             gem_name.GemName.remove_extensions(entry))
         storage_name = gem_name.GemName(file_name=entry)
         return storage_name
+
+
+class GemObsIDBuilder(nbc.Builder):
+    """
+    To be able to build a StorageName instance with an observation ID.
+    """
+
+    def __init__(self, config):
+        super(GemObsIDBuilder, self).__init__(config)
+        self._config = config
+        self._logger = logging.getLogger(__name__)
+
+    def build(self, entry):
+        """
+        :param entry: a Gemini file name or observation ID, depending on
+            the configuration
+        :return: an instance of StorageName for use in execute_composable.
+        """
+        self._logger.debug(f'Build a StorageName instance for {entry}.')
+        if (mc.TaskType.INGEST_OBS in self._config.task_types and
+                '.fits' not in entry):
+            result = gem_name.GemName(obs_id=entry)
+        else:
+            result = gem_name.GemName(file_name=entry)
+        self._logger.debug('Done build.')
+        return result

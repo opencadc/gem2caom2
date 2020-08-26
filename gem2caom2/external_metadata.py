@@ -558,7 +558,7 @@ def get_obs_id_from_headers(file_id, update_cache=None):
     for f_name in try_these:
         if os.path.exists(f_name):
             headers = fits2caom2.get_cadc_headers(f'file://{f_name}')
-            result = headers[0].get('DATALAB')
+            result = headers[0].get('DATALAB').upper()
             if result is not None:
                 if update_cache is not None:
                     update_cache(file_id, result, headers[0].get('DATE'))

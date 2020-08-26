@@ -986,6 +986,8 @@ def accumulate_fits_bp(bp, file_id, uri):
     bp.set('Observation.target.moving', 'get_target_moving(header)')
     bp.set('Observation.proposal.id', 'get_proposal_id(header)')
 
+    bp.clear('Observation.algorithm.name')
+
     telescope = em.om.get('telescope')
     if telescope is not None:
         if 'North' in telescope:

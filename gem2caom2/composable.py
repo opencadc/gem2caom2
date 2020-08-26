@@ -77,7 +77,7 @@ from caom2pipe import manage_composable as mc
 from caom2pipe import name_builder_composable as nbc
 from caom2pipe import run_composable as rc
 from gem2caom2 import main_app, work, preview_augmentation, external_metadata
-from gem2caom2 import pull_augmentation, gem_name, data_source
+from gem2caom2 import pull_augmentation, gem_name, data_source, builder
 
 META_VISITORS = [preview_augmentation, pull_augmentation]
 DATA_VISITORS = []
@@ -91,7 +91,7 @@ def _run():
     config = mc.Config()
     config.get_executors()
     external_metadata.init_global(incremental=False, config=config)
-    name_builder = nbc.FileNameBuilder(gem_name.GemName)
+    name_builder = builder.GemObsIDBuilder(config)
     return rc.run_by_todo(config, name_builder, chooser=None,
                           command_name=main_app.APPLICATION,
                           meta_visitors=META_VISITORS)
