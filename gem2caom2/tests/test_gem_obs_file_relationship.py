@@ -240,10 +240,6 @@ def test_repair_data_label():
     test_result = external_metadata.gofr.repair_data_label('N20181217S0266')
     assert test_result is not None, 'no result'
     assert test_result == 'GN-2018B-Q-133-20-001', 'wrong result'
-    test_result = external_metadata.repair_data_label(
-        'rS20050916S0159', 'GS-2003B-Q-23-17-001-G')
-    assert test_result is not None, 'no result'
-    assert test_result == 'GS-2003B-Q-23-17-001', 'wrong result'
 
 
 def test_repair_data_label_247():
