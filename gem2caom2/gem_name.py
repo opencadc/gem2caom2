@@ -72,8 +72,6 @@ import logging
 from caom2pipe import manage_composable as mc
 
 from gem2caom2 import external_metadata as em
-from gem2caom2 import obs_file_relationship as ofr
-from gem2caom2 import scrape
 
 
 __all__ = ['GemName', 'COLLECTION', 'ARCHIVE', 'SCHEME']
@@ -82,6 +80,7 @@ __all__ = ['GemName', 'COLLECTION', 'ARCHIVE', 'SCHEME']
 COLLECTION = 'GEMINI'
 ARCHIVE = 'GEM'
 SCHEME = 'gemini'
+HEADER_URL = 'https://archive.gemini.edu/fullheader/'
 
 
 class GemName(mc.StorageName):
@@ -116,8 +115,6 @@ class GemName(mc.StorageName):
             self.file_name = fname_on_disk
         if obs_id is not None:
             self._obs_id = obs_id
-        if fname_on_disk is None and file_name is None and obs_id is None:
-            raise mc.CadcException('Require a name.')
         super(GemName, self).__init__(
             obs_id=obs_id, collection=ARCHIVE,
             collection_pattern=GemName.GEM_NAME_PATTERN,
@@ -127,124 +124,26 @@ class GemName(mc.StorageName):
             temp = em.get_gofr().get_obs_id(self._file_id)
             if temp is not None:
                 self._obs_id = GemName.remove_extensions(temp)
-        if self._obs_id is None or self._obs_id == 'None':
-            # check with Gemini now
-            logging.warning(f'Check directly with GEMINI for {self.file_name}')
-            em.get_obs_metadata(self._file_id)
-            self._obs_id = ofr.repair_data_label(
-                self.file_name, em.om.get('data_label'))
-            clb = ofr.get_command_line_bits(self, self._obs_id, self.file_name)
-            self._lineage = clb.lineage
-            self._external_urls = clb.urls
-        else:
-            self._lineage = None
-            self._external_urls = None
+        if (self._fname_on_disk is None and self._file_name is None and
+                self._obs_id is None):
+            raise mc.CadcException('Require a name.')
         if (self._file_id is None and self._obs_id is None and
                 file_id is not None):
             self._file_id = file_id
             self._obs_id = file_id
         if file_id is not None:
             self._file_id = file_id
-        logging.debug(self)
+        self._logger = logging.getLogger(__name__)
+        self._logger.debug(self)
 
     def __str__(self):
         return f'obs_id {self._obs_id}, ' \
                f'file_id {self._file_id}, ' \
-               f'file_name {self._file_name}, ' \
-               f'lineage {self._lineage}, ' \
-               f'external urls {self._external_urls}'
-
-    def set_partial_args(self, pofr):
-        temp = pofr.get_args(self._obs_id)
-        if len(temp) == 1:
-            self._lineage = temp[0].lineage
-            self._external_urls = temp[0].urls
-        else:
-            raise mc.CadcException(
-                f'Unexpected arguments for observation {self._obs_id} '
-                f'file {self._file_id}')
-
-    def _get_args(self):
-        if self._lineage is None and self._external_urls is None:
-            temp = em.get_gofr().get_args(self._obs_id)
-            if len(temp) == 1:
-                self._lineage = temp[0].lineage
-                self._external_urls = temp[0].urls
-                # format is GEMINI 'obs id'
-                # use the repaired value
-                self._obs_id = temp[0].obs_id.split()[1]
-            else:
-                if len(temp) == 0:
-                    if self._file_id is None:
-                        logging.warning(
-                            f'Try a direct query for {self._obs_id}')
-                        metadata = scrape.find_direct(self._obs_id)
-                        if metadata is None or len(metadata) == 0:
-                            raise mc.CadcException(
-                                f'Direct query for obs id {self._obs_id}'
-                                f' failed at Gemini')
-                        else:
-                            # assume filename from 0th entry, which
-                            # should be ok, since the external urls and
-                            # lineage will use all file names present
-                            # in the returned metadata
-                            self._file_id = GemName.remove_extensions(
-                                metadata[0].get('filename'))
-                            self._file_name = f'{self._file_id}.fits'
-                            em.om.add(metadata, self._file_id)
-                            temp_l = []
-                            temp_e = []
-                            for entry in metadata:
-                                f_id = GemName.remove_extensions(
-                                    entry.get('filename'))
-                                f_name = f'{f_id}.fits'
-                                temp_l.append(mc.get_lineage(
-                                    ARCHIVE, f_id, f_name, SCHEME))
-                                temp_e.append(f'{ofr.HEADER_URL}{f_name}')
-                            self._lineage = ' '.join(ii for ii in temp_l)
-                            self._external_urls = ' '.join(ii for ii in temp_e)
-                            self._obs_id = ofr.repair_data_label(
-                                self._file_name, self._obs_id)
-                    else:
-                        # Gemini obs id values are repaired from what
-                        # archive.gemini.edu publishes, so check for the
-                        # un-repaired value
-                        repaired = em.get_gofr().get_obs_id(self._file_id)
-                        # repaired = em.get_repaired_obs_id(self._file_id)
-                        x = em.get_gofr().get_args(repaired)
-                        self._lineage = x[0].lineage
-                        self._external_urls = x[0].urls
-                else:
-                    found = False
-                    for bits in temp:
-                        urls = bits.urls.split()
-                        for url in urls:
-                            if self._file_name is None:
-                                if (self._obs_id ==
-                                        bits.obs_id.split()[1].strip()):
-                                    logging.debug(f'Using existing obs id '
-                                                  f'with {self._obs_id}')
-                                    self._external_urls = bits.urls
-                                    self._lineage = bits.lineage
-                                    found = True
-                                    break
-                            elif url.endswith(self._file_name):
-                                self._obs_id = bits.obs_id.split()[1]
-                                logging.debug(f'Replaced obs id with '
-                                              f'{self._obs_id}')
-                                self._external_urls = bits.urls
-                                self._lineage = bits.lineage
-                                found = True
-                                break
-                    if not found:
-                        raise mc.CadcException(
-                            'Could not find obs id for file name {}'.format(
-                                self._file_name))
-        logging.debug(self)
+               f'file_name {self._file_name}'
 
     @property
     def file_uri(self):
-        return '{}:{}/{}'.format(SCHEME, self.collection, self._file_name)
+        return '{}:{}/{}'.format(self.scheme, self.collection, self._file_name)
 
     @property
     def file_name(self):
@@ -276,15 +175,16 @@ class GemName(mc.StorageName):
 
     @property
     def lineage(self):
-        if self._lineage is None:
-            self._get_args()
-        return self._lineage
+        return mc.get_lineage(ARCHIVE, self._file_id, self._file_name,
+                              self.scheme)
 
     @property
     def external_urls(self):
-        if self._external_urls is None:
-            self._get_args()
-        return self._external_urls
+        return f'{HEADER_URL}{self._file_id}.fits'
+
+    @property
+    def product_id(self):
+        return self._file_id
 
     @property
     def thumb_uri(self):

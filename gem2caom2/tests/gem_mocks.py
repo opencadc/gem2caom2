@@ -82,7 +82,7 @@ from caom2.diff import get_differences
 from caom2pipe import manage_composable as mc
 
 import gem2caom2.external_metadata as em
-from gem2caom2 import composable
+from gem2caom2 import composable, gem_name
 
 
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
@@ -376,6 +376,8 @@ LOOKUP = {
     'S20080610S0045': ['GS-2008A-C-5-35-002', em.Inst.TRECS, 'GS-2008A-C-5'],
     'S20120922S0372': ['GS-2012A-Q-7-31-001', em.Inst.TRECS, 'GS-2012A-Q-7'],
     'S20050102S0024': ['GS-CAL20050102-1-001', em.Inst.TRECS, 'GS-CAL20050102'],
+    'rS20050916S0159': ['GS-2003B-Q-23-17-001', em.Inst.TRECS,
+                        'GS-2003B-Q-23'],
     # CIRPASS
     '2003mar09_1204': ['GS-2003A-Q-10-19-1204', em.Inst.CIRPASS,
                        'GS-2003A-Q-10'],
@@ -458,18 +460,18 @@ LOOKUP = {
                           'GS-2012B-Q-1'],
     'mrgS20160901S0122_add': ['GS-2016B-Q-72-23-001-MRG-ADD', em.Inst.GMOS,
                               'GS-2016B-Q-72'],
-    'mrgS20181016S0184_fringe': ['GS-CAL20181016-5-001',
+    'mrgS20181016S0184_fringe': ['GS-CAL20181016-5-001-MRG-FRINGE',
                                  em.Inst.GMOS, 'GS-CAL20181016'],
     'rS20121030S0136': ['GS-2012B-Q-90-366-003', em.Inst.TRECS,
                         'GS-2012B-Q-90'],
     'rgS20100212S0301': ['GS-2010A-Q-36-5-246', em.Inst.GMOS,
                          'GS-2010A-Q-36'],
     'rgS20100316S0366': ['GS-2010A-Q-36-6-358', em.Inst.GMOS, 'GS-2010A-Q-36'],
-    'rgS20130103S0098_FRINGE': ['GS-CAL20130103-3-001', em.Inst.GMOS,
+    'rgS20130103S0098_FRINGE': ['GS-CAL20130103-3-001-RG-FRINGE', em.Inst.GMOS,
                                 'GS-CAL20130103'],
-    'rgS20131109S0166_FRINGE': ['GS-CAL20131109-17-001', em.Inst.GMOS,
-                                'GS-CAL20131109'],
-    'rgS20161227S0051_fringe': ['GS-CAL20161227-5-001', em.Inst.GMOS,
+    'rgS20131109S0166_FRINGE': ['GS-CAL20131109-17-001-RG-FRINGE',
+                                em.Inst.GMOS, 'GS-CAL20131109'],
+    'rgS20161227S0051_fringe': ['GS-CAL20161227-5-001-RG-FRINGE', em.Inst.GMOS,
                                 'GS-CAL20161227'],
     'p2004may20_0048_FLAT': ['GS-CAL20040520-7-0048-P-FLAT', em.Inst.PHOENIX,
                              'GS-CAL20040520'],
@@ -487,7 +489,9 @@ LOOKUP = {
     'S20181016S0184': ['GS-CAL20181016-5-001', em.Inst.GMOS,
                        'GS-CAL20181016-5'],
     'N20200210S0077_bias': ['GN-CAL20200210-22-076-BIAS', em.Inst.GMOS,
-                            'GN-CAL20200210']
+                            'GN-CAL20200210'],
+    'rgnN20140428S0171_flat': ['GN-2014A-Q-85-16-003-RGN-FLAT', em.Inst.NIFS,
+                               'GN-2014A-Q-85']
 }
 
 call_count = 0
@@ -726,7 +730,6 @@ def _query_mock_one(ignore1, ignore2):
 
 
 def mock_query_tap(query_string, mock_tap_client):
-    # logging.error(query_string)
     if query_string.startswith('SELECT A.uri'):
         return Table.read(
             f'uri,lastModified\n'
@@ -734,7 +737,8 @@ def mock_query_tap(query_string, mock_tap_client):
             f'2020-02-25T20:36:31.230\n'.split('\n'), format='csv')
     else:
         file_id = query_string.split(
-            'GEMINI/')[1].replace('\'', '').replace('.fits', '').strip()
+            f'{gem_name.ARCHIVE}/')[1].replace('\'', '').replace(
+            '.fits', '').strip()
         result = TAP_QUERY_LOOKUP.get(file_id, 'test_data_label')
         return Table.read(f'observationID,lastModified\n'
                           f'{result},2020-02-25T20:36:31.230\n'.split('\n'),

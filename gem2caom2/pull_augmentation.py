@@ -86,33 +86,28 @@ def visit(observation, **kwargs):
     retrieve the fits file if it is not already at CADC.
     """
     mc.check_param(observation, Observation)
-
-    working_dir = './'
-    if 'working_directory' in kwargs:
-        working_dir = kwargs['working_directory']
-    if 'cadc_client' in kwargs:
-        cadc_client = kwargs['cadc_client']
-    else:
-        raise mc.CadcException('Visitor needs a cadc_client parameter.')
-    if 'stream' in kwargs:
-        stream = kwargs['stream']
-    else:
+    working_dir = kwargs.get('working_directory', './')
+    cadc_client = kwargs.get('cadc_client')
+    if cadc_client is None:
+        logging.warning('Need a cadc_client to update. Stopping pull visitor.')
+        return
+    stream = kwargs.get('stream')
+    if stream is None:
         raise mc.CadcException('Visitor needs a stream parameter.')
-    if 'observable' in kwargs:
-        observable = kwargs['observable']
-    else:
-        raise mc.CadcException('Visitor needs an observable parameter.')
+    observable = kwargs.get('observable')
+    if observable is None:
+        raise mc.CadcException('Visitor needs a observable parameter.')
 
     count = 0
     if observable.rejected.is_bad_metadata(observation.observation_id):
-        logging.info('Stopping visit for {} because of bad metadata.'.format(
-            observation.observation_id))
+        logging.info(f'Stopping visit for {observation.observation_id} '
+                     f'because of bad metadata.')
     else:
         for plane in observation.planes.values():
             if (plane.data_release is None or
                     plane.data_release > datetime.utcnow()):
-                logging.info('Plane {} is proprietary. No file access.'.format(
-                    plane.product_id))
+                logging.info(f'Plane {plane.product_id} is proprietary. No '
+                             f'file access.')
                 continue
 
             for artifact in plane.artifacts.values():
@@ -130,6 +125,5 @@ def visit(observation, **kwargs):
                     if not (observable.rejected.check_and_record(
                             str(e), observation.observation_id)):
                         raise e
-    logging.info('Completed pull visitor for {}.'.format(
-        observation.observation_id))
+    logging.info(f'Completed pull visitor for {observation.observation_id}.')
     return {'observation': count}

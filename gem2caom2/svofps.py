@@ -244,4 +244,5 @@ class FilterMetadata(object):
         self.resolving_power = (w_max + w_min) / (2 * self.bandpass)
 
     def adjust_resolving_power(self):
+        # the formula for direct imaging data
         self.resolving_power = self.central_wl / self.bandpass

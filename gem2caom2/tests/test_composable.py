@@ -102,7 +102,9 @@ def write_gemini_data_file():
 
 
 @patch('sys.exit', Mock(return_value=MyExitError))
-def test_run_by_tap_query():
+@patch('gem2caom2.external_metadata.CadcTapClient')
+def test_run_by_tap_query(client_mock):
+    # client mock present because of global in external_metadata
     # preconditions
     _write_state()
 
@@ -124,7 +126,8 @@ def test_run_by_tap_query():
 
 
 @patch('caom2pipe.execute_composable.OrganizeExecutesWithDoOne.do_one')
-def test_run(run_mock):
+@patch('gem2caom2.external_metadata.CadcTapClient')
+def test_run(client_mock, run_mock):
     test_obs_id = 'GS-2004A-Q-6-27-0255'
     test_f_id = '2004may19_0255'
     test_f_name = f'{test_f_id}.fits'
@@ -155,7 +158,8 @@ def test_run(run_mock):
 
 
 @patch('caom2pipe.execute_composable.OrganizeExecutesWithDoOne.do_one')
-def test_run_errors(run_mock):
+@patch('gem2caom2.external_metadata.CadcTapClient')
+def test_run_errors(client_mock, run_mock):
     test_obs_id = 'TX20131117_flt.3002'
     test_f_id = 'TX20131117_flt.3002'
     test_f_name = f'{test_f_id}.fits'
@@ -187,7 +191,9 @@ def test_run_errors(run_mock):
 @patch('caom2pipe.manage_composable.query_endpoint')
 @patch('gem2caom2.external_metadata.get_obs_metadata')
 @patch('caom2pipe.manage_composable.query_tap_client')
-def test_run_incremental_rc(tap_mock, get_obs_mock, query_mock, run_mock):
+@patch('gem2caom2.external_metadata.CadcTapClient')
+def test_run_incremental_rc(client_mock, tap_mock, get_obs_mock, query_mock,
+                            run_mock):
 
     get_obs_mock.side_effect = gem_mocks.mock_get_obs_metadata
     query_mock.side_effect = gem_mocks.mock_query_endpoint_3
@@ -212,21 +218,9 @@ def test_run_incremental_rc(tap_mock, get_obs_mock, query_mock, run_mock):
         assert test_storage.fname_on_disk == 'S20200303S0353.fits', \
             'wrong fname on disk'
         assert test_storage.url is None, 'wrong url'
-        # there are six files returned by the mock, and they each have the
-        # same data label, so they all end up in this lineage
         assert test_storage.lineage == \
-            'S20200303S0025/gemini:GEM/S20200303S0025.fits ' \
-            'S20200303S0026/gemini:GEM/S20200303S0026.fits ' \
-            'S20200303S0027/gemini:GEM/S20200303S0027.fits ' \
-            'S20200303S0351/gemini:GEM/S20200303S0351.fits ' \
-            'S20200303S0352/gemini:GEM/S20200303S0352.fits ' \
             'S20200303S0353/gemini:GEM/S20200303S0353.fits', 'wrong lineage'
         assert test_storage.external_urls == \
-            'https://archive.gemini.edu/fullheader/S20200303S0025.fits ' \
-            'https://archive.gemini.edu/fullheader/S20200303S0026.fits ' \
-            'https://archive.gemini.edu/fullheader/S20200303S0027.fits ' \
-            'https://archive.gemini.edu/fullheader/S20200303S0351.fits ' \
-            'https://archive.gemini.edu/fullheader/S20200303S0352.fits ' \
             'https://archive.gemini.edu/fullheader/S20200303S0353.fits', \
             'wrong external urls'
     except Exception as e:
@@ -236,7 +230,8 @@ def test_run_incremental_rc(tap_mock, get_obs_mock, query_mock, run_mock):
 
 
 @patch('sys.exit', Mock(return_value=MyExitError))
-def test_run_by_tap_query_2():
+@patch('gem2caom2.external_metadata.CadcTapClient')
+def test_run_by_tap_query_2(client_mock):
     test_obs_id = 'GS-2017A-Q-58-66-027'
     test_f_id = 'S20170905S0318'
     test_f_name = f'{test_f_id}.fits'
@@ -278,7 +273,8 @@ def test_run_by_tap_query_2():
 
 
 @patch('sys.exit', Mock(return_value=MyExitError))
-def test_run_by_tap_query_rejected_bad_metadata():
+@patch('gem2caom2.external_metadata.CadcTapClient')
+def test_run_by_tap_query_rejected_bad_metadata(client_mock):
     test_obs_id = 'GS-2017A-Q-58-66-027'
     _write_state()
     _write_rejected(test_obs_id)
@@ -307,7 +303,8 @@ def test_run_by_tap_query_rejected_bad_metadata():
             os.unlink(REJECTED_FILE)
 
 
-def test_run_by_in_memory_query():
+@patch('gem2caom2.external_metadata.CadcTapClient')
+def test_run_by_in_memory_query(client_mock):
     _write_state('2018-12-19T20:53:16')
     test_obs_id = 'GN-2015A-Q-36-15-001'
     test_f_id = 'N20150216S0129'
@@ -350,8 +347,9 @@ def test_run_by_in_memory_query():
 @patch('caom2pipe.execute_composable.CadcDataClient')
 @patch('caom2pipe.manage_composable.read_obs_from_file')
 @patch('caom2pipe.manage_composable.query_endpoint')
+@patch('gem2caom2.external_metadata.CadcTapClient')
 @pytest.mark.skip('waiting for gemini incremental endpoint')
-def test_run_by_incremental2(query_mock, read_mock,
+def test_run_by_incremental2(client_mock, query_mock, read_mock,
                              data_client_mock, repo_mock, exec_mock):
     data_client_mock.return_value.get_file_info.side_effect = \
         gem_mocks.mock_get_file_info
@@ -481,7 +479,9 @@ def test_run_by_incremental2(query_mock, read_mock,
 
 @patch('caom2pipe.execute_composable.OrganizeExecutesWithDoOne.do_one')
 @patch('caom2pipe.manage_composable.query_tap_client')
-def test_run_by_rc_public(tap_mock, exec_mock):
+@patch('gem2caom2.external_metadata.CadcTapClient')
+@patch('caom2pipe.data_source_composable.CadcTapClient')
+def test_run_by_rc_public(ds_mock, client_mock, tap_mock, exec_mock):
     exec_mock.side_effect = Mock(return_value=0)
     tap_mock.side_effect = gem_mocks.mock_query_tap
     expected_fqn = f'/usr/src/app/logs/{gem_mocks.TEST_BUILDER_OBS_ID}' \
@@ -531,7 +531,10 @@ def test_run_by_rc_public(tap_mock, exec_mock):
 @patch('caom2pipe.manage_composable.query_endpoint')
 @patch('gem2caom2.external_metadata.get_obs_metadata')
 @patch('caom2pipe.manage_composable.query_tap_client')
-def test_run_by_public(tap_mock, get_obs_mock, query_mock, run_mock):
+@patch('gem2caom2.external_metadata.CadcTapClient')
+@patch('caom2pipe.data_source_composable.CadcTapClient')
+def test_run_by_public(
+        ds_mock, client_mock, tap_mock, get_obs_mock, query_mock, run_mock):
 
     get_obs_mock.side_effect = gem_mocks.mock_get_obs_metadata
     query_mock.side_effect = gem_mocks.mock_query_endpoint_3

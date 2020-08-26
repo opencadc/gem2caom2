@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+
+<title>Detail for Program: GS-2003B-Q-23</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-2003B-Q-23</h1>
+
+<table>
+ <tr><td>Title:<td>A mid-IR imaging survey of proto-planetary nebulae</tr>
+ <tr><td>PI:<td>Tim Gledhill</tr>
+ <tr><td>Co-I(s):<td> Kim Clube,  Jeremy Yates,  Albert Zijlstra,  Mike Barlow</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+The circumstellar envelopes (CSEs) of post-AGB stars provide a record
+of the mass-loss that occurred earlier on the AGB and which dominates
+the evolution of nearly all post-MS stars. In 2001A we used OSCIR on
+Gemini-N to obtain mid-IR images of 4 post-AGB CSEs, selected from our
+near-IR imaging polarimetry survey. By combining the mid- and near-IR
+data we are exploring, via detailed models, the CSE structure and
+composition, including dust density, grain sizes and degree of
+axisymmetry. This provides direct information on the evolution of
+mass-loss rates along the AGB, the dust formation process and the
+onset of axisymmetries that ultimately lead to the observed
+morphological diversity of PN.  We propose to continue and extend this
+successful program to a further 8 targets using T-ReCS on
+Gemini-S. This is an updated resubmission of proposals G/02A/11 and 
+G/02B/07 which were both approved but not observed due to the delay 
+of T-ReCS.
+
+
+
+
+
+
+
+
+
+</div>
+
+
+<h2>Publications using this program's data</h2>
+<ul>
+<li>
+<a href="/searchform/publication=2006ApJ...640..353M" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2006ApJ...640..353M/abstract" target="_blank">[ADS]</a> Subarcsecond Mid-Infrared Imaging of Dust in the Bipolar Nebula Hen 3-401
+</ul>
+
+
+</body>
+</html>

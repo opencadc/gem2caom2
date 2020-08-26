@@ -107,7 +107,9 @@ def pytest_generate_tests(metafunc):
 
 
 @patch('caom2pipe.manage_composable.query_tap_client')
-def test_main_app(tap_mock, test_name):
+@patch('gem2caom2.external_metadata.CadcTapClient')
+def test_main_app(client_mock, tap_mock, test_name):
+    # client_mock present because of global in external_metadata
     getcwd_orig = os.getcwd
     os.getcwd = Mock(return_value=gem_mocks.TEST_DATA_DIR)
 
@@ -223,7 +225,7 @@ def _get_lineage(dirname, basename, product_id, file_id):
 
 
 def _get_expected_file_name(dirname, product_id):
-    return '{}/{}.xml'.format(dirname, product_id)
+    return '{}/{}.expected.xml'.format(dirname, product_id)
 
 
 def _get_actual_file_name(dirname, product_id):

@@ -602,6 +602,78 @@ def get_proposal_id(header):
     return em.om.get('program_id')
 
 
+def get_provenance_keywords(uri):
+    """
+    DB https://github.com/opencadc-metadata-curation/gem2caom2/issues/12
+    Currently there is no CAOM2 metadata that enables a user to distinguish
+    different spectroscopic modes of GMOS-N/S data. e.g. long-slit vs. IFU
+    vs. MOS (multi-object spectroscopy).
+
+    To enable this with at least a TAP query it would be useful to modify the
+    gem2caom2 code to add an Instrument.keywords value for GMOS-N/S spectra.
+
+    The jsonsummary 'mode' value is likely sufficient for this. It is
+    supposed to provide values of "imaging, spectroscopy, LS (Longslit
+    Spectroscopy), MOS (Multi Object Spectroscopy) or IFS (Integral Field
+    Spectroscopy)". There is likely no reason to change these values but
+    simply use them for the value of Instrument.keywords.
+    :param uri:
+    :return:
+    """
+    return em.om.get('mode')
+
+
+def get_provenance_last_executed(parameters):
+    def breakout(comments):
+        result = None
+        temp = comments.split('\n')
+        if len(temp) > 6 and 'HST' in temp[6]:
+            # go from HST to UTC
+            result = mc.make_time(temp[6])
+            logging.error(f'hello> {result}')
+        return result
+    return _get_provenance_breakout(parameters, breakout)
+
+
+def get_provenance_producer(parameters):
+    result = None
+    uri = parameters.get('uri')
+    cal_level = get_calibration_level(uri)
+    header = parameters.get('header')
+    if cal_level in [CalibrationLevel.CALIBRATED, CalibrationLevel.PRODUCT,
+                     CalibrationLevel.ANALYSIS_PRODUCT]:
+        comments = str(header.get('COMMENT'))
+        result = comments.split('Processed by the')[1].split('|')[0]
+    else:
+        result = header.get('IMAGESWV')
+    return result
+
+
+def get_provenance_reference(parameters):
+    def breakout(comments):
+        return 'https://www.gemini.edu/instrumentation/graces/data-reduction'
+    return _get_provenance_breakout(parameters, breakout)
+
+
+def get_provenance_version(parameters):
+    def breakout(comments):
+        temp = comments.split('opera-')[1].split('build date')[0]
+        return f'opera-{temp}'
+    return _get_provenance_breakout(parameters, breakout)
+
+
+def _get_provenance_breakout(parameters, fn):
+    result = None
+    uri = parameters.get('uri')
+    cal_level = get_calibration_level(uri)
+    if cal_level in [CalibrationLevel.CALIBRATED, CalibrationLevel.PRODUCT,
+                     CalibrationLevel.ANALYSIS_PRODUCT]:
+        header = parameters.get('header')
+        comments = str(header.get('COMMENT'))
+        result = fn(comments)
+    return result
+
+
 def get_ra(header):
     """
     Get the right ascension. Rely on the JSON metadata, because it's all in
@@ -793,7 +865,12 @@ def _get_data_label():
 
 
 def _get_instrument():
-    return em.Inst(em.om.get('instrument'))
+    inst = em.om.get('instrument')
+    if inst == 'ALOPEKE':
+        # because the value in JSON is a different case than the value in
+        # the FITS header
+        inst = 'Alopeke'
+    return em.Inst(inst)
 
 
 def _get_sky_coord(header, ra_key, dec_key):
@@ -909,6 +986,8 @@ def accumulate_fits_bp(bp, file_id, uri):
     bp.set('Observation.target.moving', 'get_target_moving(header)')
     bp.set('Observation.proposal.id', 'get_proposal_id(header)')
 
+    bp.clear('Observation.algorithm.name')
+
     telescope = em.om.get('telescope')
     if telescope is not None:
         if 'North' in telescope:
@@ -935,6 +1014,18 @@ def accumulate_fits_bp(bp, file_id, uri):
         data_label = _get_data_label()
         bp.set('Plane.provenance.reference',
                'http://archive.gemini.edu/searchform/{}'.format(data_label))
+    if instrument in [em.Inst.GMOSN, em.Inst.GMOSS, em.Inst.GMOS]:
+        bp.set('Plane.provenance.keywords', 'get_provenance_keywords(uri)')
+
+    if instrument is em.Inst.GRACES:
+        bp.set('Plane.provenance.lastExecuted',
+               'get_provenance_last_executed(parameters)')
+        bp.set('Plane.provenance.producer',
+               'get_provenance_producer(parameters)')
+        bp.set('Plane.provenance.reference',
+               'get_provenance_reference(parameters)')
+        bp.set('Plane.provenance.version',
+               'get_provenance_version(parameters)')
 
     bp.set('Artifact.productType', 'get_art_product_type(header)')
     bp.set('Artifact.contentChecksum', 'md5:{}'.format(em.om.get('data_md5')))
@@ -1007,13 +1098,6 @@ def update(observation, **kwargs):
                      f'{observation.observation_id}.')
         return observation
 
-    # processed files
-    if (cc.is_composite(headers) and not
-            isinstance(observation, CompositeObservation)):
-        logging.info(f'{observation.observation_id} is a Composite '
-                     f'Observation.')
-        observation = _update_composite(observation)
-
     if observation.instrument.name == 'oscir':
         # for these observations:
         # GN-2001A-C-16-3-016
@@ -1028,6 +1112,12 @@ def update(observation, **kwargs):
         # GN-2001A-C-2-9-010
         observation.instrument = Instrument(name='OSCIR')
     instrument = em.Inst(observation.instrument.name)
+
+    # processed files
+    if (cc.is_composite(headers) and not
+            isinstance(observation, CompositeObservation)):
+        observation = _update_composite(
+            observation, instrument, current_product_id)
 
     if instrument in [em.Inst.MICHELLE, em.Inst.GNIRS]:
         # DB 16-04-19
@@ -1256,7 +1346,26 @@ def update(observation, **kwargs):
                         if instrument is em.Inst.F2:
                             _update_chunk_time_f2(
                                 c, observation.observation_id)
-                        if c.naxis <= 2:
+
+                        # DB - 05-06-20
+                        # That’s a composite observation (but with no way of
+                        # determining the 4 members from the header) and it is
+                        # an extracted spectrum and (despite some header info
+                        # suggesting otherwise) has no wavelength scale.
+                        # LINEAR must be a reference to the fact that the
+                        # spacing of each pixel is constant.  Since the scale
+                        # is simply in pixels….  CTYPE1 will refer to the
+                        # energy axis.   Would likely make more sense for a
+                        # value of PIXEL.
+                        if instrument is em.Inst.PHOENIX:
+                            ctype = headers[0].get('CTYPE1')
+                            if ctype is None or ctype in ['LINEAR', 'PIXEL']:
+                                c.naxis = None
+                                c.position_axis_1 = None
+                                c.position_axis_2 = None
+                                c.time_axis = None
+                                c.energy_axis = None
+                        if c.naxis is not None and c.naxis <= 2:
                             if c.position_axis_1 is None:
                                 c.naxis = None
                             c.time_axis = None
@@ -1273,9 +1382,10 @@ def update(observation, **kwargs):
                         and 'jpg' not in caom_name.file_name):
                     # not the preview artifact
                     if plane.provenance is not None:
-                        plane.provenance.reference = \
-                            'http://archive.gemini.edu/searchform/' \
-                            'filepre={}'.format(caom_name.file_name)
+                        if instrument is not em.Inst.GRACES:
+                            plane.provenance.reference = \
+                                'http://archive.gemini.edu/searchform/' \
+                                'filepre={}'.format(caom_name.file_name)
 
             program = em.get_pi_metadata(observation.proposal.id)
             if program is not None:
@@ -3661,9 +3771,24 @@ def _update_chunk_time_gmos(chunk, obs_id):
     logging.debug('End _update_chunk_time_gmos {}'.format(obs_id))
 
 
-def _update_composite(obs):
-    comp_obs = cc.change_to_composite(obs)
-    return comp_obs
+def _update_composite(obs, instrument, current_product_id):
+    if instrument is em.Inst.TRECS:
+        if (current_product_id is not None and
+                (current_product_id.startswith('rS') or
+                 (current_product_id.startswith('rN')))):
+            # DB 02-06-20
+            # processed TReCS files in Gemini's archive are derived by
+            # combining the NNODSETS x NSAVSETS contained within a single
+            # unprocessed image into a simpler image array.
+            #
+            # SGo - this means ignoring the IMCMB keywords that are an
+            # artifact of that, which is how Composite construction is
+            # otherwise determined.
+            result = obs
+    else:
+        result = cc.change_to_composite(obs)
+        logging.info(f'{obs.observation_id} is a Composite Observation.')
+    return result
 
 
 def _repair_provenance_value(imcmb_value, obs_id):

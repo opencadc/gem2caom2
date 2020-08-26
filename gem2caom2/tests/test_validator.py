@@ -116,8 +116,9 @@ def test_validator(caps_mock, tap_mock):
             f.write('proxy content')
 
     rejected_file = f'{gem_mocks.TEST_DATA_DIR}/rejected/rejected.yml'
-    if os.path.exists(rejected_file):
-        os.unlink(rejected_file)
+    test_rejected = f'{gem_mocks.TEST_DATA_DIR}/validate/' \
+                    f'test_rejected.yml'
+    shutil.copy(test_rejected, rejected_file)
 
     getcwd_orig = os.getcwd
     os.getcwd = Mock(return_value=gem_mocks.TEST_DATA_DIR)
@@ -130,13 +131,9 @@ def test_validator(caps_mock, tap_mock):
         if os.path.exists(test_subject._config.work_fqn):
             os.unlink(test_subject._config.work_fqn)
 
-        test_rejected = f'{gem_mocks.TEST_DATA_DIR}/validate/' \
-                        f'test_rejected.yml'
-        shutil.copy(test_rejected, test_subject._config.rejected_fqn)
-
         test_source, test_meta, test_data = test_subject.validate()
         assert test_source is not None, 'expected source result'
-        assert len(test_source) == 1040, 'wrong number of source results'
+        assert len(test_source) == 1041, 'wrong number of source results'
         assert 'rS20111124S0053.fits' in test_source, 'wrong result content'
         assert 'rS20111124S0053.jpg' in test_source, 'wrong result content'
 
