@@ -39,9 +39,6 @@
         <caom2:project>Gemini Archive</caom2:project>
         <caom2:producer>NOAO-IRAF FITS Image Kernel July 1999</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/GN-CAL20030104-14-001</caom2:reference>
-        <caom2:keywords>
-          <caom2:keyword>imaging</caom2:keyword>
-        </caom2:keywords>
       </caom2:provenance>
       <caom2:position/>
       <caom2:energy/>

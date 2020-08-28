@@ -39,9 +39,6 @@
         <caom2:project>Gemini Archive</caom2:project>
         <caom2:producer>Gemini Observatory</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/GN-CAL20150925-2-007</caom2:reference>
-        <caom2:keywords>
-          <caom2:keyword>imaging</caom2:keyword>
-        </caom2:keywords>
       </caom2:provenance>
       <caom2:artifacts>
         <caom2:artifact caom2:id="00000000-0000-0000-ba10-c26a6be6476f" caom2:lastModified="2018-10-10T01:52:09.812" caom2:maxLastModified="2018-10-10T01:52:09.812" caom2:metaChecksum="md5:f0caf589ca72a5466d36aa7c2270971b" caom2:accMetaChecksum="md5:3a092008761e9c85d3e44fddad2f03c2">

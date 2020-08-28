@@ -29,9 +29,6 @@
         <caom2:project>Gemini Archive</caom2:project>
         <caom2:producer>STScI-STSDAS</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/GN2001BQ013-04</caom2:reference>
-        <caom2:keywords>
-          <caom2:keyword>spectroscopy</caom2:keyword>
-        </caom2:keywords>
       </caom2:provenance>
       <caom2:artifacts>
         <caom2:artifact caom2:id="00000000-0000-0000-ba10-c26a6be6476f">
