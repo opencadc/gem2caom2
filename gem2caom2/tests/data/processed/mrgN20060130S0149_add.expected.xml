@@ -24,6 +24,9 @@
   </caom2:telescope>
   <caom2:instrument>
     <caom2:name>GMOS-N</caom2:name>
+    <caom2:keywords>
+      <caom2:keyword>imaging</caom2:keyword>
+    </caom2:keywords>
   </caom2:instrument>
   <caom2:planes>
     <caom2:plane caom2:id="149fd33e-f1a8-4af9-a373-e582cb9570ec" caom2:lastModified="2019-12-03T21:20:49.426" caom2:maxLastModified="2020-06-04T15:38:51.639" caom2:metaChecksum="md5:da47607c35e3ff20c5b9a770bc77d9c2" caom2:accMetaChecksum="md5:4ee7510db7e6d7cdc5fc816dc8de0b9f">
@@ -37,9 +40,6 @@
         <caom2:project>Gemini Archive</caom2:project>
         <caom2:producer>NOAO-IRAF FITS Image Kernel July 2003</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/filepre=mrgN20060130S0149_add.fits</caom2:reference>
-        <caom2:keywords>
-          <caom2:keyword>imaging</caom2:keyword>
-        </caom2:keywords>
         <caom2:inputs>
           <caom2:planeURI>caom:GEMINI/GN-2006A-Q-90-1-002/N20060130S0150</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/GN-2006A-Q-90-1-001/N20060130S0149</caom2:planeURI>
