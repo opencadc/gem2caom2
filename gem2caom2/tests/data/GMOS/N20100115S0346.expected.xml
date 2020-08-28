@@ -26,6 +26,9 @@
   </caom2:telescope>
   <caom2:instrument>
     <caom2:name>GMOS-N</caom2:name>
+    <caom2:keywords>
+      <caom2:keyword>LS</caom2:keyword>
+    </caom2:keywords>
   </caom2:instrument>
   <caom2:planes>
     <caom2:plane caom2:id="00000000-0000-0000-656c-0150dd1dc1ae" caom2:lastModified="2015-11-06T14:05:28.017" caom2:metaChecksum="md5:183bc23db33cb697d030aa2aa1dfd1f7" caom2:accMetaChecksum="md5:ae9dc902ec438d3abe188b23e00489fb">
@@ -39,9 +42,6 @@
         <caom2:project>Gemini Archive</caom2:project>
         <caom2:producer>Gemini Observatory</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/GN-2010A-Q-35-10-002</caom2:reference>
-        <caom2:keywords>
-          <caom2:keyword>LS</caom2:keyword>
-        </caom2:keywords>
       </caom2:provenance>
       <caom2:position/>
       <caom2:energy/>

@@ -25,6 +25,9 @@
   </caom2:telescope>
   <caom2:instrument>
     <caom2:name>GMOS-S</caom2:name>
+    <caom2:keywords>
+      <caom2:keyword>IFS</caom2:keyword>
+    </caom2:keywords>
   </caom2:instrument>
   <caom2:planes>
     <caom2:plane caom2:id="00000000-0000-0000-a2b2-e43a42b1cce7" caom2:lastModified="2018-11-16T21:08:28.602" caom2:maxLastModified="2018-11-16T21:08:28.602" caom2:metaChecksum="md5:c9e26cec5248b95c129f94569a434d60" caom2:accMetaChecksum="md5:0f60ea66d5c048790e4e4dacbce55c7c">
@@ -38,9 +41,6 @@
         <caom2:project>Gemini Archive</caom2:project>
         <caom2:producer>NOAO-IRAF FITS Image Kernel July 2003</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/GS-2005B-Q-54-2-004</caom2:reference>
-        <caom2:keywords>
-          <caom2:keyword>IFS</caom2:keyword>
-        </caom2:keywords>
       </caom2:provenance>
       <caom2:position/>
       <caom2:energy/>

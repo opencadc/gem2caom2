@@ -25,6 +25,9 @@
   </caom2:telescope>
   <caom2:instrument>
     <caom2:name>GMOS-N</caom2:name>
+    <caom2:keywords>
+      <caom2:keyword>imaging</caom2:keyword>
+    </caom2:keywords>
   </caom2:instrument>
   <caom2:planes>
     <caom2:plane caom2:id="00000000-0000-0000-bf03-4a24029ae358" caom2:lastModified="2019-01-16T01:15:36.317" caom2:maxLastModified="2019-01-16T01:15:36.317" caom2:metaChecksum="md5:916ce0024be2776505f0cc4fa6757b63" caom2:accMetaChecksum="md5:e5d907dc9ede5c93630163a828b38ec8">
@@ -38,9 +41,6 @@
         <caom2:project>Gemini Archive</caom2:project>
         <caom2:producer>Gemini Observatory</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/GN-2015A-Q-36-15-001</caom2:reference>
-        <caom2:keywords>
-          <caom2:keyword>imaging</caom2:keyword>
-        </caom2:keywords>
       </caom2:provenance>
       <caom2:position/>
       <caom2:energy/>

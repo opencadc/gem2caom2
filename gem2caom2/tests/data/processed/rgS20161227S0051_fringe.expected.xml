@@ -23,6 +23,9 @@
   </caom2:telescope>
   <caom2:instrument>
     <caom2:name>GMOS-S</caom2:name>
+    <caom2:keywords>
+      <caom2:keyword>imaging</caom2:keyword>
+    </caom2:keywords>
   </caom2:instrument>
   <caom2:planes>
     <caom2:plane caom2:id="00000000-0000-0000-9cad-bb5b08f5eec2">
@@ -36,9 +39,6 @@
         <caom2:project>Gemini Archive</caom2:project>
         <caom2:producer>NOAO-IRAF FITS Image Kernel July 2003</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/filepre=rgS20161227S0051_fringe.fits</caom2:reference>
-        <caom2:keywords>
-          <caom2:keyword>imaging</caom2:keyword>
-        </caom2:keywords>
         <caom2:inputs>
           <caom2:planeURI>caom:GEMINI/GS-CAL20161227-5-004/S20161227S0054</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/GS-CAL20161227-5-001/S20161227S0051</caom2:planeURI>
