@@ -170,9 +170,7 @@ def _do_prev(obs_id, working_dir, plane, cadc_client, stream, observable):
                 f'Should not have reached this point in thumbnail generation '
                 f'for {plane.product_id}')
 
-        logging.error(preview_fqn)
         _augment(plane, gem_name.prev_uri, preview_fqn, ProductType.PREVIEW)
-        logging.error(plane.artifacts[gem_name.prev_uri])
         count = 1
 
         logging.debug(f'Generate thumbnail for file id {plane.product_id}')

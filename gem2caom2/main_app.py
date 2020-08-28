@@ -987,7 +987,10 @@ def accumulate_fits_bp(bp, file_id, uri):
     bp.set('Observation.proposal.id', 'get_proposal_id(header)')
 
     bp.clear('Observation.algorithm.name')
-
+    instrument = _get_instrument()
+    if instrument in [em.Inst.GMOSN, em.Inst.GMOSS, em.Inst.GMOS]:
+        bp.set('Observation.instrument.keywords',
+               'get_provenance_keywords(uri)')
     telescope = em.om.get('telescope')
     if telescope is not None:
         if 'North' in telescope:
@@ -1009,13 +1012,10 @@ def accumulate_fits_bp(bp, file_id, uri):
     # Add IMAGESWV for GRACES
     bp.add_fits_attribute('Plane.provenance.producer', 'IMAGESWV')
     bp.set_default('Plane.provenance.producer', 'Gemini Observatory')
-    instrument = _get_instrument()
     if instrument is not em.Inst.TEXES:
         data_label = _get_data_label()
         bp.set('Plane.provenance.reference',
                'http://archive.gemini.edu/searchform/{}'.format(data_label))
-    if instrument in [em.Inst.GMOSN, em.Inst.GMOSS, em.Inst.GMOS]:
-        bp.set('Plane.provenance.keywords', 'get_provenance_keywords(uri)')
 
     if instrument is em.Inst.GRACES:
         bp.set('Plane.provenance.lastExecuted',

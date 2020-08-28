@@ -25,6 +25,9 @@
   </caom2:telescope>
   <caom2:instrument>
     <caom2:name>GMOS-N</caom2:name>
+    <caom2:keywords>
+      <caom2:keyword>LS</caom2:keyword>
+    </caom2:keywords>
   </caom2:instrument>
   <caom2:planes>
     <caom2:plane caom2:id="00000000-0000-0000-8182-0150efb225e8" caom2:lastModified="2015-11-10T04:40:42.337" caom2:metaChecksum="md5:f9b4f48bdbe4a9927c6118f9d5e3d61b" caom2:accMetaChecksum="md5:ef86d2f4ea301a94f1696390e3829019">
@@ -38,9 +41,6 @@
         <caom2:project>Gemini Archive</caom2:project>
         <caom2:producer>NOAO-IRAF FITS Image Kernel July 2003</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/GN-2009B-Q-121-15-001</caom2:reference>
-        <caom2:keywords>
-          <caom2:keyword>LS</caom2:keyword>
-        </caom2:keywords>
       </caom2:provenance>
       <caom2:position/>
       <caom2:energy/>
