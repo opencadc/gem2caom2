@@ -193,7 +193,8 @@ def test_is_processed():
         'P2003JAN14_0148_DARK': True,
         'P2002FEB03_0045_DARK10SEC': True,
         'P2002DEC02_0161_SUB': True,
-        'P2002DEC02_0075_SUB.0001': True}
+        'P2002DEC02_0075_SUB.0001': True,
+        'N20191219A0004b': False}
     for ii in tests:
         assert obs_file_relationship.is_processed(ii) == tests[ii], \
             'failed {}'.format(ii)
@@ -256,10 +257,15 @@ def test_repair_data_label_247():
     fid4 = 'S20161227S0051'
     dl4 = ['GS-CAL20161227-5-001']
 
+    # the processed that goes with the unprocessed
+    fid5 = 'N20110313S0188_fringe'
+    dl5 = ['GN-CAL20110313-900-188']
+
     d = {fid1: dl1,
          fid2: dl2,
          fid3: dl3,
-         fid4: dl4
+         fid4: dl4,
+         fid5: dl5
          }
 
     for key, value in d.items():

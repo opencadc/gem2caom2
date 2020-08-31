@@ -1012,7 +1012,10 @@ def accumulate_fits_bp(bp, file_id, uri):
     # Add IMAGESWV for GRACES
     bp.add_fits_attribute('Plane.provenance.producer', 'IMAGESWV')
     bp.set_default('Plane.provenance.producer', 'Gemini Observatory')
-    if instrument is not em.Inst.TEXES:
+    if instrument is em.Inst.ALOPEKE:
+        bp.set('Plane.provenance.reference',
+               f'http://archive.gemini.edu/searchform/filepre={file_id[:-1]}')
+    elif instrument is not em.Inst.TEXES:
         data_label = _get_data_label()
         bp.set('Plane.provenance.reference',
                'http://archive.gemini.edu/searchform/{}'.format(data_label))
@@ -1341,6 +1344,9 @@ def update(observation, **kwargs):
                                 _update_chunk_position_trecs(
                                     c, headers, int(part),
                                     observation.observation_id)
+                            elif instrument is em.Inst.ALOPEKE:
+                                _update_chunk_position_alopeke(
+                                    c, observation.observation_id)
 
                         # time WCS
                         if instrument is em.Inst.F2:
@@ -3528,6 +3534,15 @@ def _update_position_from_zeroth_header(artifact, headers, instrument, obs_id):
                 chunk.position = primary_chunk.position
                 chunk.position_axis_1 = 1
                 chunk.position_axis_2 = 2
+
+
+def _update_chunk_position_alopeke(chunk, obs_id):
+    logging.debug(f'Begin _update_chunk_position_alopeke for {obs_id}')
+    if (chunk is not None and chunk.position is not None and
+            chunk.position.axis is not None and
+            chunk.position.axis.axis1.ctype == 'RA--TAN'):
+        chunk.position.axis.axis1.ctype = 'RA---TAN'
+    logging.debug(f'End _update_chunk_position_alopeke.')
 
 
 def _update_chunk_position_flamingos(chunk, header, obs_id):

@@ -473,7 +473,7 @@ class CachingObsFileRelationship(GemObsFileRelationship):
         self._tap_client = value
 
     def get_obs_id(self, file_id):
-        self._logger.error(f'Entering get_obs_id for {file_id}.')
+        self._logger.debug(f'Entering get_obs_id for {file_id}.')
         result = super(CachingObsFileRelationship, self).get_obs_id(file_id)
         if result is None:
             if self._use_local_files:
@@ -498,7 +498,7 @@ class CachingObsFileRelationship(GemObsFileRelationship):
         # using the global om structure to look up and store
         # metadata will modify the internal index of the class - maintain
         # that index here with a save/restore
-        self._logger.error(f'Begin _get_obs_id_from_gemini for {file_id}')
+        self._logger.debug(f'Begin _get_obs_id_from_gemini for {file_id}')
         global om
         current_file_id = om.current
         get_obs_metadata(file_id)
