@@ -74,7 +74,7 @@ from caom2pipe import name_builder_composable as nbc
 from gem2caom2 import gem_name, external_metadata
 
 
-__all__ = ['EduQueryBuilder', 'GemObsIDBuilder']
+__all__ = ['EduQueryBuilder', 'GemObsIDBuilder', 'get_instrument']
 
 
 class EduQueryBuilder(nbc.Builder):
@@ -112,7 +112,8 @@ class EduQueryBuilder(nbc.Builder):
 
         external_metadata.get_obs_metadata(
             gem_name.GemName.remove_extensions(entry))
-        storage_name = gem_name.GemName(file_name=entry)
+        instrument = get_instrument()
+        storage_name = gem_name.GemName(file_name=entry, instrument=instrument)
         return storage_name
 
 
@@ -133,10 +134,20 @@ class GemObsIDBuilder(nbc.Builder):
         :return: an instance of StorageName for use in execute_composable.
         """
         self._logger.debug(f'Build a StorageName instance for {entry}.')
+        instrument = get_instrument()
         if (mc.TaskType.INGEST_OBS in self._config.task_types and
                 '.fits' not in entry):
-            result = gem_name.GemName(obs_id=entry)
+            result = gem_name.GemName(obs_id=entry, instrument=instrument)
         else:
-            result = gem_name.GemName(file_name=entry)
+            result = gem_name.GemName(file_name=entry, instrument=instrument)
         self._logger.debug('Done build.')
         return result
+
+
+def get_instrument():
+    inst = external_metadata.om.get('instrument')
+    if inst == 'ALOPEKE':
+        # because the value in JSON is a different case than the value in
+        # the FITS header
+        inst = 'Alopeke'
+    return external_metadata.Inst(inst)

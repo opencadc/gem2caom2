@@ -94,7 +94,7 @@ LOOKUP = {'GS-CAL20101028-5-004': ['mrgS20101028S0134', 'S20101028S0134'],
                                    'N20150807G0044m'],
           'GN-2012A-Q-124-1-003': ['N20120905S0122', 'N20120905S0122_arc'],
           'GS-2006A-Q-60-11-001': ['S20060412S0056', 'rS20060412S0056'],
-          'GN-2020A-Q-132-0-0': ['N20191219A0004b', 'N20191219A0004r'],
+          'N20191219A0004': ['N20191219A0004b', 'N20191219A0004r'],
           'GS-2003B-Q-23-17-001': ['S20050916S0159', 'rS20050916S0159']
           }
 
@@ -160,7 +160,7 @@ def test_multi_plane(tap_mock, test_name):
 
 def _get_lineage(obs_id):
     result = ''
-    if obs_id == 'GN-2020A-Q-132-0-0':
+    if obs_id in ['GN-2020A-Q-132-0-0', 'N20191219A0004']:
         product_id = LOOKUP[obs_id][0][:-1]
         x = mc.get_lineage(gem_name.ARCHIVE, product_id,
                            f'{LOOKUP[obs_id][0]}.fits', gem_name.SCHEME)

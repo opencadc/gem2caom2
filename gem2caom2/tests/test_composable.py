@@ -82,7 +82,7 @@ import gem_mocks
 from caom2 import SimpleObservation, Algorithm
 from caom2pipe import execute_composable as ec
 from caom2pipe import manage_composable as mc
-from gem2caom2 import composable, main_app, gem_name
+from gem2caom2 import composable, main_app, gem_name, external_metadata
 
 STATE_FILE = '/usr/src/app/state.yml'
 TODO_FILE = '/usr/src/app/todo.txt'
@@ -127,7 +127,9 @@ def test_run_by_tap_query(client_mock):
 
 @patch('caom2pipe.execute_composable.OrganizeExecutesWithDoOne.do_one')
 @patch('gem2caom2.external_metadata.CadcTapClient')
-def test_run(client_mock, run_mock):
+@patch('gem2caom2.builder.get_instrument')
+def test_run(inst_mock, client_mock, run_mock):
+    inst_mock.return_value = external_metadata.Inst.CIRPASS
     test_obs_id = 'GS-2004A-Q-6-27-0255'
     test_f_id = '2004may19_0255'
     test_f_name = f'{test_f_id}.fits'
@@ -159,7 +161,9 @@ def test_run(client_mock, run_mock):
 
 @patch('caom2pipe.execute_composable.OrganizeExecutesWithDoOne.do_one')
 @patch('gem2caom2.external_metadata.CadcTapClient')
-def test_run_errors(client_mock, run_mock):
+@patch('gem2caom2.builder.get_instrument')
+def test_run_errors(inst_mock, client_mock, run_mock):
+    inst_mock.return_value = external_metadata.Inst.GMOSS
     test_obs_id = 'TX20131117_flt.3002'
     test_f_id = 'TX20131117_flt.3002'
     test_f_name = f'{test_f_id}.fits'

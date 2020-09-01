@@ -114,6 +114,8 @@ import gem2caom2.external_metadata as em
 import gem2caom2.obs_file_relationship as ofr
 from gem2caom2.gem_name import GemName, COLLECTION
 from gem2caom2.svofps import FilterMetadata
+from gem2caom2.builder import get_instrument
+
 
 __all__ = ['gem_main_app', 'to_caom2', 'update', 'APPLICATION']
 
@@ -158,7 +160,7 @@ def get_time_delta(header):
 def get_calibration_level(uri):
     result = CalibrationLevel.RAW_STANDARD
     reduction = em.om.get('reduction')
-    instrument = _get_instrument()
+    instrument = get_instrument()
     if ((reduction is not None and
          (('PROCESSED' in reduction) or ('PREPARED' in reduction))) or
             (instrument is em.Inst.TEXES and
@@ -197,7 +199,7 @@ def get_art_product_type(header):
             else:
                 result = ProductType.SCIENCE
         else:
-            instrument = _get_instrument()
+            instrument = get_instrument()
             if instrument is not None:
                 if instrument is em.Inst.PHOENIX:
                     if _is_phoenix_calibration(header):
@@ -231,7 +233,7 @@ def get_art_product_type(header):
 
 
 def get_cd11(header):
-    instrument = _get_instrument()
+    instrument = get_instrument()
     if instrument is em.Inst.HOKUPAA:
         result = _get_pix_scale(header)
     elif instrument in [em.Inst.OSCIR, em.Inst.TEXES]:
@@ -265,7 +267,7 @@ def get_cd11(header):
 
 
 def get_cd22(header):
-    instrument = _get_instrument()
+    instrument = get_instrument()
     if instrument is em.Inst.HOKUPAA:
         result = _get_pix_scale(header)
     elif instrument in [em.Inst.OSCIR, em.Inst.TEXES]:
@@ -287,7 +289,7 @@ def get_cd22(header):
 
 
 def get_crpix1(header):
-    instrument = _get_instrument()
+    instrument = get_instrument()
     if instrument is em.Inst.HOKUPAA:
         crpix1 = header.get('CRPIX1')
         if crpix1 is None:
@@ -306,7 +308,7 @@ def get_crpix1(header):
 
 
 def get_crpix2(header):
-    instrument = _get_instrument()
+    instrument = get_instrument()
     if instrument is em.Inst.HOKUPAA:
         crpix2 = header.get('CRPIX2')
         if crpix2 is None:
@@ -331,7 +333,7 @@ def get_data_product_type(header):
     :param header:  The FITS header for the current extension.
     :return: The Plane DataProductType, or None if not found.
     """
-    instrument = _get_instrument()
+    instrument = get_instrument()
     if instrument is em.Inst.FLAMINGOS:
         result, ignore = _get_flamingos_mode(header)
     elif instrument is em.Inst.GNIRS:
@@ -345,6 +347,15 @@ def get_data_product_type(header):
             result = DataProductType.SPECTRUM
     elif instrument in [em.Inst.CIRPASS, em.Inst.TEXES]:
         result = DataProductType.SPECTRUM
+    elif instrument in [em.Inst.ALOPEKE, em.Inst.ZORRO]:
+        # DB 31-08-20
+        # Both cameras are used for speckle imaging.  Datasets consist of
+        # cubes of 256 x 256 x 1000 images.  i.e. 1000 short exposures << 1
+        # second long with 256 x 256 pixel images (or smaller images if the CCD
+        # is binned).
+        #
+        # So dataProductType = cube
+        result = DataProductType.CUBE
     else:
         mode = em.om.get('mode')
         obs_type = _get_obs_type(header)
@@ -397,7 +408,7 @@ def get_dec(header):
     :param header:  The FITS header for the current extension.
     :return: declination, or None if not found.
     """
-    instrument = _get_instrument()
+    instrument = get_instrument()
     if instrument is em.Inst.HOKUPAA:
         ra, dec = _get_sky_coord(header, 'RA', 'DEC')
         result = dec
@@ -429,7 +440,7 @@ def get_exposure(header):
     :return: The exposure time, or None if not found.
     """
     result = em.om.get('exposure_time')
-    instrument = _get_instrument()
+    instrument = get_instrument()
     if instrument is em.Inst.OSCIR:
         # DB - 20-02-19 - json ‘exposure_time’ is in minutes, so multiply
         # by 60.0.
@@ -528,7 +539,7 @@ def get_obs_intent(header):
             if type_lookup in cal_values:
                 result = ObservationIntentType.CALIBRATION
             else:
-                instrument = _get_instrument()
+                instrument = get_instrument()
                 if instrument is not None:
                     if instrument is em.Inst.TRECS:
                         data_label = header.get('DATALAB')
@@ -564,7 +575,7 @@ def get_obs_type(header):
     obs_class = _get_obs_class(header)
     if obs_class is not None and (obs_class == 'acq' or obs_class == 'acqCal'):
         result = 'ACQUISITION'
-    instrument = _get_instrument()
+    instrument = get_instrument()
     if instrument is em.Inst.PHOENIX:
         result = _get_phoenix_obs_type(header)
     elif instrument is em.Inst.HOKUPAA:
@@ -682,7 +693,7 @@ def get_ra(header):
     :param header:  The FITS header for the current extension.
     :return: ra, or None if not found.
     """
-    instrument = _get_instrument()
+    instrument = get_instrument()
     if instrument is em.Inst.HOKUPAA:
         ra, dec = _get_sky_coord(header, 'RA', 'DEC')
         result = ra
@@ -730,7 +741,7 @@ def get_target_type(uri):
     """
     result = TargetType.FIELD
     spectroscopy = em.om.get('spectroscopy')
-    instrument = _get_instrument()
+    instrument = get_instrument()
     if spectroscopy or instrument is em.Inst.TEXES:
         result = TargetType.OBJECT
     return result
@@ -743,7 +754,7 @@ def get_time_function_val(header):
     :param header:  The FITS header for the current extension (not used).
     :return: The Time WCS value from JSON Summary Metadata.
     """
-    instrument = _get_instrument()
+    instrument = get_instrument()
     if instrument in [em.Inst.FLAMINGOS, em.Inst.OSCIR]:
         # Another FLAMINGOS correction needed:  DATE-OBS in header and
         # json doesn’t include the time  but sets it to 00:00:00.  You have
@@ -864,15 +875,6 @@ def _get_data_label():
     return em.om.get('data_label')
 
 
-def _get_instrument():
-    inst = em.om.get('instrument')
-    if inst == 'ALOPEKE':
-        # because the value in JSON is a different case than the value in
-        # the FITS header
-        inst = 'Alopeke'
-    return em.Inst(inst)
-
-
 def _get_sky_coord(header, ra_key, dec_key):
     ra_hours = header.get(ra_key)
     dec_hours = header.get(dec_key)
@@ -966,7 +968,7 @@ def _is_phoenix_calibration(header):
 
 def _is_gmos_mask(header):
     result = False
-    instrument = _get_instrument()
+    instrument = get_instrument()
     if instrument in [em.Inst.GMOSS, em.Inst.GMOSN, em.Inst.GMOS]:
         obs_type = _get_obs_type(header)
         if obs_type == 'MASK':
@@ -987,7 +989,7 @@ def accumulate_fits_bp(bp, file_id, uri):
     bp.set('Observation.proposal.id', 'get_proposal_id(header)')
 
     bp.clear('Observation.algorithm.name')
-    instrument = _get_instrument()
+    instrument = get_instrument()
     if instrument in [em.Inst.GMOSN, em.Inst.GMOSS, em.Inst.GMOS]:
         bp.set('Observation.instrument.keywords',
                'get_provenance_keywords(uri)')

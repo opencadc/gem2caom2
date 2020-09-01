@@ -89,50 +89,79 @@ class GemName(mc.StorageName):
             mixed-case obs id values - the case the inputs are provided in are
             assumed to be correct.
     - support uncompressed files in storage
+
+    DB 31-08-20
+    DATALAB can NOT be used for the CAOM2 Observation ID since it appears that
+    the DATALAB value is identical for all files obtained for a single
+    program. e.g. if the program ID is GN-2020A-DD-115 then the DATALAB value
+    is always GN-2020A-DD-115-0-0.
+
+    Instead, use the root of the filename as the observation ID.  e.g.
+    N20200819A0003r.fits and N20200819A0003b.fits are two files generated from
+    a single observation (r = red channel, b = blue channel).  Use
+    N20200819A0003 as the observation ID with two planes given by the two
+    colours of data.
     """
 
     GEM_NAME_PATTERN = '*'
 
     def __init__(self, fname_on_disk=None, file_name=None, obs_id=None,
-                 file_id=None):
+                 file_id=None, instrument=None):
         logging.debug('parameters fname_on_disk {} file_name {}'
                       ' obs id {} file id {}'.format(fname_on_disk,
                                                      file_name,
                                                      obs_id,
                                                      file_id))
-        # try to set the file name, if that information is available
+        if instrument in [em.Inst.ALOPEKE, em.Inst.ZORRO]:
+            if file_name is None and fname_on_disk is None:
+                raise mc.CadcException(f'Need a file name of some sort.')
+            if file_name is None:
+                self._file_name = fname_on_disk
+            else:
+                self._file_name = file_name
+            self._file_id = GemName.remove_extensions(self._file_name)
+            self._obs_id = self._file_id[:-1]
+            self._product_id = self._obs_id
+            super(GemName, self).__init__(
+                obs_id=self._obs_id, collection=ARCHIVE,
+                collection_pattern=GemName.GEM_NAME_PATTERN,
+                fname_on_disk=self._file_name,
+                scheme=SCHEME)
+        else:
+            # try to set the file name, if that information is available
 
-        # file_name is assumed to be the file name in ad
-        # because the GEM files are stored uncompressed,
-        # while the files available from Gemini are bz2.
-        self._file_name = None
-        self._file_id = None
-        if file_name is not None:
-            self._file_id = GemName.get_file_id(file_name)
-            self.file_name = file_name
-        if fname_on_disk is not None:
-            self._file_id = GemName.get_file_id(fname_on_disk)
-            self.file_name = fname_on_disk
-        if obs_id is not None:
-            self._obs_id = obs_id
-        super(GemName, self).__init__(
-            obs_id=obs_id, collection=ARCHIVE,
-            collection_pattern=GemName.GEM_NAME_PATTERN,
-            fname_on_disk=self.file_name,
-            scheme=SCHEME)
-        if self._obs_id is None:
-            temp = em.get_gofr().get_obs_id(self._file_id)
-            if temp is not None:
-                self._obs_id = GemName.remove_extensions(temp)
-        if (self._fname_on_disk is None and self._file_name is None and
-                self._obs_id is None):
-            raise mc.CadcException('Require a name.')
-        if (self._file_id is None and self._obs_id is None and
-                file_id is not None):
-            self._file_id = file_id
-            self._obs_id = file_id
-        if file_id is not None:
-            self._file_id = file_id
+            # file_name is assumed to be the file name in ad
+            # because the GEM files are stored uncompressed,
+            # while the files available from Gemini are bz2.
+            self._file_name = None
+            self._file_id = None
+            if file_name is not None:
+                self._file_id = GemName.get_file_id(file_name)
+                self.file_name = file_name
+            if fname_on_disk is not None:
+                self._file_id = GemName.get_file_id(fname_on_disk)
+                self.file_name = fname_on_disk
+            if obs_id is not None:
+                self._obs_id = obs_id
+            super(GemName, self).__init__(
+                obs_id=obs_id, collection=ARCHIVE,
+                collection_pattern=GemName.GEM_NAME_PATTERN,
+                fname_on_disk=self.file_name,
+                scheme=SCHEME)
+            if self._obs_id is None:
+                temp = em.get_gofr().get_obs_id(self._file_id)
+                if temp is not None:
+                    self._obs_id = GemName.remove_extensions(temp)
+            if (self._fname_on_disk is None and self._file_name is None and
+                    self._obs_id is None):
+                raise mc.CadcException('Require a name.')
+            if (self._file_id is None and self._obs_id is None and
+                    file_id is not None):
+                self._file_id = file_id
+                self._obs_id = file_id
+            if file_id is not None:
+                self._file_id = file_id
+            self._product_id = self._file_id
         self._logger = logging.getLogger(__name__)
         self._logger.debug(self)
 
@@ -175,7 +204,7 @@ class GemName(mc.StorageName):
 
     @property
     def lineage(self):
-        return mc.get_lineage(ARCHIVE, self._file_id, self._file_name,
+        return mc.get_lineage(ARCHIVE, self.product_id, self._file_name,
                               self.scheme)
 
     @property
@@ -184,7 +213,7 @@ class GemName(mc.StorageName):
 
     @property
     def product_id(self):
-        return self._file_id
+        return self._product_id
 
     @property
     def thumb_uri(self):
