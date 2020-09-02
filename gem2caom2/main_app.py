@@ -1290,6 +1290,12 @@ def update(observation, **kwargs):
                                 _update_chunk_energy_texes(
                                     c, headers[0], plane.data_product_type,
                                     observation.observation_id)
+                            elif instrument in [em.Inst.ALOPEKE, em.Inst.ZORRO]:
+                                _update_chunk_energy_general(
+                                    c, instrument, [DataProductType.CUBE],
+                                    plane.data_product_type,
+                                    observation.observation_id,
+                                    filter_name)
 
                         # position WCS
                         mode = em.om.get('mode')
@@ -1457,10 +1463,9 @@ def _build_chunk_energy(chunk, filter_name, fm):
                              bandpass_name=bandpass_name,
                              resolving_power=fm.resolving_power)
     chunk.energy = energy
-    if chunk.naxis > 2:
-        chunk.energy_axis = 4
-    else:
-        chunk.energy_axis = None
+    # no chunk energy is derived from FITS file axis metadata, so no cutouts
+    # to support
+    chunk.energy_axis = None
 
 
 # values from
