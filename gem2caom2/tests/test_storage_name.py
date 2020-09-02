@@ -108,8 +108,9 @@ def test_storage_name():
     test_sn = GemName(fname_on_disk='N20200810A0490r.fits',
                       instrument=em.Inst.ALOPEKE)
     assert test_sn.obs_id == 'N20200810A0490', 'wrong obs id'
+    assert test_sn.product_id == 'N20200810A0490r', 'wrong product id'
     assert test_sn.file_uri == f'{SCHEME}:{ARCHIVE}/N20200810A0490r.fits'
     assert test_sn.external_urls == 'https://archive.gemini.edu/fullheader/' \
                                     'N20200810A0490r.fits'
-    assert test_sn.lineage == f'{test_sn.obs_id}/{SCHEME}:{ARCHIVE}/' \
+    assert test_sn.lineage == f'{test_sn.obs_id}r/{SCHEME}:{ARCHIVE}/' \
                               f'{test_sn.file_id}.fits', 'wrong lineage'

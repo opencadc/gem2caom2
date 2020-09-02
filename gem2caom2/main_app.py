@@ -355,7 +355,12 @@ def get_data_product_type(header):
         # is binned).
         #
         # So dataProductType = cube
-        result = DataProductType.CUBE
+        #
+        # PD 02-09-20
+        # if those two files are images in the normal sense then it could make
+        # sense to create separate planes with dataProductType = image that
+        # end up with the correct (distinct) energy metadata.
+        result = DataProductType.IMAGE
     else:
         mode = em.om.get('mode')
         obs_type = _get_obs_type(header)
@@ -1016,7 +1021,7 @@ def accumulate_fits_bp(bp, file_id, uri):
     bp.set_default('Plane.provenance.producer', 'Gemini Observatory')
     if instrument is em.Inst.ALOPEKE:
         bp.set('Plane.provenance.reference',
-               f'http://archive.gemini.edu/searchform/filepre={file_id[:-1]}')
+               f'http://archive.gemini.edu/searchform/filepre={file_id}.fits')
     elif instrument is not em.Inst.TEXES:
         data_label = _get_data_label()
         bp.set('Plane.provenance.reference',
@@ -1292,7 +1297,7 @@ def update(observation, **kwargs):
                                     observation.observation_id)
                             elif instrument in [em.Inst.ALOPEKE, em.Inst.ZORRO]:
                                 _update_chunk_energy_general(
-                                    c, instrument, [DataProductType.CUBE],
+                                    c, instrument, [DataProductType.IMAGE],
                                     plane.data_product_type,
                                     observation.observation_id,
                                     filter_name)
@@ -1379,6 +1384,10 @@ def update(observation, **kwargs):
                                 c.position_axis_2 = None
                                 c.time_axis = None
                                 c.energy_axis = None
+
+                        if instrument in [em.Inst.ALOPEKE, em.Inst.ZORRO]:
+                            _update_chunk_time_fox(
+                                c, header, observation.observation_id)
                         if c.naxis is not None and c.naxis <= 2:
                             if c.position_axis_1 is None:
                                 c.naxis = None
@@ -3777,6 +3786,23 @@ def _update_chunk_time_f2(chunk, obs_id):
         chunk.time.axis.function.delta = get_time_delta(None)
         logging.info('F2: Updated time delta for {}'.format(obs_id))
     logging.debug('End _update_chunk_time_f2 {}'.format(obs_id))
+
+
+def _update_chunk_time_fox(chunk, header, obs_id):
+    """
+    DB 02-09-20
+    Exposure time using JSON values isn’t correct.  I know that for this
+    example Gemini shows the exposure time is 0.02 seconds but there are
+    1000 x 0.02-second exposures in the cube.  The keyword EXPOSURE gives the
+    total exposure time (in seconds), time.exposure, or 20 in this case while
+    the json exposure_time should be the time.resolution.
+    """
+    logging.debug('Begin _update_chunk_time_fox {}'.format(obs_id))
+    mc.check_param(chunk, Chunk)
+    if chunk.time is not None:
+        chunk.time.exposure = header.get('EXPOSURE')
+        # chunk.time.resolution already set by blueprint
+    logging.debug('End _update_chunk_time_fox {}'.format(obs_id))
 
 
 def _update_chunk_time_gmos(chunk, obs_id):

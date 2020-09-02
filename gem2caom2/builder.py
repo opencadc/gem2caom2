@@ -68,7 +68,9 @@
 #
 
 import logging
+import traceback
 
+from caom2pipe import astro_composable as ac
 from caom2pipe import manage_composable as mc
 from caom2pipe import name_builder_composable as nbc
 from gem2caom2 import gem_name, external_metadata
@@ -134,14 +136,41 @@ class GemObsIDBuilder(nbc.Builder):
         :return: an instance of StorageName for use in execute_composable.
         """
         self._logger.debug(f'Build a StorageName instance for {entry}.')
-        instrument = get_instrument()
-        if (mc.TaskType.INGEST_OBS in self._config.task_types and
-                '.fits' not in entry):
-            result = gem_name.GemName(obs_id=entry, instrument=instrument)
-        else:
-            result = gem_name.GemName(file_name=entry, instrument=instrument)
-        self._logger.debug('Done build.')
-        return result
+        try:
+            if (mc.TaskType.INGEST_OBS in self._config.task_types and
+                    '.fits' not in entry):
+                # anything that is NOT ALOPEKE/ZORRO, which are the only
+                # two instruments that change the behaviour of the
+                # GemName constructor - and yeah, that abstraction is leaking
+                # like a sieve.
+                self._logger.debug('INGEST_OBS, hard-coded instrument.')
+                instrument = external_metadata.Inst.CIRPASS
+                result = gem_name.GemName(obs_id=entry, instrument=instrument)
+            elif (mc.TaskType.SCRAPE in self._config.task_types or
+                    self._config.use_local_files):
+                self._logger.debug(
+                    'Use a local file to read instrument from the headers.')
+                headers = ac.read_fits_headers(
+                    f'{self._config.working_dir}/{entry}')
+                instrument = external_metadata.Inst(headers[0].get('INSTRUME'))
+                result = gem_name.GemName(
+                    file_name=entry, instrument=instrument)
+            elif self._config.features.use_file_names:
+                self._logger.debug('Read instrument from archive.gemini.edu.')
+                file_id = gem_name.GemName.remove_extensions(entry)
+                external_metadata.get_obs_metadata(file_id)
+                instrument = get_instrument()
+                result = gem_name.GemName(
+                    file_name=entry, instrument=instrument)
+            else:
+                raise mc.CadcException('The need has not been encountered '
+                                       'in the real world yet.')
+            self._logger.debug('Done build.')
+            return result
+        except Exception as e:
+            self._logger.error(e)
+            self._logger.debug(traceback.format_exc())
+            raise mc.CadcException(e)
 
 
 def get_instrument():
