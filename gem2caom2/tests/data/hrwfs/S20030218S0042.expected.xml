@@ -12,6 +12,9 @@
     <caom2:id>GS-2003A-Q-6</caom2:id>
     <caom2:pi>Jane Gregorio-Hetem</caom2:pi>
     <caom2:title>The nature of unidentified X-ray sources in CMa star formation region- Part II</caom2:title>
+    <caom2:keywords>
+      <caom2:keyword>Moleculear clouds, Neutron stars, T Tauri stars, Young star clusters</caom2:keyword>
+    </caom2:keywords>
   </caom2:proposal>
   <caom2:target>
     <caom2:name>src17</caom2:name>
