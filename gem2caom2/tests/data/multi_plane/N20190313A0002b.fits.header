@@ -1,0 +1,100 @@
+Filename: N20190313A0002b.fits.bz2
+
+AstroData Tags: {'UNPREPARED', 'GEMINI', 'NORTH', 'RAW'}
+
+
+--- PHU ---
+SIMPLE  =                    T / file does conform to FITS standard             
+BITPIX  =                   16 / number of bits per data pixel                  
+NAXIS   =                    3 / number of data axes                            
+NAXIS1  =                 1024 / length of data axis 1                          
+NAXIS2  =                 1024 / length of data axis 2                          
+NAXIS3  =                   50 / length of data axis 3                          
+EXTEND  =                    T / FITS dataset may contain extensions            
+COMMENT   FITS (Flexible Image Transport System) format is defined in 'Astronomy
+COMMENT   and Astrophysics', volume 376, page 359; bibcode: 2001A&A...376..359H 
+BZERO   =                32768 / offset data range to that of unsigned short    
+BSCALE  =                    1 / default scaling factor                         
+CREATOR = 'Linux ANDOR CCD control' / Speckle Data-taking program               
+MJD-OBS =         58555.936169 / MJD at start of obs                            
+JD      =        2458556.43617 / Julian Date at start of obs                    
+HDR_REV = '3.00 18-Feb-2008'   / Header-Rev                                     
+UTC     = '22:28:04.4'         / UTC time                                       
+LAST    = '23:31:14.2'         / LSTHDR local sidereal time                     
+EPOCH   =          2000.000000 / EPOCH of telescope coords                      
+TARGRA  =            75.000000 / Telescope target RA                            
+TARGDEC =            89.970000 / Telescope target DEC                           
+RA      = '23:30:50.691'       / Telescope RA                                   
+DEC     = '+19:53:54.89'       / Telescope DEC                                  
+RAOFFST =             0.000000 / Telescope RA offset                            
+DECOFFST=             0.000000 / Telescope DEC offset                           
+ZD      =             0.036900 / zenith distance                                
+AIRMASS =             1.000000 / airmass at start of exposure                   
+FOCUS   = '-0.082  '           / Telescope focus (microns)                      
+OBJECT  = 'Zenith  '           / Object name                                    
+PA      =             0.000000 / Instrument position angle                      
+OBSERVAT= 'Gemini-North'       / Originating Observatory                        
+PROGID  = 'GN-2019A-Q-214'     / from speckle.scope.ProgID                      
+INSTRUME= 'Alopeke '           / Instrument name                                
+DATE-OBS= '2019-03-13'         / Date of start of observation in UTC            
+OBSTIME = '22:15:34.10'        / from speckle.scope.obstime                     
+OBSTYPE = 'DARK    '           / Type of picture (object, dark, etc.)           
+TELESCOP= 'Gemini-North'       / Specific system                                
+RECID   = '2019-03-13_Gemini-North"' / archive ID for observation               
+ACT     =             0.000000 / Accumulation cycle time                        
+EXPTIME =            15.000000 / Frame Exposure time in seconds                 
+EXPSTART=      1552515334.9638 / Start TAI time of exposure                     
+EXPENDTM=      1552516085.4566 / End TAI time of exposure                       
+HEAD    = 'Andor iXon Emccd'   / Head model                                     
+ACQMODE = 'Kinetics mode'      / Acquisition mode                               
+KCT     =             0.000000 / Kinetic cycle time                             
+KINMODE = '1       '           / Kinetic Mode                                   
+NUMEXP  = '1       '           / from speckle.scope.numexp                      
+READMODE= 'Image   '           / Readout mode                                   
+IMGRECT = '1,1024,1,1024'      / Image format                                   
+EMCCD   = 'On      '           / EMCCD mode                                     
+FRAMEXFR= 'On      '           / Frame Transfer mode                            
+BLCLAMP = 'On      '           / Bias Clamp                                     
+HBIN    =                    1 / Horizontal binning                             
+VBIN    =                    1 / Vertical binning                               
+SUBRECT = '1,1024,1,1024'      / Subimage format                                
+EXPOSURE=           750.000000 / Total Exposure Time                            
+DATATYPE= '32      '           / from speckle.andor.datatype                    
+EMGGAIN =           600.000000 / EM Real Gain                                   
+VSSPEED =             1.130000 / Vertical Speed (usec)                          
+HSSPEED =             1.000000 / Horizontal Speed (MHz)                         
+OUTPTAMP= 'Electron Multiplying' / Output Amplifier                             
+PREAMP  =                    1 / Pre Amplifier Gain                             
+SERNO   = 'X-10405 '           / Serial Number                                  
+UNSTTEMP=           -60.000000 / Unstabilized Temperature                       
+ACCUM   =                    1 / Accumulations per frame                        
+NUMKIN  =                   50 / Series length                                  
+FILTER  = 'clear   '           / Filter name                                    
+FLDZABER= 'wide    '           / Field zaber position                           
+INPZABER= 'wide    '           / Input zaber position                           
+CCDTEMP =           -60.020000 / CCD temperature                                
+RAWIQ   = '0       '           / Image quality                                  
+RAWCC   = '0       '           / Cloud cover                                    
+RAWWV   = '0       '           / Water vapour                                   
+RAWBG   = '0       '           / Background                                     
+HUMIDITY= '37.3    '           / from tcs.weather.humidity                      
+OBSID   = 'GN-2019A-Q-214-0'   / Observation-ID                                 
+GEMPRGID= 'GN-2019A-Q-214'     / Observation-ID                                 
+SPKLESEQ=                    9 / SPECKLENFO-sequence                            
+SPKLEDAT= 'Mar 13 12:28:06'    / SPECKLENFO-timestamp                           
+CRVAL1  =    19.89833333333333 / Declination of reference pixel [deg]           
+CRVAL2  =    352.7083333333333 / RA of reference pixel [deg]                    
+CRPIX1  =                  512 / Coordinate reference pixel in X                
+CRPIX2  =                  512 / Coordinate reference pixel in Y                
+CD1_1   =      -0.000000000000 / Coordinate scale matrix [degrees / pixel]      
+CD1_2   =       0.000020138889 / Coordinate scale matrix [degrees / pixel]      
+CD2_1   =       0.000020138889 / Coordinate scale matrix [degrees / pixel]      
+CD2_2   =       0.000000000000 / Coordinate scale matrix [degrees / pixel]      
+CTYPE1  = 'DEC--TAN'           / Coordinate type                                
+CTYPE2  = 'RA--TAN '           / Coordinate type                                
+WCSNAME = 'FK5     '           / World coordinate system type                   
+RADECSYS= 'FK5     '           / Default coordinate system type                 
+DATALAB = 'GN-2019A-Q-214-0-0'                                                  
+RELEASE = '2020-03-12'                                                          
+ORIGNAME= 'N20190313A0002b.fits' / Original filename prior to processing        
+HISTORY Corrected metadata: Alopeke fixes

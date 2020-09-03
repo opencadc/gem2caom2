@@ -84,8 +84,7 @@ def test_storage_name():
     mock_obs_id = 'GN-2013B-Q-28-150-002'
     test_sn = GemName(file_name='N20131203S0006i.fits.bz2',
                       obs_id=mock_obs_id)
-    assert test_sn.file_uri == '{}:{}/N20131203S0006i.fits'.format(SCHEME,
-                                                                   ARCHIVE)
+    assert test_sn.file_uri == f'{SCHEME}:{ARCHIVE}/N20131203S0006i.fits'
     assert test_sn.file_name == 'N20131203S0006i.fits'
     assert test_sn.prev == 'N20131203S0006i.jpg'
     assert test_sn.thumb == 'N20131203S0006i_th.jpg'
@@ -94,8 +93,7 @@ def test_storage_name():
 
     test_sn = GemName(file_name='S20060920S0137.jpg',
                       obs_id=mock_obs_id)
-    assert test_sn.file_uri == '{}:{}/S20060920S0137.jpg'.format(SCHEME,
-                                                                 ARCHIVE)
+    assert test_sn.file_uri == f'{SCHEME}:{ARCHIVE}/S20060920S0137.jpg'
     assert test_sn.file_name == 'S20060920S0137.jpg'
     assert test_sn.prev == 'S20060920S0137.jpg'
     assert test_sn.thumb == 'S20060920S0137_th.jpg'
@@ -103,7 +101,16 @@ def test_storage_name():
 
     test_sn = GemName(fname_on_disk='N20100104S0208.fits.header')
     assert test_sn.obs_id == 'GN-2009B-Q-121-15-001', 'wrong obs id'
-    assert test_sn.file_uri == '{}:{}/N20100104S0208.fits'.format(SCHEME,
-                                                                  ARCHIVE)
+    assert test_sn.file_uri == f'{SCHEME}:{ARCHIVE}/N20100104S0208.fits'
     assert test_sn.external_urls == 'https://archive.gemini.edu/fullheader/' \
                                     'N20100104S0208.fits'
+
+    test_sn = GemName(fname_on_disk='N20200810A0490r.fits',
+                      instrument=em.Inst.ALOPEKE)
+    assert test_sn.obs_id == 'N20200810A0490', 'wrong obs id'
+    assert test_sn.product_id == 'N20200810A0490r', 'wrong product id'
+    assert test_sn.file_uri == f'{SCHEME}:{ARCHIVE}/N20200810A0490r.fits'
+    assert test_sn.external_urls == 'https://archive.gemini.edu/fullheader/' \
+                                    'N20200810A0490r.fits'
+    assert test_sn.lineage == f'{test_sn.obs_id}r/{SCHEME}:{ARCHIVE}/' \
+                              f'{test_sn.file_id}.fits', 'wrong lineage'

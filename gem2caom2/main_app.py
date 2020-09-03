@@ -114,6 +114,8 @@ import gem2caom2.external_metadata as em
 import gem2caom2.obs_file_relationship as ofr
 from gem2caom2.gem_name import GemName, COLLECTION
 from gem2caom2.svofps import FilterMetadata
+from gem2caom2.builder import get_instrument
+
 
 __all__ = ['gem_main_app', 'to_caom2', 'update', 'APPLICATION']
 
@@ -158,7 +160,7 @@ def get_time_delta(header):
 def get_calibration_level(uri):
     result = CalibrationLevel.RAW_STANDARD
     reduction = em.om.get('reduction')
-    instrument = _get_instrument()
+    instrument = get_instrument()
     if ((reduction is not None and
          (('PROCESSED' in reduction) or ('PREPARED' in reduction))) or
             (instrument is em.Inst.TEXES and
@@ -197,7 +199,7 @@ def get_art_product_type(header):
             else:
                 result = ProductType.SCIENCE
         else:
-            instrument = _get_instrument()
+            instrument = get_instrument()
             if instrument is not None:
                 if instrument is em.Inst.PHOENIX:
                     if _is_phoenix_calibration(header):
@@ -231,7 +233,7 @@ def get_art_product_type(header):
 
 
 def get_cd11(header):
-    instrument = _get_instrument()
+    instrument = get_instrument()
     if instrument is em.Inst.HOKUPAA:
         result = _get_pix_scale(header)
     elif instrument in [em.Inst.OSCIR, em.Inst.TEXES]:
@@ -265,7 +267,7 @@ def get_cd11(header):
 
 
 def get_cd22(header):
-    instrument = _get_instrument()
+    instrument = get_instrument()
     if instrument is em.Inst.HOKUPAA:
         result = _get_pix_scale(header)
     elif instrument in [em.Inst.OSCIR, em.Inst.TEXES]:
@@ -287,7 +289,7 @@ def get_cd22(header):
 
 
 def get_crpix1(header):
-    instrument = _get_instrument()
+    instrument = get_instrument()
     if instrument is em.Inst.HOKUPAA:
         crpix1 = header.get('CRPIX1')
         if crpix1 is None:
@@ -306,7 +308,7 @@ def get_crpix1(header):
 
 
 def get_crpix2(header):
-    instrument = _get_instrument()
+    instrument = get_instrument()
     if instrument is em.Inst.HOKUPAA:
         crpix2 = header.get('CRPIX2')
         if crpix2 is None:
@@ -331,7 +333,7 @@ def get_data_product_type(header):
     :param header:  The FITS header for the current extension.
     :return: The Plane DataProductType, or None if not found.
     """
-    instrument = _get_instrument()
+    instrument = get_instrument()
     if instrument is em.Inst.FLAMINGOS:
         result, ignore = _get_flamingos_mode(header)
     elif instrument is em.Inst.GNIRS:
@@ -345,6 +347,20 @@ def get_data_product_type(header):
             result = DataProductType.SPECTRUM
     elif instrument in [em.Inst.CIRPASS, em.Inst.TEXES]:
         result = DataProductType.SPECTRUM
+    elif instrument in [em.Inst.ALOPEKE, em.Inst.ZORRO]:
+        # DB 31-08-20
+        # Both cameras are used for speckle imaging.  Datasets consist of
+        # cubes of 256 x 256 x 1000 images.  i.e. 1000 short exposures << 1
+        # second long with 256 x 256 pixel images (or smaller images if the CCD
+        # is binned).
+        #
+        # So dataProductType = cube
+        #
+        # PD 02-09-20
+        # if those two files are images in the normal sense then it could make
+        # sense to create separate planes with dataProductType = image that
+        # end up with the correct (distinct) energy metadata.
+        result = DataProductType.IMAGE
     else:
         mode = em.om.get('mode')
         obs_type = _get_obs_type(header)
@@ -397,7 +413,7 @@ def get_dec(header):
     :param header:  The FITS header for the current extension.
     :return: declination, or None if not found.
     """
-    instrument = _get_instrument()
+    instrument = get_instrument()
     if instrument is em.Inst.HOKUPAA:
         ra, dec = _get_sky_coord(header, 'RA', 'DEC')
         result = dec
@@ -429,7 +445,7 @@ def get_exposure(header):
     :return: The exposure time, or None if not found.
     """
     result = em.om.get('exposure_time')
-    instrument = _get_instrument()
+    instrument = get_instrument()
     if instrument is em.Inst.OSCIR:
         # DB - 20-02-19 - json ‘exposure_time’ is in minutes, so multiply
         # by 60.0.
@@ -490,7 +506,7 @@ def get_obs_intent(header):
     """
     result = ObservationIntentType.CALIBRATION
     cal_values = ['GCALflat', 'Bias', 'BIAS', 'Twilight', 'Ar', 'FLAT',
-                  'flat', 'ARC', 'Domeflat', 'DARK', 'dark', 'gcal']
+                  'flat', 'ARC', 'Domeflat', 'DARK', 'dark', 'gcal', 'ZERO']
     dl = header.get('DATALAB')
     lookup = _get_obs_class(header)
     logging.debug('observation_class is {} for {}'.format(lookup, dl))
@@ -528,7 +544,7 @@ def get_obs_intent(header):
             if type_lookup in cal_values:
                 result = ObservationIntentType.CALIBRATION
             else:
-                instrument = _get_instrument()
+                instrument = get_instrument()
                 if instrument is not None:
                     if instrument is em.Inst.TRECS:
                         data_label = header.get('DATALAB')
@@ -564,7 +580,7 @@ def get_obs_type(header):
     obs_class = _get_obs_class(header)
     if obs_class is not None and (obs_class == 'acq' or obs_class == 'acqCal'):
         result = 'ACQUISITION'
-    instrument = _get_instrument()
+    instrument = get_instrument()
     if instrument is em.Inst.PHOENIX:
         result = _get_phoenix_obs_type(header)
     elif instrument is em.Inst.HOKUPAA:
@@ -682,7 +698,7 @@ def get_ra(header):
     :param header:  The FITS header for the current extension.
     :return: ra, or None if not found.
     """
-    instrument = _get_instrument()
+    instrument = get_instrument()
     if instrument is em.Inst.HOKUPAA:
         ra, dec = _get_sky_coord(header, 'RA', 'DEC')
         result = ra
@@ -730,8 +746,9 @@ def get_target_type(uri):
     """
     result = TargetType.FIELD
     spectroscopy = em.om.get('spectroscopy')
-    instrument = _get_instrument()
-    if spectroscopy or instrument is em.Inst.TEXES:
+    instrument = get_instrument()
+    if (spectroscopy or
+            instrument in [em.Inst.ALOPEKE, em.Inst.TEXES, em.Inst.ZORRO]):
         result = TargetType.OBJECT
     return result
 
@@ -743,7 +760,7 @@ def get_time_function_val(header):
     :param header:  The FITS header for the current extension (not used).
     :return: The Time WCS value from JSON Summary Metadata.
     """
-    instrument = _get_instrument()
+    instrument = get_instrument()
     if instrument in [em.Inst.FLAMINGOS, em.Inst.OSCIR]:
         # Another FLAMINGOS correction needed:  DATE-OBS in header and
         # json doesn’t include the time  but sets it to 00:00:00.  You have
@@ -864,15 +881,6 @@ def _get_data_label():
     return em.om.get('data_label')
 
 
-def _get_instrument():
-    inst = em.om.get('instrument')
-    if inst == 'ALOPEKE':
-        # because the value in JSON is a different case than the value in
-        # the FITS header
-        inst = 'Alopeke'
-    return em.Inst(inst)
-
-
 def _get_sky_coord(header, ra_key, dec_key):
     ra_hours = header.get(ra_key)
     dec_hours = header.get(dec_key)
@@ -966,7 +974,7 @@ def _is_phoenix_calibration(header):
 
 def _is_gmos_mask(header):
     result = False
-    instrument = _get_instrument()
+    instrument = get_instrument()
     if instrument in [em.Inst.GMOSS, em.Inst.GMOSN, em.Inst.GMOS]:
         obs_type = _get_obs_type(header)
         if obs_type == 'MASK':
@@ -987,7 +995,7 @@ def accumulate_fits_bp(bp, file_id, uri):
     bp.set('Observation.proposal.id', 'get_proposal_id(header)')
 
     bp.clear('Observation.algorithm.name')
-    instrument = _get_instrument()
+    instrument = get_instrument()
     if instrument in [em.Inst.GMOSN, em.Inst.GMOSS, em.Inst.GMOS]:
         bp.set('Observation.instrument.keywords',
                'get_provenance_keywords(uri)')
@@ -1012,7 +1020,10 @@ def accumulate_fits_bp(bp, file_id, uri):
     # Add IMAGESWV for GRACES
     bp.add_fits_attribute('Plane.provenance.producer', 'IMAGESWV')
     bp.set_default('Plane.provenance.producer', 'Gemini Observatory')
-    if instrument is not em.Inst.TEXES:
+    if instrument in [em.Inst.ALOPEKE, em.Inst.ZORRO]:
+        bp.set('Plane.provenance.reference',
+               f'http://archive.gemini.edu/searchform/filepre={file_id}.fits')
+    elif instrument is not em.Inst.TEXES:
         data_label = _get_data_label()
         bp.set('Plane.provenance.reference',
                'http://archive.gemini.edu/searchform/{}'.format(data_label))
@@ -1054,7 +1065,7 @@ def accumulate_fits_bp(bp, file_id, uri):
         # the equinox given at the time specified by the EQUINOX keyword value.
         bp.clear('Chunk.position.equinox')
         bp.add_fits_attribute('Chunk.position.equinox', 'EQUINOX')
-        
+
     bp.configure_time_axis(3)
 
     # The Chunk time metadata is calculated using keywords from the
@@ -1068,6 +1079,10 @@ def accumulate_fits_bp(bp, file_id, uri):
     bp.set('Chunk.time.axis.error.syser', '1e-07')
     bp.set('Chunk.time.axis.error.rnder', '1e-07')
     bp.set('Chunk.time.axis.function.naxis', '1')
+    if instrument in [em.Inst.ALOPEKE, em.Inst.ZORRO]:
+        bp.clear('Chunk.time.axis.function.naxis')
+        bp.add_fits_attribute('Chunk.time.axis.function.naxis', 'NAXIS3')
+
     bp.set('Chunk.time.axis.function.delta', 'get_time_delta(header)')
     bp.set('Chunk.time.axis.function.refCoord.pix', '0.5')
     bp.set('Chunk.time.axis.function.refCoord.val',
@@ -1285,6 +1300,12 @@ def update(observation, **kwargs):
                                 _update_chunk_energy_texes(
                                     c, headers[0], plane.data_product_type,
                                     observation.observation_id)
+                            elif instrument in [em.Inst.ALOPEKE, em.Inst.ZORRO]:
+                                _update_chunk_energy_general(
+                                    c, instrument, [DataProductType.IMAGE],
+                                    plane.data_product_type,
+                                    observation.observation_id,
+                                    filter_name)
 
                         # position WCS
                         mode = em.om.get('mode')
@@ -1341,6 +1362,9 @@ def update(observation, **kwargs):
                                 _update_chunk_position_trecs(
                                     c, headers, int(part),
                                     observation.observation_id)
+                            elif instrument in [em.Inst.ALOPEKE, em.Inst.ZORRO]:
+                                _update_chunk_position_fox(
+                                    c, observation.observation_id)
 
                         # time WCS
                         if instrument is em.Inst.F2:
@@ -1365,6 +1389,10 @@ def update(observation, **kwargs):
                                 c.position_axis_2 = None
                                 c.time_axis = None
                                 c.energy_axis = None
+
+                        if instrument in [em.Inst.ALOPEKE, em.Inst.ZORRO]:
+                            _update_chunk_time_fox(
+                                c, header, observation.observation_id)
                         if c.naxis is not None and c.naxis <= 2:
                             if c.position_axis_1 is None:
                                 c.naxis = None
@@ -1449,10 +1477,9 @@ def _build_chunk_energy(chunk, filter_name, fm):
                              bandpass_name=bandpass_name,
                              resolving_power=fm.resolving_power)
     chunk.energy = energy
-    if chunk.naxis > 2:
-        chunk.energy_axis = 4
-    else:
-        chunk.energy_axis = None
+    # no chunk energy is derived from FITS file axis metadata, so no cutouts
+    # to support
+    chunk.energy_axis = None
 
 
 # values from
@@ -3530,6 +3557,15 @@ def _update_position_from_zeroth_header(artifact, headers, instrument, obs_id):
                 chunk.position_axis_2 = 2
 
 
+def _update_chunk_position_fox(chunk, obs_id):
+    logging.debug(f'Begin _update_chunk_position_fox for {obs_id}')
+    if (chunk is not None and chunk.position is not None and
+            chunk.position.axis is not None and
+            chunk.position.axis.axis1.ctype == 'RA--TAN'):
+        chunk.position.axis.axis1.ctype = 'RA---TAN'
+    logging.debug(f'End _update_chunk_position_fox.')
+
+
 def _update_chunk_position_flamingos(chunk, header, obs_id):
     # DB - I see nothing in astropy that will do a transformation from crota
     # form to CD matrix, but this is it:
@@ -3755,6 +3791,23 @@ def _update_chunk_time_f2(chunk, obs_id):
         chunk.time.axis.function.delta = get_time_delta(None)
         logging.info('F2: Updated time delta for {}'.format(obs_id))
     logging.debug('End _update_chunk_time_f2 {}'.format(obs_id))
+
+
+def _update_chunk_time_fox(chunk, header, obs_id):
+    """
+    DB 02-09-20
+    Exposure time using JSON values isn’t correct.  I know that for this
+    example Gemini shows the exposure time is 0.02 seconds but there are
+    1000 x 0.02-second exposures in the cube.  The keyword EXPOSURE gives the
+    total exposure time (in seconds), time.exposure, or 20 in this case while
+    the json exposure_time should be the time.resolution.
+    """
+    logging.debug('Begin _update_chunk_time_fox {}'.format(obs_id))
+    mc.check_param(chunk, Chunk)
+    if chunk.time is not None:
+        chunk.time.exposure = header.get('EXPOSURE')
+        # chunk.time.resolution already set by blueprint
+    logging.debug('End _update_chunk_time_fox {}'.format(obs_id))
 
 
 def _update_chunk_time_gmos(chunk, obs_id):

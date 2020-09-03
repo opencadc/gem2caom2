@@ -56,7 +56,6 @@
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-be0b-8cc186a379cd">
                   <caom2:naxis>3</caom2:naxis>
-                  <caom2:energyAxis>4</caom2:energyAxis>
                   <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:energy>
                     <caom2:axis>

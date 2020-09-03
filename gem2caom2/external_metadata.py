@@ -159,6 +159,7 @@ class Inst(Enum):
     PHOENIX = 'PHOENIX'
     TEXES = 'TEXES'
     TRECS = 'TReCS'
+    ZORRO = 'Zorro'
 
 
 def get_obs_metadata(file_id):
@@ -300,6 +301,17 @@ def _repair_filter_name_for_svo(instrument, filter_names):
         separated by '+'
     :return filter_name the SVO version
     """
+    # Alopeke/ZORRO == FOX in Hawaiian and Spanish
+    FILTER_REPAIR_FOX = {'Red-832': 'EO_832',
+                         'Blue-u': 'u_sdss',
+                         'Blue-466': 'EO_466',
+                         'Blue-g': 'g_sdss',
+                         'Blue-562': 'EO_562',
+                         'Blue-r': 'r_sdss',
+                         'Blue-Halpha': 'Halpha',
+                         'Red-716': 'EO_716',
+                         'Red-i': 'i_sdss',
+                         'Red-z': 'z_sdss'}
     FILTER_REPAIR_NICI = {'CH4-H4S': 'ED451',
                           'CH4-H4L': 'ED449',
                           'CH4-H1S': 'ED286',
@@ -416,6 +428,8 @@ def _repair_filter_name_for_svo(instrument, filter_names):
         elif instrument is Inst.GSAOI:
             if temp in FILTER_REPAIR_GSAOI:
                 temp = FILTER_REPAIR_GSAOI[temp]
+        elif instrument in [Inst.ALOPEKE, Inst.ZORRO]:
+            temp = FILTER_REPAIR_FOX.get(temp)
         elif instrument is Inst.F2:
             if temp == 'J-lo':
                 temp = 'Jlow'
@@ -473,7 +487,7 @@ class CachingObsFileRelationship(GemObsFileRelationship):
         self._tap_client = value
 
     def get_obs_id(self, file_id):
-        self._logger.error(f'Entering get_obs_id for {file_id}.')
+        self._logger.debug(f'Entering get_obs_id for {file_id}.')
         result = super(CachingObsFileRelationship, self).get_obs_id(file_id)
         if result is None:
             if self._use_local_files:
@@ -498,7 +512,7 @@ class CachingObsFileRelationship(GemObsFileRelationship):
         # using the global om structure to look up and store
         # metadata will modify the internal index of the class - maintain
         # that index here with a save/restore
-        self._logger.error(f'Begin _get_obs_id_from_gemini for {file_id}')
+        self._logger.debug(f'Begin _get_obs_id_from_gemini for {file_id}')
         global om
         current_file_id = om.current
         get_obs_metadata(file_id)

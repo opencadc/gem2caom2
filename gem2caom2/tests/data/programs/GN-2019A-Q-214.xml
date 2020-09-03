@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+
+<title>Detail for Program: GN-2019A-Q-214</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GN-2019A-Q-214</h1>
+
+<table>
+ <tr><td>Title:<td>Radial Velocity Test for Sub-parsec Binary Supermassive Black Holes: Continued Spectroscopic Monitoring of Strong Candidates</tr>
+ <tr><td>PI:<td>Xin Liu</tr>
+ <tr><td>Co-I(s):<td> Yue Shen</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+We propose Gemini/GMOS-N follow-up spectroscopy for a sample of 8 SDSS quasars. They were selected from our long-term quasar spectroscopic monitoring program to be the strongest candidates to host sub-pc binary supermassive black holes (BSBHs). Our targets show significant radial velocity shifts in their broad emission lines relative to the systemic velocity of a few hundred km/s over 5--15 yr (rest frame) without variations in the line profile. Such coherent radial velocity shifts are the smoking gun signature for a BSBH where one BH is active (analogous to exoplanets), but further continuued spectroscopic monitoring is needed to rule out alternative scenarios. While detecting a complete binary orbit would require a few decades of monitoring, a continuing constant acceleration without line profile variation would already be a strong signature for a sub-pc BSBH. The proposed new spectra will extend the existing time baseline by ~3 yr, which will allow a stronger test of the binary hypothesis and better constrain the model parameter space. The results will inform the occurrence rate of sub-pc BSBHs with implications for the abundance of low-frequency gravitational wave sources. The program will pave the way for future large spectroscopic synoptic surveys such as the SDSS-V and MSE projects. 
+</div>
+
+
+
+</body>
+</html>

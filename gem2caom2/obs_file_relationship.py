@@ -570,10 +570,12 @@ def is_processed(file_name):
     patterns."""
     result = True
     file_id = gem_name.GemName.remove_extensions(file_name)
-    if (file_id.startswith(('S', 'N', 'GN', 'GS', 'c', 'abu')) and
-            file_id.endswith(
-                ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'))):
-        result = False
+    # ALOPEKE file id ends with 'r' or 'b', so avoid checking that letter
+    if file_id.startswith(('S', 'N', 'GN', 'GS', 'c', 'abu')):
+        if file_id.endswith(('0', '1', '2', '3', '4', '5', '6', '7', '8', '9')):
+            result = False
+        if file_id[:15].endswith(('b', 'r')):
+            result = False
     elif file_id.startswith(('2', '02', '01')):
         result = False
     # TEXES naming patterns
@@ -628,9 +630,6 @@ def repair_data_label(file_name, data_label):
         else:
             removals = removals + suffix
 
-        if 'fringe' in removals or 'FRINGE' in removals:
-            removals = []
-
         for ii in removals:
             # rreplace
             temp = repaired.rsplit(ii, 1)
@@ -672,6 +671,10 @@ def repair_data_label(file_name, data_label):
                 ('arc' in suffix or 'ARC' in suffix) or
                 ('r' == prefix or 'R' == prefix)):
             prefix = ''
+            suffix = []
+
+        if (prefix == '' and len(suffix) == 1 and
+                ('FRINGE' in suffix or 'fringe' in suffix)):
             suffix = []
 
         if len(prefix) > 0:

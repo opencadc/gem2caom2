@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+
+<title>Detail for Program: GS-2020A-Q-321</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-2020A-Q-321</h1>
+
+<table>
+ <tr><td>Title:<td>A Closer look at Be star Multiplicity properties</tr>
+ <tr><td>PI:<td>Saida Caballero-Nieves</tr>
+ <tr><td>Co-I(s):<td> Steve Howell,  Noel Richardson,  Keefe Kamp,  Rachel Matson,  Nancy Evans,  Minh Le,  Nic Scott</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+We propose for a Gemini-S/Zorro Queue program to explore the multiplicity of main-sequence Be-type stars. The speckle camera will enables us to search for and detect faint companions at the diffraction limit of the telescope (~20 mas), while setting deep detection limits on companions (7-9 magnitudes are typical). These observations will constrain the wide binary properties of Be stars and will inform us about the role binary and triple systems play in the formation of these decretion disks around hot stars. Such programs have been successfully executed for O stars, but have been largely neglected for the slightly lower-mass B stars. In particular, Be stars are thought to be a product of a binary interaction and their multiplicity has been challenging to study due to the variable nature of Be stars and broad lines due to rapid rotation. This study will have further implications in understanding the evolution of these likely supernovae progenitors. 
+</div>
+
+
+
+</body>
+</html>
