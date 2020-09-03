@@ -506,7 +506,7 @@ def get_obs_intent(header):
     """
     result = ObservationIntentType.CALIBRATION
     cal_values = ['GCALflat', 'Bias', 'BIAS', 'Twilight', 'Ar', 'FLAT',
-                  'flat', 'ARC', 'Domeflat', 'DARK', 'dark', 'gcal']
+                  'flat', 'ARC', 'Domeflat', 'DARK', 'dark', 'gcal', 'ZERO']
     dl = header.get('DATALAB')
     lookup = _get_obs_class(header)
     logging.debug('observation_class is {} for {}'.format(lookup, dl))
@@ -1065,7 +1065,7 @@ def accumulate_fits_bp(bp, file_id, uri):
         # the equinox given at the time specified by the EQUINOX keyword value.
         bp.clear('Chunk.position.equinox')
         bp.add_fits_attribute('Chunk.position.equinox', 'EQUINOX')
-        
+
     bp.configure_time_axis(3)
 
     # The Chunk time metadata is calculated using keywords from the

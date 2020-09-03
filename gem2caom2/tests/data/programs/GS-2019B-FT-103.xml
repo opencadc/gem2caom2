@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+
+<title>Detail for Program: GS-2019B-FT-103</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-2019B-FT-103</h1>
+
+<table>
+ <tr><td>Title:<td>Towards Validating Planet Hunters TESS Planet Candidates with Zorro</tr>
+ <tr><td>PI:<td>Laura Trouille</tr>
+ <tr><td>Co-I(s):<td> Chris Lintott,  Meg Schwamb,  Nora Eisner,  Suzanne Aigrain,  Oscar Barragan</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+We request Fast Turnaround time to obtain speckle imaging of  2 TESS planet candidates identified by citizen scientists from the Planet Hunters TESS project. These planet candidates have not been identified by the TESS team’s pipelines and therefore are not part of the TESS team’s ground-based follow-up effort. We request Zorro time to search for stellar blends that may be contaminating the TESS light curve to help validate these planet candidates and rule out false positive scenarios. Such observations compensate for the fact that TESS is designed for photometric precision but at the cost of poor spatial resolution. TESS has extremely large pixels (with a pixel scale of 21''  per pixel), Eclipsing binary light curves can thus be sufficiently diluted by neighboring background stars to mimic planet transits in the TESS light curves. Observations to estimate the stellar contamination are a crucial first step towards validating TESS planet transits, and Zorro is specifically designed for this task. An extremely modest allocation of speckle observations would have the resolution to find sellar companions/contaminating stars with contrasts &lt; 7−9 mag within 0.02−1.02'' enabling a critical assessment of the false positive likelihood and an accurate estimate of the planet candidate’s radius. These observations are importat for helping us validate the status of our planet candidates and better characterize their host stars. 
+</div>
+
+
+
+</body>
+</html>
