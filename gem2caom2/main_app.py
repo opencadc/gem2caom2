@@ -747,7 +747,8 @@ def get_target_type(uri):
     result = TargetType.FIELD
     spectroscopy = em.om.get('spectroscopy')
     instrument = get_instrument()
-    if spectroscopy or instrument is em.Inst.TEXES:
+    if (spectroscopy or
+            instrument in [em.Inst.ALOPEKE, em.Inst.TEXES, em.Inst.ZORRO]):
         result = TargetType.OBJECT
     return result
 
@@ -1019,7 +1020,7 @@ def accumulate_fits_bp(bp, file_id, uri):
     # Add IMAGESWV for GRACES
     bp.add_fits_attribute('Plane.provenance.producer', 'IMAGESWV')
     bp.set_default('Plane.provenance.producer', 'Gemini Observatory')
-    if instrument is em.Inst.ALOPEKE:
+    if instrument in [em.Inst.ALOPEKE, em.Inst.ZORRO]:
         bp.set('Plane.provenance.reference',
                f'http://archive.gemini.edu/searchform/filepre={file_id}.fits')
     elif instrument is not em.Inst.TEXES:
@@ -1078,6 +1079,10 @@ def accumulate_fits_bp(bp, file_id, uri):
     bp.set('Chunk.time.axis.error.syser', '1e-07')
     bp.set('Chunk.time.axis.error.rnder', '1e-07')
     bp.set('Chunk.time.axis.function.naxis', '1')
+    if instrument in [em.Inst.ALOPEKE, em.Inst.ZORRO]:
+        bp.clear('Chunk.time.axis.function.naxis')
+        bp.add_fits_attribute('Chunk.time.axis.function.naxis', 'NAXIS3')
+
     bp.set('Chunk.time.axis.function.delta', 'get_time_delta(header)')
     bp.set('Chunk.time.axis.function.refCoord.pix', '0.5')
     bp.set('Chunk.time.axis.function.refCoord.val',
@@ -1357,8 +1362,8 @@ def update(observation, **kwargs):
                                 _update_chunk_position_trecs(
                                     c, headers, int(part),
                                     observation.observation_id)
-                            elif instrument is em.Inst.ALOPEKE:
-                                _update_chunk_position_alopeke(
+                            elif instrument in [em.Inst.ALOPEKE, em.Inst.ZORRO]:
+                                _update_chunk_position_fox(
                                     c, observation.observation_id)
 
                         # time WCS
@@ -3552,13 +3557,13 @@ def _update_position_from_zeroth_header(artifact, headers, instrument, obs_id):
                 chunk.position_axis_2 = 2
 
 
-def _update_chunk_position_alopeke(chunk, obs_id):
-    logging.debug(f'Begin _update_chunk_position_alopeke for {obs_id}')
+def _update_chunk_position_fox(chunk, obs_id):
+    logging.debug(f'Begin _update_chunk_position_fox for {obs_id}')
     if (chunk is not None and chunk.position is not None and
             chunk.position.axis is not None and
             chunk.position.axis.axis1.ctype == 'RA--TAN'):
         chunk.position.axis.axis1.ctype = 'RA---TAN'
-    logging.debug(f'End _update_chunk_position_alopeke.')
+    logging.debug(f'End _update_chunk_position_fox.')
 
 
 def _update_chunk_position_flamingos(chunk, header, obs_id):

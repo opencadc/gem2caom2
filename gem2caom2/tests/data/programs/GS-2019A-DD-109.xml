@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+
+<title>Detail for Program: GS-2019A-DD-109</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-2019A-DD-109</h1>
+
+<table>
+ <tr><td>Title:<td>Towards Validating the Longest Period TESS Planet Candidate</tr>
+ <tr><td>PI:<td>Chris Lintott</tr>
+ <tr><td>Co-I(s):<td> Meg Schwamb,  Nora Eisner,  Suzanne Aigrain,  Oscar Barragan,  Grant Miller</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+We request Director’s Discretionary Time to obtain speckle imaging of the longest period TESS planet candidate known to date identified by citizen scientists from the Planet Hunters project. This planet candidate has not been identified by the TESS team’s pipelines and therefore is not part of the TESS team’s ground-based follow-up effort. It is of particular interest as its host star is a subgiant, and it may therefore help us understand the fate of such warm Saturns as their host stars start to evolve up the giant branch. We request Zorro time to search for stellar blends that may be contaminating the TESS light curve to help validate this planet candidate and rule out false positive scenarios. Such observations compensate for the fact that TESS is designed for photometric precision but at the cost of poor spatial resolution. TESS has extremely large pixels (with a pixel scale of 21arcsec per pixel), Eclipsing binary light curves can thus be sufficiently diluted by neighboring background stars to mimic planet transits in the TESS light curves. Observations to estimate the stellar contamination are a crucial first step towards validating TESS planet transits, and Zorro is specifically designed for this task. An extremely modest allocation of speckle observations would have the resolution to find stellar companions/contaminating stars with contrasts of ∆m &lt; 7−9 mag within 0.02−1.02′′ enabling a critical assessment of the false positive likelihood and an accurate estimate of the planet candidate’s radius. We expect these observations to allow us to validate the status of the planet candidate, and to inspire a program of radial velocity follow-up. 
+</div>
+
+
+<h2>Publications using this program's data</h2>
+<ul>
+<li>
+<a href="/searchform/publication=2020MNRAS.494..750E" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2020MNRAS.494..750E/abstract" target="_blank">[ADS]</a> Planet Hunters TESS I: TOI 813, a subgiant hosting a transiting Saturn-sized planet on an 84-day orbit
+</ul>
+
+
+</body>
+</html>

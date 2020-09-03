@@ -159,7 +159,7 @@ class Inst(Enum):
     PHOENIX = 'PHOENIX'
     TEXES = 'TEXES'
     TRECS = 'TReCS'
-    ZORRO = 'ZORRO'
+    ZORRO = 'Zorro'
 
 
 def get_obs_metadata(file_id):

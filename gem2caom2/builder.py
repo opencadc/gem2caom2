@@ -179,4 +179,6 @@ def get_instrument():
         # because the value in JSON is a different case than the value in
         # the FITS header
         inst = 'Alopeke'
+    if inst == 'ZORRO':
+        inst = 'Zorro'
     return external_metadata.Inst(inst)
