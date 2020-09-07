@@ -151,7 +151,7 @@ class GemObsIDBuilder(nbc.Builder):
                 self._logger.debug(
                     'Use a local file to read instrument from the headers.')
                 headers = ac.read_fits_headers(
-                    f'{self._config.working_dir}/{entry}')
+                    f'{self._config.working_directory}/{entry}')
                 instrument = external_metadata.Inst(headers[0].get('INSTRUME'))
                 result = gem_name.GemName(
                     file_name=entry, instrument=instrument)
