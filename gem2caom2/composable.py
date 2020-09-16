@@ -72,11 +72,10 @@ import sys
 import tempfile
 import traceback
 
-from caom2pipe import execute_composable as ec
 from caom2pipe import manage_composable as mc
 from caom2pipe import name_builder_composable as nbc
 from caom2pipe import run_composable as rc
-from gem2caom2 import main_app, work, preview_augmentation, external_metadata
+from gem2caom2 import main_app, preview_augmentation, external_metadata
 from gem2caom2 import pull_augmentation, gem_name, data_source, builder
 
 META_VISITORS = [preview_augmentation, pull_augmentation]
@@ -130,7 +129,7 @@ def _run_single():
     else:
         raise mc.CadcException('No code to handle running GEM by obs id.')
     external_metadata.init_global(incremental=False, config=config)
-    return ec.run_single(config, storage_name, main_app.APPLICATION,
+    return rc.run_single(config, storage_name, main_app.APPLICATION,
                          META_VISITORS, DATA_VISITORS)
 
 
@@ -142,65 +141,6 @@ def run_single():
     """
     try:
         result = _run_single()
-        sys.exit(result)
-    except Exception as e:
-        logging.error(e)
-        tb = traceback.format_exc()
-        logging.debug(tb)
-        sys.exit(-1)
-
-
-def _run_by_tap_query():
-    """Run the processing for all the previews that are public, but there are
-    no artifacts representing those previews in CAOM.
-
-    Called as gem_run_query. The time-boxing is based on the timestamps in
-    the file provided by Gemini.
-
-    :return 0 if successful, -1 if there's any sort of failure. Return status
-        is used by airflow for task instance management and reporting.
-    """
-    config = mc.Config()
-    config.get_executors()
-    external_metadata.init_global(incremental=False, config=config)
-    return ec.run_from_state(config, gem_name.GemName, main_app.APPLICATION,
-                             META_VISITORS, DATA_VISITORS,
-                             data_source.GEM_BOOKMARK,
-                             work.TapNoPreviewQuery(
-                                 rc.get_utc_now(), config))
-
-
-def run_by_tap_query():
-    try:
-        result = _run_by_tap_query()
-        sys.exit(result)
-    except Exception as e:
-        logging.error(e)
-        tb = traceback.format_exc()
-        logging.debug(tb)
-        sys.exit(-1)
-
-
-def _run_by_in_memory():
-    """Run the processing for the list of observations provided from Gemini.
-
-    Called as gem_run_state.
-
-    :return 0 if successful, -1 if there's any sort of failure. Return status
-        is used by airflow for task instance management and reporting.
-    """
-    config = mc.Config()
-    config.get_executors()
-    external_metadata.init_global(incremental=False, config=config)
-    return ec.run_from_state(config, gem_name.GemName, main_app.APPLICATION,
-                             META_VISITORS, DATA_VISITORS,
-                             data_source.GEM_BOOKMARK,
-                             work.ObsFileRelationshipQuery())
-
-
-def run_by_in_memory():
-    try:
-        result = _run_by_in_memory()
         sys.exit(result)
     except Exception as e:
         logging.error(e)
@@ -276,38 +216,6 @@ def _run_by_incremental():
 def run_by_incremental():
     try:
         result = _run_by_incremental()
-        sys.exit(result)
-    except Exception as e:
-        logging.error(e)
-        tb = traceback.format_exc()
-        logging.debug(tb)
-        sys.exit(-1)
-
-
-def _run_rc_state_public():
-    """Run incremental processing for observations that went public recently,
-    so the preview is now available.
-
-    :return 0 if successful, -1 if there's any sort of failure. Return status
-        is used by airflow for task instance management and reporting.
-    """
-    config = mc.Config()
-    config.get_executors()
-    external_metadata.init_global(incremental=True, config=config)
-    name_builder = nbc.FileNameBuilder(gem_name.GemName)
-    incremental_source = data_source.PublicIncremental(config)
-    return rc.run_by_state(config=config, name_builder=name_builder,
-                           command_name=main_app.APPLICATION,
-                           bookmark_name=data_source.GEM_BOOKMARK,
-                           meta_visitors=META_VISITORS,
-                           data_visitors=DATA_VISITORS,
-                           end_time=None, source=incremental_source,
-                           chooser=None)
-
-
-def run_by_rc_public():
-    try:
-        result = _run_rc_state_public()
         sys.exit(result)
     except Exception as e:
         logging.error(e)

@@ -135,7 +135,7 @@ class GemName(mc.StorageName):
     GEM_NAME_PATTERN = '*'
 
     def __init__(self, fname_on_disk=None, file_name=None, obs_id=None,
-                 file_id=None, instrument=None):
+                 file_id=None, instrument=None, entry=None):
         logging.debug('parameters fname_on_disk {} file_name {}'
                       ' obs id {} file id {}'.format(fname_on_disk,
                                                      file_name,
@@ -155,7 +155,7 @@ class GemName(mc.StorageName):
                 obs_id=self._obs_id, collection=ARCHIVE,
                 collection_pattern=GemName.GEM_NAME_PATTERN,
                 fname_on_disk=self._file_name,
-                scheme=SCHEME)
+                scheme=SCHEME, entry=entry)
         else:
             # try to set the file name, if that information is available
 
@@ -176,7 +176,7 @@ class GemName(mc.StorageName):
                 obs_id=obs_id, collection=ARCHIVE,
                 collection_pattern=GemName.GEM_NAME_PATTERN,
                 fname_on_disk=self.file_name,
-                scheme=SCHEME)
+                scheme=SCHEME, entry=entry)
             if self._obs_id is None:
                 temp = em.get_gofr().get_obs_id(self._file_id)
                 if temp is not None:

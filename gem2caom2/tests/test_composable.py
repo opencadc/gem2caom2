@@ -91,38 +91,10 @@ PROGRESS_FILE = '/usr/src/app/logs/progress.txt'
 PUBLIC_TEST_JSON = f'{gem_mocks.TEST_DATA_DIR}/json/GN-2019B-ENG-1-160-008.json'
 
 
-class MyExitError(Exception):
-    pass
-
-
 @pytest.fixture(scope='session', autouse=True)
 def write_gemini_data_file():
     copyfile(os.path.join(gem_mocks.TEST_DATA_DIR, 'from_paul.txt'),
              '/app/data/from_paul.txt')
-
-
-@patch('sys.exit', Mock(return_value=MyExitError))
-@patch('gem2caom2.external_metadata.CadcTapClient')
-def test_run_by_tap_query(client_mock):
-    # client mock present because of global in external_metadata
-    # preconditions
-    _write_state()
-
-    getcwd_orig = os.getcwd
-    os.getcwd = Mock(return_value=gem_mocks.TEST_DATA_DIR)
-
-    try:
-        # execution
-        with patch('caom2pipe.manage_composable.query_tap') as \
-                query_endpoint_mock, \
-                patch('caom2pipe.execute_composable.run_by_file') \
-                as run_mock:
-            query_endpoint_mock.return_value = {
-                'uri': ['gemini:GEM/2004may19_0255.fits']}
-            composable.run_by_tap_query()
-            assert run_mock.called, 'should have been called'
-    finally:
-        os.getcwd = getcwd_orig
 
 
 @patch('caom2pipe.execute_composable.OrganizeExecutesWithDoOne.do_one')
@@ -233,119 +205,6 @@ def test_run_incremental_rc(client_mock, tap_mock, get_obs_mock, query_mock,
         os.getcwd = getcwd_orig
 
 
-@patch('sys.exit', Mock(return_value=MyExitError))
-@patch('gem2caom2.external_metadata.CadcTapClient')
-def test_run_by_tap_query_2(client_mock):
-    test_obs_id = 'GS-2017A-Q-58-66-027'
-    test_f_id = 'S20170905S0318'
-    test_f_name = f'{test_f_id}.fits'
-    _write_state()
-    getcwd_orig = os.getcwd
-    os.getcwd = Mock(return_value=gem_mocks.TEST_DATA_DIR)
-    try:
-        # execution
-        with patch('caom2pipe.execute_composable._do_one') as run_mock, \
-                patch('gem2caom2.work.TapNoPreviewQuery') as query_mock:
-            query_mock.return_value.todo.return_value = [test_f_name]
-            composable.run_by_tap_query()
-            assert run_mock.called, 'should have been called'
-            args, kwargs = run_mock.call_args
-            assert args[3] == 'gem2caom2', 'wrong command'
-            test_storage = args[2]
-            assert isinstance(test_storage, gem_name.GemName), \
-                type(test_storage)
-            assert test_storage.obs_id == test_obs_id, 'wrong obs id'
-            assert test_storage.file_name == test_f_name, 'wrong file name'
-            assert test_storage.fname_on_disk == test_f_name, \
-                'wrong fname on disk'
-            assert test_storage.url is None, 'wrong url'
-            assert test_storage.lineage == \
-                f'{test_f_id}/gemini:GEM/{test_f_name}', 'wrong lineage'
-            assert test_storage.external_urls == \
-                'https://archive.gemini.edu/fullheader/{}.fits'.format(
-                       test_f_id), 'wrong external urls'
-
-            args, kwargs = query_mock.call_args
-            test_config = args[1]
-            assert isinstance(test_config, mc.Config), 'wrong arg type'
-
-            args, kwargs = query_mock.return_value.todo.call_args
-            test_arg = args[0]
-            assert isinstance(test_arg, datetime), type(test_arg)
-    finally:
-        os.getcwd = getcwd_orig
-
-
-@patch('sys.exit', Mock(return_value=MyExitError))
-@patch('gem2caom2.external_metadata.CadcTapClient')
-def test_run_by_tap_query_rejected_bad_metadata(client_mock):
-    test_obs_id = 'GS-2017A-Q-58-66-027'
-    _write_state()
-    _write_rejected(test_obs_id)
-
-    if os.path.exists(PROGRESS_FILE):
-        os.unlink(PROGRESS_FILE)
-
-    getcwd_orig = os.getcwd
-    os.getcwd = Mock(return_value=gem_mocks.TEST_DATA_DIR)
-    try:
-        # execution
-        with patch('gem2caom2.work.TapNoPreviewQuery') as query_mock:
-            query_mock.return_value.todo.return_value = [test_obs_id]
-            composable.run_by_tap_query()
-            args, kwargs = query_mock.return_value.todo.call_args
-            test_time = args[0]
-            assert isinstance(test_time, datetime), type(test_time)
-            assert os.path.exists(PROGRESS_FILE), 'should log'
-            args, kwargs = query_mock.call_args
-            test_config = args[1]
-            assert isinstance(test_config, mc.Config), type(test_config)
-            assert test_config.state_fqn == STATE_FILE, 'wrong state file'
-    finally:
-        os.getcwd = getcwd_orig
-        if os.path.exists(REJECTED_FILE):
-            os.unlink(REJECTED_FILE)
-
-
-@patch('gem2caom2.external_metadata.CadcTapClient')
-def test_run_by_in_memory_query(client_mock):
-    _write_state('2018-12-19T20:53:16')
-    test_obs_id = 'GN-2015A-Q-36-15-001'
-    test_f_id = 'N20150216S0129'
-    if os.path.exists(TODO_FILE):
-        os.unlink(TODO_FILE)
-
-    getcwd_orig = os.getcwd
-    os.getcwd = Mock(return_value=gem_mocks.TEST_DATA_DIR)
-    try:
-        # execution
-        with patch('caom2pipe.execute_composable._do_one') \
-                as run_mock:
-            sys.argv = ['mock']
-            composable._run_by_in_memory()
-            assert run_mock.called, 'should have been called'
-            args, kwargs = run_mock.call_args
-            assert args[3] == main_app.APPLICATION, 'wrong command'
-            test_storage = args[2]
-            assert isinstance(test_storage, gem_name.GemName), \
-                type(test_storage)
-            assert test_storage.obs_id == test_obs_id, 'wrong obs id'
-            assert test_storage.file_name == 'N20150216S0129.fits', \
-                'wrong file name'
-            assert test_storage.fname_on_disk == 'N20150216S0129.fits', \
-                'wrong fname on disk'
-            assert test_storage.url is None, 'wrong url'
-            assert test_storage.lineage == \
-                   '{}/gemini:GEM/{}.fits'.format(test_f_id, test_f_id), \
-                'wrong lineage'
-            assert test_storage.external_urls == \
-                   'https://archive.gemini.edu/fullheader/{}.fits'.format(
-                       test_f_id), 'wrong external urls'
-    finally:
-        os.getcwd = getcwd_orig
-
-
-@patch('sys.exit', Mock(return_value=MyExitError))
 @patch('caom2pipe.manage_composable.exec_cmd')
 @patch('caom2pipe.execute_composable.CAOM2RepoClient')
 @patch('caom2pipe.execute_composable.CadcDataClient')
@@ -485,7 +344,7 @@ def test_run_by_incremental2(client_mock, query_mock, read_mock,
 @patch('caom2pipe.manage_composable.query_tap_client')
 @patch('gem2caom2.external_metadata.CadcTapClient')
 @patch('caom2pipe.data_source_composable.CadcTapClient')
-def test_run_by_rc_public(ds_mock, client_mock, tap_mock, exec_mock):
+def test_run_by_public(ds_mock, client_mock, tap_mock, exec_mock):
     exec_mock.side_effect = Mock(return_value=0)
     tap_mock.side_effect = gem_mocks.mock_query_tap
     expected_fqn = f'/usr/src/app/logs/{gem_mocks.TEST_BUILDER_OBS_ID}' \
@@ -503,7 +362,7 @@ def test_run_by_rc_public(ds_mock, client_mock, tap_mock, exec_mock):
     try:
         # execution
         sys.argv = ['test command']
-        test_result = composable._run_rc_state_public()
+        test_result = composable._run_by_public()
         assert test_result == 0, 'wrong result'
     except Exception as e:
         import logging
@@ -537,7 +396,7 @@ def test_run_by_rc_public(ds_mock, client_mock, tap_mock, exec_mock):
 @patch('caom2pipe.manage_composable.query_tap_client')
 @patch('gem2caom2.external_metadata.CadcTapClient')
 @patch('caom2pipe.data_source_composable.CadcTapClient')
-def test_run_by_public(
+def test_run_by_public2(
         ds_mock, client_mock, tap_mock, get_obs_mock, query_mock, run_mock):
 
     get_obs_mock.side_effect = gem_mocks.mock_get_obs_metadata

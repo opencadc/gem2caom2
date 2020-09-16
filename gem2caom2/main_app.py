@@ -103,7 +103,7 @@ from astropy.coordinates import SkyCoord
 from caom2 import Observation, ObservationIntentType, DataProductType
 from caom2 import CalibrationLevel, TargetType, ProductType, Chunk, Axis
 from caom2 import SpectralWCS, CoordAxis1D, RefCoord, Instrument
-from caom2 import TypedList, CoordRange1D, CompositeObservation
+from caom2 import TypedList, CoordRange1D, DerivedObservation
 from caom2utils import ObsBlueprint, get_gen_proc_arg_parser, gen_proc
 from caom2utils import WcsParser
 from caom2pipe import manage_composable as mc
@@ -1130,7 +1130,7 @@ def update(observation, **kwargs):
 
     # processed files
     if (cc.is_composite(headers) and not
-            isinstance(observation, CompositeObservation)):
+            isinstance(observation, DerivedObservation)):
         observation = _update_composite(
             observation, instrument, current_product_id)
 
@@ -1398,14 +1398,14 @@ def update(observation, **kwargs):
                                 c.naxis = None
                             c.time_axis = None
 
-                if isinstance(observation, CompositeObservation):
+                if isinstance(observation, DerivedObservation):
                     cc.update_plane_provenance(plane, headers[1:], 'IMCMB',
                                                COLLECTION,
                                                _repair_provenance_value,
                                                observation.observation_id)
 
                 if ((processed or
-                     isinstance(observation, CompositeObservation) or
+                     isinstance(observation, DerivedObservation) or
                      instrument is em.Inst.TEXES)
                         and 'jpg' not in caom_name.file_name):
                     # not the preview artifact
@@ -1420,7 +1420,7 @@ def update(observation, **kwargs):
                 observation.proposal.pi_name = program['pi_name']
                 observation.proposal.title = program['title']
 
-        if isinstance(observation, CompositeObservation):
+        if isinstance(observation, DerivedObservation):
             cc.update_observation_members(observation)
 
     except Exception as e:

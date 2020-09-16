@@ -10,7 +10,6 @@ RUN pip install cadcdata && \
     pip install caom2 && \
     pip install caom2repo && \
     pip install caom2utils && \
-    pip install deprecated && \
     pip install ftputil && \
     pip install importlib-metadata && \
     pip install pytz && \
@@ -28,14 +27,7 @@ RUN mkdir /app && mkdir /app/data
 
 ADD https://www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/files/vault/cadcsw/2019-07-03_from_paul.txt /app/data/from_paul.txt
 
-ARG OPENCADC_BRANCH=master
-ARG OPENCADC_REPO=opencadc
 ARG OMC_REPO=opencadc-metadata-curation
-
-RUN git clone https://github.com/${OPENCADC_REPO}/caom2tools.git --branch ${OPENCADC_BRANCH} --single-branch && \
-    pip install ./caom2tools/caom2 && \
-    pip install ./caom2tools/caom2repo && \
-    pip install ./caom2tools/caom2utils
 
 RUN git clone https://github.com/${OMC_REPO}/caom2pipe.git && \
   pip install ./caom2pipe
