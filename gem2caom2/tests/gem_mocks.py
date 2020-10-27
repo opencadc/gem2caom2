@@ -491,7 +491,8 @@ LOOKUP = {
     'N20200210S0077_bias': ['GN-CAL20200210-22-076-BIAS', em.Inst.GMOS,
                             'GN-CAL20200210'],
     'rgnN20140428S0171_flat': ['GN-2014A-Q-85-16-003-RGN-FLAT', em.Inst.NIFS,
-                               'GN-2014A-Q-85']
+                               'GN-2014A-Q-85'],
+    'S20201023Z0001b': ['GS-CAL20201023-0-0', em.Inst.ZORRO, 'GS-CAL20201023']
 }
 
 call_count = 0

@@ -96,7 +96,7 @@ def pytest_generate_tests(metafunc):
                    em.Inst.GNIRS, em.Inst.PHOENIX, em.Inst.FLAMINGOS,
                    em.Inst.HRWFS, em.Inst.HOKUPAA, em.Inst.OSCIR,
                    em.Inst.BHROS, em.Inst.CIRPASS, em.Inst.TEXES, 'processed',
-                   em.Inst.ALOPEKE]:
+                   em.Inst.ALOPEKE, em.Inst.ZORRO]:
             walk_dir = _get_inst_name(ii)
             for root, dirs, files in os.walk(
                     '{}/{}'.format(gem_mocks.TEST_DATA_DIR, walk_dir)):
