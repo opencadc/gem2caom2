@@ -1082,6 +1082,7 @@ def accumulate_fits_bp(bp, file_id, uri):
     if instrument in [em.Inst.ALOPEKE, em.Inst.ZORRO]:
         bp.clear('Chunk.time.axis.function.naxis')
         bp.add_fits_attribute('Chunk.time.axis.function.naxis', 'NAXIS3')
+        bp.set_default('Chunk.time.axis.function.naxis', 1)
 
     bp.set('Chunk.time.axis.function.delta', 'get_time_delta(header)')
     bp.set('Chunk.time.axis.function.refCoord.pix', '0.5')

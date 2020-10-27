@@ -147,6 +147,6 @@ def test_caching_relationship_unconnected():
     test_config.task_types = [mc.TaskType.SCRAPE]
     test_subject = ext_md.CachingObsFileRelationship(test_config)
     # test an entry that's a file header on disk
-    test_result = test_subject.get_obs_id('mrgN20060130S0149_add')
+    test_result = test_subject.get_obs_id('get_obs_id_from_file_on_disk')
     assert test_result is not None, 'expected result'
     assert test_result == 'GN-2006A-Q-90-1-001-MRG-ADD', 'wrong result'

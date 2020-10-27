@@ -217,6 +217,11 @@ def test_repair_data_label():
             assert test_result == 'N20200210S0077_bias', \
                 'repair failed for {} actual {} expected {}'.format(
                     ii, test_result, gem_mocks.LOOKUP[ii][0])
+        elif ii == 'S20201023Z0001b':
+            # what happens when an entry is not found
+            assert test_result == 'S20201023Z0001b', \
+                'repair failed for {} actual {} expected {}'.format(
+                    ii, test_result, gem_mocks.LOOKUP[ii][0])
         elif ii in ['mrgN20060130S0149_add', 'rgnN20140428S0171_flat']:
             # what happens when an entry is not found
             # note that the answer should actually be
