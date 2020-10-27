@@ -27,12 +27,12 @@ RUN mkdir /app && mkdir /app/data
 
 ADD https://www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/files/vault/cadcsw/2019-07-03_from_paul.txt /app/data/from_paul.txt
 
-ARG OMC_REPO=opencadc-metadata-curation
+ARG OPENCADC_REPO=opencadc
 
-RUN git clone https://github.com/${OMC_REPO}/caom2pipe.git && \
+RUN git clone https://github.com/${OPENCADC_REPO}/caom2pipe.git && \
   pip install ./caom2pipe
 
-RUN git clone https://github.com/${OMC_REPO}/gem2caom2.git && \
+RUN git clone https://github.com/${OPENCADC_REPO}/gem2caom2.git && \
   pip install ./gem2caom2 && \
   cp ./gem2caom2/scripts/docker-entrypoint.sh / && \
   cp ./gem2caom2/scripts/config_with_ingest.yml / && \
