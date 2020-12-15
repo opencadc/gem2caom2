@@ -75,7 +75,7 @@ from mock import patch, Mock
 
 from caom2 import ChecksumURI, Artifact, ReleaseType, ProductType
 from gem2caom2 import preview_augmentation, pull_augmentation, SCHEME
-from gem2caom2 import ARCHIVE
+from gem2caom2 import ARCHIVE, pull_v_augmentation, COLLECTION
 from caom2pipe import manage_composable as mc
 
 pytest.main(args=['-s', os.path.abspath(__file__)])
@@ -283,6 +283,37 @@ def test_pull_augmentation():
         assert result['observation'] == 0, 'no updated metadata'
         assert len(obs.planes[TEST_PRODUCT_ID].artifacts) == 1, \
             'no new artifacts'
+
+
+@patch('caom2pipe.manage_composable.http_get')
+@patch('caom2pipe.manage_composable.client_put')
+def test_pull_v_augmentation(put_mock, http_mock):
+    obs = mc.read_obs_from_file(TEST_OBS_FILE)
+    obs.planes[TEST_PRODUCT_ID].data_release = datetime.utcnow()
+    assert len(obs.planes[TEST_PRODUCT_ID].artifacts) == 1, 'initial condition'
+
+    test_uri = f'{SCHEME}:{COLLECTION}/{TEST_PRODUCT_ID}.fits'
+    test_rejected = mc.Rejected(REJECTED_FILE)
+    test_config = mc.Config()
+    test_observable = mc.Observable(test_rejected, mc.Metrics(test_config))
+    cadc_client_mock = Mock()
+    kwargs = {'working_directory': TEST_DATA_DIR,
+              'cadc_client': cadc_client_mock,
+              'observable': test_observable}
+
+    result = pull_v_augmentation.visit(obs, **kwargs)
+    test_url = f'{pull_augmentation.FILE_URL}/{TEST_PRODUCT_ID}.fits'
+    test_prev = f'{TEST_DATA_DIR}/{TEST_PRODUCT_ID}.fits'
+    http_mock.assert_called_with(test_url, test_prev),  'mock not called'
+    assert put_mock.called, 'put mock not called'
+    args, kwargs = put_mock.call_args
+    assert args[1] == TEST_DATA_DIR, 'wrong working dir'
+    assert args[2] == f'{TEST_PRODUCT_ID}.fits', 'wrong file name'
+    assert args[3] == test_uri, 'wrong storage name'
+    assert result is not None, 'expect a result'
+    assert result['observation'] == 0, 'no updated metadata'
+    assert len(obs.planes[TEST_PRODUCT_ID].artifacts) == 1, \
+        'no new artifacts'
 
 
 def test_preview_augment_delete_preview():

@@ -72,7 +72,6 @@ import logging
 from astropy.table import Table
 from datetime import datetime
 
-from cadctap import CadcTapClient
 from caom2pipe import data_source_composable as dsc
 from caom2pipe import manage_composable as mc
 from gem2caom2.scrape import read_json_file_list_page
