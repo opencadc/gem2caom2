@@ -66,6 +66,7 @@
 #
 # ***********************************************************************
 #
+
 import logging
 import os
 import sys
@@ -73,6 +74,7 @@ import sys
 import pytest
 
 from shutil import copyfile
+from caom2 import get_differences
 
 import gem2caom2.external_metadata as em
 
@@ -133,7 +135,8 @@ def test_main_app(client_mock, tap_mock, test_name):
         file_id = _get_file_id(basename)
         obs_id = _get_obs_id(file_id)
         product_id = file_id
-        lineage = _get_lineage(dirname, basename, product_id, file_id)
+        lineage = _get_lineage(dirname, basename, product_id, file_id,
+                               test_config)
         input_file = '{}.in.xml'.format(product_id)
         actual_fqn = _get_actual_file_name(dirname, product_id)
 
@@ -174,10 +177,84 @@ def test_main_app(client_mock, tap_mock, test_name):
             main_app.to_caom2()
             expected_fqn = _get_expected_file_name(dirname, product_id)
 
-            compare_result = mc.compare_observations(actual_fqn, expected_fqn)
+            compare_result = _new_si_compare_differences(
+                actual_fqn, expected_fqn, test_config)
             if compare_result is not None:
                 raise AssertionError(compare_result)
             # assert False  # cause I want to see logging messages
+    finally:
+        os.getcwd = getcwd_orig
+
+
+@patch('caom2utils.fits2caom2.Client')
+@patch('caom2pipe.astro_composable.get_vo_table')
+@patch('gem2caom2.external_metadata.get_pi_metadata')
+@patch('gem2caom2.external_metadata.get_obs_metadata')
+@patch('caom2pipe.manage_composable.query_tap_client')
+@patch('gem2caom2.external_metadata.CadcTapClient')
+def test_main_app_v(client_mock, tap_mock, gemini_client_mock, gemini_pi_mock,
+                    svofps_mock, cadc_client_mock, test_name):
+    # client_mock present because of global in external_metadata
+    cadc_client_mock.get_node.side_effect = gem_mocks.mock_get_node
+    gemini_client_mock.side_effect = gem_mocks.mock_get_obs_metadata
+    gemini_pi_mock.side_effect = gem_mocks.mock_get_pi_metadata
+    svofps_mock.side_effect = gem_mocks.mock_get_votable
+    tap_mock.side_effect = gem_mocks.mock_query_tap
+
+    getcwd_orig = os.getcwd
+    os.getcwd = Mock(return_value=gem_mocks.TEST_DATA_DIR)
+
+    try:
+        test_config = mc.Config()
+        test_config.get_executors()
+        test_config.features.supports_latest_client = True
+
+        em.set_ofr(None)
+        em.init_global(False, test_config)
+        test_data_size = os.stat(
+            os.path.join(gem_mocks.TEST_DATA_DIR, 'from_paul.txt'))
+        app_size = os.stat('/app/data/from_paul.txt')
+        if test_data_size.st_size != app_size.st_size:
+            copyfile(os.path.join(gem_mocks.TEST_DATA_DIR, 'from_paul.txt'),
+                     '/app/data/from_paul.txt')
+        basename = os.path.basename(test_name)
+        dirname = os.path.dirname(test_name)
+        file_id = _get_file_id(basename)
+        obs_id = _get_obs_id(file_id)
+        product_id = file_id
+        lineage = _get_lineage(dirname, basename, product_id, file_id,
+                               test_config)
+        input_file = '{}.in.xml'.format(product_id)
+        actual_fqn = _get_actual_file_name(dirname, product_id)
+        local = _get_local(test_name)
+        plugin = gem_mocks.PLUGIN
+
+        if os.path.exists(actual_fqn):
+            os.remove(actual_fqn)
+
+        if os.path.exists(os.path.join(dirname, input_file)):
+            sys.argv = \
+                ('{} --quiet --no_validate --local {} '
+                 '--plugin {} --module {} --in {}/{} --out {} --lineage {}'.
+                 format(main_app.APPLICATION, local, plugin, plugin, dirname,
+                        input_file, actual_fqn, lineage)).split()
+        else:
+            sys.argv = \
+                ('{} --quiet --no_validate --local {} '
+                 '--plugin {} --module {} --observation {} {} --out {} '
+                 '--lineage {}'.
+                 format(main_app.APPLICATION, local, plugin, plugin,
+                        main_app.COLLECTION, obs_id, actual_fqn,
+                        lineage)).split()
+        print(sys.argv)
+        main_app.to_caom2()
+        expected_fqn = _get_expected_file_name(dirname, product_id)
+
+        compare_result = _new_si_compare_differences(
+            actual_fqn, expected_fqn, test_config)
+        if compare_result is not None:
+            raise AssertionError(compare_result)
+        assert False  # cause I want to see logging messages
     finally:
         os.getcwd = getcwd_orig
 
@@ -211,18 +288,20 @@ def _get_file_id(basename):
         return basename.split('.fits')[0]
 
 
-def _get_lineage(dirname, basename, product_id, file_id):
-    logging.error('basename is {}'.format(basename))
+def _get_lineage(dirname, basename, product_id, file_id, config):
+    archive = (gem_name.COLLECTION
+               if config.features.supports_latest_client
+               else gem_name.ARCHIVE)
     jpg_file = basename.replace('.fits.header', '.jpg')
     if os.path.exists(os.path.join(dirname, jpg_file)):
-        jpg = mc.get_lineage(gem_name.ARCHIVE, product_id,
-                             '{}.jpg'.format(file_id), gem_name.SCHEME)
-        fits = mc.get_lineage(gem_name.ARCHIVE, product_id,
-                              '{}.fits'.format(file_id), gem_name.SCHEME)
-        return '{} {}'.format(jpg, fits)
+        jpg = mc.get_lineage(archive, product_id, f'{file_id}.jpg',
+                             gem_name.SCHEME)
+        fits = mc.get_lineage(archive, product_id, f'{file_id}.fits',
+                              gem_name.SCHEME)
+        return f'{jpg} {fits}'
     else:
-        return mc.get_lineage(gem_name.ARCHIVE, product_id,
-                              '{}.fits'.format(file_id), gem_name.SCHEME)
+        return mc.get_lineage(archive, product_id, f'{file_id}.fits',
+                              gem_name.SCHEME)
 
 
 def _get_expected_file_name(dirname, product_id):
@@ -238,3 +317,54 @@ def _get_inst_name(inst):
     if inst != 'processed' and isinstance(inst, em.Inst):
         walk_dir = inst.value
     return walk_dir
+
+
+def _new_si_compare_differences(actual_fqn, expected_fqn, config):
+    if config.features.supports_latest_client:
+        return _do_botched_compare(actual_fqn, expected_fqn)
+    else:
+        return mc.compare_observations(actual_fqn, expected_fqn)
+
+
+def _do_botched_compare(actual_fqn, expected_fqn):
+    import logging
+    logging.error('botched compare')
+    actual = mc.read_obs_from_file(actual_fqn)
+    expected = mc.read_obs_from_file(expected_fqn)
+    result = _compare_keys(expected.planes.keys(), actual.planes.keys())
+    if result == '':
+        for plane in actual.planes.values():
+            expected_a_keys = [ii.replace('GEMINI', 'GEM') for ii in
+                               expected.planes[plane.product_id].artifacts.keys()]
+            result = _compare_keys(expected_a_keys, plane.artifacts.keys())
+            if result.strip() == '':
+                for artifact in plane.artifacts.values():
+                    expected_id = artifact.uri.replace('GEMINI', 'GEM')
+                    if expected_id in expected.artifacts.keys():
+                        temp = get_differences(
+                            artifact,
+                            expected.planes[plane.product_id].artifacts[
+                                expected_id], 'Artifact')
+                        result = f'{result}\n{temp}'
+                    else:
+                        result = f'{result}\nPlane {expected_id} in actual ' \
+                                 f'but not expected.'
+    else:
+            result = f'Got {len(actual.planes)} planes.  Expected ' \
+                 f'{len(expected.planes)} planes.'
+    return result
+
+
+def _compare_keys(expected_keys, actual_keys, key_type):
+    result = ''
+    if len(expected_keys) == len(actual_keys):
+        expected_missing = mc.find_missing(expected_keys, actual_keys)
+        actual_missing = mc.find_missing(actual_keys, expected_keys)
+        for entry in [expected_missing, actual_missing]:
+            if len(entry) > 0:
+                result = f'{result}\n' \
+                         f'Expected:: missing {len(entry)} {key_type}.'
+    else:
+        result = f'expected:: {len(expected_keys)} {key_type} ' \
+                 f'actual:: {len(actual_keys)} {key_type}'
+    return result

@@ -744,3 +744,10 @@ def mock_query_tap(query_string, mock_tap_client):
         return Table.read(f'observationID,lastModified\n'
                           f'{result},2020-02-25T20:36:31.230\n'.split('\n'),
                           format='csv')
+
+
+def mock_get_node(uri, **kwargs):
+    node = type('', (), {})()
+    node.props = {'length': 42,
+                  'MD5': '1234'}
+    return node
