@@ -177,6 +177,7 @@ LOOKUP = {
     'S20181230S0026': ['GS-2018B-SV-301-144-020', em.Inst.F2,
                        'GS-2018B-SV-301'],
     'S20170905S0318': ['GS-2017A-Q-58-66-027', em.Inst.F2, 'GS-2017A-Q-58'],
+    'S20191214S0301': ['GS-CAL20191214-1-029', em.Inst.F2, 'GS-CAL20191214'],
     # Flamingos
     '02jul07.0186': ['GS-2002A-Q-13-2-0186', em.Inst.FLAMINGOS,
                      'GS-2002A-Q-13'],
@@ -214,6 +215,8 @@ LOOKUP = {
                      'GS-CAL20021112'],
     '02nov12.0043': ['GS-CAL20021112-4-0043', em.Inst.FLAMINGOS,
                      'GS-CAL20021112'],
+    '02jun24.0057': ['GS-CAL20020624-9-0057', em.Inst.FLAMINGOS,
+                     'GS-CAL20020624'],
     # GMOS
     'N20030107S0163': ['GN-2003A-Q-22-3-004', em.Inst.GMOS, 'GN-2003A-Q-22'],
     'N20071219S0193': ['GN-2007B-Q-112-14-018', em.Inst.GMOS, 'GN-2007B-Q-112'],
