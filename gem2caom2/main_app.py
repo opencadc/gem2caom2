@@ -857,7 +857,7 @@ def _get_flamingos_mode(header):
         # json value contains ‘arc’ (any case) then it’s an ARC observation
         # type
         #
-        # For FLAMINGOS since OBS_TYPE seems to always be st to ‘Object’
+        # For FLAMINGOS since OBS_TYPE seems to always be set to ‘Object’
         # could in principal look at the OBJECT keyword value or json value:
         # if it contains ‘flat’ as a substring (any case) then set
         # observation type to ‘flat’.  Ditto for ‘dark’
@@ -1315,6 +1315,16 @@ def update(observation, **kwargs):
                                 'Setting Spatial WCS to None for {}'.format(
                                     observation.observation_id))
                             cc.reset_position(c)
+                            # fix a very specific edge case where cal files
+                            # have useless WCS information for the purposes of
+                            # CAOM2.4 axis checks, and the corresponding
+                            # cutouts. No spatial wcs means invalid chunk.naxis
+                            # value, so set that to None, which then
+                            # invalidates the chunk.time_axis value
+                            if c.naxis == 3:
+                                c.naxis = None
+                                if c.time_axis == 3:
+                                    c.time_axis = None
                         else:
                             if (instrument in [em.Inst.PHOENIX, em.Inst.HOKUPAA,
                                                em.Inst.OSCIR] or

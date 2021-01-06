@@ -240,7 +240,6 @@ from gem2caom2 import gem_name
 __all__ = ['GemObsFileRelationship', 'FILE_NAME', 'repair_data_label']
 
 FILE_NAME = '/app/data/from_paul.txt'
-HEADER_URL = 'https://archive.gemini.edu/fullheader/'
 
 
 class GemObsFileRelationship(object):
