@@ -1321,6 +1321,9 @@ def update(observation, **kwargs):
                             # cutouts. No spatial wcs means invalid chunk.naxis
                             # value, so set that to None, which then
                             # invalidates the chunk.time_axis value
+                            # DB 06-01-21 - no calibration file cutouts to
+                            # support, so removing this axis information is
+                            # not removing downstream functionality
                             if c.naxis == 3:
                                 c.naxis = None
                                 if c.time_axis == 3:
