@@ -1,22 +1,24 @@
 FROM opencadc/pandas:3.8-slim
 
-RUN apt-get update -y && apt-get dist-upgrade -y
+RUN apt-get update -y && apt-get dist-upgrade -y && \
+    apt-get install -y build-essential \
+                       git && \
+    rm -rf /var/lib/apt/lists/ /tmp/* /var/tmp/*
 
-RUN apt-get install -y build-essential \
-    git
-
-RUN pip install cadcdata && \
-    pip install cadctap && \
-    pip install caom2 && \
-    pip install caom2repo && \
-    pip install caom2utils && \
-    pip install ftputil && \
-    pip install importlib-metadata && \
-    pip install pytz && \
-    pip install PyYAML && \
-    pip install pytz && \
-    pip install spherical-geometry && \
-    pip install vos
+RUN pip install bs4 \
+    cadcdata \
+    cadctap \
+    caom2 \
+    caom2repo \
+    caom2utils \
+    deprecated \
+    ftputil \
+    importlib-metadata \
+    matplotlib \
+    pillow \
+    PyYAML \
+    spherical-geometry \
+    vos
 
 WORKDIR /usr/src/app
 
