@@ -186,6 +186,7 @@ def test_main_app(client_mock, tap_mock, test_name):
         os.getcwd = getcwd_orig
 
 
+@patch('caom2utils.fits2caom2.CadcDataClient')
 @patch('caom2utils.fits2caom2.Client')
 @patch('caom2pipe.astro_composable.get_vo_table')
 @patch('gem2caom2.external_metadata.get_pi_metadata')
@@ -193,16 +194,20 @@ def test_main_app(client_mock, tap_mock, test_name):
 @patch('caom2pipe.manage_composable.query_tap_client')
 @patch('gem2caom2.external_metadata.CadcTapClient')
 def test_main_app_v(client_mock, tap_mock, gemini_client_mock, gemini_pi_mock,
-                    svofps_mock, cadc_client_mock, test_name):
+                    svofps_mock, cadc_client_mock, get_file_info_mock,
+                    test_name):
     # client_mock present because of global in external_metadata
     cadc_client_mock.get_node.side_effect = gem_mocks.mock_get_node
     gemini_client_mock.side_effect = gem_mocks.mock_get_obs_metadata
     gemini_pi_mock.side_effect = gem_mocks.mock_get_pi_metadata
     svofps_mock.side_effect = gem_mocks.mock_get_votable
     tap_mock.side_effect = gem_mocks.mock_query_tap
+    get_file_info_mock.return_value.get_file_info.side_effect = \
+        gem_mocks.mock_get_file_info
 
     getcwd_orig = os.getcwd
-    os.getcwd = Mock(return_value=gem_mocks.TEST_DATA_DIR)
+    os.getcwd = Mock(return_value=os.path.join(gem_mocks.TEST_DATA_DIR,
+                                               'si_config'))
 
     try:
         test_config = mc.Config()
@@ -254,7 +259,7 @@ def test_main_app_v(client_mock, tap_mock, gemini_client_mock, gemini_pi_mock,
             actual_fqn, expected_fqn, test_config)
         if compare_result is not None:
             raise AssertionError(compare_result)
-        assert False  # cause I want to see logging messages
+        # assert False  # cause I want to see logging messages
     finally:
         os.getcwd = getcwd_orig
 
@@ -327,44 +332,62 @@ def _new_si_compare_differences(actual_fqn, expected_fqn, config):
 
 
 def _do_botched_compare(actual_fqn, expected_fqn):
-    import logging
-    logging.error('botched compare')
+    """Compare artifacts for .fits files only. Rationalize the keys so
+    that the schema change from GEM to GEMINI is irrelevant."""
     actual = mc.read_obs_from_file(actual_fqn)
     expected = mc.read_obs_from_file(expected_fqn)
-    result = _compare_keys(expected.planes.keys(), actual.planes.keys())
-    if result == '':
+    result = _compare_keys(
+        expected.planes.keys(), actual.planes.keys(), 'plane')
+    if result is None:
         for plane in actual.planes.values():
-            expected_a_keys = [ii.replace('GEMINI', 'GEM') for ii in
-                               expected.planes[plane.product_id].artifacts.keys()]
-            result = _compare_keys(expected_a_keys, plane.artifacts.keys())
-            if result.strip() == '':
+            e_plane = expected.planes[plane.product_id]
+            expected_a_keys = _rationalize_keys(e_plane.artifacts.keys())
+            actual_a_keys = _rationalize_keys(plane.artifacts.keys())
+            result = _compare_keys(
+                expected_a_keys, actual_a_keys, f'artifact.{plane.product_id}')
+            if result is None:
                 for artifact in plane.artifacts.values():
-                    expected_id = artifact.uri.replace('GEMINI', 'GEM')
-                    if expected_id in expected.artifacts.keys():
+                    if 'gemini:GEM/' in artifact.uri:
+                        # ignore the artifacts that are named with the
+                        # 'old' URIs
+                        continue
+                    expected_id = artifact.uri.replace('GEMINI/', 'GEM/')
+                    expected_artifact = e_plane.artifacts[expected_id]
+                    expected_artifact.uri = artifact.uri
+                    if expected_id in e_plane.artifacts.keys():
                         temp = get_differences(
-                            artifact,
-                            expected.planes[plane.product_id].artifacts[
-                                expected_id], 'Artifact')
-                        result = f'{result}\n{temp}'
+                            artifact, expected_artifact, 'Artifact')
+                        if temp is not None:
+                            if result is None:
+                                result = temp
+                            else:
+                                result = f'{result}\n{temp}'
                     else:
-                        result = f'{result}\nPlane {expected_id} in actual ' \
+                        temp = f'Artifact {expected_id} in actual ' \
                                  f'but not expected.'
+                        if result is None:
+                            result = temp
+                        else:
+                            result = f'{result}\n{temp}'
     else:
-            result = f'Got {len(actual.planes)} planes.  Expected ' \
+        result = f'Got {len(actual.planes)} planes. Expected ' \
                  f'{len(expected.planes)} planes.'
     return result
 
 
+def _rationalize_keys(in_keys):
+    return list(set([ii.replace('GEM/', 'GEMINI/') for ii in
+                     in_keys if '.fits' in ii]))
+
+
 def _compare_keys(expected_keys, actual_keys, key_type):
     result = ''
-    if len(expected_keys) == len(actual_keys):
-        expected_missing = mc.find_missing(expected_keys, actual_keys)
-        actual_missing = mc.find_missing(actual_keys, expected_keys)
-        for entry in [expected_missing, actual_missing]:
-            if len(entry) > 0:
-                result = f'{result}\n' \
-                         f'Expected:: missing {len(entry)} {key_type}.'
-    else:
-        result = f'expected:: {len(expected_keys)} {key_type} ' \
-                 f'actual:: {len(actual_keys)} {key_type}'
+    expected_missing = mc.find_missing(expected_keys, actual_keys)
+    actual_missing = mc.find_missing(actual_keys, expected_keys)
+    for entry in [expected_missing, actual_missing]:
+        if len(entry) > 0:
+            result = f'{result}\n' \
+                     f'Expected:: missing {len(entry)} {key_type}.'
+    if len(result) == 0:
+        result = None
     return result

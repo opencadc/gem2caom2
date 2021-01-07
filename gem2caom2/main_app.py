@@ -114,7 +114,7 @@ import gem2caom2.external_metadata as em
 import gem2caom2.obs_file_relationship as ofr
 from gem2caom2.gem_name import GemName, COLLECTION
 from gem2caom2.svofps import FilterMetadata
-from gem2caom2.builder import get_instrument
+from gem2caom2.builder import get_instrument, GemObsIDBuilder
 
 
 __all__ = ['gem_main_app', 'to_caom2', 'update', 'APPLICATION']
@@ -1440,7 +1440,7 @@ def update(observation, **kwargs):
             temp = list(set(delete_list))
             for entry in temp:
                 logging.warning(f'Removing artifact {entry} from observation '
-                                f'{observation.observation_id}, plane'
+                                f'{observation.observation_id}, plane '
                                 f'{plane.product_id}.')
                 plane.artifacts.pop(entry)
 
@@ -3947,14 +3947,16 @@ def _build_blueprints(uris):
 
 def _get_uris(args):
     result = []
-    if args.local:
-        for ii in args.local:
-            result.append(GemName(
-                fname_on_disk=os.path.basename(ii)).file_uri)
-    elif args.lineage:
+    if args.lineage:
         for ii in args.lineage:
             ignore, temp = mc.decompose_lineage(ii)
             result.append(temp)
+    elif args.local:
+        config = mc.Config()
+        config.get_executors()
+        name_builder = GemObsIDBuilder(config)
+        for ii in args.local:
+            result.append(name_builder.build(os.path.basename(ii)).file_uri)
     else:
         raise mc.CadcException(
             'Could not define uri from these args {}'.format(args))
