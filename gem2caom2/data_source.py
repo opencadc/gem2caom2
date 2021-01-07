@@ -69,10 +69,9 @@
 
 import logging
 
-from astropy.table import Table
-from datetime import datetime
+from collections import deque
+from datetime import datetime, timezone
 
-from cadctap import CadcTapClient
 from caom2pipe import data_source_composable as dsc
 from caom2pipe import manage_composable as mc
 from gem2caom2.scrape import read_json_file_list_page
@@ -109,10 +108,7 @@ class IncrementalSource(dsc.DataSource):
               f'entrytime'
 
         # needs to be ordered by timestamps when processed
-        # key timestamp
-        # value list of file names
-        entries = Table(names=('fileName', 'ingestDate'),
-                        dtype=('S64', 'S32'))
+        entries = deque()
         response = None
         try:
             response = mc.query_endpoint(url)
@@ -129,7 +125,8 @@ class IncrementalSource(dsc.DataSource):
                     else:
                         for entry in metadata:
                             file_name = entry.get('name')
-                            entries.add_row((file_name, entry.get('lastmod')))
+                            entries.append(dsc.StateRunnerMeta(
+                                file_name, entry.get('lastmod')))
         finally:
             if response is not None:
                 response.close()
@@ -162,22 +159,15 @@ class FileListIncrementalSource(dsc.DataSource):
         """
         self._logger.debug(f'Begin get_time_box_work from '
                            f'{prev_exec_time} to {exec_time}.')
-        prev_ts = prev_exec_time.timestamp()
-        temp = read_json_file_list_page(prev_ts, self._last_processed_time)
+        temp = read_json_file_list_page(
+            prev_exec_time, self._last_processed_time)
         if len(temp) == 2500:
             self._max_records_encountered = True
 
-        # needs to be ordered by timestamps when processed
-        # key timestamp
-        # value list of file names
-        entries = Table(names=('fileName', 'ingestDate'),
-                        dtype=('S64', 'S32'))
-
-        # temp is a dict with:
-        # key - timestamp
-        # value - file name
+        entries = deque()
         for key, value in temp.items():
-            entries.add_row((value, datetime.fromtimestamp(key).isoformat()))
+            entries.append(dsc.StateRunnerMeta(
+                value, datetime.fromtimestamp(key).isoformat()))
         self._logger.debug('End get_time_box_work.')
         return entries
 
@@ -204,8 +194,10 @@ class PublicIncremental(dsc.QueryTimeBoxDataSource):
 
         self._logger.debug('Entering get_time_box_work')
         # datetime format 2019-12-01T00:00:00.000000
-        prev_dt_str = prev_exec_time.strftime(mc.ISO_8601_FORMAT)
-        exec_dt_str = exec_time.strftime(mc.ISO_8601_FORMAT)
+        prev_dt_str = datetime.fromtimestamp(
+            prev_exec_time, tz=timezone.utc).strftime(mc.ISO_8601_FORMAT)
+        exec_dt_str = datetime.fromtimestamp(
+            exec_time, tz=timezone.utc).strftime(mc.ISO_8601_FORMAT)
         query = f"SELECT A.uri, A.lastModified " \
                 f"FROM caom2.Observation AS O " \
                 f"JOIN caom2.Plane AS P ON O.obsID = P.obsID " \
@@ -226,9 +218,8 @@ class PublicIncremental(dsc.QueryTimeBoxDataSource):
         # results look like:
         # gemini:GEM/N20191202S0125.fits, ISO 8601
 
-        entries = Table(names=('fileName', 'ingestDate'),
-                        dtype=('S64', 'S32'))
+        entries = deque()
         for row in result:
-            entries.add_row((mc.CaomName(row['uri']).file_name,
-                             row['lastModified']))
+            entries.append(dsc.StateRunnerMeta(
+                mc.CaomName(row['uri']).file_name, row['lastModified']))
         return entries

@@ -533,7 +533,7 @@ class CachingObsFileRelationship(GemObsFileRelationship):
         # array contents are:
         # 0 - data label / observation ID
         # 1 - timestamp
-        mc.append_as_array(self.name_list, file_id, [obs_id, dt_s])
+        self.name_list[file_id].append([obs_id, dt_s])
         repaired_obs_id = repair_data_label(file_id, obs_id)
         return repaired_obs_id
 

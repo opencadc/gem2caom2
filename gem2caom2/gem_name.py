@@ -74,12 +74,18 @@ from caom2pipe import manage_composable as mc
 from gem2caom2 import external_metadata as em
 
 
-__all__ = ['GemName', 'COLLECTION', 'ARCHIVE', 'SCHEME']
+__all__ = ['GemName', 'COLLECTION', 'ARCHIVE', 'A_SCHEME', 'SCHEME',
+           'V_SCHEME']
 
 
 COLLECTION = 'GEMINI'
 ARCHIVE = 'GEM'
+# ad storage scheme
+A_SCHEME = 'ad'
+# originates at gemini scheme
 SCHEME = 'gemini'
+# after ad storage scheme
+V_SCHEME = 'cadc'
 HEADER_URL = 'https://archive.gemini.edu/fullheader/'
 
 
@@ -130,12 +136,22 @@ class GemName(mc.StorageName):
     metadata. It is OK for an observation to create two sibling products and
     two planes probably captures the goal of this instrument/observing mode
     more directly.
+
+
+    PD 15-12-20 IPM
+    When working with the new storage system at CADC:
+    Artifact URIs for files, previews, obtained from archive.gemini.edu
+    should be:
+      gemini:GEMINI/file_name."fits|jpg"[.bz2]
+    Artifact URIs for thumbnails created at CADC should be:
+      cadc:GEMINI/file_name_th.jpg
     """
 
     GEM_NAME_PATTERN = '*'
 
     def __init__(self, fname_on_disk=None, file_name=None, obs_id=None,
-                 file_id=None, instrument=None, entry=None):
+                 file_id=None, instrument=None, entry=None,
+                 v_collection=None, v_scheme=None):
         logging.debug('parameters fname_on_disk {} file_name {}'
                       ' obs id {} file id {}'.format(fname_on_disk,
                                                      file_name,
@@ -151,6 +167,10 @@ class GemName(mc.StorageName):
             self._file_id = GemName.remove_extensions(self._file_name)
             self._obs_id = self._file_id[:-1]
             self._product_id = self._file_id
+            #
+            # don't use the v_collection parameter from the constructor here
+            # because the following super call works for prior to the CADC
+            # storage system change-over
             super(GemName, self).__init__(
                 obs_id=self._obs_id, collection=ARCHIVE,
                 collection_pattern=GemName.GEM_NAME_PATTERN,
@@ -191,6 +211,10 @@ class GemName(mc.StorageName):
             if file_id is not None:
                 self._file_id = file_id
             self._product_id = self._file_id
+        # the following two assignments are meant to support naming
+        # post the CADC storage system change-over.
+        self._v_scheme = v_scheme
+        self._v_collection = v_collection
         self._logger = logging.getLogger(__name__)
         self._logger.debug(self)
 
@@ -201,7 +225,10 @@ class GemName(mc.StorageName):
 
     @property
     def file_uri(self):
-        return '{}:{}/{}'.format(self.scheme, self.collection, self._file_name)
+        if self._v_scheme is None:
+            return f'{self.scheme}:{self.collection}/{self._file_name}'
+        else:
+            return f'{self.scheme}:{self._v_collection}/{self._file_name}'
 
     @property
     def file_name(self):
@@ -241,14 +268,28 @@ class GemName(mc.StorageName):
         return f'{HEADER_URL}{self._file_id}.fits'
 
     @property
+    def prev_uri(self):
+        if self._v_scheme is None:
+            return f'{self.scheme}:{self.archive}/{self.prev}'
+        else:
+            return f'{self.scheme}:{self._v_collection}/{self.prev}'
+
+    @property
     def product_id(self):
         return self._product_id
+
+    @property
+    def product_id(self):
+        return self._file_id
 
     @property
     def thumb_uri(self):
         """Note the 'ad' scheme - the thumbnail is generated at CADC,
         so acknowledge that with the ad URI."""
-        return 'ad:{}/{}'.format(self.archive, self.thumb)
+        if self._v_scheme is None:
+            return f'ad:{self.archive}/{self.thumb}'
+        else:
+            return f'{self._v_scheme}:{self._v_collection}/{self.thumb}'
 
     def is_valid(self):
         return True
