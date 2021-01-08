@@ -78,7 +78,7 @@ from caom2 import get_differences
 
 import gem2caom2.external_metadata as em
 
-from gem2caom2 import main_app, gem_name
+from gem2caom2 import main_app, gem_name, builder
 from caom2pipe import manage_composable as mc
 
 from mock import patch, Mock
@@ -109,14 +109,16 @@ def pytest_generate_tests(metafunc):
         metafunc.parametrize('test_name', file_list)
 
 
+@patch('gem2caom2.external_metadata.get_obs_metadata')
 @patch('caom2pipe.manage_composable.query_tap_client')
 @patch('gem2caom2.external_metadata.CadcTapClient')
-def test_main_app(client_mock, tap_mock, test_name):
+def test_main_app(client_mock, tap_mock, gemini_client_mock, test_name):
     # client_mock present because of global in external_metadata
     getcwd_orig = os.getcwd
     os.getcwd = Mock(return_value=gem_mocks.TEST_DATA_DIR)
 
     tap_mock.side_effect = gem_mocks.mock_query_tap
+    gemini_client_mock.side_effect = gem_mocks.mock_get_obs_metadata
 
     try:
         test_config = mc.Config()
@@ -135,8 +137,7 @@ def test_main_app(client_mock, tap_mock, test_name):
         file_id = _get_file_id(basename)
         obs_id = _get_obs_id(file_id)
         product_id = file_id
-        lineage = _get_lineage(dirname, basename, product_id, file_id,
-                               test_config)
+        lineage = _get_lineage(dirname, basename, test_config)
         input_file = '{}.in.xml'.format(product_id)
         actual_fqn = _get_actual_file_name(dirname, product_id)
 
@@ -144,15 +145,12 @@ def test_main_app(client_mock, tap_mock, test_name):
         plugin = gem_mocks.PLUGIN
 
         with patch('caom2utils.fits2caom2.CadcDataClient') as data_client_mock, \
-            patch('gem2caom2.external_metadata.get_obs_metadata') as \
-                gemini_client_mock, \
                 patch('gem2caom2.external_metadata.get_pi_metadata') as \
                 gemini_pi_mock, \
                 patch('caom2pipe.astro_composable.get_vo_table') as svofps_mock:
 
             data_client_mock.return_value.get_file_info.side_effect = \
                 gem_mocks.mock_get_file_info
-            gemini_client_mock.side_effect = gem_mocks.mock_get_obs_metadata
             gemini_pi_mock.side_effect = gem_mocks.mock_get_pi_metadata
             svofps_mock.side_effect = gem_mocks.mock_get_votable
 
@@ -227,8 +225,7 @@ def test_main_app_v(client_mock, tap_mock, gemini_client_mock, gemini_pi_mock,
         file_id = _get_file_id(basename)
         obs_id = _get_obs_id(file_id)
         product_id = file_id
-        lineage = _get_lineage(dirname, basename, product_id, file_id,
-                               test_config)
+        lineage = _get_lineage(dirname, basename, test_config)
         input_file = '{}.in.xml'.format(product_id)
         actual_fqn = _get_actual_file_name(dirname, product_id)
         local = _get_local(test_name)
@@ -293,20 +290,18 @@ def _get_file_id(basename):
         return basename.split('.fits')[0]
 
 
-def _get_lineage(dirname, basename, product_id, file_id, config):
-    archive = (gem_name.COLLECTION
-               if config.features.supports_latest_client
-               else gem_name.ARCHIVE)
+def _get_lineage(dirname, basename, config):
     jpg_file = basename.replace('.fits.header', '.jpg')
+    name_builder = builder.GemObsIDBuilder(config)
+    storage_name = name_builder.build(basename.replace('.header', ''))
     if os.path.exists(os.path.join(dirname, jpg_file)):
-        jpg = mc.get_lineage(archive, product_id, f'{file_id}.jpg',
-                             gem_name.SCHEME)
-        fits = mc.get_lineage(archive, product_id, f'{file_id}.fits',
-                              gem_name.SCHEME)
-        return f'{jpg} {fits}'
+        jpg_storage_name = name_builder.build(jpg_file)
+        jpg = jpg_storage_name.lineage
+        fits = storage_name.lineage.replace('.header', '')
+        result = f'{jpg} {fits}'
     else:
-        return mc.get_lineage(archive, product_id, f'{file_id}.fits',
-                              gem_name.SCHEME)
+        result = storage_name.lineage.replace('.header', '')
+    return result
 
 
 def _get_expected_file_name(dirname, product_id):
