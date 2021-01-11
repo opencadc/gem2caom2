@@ -214,6 +214,7 @@ class GemName(mc.StorageName):
         # the following two assignments are meant to support naming
         # post the CADC storage system change-over.
         self._v_scheme = v_scheme
+        self._use_vo_naming = self._v_scheme is not None
         self._v_collection = v_collection
         self._logger = logging.getLogger(__name__)
         self._logger.debug(self)
@@ -260,10 +261,7 @@ class GemName(mc.StorageName):
 
     @property
     def lineage(self):
-        if self._v_scheme is None:
-            return mc.get_lineage(ARCHIVE, self.product_id, self._file_name,
-                                  self.scheme)
-        else:
+        if self._use_vo_naming:
             if '_th.jpg' in self._file_name:
                 # thumbnail
                 return mc.get_lineage(self._v_collection, self.product_id,
@@ -271,6 +269,9 @@ class GemName(mc.StorageName):
             else:
                 return mc.get_lineage(self._v_collection, self.product_id,
                                       self._file_name, SCHEME)
+        else:
+            return mc.get_lineage(ARCHIVE, self.product_id, self._file_name,
+                                  self.scheme)
 
     @property
     def external_urls(self):
@@ -278,10 +279,10 @@ class GemName(mc.StorageName):
 
     @property
     def prev_uri(self):
-        if self._v_scheme is None:
-            return f'{self.scheme}:{self.archive}/{self.prev}'
-        else:
+        if self._use_vo_naming:
             return f'{self.scheme}:{self._v_collection}/{self.prev}'
+        else:
+            return f'{self.scheme}:{self.archive}/{self.prev}'
 
     @property
     def product_id(self):
@@ -295,10 +296,10 @@ class GemName(mc.StorageName):
     def thumb_uri(self):
         """Note the 'ad' scheme - the thumbnail is generated at CADC,
         so acknowledge that with the ad URI."""
-        if self._v_scheme is None:
-            return f'ad:{self.archive}/{self.thumb}'
-        else:
+        if self._use_vo_naming:
             return f'{self._v_scheme}:{self._v_collection}/{self.thumb}'
+        else:
+            return f'ad:{self.archive}/{self.thumb}'
 
     def is_valid(self):
         return True

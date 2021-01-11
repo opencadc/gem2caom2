@@ -130,14 +130,14 @@ class GemObsIDBuilder(nbc.StorageNameBuilder):
         self._instrument = None
         self._logger = logging.getLogger(__name__)
 
-    def _read_local(self, entry):
+    def _read_instrument_locally(self, entry):
         self._logger.debug(f'Use a local file to read instrument from the '
                            f'headers for {entry}.')
         headers = ac.read_fits_headers(
             f'{self._config.working_directory}/{entry}')
         self._instrument = external_metadata.Inst(headers[0].get('INSTRUME'))
 
-    def _read_remote(self, entry):
+    def _read_instrument_remotely(self, entry):
         self._logger.debug(
             'Read instrument from archive.gemini.edu.')
         file_id = gem_name.GemName.remove_extensions(entry)
@@ -155,14 +155,14 @@ class GemObsIDBuilder(nbc.StorageNameBuilder):
             if self._config.features.supports_latest_client:
                 if (mc.TaskType.SCRAPE in self._config.task_types or
                         self._config.use_local_files):
-                    self._read_local(entry)
+                    self._read_instrument_locally(entry)
                     result = gem_name.GemName(file_name=entry,
                                               instrument=self._instrument,
                                               v_collection=gem_name.COLLECTION,
                                               v_scheme=gem_name.V_SCHEME,
                                               entry=entry)
                 elif self._config.features.use_file_names:
-                    self._read_remote(entry)
+                    self._read_instrument_remotely(entry)
                     result = gem_name.GemName(file_name=entry,
                                               instrument=self._instrument,
                                               v_collection=gem_name.COLLECTION,
@@ -185,12 +185,12 @@ class GemObsIDBuilder(nbc.StorageNameBuilder):
                                               entry=entry)
                 elif (mc.TaskType.SCRAPE in self._config.task_types or
                         self._config.use_local_files):
-                    self._read_local(entry)
+                    self._read_instrument_locally(entry)
                     result = gem_name.GemName(file_name=entry,
                                               instrument=self._instrument,
                                               entry=entry)
                 elif self._config.features.use_file_names:
-                    self._read_remote(entry)
+                    self._read_instrument_remotely(entry)
                     result = gem_name.GemName(file_name=entry,
                                               instrument=self._instrument,
                                               entry=entry)
