@@ -28,26 +28,13 @@ ADD https://www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/files/vault/cadcsw/2019-07-03_f
 
 ARG OPENCADC_BRANCH=master
 ARG OPENCADC_REPO=opencadc
+ARG PIPE_BRANCH=master
+ARG PIPE_REPO=opencadc
 
-RUN git clone https://github.com/${OPENCADC_REPO}/caom2tools.git --branch ${OPENCADC_BRANCH} --single-branch && \
-    rm -rf ./caom2tools/.git && \
-    rm -rf ./caom2tools/caom2 && \
-    rm -rf ./caom2tools/caom2repo && \
-    rm -rf ./caom2tools/caom2utils/caom2utils/tests && \
-    pip install ./caom2tools/caom2utils
+RUN pip install git+https://github.com/${OPENCADC_REPO}/caom2tools@${OPENCADC_BRANCH}#egg=caom2tools&subdirectory=caom2utils
 
-RUN git clone https://github.com/${OPENCADC_REPO}/caom2pipe.git --branch ${OPENCADC_BRANCH} --single-branch && \
-    rm -rf ./caom2pipe/.git && \
-    rm -rf ./caom2pipe/caom2pipe/tests && \
-    pip install ./caom2pipe
+RUN pip install git+https://github.com/${PIPE_REPO}/caom2pipe@${PIPE_BRANCH}#egg=caom2pipe
 
-RUN git clone https://github.com/${OPENCADC_REPO}/gem2caom2.git --branch ${OPENCADC_BRANCH} --single-branch && \
-    rm -rf ./gem2caom2/.git && \
-    rm -rf ./gem2caom2/gem2caom2/test && \
-    pip install ./gem2caom2 && \
-    cp ./gem2caom2/scripts/docker-entrypoint.sh / && \
-    cp ./gem2caom2/scripts/config_with_ingest.yml / && \
-    cp ./gem2caom2/scripts/config_with_visit.yml / && \
-    cp ./gem2caom2/scripts/state.yml /
+RUN pip install git+https://github.com/${PIPE_REPO}/gem2caom2@${PIPE_BRANCH}#egg=gem2caom2
 
-ENTRYPOINT ["/docker-entrypoint.sh"]
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
