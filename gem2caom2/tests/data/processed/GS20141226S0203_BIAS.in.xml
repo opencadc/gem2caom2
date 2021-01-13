@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:CompositeObservation" caom2:id="00000000-0000-0000-be64-e0b10c86803b">
+<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:DerivedObservation" caom2:id="00000000-0000-0000-be64-e0b10c86803b" caom2:metaProducer="gem2caom2/0.8">
   <caom2:collection>GEMINI</caom2:collection>
   <caom2:observationID>GS-CAL20141226-7-026-G-BIAS</caom2:observationID>
   <caom2:metaRelease>2014-12-26T00:00:00.000</caom2:metaRelease>
@@ -26,7 +26,7 @@
     <caom2:name>GMOS-S</caom2:name>
   </caom2:instrument>
   <caom2:planes>
-    <caom2:plane caom2:id="00000000-0000-0000-865c-c96dee21576f">
+    <caom2:plane caom2:id="00000000-0000-0000-865c-c96dee21576f" caom2:metaProducer="gem2caom2/0.8">
       <caom2:productID>GS20141226S0203_BIAS</caom2:productID>
       <caom2:metaRelease>2014-12-26T00:00:00.000</caom2:metaRelease>
       <caom2:dataRelease>2014-12-26T00:00:00.000</caom2:dataRelease>
@@ -39,23 +39,23 @@
         <caom2:reference>http://archive.gemini.edu/searchform/filepre=GS20141226S0203_BIAS.fits</caom2:reference>
       </caom2:provenance>
       <caom2:artifacts>
-        <caom2:artifact caom2:id="00000000-0000-0000-93f8-348d7f075793">
+        <caom2:artifact caom2:id="00000000-0000-0000-93f8-348d7f075793" caom2:metaProducer="gem2caom2/0.8">
           <caom2:uri>gemini:GEM/GS20141226S0203_BIAS.fits</caom2:uri>
           <caom2:productType>calibration</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>
           <caom2:contentLength>5986542</caom2:contentLength>
           <caom2:contentChecksum>md5:250b381b75bef629f23a88ff55593672</caom2:contentChecksum>
-	  <caom2:parts/>
+          <caom2:parts/>
         </caom2:artifact>
-        <caom2:artifact caom2:id="00000000-0000-0000-93f8-348d7f075790">
-		<caom2:uri>gemini:GEM/GS20141226S0203_BIAS.jpg</caom2:uri>
-<caom2:productType>preview</caom2:productType>
-<caom2:releaseType>data</caom2:releaseType>
-<caom2:contentType>image/jpeg</caom2:contentType>
-<caom2:contentLength>8227</caom2:contentLength>
-<caom2:contentChecksum>md5:41f90793197cd89d008730dab85247c6</caom2:contentChecksum>
-	  <caom2:parts/>
+        <caom2:artifact caom2:id="00000000-0000-0000-93f8-348d7f075790" caom2:metaProducer="gem2caom2/0.8">
+          <caom2:uri>gemini:GEM/GS20141226S0203_BIAS.jpg</caom2:uri>
+          <caom2:productType>preview</caom2:productType>
+          <caom2:releaseType>data</caom2:releaseType>
+          <caom2:contentType>image/jpeg</caom2:contentType>
+          <caom2:contentLength>8227</caom2:contentLength>
+          <caom2:contentChecksum>md5:41f90793197cd89d008730dab85247c6</caom2:contentChecksum>
+          <caom2:parts/>
         </caom2:artifact>
       </caom2:artifacts>
     </caom2:plane>

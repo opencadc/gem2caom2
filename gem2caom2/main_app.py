@@ -987,8 +987,11 @@ def accumulate_fits_bp(bp, file_id, uri):
     Observation level."""
     logging.debug('Begin accumulate_fits_bp for {}.'.format(file_id))
     em.get_obs_metadata(file_id)
+
+    meta_producer = mc.get_version(APPLICATION)
     bp.set('Observation.type', 'get_obs_type(header)')
     bp.set('Observation.intent', 'get_obs_intent(header)')
+    bp.set('Observation.metaProducer', meta_producer)
     bp.set('Observation.metaRelease', 'get_meta_release(parameters)')
     bp.set('Observation.target.type', 'get_target_type(uri)')
     bp.set('Observation.target.moving', 'get_target_moving(header)')
@@ -1012,6 +1015,7 @@ def accumulate_fits_bp(bp, file_id, uri):
     bp.set('Plane.productID', file_id)
     bp.set('Plane.dataProductType', 'get_data_product_type(header)')
     bp.set('Plane.calibrationLevel', 'get_calibration_level(uri)')
+    bp.set('Plane.metaProducer', meta_producer)
     bp.set('Plane.metaRelease', 'get_meta_release(parameters)')
     bp.set('Plane.dataRelease', 'get_data_release(header)')
 
@@ -1038,6 +1042,7 @@ def accumulate_fits_bp(bp, file_id, uri):
         bp.set('Plane.provenance.version',
                'get_provenance_version(parameters)')
 
+    bp.set('Artifact.metaProducer', meta_producer)
     bp.set('Artifact.productType', 'get_art_product_type(header)')
     bp.set('Artifact.contentChecksum', 'md5:{}'.format(em.om.get('data_md5')))
     bp.set('Artifact.contentLength', em.om.get('data_size'))
@@ -1068,6 +1073,7 @@ def accumulate_fits_bp(bp, file_id, uri):
 
     bp.configure_time_axis(3)
 
+    bp.set('Chunk.metaProducer', meta_producer)
     # The Chunk time metadata is calculated using keywords from the
     # primary header, and the only I could figure out to access keywords
     # in the primary is through a function. JB

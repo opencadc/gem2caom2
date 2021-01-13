@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="00000000-0000-0000-901c-4d174afe9087">
+<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="00000000-0000-0000-901c-4d174afe9087" caom2:metaProducer="gem2caom2/0.8">
   <caom2:collection>GEMINI</caom2:collection>
   <caom2:observationID>GS-2010A-Q-36-6-358</caom2:observationID>
   <caom2:metaRelease>2010-03-16T00:00:00.000</caom2:metaRelease>
@@ -7,30 +7,30 @@
     <caom2:name>exposure</caom2:name>
   </caom2:algorithm>
   <caom2:planes>
-    <caom2:plane caom2:id="00000000-0000-0000-b7e9-30c3dcf6aa95">
+    <caom2:plane caom2:id="00000000-0000-0000-b7e9-30c3dcf6aa95" caom2:metaProducer="gem2caom2/0.8">
       <caom2:productID>rgS20100316S0366</caom2:productID>
       <caom2:metaRelease>2010-03-16T00:00:00.000</caom2:metaRelease>
       <caom2:dataRelease>2011-09-16T00:00:00.000</caom2:dataRelease>
       <caom2:dataProductType>image</caom2:dataProductType>
       <caom2:calibrationLevel>2</caom2:calibrationLevel>
       <caom2:artifacts>
-        <caom2:artifact caom2:id="00000000-0000-0000-bcfa-b4900cbe927c">
+        <caom2:artifact caom2:id="00000000-0000-0000-bcfa-b4900cbe927c" caom2:metaProducer="gem2caom2/0.8">
           <caom2:uri>gemini:GEM/rgS20100316S0366.fits</caom2:uri>
           <caom2:productType>science</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>
           <caom2:contentLength>7571939</caom2:contentLength>
           <caom2:contentChecksum>md5:59fb99b95a5d281d3afe7a46401b226a</caom2:contentChecksum>
-	  <caom2:parts/>
+          <caom2:parts/>
         </caom2:artifact>
-        <caom2:artifact caom2:id="00000000-0000-0000-bcfa-b4900cbe9270">
-		<caom2:uri>gemini:GEM/rgS20100316S0366.jpg</caom2:uri>
-<caom2:productType>preview</caom2:productType>
-<caom2:releaseType>data</caom2:releaseType>
-<caom2:contentType>image/jpeg</caom2:contentType>
-<caom2:contentLength>55386</caom2:contentLength>
-<caom2:contentChecksum>md5:12388af87d0923e7e12b7a6f33606c4e</caom2:contentChecksum>
-
+        <caom2:artifact caom2:id="00000000-0000-0000-bcfa-b4900cbe9270" caom2:metaProducer="gem2caom2/0.8">
+          <caom2:uri>gemini:GEM/rgS20100316S0366.jpg</caom2:uri>
+          <caom2:productType>preview</caom2:productType>
+          <caom2:releaseType>data</caom2:releaseType>
+          <caom2:contentType>image/jpeg</caom2:contentType>
+          <caom2:contentLength>55386</caom2:contentLength>
+          <caom2:contentChecksum>md5:12388af87d0923e7e12b7a6f33606c4e</caom2:contentChecksum>
+          <caom2:parts/>
         </caom2:artifact>
       </caom2:artifacts>
     </caom2:plane>

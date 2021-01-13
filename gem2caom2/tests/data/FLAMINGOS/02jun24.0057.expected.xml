@@ -1,4 +1,5 @@
-<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="6fd63499-2a6d-424a-8068-a22b087ccbcd" caom2:lastModified="2017-06-27T20:09:32.070" caom2:maxLastModified="2020-12-30T01:15:33.324" caom2:metaChecksum="md5:a42086677c1c9112f245e52c0115d76a" caom2:accMetaChecksum="md5:d9fed94f07ae53bcc2b3244e2efa31b5">
+<?xml version='1.0' encoding='UTF-8'?>
+<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="6fd63499-2a6d-424a-8068-a22b087ccbcd" caom2:lastModified="2017-06-27T20:09:32.070" caom2:maxLastModified="2020-12-30T01:15:33.324" caom2:metaChecksum="md5:a42086677c1c9112f245e52c0115d76a" caom2:accMetaChecksum="md5:d9fed94f07ae53bcc2b3244e2efa31b5" caom2:metaProducer="gem2caom2/0.8">
   <caom2:collection>GEMINI</caom2:collection>
   <caom2:observationID>GS-CAL20020624-9-0057</caom2:observationID>
   <caom2:metaRelease>2002-06-24T00:00:00.000</caom2:metaRelease>
@@ -24,7 +25,7 @@
     <caom2:name>FLAMINGOS</caom2:name>
   </caom2:instrument>
   <caom2:planes>
-    <caom2:plane caom2:id="1616f658-752f-4d71-aaf8-b1f0716e41da" caom2:lastModified="2019-12-05T01:16:33.141" caom2:maxLastModified="2020-12-30T01:15:33.324" caom2:metaChecksum="md5:a1a5f023055b05ea0a500a92c5c186a4" caom2:accMetaChecksum="md5:ed1c2867ef81cf857057be18c45d217e">
+    <caom2:plane caom2:id="1616f658-752f-4d71-aaf8-b1f0716e41da" caom2:lastModified="2019-12-05T01:16:33.141" caom2:maxLastModified="2020-12-30T01:15:33.324" caom2:metaChecksum="md5:a1a5f023055b05ea0a500a92c5c186a4" caom2:accMetaChecksum="md5:ed1c2867ef81cf857057be18c45d217e" caom2:metaProducer="gem2caom2/0.8">
       <caom2:productID>02jun24.0057</caom2:productID>
       <caom2:metaRelease>2002-06-24T00:00:00.000</caom2:metaRelease>
       <caom2:dataRelease>2002-06-24T00:00:00.000</caom2:dataRelease>
@@ -37,7 +38,7 @@
         <caom2:reference>http://archive.gemini.edu/searchform/GS-CAL20020624-9-0057</caom2:reference>
       </caom2:provenance>
       <caom2:artifacts>
-        <caom2:artifact caom2:id="f054892e-30d1-4540-a2f8-67bd94bfac60" caom2:lastModified="2019-07-24T02:25:54.296" caom2:maxLastModified="2020-12-30T01:15:33.324" caom2:metaChecksum="md5:1193aefc1e05b833683390d852aaeb14" caom2:accMetaChecksum="md5:53d8cf994326b84aa793ef0072178227">
+        <caom2:artifact caom2:id="f054892e-30d1-4540-a2f8-67bd94bfac60" caom2:lastModified="2019-07-24T02:25:54.296" caom2:maxLastModified="2020-12-30T01:15:33.324" caom2:metaChecksum="md5:1193aefc1e05b833683390d852aaeb14" caom2:accMetaChecksum="md5:53d8cf994326b84aa793ef0072178227" caom2:metaProducer="gem2caom2/0.8">
           <caom2:uri>gemini:GEM/02jun24.0057.fits</caom2:uri>
           <caom2:productType>calibration</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
@@ -52,7 +53,7 @@
             <caom2:part caom2:id="d84067f0-8ce5-44b9-bbc3-43ed174c3b8b" caom2:lastModified="2017-06-27T20:09:32.070" caom2:maxLastModified="2020-12-30T01:15:33.324" caom2:metaChecksum="md5:812ecc4468012bed4b29191329aeaa5d" caom2:accMetaChecksum="md5:5d15dc642dd39c134d16e810d5629a01">
               <caom2:name>1</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="80a2070d-15c0-4548-8a57-b525275dfcb1" caom2:lastModified="2020-12-30T01:15:33.324" caom2:maxLastModified="2020-12-30T01:15:33.324" caom2:metaChecksum="md5:f5947b1e83040bfef16eef5a7c1c64d8" caom2:accMetaChecksum="md5:38ed26954f01ebbee30c7445863163db">
+                <caom2:chunk caom2:id="80a2070d-15c0-4548-8a57-b525275dfcb1" caom2:lastModified="2020-12-30T01:15:33.324" caom2:maxLastModified="2020-12-30T01:15:33.324" caom2:metaChecksum="md5:f5947b1e83040bfef16eef5a7c1c64d8" caom2:accMetaChecksum="md5:38ed26954f01ebbee30c7445863163db" caom2:metaProducer="gem2caom2/0.8">
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
