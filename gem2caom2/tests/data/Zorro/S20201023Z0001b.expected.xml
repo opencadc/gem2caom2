@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="efe445b9-f9a7-4faa-8a90-0a5abaf5608f">
+<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="efe445b9-f9a7-4faa-8a90-0a5abaf5608f" caom2:metaProducer="gem2caom2/0.8">
   <caom2:collection>GEMINI</caom2:collection>
   <caom2:observationID>GS-CAL20201023-0-0</caom2:observationID>
   <caom2:metaRelease>2020-10-22T23:13:20.035</caom2:metaRelease>
@@ -26,7 +26,7 @@
     <caom2:name>Zorro</caom2:name>
   </caom2:instrument>
   <caom2:planes>
-    <caom2:plane caom2:id="f692a252-2d32-4837-a051-1cd5baba4bf1">
+    <caom2:plane caom2:id="f692a252-2d32-4837-a051-1cd5baba4bf1" caom2:metaProducer="gem2caom2/0.8">
       <caom2:productID>S20201023Z0001b</caom2:productID>
       <caom2:metaRelease>2020-10-22T23:13:20.035</caom2:metaRelease>
       <caom2:dataRelease>2020-10-22T00:00:00.000</caom2:dataRelease>
@@ -39,7 +39,7 @@
         <caom2:reference>http://archive.gemini.edu/searchform/filepre=S20201023Z0001b.fits</caom2:reference>
       </caom2:provenance>
       <caom2:artifacts>
-        <caom2:artifact caom2:id="532e418d-d2ce-41c5-8bae-f1a5e19ee532">
+        <caom2:artifact caom2:id="532e418d-d2ce-41c5-8bae-f1a5e19ee532" caom2:metaProducer="gem2caom2/0.8">
           <caom2:uri>gemini:GEM/S20201023Z0001b.fits</caom2:uri>
           <caom2:productType>science</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
@@ -54,7 +54,7 @@
             <caom2:part caom2:id="235a8c24-0d35-4e71-a499-31317ac286ee">
               <caom2:name>1</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="16e66aed-4249-4c91-aca3-e23ca3757c94">
+                <caom2:chunk caom2:id="16e66aed-4249-4c91-aca3-e23ca3757c94" caom2:metaProducer="gem2caom2/0.8">
                   <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>

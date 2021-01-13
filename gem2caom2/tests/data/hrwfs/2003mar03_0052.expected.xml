@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="00000000-0000-0000-b70c-05767bcc34b7" caom2:lastModified="2018-11-08T20:32:22.680" caom2:maxLastModified="2018-11-08T20:32:22.680" caom2:metaChecksum="md5:c255da101fd8c48acc174a381d9fa059" caom2:accMetaChecksum="md5:eaa8f68bf2986e0ff7e180866b2d35a9">
+<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="00000000-0000-0000-b70c-05767bcc34b7" caom2:lastModified="2018-11-08T20:32:22.680" caom2:maxLastModified="2018-11-08T20:32:22.680" caom2:metaChecksum="md5:c255da101fd8c48acc174a381d9fa059" caom2:accMetaChecksum="md5:eaa8f68bf2986e0ff7e180866b2d35a9" caom2:metaProducer="gem2caom2/0.8">
   <caom2:collection>GEMINI</caom2:collection>
   <caom2:observationID>GS-CAL20030303-7-0006</caom2:observationID>
   <caom2:metaRelease>2003-03-03T10:31:39.554</caom2:metaRelease>
@@ -25,7 +25,7 @@
     <caom2:name>hrwfs</caom2:name>
   </caom2:instrument>
   <caom2:planes>
-    <caom2:plane caom2:id="00000000-0000-0000-8e3c-696070d7f0b9" caom2:lastModified="2018-11-08T20:32:22.680" caom2:maxLastModified="2018-11-08T20:32:22.680" caom2:metaChecksum="md5:a230ddb28fdb859b47717c9c310b17da" caom2:accMetaChecksum="md5:5c5b3499e8e3fba4f295a1f9ce1b025d">
+    <caom2:plane caom2:id="00000000-0000-0000-8e3c-696070d7f0b9" caom2:lastModified="2018-11-08T20:32:22.680" caom2:maxLastModified="2018-11-08T20:32:22.680" caom2:metaChecksum="md5:a230ddb28fdb859b47717c9c310b17da" caom2:accMetaChecksum="md5:5c5b3499e8e3fba4f295a1f9ce1b025d" caom2:metaProducer="gem2caom2/0.8">
       <caom2:productID>2003mar03_0052</caom2:productID>
       <caom2:metaRelease>2003-03-03T10:31:39.554</caom2:metaRelease>
       <caom2:dataRelease>2003-03-03T00:00:00.000</caom2:dataRelease>
@@ -42,7 +42,7 @@
       <caom2:time/>
       <caom2:polarization/>
       <caom2:artifacts>
-        <caom2:artifact caom2:id="00000000-0000-0000-abb0-18c6436e3fb2" caom2:lastModified="2018-11-08T20:32:22.680" caom2:maxLastModified="2018-11-08T20:32:22.680" caom2:metaChecksum="md5:6d4ef70ceff6b3c129e0298a6f03272a" caom2:accMetaChecksum="md5:0ba8d517b7fef7f3ecd5e03ac3de58fb">
+        <caom2:artifact caom2:id="00000000-0000-0000-abb0-18c6436e3fb2" caom2:lastModified="2018-11-08T20:32:22.680" caom2:maxLastModified="2018-11-08T20:32:22.680" caom2:metaChecksum="md5:6d4ef70ceff6b3c129e0298a6f03272a" caom2:accMetaChecksum="md5:0ba8d517b7fef7f3ecd5e03ac3de58fb" caom2:metaProducer="gem2caom2/0.8">
           <caom2:uri>gemini:GEM/2003mar03_0052.fits</caom2:uri>
           <caom2:productType>calibration</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
@@ -57,7 +57,7 @@
             <caom2:part caom2:id="00000000-0000-0000-a4a7-a6986be7d250">
               <caom2:name>1</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-b8f9-60004e1eee88">
+                <caom2:chunk caom2:id="00000000-0000-0000-b8f9-60004e1eee88" caom2:metaProducer="gem2caom2/0.8">
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
@@ -109,7 +109,7 @@
             </caom2:part>
           </caom2:parts>
         </caom2:artifact>
-        <caom2:artifact caom2:id="00000000-0000-0000-ab64-8efd1d66221e" caom2:lastModified="2018-11-08T20:32:22.680" caom2:maxLastModified="2018-11-08T20:32:22.680" caom2:metaChecksum="md5:1f0f250a41890f9fb12148477dc97743" caom2:accMetaChecksum="md5:66451f09be6368f1e6466e958f099985">
+        <caom2:artifact caom2:id="00000000-0000-0000-ab64-8efd1d66221e" caom2:lastModified="2018-11-08T20:32:22.680" caom2:maxLastModified="2018-11-08T20:32:22.680" caom2:metaChecksum="md5:1f0f250a41890f9fb12148477dc97743" caom2:accMetaChecksum="md5:66451f09be6368f1e6466e958f099985" caom2:metaProducer="gem2caom2/0.8">
           <caom2:uri>gemini:GEM/2003mar03_0052.jpg</caom2:uri>
           <caom2:productType>preview</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>

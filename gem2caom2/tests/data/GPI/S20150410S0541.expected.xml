@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="00000000-0000-0000-8eb2-1a0f1f22240c" caom2:lastModified="2018-10-06T02:28:50.091" caom2:maxLastModified="2018-10-06T02:28:50.091" caom2:metaChecksum="md5:0fe9995e5c988840711d5d2bcc8ed736" caom2:accMetaChecksum="md5:9ef8742d0aa51db009f4077cdff4783f">
+<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="00000000-0000-0000-8eb2-1a0f1f22240c" caom2:lastModified="2018-10-06T02:28:50.091" caom2:maxLastModified="2018-10-06T02:28:50.091" caom2:metaChecksum="md5:0fe9995e5c988840711d5d2bcc8ed736" caom2:accMetaChecksum="md5:9ef8742d0aa51db009f4077cdff4783f" caom2:metaProducer="gem2caom2/0.8">
   <caom2:collection>GEMINI</caom2:collection>
   <caom2:observationID>GS-CAL20150410-1-007</caom2:observationID>
   <caom2:metaRelease>2015-04-10T10:23:44.900</caom2:metaRelease>
@@ -25,7 +25,7 @@
     <caom2:name>GPI</caom2:name>
   </caom2:instrument>
   <caom2:planes>
-    <caom2:plane caom2:id="00000000-0000-0000-b4a6-3934eb8aca0f" caom2:lastModified="2018-10-06T02:28:50.091" caom2:maxLastModified="2018-10-06T02:28:50.091" caom2:metaChecksum="md5:bf26cb06e748a6a2de0965415d5ca2e5" caom2:accMetaChecksum="md5:9381eaa8895774a40597c28da4c68a00">
+    <caom2:plane caom2:id="00000000-0000-0000-b4a6-3934eb8aca0f" caom2:lastModified="2018-10-06T02:28:50.091" caom2:maxLastModified="2018-10-06T02:28:50.091" caom2:metaChecksum="md5:bf26cb06e748a6a2de0965415d5ca2e5" caom2:accMetaChecksum="md5:9381eaa8895774a40597c28da4c68a00" caom2:metaProducer="gem2caom2/0.8">
       <caom2:productID>S20150410S0541</caom2:productID>
       <caom2:metaRelease>2015-04-10T10:23:44.900</caom2:metaRelease>
       <caom2:dataRelease>2015-04-10T00:00:00.000</caom2:dataRelease>
@@ -38,7 +38,7 @@
         <caom2:reference>http://archive.gemini.edu/searchform/GS-CAL20150410-1-007</caom2:reference>
       </caom2:provenance>
       <caom2:artifacts>
-        <caom2:artifact caom2:id="00000000-0000-0000-98ce-7643e2434937" caom2:lastModified="2018-10-06T02:28:50.091" caom2:maxLastModified="2018-10-06T02:28:50.091" caom2:metaChecksum="md5:84bd4f23e5dd1a20bde04c24b74091fc" caom2:accMetaChecksum="md5:993f0051fb97ee5ded2c96059465be92">
+        <caom2:artifact caom2:id="00000000-0000-0000-98ce-7643e2434937" caom2:lastModified="2018-10-06T02:28:50.091" caom2:maxLastModified="2018-10-06T02:28:50.091" caom2:metaChecksum="md5:84bd4f23e5dd1a20bde04c24b74091fc" caom2:accMetaChecksum="md5:993f0051fb97ee5ded2c96059465be92" caom2:metaProducer="gem2caom2/0.8">
           <caom2:uri>gemini:GEM/S20150410S0541.fits</caom2:uri>
           <caom2:productType>calibration</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
@@ -53,7 +53,7 @@
             <caom2:part caom2:id="00000000-0000-0000-8d79-1e73490cab8d">
               <caom2:name>1</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-874e-96c982f6b008">
+                <caom2:chunk caom2:id="00000000-0000-0000-874e-96c982f6b008" caom2:metaProducer="gem2caom2/0.8">
                   <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -123,7 +123,7 @@
             </caom2:part>
           </caom2:parts>
         </caom2:artifact>
-        <caom2:artifact caom2:id="00000000-0000-0000-91a8-93ef3934c087" caom2:lastModified="2018-10-06T02:28:50.091" caom2:maxLastModified="2018-10-06T02:28:50.091" caom2:metaChecksum="md5:e2d677be4889cbe45763596dda90a6da" caom2:accMetaChecksum="md5:8dbd5ce33ddf032af1332cec5c1b236a">
+        <caom2:artifact caom2:id="00000000-0000-0000-91a8-93ef3934c087" caom2:lastModified="2018-10-06T02:28:50.091" caom2:maxLastModified="2018-10-06T02:28:50.091" caom2:metaChecksum="md5:e2d677be4889cbe45763596dda90a6da" caom2:accMetaChecksum="md5:8dbd5ce33ddf032af1332cec5c1b236a" caom2:metaProducer="gem2caom2/0.8">
           <caom2:uri>gemini:GEM/S20150410S0541.jpg</caom2:uri>
           <caom2:productType>preview</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
