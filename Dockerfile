@@ -1,43 +1,40 @@
 FROM opencadc/pandas:3.8-slim
 
-RUN apt-get update -y && apt-get dist-upgrade -y
-
-RUN apt-get install -y build-essential \
-    git
-
-RUN pip install cadcdata && \
-    pip install cadctap && \
-    pip install caom2 && \
-    pip install caom2repo && \
-    pip install caom2utils && \
-    pip install ftputil && \
-    pip install importlib-metadata && \
-    pip install pytz && \
-    pip install PyYAML && \
-    pip install spherical-geometry && \
-    pip install vos
-
-WORKDIR /usr/src/app
+RUN apt-get update -y && apt-get dist-upgrade -y && \
+    apt-get install -y build-essential \
+                       git && \
+    rm -rf /var/lib/apt/lists/ /tmp/* /var/tmp/*
 
 RUN pip install bs4 \
+    cadcdata \
+    cadctap \
+    caom2 \
+    caom2repo \
+    caom2utils \
+    deprecated \
+    ftputil \
+    importlib-metadata \
     matplotlib \
-    pillow
+    pillow \
+    PyYAML \
+    spherical-geometry \
+    vos
+
+WORKDIR /usr/src/app
 
 RUN mkdir /app && mkdir /app/data
 
 ADD https://www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/files/vault/cadcsw/2019-07-03_from_paul.txt /app/data/from_paul.txt
 
+ARG OPENCADC_BRANCH=master
 ARG OPENCADC_REPO=opencadc
+ARG PIPE_BRANCH=master
+ARG PIPE_REPO=opencadc
 
-RUN git clone https://github.com/${OPENCADC_REPO}/caom2pipe.git && \
-  pip install ./caom2pipe
+RUN pip install git+https://github.com/${OPENCADC_REPO}/caom2tools@${OPENCADC_BRANCH}#egg=caom2tools&subdirectory=caom2utils
 
-RUN git clone https://github.com/${OPENCADC_REPO}/gem2caom2.git && \
-  pip install ./gem2caom2 && \
-  cp ./gem2caom2/scripts/docker-entrypoint.sh / && \
-  cp ./gem2caom2/scripts/config_with_ingest.yml / && \
-  cp ./gem2caom2/scripts/config_with_visit.yml / && \
-  cp ./gem2caom2/scripts/state.yml /
+RUN pip install git+https://github.com/${PIPE_REPO}/caom2pipe@${PIPE_BRANCH}#egg=caom2pipe
 
-ENTRYPOINT ["/docker-entrypoint.sh"]
+RUN pip install git+https://github.com/${PIPE_REPO}/gem2caom2@${PIPE_BRANCH}#egg=gem2caom2
 
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]

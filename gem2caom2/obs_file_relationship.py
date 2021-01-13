@@ -258,7 +258,7 @@ class GemObsFileRelationship(object):
         # are a set of associated file names. This structure supports the
         # get_observation query.
 
-        self.id_list = {}
+        self.id_list = collections.defaultdict(list)
 
         # time_list structure: a dict, keys are last modified time,
         # values are a set of observation IDs as specified from Gemini
@@ -272,7 +272,7 @@ class GemObsFileRelationship(object):
         # for determining provenance information for planes and
         # observations.
 
-        self.name_list = {}
+        self.name_list = collections.defaultdict(list)
 
         self.logger = logging.getLogger(__name__)
         self._initialize_content(FILE_NAME)
@@ -297,15 +297,9 @@ class GemObsFileRelationship(object):
             else:
                 temp_content[ol_key] = [ii[0]]
             # re-organize to be able to answer get_observation queries
-            if ii[0] in self.id_list:
-                self.id_list[ii[0]].append(ii[2])
-            else:
-                self.id_list[ii[0]] = [ii[2]]
+            self.id_list[ii[0]].append(ii[2])
             file_id = gem_name.GemName.remove_extensions(ii[2])
-            if file_id in self.name_list:
-                self.name_list[file_id].append([ii[0], ol_key])
-            else:
-                self.name_list[file_id] = [[ii[0], ol_key]]
+            self.name_list[file_id].append([ii[0], ol_key])
 
         # this structure means an observation ID occurs more than once with
         # different last modified times
