@@ -97,7 +97,7 @@ def write_gemini_data_file():
              '/app/data/from_paul.txt')
 
 
-@patch('caom2pipe.execute_composable.OrganizeExecutesWithDoOne.do_one')
+@patch('caom2pipe.execute_composable.OrganizeExecutes.do_one')
 @patch('gem2caom2.external_metadata.CadcTapClient')
 @patch('gem2caom2.builder.get_instrument')
 def test_run(inst_mock, client_mock, run_mock):
@@ -131,7 +131,7 @@ def test_run(inst_mock, client_mock, run_mock):
         os.getcwd = getcwd_orig
 
 
-@patch('caom2pipe.execute_composable.OrganizeExecutesWithDoOne.do_one')
+@patch('caom2pipe.execute_composable.OrganizeExecutes.do_one')
 @patch('gem2caom2.external_metadata.CadcTapClient')
 @patch('gem2caom2.builder.get_instrument')
 def test_run_errors(inst_mock, client_mock, run_mock):
@@ -163,7 +163,7 @@ def test_run_errors(inst_mock, client_mock, run_mock):
         os.getcwd = getcwd_orig
 
 
-@patch('caom2pipe.execute_composable.OrganizeExecutesWithDoOne.do_one')
+@patch('caom2pipe.execute_composable.OrganizeExecutes.do_one')
 @patch('caom2pipe.manage_composable.query_endpoint')
 @patch('gem2caom2.external_metadata.get_obs_metadata')
 @patch('caom2pipe.manage_composable.query_tap_client')
@@ -340,7 +340,7 @@ def test_run_by_incremental2(client_mock, query_mock, read_mock,
     assert query_mock.called, 'query mock not called'
 
 
-@patch('caom2pipe.execute_composable.OrganizeExecutesWithDoOne.do_one')
+@patch('caom2pipe.execute_composable.OrganizeExecutes.do_one')
 @patch('caom2pipe.manage_composable.query_tap_client')
 @patch('gem2caom2.external_metadata.CadcTapClient')
 @patch('caom2pipe.data_source_composable.CadcTapClient')
@@ -390,7 +390,7 @@ def test_run_by_public(ds_mock, client_mock, tap_mock, exec_mock):
     assert tap_mock.called, 'tap mock not called'
 
 
-@patch('caom2pipe.execute_composable.OrganizeExecutesWithDoOne.do_one')
+@patch('caom2pipe.execute_composable.OrganizeExecutes.do_one')
 @patch('caom2pipe.manage_composable.query_endpoint')
 @patch('gem2caom2.external_metadata.get_obs_metadata')
 @patch('caom2pipe.manage_composable.query_tap_client')

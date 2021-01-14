@@ -291,8 +291,11 @@ def test_pull_v_augmentation(put_mock, http_mock):
     obs = mc.read_obs_from_file(TEST_OBS_FILE)
     obs.planes[TEST_PRODUCT_ID].data_release = datetime.utcnow()
     assert len(obs.planes[TEST_PRODUCT_ID].artifacts) == 1, 'initial condition'
-
     test_uri = f'{SCHEME}:{COLLECTION}/{TEST_PRODUCT_ID}.fits'
+    for plane in obs.planes.values():
+        for artifact in plane.artifacts.values():
+            artifact.uri = test_uri
+
     test_rejected = mc.Rejected(REJECTED_FILE)
     test_config = mc.Config()
     test_observable = mc.Observable(test_rejected, mc.Metrics(test_config))
