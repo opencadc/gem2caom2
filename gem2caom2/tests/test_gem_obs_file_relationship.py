@@ -643,6 +643,7 @@ test_subjects = [
 
 @patch('caom2pipe.manage_composable.query_tap_client')
 @patch('gem2caom2.external_metadata.get_obs_metadata')
+@patch('caom2repo.core.net.BaseWsClient', Mock())
 def test_repair_provenance(gem_mock, tap_mock):
     copyfile(f'{gem_mocks.TEST_DATA_DIR}/from_paul.txt',
              '/app/data/from_paul.txt')
