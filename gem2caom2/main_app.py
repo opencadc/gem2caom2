@@ -1421,6 +1421,27 @@ def update(observation, **kwargs):
                                 c.naxis = None
                             c.time_axis = None
 
+                        # DB - 01-02-21
+                        # OSCIR data should all have NAXIS=6 in the header.
+                        # Axis 1/2 are position axes.  Axis 3 is the number of
+                        # chop positions (1 or usually = 2), axis 5 is the
+                        # number of nod positions (1 or usually = 2), axis
+                        # 4 gives the number of ‘savesets’ per nod position
+                        # and axis 6 gives the number of ‘nod sets’.
+                        #
+                        # For that particular example you gave me I think the
+                        # NAXIS6 = 1 is incorrect.  Think it should equal the
+                        # value of NODSETS.  And TOTFRMS = 360 should equal
+                        # naxis1 x naxis2 x naxis3 x naxis4.
+                        #
+                        # Spatial cutouts would use axes 1 and 2, although
+                        # the precise positions of each chop/nod position are
+                        # not captured by the CAOM2 data.
+                        if (instrument is em.Inst.OSCIR and
+                                c.naxis is not None and c.naxis == 6):
+                            c.naxis = 2
+                            c.time_axis = None
+
                 if isinstance(observation, DerivedObservation):
                     cc.update_plane_provenance(plane, headers[1:], 'IMCMB',
                                                COLLECTION,
