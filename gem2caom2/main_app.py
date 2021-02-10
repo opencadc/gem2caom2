@@ -2758,6 +2758,8 @@ def _update_chunk_energy_phoenix(chunk, data_product_type, obs_id, filter_name):
     # so should be disregarded.
     if len(filter_name) > 0:
         filter_name = filter_name.split()[0]
+        if '_' in filter_name:
+            filter_name = filter_name.split('_')[0]
 
     logging.debug(
         'Phoenix: filter_name is {} for {}'.format(filter_name, obs_id))
