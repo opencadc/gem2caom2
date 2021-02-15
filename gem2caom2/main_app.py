@@ -2741,7 +2741,8 @@ PHOENIX = {'2030': [4.929000, 4.808000, 5.050000],
            '8265': [1.204500, 1.196000, 1.213000],
            '9232': [1.083000, 1.077000, 1.089000],
            'L2870': [3.490500, 3.436000, 3.545000],
-           '9440': [1.058500, 1.053000, 1.064000]}
+           '9440': [1.058500, 1.053000, 1.064000],
+           'open': [3.0, 1.0, 5.0]}
 
 
 def _update_chunk_energy_phoenix(chunk, data_product_type, obs_id, filter_name):
@@ -2758,6 +2759,9 @@ def _update_chunk_energy_phoenix(chunk, data_product_type, obs_id, filter_name):
     # so should be disregarded.
     if len(filter_name) > 0:
         filter_name = filter_name.split()[0]
+        # found some files with '_' in the name
+        if '_' in filter_name:
+            filter_name = filter_name.split('_')[0]
 
     logging.debug(
         'Phoenix: filter_name is {} for {}'.format(filter_name, obs_id))
@@ -2772,8 +2776,13 @@ def _update_chunk_energy_phoenix(chunk, data_product_type, obs_id, filter_name):
             fm.set_bandpass(PHOENIX[filter_name][2], PHOENIX[filter_name][1])
             fm.central_wl = PHOENIX[filter_name][0]
         elif len(filter_name) == 0:
-            fm.set_bandpass(10.0, 0.0)
-            fm.set_central_wl(10.0, 0.0)
+            # DB 11-02-21
+            # With open filter in Phoenix the band pass coverage should be
+            # from 1 to 5 microns, so central wavelength of 3 microns and
+            # bandpass of 4 microns. Lines 2777 to 2778 should be changed as
+            # well as adding an ‘open_(1)’ filter
+            fm.set_bandpass(5.0, 1.0)
+            fm.set_central_wl(5.0, 1.0)
         else:
             raise mc.CadcException(
                 'Phoenix: mystery filter name {} for {}'.format(
