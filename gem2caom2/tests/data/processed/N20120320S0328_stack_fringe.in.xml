@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="00000000-0000-0000-b5af-4f245156f77e" caom2:metaProducer="gem2caom2/0.8">
+<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="00000000-0000-0000-b5af-4f245156f77e" caom2:metaProducer="gem2caom2/0.8.1">
   <caom2:collection>GEMINI</caom2:collection>
   <caom2:observationID>GN-CAL20120320-900-328-STACK-FRINGE</caom2:observationID>
   <caom2:metaRelease>2012-03-20T00:00:00.000</caom2:metaRelease>
@@ -7,12 +7,12 @@
     <caom2:name>exposure</caom2:name>
   </caom2:algorithm>
   <caom2:planes>
-    <caom2:plane caom2:id="00000000-0000-0000-b170-32aa6bc4d320" caom2:metaProducer="gem2caom2/0.8">
+    <caom2:plane caom2:id="00000000-0000-0000-b170-32aa6bc4d320" caom2:metaProducer="gem2caom2/0.8.1">
       <caom2:productID>N20120320S0328_stack_fringe</caom2:productID>
       <caom2:metaRelease>2012-03-20T00:00:00.000</caom2:metaRelease>
       <caom2:dataRelease>2012-03-20T00:00:00.000</caom2:dataRelease>
       <caom2:artifacts>
-        <caom2:artifact caom2:id="00000000-0000-0000-812f-71566214fc4a" caom2:metaProducer="gem2caom2/0.8">
+        <caom2:artifact caom2:id="00000000-0000-0000-812f-71566214fc4a" caom2:metaProducer="gem2caom2/0.8.1">
           <caom2:uri>gemini:GEM/N20120320S0328_stack_fringe.fits</caom2:uri>
           <caom2:productType>calibration</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
@@ -21,7 +21,7 @@
           <caom2:contentChecksum>md5:81830c5aca8a7eae9062e486ccf36ab4</caom2:contentChecksum>
           <caom2:parts/>
         </caom2:artifact>
-        <caom2:artifact caom2:id="00000000-0000-0000-812f-71566214fc40" caom2:metaProducer="gem2caom2/0.8">
+        <caom2:artifact caom2:id="00000000-0000-0000-812f-71566214fc40" caom2:metaProducer="gem2caom2/0.8.1">
           <caom2:uri>gemini:GEM/N20120320S0328_stack_fringe.jpg</caom2:uri>
           <caom2:productType>preview</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>

@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="00000000-0000-0000-a455-6a569c68f632" caom2:metaProducer="gem2caom2/0.8">
+<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="00000000-0000-0000-a455-6a569c68f632" caom2:metaProducer="gem2caom2/0.8.1">
   <caom2:collection>GEMINI</caom2:collection>
   <caom2:observationID>GN-CAL20110927-900-170-FRINGE</caom2:observationID>
   <caom2:metaRelease>2011-09-27T00:00:00.000</caom2:metaRelease>
@@ -7,12 +7,12 @@
     <caom2:name>exposure</caom2:name>
   </caom2:algorithm>
   <caom2:planes>
-    <caom2:plane caom2:id="00000000-0000-0000-916b-2650f60fc5e9" caom2:metaProducer="gem2caom2/0.8">
+    <caom2:plane caom2:id="00000000-0000-0000-916b-2650f60fc5e9" caom2:metaProducer="gem2caom2/0.8.1">
       <caom2:productID>N20110927S0170_fringe</caom2:productID>
       <caom2:metaRelease>2011-09-27T00:00:00.000</caom2:metaRelease>
       <caom2:dataRelease>2011-09-27T00:00:00.000</caom2:dataRelease>
       <caom2:artifacts>
-        <caom2:artifact caom2:id="00000000-0000-0000-a5a1-43b8cc009954" caom2:metaProducer="gem2caom2/0.8">
+        <caom2:artifact caom2:id="00000000-0000-0000-a5a1-43b8cc009954" caom2:metaProducer="gem2caom2/0.8.1">
           <caom2:uri>gemini:GEM/N20110927S0170_fringe.fits</caom2:uri>
           <caom2:productType>calibration</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
@@ -21,7 +21,7 @@
           <caom2:contentChecksum>md5:514d9b61b5fbb5eeb229a606d83d3d21</caom2:contentChecksum>
           <caom2:parts/>
         </caom2:artifact>
-        <caom2:artifact caom2:id="00000000-0000-0000-a5a1-43b8cc009950" caom2:metaProducer="gem2caom2/0.8">
+        <caom2:artifact caom2:id="00000000-0000-0000-a5a1-43b8cc009950" caom2:metaProducer="gem2caom2/0.8.1">
           <caom2:uri>gemini:GEM/N20110927S0170_fringe.jpg</caom2:uri>
           <caom2:productType>preview</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>

@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:DerivedObservation" caom2:id="00000000-0000-0000-8858-f74a242375dc" caom2:metaProducer="gem2caom2/0.8">
+<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:DerivedObservation" caom2:id="00000000-0000-0000-8858-f74a242375dc" caom2:metaProducer="gem2caom2/0.8.1">
   <caom2:collection>GEMINI</caom2:collection>
   <caom2:observationID>GS-2004B-Q-42-1-001-MFRG-ADD</caom2:observationID>
   <caom2:metaRelease>2004-11-17T08:31:48.400</caom2:metaRelease>
@@ -30,7 +30,7 @@
     </caom2:keywords>
   </caom2:instrument>
   <caom2:planes>
-    <caom2:plane caom2:id="00000000-0000-0000-8b90-9e68f99d72cf" caom2:metaProducer="gem2caom2/0.8">
+    <caom2:plane caom2:id="00000000-0000-0000-8b90-9e68f99d72cf" caom2:metaProducer="gem2caom2/0.8.1">
       <caom2:productID>mfrgS20041117S0073_add</caom2:productID>
       <caom2:metaRelease>2004-11-17T08:31:48.400</caom2:metaRelease>
       <caom2:dataRelease>2006-05-17T00:00:00.000</caom2:dataRelease>
@@ -47,7 +47,7 @@
         </caom2:inputs>
       </caom2:provenance>
       <caom2:artifacts>
-        <caom2:artifact caom2:id="00000000-0000-0000-a0c3-da3a6429df83" caom2:metaProducer="gem2caom2/0.8">
+        <caom2:artifact caom2:id="00000000-0000-0000-a0c3-da3a6429df83" caom2:metaProducer="gem2caom2/0.8.1">
           <caom2:uri>gemini:GEM/mfrgS20041117S0073_add.fits</caom2:uri>
           <caom2:productType>science</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
@@ -62,7 +62,7 @@
             <caom2:part caom2:id="00000000-0000-0000-9e3c-42a2a5023a97">
               <caom2:name>1</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-83f3-06fddb6edad4" caom2:metaProducer="gem2caom2/0.8">
+                <caom2:chunk caom2:id="00000000-0000-0000-83f3-06fddb6edad4" caom2:metaProducer="gem2caom2/0.8.1">
                   <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -150,7 +150,7 @@
             </caom2:part>
           </caom2:parts>
         </caom2:artifact>
-        <caom2:artifact caom2:id="00000000-0000-0000-bf9f-f59a76e0b5f0" caom2:metaProducer="gem2caom2/0.8">
+        <caom2:artifact caom2:id="00000000-0000-0000-bf9f-f59a76e0b5f0" caom2:metaProducer="gem2caom2/0.8.1">
           <caom2:uri>gemini:GEM/mfrgS20041117S0073_add.jpg</caom2:uri>
           <caom2:productType>preview</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>

@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="3421b4ba-9640-40c0-9170-71da4c1cb23f" caom2:lastModified="2019-11-06T12:10:50.080" caom2:maxLastModified="2019-11-06T12:10:50.080" caom2:metaChecksum="md5:2b44353efe9a9c7f19372c883131fe33" caom2:accMetaChecksum="md5:8628d4470ebe3ac34204ea207666d15f" caom2:metaProducer="gem2caom2/0.8">
+<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="3421b4ba-9640-40c0-9170-71da4c1cb23f" caom2:lastModified="2019-11-06T12:10:50.080" caom2:maxLastModified="2019-11-06T12:10:50.080" caom2:metaChecksum="md5:2b44353efe9a9c7f19372c883131fe33" caom2:accMetaChecksum="md5:8628d4470ebe3ac34204ea207666d15f" caom2:metaProducer="gem2caom2/0.8.1">
   <caom2:collection>GEMINI</caom2:collection>
   <caom2:observationID>GS-2003B-Q-23-17-001</caom2:observationID>
   <caom2:metaRelease>2005-09-16T07:33:03.000</caom2:metaRelease>
@@ -27,7 +27,7 @@
     <caom2:name>TReCS</caom2:name>
   </caom2:instrument>
   <caom2:planes>
-    <caom2:plane caom2:id="d1414059-4646-4a2d-ba41-dd61594162d7" caom2:lastModified="2019-11-06T12:10:50.080" caom2:maxLastModified="2019-11-06T12:10:50.080" caom2:metaChecksum="md5:abd6422301f0a1a861cf850d42d93903" caom2:accMetaChecksum="md5:67d0aed45bdfcdf9ef5eab8c7873cdd0" caom2:metaProducer="gem2caom2/0.8">
+    <caom2:plane caom2:id="d1414059-4646-4a2d-ba41-dd61594162d7" caom2:lastModified="2019-11-06T12:10:50.080" caom2:maxLastModified="2019-11-06T12:10:50.080" caom2:metaChecksum="md5:abd6422301f0a1a861cf850d42d93903" caom2:accMetaChecksum="md5:67d0aed45bdfcdf9ef5eab8c7873cdd0" caom2:metaProducer="gem2caom2/0.8.1">
       <caom2:productID>rS20050916S0159</caom2:productID>
       <caom2:metaRelease>2005-09-16T07:33:03.000</caom2:metaRelease>
       <caom2:dataRelease>2007-03-16T00:00:00.000</caom2:dataRelease>
@@ -40,7 +40,7 @@
         <caom2:reference>http://archive.gemini.edu/searchform/filepre=rS20050916S0159.fits</caom2:reference>
       </caom2:provenance>
       <caom2:artifacts>
-        <caom2:artifact caom2:id="0261c202-bc1e-4803-8635-c915f43c6187" caom2:lastModified="2019-11-06T12:10:50.080" caom2:maxLastModified="2019-11-06T12:10:50.080" caom2:metaChecksum="md5:e6365907f08921fe4cbbccb5afe59634" caom2:accMetaChecksum="md5:48d7cec7949ab151251116fe8d028364" caom2:metaProducer="gem2caom2/0.8">
+        <caom2:artifact caom2:id="0261c202-bc1e-4803-8635-c915f43c6187" caom2:lastModified="2019-11-06T12:10:50.080" caom2:maxLastModified="2019-11-06T12:10:50.080" caom2:metaChecksum="md5:e6365907f08921fe4cbbccb5afe59634" caom2:accMetaChecksum="md5:48d7cec7949ab151251116fe8d028364" caom2:metaProducer="gem2caom2/0.8.1">
           <caom2:uri>gemini:GEM/rS20050916S0159.fits</caom2:uri>
           <caom2:productType>science</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
@@ -55,7 +55,7 @@
             <caom2:part caom2:id="403b8b46-0d5f-4ad3-a4cc-5eaee7e3654d" caom2:lastModified="2019-11-06T12:10:50.080" caom2:maxLastModified="2019-11-06T12:10:50.080" caom2:metaChecksum="md5:78e46cb63f86cae938c75405e7629778" caom2:accMetaChecksum="md5:a3889133175790da81058953873666ce">
               <caom2:name>1</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="d92b7003-18fe-4b09-b38e-74abd105b86e" caom2:lastModified="2019-11-06T12:10:50.080" caom2:maxLastModified="2019-11-06T12:10:50.080" caom2:metaChecksum="md5:a46e4221d157a8bce8f7428bee531a5b" caom2:accMetaChecksum="md5:1a7b728fa4360c3afcf5e599a21e0a79" caom2:metaProducer="gem2caom2/0.8">
+                <caom2:chunk caom2:id="d92b7003-18fe-4b09-b38e-74abd105b86e" caom2:lastModified="2019-11-06T12:10:50.080" caom2:maxLastModified="2019-11-06T12:10:50.080" caom2:metaChecksum="md5:a46e4221d157a8bce8f7428bee531a5b" caom2:accMetaChecksum="md5:1a7b728fa4360c3afcf5e599a21e0a79" caom2:metaProducer="gem2caom2/0.8.1">
                   <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
