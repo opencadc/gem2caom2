@@ -1,9 +1,9 @@
 Filename: r01dec05_007.fits.bz2
 
-AstroData Types: ['OSCIR', 'GEMINI', 'GEMINI_SOUTH', 'UNPREPARED']
+AstroData Tags: {'GEMINI', 'UNPREPARED', 'SOUTH', 'CHOP-NOD', 'SPECT', 'OSCIR'}
 
 
---- HDU 0 ---
+--- PHU ---
 SIMPLE  =                    T / conforms to FITS standard                      
 BITPIX  =                    8 / array data type                                
 NAXIS   =                    0 / number of array dimensions                     
@@ -170,11 +170,12 @@ FINALIQ = 'pass              ' / Requested final image quality
 PICONFIG= 'pass              ' / Requested instrument configuration             
 PITARGET= 'pass              ' / Requested target                               
 RELEASE = '2010-01-01'                                                          
+ORIGNAME= 'r01dec05_007.fits'  / Original filename prior to processing          
 HISTORY Corrected keywords: NULL(1), CLK1/2HI, CLK7/8LO, CLK7/8HI, NULL(3), CLK5
 HISTORY /6LO, CLK1/2LO, NULL(2), CLK5/6HI, NULL(4), CLK3/4LO, CLK3/4HI          
-HISTORY Corrected metadata: RELEASE                                             
+HISTORY Corrected metadata: RELEASE
 
---- HDU 1 ---
+--- HDU 0 ---
 XTENSION= 'IMAGE   '           / Image extension                                
 BITPIX  =                  -32 / array data type                                
 NAXIS   =                    2 / number of array dimensions                     
@@ -182,7 +183,6 @@ NAXIS1  =                  128
 NAXIS2  =                  128                                                  
 PCOUNT  =                    0 / number of parameters                           
 GCOUNT  =                    1 / number of groups                               
-EXTNAME = 'SCI     '           / ad4549: added by AstroData                     
 ORIGIN  = 'NOAO-IRAF FITS Image Kernel July 1999' / FITS file originator        
 IRAF-TLM= '23:37:40 (04/12/2001)' / Time of last modification                   
 OBJECT  = 'NGC7552 '           / Name of the object observed                    
@@ -345,6 +345,8 @@ FINALIQ = 'pass              ' / Requested final image quality
 PICONFIG= 'pass              ' / Requested instrument configuration             
 PITARGET= 'pass              ' / Requested target                               
 RELEASE = '2010-01-01'                                                          
+EXTNAME = 'SCI     '           / Added by AstroData                             
+EXTVER  =                    1 / Added by AstroData                             
 HISTORY Corrected keywords: NULL(1), CLK1/2HI, CLK7/8LO, CLK7/8HI, NULL(3), CLK5
 HISTORY /6LO, CLK1/2LO, NULL(2), CLK5/6HI, NULL(4), CLK3/4LO, CLK3/4HI          
-HISTORY Corrected metadata: RELEASE                                             
+HISTORY Corrected metadata: RELEASE

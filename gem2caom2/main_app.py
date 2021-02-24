@@ -166,7 +166,13 @@ def get_calibration_level(uri):
             (instrument is em.Inst.TEXES and
              ('_red' in uri.lower() or '_sum' in uri.lower())) or
             (instrument is em.Inst.PHOENIX and
-             mc.CaomName(uri.lower()).file_id.startswith('p'))):
+             mc.CaomName(uri.lower()).file_id.startswith('p')) or
+            # DB 23-02-21
+            # The best thing to do with OSCIR 'r' files is to add them as a
+            # second cal level 2 plane and use the same metadata as the
+            # unprocessed plane.
+            (instrument is em.Inst.OSCIR and
+             mc.CaomName(uri.lower()).file_id.startswith('r'))):
         result = CalibrationLevel.CALIBRATED
     return result
 
@@ -506,7 +512,8 @@ def get_obs_intent(header):
     """
     result = ObservationIntentType.CALIBRATION
     cal_values = ['GCALflat', 'Bias', 'BIAS', 'Twilight', 'Ar', 'FLAT',
-                  'flat', 'ARC', 'Domeflat', 'DARK', 'dark', 'gcal', 'ZERO']
+                  'flat', 'ARC', 'Domeflat', 'DARK', 'dark', 'gcal', 'ZERO',
+                  'SLIT', 'slit']
     dl = header.get('DATALAB')
     lookup = _get_obs_class(header)
     logging.debug('observation_class is {} for {}'.format(lookup, dl))
@@ -928,6 +935,11 @@ def _get_phoenix_obs_type(header):
         result = 'FLAT'
     elif 'arc' in object_value:
         result = 'ARC'
+    elif 'slit' in object_value:
+        # DB 22-02-21
+        # These are images that show the slit location so I think it’s best
+        # to add a new OBSTYPE of SLIT (sort of like MASK for GMOS-N/S).
+        result = 'SLIT'
     return result
 
 
@@ -967,7 +979,8 @@ def _is_phoenix_calibration(header):
             'arc' in object_value or
             'comp' in object_value or
             'lamp' in object_value or
-            'comparison' in object_value):
+            'comparison' in object_value or
+            'slit' in object_value):
         return True
     return False
 
@@ -1909,7 +1922,8 @@ def _update_chunk_energy_hrwfs(chunk, data_product_type, obs_id, filter_name):
         logging.debug(
             'hrwfs Spectral WCS {} mode for {}.'.format(data_product_type,
                                                         obs_id))
-        if 'open' in filter_name or 'neutral' in filter_name:
+        if ('open' in filter_name or 'neutral' in filter_name or
+                'undefined' in filter_name):
             w_min = 0.35
             w_max = 1.0
             filter_md = FilterMetadata()
@@ -2990,18 +3004,17 @@ def _update_chunk_energy_oscir(chunk, data_product_type, obs_id, filter_name):
         raise mc.CadcException(
             'oscir: Mystery FILTER keyword {} for {}'.format(
                 filter_name, obs_id))
-    if data_product_type == DataProductType.IMAGE:
-        logging.debug(
-            'oscir: SpectralWCS imaging mode for {}.'.format(obs_id))
-        fm = FilterMetadata()
-        fm.central_wl = oscir_lookup[filter_name][0]
-        fm.bandpass = oscir_lookup[filter_name][1]
-        _build_chunk_energy(chunk, filter_name, fm)
-    else:
-        raise mc.CadcException(
-            'oscir: mystery data product type {} for {}'.format(
-                data_product_type, obs_id))
-
+    # DB 23-02-21
+    # OSCIR files with the 'r' prefix will cause issues because they are
+    # classified as spectra so remove the check
+    #   'if data_product_type == DataProductType.IMAGE:'
+    # and assume they are all images.  The filter bandpass is the best we can
+    # do for the energy WCS in any case.
+    logging.debug('oscir: SpectralWCS imaging mode for {}.'.format(obs_id))
+    fm = FilterMetadata()
+    fm.central_wl = oscir_lookup[filter_name][0]
+    fm.bandpass = oscir_lookup[filter_name][1]
+    _build_chunk_energy(chunk, filter_name, fm)
     logging.debug('End _update_chunk_energy_oscir')
 
 

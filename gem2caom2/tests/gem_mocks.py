@@ -311,6 +311,7 @@ LOOKUP = {
     'S20030730S0036': ['GS-CAL20030730-10-006', em.Inst.HRWFS,
                        'GS-CAL20030730'],
     'S20031218S0049': ['GS-CAL20031218-1-034', em.Inst.HRWFS, 'GS-CAL20031218'],
+    '2001nov16_0164': ['GS-2001B-DD-4-1-0002', em.Inst.HRWFS, 'GS-2001B-DD-4'],
     # Michelle
     'N20060705S0054': ['GN-2006A-C-14-49-002', em.Inst.MICHELLE,
                        'GN-2006A-C-14'],
