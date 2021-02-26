@@ -363,6 +363,7 @@ LOOKUP = {
     # OSCIR
     'r01dec05_007': ['GS-2001B-Q-31-9-007', em.Inst.OSCIR, 'GS-2001B-Q-31'],
     '01MAY08_023': ['GN-2001A-C-4-11-9023', em.Inst.OSCIR, 'GN-2001A-C-4'],
+    '01DEC05_004': ['GS-2001B-Q-31-9-9004', em.Inst.OSCIR, 'GS-2001B-Q-31'],
     # Phoenix
     '2002jun10_0171': ['GS-2002A-DD-1-17-0171', em.Inst.PHOENIX,
                        'GS-2002A-DD-1'],
