@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:DerivedObservation" caom2:id="f5a20091-89fb-45c5-9ecc-b348b37d06fe" caom2:lastModified="2019-12-03T21:20:49.426" caom2:maxLastModified="2020-06-04T15:38:51.639" caom2:metaChecksum="md5:f4f36b272a6d82fd87675f13d748ac37" caom2:accMetaChecksum="md5:1076c2d3beb5ded7fbba0dd15e6c80fd" caom2:metaProducer="gem2caom2/0.8">
+<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:DerivedObservation" caom2:id="f5a20091-89fb-45c5-9ecc-b348b37d06fe" caom2:lastModified="2019-12-03T21:20:49.426" caom2:maxLastModified="2020-06-04T15:38:51.639" caom2:metaChecksum="md5:f4f36b272a6d82fd87675f13d748ac37" caom2:accMetaChecksum="md5:1076c2d3beb5ded7fbba0dd15e6c80fd" caom2:metaProducer="gem2caom2/0.8.1">
   <caom2:collection>GEMINI</caom2:collection>
   <caom2:observationID>GN-2006A-Q-90-1-001-MRG-ADD</caom2:observationID>
   <caom2:metaRelease>2006-01-30T13:10:37.700</caom2:metaRelease>
@@ -30,7 +30,7 @@
     </caom2:keywords>
   </caom2:instrument>
   <caom2:planes>
-    <caom2:plane caom2:id="149fd33e-f1a8-4af9-a373-e582cb9570ec" caom2:lastModified="2019-12-03T21:20:49.426" caom2:maxLastModified="2020-06-04T15:38:51.639" caom2:metaChecksum="md5:da47607c35e3ff20c5b9a770bc77d9c2" caom2:accMetaChecksum="md5:4ee7510db7e6d7cdc5fc816dc8de0b9f" caom2:metaProducer="gem2caom2/0.8">
+    <caom2:plane caom2:id="149fd33e-f1a8-4af9-a373-e582cb9570ec" caom2:lastModified="2019-12-03T21:20:49.426" caom2:maxLastModified="2020-06-04T15:38:51.639" caom2:metaChecksum="md5:da47607c35e3ff20c5b9a770bc77d9c2" caom2:accMetaChecksum="md5:4ee7510db7e6d7cdc5fc816dc8de0b9f" caom2:metaProducer="gem2caom2/0.8.1">
       <caom2:productID>mrgN20060130S0149_add</caom2:productID>
       <caom2:metaRelease>2006-01-30T13:10:37.700</caom2:metaRelease>
       <caom2:dataRelease>2007-07-30T00:00:00.000</caom2:dataRelease>
@@ -42,13 +42,13 @@
         <caom2:producer>NOAO-IRAF FITS Image Kernel July 2003</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/filepre=mrgN20060130S0149_add.fits</caom2:reference>
         <caom2:inputs>
-          <caom2:planeURI>caom:GEMINI/GN-2006A-Q-90-1-002/N20060130S0150</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/GN-2006A-Q-90-1-003/N20060130S0151</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/GN-2006A-Q-90-1-001/N20060130S0149</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GN-2006A-Q-90-1-002/N20060130S0150</caom2:planeURI>
         </caom2:inputs>
       </caom2:provenance>
       <caom2:artifacts>
-        <caom2:artifact caom2:id="66fcdea3-9572-41d8-beef-1665cec5a98e" caom2:lastModified="2019-07-19T15:12:57.137" caom2:maxLastModified="2019-12-03T21:20:49.426" caom2:metaChecksum="md5:5c41b4a87d11fa5adf6b0714cad18d13" caom2:accMetaChecksum="md5:15f0bcbb638d3c13a2b0d2f228152dd5" caom2:metaProducer="gem2caom2/0.8">
+        <caom2:artifact caom2:id="66fcdea3-9572-41d8-beef-1665cec5a98e" caom2:lastModified="2019-07-19T15:12:57.137" caom2:maxLastModified="2019-12-03T21:20:49.426" caom2:metaChecksum="md5:5c41b4a87d11fa5adf6b0714cad18d13" caom2:accMetaChecksum="md5:15f0bcbb638d3c13a2b0d2f228152dd5" caom2:metaProducer="gem2caom2/0.8.1">
           <caom2:uri>gemini:GEM/mrgN20060130S0149_add.fits</caom2:uri>
           <caom2:productType>science</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
@@ -63,7 +63,7 @@
             <caom2:part caom2:id="0c4b84bf-e32e-4746-99b3-5bc19bc4cf48" caom2:lastModified="2019-07-19T15:12:57.137" caom2:maxLastModified="2019-12-03T21:20:49.426" caom2:metaChecksum="md5:cc166e5bc56aaebc2a4769255152a0b7" caom2:accMetaChecksum="md5:82202a2161070bc0a3a3cdd5ea512630">
               <caom2:name>1</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="1254fa94-0683-4f72-a052-49b6d5099aff" caom2:lastModified="2019-12-03T21:20:49.426" caom2:maxLastModified="2019-12-03T21:20:49.426" caom2:metaChecksum="md5:8fc83f1b45b04f8b4eb7d19ed37501be" caom2:accMetaChecksum="md5:8c3cb4ea792bbc30c5925afac2eb66d1" caom2:metaProducer="gem2caom2/0.8">
+                <caom2:chunk caom2:id="1254fa94-0683-4f72-a052-49b6d5099aff" caom2:lastModified="2019-12-03T21:20:49.426" caom2:maxLastModified="2019-12-03T21:20:49.426" caom2:metaChecksum="md5:8fc83f1b45b04f8b4eb7d19ed37501be" caom2:accMetaChecksum="md5:8c3cb4ea792bbc30c5925afac2eb66d1" caom2:metaProducer="gem2caom2/0.8.1">
                   <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -155,8 +155,8 @@
     </caom2:plane>
   </caom2:planes>
   <caom2:members>
-    <caom2:observationURI>caom:GEMINI/GN-2006A-Q-90-1-003</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GN-2006A-Q-90-1-002</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GN-2006A-Q-90-1-001</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GN-2006A-Q-90-1-003</caom2:observationURI>
   </caom2:members>
 </caom2:Observation>

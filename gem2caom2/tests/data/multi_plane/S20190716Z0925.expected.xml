@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="00000000-0000-0000-0123-01246e4c9701" caom2:metaProducer="gem2caom2/0.8">
+<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="00000000-0000-0000-0123-01246e4c9701" caom2:metaProducer="gem2caom2/0.8.1">
   <caom2:collection>GEMINI</caom2:collection>
   <caom2:observationID>S20190716Z0925</caom2:observationID>
   <caom2:metaRelease>2019-07-16T10:28:29.020</caom2:metaRelease>
@@ -27,7 +27,7 @@
     <caom2:name>Zorro</caom2:name>
   </caom2:instrument>
   <caom2:planes>
-    <caom2:plane caom2:id="00000000-0000-0000-0123-01247c90c001" caom2:metaProducer="gem2caom2/0.8">
+    <caom2:plane caom2:id="00000000-0000-0000-0123-01247c90c001" caom2:metaProducer="gem2caom2/0.8.1">
       <caom2:productID>S20190716Z0925r</caom2:productID>
       <caom2:metaRelease>2019-07-16T10:28:29.020</caom2:metaRelease>
       <caom2:dataRelease>2020-07-15T00:00:00.000</caom2:dataRelease>
@@ -40,7 +40,7 @@
         <caom2:reference>http://archive.gemini.edu/searchform/filepre=S20190716Z0925r.fits</caom2:reference>
       </caom2:provenance>
       <caom2:artifacts>
-        <caom2:artifact caom2:id="263f64b5-3f44-48d9-b0de-f64a9d9c9c30" caom2:metaProducer="gem2caom2/0.8">
+        <caom2:artifact caom2:id="263f64b5-3f44-48d9-b0de-f64a9d9c9c30" caom2:metaProducer="gem2caom2/0.8.1">
           <caom2:uri>gemini:GEM/S20190716Z0925r.fits</caom2:uri>
           <caom2:productType>science</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
@@ -51,7 +51,7 @@
             <caom2:part caom2:id="30f09c81-276a-4103-a1ab-f839cbad513b">
               <caom2:name>0</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="99cbf2f4-adfa-4190-a1de-9ed084e53b97" caom2:metaProducer="gem2caom2/0.8">
+                <caom2:chunk caom2:id="99cbf2f4-adfa-4190-a1de-9ed084e53b97" caom2:metaProducer="gem2caom2/0.8.1">
                   <caom2:naxis>3</caom2:naxis>
                   <caom2:positionAxis1>2</caom2:positionAxis1>
                   <caom2:positionAxis2>1</caom2:positionAxis2>
@@ -140,7 +140,7 @@
         </caom2:artifact>
       </caom2:artifacts>
     </caom2:plane>
-    <caom2:plane caom2:id="3784aa50-b002-4638-8f57-86b756144af2" caom2:metaProducer="gem2caom2/0.8">
+    <caom2:plane caom2:id="3784aa50-b002-4638-8f57-86b756144af2" caom2:metaProducer="gem2caom2/0.8.1">
       <caom2:productID>S20190716Z0925b</caom2:productID>
       <caom2:metaRelease>2019-07-16T10:28:29.020</caom2:metaRelease>
       <caom2:dataRelease>2020-07-15T00:00:00.000</caom2:dataRelease>
@@ -153,7 +153,7 @@
         <caom2:reference>http://archive.gemini.edu/searchform/filepre=S20190716Z0925b.fits</caom2:reference>
       </caom2:provenance>
       <caom2:artifacts>
-        <caom2:artifact caom2:id="20df4b83-37cf-4d8e-8c3a-010a5f0b088f" caom2:metaProducer="gem2caom2/0.8">
+        <caom2:artifact caom2:id="20df4b83-37cf-4d8e-8c3a-010a5f0b088f" caom2:metaProducer="gem2caom2/0.8.1">
           <caom2:uri>gemini:GEM/S20190716Z0925b.fits</caom2:uri>
           <caom2:productType>science</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
@@ -164,7 +164,7 @@
             <caom2:part caom2:id="31f8ccdb-d6e4-46ab-a434-ed913982035e">
               <caom2:name>0</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="38f60c48-bf1b-4a37-86e6-5c11f0aa588f" caom2:metaProducer="gem2caom2/0.8">
+                <caom2:chunk caom2:id="38f60c48-bf1b-4a37-86e6-5c11f0aa588f" caom2:metaProducer="gem2caom2/0.8.1">
                   <caom2:naxis>3</caom2:naxis>
                   <caom2:positionAxis1>2</caom2:positionAxis1>
                   <caom2:positionAxis2>1</caom2:positionAxis2>

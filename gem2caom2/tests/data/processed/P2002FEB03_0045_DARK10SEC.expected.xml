@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="00000000-0000-0000-9c1b-90a0d61309ce" caom2:metaProducer="gem2caom2/0.8">
+<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="00000000-0000-0000-9c1b-90a0d61309ce" caom2:metaProducer="gem2caom2/0.8.1">
   <caom2:collection>GEMINI</caom2:collection>
   <caom2:observationID>GS-CAL20020203-4-0045</caom2:observationID>
   <caom2:metaRelease>2002-02-02T23:55:02.400</caom2:metaRelease>
@@ -25,7 +25,7 @@
     <caom2:name>PHOENIX</caom2:name>
   </caom2:instrument>
   <caom2:planes>
-    <caom2:plane caom2:id="00000000-0000-0000-a7ba-16a9d078167f" caom2:metaProducer="gem2caom2/0.8">
+    <caom2:plane caom2:id="00000000-0000-0000-a7ba-16a9d078167f" caom2:metaProducer="gem2caom2/0.8.1">
       <caom2:productID>P2002FEB03_0045_DARK10SEC</caom2:productID>
       <caom2:metaRelease>2002-02-02T23:55:02.400</caom2:metaRelease>
       <caom2:dataRelease>2002-02-02T00:00:00.000</caom2:dataRelease>
@@ -38,7 +38,7 @@
         <caom2:reference>http://archive.gemini.edu/searchform/filepre=P2002FEB03_0045_DARK10SEC.fits</caom2:reference>
       </caom2:provenance>
       <caom2:artifacts>
-        <caom2:artifact caom2:id="00000000-0000-0000-a252-8e5fc74f90bf" caom2:metaProducer="gem2caom2/0.8">
+        <caom2:artifact caom2:id="00000000-0000-0000-a252-8e5fc74f90bf" caom2:metaProducer="gem2caom2/0.8.1">
           <caom2:uri>gemini:GEM/P2002FEB03_0045_DARK10SEC.fits</caom2:uri>
           <caom2:productType>calibration</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
@@ -53,7 +53,7 @@
             <caom2:part caom2:id="00000000-0000-0000-b219-e7506c342f3c">
               <caom2:name>1</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-9e7d-905cfd36c500" caom2:metaProducer="gem2caom2/0.8">
+                <caom2:chunk caom2:id="00000000-0000-0000-9e7d-905cfd36c500" caom2:metaProducer="gem2caom2/0.8.1">
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -116,7 +116,7 @@
             </caom2:part>
           </caom2:parts>
         </caom2:artifact>
-        <caom2:artifact caom2:id="00000000-0000-0000-9be5-5886bcac4b30" caom2:metaProducer="gem2caom2/0.8">
+        <caom2:artifact caom2:id="00000000-0000-0000-9be5-5886bcac4b30" caom2:metaProducer="gem2caom2/0.8.1">
           <caom2:uri>gemini:GEM/P2002FEB03_0045_DARK10SEC.jpg</caom2:uri>
           <caom2:productType>preview</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>

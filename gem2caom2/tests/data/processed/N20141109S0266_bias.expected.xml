@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:DerivedObservation" caom2:id="00000000-0000-0000-b88f-fad3e10f645a" caom2:metaProducer="gem2caom2/0.8">
+<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:DerivedObservation" caom2:id="00000000-0000-0000-b88f-fad3e10f645a" caom2:metaProducer="gem2caom2/0.8.1">
   <caom2:collection>GEMINI</caom2:collection>
   <caom2:observationID>GN-CAL20141109-2-001-BIAS</caom2:observationID>
   <caom2:metaRelease>2014-11-09T20:01:38.900</caom2:metaRelease>
@@ -29,7 +29,7 @@
     </caom2:keywords>
   </caom2:instrument>
   <caom2:planes>
-    <caom2:plane caom2:id="00000000-0000-0000-90d9-db8c67c7ecae" caom2:metaProducer="gem2caom2/0.8">
+    <caom2:plane caom2:id="00000000-0000-0000-90d9-db8c67c7ecae" caom2:metaProducer="gem2caom2/0.8.1">
       <caom2:productID>N20141109S0266_bias</caom2:productID>
       <caom2:metaRelease>2014-11-09T20:01:38.900</caom2:metaRelease>
       <caom2:dataRelease>2014-11-09T00:00:00.000</caom2:dataRelease>
@@ -41,30 +41,30 @@
         <caom2:producer>NOAO-IRAF FITS Image Kernel July 2003</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/filepre=N20141109S0266_bias.fits</caom2:reference>
         <caom2:inputs>
-          <caom2:planeURI>caom:GEMINI/GN-CAL20141112-1-002/N20141112S0092</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/GN-CAL20141112-1-001/N20141112S0091</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/GN-CAL20141111-1-001/N20141112S0001</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/GN-CAL20141109-2-004/N20141109S0269</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/GN-CAL20141112-1-003/N20141112S0093</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/GN-CAL20141109-2-005/N20141109S0270</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/GN-CAL20141111-1-005/N20141112S0005</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/GN-CAL20141111-1-002/N20141112S0002</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/GN-CAL20141109-2-003/N20141109S0268</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/GN-CAL20141109-2-002/N20141109S0267</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/GN-CAL20141109-2-001/N20141109S0266</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/GN-CAL20141112-1-005/N20141112S0095</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/GN-CAL20141113-5-002/N20141113S0116</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/GN-CAL20141112-1-004/N20141112S0094</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/GN-CAL20141113-5-005/N20141113S0119</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/GN-CAL20141113-5-001/N20141113S0115</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/GN-CAL20141111-1-003/N20141112S0003</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/GN-CAL20141111-1-004/N20141112S0004</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/GN-CAL20141113-5-003/N20141113S0117</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GN-CAL20141113-5-002/N20141113S0116</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GN-CAL20141112-1-005/N20141112S0095</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GN-CAL20141112-1-003/N20141112S0093</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GN-CAL20141109-2-003/N20141109S0268</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GN-CAL20141109-2-004/N20141109S0269</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GN-CAL20141111-1-001/N20141112S0001</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GN-CAL20141112-1-001/N20141112S0091</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GN-CAL20141111-1-005/N20141112S0005</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GN-CAL20141109-2-005/N20141109S0270</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GN-CAL20141112-1-004/N20141112S0094</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/GN-CAL20141113-5-004/N20141113S0118</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GN-CAL20141111-1-002/N20141112S0002</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GN-CAL20141109-2-001/N20141109S0266</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GN-CAL20141113-5-001/N20141113S0115</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GN-CAL20141113-5-005/N20141113S0119</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GN-CAL20141109-2-002/N20141109S0267</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GN-CAL20141112-1-002/N20141112S0092</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GN-CAL20141111-1-004/N20141112S0004</caom2:planeURI>
         </caom2:inputs>
       </caom2:provenance>
       <caom2:artifacts>
-        <caom2:artifact caom2:id="00000000-0000-0000-b324-886e427ff867" caom2:metaProducer="gem2caom2/0.8">
+        <caom2:artifact caom2:id="00000000-0000-0000-b324-886e427ff867" caom2:metaProducer="gem2caom2/0.8.1">
           <caom2:uri>gemini:GEM/N20141109S0266_bias.fits</caom2:uri>
           <caom2:productType>calibration</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
@@ -79,7 +79,7 @@
             <caom2:part caom2:id="00000000-0000-0000-a157-a762a5324f30">
               <caom2:name>1</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-af64-3c5b5d62d670" caom2:metaProducer="gem2caom2/0.8">
+                <caom2:chunk caom2:id="00000000-0000-0000-af64-3c5b5d62d670" caom2:metaProducer="gem2caom2/0.8.1">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
@@ -109,7 +109,7 @@
             <caom2:part caom2:id="00000000-0000-0000-99bb-9d69fc8e3f8e">
               <caom2:name>2</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-a739-91de2b9f8e6c" caom2:metaProducer="gem2caom2/0.8">
+                <caom2:chunk caom2:id="00000000-0000-0000-a739-91de2b9f8e6c" caom2:metaProducer="gem2caom2/0.8.1">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
@@ -139,7 +139,7 @@
             <caom2:part caom2:id="00000000-0000-0000-afa7-ea9d4755019d">
               <caom2:name>3</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-a70c-d5809df62f06" caom2:metaProducer="gem2caom2/0.8">
+                <caom2:chunk caom2:id="00000000-0000-0000-a70c-d5809df62f06" caom2:metaProducer="gem2caom2/0.8.1">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
@@ -169,7 +169,7 @@
             <caom2:part caom2:id="00000000-0000-0000-85e9-87f4e25ff66b">
               <caom2:name>4</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-ac68-e6e280b43698" caom2:metaProducer="gem2caom2/0.8">
+                <caom2:chunk caom2:id="00000000-0000-0000-ac68-e6e280b43698" caom2:metaProducer="gem2caom2/0.8.1">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
@@ -199,7 +199,7 @@
             <caom2:part caom2:id="00000000-0000-0000-8200-3f3c18b9ada5">
               <caom2:name>5</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-a485-01367ae36aa7" caom2:metaProducer="gem2caom2/0.8">
+                <caom2:chunk caom2:id="00000000-0000-0000-a485-01367ae36aa7" caom2:metaProducer="gem2caom2/0.8.1">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
@@ -229,7 +229,7 @@
             <caom2:part caom2:id="00000000-0000-0000-b38a-87064375806b">
               <caom2:name>6</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-8e69-75c92778b060" caom2:metaProducer="gem2caom2/0.8">
+                <caom2:chunk caom2:id="00000000-0000-0000-8e69-75c92778b060" caom2:metaProducer="gem2caom2/0.8.1">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
@@ -262,25 +262,25 @@
     </caom2:plane>
   </caom2:planes>
   <caom2:members>
-    <caom2:observationURI>caom:GEMINI/GN-CAL20141113-5-004</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GN-CAL20141113-5-001</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GN-CAL20141112-1-001</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GN-CAL20141112-1-002</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GN-CAL20141111-1-005</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GN-CAL20141112-1-005</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GN-CAL20141113-5-005</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GN-CAL20141109-2-002</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GN-CAL20141111-1-004</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GN-CAL20141109-2-002</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GN-CAL20141109-2-005</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GN-CAL20141111-1-002</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GN-CAL20141112-1-003</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GN-CAL20141111-1-003</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GN-CAL20141111-1-002</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GN-CAL20141113-5-002</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GN-CAL20141112-1-003</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GN-CAL20141109-2-003</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GN-CAL20141113-5-003</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GN-CAL20141111-1-001</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GN-CAL20141113-5-004</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GN-CAL20141109-2-004</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GN-CAL20141112-1-004</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GN-CAL20141109-2-001</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GN-CAL20141113-5-003</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GN-CAL20141113-5-002</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GN-CAL20141113-5-001</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GN-CAL20141112-1-005</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GN-CAL20141112-1-002</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GN-CAL20141109-2-004</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GN-CAL20141111-1-001</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GN-CAL20141111-1-005</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GN-CAL20141112-1-001</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GN-CAL20141109-2-003</caom2:observationURI>
   </caom2:members>
 </caom2:Observation>

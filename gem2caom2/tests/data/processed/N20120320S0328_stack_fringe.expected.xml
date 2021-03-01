@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="00000000-0000-0000-b16c-635179d42e0f" caom2:metaProducer="gem2caom2/0.8">
+<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="00000000-0000-0000-b16c-635179d42e0f" caom2:metaProducer="gem2caom2/0.8.1">
   <caom2:collection>GEMINI</caom2:collection>
   <caom2:observationID>GN-CAL20120320-900-328-STACK-FRINGE</caom2:observationID>
   <caom2:metaRelease>2012-03-20T13:16:09.100</caom2:metaRelease>
@@ -28,7 +28,7 @@
     </caom2:keywords>
   </caom2:instrument>
   <caom2:planes>
-    <caom2:plane caom2:id="00000000-0000-0000-aa1f-33f88106723f" caom2:metaProducer="gem2caom2/0.8">
+    <caom2:plane caom2:id="00000000-0000-0000-aa1f-33f88106723f" caom2:metaProducer="gem2caom2/0.8.1">
       <caom2:productID>N20120320S0328_stack_fringe</caom2:productID>
       <caom2:metaRelease>2012-03-20T13:16:09.100</caom2:metaRelease>
       <caom2:dataRelease>2012-03-20T00:00:00.000</caom2:dataRelease>
@@ -41,7 +41,7 @@
         <caom2:reference>http://archive.gemini.edu/searchform/filepre=N20120320S0328_stack_fringe.fits</caom2:reference>
       </caom2:provenance>
       <caom2:artifacts>
-        <caom2:artifact caom2:id="00000000-0000-0000-a26c-89ab42fe7baf" caom2:metaProducer="gem2caom2/0.8">
+        <caom2:artifact caom2:id="00000000-0000-0000-a26c-89ab42fe7baf" caom2:metaProducer="gem2caom2/0.8.1">
           <caom2:uri>gemini:GEM/N20120320S0328_stack_fringe.fits</caom2:uri>
           <caom2:productType>calibration</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
@@ -56,7 +56,7 @@
             <caom2:part caom2:id="00000000-0000-0000-b582-b42badae03cf">
               <caom2:name>1</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-be83-8d5fc89ef77f" caom2:metaProducer="gem2caom2/0.8">
+                <caom2:chunk caom2:id="00000000-0000-0000-be83-8d5fc89ef77f" caom2:metaProducer="gem2caom2/0.8.1">
                   <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -146,7 +146,7 @@
             <caom2:part caom2:id="00000000-0000-0000-91f4-3b60a2dbfb5f">
               <caom2:name>2</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-9896-3557e562f3df" caom2:metaProducer="gem2caom2/0.8">
+                <caom2:chunk caom2:id="00000000-0000-0000-9896-3557e562f3df" caom2:metaProducer="gem2caom2/0.8.1">
                   <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -236,7 +236,7 @@
             <caom2:part caom2:id="00000000-0000-0000-bcf9-8983d0ae9bdf">
               <caom2:name>3</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-8822-ba1effd0f7cf" caom2:metaProducer="gem2caom2/0.8">
+                <caom2:chunk caom2:id="00000000-0000-0000-8822-ba1effd0f7cf" caom2:metaProducer="gem2caom2/0.8.1">
                   <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -325,7 +325,7 @@
             </caom2:part>
           </caom2:parts>
         </caom2:artifact>
-        <caom2:artifact caom2:id="00000000-0000-0000-812f-71566214fc40" caom2:metaProducer="gem2caom2/0.8">
+        <caom2:artifact caom2:id="00000000-0000-0000-812f-71566214fc40" caom2:metaProducer="gem2caom2/0.8.1">
           <caom2:uri>gemini:GEM/N20120320S0328_stack_fringe.jpg</caom2:uri>
           <caom2:productType>preview</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>

@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="00000000-0000-0000-a720-569134dfe14d" caom2:lastModified="2018-10-12T00:35:22.744" caom2:maxLastModified="2018-10-12T00:35:22.744" caom2:metaChecksum="md5:7152d444e2bfc68defce8b5b5eadb2bc" caom2:accMetaChecksum="md5:172a46880bd0d0d103db8c8b2593a48d" caom2:metaProducer="gem2caom2/0.8">
+<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="00000000-0000-0000-a720-569134dfe14d" caom2:lastModified="2018-10-12T00:35:22.744" caom2:maxLastModified="2018-10-12T00:35:22.744" caom2:metaChecksum="md5:7152d444e2bfc68defce8b5b5eadb2bc" caom2:accMetaChecksum="md5:172a46880bd0d0d103db8c8b2593a48d" caom2:metaProducer="gem2caom2/0.8.1">
   <caom2:collection>GEMINI</caom2:collection>
   <caom2:observationID>GS-2013B-Q-26-19-004</caom2:observationID>
   <caom2:metaRelease>2014-01-22T07:40:16.100</caom2:metaRelease>
@@ -28,7 +28,7 @@
     <caom2:name>GSAOI</caom2:name>
   </caom2:instrument>
   <caom2:planes>
-    <caom2:plane caom2:id="00000000-0000-0000-b2d0-d6b3796ad1af" caom2:lastModified="2018-10-12T00:35:22.744" caom2:maxLastModified="2018-10-12T00:35:22.744" caom2:metaChecksum="md5:ccd44ecd46d8b3f8ef83f21d56a0ba95" caom2:accMetaChecksum="md5:784bf81367246706f90fa5c1c5e25436" caom2:metaProducer="gem2caom2/0.8">
+    <caom2:plane caom2:id="00000000-0000-0000-b2d0-d6b3796ad1af" caom2:lastModified="2018-10-12T00:35:22.744" caom2:maxLastModified="2018-10-12T00:35:22.744" caom2:metaChecksum="md5:ccd44ecd46d8b3f8ef83f21d56a0ba95" caom2:accMetaChecksum="md5:784bf81367246706f90fa5c1c5e25436" caom2:metaProducer="gem2caom2/0.8.1">
       <caom2:productID>S20140122S0227</caom2:productID>
       <caom2:metaRelease>2014-01-22T07:40:16.100</caom2:metaRelease>
       <caom2:dataRelease>2014-01-22T00:00:00.000</caom2:dataRelease>
@@ -45,7 +45,7 @@
       <caom2:time/>
       <caom2:polarization/>
       <caom2:artifacts>
-        <caom2:artifact caom2:id="00000000-0000-0000-828c-40030e926ce4" caom2:lastModified="2018-10-12T00:35:22.744" caom2:maxLastModified="2018-10-12T00:35:22.744" caom2:metaChecksum="md5:d7afa9578743b66d48b1bc227e0b8dac" caom2:accMetaChecksum="md5:f2b3797bcb6d77421a9a7dbbe5599aad" caom2:metaProducer="gem2caom2/0.8">
+        <caom2:artifact caom2:id="00000000-0000-0000-828c-40030e926ce4" caom2:lastModified="2018-10-12T00:35:22.744" caom2:maxLastModified="2018-10-12T00:35:22.744" caom2:metaChecksum="md5:d7afa9578743b66d48b1bc227e0b8dac" caom2:accMetaChecksum="md5:f2b3797bcb6d77421a9a7dbbe5599aad" caom2:metaProducer="gem2caom2/0.8.1">
           <caom2:uri>gemini:GEM/S20140122S0227.fits</caom2:uri>
           <caom2:productType>calibration</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
@@ -60,7 +60,7 @@
             <caom2:part caom2:id="00000000-0000-0000-94c6-5129ed387aa7">
               <caom2:name>1</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-aa01-6e038d649f56" caom2:metaProducer="gem2caom2/0.8">
+                <caom2:chunk caom2:id="00000000-0000-0000-aa01-6e038d649f56" caom2:metaProducer="gem2caom2/0.8.1">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
@@ -90,7 +90,7 @@
             <caom2:part caom2:id="00000000-0000-0000-a797-52626fb45f2a">
               <caom2:name>2</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-8bd9-052e46629a7d" caom2:metaProducer="gem2caom2/0.8">
+                <caom2:chunk caom2:id="00000000-0000-0000-8bd9-052e46629a7d" caom2:metaProducer="gem2caom2/0.8.1">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
@@ -120,7 +120,7 @@
             <caom2:part caom2:id="00000000-0000-0000-9342-aba26f36baf7">
               <caom2:name>3</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-8293-f6c6f168401b" caom2:metaProducer="gem2caom2/0.8">
+                <caom2:chunk caom2:id="00000000-0000-0000-8293-f6c6f168401b" caom2:metaProducer="gem2caom2/0.8.1">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
@@ -150,7 +150,7 @@
             <caom2:part caom2:id="00000000-0000-0000-a249-e4c82b74ba5b">
               <caom2:name>4</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="00000000-0000-0000-8a62-0aa9f215aaf9" caom2:metaProducer="gem2caom2/0.8">
+                <caom2:chunk caom2:id="00000000-0000-0000-8a62-0aa9f215aaf9" caom2:metaProducer="gem2caom2/0.8.1">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
@@ -179,7 +179,7 @@
             </caom2:part>
           </caom2:parts>
         </caom2:artifact>
-        <caom2:artifact caom2:id="00000000-0000-0000-bfc1-326d8788343b" caom2:lastModified="2018-10-12T00:35:22.744" caom2:maxLastModified="2018-10-12T00:35:22.744" caom2:metaChecksum="md5:c030888d715a3d97d67a7f67f23b1edc" caom2:accMetaChecksum="md5:03226960c7e2c9ba6f1f2d57bf0ee339" caom2:metaProducer="gem2caom2/0.8">
+        <caom2:artifact caom2:id="00000000-0000-0000-bfc1-326d8788343b" caom2:lastModified="2018-10-12T00:35:22.744" caom2:maxLastModified="2018-10-12T00:35:22.744" caom2:metaChecksum="md5:c030888d715a3d97d67a7f67f23b1edc" caom2:accMetaChecksum="md5:03226960c7e2c9ba6f1f2d57bf0ee339" caom2:metaProducer="gem2caom2/0.8.1">
           <caom2:uri>gemini:GEM/S20140122S0227.jpg</caom2:uri>
           <caom2:productType>preview</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
