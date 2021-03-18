@@ -3811,6 +3811,20 @@ def _update_chunk_position(chunk, header, instrument, extension, obs_id,
     if instrument is em.Inst.OSCIR:
         chunk.position.coordsys = header.get('FRAMEPA')
         chunk.position.equinox = mc.to_float(header.get('EQUINOX'))
+        # DB 02-01-21
+        # OSCIR data should all have NAXIS=6 in the header.  Axis 1/2 are
+        # position axes. Axis 3 is the number of chop positions (1 or usually =
+        # 2), axis 5 is the number of nod positions (1 or usually = 2), axis 4
+        # gives the number of ‘savesets’ per nod position and axis 6 gives the
+        # number of ‘nod sets’.
+        #
+        # Spatial cutouts would use axes 1 and 2, although the precise
+        # positions of each chop/nod position are not captured by the CAOM2
+        # data.
+        if chunk.naxis == 6:
+            chunk.naxis = 2
+            chunk.time_axis = None
+            chunk.eneryg_axis = None
     elif instrument is em.Inst.BHROS:
         chunk.position.coordsys = header.get('TRKFRAME')
     elif instrument is em.Inst.GPI:
