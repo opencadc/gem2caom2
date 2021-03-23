@@ -11,7 +11,6 @@ RUN pip install bs4 \
     caom2 \
     caom2repo \
     caom2utils \
-    deprecated \
     importlib-metadata \
     matplotlib \
     pillow \

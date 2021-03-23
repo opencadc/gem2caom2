@@ -1,16 +1,16 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="00000000-0000-0000-0123-45676e4c9700" caom2:metaProducer="gem2caom2/0.8">
+<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="00000000-0000-0000-0123-45676e4c9700" caom2:metaProducer="gem2caom2/0.8.1">
   <caom2:collection>GEMINI</caom2:collection>
   <caom2:observationID>TX20170321_flt.2505</caom2:observationID>
   <caom2:algorithm>
     <caom2:name>exposure</caom2:name>
   </caom2:algorithm>
   <caom2:planes>
-    <caom2:plane caom2:id="00000000-0000-0000-0123-45677c90c000" caom2:metaProducer="gem2caom2/0.8">
+    <caom2:plane caom2:id="00000000-0000-0000-0123-45677c90c000" caom2:metaProducer="gem2caom2/0.8.1">
       <caom2:productID>TX20170321_flt.2505</caom2:productID>
       <caom2:metaRelease>1990-01-01T00:00:00.000</caom2:metaRelease>
       <caom2:artifacts>
-        <caom2:artifact caom2:id="00000000-0000-0000-0123-45676be64700" caom2:metaProducer="gem2caom2/0.8">
+        <caom2:artifact caom2:id="00000000-0000-0000-0123-45676be64700" caom2:metaProducer="gem2caom2/0.8.1">
           <caom2:uri>gemini:GEM/TX20170321_flt.2505.fits</caom2:uri>
           <caom2:productType>science</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>

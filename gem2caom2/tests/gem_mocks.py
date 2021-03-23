@@ -311,6 +311,7 @@ LOOKUP = {
     'S20030730S0036': ['GS-CAL20030730-10-006', em.Inst.HRWFS,
                        'GS-CAL20030730'],
     'S20031218S0049': ['GS-CAL20031218-1-034', em.Inst.HRWFS, 'GS-CAL20031218'],
+    '2001nov16_0164': ['GS-2001B-DD-4-1-0002', em.Inst.HRWFS, 'GS-2001B-DD-4'],
     # Michelle
     'N20060705S0054': ['GN-2006A-C-14-49-002', em.Inst.MICHELLE,
                        'GN-2006A-C-14'],
@@ -361,6 +362,8 @@ LOOKUP = {
     'N20141203S0891': ['GN-2014B-C-1-157-100', em.Inst.NIRI, 'GN-2014B-C-1'],
     # OSCIR
     'r01dec05_007': ['GS-2001B-Q-31-9-007', em.Inst.OSCIR, 'GS-2001B-Q-31'],
+    '01MAY08_023': ['GN-2001A-C-4-11-9023', em.Inst.OSCIR, 'GN-2001A-C-4'],
+    '01DEC05_004': ['GS-2001B-Q-31-9-9004', em.Inst.OSCIR, 'GS-2001B-Q-31'],
     # Phoenix
     '2002jun10_0171': ['GS-2002A-DD-1-17-0171', em.Inst.PHOENIX,
                        'GS-2002A-DD-1'],
@@ -373,6 +376,8 @@ LOOKUP = {
     '2006dec10_0052': ['GS-2006B-C-8-2-0052', em.Inst.PHOENIX, 'GS-2006B-C-8'],
     '2002may12_0277': ['GS-CAL20020512-9-0277', em.Inst.PHOENIX,
                        'GS-CAL20020512'],
+    '2007sep15_0001': ['GS-2007B-Q-214-45-0001', em.Inst.PHOENIX,
+                       'GS-2007B-Q-214'],
     # TReCS
     'S20050621S0037': ['GS-2005A-Q-15-1-001', em.Inst.TRECS, 'GS-2005A-Q-15'],
     'S20050918S0058': ['GS-2005B-Q-10-22-003', em.Inst.TRECS, 'GS-2005B-Q-10'],

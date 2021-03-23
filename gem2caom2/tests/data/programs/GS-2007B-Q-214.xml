@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+
+<title>Detail for Program: GS-2007B-Q-214</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-2007B-Q-214</h1>
+
+<table>
+ <tr><td>Title:<td>Spatially Resolved Warm Disks Around Massive Young Stellar Objects : Spectro-astrometry around CO</tr>
+ <tr><td>PI:<td>Rene Oudmaijer</tr>
+ <tr><td>Co-I(s):<td> Stuart  Lumsden,  Melvin Hoare,  Willem-Jan de Wit,  Hugh Wheelwright</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+To date, our knowledge of the formation of massive stars and the properties of their circumstellar material is scarce at best. Observational evidence that some of the massive young stellar objects (MYSOs) are surrounded by disks, and may therefore form via disk accretion, is sparse and hampered by the available spatial resolution. The disks that have been directly observed so far are  100s of AU, much too large to strongly make the case for accretion. Indirect evidence for small scale disks comes from spectroscopy of the CO first-overtone bandhead emission at 2.3 micron. In particular, synthetic modelling indicates that the emission arises in warm dense disks rotating at distances of order few AU from the star. The velocity resolved emission and kinematic evidence for the presence of disks this close to the central object play a major role in establishing the disk accretion scenario as the main route to form massive stars.
+
+Here we propose to spatially resolve this emission using spectro-astrometry. This method, tested also on Gemini data, is capable of probing geometries at sub-milli-arcsecond scales, sufficient to resolve the CO bandhead emission of Massive Young Stellar Objects. We have constructed a statistically complete sample of massive young stellar objects and plan to observe a sub-sample of these with known CO emission using Phoenix. The data will allow us to confirm the presence of the smallest scale disks ever observed in MYSOs and provide a prelude to studies of even larger samples of objects using additional diagnostic lines.     
+</div>
+
+
+<h2>Publications using this program's data</h2>
+<ul>
+<li>
+<a href="/searchform/publication=2010MNRAS.408.1840W" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2010MNRAS.408.1840W/abstract" target="_blank">[ADS]</a> Probing discs around massive young stellar objects with CO first overtone emission&dagger;
+</ul>
+
+
+</body>
+</html>

@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="00000000-0000-0000-a408-e325a6beb334" caom2:lastModified="2018-11-13T20:19:07.332" caom2:maxLastModified="2018-11-13T20:19:07.332" caom2:metaChecksum="md5:122305a065488c3dd7e007071e26750e" caom2:accMetaChecksum="md5:5fa45e85cffe2ce9a50902334db28927" caom2:metaProducer="gem2caom2/0.8">
+<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="00000000-0000-0000-a408-e325a6beb334" caom2:lastModified="2018-11-13T20:19:07.332" caom2:maxLastModified="2018-11-13T20:19:07.332" caom2:metaChecksum="md5:122305a065488c3dd7e007071e26750e" caom2:accMetaChecksum="md5:5fa45e85cffe2ce9a50902334db28927" caom2:metaProducer="gem2caom2/0.8.1">
   <caom2:collection>GEMINI</caom2:collection>
   <caom2:observationID>GS-2004B-Q-19-20-023</caom2:observationID>
   <caom2:metaRelease>2006-05-01T00:00:00.000</caom2:metaRelease>
@@ -23,7 +23,7 @@
     <caom2:name>GNIRS</caom2:name>
   </caom2:instrument>
   <caom2:planes>
-    <caom2:plane caom2:id="00000000-0000-0000-a728-dee866a3bd86" caom2:lastModified="2018-11-13T20:19:07.332" caom2:maxLastModified="2018-11-13T20:19:07.332" caom2:metaChecksum="md5:9212887457497a06ac807b76b2d1db79" caom2:accMetaChecksum="md5:949def81bf87cce84e67d78cef57e4cb" caom2:metaProducer="gem2caom2/0.8">
+    <caom2:plane caom2:id="00000000-0000-0000-a728-dee866a3bd86" caom2:lastModified="2018-11-13T20:19:07.332" caom2:maxLastModified="2018-11-13T20:19:07.332" caom2:metaChecksum="md5:9212887457497a06ac807b76b2d1db79" caom2:accMetaChecksum="md5:949def81bf87cce84e67d78cef57e4cb" caom2:metaProducer="gem2caom2/0.8.1">
       <caom2:productID>S20041101S0215</caom2:productID>
       <caom2:metaRelease>2006-05-01T00:00:00.000</caom2:metaRelease>
       <caom2:dataRelease>2006-05-01T00:00:00.000</caom2:dataRelease>
@@ -40,7 +40,7 @@
       <caom2:time/>
       <caom2:polarization/>
       <caom2:artifacts>
-        <caom2:artifact caom2:id="00000000-0000-0000-b036-6fb1eeea8f83" caom2:lastModified="2018-11-13T20:19:07.332" caom2:maxLastModified="2018-11-13T20:19:07.332" caom2:metaChecksum="md5:b96a5f1ca635a3a31297da8a7969de43" caom2:accMetaChecksum="md5:43342f06b8c1919127d8668bb0679e9f" caom2:metaProducer="gem2caom2/0.8">
+        <caom2:artifact caom2:id="00000000-0000-0000-b036-6fb1eeea8f83" caom2:lastModified="2018-11-13T20:19:07.332" caom2:maxLastModified="2018-11-13T20:19:07.332" caom2:metaChecksum="md5:b96a5f1ca635a3a31297da8a7969de43" caom2:accMetaChecksum="md5:43342f06b8c1919127d8668bb0679e9f" caom2:metaProducer="gem2caom2/0.8.1">
           <caom2:uri>gemini:GEM/S20041101S0215.fits</caom2:uri>
           <caom2:productType>science</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
@@ -49,7 +49,7 @@
           <caom2:contentChecksum>md5:6641d02114c94110badfabfb492ec6e7</caom2:contentChecksum>
           <caom2:parts/>
         </caom2:artifact>
-        <caom2:artifact caom2:id="00000000-0000-0000-895c-2877ae42deb2" caom2:lastModified="2018-11-13T20:19:07.332" caom2:maxLastModified="2018-11-13T20:19:07.332" caom2:metaChecksum="md5:1792ec87b61090cb6ef0a9ec4df4612c" caom2:accMetaChecksum="md5:805a59f81925db54423b1503dac071fa" caom2:metaProducer="gem2caom2/0.8">
+        <caom2:artifact caom2:id="00000000-0000-0000-895c-2877ae42deb2" caom2:lastModified="2018-11-13T20:19:07.332" caom2:maxLastModified="2018-11-13T20:19:07.332" caom2:metaChecksum="md5:1792ec87b61090cb6ef0a9ec4df4612c" caom2:accMetaChecksum="md5:805a59f81925db54423b1503dac071fa" caom2:metaProducer="gem2caom2/0.8.1">
           <caom2:uri>gemini:GEM/S20041101S0215.jpg</caom2:uri>
           <caom2:productType>preview</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>

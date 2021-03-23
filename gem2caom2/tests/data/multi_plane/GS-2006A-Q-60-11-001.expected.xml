@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="fee1a6d7-c3b4-4636-9fd6-0f1829dbb5eb" caom2:metaProducer="gem2caom2/0.8">
+<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="fee1a6d7-c3b4-4636-9fd6-0f1829dbb5eb" caom2:metaProducer="gem2caom2/0.8.1">
   <caom2:collection>GEMINI</caom2:collection>
   <caom2:observationID>GS-2006A-Q-60-11-001</caom2:observationID>
   <caom2:metaRelease>2006-04-12T00:33:41.400</caom2:metaRelease>
@@ -27,7 +27,7 @@
     <caom2:name>TReCS</caom2:name>
   </caom2:instrument>
   <caom2:planes>
-    <caom2:plane caom2:id="0010710a-dbca-4885-9f9f-8842a53eca0e" caom2:metaProducer="gem2caom2/0.8">
+    <caom2:plane caom2:id="0010710a-dbca-4885-9f9f-8842a53eca0e" caom2:metaProducer="gem2caom2/0.8.1">
       <caom2:productID>S20060412S0056</caom2:productID>
       <caom2:metaRelease>2006-04-12T00:33:41.400</caom2:metaRelease>
       <caom2:dataRelease>2007-10-12T00:00:00.000</caom2:dataRelease>
@@ -40,7 +40,7 @@
         <caom2:reference>http://archive.gemini.edu/searchform/GS-2006A-Q-60-11-001</caom2:reference>
       </caom2:provenance>
       <caom2:artifacts>
-        <caom2:artifact caom2:id="9840bad3-5c14-46f1-992a-d8ea128123d4" caom2:metaProducer="gem2caom2/0.8">
+        <caom2:artifact caom2:id="9840bad3-5c14-46f1-992a-d8ea128123d4" caom2:metaProducer="gem2caom2/0.8.1">
           <caom2:uri>gemini:GEM/S20060412S0056.fits</caom2:uri>
           <caom2:productType>science</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
@@ -55,7 +55,7 @@
             <caom2:part caom2:id="5d93649a-f502-4695-959a-4cf5c690314c">
               <caom2:name>1</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="2c548d81-15e1-42cd-b5b0-1b3fc32727f3" caom2:metaProducer="gem2caom2/0.8">
+                <caom2:chunk caom2:id="2c548d81-15e1-42cd-b5b0-1b3fc32727f3" caom2:metaProducer="gem2caom2/0.8.1">
                   <caom2:naxis>4</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -146,7 +146,7 @@
             <caom2:part caom2:id="0ba4a122-ed9b-400a-9d1d-8ce877e44bd2">
               <caom2:name>2</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="35869c1d-3ebc-489b-99e9-4e2f8a1367f7" caom2:metaProducer="gem2caom2/0.8">
+                <caom2:chunk caom2:id="35869c1d-3ebc-489b-99e9-4e2f8a1367f7" caom2:metaProducer="gem2caom2/0.8.1">
                   <caom2:naxis>4</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -237,7 +237,7 @@
             <caom2:part caom2:id="21f12db7-2257-463b-891e-520bccc8f1f3">
               <caom2:name>3</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="414190e8-91f7-4c7d-bdaa-c95f78121780" caom2:metaProducer="gem2caom2/0.8">
+                <caom2:chunk caom2:id="414190e8-91f7-4c7d-bdaa-c95f78121780" caom2:metaProducer="gem2caom2/0.8.1">
                   <caom2:naxis>4</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -328,7 +328,7 @@
             <caom2:part caom2:id="596f14fd-9eba-4a90-8ec2-215b0882c154">
               <caom2:name>4</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="aa760a5a-96db-4d47-9387-69edfc304f05" caom2:metaProducer="gem2caom2/0.8">
+                <caom2:chunk caom2:id="aa760a5a-96db-4d47-9387-69edfc304f05" caom2:metaProducer="gem2caom2/0.8.1">
                   <caom2:naxis>4</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -419,7 +419,7 @@
             <caom2:part caom2:id="53acb916-6ba5-4304-804f-547893781db9">
               <caom2:name>5</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="e19bbd24-a9ca-40a2-b682-5fc3e8e82caf" caom2:metaProducer="gem2caom2/0.8">
+                <caom2:chunk caom2:id="e19bbd24-a9ca-40a2-b682-5fc3e8e82caf" caom2:metaProducer="gem2caom2/0.8.1">
                   <caom2:naxis>4</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -510,7 +510,7 @@
             <caom2:part caom2:id="a4fc4a03-fc66-46a4-b4ac-6d0e57b4ee12">
               <caom2:name>6</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="530f27b5-849f-45f6-a866-df42c9d84c1a" caom2:metaProducer="gem2caom2/0.8">
+                <caom2:chunk caom2:id="530f27b5-849f-45f6-a866-df42c9d84c1a" caom2:metaProducer="gem2caom2/0.8.1">
                   <caom2:naxis>4</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -601,7 +601,7 @@
             <caom2:part caom2:id="0fea1f55-b26b-44c5-949b-2d4b970a2983">
               <caom2:name>7</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="7753c826-2a1a-4a95-93ec-5358acc2ed71" caom2:metaProducer="gem2caom2/0.8">
+                <caom2:chunk caom2:id="7753c826-2a1a-4a95-93ec-5358acc2ed71" caom2:metaProducer="gem2caom2/0.8.1">
                   <caom2:naxis>4</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -692,7 +692,7 @@
             <caom2:part caom2:id="7d12dcac-aeb1-402d-89a1-639e7ccc0be4">
               <caom2:name>8</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="7fcdc309-0f65-40de-aac4-1175b5ed1fee" caom2:metaProducer="gem2caom2/0.8">
+                <caom2:chunk caom2:id="7fcdc309-0f65-40de-aac4-1175b5ed1fee" caom2:metaProducer="gem2caom2/0.8.1">
                   <caom2:naxis>4</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -783,7 +783,7 @@
             <caom2:part caom2:id="831351bd-d8e0-44c4-90fc-4762360ebe26">
               <caom2:name>9</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="17dd2916-6447-418c-ac2b-7ae0cceb44b8" caom2:metaProducer="gem2caom2/0.8">
+                <caom2:chunk caom2:id="17dd2916-6447-418c-ac2b-7ae0cceb44b8" caom2:metaProducer="gem2caom2/0.8.1">
                   <caom2:naxis>4</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -874,7 +874,7 @@
             <caom2:part caom2:id="0e52a3ca-3d22-423c-afae-540d26c5f2d1">
               <caom2:name>10</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="92d293fc-8da1-4296-bb77-20d87f49c454" caom2:metaProducer="gem2caom2/0.8">
+                <caom2:chunk caom2:id="92d293fc-8da1-4296-bb77-20d87f49c454" caom2:metaProducer="gem2caom2/0.8.1">
                   <caom2:naxis>4</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -965,7 +965,7 @@
             <caom2:part caom2:id="eaf9c10f-b38d-48fa-a621-c98926554a92">
               <caom2:name>11</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="17c897a2-94e0-4dd6-8fce-972356b9a781" caom2:metaProducer="gem2caom2/0.8">
+                <caom2:chunk caom2:id="17c897a2-94e0-4dd6-8fce-972356b9a781" caom2:metaProducer="gem2caom2/0.8.1">
                   <caom2:naxis>4</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -1056,7 +1056,7 @@
             <caom2:part caom2:id="4eb49c07-7981-4b6c-bb27-091bd5653e15">
               <caom2:name>12</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="83854c4a-ba5f-4fdf-9812-74d428b49c5d" caom2:metaProducer="gem2caom2/0.8">
+                <caom2:chunk caom2:id="83854c4a-ba5f-4fdf-9812-74d428b49c5d" caom2:metaProducer="gem2caom2/0.8.1">
                   <caom2:naxis>4</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -1148,7 +1148,7 @@
         </caom2:artifact>
       </caom2:artifacts>
     </caom2:plane>
-    <caom2:plane caom2:id="b30448c9-7195-4e35-b41c-df73b9b6a036" caom2:metaProducer="gem2caom2/0.8">
+    <caom2:plane caom2:id="b30448c9-7195-4e35-b41c-df73b9b6a036" caom2:metaProducer="gem2caom2/0.8.1">
       <caom2:productID>rS20060412S0056</caom2:productID>
       <caom2:metaRelease>2006-04-12T00:33:41.400</caom2:metaRelease>
       <caom2:dataRelease>2007-10-12T00:00:00.000</caom2:dataRelease>
@@ -1161,7 +1161,7 @@
         <caom2:reference>http://archive.gemini.edu/searchform/filepre=rS20060412S0056.fits</caom2:reference>
       </caom2:provenance>
       <caom2:artifacts>
-        <caom2:artifact caom2:id="4404d796-4663-417b-886b-e7b064861fc3" caom2:metaProducer="gem2caom2/0.8">
+        <caom2:artifact caom2:id="4404d796-4663-417b-886b-e7b064861fc3" caom2:metaProducer="gem2caom2/0.8.1">
           <caom2:uri>gemini:GEM/rS20060412S0056.fits</caom2:uri>
           <caom2:productType>science</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
@@ -1176,7 +1176,7 @@
             <caom2:part caom2:id="242ab732-4b54-422b-a156-f7866226f277">
               <caom2:name>1</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="40ffdff5-08b9-4c54-ab6c-13cd49d2487b" caom2:metaProducer="gem2caom2/0.8">
+                <caom2:chunk caom2:id="40ffdff5-08b9-4c54-ab6c-13cd49d2487b" caom2:metaProducer="gem2caom2/0.8.1">
                   <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
