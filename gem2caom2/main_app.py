@@ -653,7 +653,6 @@ def get_provenance_last_executed(parameters):
         if len(temp) > 6 and 'HST' in temp[6]:
             # go from HST to UTC
             result = mc.make_time(temp[6])
-            logging.error(f'hello> {result}')
         return result
     return _get_provenance_breakout(parameters, breakout)
 
