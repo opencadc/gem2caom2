@@ -192,6 +192,9 @@ def get_obs_metadata(file_id):
             raise mc.CadcException(
                 f'Unable to download Gemini observation metadata from '
                 f'{gemini_url} because {str(e)}')
+        if len(metadata) == 0:
+            raise mc.CadcException(f'Could not find JSON record for {file_id} '
+                                   f'at archive.gemini.edu.')
         om.add(metadata, file_id)
     logging.debug('End get_obs_metadata for {}'.format(file_id))
 

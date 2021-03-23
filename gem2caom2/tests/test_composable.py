@@ -99,9 +99,11 @@ def write_gemini_data_file():
 
 @patch('caom2pipe.execute_composable.OrganizeExecutes.do_one')
 @patch('gem2caom2.external_metadata.CadcTapClient')
+@patch('gem2caom2.external_metadata.get_obs_metadata')
 @patch('gem2caom2.builder.get_instrument')
-def test_run(inst_mock, client_mock, run_mock):
+def test_run(inst_mock, get_obs_mock, client_mock, run_mock):
     inst_mock.return_value = external_metadata.Inst.CIRPASS
+    get_obs_mock.side_effect = gem_mocks.mock_get_obs_metadata
     test_obs_id = 'GS-2004A-Q-6-27-0255'
     test_f_id = '2004may19_0255'
     test_f_name = f'{test_f_id}.fits'
@@ -133,9 +135,11 @@ def test_run(inst_mock, client_mock, run_mock):
 
 @patch('caom2pipe.execute_composable.OrganizeExecutes.do_one')
 @patch('gem2caom2.external_metadata.CadcTapClient')
+@patch('gem2caom2.external_metadata.get_obs_metadata')
 @patch('gem2caom2.builder.get_instrument')
-def test_run_errors(inst_mock, client_mock, run_mock):
+def test_run_errors(inst_mock, get_obs_mock, client_mock, run_mock):
     inst_mock.return_value = external_metadata.Inst.GMOSS
+    get_obs_mock.side_effect = gem_mocks.mock_get_obs_metadata
     test_obs_id = 'TX20131117_flt.3002'
     test_f_id = 'TX20131117_flt.3002'
     test_f_name = f'{test_f_id}.fits'
@@ -185,22 +189,18 @@ def test_run_incremental_rc(client_mock, tap_mock, get_obs_mock, query_mock,
         test_storage = args[0]
         assert isinstance(
             test_storage, gem_name.GemName), type(test_storage)
-        import logging
-        logging.error(test_storage)
         assert test_storage.obs_id == 'test_data_label', 'wrong obs id'
-        assert test_storage.file_name == 'S20200303S0353.fits', \
+        assert test_storage.file_name == 'S20200303S0025.fits', \
             'wrong file_name'
-        assert test_storage.file_id == 'S20200303S0353', 'wrong file_id'
-        assert test_storage.fname_on_disk == 'S20200303S0353.fits', \
+        assert test_storage.file_id == 'S20200303S0025', 'wrong file_id'
+        assert test_storage.fname_on_disk == 'S20200303S0025.fits', \
             'wrong fname on disk'
         assert test_storage.url is None, 'wrong url'
         assert test_storage.lineage == \
-            'S20200303S0353/gemini:GEM/S20200303S0353.fits', 'wrong lineage'
+            'S20200303S0025/gemini:GEM/S20200303S0025.fits', 'wrong lineage'
         assert test_storage.external_urls == \
-            'https://archive.gemini.edu/fullheader/S20200303S0353.fits', \
+            'https://archive.gemini.edu/fullheader/S20200303S0025.fits', \
             'wrong external urls'
-    except Exception as e:
-        assert False, e
     finally:
         os.getcwd = getcwd_orig
 

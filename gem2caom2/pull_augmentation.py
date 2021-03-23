@@ -106,14 +106,15 @@ def visit(observation, **kwargs):
         for plane in observation.planes.values():
             if (plane.data_release is None or
                     plane.data_release > datetime.utcnow()):
-                logging.info(f'Plane {plane.product_id} is proprietary. No '
-                             f'file access.')
+                logging.error(f'Plane {plane.product_id} is proprietary '
+                              f'until {plane.data_release}. No file access.')
                 continue
 
             for artifact in plane.artifacts.values():
                 if gem_name.GemName.is_preview(artifact.uri):
                     continue
                 try:
+                    logging.error('hello')
                     f_name = mc.CaomName(artifact.uri).file_name
                     file_url = '{}/{}'.format(FILE_URL, f_name)
                     mc.look_pull_and_put(f_name, working_dir, file_url,

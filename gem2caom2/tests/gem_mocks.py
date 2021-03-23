@@ -659,6 +659,13 @@ def mock_query_endpoint_2(url, timeout=-1):
     return result
 
 
+def mock_session_get_not_found(url):
+    # returns json via response.text, depending on url
+    result = Object()
+    result.text = '[]'
+    return result
+
+
 def mock_write_state(start_time):
     test_bookmark = {'bookmarks': {composable.GEM_BOOKMARK:
                                    {'last_record': start_time}}}

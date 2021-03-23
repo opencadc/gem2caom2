@@ -108,8 +108,7 @@ class GeminiObsMetadata(object):
 
     def _reset_index(self, file_id):
         if file_id not in self.lookup:
-            raise mc.CadcException(
-                'ObsMetadata: Mystery file id {}'.format(file_id))
+            raise mc.CadcException(f'ObsMetadata: Mystery file id {file_id}')
         self.current = file_id
         self.index = self._get_index(file_id)
 
@@ -130,8 +129,7 @@ class GeminiObsMetadata(object):
         if result == -1:
             # TODO - set obs id?
             raise mc.CadcException(
-                'JSON Summary: unrecognized file_id {} in obs_id {}'.format(
-                    file_id, ''))
+                f'JSON Summary: file_id {file_id} not in metadata cache.')
         return result
 
 

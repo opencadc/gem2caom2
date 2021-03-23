@@ -68,6 +68,7 @@
 #
 
 import os
+import pytest
 import shutil
 
 from mock import patch, Mock
@@ -150,3 +151,15 @@ def test_caching_relationship_unconnected():
     test_result = test_subject.get_obs_id('get_obs_id_from_file_on_disk')
     assert test_result is not None, 'expected result'
     assert test_result == 'GN-2006A-Q-90-1-001-MRG-ADD', 'wrong result'
+
+
+@patch('requests.Session')
+@patch('gem2caom2.external_metadata.CadcTapClient')
+def test_get_obs_metadata_not_at_gemini(tap_client_mock, session_mock):
+    session_mock.get.side_effect = gem_mocks.mock_session_get_not_found
+    test_config = mc.Config()
+    test_config.working_directory = gem_mocks.TEST_DATA_DIR
+    test_config.proxy_file_name = 'test_proxy.pem'
+    ext_md.init_global(incremental=True, config=test_config)
+    with pytest.raises(mc.CadcException, match=f'Could not find JSON record *'):
+        test_result = ext_md.get_obs_metadata('test_file_id')
