@@ -2299,6 +2299,9 @@ def _update_chunk_energy_nifs(chunk, data_product_type, obs_id, filter_name):
                                     nifs_lookup[grating][filter_name][1])
                     fm.central_wl = em.om.get('central_wavelength')
                     fm.resolving_power = nifs_lookup[grating][filter_name][3]
+                    if fm.central_wl is None:
+                        logging.warning(
+                            f'JSON central_wavelength is None for {obs_id}.')
                 else:
                     logging.info(
                         'NIFS: No energy. filter_name {} with disperser {}'
@@ -2319,7 +2322,7 @@ def _update_chunk_energy_nifs(chunk, data_product_type, obs_id, filter_name):
                 'NIFS: DataProductType {} for {}'.format(
                     data_product_type, obs_id))
 
-    if fm is None:
+    if fm is None or fm.central_wl is None:
         cc.reset_energy(chunk)
     else:
         _build_chunk_energy(chunk, filter_name, fm)
