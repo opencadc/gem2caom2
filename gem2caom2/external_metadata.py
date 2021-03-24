@@ -351,7 +351,8 @@ def _repair_filter_name_for_svo(instrument, filter_names):
                            'Nprime': 'nprime',
                            'Qw': 'Qwide',
                            'Qs': 'Qa',
-                           'NeII_ref2': 'NeII_ref'}
+                           'NeII_ref2': 'NeII_ref',
+                           'SIV-10.5um': 'SIV'}
     FILTER_REPAIR_MICHELLE = {'I79B10': 'Si1',
                               'I88B10': 'Si2',
                               'I97B10': 'Si3',

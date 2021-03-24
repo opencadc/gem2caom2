@@ -1453,7 +1453,8 @@ def update(observation, **kwargs):
                                 c.naxis is not None and c.naxis == 6):
                             c.naxis = 2
                             c.time_axis = None
-                        if instrument is em.Inst.MICHELLE and c.naxis == 4:
+                        if (instrument in [em.Inst.MICHELLE, em.Inst.TRECS]
+                                and c.naxis == 4):
                             if c.position is None:
                                 c.naxis = None
                                 if c.time_axis is not None:
