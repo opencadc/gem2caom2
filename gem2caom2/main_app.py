@@ -1458,6 +1458,10 @@ def update(observation, **kwargs):
                                 c.naxis = None
                                 if c.time_axis is not None:
                                     c.time_axis = None
+                            else:
+                                if c.naxis == 4:
+                                    c.naxis = 2
+                                    c.time_axis = None
 
                 if isinstance(observation, DerivedObservation):
                     cc.update_plane_provenance(plane, headers[1:], 'IMCMB',

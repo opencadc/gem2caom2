@@ -323,6 +323,8 @@ LOOKUP = {
                        'GN-2008A-Q-43'],
     'N20100131S0131': ['GN-2009B-C-1-62-001', em.Inst.MICHELLE, 'GN-2009B-C-1'],
     'N20110127S0219': ['GN-2010B-C-3-21-002', em.Inst.MICHELLE, 'GN-2010B-C-3'],
+    'N20050826S0137': ['GN-2005B-Q-16-85-001', em.Inst.MICHELLE,
+                       'GN-2005B-Q-16'],
     'N20060413S0129': ['GN-CAL20060413-7-001', em.Inst.MICHELLE,
                        'GN-CAL20060413'],
     'N20080308S0086': ['GN-CAL20080308-8-016', em.Inst.MICHELLE,
