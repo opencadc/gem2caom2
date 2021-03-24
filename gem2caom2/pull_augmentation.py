@@ -114,7 +114,6 @@ def visit(observation, **kwargs):
                 if gem_name.GemName.is_preview(artifact.uri):
                     continue
                 try:
-                    logging.error('hello')
                     f_name = mc.CaomName(artifact.uri).file_name
                     file_url = '{}/{}'.format(FILE_URL, f_name)
                     mc.look_pull_and_put(f_name, working_dir, file_url,
