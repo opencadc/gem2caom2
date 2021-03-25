@@ -3721,10 +3721,11 @@ def _update_chunk_position_trecs(chunk, headers, extension, obs_id):
         chunk = Chunk()
 
     wcs_parser.augment_position(chunk)
-    chunk.position_axis_1 = 1
-    chunk.position_axis_2 = 2
-    chunk.position.coordsys = headers[0].get('FRAME')
-    chunk.position.equinox = mc.to_float(headers[0].get('EQUINOX'))
+    if chunk.position is not None:
+        chunk.position_axis_1 = 1
+        chunk.position_axis_2 = 2
+        chunk.position.coordsys = headers[0].get('FRAME')
+        chunk.position.equinox = mc.to_float(headers[0].get('EQUINOX'))
 
 
 def _update_chunk_position(chunk, header, instrument, extension, obs_id,
