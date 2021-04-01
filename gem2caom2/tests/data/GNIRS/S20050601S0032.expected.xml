@@ -1,0 +1,110 @@
+<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="00000000-0000-0000-b7cd-d5dfaf55784d" caom2:lastModified="2017-06-26T19:00:44.351" caom2:maxLastModified="2019-11-08T22:18:55.668" caom2:metaChecksum="md5:3a42277cf6834a035a208998a812b7e6" caom2:accMetaChecksum="md5:f9e35864608334f019628d8f138dba13">
+  <caom2:collection>GEMINI</caom2:collection>
+  <caom2:observationID>GS-CAL20050601-3-002</caom2:observationID>
+  <caom2:metaRelease>2005-05-31T21:16:41.100</caom2:metaRelease>
+  <caom2:algorithm>
+    <caom2:name>exposure</caom2:name>
+  </caom2:algorithm>
+  <caom2:type>FLAT</caom2:type>
+  <caom2:intent>calibration</caom2:intent>
+  <caom2:proposal>
+    <caom2:id>GS-CAL20050601</caom2:id>
+    <caom2:title>GS-CAL20050601</caom2:title>
+  </caom2:proposal>
+  <caom2:target>
+    <caom2:name>GCALflat</caom2:name>
+    <caom2:type>object</caom2:type>
+  </caom2:target>
+  <caom2:telescope>
+    <caom2:name>Gemini-South</caom2:name>
+    <caom2:geoLocationX>1820184.0557473274</caom2:geoLocationX>
+    <caom2:geoLocationY>-5208320.066618682</caom2:geoLocationY>
+    <caom2:geoLocationZ>-3194829.197152751</caom2:geoLocationZ>
+  </caom2:telescope>
+  <caom2:instrument>
+    <caom2:name>GNIRS</caom2:name>
+  </caom2:instrument>
+  <caom2:planes>
+    <caom2:plane caom2:id="00000000-0000-0000-a331-152095ad0ed9" caom2:lastModified="2019-08-02T13:44:56.703" caom2:maxLastModified="2019-11-08T22:18:55.668" caom2:metaChecksum="md5:c261e942e0aa00abce2a1d548d3201e6" caom2:accMetaChecksum="md5:006399c1e816724d9dcf10748c43a446">
+      <caom2:productID>S20050601S0032</caom2:productID>
+      <caom2:metaRelease>2005-05-31T21:16:41.100</caom2:metaRelease>
+      <caom2:dataRelease>2005-05-31T00:00:00.000</caom2:dataRelease>
+      <caom2:dataProductType>spectrum</caom2:dataProductType>
+      <caom2:calibrationLevel>1</caom2:calibrationLevel>
+      <caom2:provenance>
+        <caom2:name>Gemini Observatory Data</caom2:name>
+        <caom2:project>Gemini Archive</caom2:project>
+        <caom2:producer>Gemini Observatory</caom2:producer>
+        <caom2:reference>http://archive.gemini.edu/searchform/GS-CAL20050601-3-002</caom2:reference>
+      </caom2:provenance>
+      <caom2:artifacts>
+        <caom2:artifact caom2:id="00000000-0000-0000-ae21-2688a3765f20" caom2:lastModified="2019-07-07T20:18:46.562" caom2:maxLastModified="2019-11-08T22:18:55.668" caom2:metaChecksum="md5:5dd995c10e52fe0a1b3a622943559002" caom2:accMetaChecksum="md5:55eb9f12070b24a109d8a97e09bb1c97">
+          <caom2:uri>gemini:GEM/S20050601S0032.fits</caom2:uri>
+          <caom2:productType>calibration</caom2:productType>
+          <caom2:releaseType>data</caom2:releaseType>
+          <caom2:contentType>application/fits</caom2:contentType>
+          <caom2:contentLength>4201920</caom2:contentLength>
+          <caom2:parts>
+            <caom2:part caom2:id="a6a3d5cf-d3f2-44ec-b56e-ee82d4ecbbca" caom2:lastModified="2019-07-07T20:18:46.562" caom2:maxLastModified="2019-07-07T20:18:46.562" caom2:metaChecksum="md5:9d947bb309071b9d78c8227c80c39ec9" caom2:accMetaChecksum="md5:8811f13b77b780f9029670b355999d7b">
+              <caom2:name>0</caom2:name>
+              <caom2:chunks/>
+            </caom2:part>
+            <caom2:part caom2:id="00000000-0000-0000-a980-81d1b1e8ff69" caom2:lastModified="2017-06-26T19:00:44.351" caom2:maxLastModified="2017-06-26T19:00:44.351" caom2:metaChecksum="md5:12a3c77d0b401870b05939fbe9d35714" caom2:accMetaChecksum="md5:21479e1f798a05ef35982ef096dc2974">
+              <caom2:name>1</caom2:name>
+              <caom2:chunks>
+                <caom2:chunk caom2:id="00000000-0000-0000-87ba-0b8fdbb9e0a7" caom2:lastModified="2017-06-26T19:00:44.351" caom2:maxLastModified="2017-06-26T19:00:44.351" caom2:metaChecksum="md5:e4ed0f227ece41f1bd01b5cc29bef1f8" caom2:accMetaChecksum="md5:cba6038166e47dcd6fbc70a62d156ca9">
+                  <caom2:energy>
+                    <caom2:axis>
+                      <caom2:axis>
+                        <caom2:ctype>WAVE</caom2:ctype>
+                        <caom2:cunit>um</caom2:cunit>
+                      </caom2:axis>
+                      <caom2:range>
+                        <caom2:start>
+                          <caom2:pix>0.5</caom2:pix>
+                          <caom2:val>0.8999999999999999</caom2:val>
+                        </caom2:start>
+                        <caom2:end>
+                          <caom2:pix>1.5</caom2:pix>
+                          <caom2:val>2.5</caom2:val>
+                        </caom2:end>
+                      </caom2:range>
+                    </caom2:axis>
+                    <caom2:specsys>TOPOCENT</caom2:specsys>
+                    <caom2:ssysobs>TOPOCENT</caom2:ssysobs>
+                    <caom2:ssyssrc>TOPOCENT</caom2:ssyssrc>
+                    <caom2:bandpassName>XD</caom2:bandpassName>
+                    <caom2:resolvingPower>540.0</caom2:resolvingPower>
+                  </caom2:energy>
+                  <caom2:time>
+                    <caom2:axis>
+                      <caom2:axis>
+                        <caom2:ctype>TIME</caom2:ctype>
+                        <caom2:cunit>d</caom2:cunit>
+                      </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
+                      <caom2:function>
+                        <caom2:naxis>1</caom2:naxis>
+                        <caom2:delta>2.31481481481481e-05</caom2:delta>
+                        <caom2:refCoord>
+                          <caom2:pix>0.5</caom2:pix>
+                          <caom2:val>53521.88658680556</caom2:val>
+                        </caom2:refCoord>
+                      </caom2:function>
+                    </caom2:axis>
+                    <caom2:timesys>UTC</caom2:timesys>
+                    <caom2:exposure>2.0</caom2:exposure>
+                    <caom2:resolution>2.0</caom2:resolution>
+                  </caom2:time>
+                </caom2:chunk>
+              </caom2:chunks>
+            </caom2:part>
+          </caom2:parts>
+        </caom2:artifact>
+      </caom2:artifacts>
+    </caom2:plane>
+  </caom2:planes>
+</caom2:Observation>
