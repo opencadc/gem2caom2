@@ -226,7 +226,8 @@ def test_repair_data_label():
                     'S20191214S0301', '02jun24.0057', '01MAY08_023',
                     '2001nov16_0164', '2007sep15_0001', '01DEC05_004',
                     'N20061217S0228', 'N20050826S0137', 'S20120605S0053',
-                    'S20050601S0032', 'S20050601S0411']:
+                    'S20050601S0032', 'S20050601S0411', 'S20050718S0172',
+                    'S20130922S0130']:
             # what happens when an entry is not found
             # note that the answer should actually be
             # GN-2006A-Q-90-1-001-MRG-ADD, but because the
@@ -659,7 +660,7 @@ def test_repair_provenance(gem_mock, tap_mock):
         external_metadata.get_gofr()
         test_config = mc.Config()
         test_config.get_executors()
-        external_metadata.init_global(incremental=False, config=test_config)
+        external_metadata.init_global(config=test_config)
         for ii in test_subjects:
             ignore, test_fid = main_app._repair_provenance_value(ii[1],
                                                                  'test obs')

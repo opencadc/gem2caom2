@@ -96,7 +96,7 @@ def _run():
     """
     config = mc.Config()
     config.get_executors()
-    external_metadata.init_global(incremental=False, config=config)
+    external_metadata.init_global(config=config)
     name_builder = builder.GemObsIDBuilder(config)
     meta_visitors = _define_meta_visitors(config)
     return rc.run_by_todo(config, name_builder, chooser=None,
@@ -136,7 +136,7 @@ def _run_single():
         storage_name = gem_name.GemName(file_name=sys.argv[1])
     else:
         raise mc.CadcException('No code to handle running GEM by obs id.')
-    external_metadata.init_global(incremental=False, config=config)
+    external_metadata.init_global(config=config)
     meta_visitors = _define_meta_visitors(config)
     return rc.run_single(config, storage_name, main_app.APPLICATION,
                          meta_visitors, DATA_VISITORS)
@@ -171,7 +171,7 @@ def _run_by_public():
     """
     config = mc.Config()
     config.get_executors()
-    external_metadata.init_global(incremental=True, config=config)
+    external_metadata.init_global(config=config)
     name_builder = nbc.FileNameBuilder(gem_name.GemName)
     incremental_source = data_source.PublicIncremental(config)
     meta_visitors = _define_meta_visitors(config)
@@ -205,7 +205,7 @@ def _run_by_incremental():
     """
     config = mc.Config()
     config.get_executors()
-    external_metadata.init_global(incremental=True, config=config)
+    external_metadata.init_global(config=config)
     name_builder = nbc.FileNameBuilder(gem_name.GemName)
     incremental_source = data_source.FileListIncrementalSource(config)
     meta_visitors = _define_meta_visitors(config)

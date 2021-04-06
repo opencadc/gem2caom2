@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+
+<title>Detail for Program: GS-2013B-Q-75</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-2013B-Q-75</h1>
+
+<table>
+ <tr><td>Title:<td>Missing metal-poor stars from the HK and Hamburg/ESO Surveys (South)</tr>
+ <tr><td>PI:<td>Timothy Beers</tr>
+ <tr><td>Co-I(s):<td> Vinicius Placco,  Rafael Santucci,  Norbert Christlieb,  Silvia Rossi</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+The most metal-poor stars in the Galaxy retain the imprint of chemical evolution processes that took place during the earliest epochs of the Universe, and provide valuable kinematic probes of the hierachical assembly of the Milky Way. We propose to supplement the lists of known very metal-poor ([Fe/H] &lt; -2.0) stars by obtaining follow-up medium-resolution spectroscopy of candidates selected from the HK and Hamburg/ESO prism surveys. We have prepared a list of several thousand candidates, with 10 &lt; B &lt; 18, and available at essentially all RAs in both hemispheres. We plan to use GMOS-N and GMOS-S to obtain spectra for the fainter candidates, brighter candidates will be acquired with other 4-m class telescopes. These medium-resolution spectra will be used to determine atmospheric parameters (Teff, logg, [Fe/H]), as well as estimates of [C/Fe] and [alpha/Fe] and accurate radial velocities, using our well-tested spectroscopic analysis pipeline. This information will enable the identification of many new very metal-poor stars, including representatives of the inner- and outer-halo populations, for which detailed chemodynamical analysis can be carried out. The most interesting stars identified during this project will be selected for later follow-up with the either existing or new high-resolution spectrographs being developed for Gemini-N, Gemini-S, and SOAR. 
+</div>
+
+
+
+</body>
+</html>

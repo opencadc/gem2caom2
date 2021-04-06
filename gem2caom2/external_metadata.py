@@ -121,12 +121,9 @@ def set_ofr(value):
     gofr = value
 
 
-def init_global(incremental, config):
+def init_global(config):
     global om
-    if incremental:
-        om = gom.GeminiObsMetadataIncremental()
-    else:
-        om = gom.GeminiObsMetadata()
+    om = gom.GeminiObsMetadata()
     get_gofr(config)
     global gofr
     if gofr.tap_client is None and config.is_connected:

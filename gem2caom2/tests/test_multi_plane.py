@@ -66,15 +66,17 @@
 #
 # ***********************************************************************
 #
-import pytest
 
-from gem2caom2 import main_app, gem_name, external_metadata
-from caom2pipe import manage_composable as mc
-
+import json
 import os
+import pytest
 import sys
 
+from caom2pipe import manage_composable as mc
+from gem2caom2 import main_app, gem_name, external_metadata
+
 from mock import patch, Mock
+
 import gem_mocks
 
 pytest.main(args=['-s', os.path.abspath(__file__)])
@@ -101,7 +103,8 @@ LOOKUP = {'GS-CAL20101028-5-004': ['mrgS20101028S0134', 'S20101028S0134'],
           'N20190313A0002': ['N20190313A0002b', 'N20190313A0002r'],
           'N20200215A0004': ['N20200215A0004b', 'N20200215A0004r'],
           'S20190912Z0264': ['S20190912Z0264b', 'S20190912Z0264r'],
-          'GS-2003B-Q-23-17-001': ['S20050916S0159', 'rS20050916S0159']
+          'GS-2003B-Q-23-17-001': ['S20050916S0159', 'rS20050916S0159'],
+          'GS-2013B-Q-75-187-001': ['S20130922S0130', 'S20130922S0130_arc']
           }
 
 
@@ -119,7 +122,7 @@ def test_multi_plane(tap_mock, test_name):
     try:
         test_config = mc.Config()
         test_config.get_executors()
-        external_metadata.init_global(False, test_config)
+        external_metadata.init_global(test_config)
         obs_id = test_name
         lineage = _get_lineage(obs_id)
         input_file = '{}/{}/{}.in.xml'.format(
@@ -131,7 +134,7 @@ def test_multi_plane(tap_mock, test_name):
         plugin = gem_mocks.PLUGIN
 
         with patch('caom2utils.fits2caom2.CadcDataClient') as data_client_mock, \
-                patch('gem2caom2.external_metadata.get_obs_metadata') as \
+                patch('gem2caom2.external_metadata.requests.Session.get') as \
                 gemini_client_mock, \
                 patch('gem2caom2.external_metadata.get_pi_metadata') as \
                 gemini_pi_mock, \
@@ -139,7 +142,7 @@ def test_multi_plane(tap_mock, test_name):
 
             data_client_mock.return_value.get_file_info.side_effect = \
                 gem_mocks.mock_get_file_info
-            gemini_client_mock.side_effect = gem_mocks.mock_get_obs_metadata
+            gemini_client_mock.side_effect = _request_mock
             gemini_pi_mock.side_effect = gem_mocks.mock_get_pi_metadata
             svofps_mock.side_effect = gem_mocks.mock_get_votable
 
@@ -187,4 +190,19 @@ def _get_local(obs_id):
         result = '{} {}/{}/{}.fits.header'.format(result,
                                                   gem_mocks.TEST_DATA_DIR,
                                                   DIR_NAME, ii)
+    return result
+
+
+def _request_mock(url, timeout=-1):
+    result = gem_mocks.Object()
+    f_id = url.split('=')[1]
+    f_name = f'{gem_mocks.TEST_DATA_DIR}/json/{f_id}.json'
+
+    def x():
+        with open(f_name) as f:
+            # y = json.loads(f.read())
+            y = f.read()
+        return json.loads(y)
+
+    result.json = x
     return result

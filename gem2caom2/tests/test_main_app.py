@@ -125,7 +125,7 @@ def test_main_app(client_mock, tap_mock, gemini_client_mock, test_name):
         test_config.get_executors()
 
         em.set_ofr(None)
-        em.init_global(False, test_config)
+        em.init_global(test_config)
         test_data_size = os.stat(
             os.path.join(gem_mocks.TEST_DATA_DIR, 'from_paul.txt'))
         app_size = os.stat('/app/data/from_paul.txt')
@@ -213,7 +213,7 @@ def test_main_app_v(client_mock, tap_mock, gemini_client_mock, gemini_pi_mock,
         test_config.features.supports_latest_client = True
 
         em.set_ofr(None)
-        em.init_global(False, test_config)
+        em.init_global(test_config)
         test_data_size = os.stat(
             os.path.join(gem_mocks.TEST_DATA_DIR, 'from_paul.txt'))
         app_size = os.stat('/app/data/from_paul.txt')
