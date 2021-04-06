@@ -1,0 +1,113 @@
+<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="d2a6b666-0b46-45c7-84af-3daa7b00a8e1" caom2:lastModified="2019-08-14T09:50:30.781" caom2:maxLastModified="2019-11-08T23:34:42.991" caom2:metaChecksum="md5:3ec16547cf7637bbb60e097f9027f5af" caom2:accMetaChecksum="md5:4fdb85b47a7bfcd710fd74beaa883956">
+  <caom2:collection>GEMINI</caom2:collection>
+  <caom2:observationID>GS-2012A-SV-101-6-009</caom2:observationID>
+  <caom2:metaRelease>2012-06-04T22:29:33.800</caom2:metaRelease>
+  <caom2:algorithm>
+    <caom2:name>exposure</caom2:name>
+  </caom2:algorithm>
+  <caom2:type>OBJECT</caom2:type>
+  <caom2:intent>calibration</caom2:intent>
+  <caom2:proposal>
+    <caom2:id>GS-2012A-SV-101</caom2:id>
+    <caom2:pi>James Radomski</caom2:pi>
+    <caom2:title>T-ReCS Performance Characterization/Monitoring</caom2:title>
+  </caom2:proposal>
+  <caom2:target>
+    <caom2:name>Zenith</caom2:name>
+    <caom2:type>field</caom2:type>
+    <caom2:moving>true</caom2:moving>
+  </caom2:target>
+  <caom2:telescope>
+    <caom2:name>Gemini-South</caom2:name>
+    <caom2:geoLocationX>1820184.0557473274</caom2:geoLocationX>
+    <caom2:geoLocationY>-5208320.066618682</caom2:geoLocationY>
+    <caom2:geoLocationZ>-3194829.197152751</caom2:geoLocationZ>
+  </caom2:telescope>
+  <caom2:instrument>
+    <caom2:name>TReCS</caom2:name>
+  </caom2:instrument>
+  <caom2:planes>
+    <caom2:plane caom2:id="71fe58c2-4432-4a33-bc89-90deea3467e4" caom2:lastModified="2019-08-14T09:50:30.781" caom2:maxLastModified="2019-11-08T23:34:42.991" caom2:metaChecksum="md5:49f1ed9503d594fe0c3c99e5e5d94e39" caom2:accMetaChecksum="md5:74a63a9f1b98f5603385d404fa8f3768">
+      <caom2:productID>S20120605S0053</caom2:productID>
+      <caom2:metaRelease>2012-06-04T22:29:33.800</caom2:metaRelease>
+      <caom2:dataRelease>2012-06-04T00:00:00.000</caom2:dataRelease>
+      <caom2:dataProductType>image</caom2:dataProductType>
+      <caom2:calibrationLevel>1</caom2:calibrationLevel>
+      <caom2:provenance>
+        <caom2:name>Gemini Observatory Data</caom2:name>
+        <caom2:project>Gemini Archive</caom2:project>
+        <caom2:producer>Gemini Observatory</caom2:producer>
+        <caom2:reference>http://archive.gemini.edu/searchform/GS-2012A-SV-101-6-009</caom2:reference>
+      </caom2:provenance>
+      <caom2:artifacts>
+        <caom2:artifact caom2:id="91ce76df-d48a-4a89-8146-874df8c454ff" caom2:lastModified="2019-08-14T09:50:30.781" caom2:maxLastModified="2019-11-08T23:34:42.991" caom2:metaChecksum="md5:c500de1d105cc92ca5907b2e9a9475a6" caom2:accMetaChecksum="md5:5e4a33bae14160e776836aff4ff6f42e">
+          <caom2:uri>gemini:GEM/S20120605S0053.fits</caom2:uri>
+          <caom2:productType>calibration</caom2:productType>
+          <caom2:releaseType>data</caom2:releaseType>
+          <caom2:contentType>application/fits</caom2:contentType>
+          <caom2:contentLength>941760</caom2:contentLength>
+          <caom2:contentChecksum>md5:5f67cb88c8f8b394135c889b9f8e49b2</caom2:contentChecksum>
+          <caom2:parts>
+            <caom2:part caom2:id="4a1b0e4a-d080-4e42-a6d7-0b3eabaa6ad0" caom2:lastModified="2019-08-14T09:50:30.781" caom2:maxLastModified="2019-08-14T09:50:30.781" caom2:metaChecksum="md5:1410965a3b0b4107ebdb441c4c54615b" caom2:accMetaChecksum="md5:05f4767a625a2247e3cc9ac7d7e1a0fa">
+              <caom2:name>0</caom2:name>
+              <caom2:chunks/>
+            </caom2:part>
+            <caom2:part caom2:id="b5b39ad2-1c01-4582-9040-ff289058d33b" caom2:lastModified="2019-08-14T09:50:30.781" caom2:maxLastModified="2019-08-14T09:50:30.781" caom2:metaChecksum="md5:4c9ed9c286a587d441eb56b04e4cb8ea" caom2:accMetaChecksum="md5:53ec5f81ae835f9abce561e4139e6658">
+              <caom2:name>1</caom2:name>
+              <caom2:chunks>
+                <caom2:chunk caom2:id="3d99810e-694c-4e5d-8731-0e934c14125e" caom2:lastModified="2019-08-14T09:50:30.781" caom2:maxLastModified="2019-08-14T09:50:30.781" caom2:metaChecksum="md5:37fd32cf9ca4597ea0acbb65ca5557b0" caom2:accMetaChecksum="md5:139624116d00c80fe8adeb8abba0d236">
+                  <caom2:energy>
+                    <caom2:axis>
+                      <caom2:axis>
+                        <caom2:ctype>WAVE</caom2:ctype>
+                        <caom2:cunit>um</caom2:cunit>
+                      </caom2:axis>
+                      <caom2:range>
+                        <caom2:start>
+                          <caom2:pix>0.5</caom2:pix>
+                          <caom2:val>10.3742620558755</caom2:val>
+                        </caom2:start>
+                        <caom2:end>
+                          <caom2:pix>1.5</caom2:pix>
+                          <caom2:val>10.5379580499245</caom2:val>
+                        </caom2:end>
+                      </caom2:range>
+                    </caom2:axis>
+                    <caom2:specsys>TOPOCENT</caom2:specsys>
+                    <caom2:ssysobs>TOPOCENT</caom2:ssysobs>
+                    <caom2:ssyssrc>TOPOCENT</caom2:ssyssrc>
+                    <caom2:bandpassName>SIV-10.5um</caom2:bandpassName>
+                    <caom2:resolvingPower>63.875173694049685</caom2:resolvingPower>
+                  </caom2:energy>
+                  <caom2:time>
+                    <caom2:axis>
+                      <caom2:axis>
+                        <caom2:ctype>TIME</caom2:ctype>
+                        <caom2:cunit>d</caom2:cunit>
+                      </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
+                      <caom2:function>
+                        <caom2:naxis>1</caom2:naxis>
+                        <caom2:delta>0.000172371527777777</caom2:delta>
+                        <caom2:refCoord>
+                          <caom2:pix>0.5</caom2:pix>
+                          <caom2:val>56082.93719675926</caom2:val>
+                        </caom2:refCoord>
+                      </caom2:function>
+                    </caom2:axis>
+                    <caom2:timesys>UTC</caom2:timesys>
+                    <caom2:exposure>14.8929</caom2:exposure>
+                    <caom2:resolution>14.8929</caom2:resolution>
+                  </caom2:time>
+                </caom2:chunk>
+              </caom2:chunks>
+            </caom2:part>
+          </caom2:parts>
+        </caom2:artifact>
+      </caom2:artifacts>
+    </caom2:plane>
+  </caom2:planes>
+</caom2:Observation>

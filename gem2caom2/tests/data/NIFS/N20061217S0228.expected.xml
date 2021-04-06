@@ -1,0 +1,90 @@
+<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="00000000-0000-0000-8640-7a338f7e9730" caom2:lastModified="2017-06-26T06:43:02.989" caom2:maxLastModified="2019-11-08T22:43:38.263" caom2:metaChecksum="md5:d2286a729dcdd8e5a672320172b5be07" caom2:accMetaChecksum="md5:1f9803e0b5e88a567d505ce6833894b1">
+  <caom2:collection>GEMINI</caom2:collection>
+  <caom2:observationID>GN-2006B-C-9-17-034</caom2:observationID>
+  <caom2:metaRelease>2006-12-17T16:28:44.700</caom2:metaRelease>
+  <caom2:algorithm>
+    <caom2:name>exposure</caom2:name>
+  </caom2:algorithm>
+  <caom2:type>RONCHI</caom2:type>
+  <caom2:intent>calibration</caom2:intent>
+  <caom2:proposal>
+    <caom2:id>GN-2006B-C-9</caom2:id>
+    <caom2:pi>Peter McGregor</caom2:pi>
+    <caom2:title>NIFS GT combined proposal</caom2:title>
+  </caom2:proposal>
+  <caom2:target>
+    <caom2:name>GCALflat</caom2:name>
+    <caom2:type>object</caom2:type>
+    <caom2:moving>true</caom2:moving>
+  </caom2:target>
+  <caom2:telescope>
+    <caom2:name>Gemini-North</caom2:name>
+    <caom2:geoLocationX>-5464284.386715498</caom2:geoLocationX>
+    <caom2:geoLocationY>-2493782.3091076654</caom2:geoLocationY>
+    <caom2:geoLocationZ>2150786.380689657</caom2:geoLocationZ>
+  </caom2:telescope>
+  <caom2:instrument>
+    <caom2:name>NIFS</caom2:name>
+  </caom2:instrument>
+  <caom2:planes>
+    <caom2:plane caom2:id="00000000-0000-0000-a492-fe488f85ee52" caom2:lastModified="2019-08-02T14:21:13.797" caom2:maxLastModified="2019-11-08T22:43:38.263" caom2:metaChecksum="md5:e4c5b39fb566a016ed731766bba9533f" caom2:accMetaChecksum="md5:53f0400bcffbf0a550bb22378b41d64f">
+      <caom2:productID>N20061217S0228</caom2:productID>
+      <caom2:metaRelease>2006-12-17T16:28:44.700</caom2:metaRelease>
+      <caom2:dataRelease>2006-12-17T00:00:00.000</caom2:dataRelease>
+      <caom2:dataProductType>spectrum</caom2:dataProductType>
+      <caom2:calibrationLevel>1</caom2:calibrationLevel>
+      <caom2:provenance>
+        <caom2:name>Gemini Observatory Data</caom2:name>
+        <caom2:project>Gemini Archive</caom2:project>
+        <caom2:producer>Gemini Observatory</caom2:producer>
+        <caom2:reference>http://archive.gemini.edu/searchform/GN-2006B-C-9-17-034</caom2:reference>
+      </caom2:provenance>
+      <caom2:artifacts>
+        <caom2:artifact caom2:id="00000000-0000-0000-a8ab-4d51dc0eae73" caom2:lastModified="2019-07-21T12:29:13.004" caom2:maxLastModified="2019-11-08T22:43:38.263" caom2:metaChecksum="md5:33039ffe1a1ac33019c3113008f9820e" caom2:accMetaChecksum="md5:5c1fb4bae233e53be4b4e5f48fda66d2">
+          <caom2:uri>gemini:GEM/N20061217S0228.fits</caom2:uri>
+          <caom2:productType>calibration</caom2:productType>
+          <caom2:releaseType>data</caom2:releaseType>
+          <caom2:contentType>application/fits</caom2:contentType>
+          <caom2:contentLength>16801920</caom2:contentLength>
+          <caom2:contentChecksum>md5:065d2a9e6485c8948e4ac46ad720f730</caom2:contentChecksum>
+          <caom2:parts>
+            <caom2:part caom2:id="95cf2d7f-d339-44f6-989f-e1618e620f66" caom2:lastModified="2019-07-21T12:29:13.004" caom2:maxLastModified="2019-07-21T12:29:13.004" caom2:metaChecksum="md5:6026437d9f05dda0291ac7a77e0036cb" caom2:accMetaChecksum="md5:b806f0220509a4155fed1a15f6f670f8">
+              <caom2:name>0</caom2:name>
+              <caom2:chunks/>
+            </caom2:part>
+            <caom2:part caom2:id="00000000-0000-0000-8bf6-6256e648b501" caom2:lastModified="2017-06-26T06:43:02.989" caom2:maxLastModified="2017-06-26T06:43:02.989" caom2:metaChecksum="md5:c2f7203ede1cc42ba2c15ad8583526a7" caom2:accMetaChecksum="md5:e1be63aa44b9e18a528b31d2661b3e01">
+              <caom2:name>1</caom2:name>
+              <caom2:chunks>
+                <caom2:chunk caom2:id="00000000-0000-0000-a3e4-879aecf3b0eb" caom2:lastModified="2017-06-26T06:43:02.989" caom2:maxLastModified="2017-06-26T06:43:02.989" caom2:metaChecksum="md5:836ac8bd51aa2b3ba34792746fbe6648" caom2:accMetaChecksum="md5:5615c6b88c5690b7bb94e5396b33aae5">
+                  <caom2:time>
+                    <caom2:axis>
+                      <caom2:axis>
+                        <caom2:ctype>TIME</caom2:ctype>
+                        <caom2:cunit>d</caom2:cunit>
+                      </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
+                      <caom2:function>
+                        <caom2:naxis>1</caom2:naxis>
+                        <caom2:delta>9.25925925925925e-05</caom2:delta>
+                        <caom2:refCoord>
+                          <caom2:pix>0.5</caom2:pix>
+                          <caom2:val>54086.68662847222</caom2:val>
+                        </caom2:refCoord>
+                      </caom2:function>
+                    </caom2:axis>
+                    <caom2:timesys>UTC</caom2:timesys>
+                    <caom2:exposure>8.0</caom2:exposure>
+                    <caom2:resolution>8.0</caom2:resolution>
+                  </caom2:time>
+                </caom2:chunk>
+              </caom2:chunks>
+            </caom2:part>
+          </caom2:parts>
+        </caom2:artifact>
+      </caom2:artifacts>
+    </caom2:plane>
+  </caom2:planes>
+</caom2:Observation>

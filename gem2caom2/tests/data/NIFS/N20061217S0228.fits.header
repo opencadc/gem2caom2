@@ -1,0 +1,156 @@
+Filename: N20061217S0228.fits.bz2
+
+AstroData Tags: {'UNPREPARED', 'NIFS', 'CAL', 'SPECT', 'NORTH', 'AZEL_TARGET', 'NON_SIDEREAL', 'RONCHI', 'IFU', 'AT_ZENITH', 'RAW', 'GEMINI'}
+
+
+--- PHU ---
+SIMPLE  =                    T / file does conform to FITS standard             
+BITPIX  =                   16 / number of bits per data pixel                  
+NAXIS   =                    0 / number of data axes                            
+EXTEND  =                    T / FITS dataset may contain extensions            
+COMMENT   FITS (Flexible Image Transport System) format defined in Astronomy and
+COMMENT   Astrophysics Supplement Series v44/p363, v44/p371, v73/p359, v73/p365.
+COMMENT   Contact the NASA Science Office of Standards and Technology for the   
+COMMENT   FITS Definition document #100 and other FITS information.             
+INSTRUME= 'NIFS    '           / Instrument used to acquire data.               
+OBJECT  = 'GCALflat'           / Object Name                                    
+OBSTYPE = 'FLAT    '           / Observation type                               
+OBSCLASS= 'dayCal  '           / Observe class                                  
+GEMPRGID= 'GN-2006B-C-9'       / Gemini Science Program ID                      
+OBSID   = 'GN-2006B-C-9-17'    / Observation ID / Data label                    
+DATALAB = 'GN-2006B-C-9-17-034' / Datalabel                                     
+OBSERVER= 'observer'           / Observer                                       
+OBSERVAT= 'Gemini-North'       / Observatory                                    
+TELESCOP= 'Gemini-North'       / Telescope                                      
+PARALLAX=                   0. / Parallax of Target                             
+RADVEL  =                   0. / Heliocentric Radial Velocity                   
+EPOCH   =                2000. / Epoch for Target coordinates                   
+EQUINOX =                   0. / Equinox for Target coordinates                 
+TRKEQUIN=                2000. / Tracking equinox                               
+SSA     = 'ssa     '           / SSA                                            
+RA      =                  22. / RA of Target                                   
+DEC     =                  90. / Declination of Target                          
+ELEVATIO=     89.9999152777778 / Current Elevation                              
+AZIMUTH =            22.000125 / Current Azimuth                                
+CRPA    =    -45.0002574014029 / Current Cass Rotator Position Angle            
+HA      = '+00:00:00.02'       / Telescope hour angle                           
+LT      = '06:28:43.7'         / Local time at start of observation             
+TRKFRAME= 'FK5     '           / Tracking co-ordinate                           
+DECTRACK=      0.0020903251484 / Differential tracking rate Dec                 
+TRKEPOCH=         54086.670836 / Differential tracking reference epoch          
+RATRACK =        1.00308705693 / Differential tracking rate RA                  
+FRAME   = 'AZEL_TOPO'          / Target coordinate system                       
+PMDEC   =              -0.0033 / Proper Motion in Declination                   
+PMRA    =              0.00057 / Proper Motion in RA                            
+WAVELENG=               16500. / Effective Target Wavelength                    
+RAWIQ   = 'Any     '           / Raw Image Quality                              
+RAWCC   = 'Any     '           / Raw Cloud Cover                                
+RAWWV   = 'Any     '           / Raw Water Vapour/Transparency                  
+RAWBG   = 'Any     '           / Raw Background                                 
+RAWPIREQ= 'YES     '           / PI Requirements Met                            
+RAWGEMQA= 'USABLE  '           / Gemini Quality Assessment                      
+CGUIDMOD= 'Basic   '           / Driving mode for carousel                      
+UT      = '16:28:44.7'         / Beginning of Observation (UT)                  
+DATE    = '2006-12-17'         / Date of last modification                      
+M2BAFFLE= 'RETRACTED'          / Position of M2 baffle                          
+M2CENBAF= 'CLOSED  '           / Position of M2 central hole baffle             
+ST      = '11:51:30.8'         / Sidereal time at the start of the exposure     
+XOFFSET =                   0. / Telescope offset in x in arcsec                
+YOFFSET =                   0. / Telescope offset in y in arcsec                
+POFFSET =                   0. / Telescope offset in p in arcsec                
+QOFFSET =                   0. / Telescope offset in q in arcsec                
+RAOFFSET=                   0. / Telescope offset in RA in arcsec               
+DECOFFSE=                  -0. / Telescope offset in DEC in arcsec              
+RATRGOFF=                   0. / Target offset in RA in arcsec                  
+DECTRGOF=                   0. / Target offset in DEC in arcsec                 
+PA      =                   0. / Sky Position Angle at start of exposure        
+IAA     =                 180. / Instrument Alignment Angle                     
+SFRT2   =               88.583 / Science fold rotation angle (degrees)          
+SFTILT  =               -44.89 / Science fold tilt angle (degrees)              
+SFLINEAR=                   8. / Science fold linear position (mm)              
+AOFOLD  = 'park-pos.'          / AO Pick-Off Mirror Position                    
+GCALLAMP= 'QH      '           / GCAL Lamp name                                 
+GCALFILT= 'ND4.0   '           / GCAL Filter name                               
+GCALDIFF= 'IR      '           / GCAL Diffuser name                             
+GCALSHUT= 'CLOSED  '           / GCAL Shutter (OPEN or CLOSED)                  
+HUMIDITY=                   1. / The relative humidity (fraction, 0..101).      
+TAMBIENT=                  2.3 / The ambient temp (C).                          
+TAMBIEN2=                36.14 / The ambient temp (F).                          
+PRESSURE=             461.4222 / The atmospheric pressure (mm Hg).              
+PRESSUR2=               61500. / The atmospheric pressure (Pa).                 
+DEWPOINT=                -48.9 / The dew point (C).                             
+DEWPOIN2=               -56.02 / The dew point (F).                             
+WINDSPEE=                  6.1 / The wind speed (m/s).                          
+WINDSPE2=              13.6457 / The wind speed (mph).                          
+WINDDIRE=                 306. / The wind direction (degrees).                  
+WINDCOVR= 'Opened  '           / Window cover position name (open|closed)       
+FILTER  = 'JH_G0602'           / Filter name                                    
+APOFFSET=                   0. / Fopl offseti (arcseconds)                      
+GRATING = 'H_G5604 '           / Grating name                                   
+GRATWAVE= '1.6490  '           / Grating cetntral wavelength                    
+APERTURE= 'Ronchi_Screen_G5615' / Focal plane mask                              
+FLIP    = 'Out     '           / Imaging (flip) mirror                          
+EXPRQ   =                   8. / Requested Exposure time                        
+DCNAME  = 'NIFS DC '           / Nifs dc name                                   
+PERIOD  =                   8. / Period                                         
+NPERIODS=                    1 / Number of periods                              
+EXPMODE = 'NONDESTRUCTIVE'     / Exposure mode                                  
+RDTIME  =                   5. / Read time                                      
+COADDS  =                    1 / Number of coadds summed                        
+BIASPWR =                   3. / Source voltage of bias P-FET                   
+OBSMODE = 'IFU     '           / Observing mode configuration                   
+LNRS    =                    1 / Number of non-destructive read pairs           
+DATE-OBS= '2006-12-17'         / Observation date (UT)                          
+INPORT  =                    1 / Number of ISS port where NIFS was located      
+CTYPE1  = 'RA---TAN'           / R.A. in tangent plane projection               
+CRPIX1  =            14.999954 / Ref pix of axis 1                              
+CRVAL1  =           177.788767 / RA at Ref pix in decimal degrees               
+CTYPE2  = 'DEC--TAN'           / DEC. in tangent plane projection               
+CRPIX2  =            34.000101 / Ref pix of axis 2                              
+CRVAL2  =            19.864757 / DEC at Ref pix in decimal degrees              
+CD1_1   =             -4.7E-05 / WCS matrix element 1 1                         
+CD1_2   =               -2E-06 / WCS matrix element 1 2                         
+CD2_1   =                4E-06 / WCS matrix element 2 1                         
+CD2_2   =             -1.9E-05 / WCS matrix element 2 2                         
+RADECSYS= 'FK5     '           / R.A./DEC. coordinate system reference          
+MJD_OBS =         54086.687389 / Mean Julian day of observation                 
+DETSIZE = '[1:2048,1:2048]'    / Dimensions of detector                         
+DETECTOR= 'NIFS    '           / Name of detector                               
+NCCDS   =                    1 / Number of detector CCDS                        
+NAMPS   =                    4 / Number of CCD amps                             
+NEXTEND =                    1 / Number of image extensions                     
+CCDNAME = 'NIFS    '           / CCD/ARRAY name                                 
+CCDSIZE = '[1:2048,1:2048]'    / Dimensions of CCD                              
+CCDSUM  = '1 1     '           / CCD binning                                    
+CCDSEC  = '[1:512,1:2048]'     / CCD section                                    
+AMPNAME = '1       '           / Amplifier name                                 
+AMPSEC  = '[1:512,1:2048]'     / Amplifier section                              
+DETSEC  = '[1:2048,1:2048]'    / Full detector size                             
+AMPNAME2= '2       '           / Amplifier 2 name                               
+AMPSEC2 = '[1024:513,1:2048]'  / Amplifier 2 section                            
+AMPNAME3= '3       '           / Amplifier 3 name                               
+AMPSEC3 = '[1025:1536,1:2048]' / Amplifier 3 section                            
+AMPNAME4= '4       '           / Amplifier 4 name                               
+AMPSEC4 = '[2048:1537,1:2048]' / Amplifier 4 section                            
+EXPTIME =                   8. / Exposure time (s)                              
+AIRMASS =                   1. / Mean airmass for the observation               
+AMSTART =                   1. / Airmass at start of exposure                   
+AMEND   =                   1. / Airmass at end of exposure                     
+RELEASE = '2006-12-17'         / End of proprietary period YYYY-MM-DD           
+ORIGNAME= 'N20061217S0228.fits' / Original filename prior to processing
+
+--- HDU 0 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                  -32 / number of bits per data pixel                  
+NAXIS   =                    2 / number of data axes                            
+NAXIS1  =                 2048 / length of data axis 1                          
+NAXIS2  =                 2048 / length of data axis 2                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+INHERIT =                    F / inherit the primary header                     
+DATASEC = '[1:2048,1:2048]'    / Current datasection of the frame               
+FRMNAME = 'NIFS_Frame1'        / Frame name                                     
+FRAMEID = '0       '           / Frame ID                                       
+DATATYP = 'Intensity'          / Data type                                      
+EXTVER  =                    1 / Number assigned to a FITS extension.           
+EXTNAME = 'SCI     '           / Added by AstroData

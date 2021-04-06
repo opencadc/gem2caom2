@@ -231,10 +231,9 @@
               <caom2:name>1</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="e803335b-bc52-49f8-8445-49f20f114a77" caom2:lastModified="2019-08-13T22:19:15.040" caom2:maxLastModified="2019-08-13T22:19:15.040" caom2:metaChecksum="md5:eec7da2ae0fd32c808a99bc665ba27e0" caom2:accMetaChecksum="md5:47276ff76884b34337c6b527bcae5cfa">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -322,10 +321,9 @@
               <caom2:name>2</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="4c0b12f7-22c9-4c56-9b45-b91b6ea277f4" caom2:lastModified="2019-08-13T22:19:15.040" caom2:maxLastModified="2019-08-13T22:19:15.040" caom2:metaChecksum="md5:a7d676c3268d0651c8e244b047fcd802" caom2:accMetaChecksum="md5:ecdff39db24352261ee851845e4816d2">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -413,10 +411,9 @@
               <caom2:name>3</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="f11ab8f3-bf35-49ac-bafa-ff9377893839" caom2:lastModified="2019-08-13T22:19:15.040" caom2:maxLastModified="2019-08-13T22:19:15.040" caom2:metaChecksum="md5:d66773ab874c00a25b3d407efadd41c9" caom2:accMetaChecksum="md5:18f104611e083fcb9acb7e04e614fb70">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -504,10 +501,9 @@
               <caom2:name>4</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="f559f802-50cf-484b-b794-b9d3d18ee99f" caom2:lastModified="2019-08-13T22:19:15.040" caom2:maxLastModified="2019-08-13T22:19:15.040" caom2:metaChecksum="md5:e6f1a966d9f78cffb54497d1dbaedfc0" caom2:accMetaChecksum="md5:a8ba1d11a94de85e6bb2da5b4b79ae4a">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -728,7 +724,6 @@
                   <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>

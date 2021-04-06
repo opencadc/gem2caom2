@@ -264,6 +264,8 @@ LOOKUP = {
     'N20160202S0098': ['GN-CAL20160202-3-039', em.Inst.GNIRS, 'GN-CAL20160202'],
     'S20041101S0215': ['GS-2004B-Q-19-20-023', em.Inst.GNIRS, 'GS-2004B-Q-19'],
     'N20170201S0246': ['GN-2017A-Q-44-25-031', em.Inst.GNIRS, 'GS-2017A-Q-44'],
+    'S20050601S0032': ['GS-CAL20050601-3-002', em.Inst.GNIRS, 'GS-CAL20050601'],
+    'S20050601S0411': ['GS-CAL20050601-24-035', em.Inst.GNIRS, 'GS-CAL20050601'],
     'N20180224S0063': ['GN-CAL20180224-3-001', em.Inst.GNIRS,
                        'GN-CAL20180224-3'],
     'N20171106S0187': ['GN-2017B-LP-16-470-002', em.Inst.GNIRS,
@@ -323,6 +325,8 @@ LOOKUP = {
                        'GN-2008A-Q-43'],
     'N20100131S0131': ['GN-2009B-C-1-62-001', em.Inst.MICHELLE, 'GN-2009B-C-1'],
     'N20110127S0219': ['GN-2010B-C-3-21-002', em.Inst.MICHELLE, 'GN-2010B-C-3'],
+    'N20050826S0137': ['GN-2005B-Q-16-85-001', em.Inst.MICHELLE,
+                       'GN-2005B-Q-16'],
     'N20060413S0129': ['GN-CAL20060413-7-001', em.Inst.MICHELLE,
                        'GN-CAL20060413'],
     'N20080308S0086': ['GN-CAL20080308-8-016', em.Inst.MICHELLE,
@@ -343,6 +347,7 @@ LOOKUP = {
     'N20160426S0092': ['GN-2016A-Q-35-107-001', em.Inst.NIFS, 'GN-2016A-Q-35'],
     'N20161007S0382': ['GN-2016B-Q-27-31-007', em.Inst.NIFS, 'GN-2016B-Q-27'],
     'N20060723S0132': ['GN-2006A-C-11-670-006', em.Inst.NIFS, 'GN-2006A-C-11'],
+    'N20061217S0228': ['GN-2006B-C-9-17-034', em.Inst.NIFS, 'GN-2006B-C-9'],
     # NIRI
     'N20020405S0044': ['GN-2002A-C-4-2-001', em.Inst.NIRI, ''],
     'N20020620S0021': ['GN-2002A-C-5-1-001', em.Inst.NIRI, 'GN-2002A-C-5'],
@@ -384,6 +389,9 @@ LOOKUP = {
     'S20080610S0045': ['GS-2008A-C-5-35-002', em.Inst.TRECS, 'GS-2008A-C-5'],
     'S20120922S0372': ['GS-2012A-Q-7-31-001', em.Inst.TRECS, 'GS-2012A-Q-7'],
     'S20050102S0024': ['GS-CAL20050102-1-001', em.Inst.TRECS, 'GS-CAL20050102'],
+    'S20050718S0172': ['GS-2005A-Q-50-55-003', em.Inst.TRECS, 'GS-2005A-Q-50'],
+    'S20120605S0053': ['GS-2012A-SV-101-6-009', em.Inst.TRECS,
+                       'GS-2012A-SV-101'],
     'rS20050916S0159': ['GS-2003B-Q-23-17-001', em.Inst.TRECS,
                         'GS-2003B-Q-23'],
     # CIRPASS
@@ -661,6 +669,13 @@ def mock_query_endpoint_2(url, timeout=-1):
     else:
         # raise mc.CadcException(f'wut? {url}')
         pass
+    return result
+
+
+def mock_session_get_not_found(url):
+    # returns json via response.text, depending on url
+    result = Object()
+    result.text = '[]'
     return result
 
 

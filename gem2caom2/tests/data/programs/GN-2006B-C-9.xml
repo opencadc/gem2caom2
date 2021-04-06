@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+
+<title>Detail for Program: GN-2006B-C-9</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GN-2006B-C-9</h1>
+
+<table>
+ <tr><td>Title:<td>NIFS GT combined proposal</tr>
+ <tr><td>PI:<td>Peter McGregor</tr>
+ <tr><td>Co-I(s):<td> Tracy Beck</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+// Three NIFS proposals combined into one //
+
+///   G/2006B/012   ///
+High-Mass Protostar Enivironments - W3 IRS 5
+W3 IRS 5 is a high-mass protostar system in the W3 star forming region at a distance of ~ 1.8 kpc (Imai et al. 2000, ApJ, 538, 751). It has long been known to be a binary protostar with both components powering hyper-compact H II regions. Recent NICMOS images reveal nebulous emission between the two high-mass protostars. This emission could arise through interaction between the two protostar outflows, through photo-ionization of adjacent massive accretion disks, or through mechanical interaction between the two accretion disks. We propose to obtain sub-arcsecond spatially-resolved near-infrared spectra with NIFS+ALTAIR/LGS of the two protostars and this intervening emission to establish its nature.
+
+///   G/2006B/015   ///
+The Driving Mechanism of Young Stellar Object Jets 
+A small number of T Tauri stars and other Young Stellar Objects (YSOs) possess well-collimated outflows that are revealed by subarcsecond-scale "microjets". These microjets are seen in emission lines of shock-excited forbidden transitions and molecular hydrogen. The structure and dynamics of the jet can be used to infer information about the accretion envelope of the star and the  mechanisms controlling mass inflow and jet collimation. We propose to use NIFS+ALTAIR/NGS to study these structures in the classic T Tauri star, CW Tau, and the edge-on disk system, Haro 6-5B.
+
+///   G/2006B/013   ///
+What Powers Activity in the Cores of Seyfert Galaxies?
+The near-infrared region contains several spectral features that by virtue of their low excitation can be excited by either star formation or AGN activity. We will use high resolution 2D spatial information, in addition to excitation and velocity data, to explore the origins of the [Fe II] and H_2 emission in Seyfert galaxies in which the radio emission is spatially resolved on arcsecond scales. These features can arise in shocks associated with the radio jet, or by X-ray photoionization from the AGN. Radial velocity dispersion profiles of the circumnuclear stellar population measured from 2.3 micron CO absorption bands will be used to constrain the central black hole mass. 
+</div>
+
+
+<h2>Publications using this program's data</h2>
+<ul>
+<li>
+<a href="/searchform/publication=2009ApJ...698.1767R" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2009ApJ...698.1767R/abstract" target="_blank">[ADS]</a> The Dusty Nuclear Torus in NGC 4151: Constraints from Gemini Near-Infrared Integral Field Spectrograph Observations
+<li>
+<a href="/searchform/publication=2009MNRAS.394.1148S" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2009MNRAS.394.1148S/abstract" target="_blank">[ADS]</a> Feeding versus feedback in NGC4151 probed with Gemini NIFS - I. Excitation
+<li>
+<a href="/searchform/publication=2010MNRAS.402..819S" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2010MNRAS.402..819S/abstract" target="_blank">[ADS]</a> Feeding versus feedback in NGC4151 probed with Gemini NIFS - II. Kinematics
+<li>
+<a href="/searchform/publication=2012MNRAS.422..252D" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2012MNRAS.422..252D/abstract" target="_blank">[ADS]</a> X-rays as the dominant excitation mechanism of [Fe II] and H<SUB>2</SUB> emission lines in active galaxies
+<li>
+<a href="/searchform/publication=2012ApJ...755...87S" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2012ApJ...755...87S/abstract" target="_blank">[ADS]</a> Two-dimensional Mapping of Young Stars in the Inner 180 pc of NGC 1068: Correlation with Molecular Gas Ring and Stellar Kinematics
+<li>
+<a href="/searchform/publication=2013MNRAS.430.2411M" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2013MNRAS.430.2411M/abstract" target="_blank">[ADS]</a> Resolving the coronal line region of NGC 1068 with near-infrared integral field spectroscopy
+<li>
+<a href="/searchform/publication=2014MNRAS.438.2597M" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2014MNRAS.438.2597M/abstract" target="_blank">[ADS]</a> A treatment procedure for Gemini North/NIFS data cubes: application to NGC 4151
+<li>
+<a href="/searchform/publication=2014MNRAS.442..656R" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2014MNRAS.442..656R/abstract" target="_blank">[ADS]</a> Feeding versus feedback in NGC 1068 probed with Gemini NIFS - I. Excitation
+<li>
+<a href="/searchform/publication=2014MNRAS.445.2353B" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2014MNRAS.445.2353B/abstract" target="_blank">[ADS]</a> Modelling the [Fe II] λ1.644 μm outflow and comparison with H2 and H+ kinematics in the inner 200 pc of NGC 1068
+<li>
+<a href="/searchform/publication=2018MNRAS.474.1373R" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2018MNRAS.474.1373R/abstract" target="_blank">[ADS]</a> Gemini NIFS survey of feeding and feedback processes in nearby active galaxies - II. The sample and surface mass density profiles
+<li>
+<a href="/searchform/publication=2020MNRAS.496.1488M" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2020MNRAS.496.1488M/abstract" target="_blank">[ADS]</a> The nuclear architecture of NGC 4151: on the path toward a universal outflow mechanism in light of NGC 1068
+</ul>
+
+
+</body>
+</html>

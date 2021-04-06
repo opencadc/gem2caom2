@@ -66,6 +66,7 @@
 #
 # ***********************************************************************
 #
+
 import os
 import pytest
 import shutil
@@ -76,6 +77,7 @@ from mock import patch, Mock
 from caom2 import ChecksumURI, Artifact, ReleaseType, ProductType
 from gem2caom2 import preview_augmentation, pull_augmentation, SCHEME
 from gem2caom2 import ARCHIVE, pull_v_augmentation, COLLECTION
+from gem2caom2 import preview_v_augmentation
 from caom2pipe import manage_composable as mc
 
 pytest.main(args=['-s', os.path.abspath(__file__)])
@@ -131,10 +133,6 @@ def test_preview_augment():
                                     'image/jpeg',
                                     12,
                                     ChecksumURI('md5:12'))
-
-            def _get_mock(url_ignore, fqn_ignore):
-                shutil.copy(f'{TEST_DATA_DIR}/{TEST_FILE}',
-                            f'/test_files/{TEST_PRODUCT_ID}.jpg')
 
             cadc_client_mock.return_value.data_get.return_value = \
                 mc.CadcException('test')
@@ -235,7 +233,8 @@ def test_preview_augment_unknown_no_preview():
 
     with patch('caom2pipe.manage_composable.http_get',
                side_effect=mc.CadcException(
-                   '404 Client Error: Not Found for url')) as http_mock, \
+                   'Internal Server Error for url: '
+                   'https://archive.gemini.edu/preview')) as http_mock, \
             patch('caom2pipe.manage_composable.data_put') as ad_put_mock, \
             patch('caom2pipe.manage_composable.get_artifact_metadata') as \
                 art_mock, \
@@ -344,3 +343,61 @@ def test_preview_augment_delete_preview():
     assert result is not None, 'expect a result'
     assert result['artifacts'] == 1, 'wrong result'
     assert len(obs.planes[test_product_id].artifacts) == 1, 'post condition'
+
+
+@patch('caom2pipe.manage_composable.http_get')
+@patch('caom2pipe.manage_composable.client_put')
+def test_preview_augment_v(put_mock, http_mock):
+    # this should result in two new artifacts being added to the plane
+    # one for a thumbnail and one for a preview
+
+    obs = mc.read_obs_from_file(TEST_OBS_FILE)
+    obs.planes[TEST_PRODUCT_ID].data_release = datetime.utcnow()
+    assert len(obs.planes[TEST_PRODUCT_ID].artifacts) == 1, 'initial condition'
+
+    test_rejected = mc.Rejected(REJECTED_FILE)
+    test_config = mc.Config()
+    test_metrics = mc.Metrics(test_config)
+    test_observable = mc.Observable(test_rejected, test_metrics)
+    cadc_client_mock = Mock()
+    kwargs = {'working_directory': '/test_files',
+              'cadc_client': cadc_client_mock,
+              'observable': test_observable}
+
+    test_prev = f'/test_files/{TEST_PRODUCT_ID}.jpg'
+    if os.path.exists(test_prev):
+        os.unlink(test_prev)
+
+    try:
+        cadc_client_mock.return_value.data_get.return_value = \
+            mc.CadcException('test')
+        http_mock.side_effect = _get_mock
+        result = preview_v_augmentation.visit(obs, **kwargs)
+        test_url = f'{preview_augmentation.PREVIEW_URL}' \
+                   f'{TEST_PRODUCT_ID}.fits'
+        assert http_mock.called, 'http mock should be called'
+        http_mock.assert_called_with(test_url, test_prev), \
+            'mock not called'
+        assert put_mock.called, 'put mock not called'
+        put_mock.assert_called_with(
+            cadc_client_mock, '/test_files', 'GN2001BQ013-04_th.jpg',
+            'ad:GEM/GN2001BQ013-04_th.jpg', metrics=test_metrics)
+        assert result is not None, 'expect a result'
+        assert result['artifacts'] == 2, 'artifacts should be added'
+        assert len(obs.planes[TEST_PRODUCT_ID].artifacts) == 3, \
+            'two new artifacts'
+        prev_uri = mc.build_uri(
+            ARCHIVE, f'{TEST_PRODUCT_ID}.jpg', SCHEME)
+        thumb_uri = mc.build_uri(ARCHIVE, f'{TEST_PRODUCT_ID}_th.jpg')
+        assert prev_uri in obs.planes[TEST_PRODUCT_ID].artifacts.keys(), \
+            'no preview'
+        assert thumb_uri in obs.planes[TEST_PRODUCT_ID].artifacts, \
+            'no thumbnail'
+    finally:
+        if os.path.exists(test_prev):
+            os.unlink(test_prev)
+
+
+def _get_mock(url_ignore, fqn_ignore):
+    shutil.copy(f'{TEST_DATA_DIR}/{TEST_FILE}',
+                f'/test_files/{TEST_PRODUCT_ID}.jpg')

@@ -56,10 +56,9 @@
               <caom2:name>1</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-9f39-4363864d4341" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:cc5c53588fdfb0f3f5edd8434773e6cd" caom2:accMetaChecksum="md5:0d4677ec2ba31ace4f869967e2f65bf2" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -147,10 +146,9 @@
               <caom2:name>10</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-b2b0-2605f147a761" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:d3b4e2805bad88107b95a1d210fd6454" caom2:accMetaChecksum="md5:a85666926d030a9a4fe8b6addb028ba9" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -238,10 +236,9 @@
               <caom2:name>11</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-8e7f-8348db6930eb" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:39101c85bbface956842e02da2dffff3" caom2:accMetaChecksum="md5:ea166518c9b305ace93429d610efb182" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -329,10 +326,9 @@
               <caom2:name>12</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-bd12-5b173d7fc5af" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:cb8500626f2edd764ff994a6e99309b0" caom2:accMetaChecksum="md5:d5daca9da29aaa2dd4dad7c8fd418b39" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -420,10 +416,9 @@
               <caom2:name>13</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-9cfd-59824d627b18" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:281cf77dc69eed4db217005b1476ebde" caom2:accMetaChecksum="md5:604ba61416ff9a00a960d14afec0b974" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -511,10 +506,9 @@
               <caom2:name>14</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-9514-bcf1d1eec946" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:c988430c446ba8e3732e03fb07bfb455" caom2:accMetaChecksum="md5:9edf184b47cedbce81f34db5da1eac79" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -602,10 +596,9 @@
               <caom2:name>15</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-a2cd-258dfb9d679e" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:b06339a8a4ad9580ce4622df14538258" caom2:accMetaChecksum="md5:577f8b08ce4092aedd806f59a772a1aa" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -693,10 +686,9 @@
               <caom2:name>16</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-bba8-05e8c3f2bc65" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:b55339d4aefcf0981e339617f664d0e5" caom2:accMetaChecksum="md5:4a61a53989565403bea7deae75cd64a6" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -784,10 +776,9 @@
               <caom2:name>17</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-af09-32247bbda87a" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:0bd7e9ad8b146e159f58d1346c5481ae" caom2:accMetaChecksum="md5:ac70db5aca4f6ae05468bbd386966d76" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -875,10 +866,9 @@
               <caom2:name>18</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-9a21-f70cdbd6097d" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:58133e70ea4d5f4f9c4981e87e19d1ec" caom2:accMetaChecksum="md5:1b7021a9560478fe48694498341947fa" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -966,10 +956,9 @@
               <caom2:name>19</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-a900-0b56b381d0cd" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:f1dda46266ebdb90d0276037ccce5c20" caom2:accMetaChecksum="md5:b06f0ed15ac156ca237978b853c60845" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -1057,10 +1046,9 @@
               <caom2:name>2</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-93aa-abb845ca1549" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:6808d2f2298757b80787c9087f9daa1f" caom2:accMetaChecksum="md5:fc2c89e8d96339761b7a890f6ab1b943" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -1148,10 +1136,9 @@
               <caom2:name>20</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-9440-1aecd08b9c73" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:1f328e7f6f91c537a778eb2cddd52e6d" caom2:accMetaChecksum="md5:86caecb5266bcca54151d0fbbd4ea8c4" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -1239,10 +1226,9 @@
               <caom2:name>21</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-96c4-98e93321a460" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:4fe424b5bfef812d77a8524202b4705b" caom2:accMetaChecksum="md5:fc561aee9b8ae7626ffd3f787234602a" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -1330,10 +1316,9 @@
               <caom2:name>22</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-ac8d-8b4c0f92fe16" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:9a74c5b3cf3e1b89bd145576653245ca" caom2:accMetaChecksum="md5:cdae24d9bdb7057ecea86cffb2e42c2f" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -1421,10 +1406,9 @@
               <caom2:name>23</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-8c1c-9e88302536aa" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:4d0d044ad5a8e6d7aa14c31c0dd91279" caom2:accMetaChecksum="md5:a8eacd935a3ff6698bf3a2b44d5bc6a8" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -1512,10 +1496,9 @@
               <caom2:name>24</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-862c-3646a6f4e737" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:d3609f522b846c8e86f3461683a0d08f" caom2:accMetaChecksum="md5:71eb3fe708545dd86246ec23ab252159" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -1603,10 +1586,9 @@
               <caom2:name>25</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-b7e0-5118b787fdb5" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:4345c8b6efa8216202c59b475b7f75ea" caom2:accMetaChecksum="md5:00f7fd1a402b71dab9a8713ed3227c88" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -1694,10 +1676,9 @@
               <caom2:name>26</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-896d-70363006acbd" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:078f41346df6beaeaf4851e5ba2a3184" caom2:accMetaChecksum="md5:2d3fd503c179f66f7227babf23884061" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -1785,10 +1766,9 @@
               <caom2:name>27</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-b142-36cce72671aa" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:fe2e0c8a235669c76803fee276537f37" caom2:accMetaChecksum="md5:9d636e25883a83c32c1c1039443a8db8" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -1876,10 +1856,9 @@
               <caom2:name>28</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-a824-ad4be726edb4" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:2411c9456a507074f6b6a35fd78c4cbd" caom2:accMetaChecksum="md5:db2a038a9d3d455c65de8b1897d97326" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -1967,10 +1946,9 @@
               <caom2:name>29</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-a702-df3bbf5877f7" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:72a34164062a2faf8e68401276b9a7b5" caom2:accMetaChecksum="md5:b72cd91f0c593372548688ca430ade43" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -2058,10 +2036,9 @@
               <caom2:name>3</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-b1f9-a0bb0a0b58eb" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:3647192bb7759bf6225cb39d8084371f" caom2:accMetaChecksum="md5:bc23fc239703713970b2340c3805b166" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -2149,10 +2126,9 @@
               <caom2:name>30</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-948c-c32b344f7dcc" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:7906d2803e3313fd8f012e845da576bb" caom2:accMetaChecksum="md5:a538eb15133995d37aa7ab1060a98878" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -2240,10 +2216,9 @@
               <caom2:name>31</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-8b25-b1e381f21386" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:8945218a880476ef7a5dbe8252ab5245" caom2:accMetaChecksum="md5:e85ab9544e50fdacee3be5fa193561f3" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -2331,10 +2306,9 @@
               <caom2:name>32</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-b013-73ae8d4130c9" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:5b63cc35eebdfe9b44f11331bdc9afce" caom2:accMetaChecksum="md5:08aa63e7cb8199c9e5e87496fc9a19ac" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -2422,10 +2396,9 @@
               <caom2:name>33</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-b77b-c18747cce20d" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:b09b70e78be79a5d79bc018086bcf1b3" caom2:accMetaChecksum="md5:7b3e1f899ec717d45ed18bdc52fe40ae" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -2513,10 +2486,9 @@
               <caom2:name>34</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-adab-03562e4045ee" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:6eb4e20c6841a4c85734e4721cdc6137" caom2:accMetaChecksum="md5:02e9bbd65f6172effa5f21a66607496a" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -2604,10 +2576,9 @@
               <caom2:name>35</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-90f7-a6e0c0f3fe33" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:35db6b8dff2370a9e0cad3d586eb50c4" caom2:accMetaChecksum="md5:2965ddb90946049d4fa6019433779612" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -2695,10 +2666,9 @@
               <caom2:name>36</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-b8ff-7860b8a42e9b" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:71fee6c3f50d48d8a9707ff87fda2867" caom2:accMetaChecksum="md5:3fb2114f1f52949f64def96c47d6a821" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -2786,10 +2756,9 @@
               <caom2:name>37</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-92dd-8de1f22d5f06" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:ea2ccb100357466e08f81d89b9c4f16b" caom2:accMetaChecksum="md5:2c78b52e571ebc037e8b9af2675b59cf" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -2877,10 +2846,9 @@
               <caom2:name>38</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-993a-88dfcc2e9365" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:68c966cdb9383edfee50c7b3942780fc" caom2:accMetaChecksum="md5:8566427c5324405bc14dedbdbd25c0b1" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -2968,10 +2936,9 @@
               <caom2:name>39</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-94d2-96c1f6fa43ea" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:1bc0a5698ea939a656891cab2f21d111" caom2:accMetaChecksum="md5:b569ecc703a5512d2433e865edcebb31" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -3059,10 +3026,9 @@
               <caom2:name>4</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-9aca-775767c8e35c" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:6f575146cdcf85dfe8538e417a242827" caom2:accMetaChecksum="md5:d7d981004d7c7cd56e65fd08c3fb9991" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -3150,10 +3116,9 @@
               <caom2:name>40</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-8949-9ccff9e0314d" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:17103af18b7670fa889bdf8e42f01dff" caom2:accMetaChecksum="md5:229a7349280f1dacf586d6c0e0dc441b" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -3241,10 +3206,9 @@
               <caom2:name>41</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-9e9d-16c86531bbf2" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:dc598c0fe297ead5207fbcffb1ad9b5f" caom2:accMetaChecksum="md5:8ffdb556e98e164557971e49c7c9673f" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -3332,10 +3296,9 @@
               <caom2:name>42</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-a463-38f074cf68ca" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:316155e99ab4721a015b3ebd1f84af1b" caom2:accMetaChecksum="md5:9bcce9b4298d3e3c45a753f24f179863" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -3423,10 +3386,9 @@
               <caom2:name>43</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-854d-0ed3e4900d10" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:71e81ff581e6b99a51e2341636f1410b" caom2:accMetaChecksum="md5:0ee5382a092d5ce62d36dcefada2af58" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -3514,10 +3476,9 @@
               <caom2:name>44</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-8263-27bb12c3b38c" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:201da09dfd0b72fba196735351b1f076" caom2:accMetaChecksum="md5:9d87315142f096d06298289778d95d04" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -3605,10 +3566,9 @@
               <caom2:name>45</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-93ed-bccfef2edce7" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:8fc056f698182270cc3c1d9893474c35" caom2:accMetaChecksum="md5:0523f1ff717bed81c9e6410add3d22f3" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -3696,10 +3656,9 @@
               <caom2:name>46</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-9562-ad765add547e" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:059861477cbfc332557c8d30a2e139c2" caom2:accMetaChecksum="md5:cdb19b8e6f7fbeb15b2d9469db536059" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -3787,10 +3746,9 @@
               <caom2:name>47</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-b998-01d092d3acd9" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:ecbd2ddd471f3c647a1473beb2605b4d" caom2:accMetaChecksum="md5:8508eed026196814787e8ae85b5439bf" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -3878,10 +3836,9 @@
               <caom2:name>48</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-ae47-99caa3028bba" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:aabf8d3cea1ba95dad8fd78cee5ccc36" caom2:accMetaChecksum="md5:cac3698d9020883249496e6cb7aafd64" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -3969,10 +3926,9 @@
               <caom2:name>49</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-8330-8cd352027e4d" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:cbec52f8591150cfbf6bdc69143d489f" caom2:accMetaChecksum="md5:a88d272e7b8481eea0368ab4c44efd42" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -4060,10 +4016,9 @@
               <caom2:name>5</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-9535-5df2047ce68f" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:edefad721528c5ec0bc28967db538122" caom2:accMetaChecksum="md5:8c5227e7a23caf44dda3b997952b6cf5" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -4151,10 +4106,9 @@
               <caom2:name>50</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-af15-647d2464f07f" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:f493041db9cd8a6e301ec6213f0878e9" caom2:accMetaChecksum="md5:671aedbb391c969f0df2ff2c149c9e8a" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -4242,10 +4196,9 @@
               <caom2:name>51</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-8de1-35b45da2856a" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:8e6b962b94331967712dc2912501a34e" caom2:accMetaChecksum="md5:9d06da91c5c03e58f80645426fb07b2f" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -4333,10 +4286,9 @@
               <caom2:name>52</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-a991-078494ee6a49" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:62edc68bf7a349a7847a3e2c188c80cd" caom2:accMetaChecksum="md5:df12f84cd0800e9d27e4f2eb88774d87" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -4424,10 +4376,9 @@
               <caom2:name>53</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-a519-7530e9316e01" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:795e8a5c61aa31ba692d2dacb5d960d4" caom2:accMetaChecksum="md5:7605bddbfa9291c75f9e9fc6c4bac30a" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -4515,10 +4466,9 @@
               <caom2:name>54</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-896d-5dc25a12616d" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:ae0a8b302f83aa695e3cd82b90bb24db" caom2:accMetaChecksum="md5:be727cb30c5ec09681e8ea5971217462" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -4606,10 +4556,9 @@
               <caom2:name>55</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-a038-e95749eb59af" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:d07671d881faa3e1499f94204a1e7db1" caom2:accMetaChecksum="md5:01dcd2e40dde0f605dd993d0ca890d28" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -4697,10 +4646,9 @@
               <caom2:name>56</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-a1eb-d0d7982fda07" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:9bc98fd5347da63cd201e9e95ec9dc72" caom2:accMetaChecksum="md5:4433fac0eea69d4c8b83c48ad785c332" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -4788,10 +4736,9 @@
               <caom2:name>57</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-8931-cf790fb37abe" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:76bfa1b85d24f086cc8aea710ae96f7a" caom2:accMetaChecksum="md5:4fac99f039b36e2c51d8276cc3e9f194" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -4879,10 +4826,9 @@
               <caom2:name>58</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-a223-08eb45923d3c" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:24847c63f3ecd6fe99a86960990f5b00" caom2:accMetaChecksum="md5:d9e98ab60ea489215a7f52298eb5bb54" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -4970,10 +4916,9 @@
               <caom2:name>59</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-bc57-0262d8286275" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:bd127873cc408dcc3d2c9c8334c1c696" caom2:accMetaChecksum="md5:345c4c906c5be606544953e8079394de" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -5061,10 +5006,9 @@
               <caom2:name>6</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-9626-55d90a26663d" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:6c94799c7195b7ee10fbc430e0debea2" caom2:accMetaChecksum="md5:4435e5c6cb9f420ddc17bf413ef79dc9" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -5152,10 +5096,9 @@
               <caom2:name>60</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-9ff8-4c1a6113fc8a" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:3deb75ce14dfc8e242d2bc7fc0243a06" caom2:accMetaChecksum="md5:8240043081c8c82ab0731f49f7f9f6a7" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -5243,10 +5186,9 @@
               <caom2:name>61</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-b6cd-d32b7126adaa" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:6d586169d7f13477fb88e0c77a949e4d" caom2:accMetaChecksum="md5:94b601bfd1bf56059ae4d88b8c25e485" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -5334,10 +5276,9 @@
               <caom2:name>62</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-8ca2-dfe42d033352" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:6f1e548cc1d352816f46e03f9d1d60f3" caom2:accMetaChecksum="md5:cb2f2bedd8f35c7ecdaed5b8a19824e1" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -5425,10 +5366,9 @@
               <caom2:name>63</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-bbb8-8310f50564d6" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:0c305f1ebe7a4893ddd824ea6956be36" caom2:accMetaChecksum="md5:df5021babebe9ff602b97d8a26b29faf" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -5516,10 +5456,9 @@
               <caom2:name>64</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-b402-fb732260b7c1" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:0057f285710555eef8b6e93cbef50a54" caom2:accMetaChecksum="md5:c22c7f5bcc48ec7dc26d35db16def79c" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -5607,10 +5546,9 @@
               <caom2:name>65</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-a9c3-19fa3f5cd879" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:2c759eb2b2161ecfbdcf534c54629537" caom2:accMetaChecksum="md5:f86784110fe694d695b24d9cbba4c13c" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -5698,10 +5636,9 @@
               <caom2:name>66</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-b741-e13e88752202" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:f2565a170e10f8e085af0502e774f055" caom2:accMetaChecksum="md5:1778c6cf9de372db9156f6b1ba32188f" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -5789,10 +5726,9 @@
               <caom2:name>67</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-b70b-905ac936ee22" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:0079da7efe878514fce563d07129690a" caom2:accMetaChecksum="md5:88bad0a944594c6480b0d30dd5d0f197" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -5880,10 +5816,9 @@
               <caom2:name>68</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-8941-06a6adf51085" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:9818a1145d210a2384369a4320faffa2" caom2:accMetaChecksum="md5:12d786b6212afc1c1f0c8e2fabb9322e" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -5971,10 +5906,9 @@
               <caom2:name>69</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-8cf1-53624a9e4d08" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:8cd78130787943c3f12ae06d1b01ae0a" caom2:accMetaChecksum="md5:ecca4faf2a907d0cb0324cb20f9df491" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -6062,10 +5996,9 @@
               <caom2:name>7</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-948e-8e5fd5ac1837" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:a3160fb8192d0e2d90bff83ab13b3bdd" caom2:accMetaChecksum="md5:68017b24579cdb2f4e31a2863b6dc890" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -6153,10 +6086,9 @@
               <caom2:name>70</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-89d9-a2d56267de0e" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:ccb507f7615387bb55c71321c4ad6c00" caom2:accMetaChecksum="md5:8118ce7a00da236708d13688e7aa8c9a" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -6244,10 +6176,9 @@
               <caom2:name>71</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-82e8-119b6b5bc933" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:70213f6d87f8142d03c09d907ef14c74" caom2:accMetaChecksum="md5:4521e1427209f7ab3957f27eb4564957" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -6335,10 +6266,9 @@
               <caom2:name>72</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-a8df-4dab2c088176" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:b147118655b3dd6e2a4e15f0594fd870" caom2:accMetaChecksum="md5:d073ee6fddc286324ad9b538ecddd483" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -6426,10 +6356,9 @@
               <caom2:name>73</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-a16d-b8b9f3d1c6f2" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:a70393268d67bb7d87a8912fb576f850" caom2:accMetaChecksum="md5:91622899765cecd04bc006eaaee13bba" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -6517,10 +6446,9 @@
               <caom2:name>74</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-bbdb-11dff85524bb" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:94893b6117c99b01f1514d622a8bf3c8" caom2:accMetaChecksum="md5:6a7b2efbd89043c6071b56edae119849" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -6608,10 +6536,9 @@
               <caom2:name>75</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-8644-4a8496223e20" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:f68b848b7fde1825f5b6c271a0495715" caom2:accMetaChecksum="md5:871c93d2ed7c5fda48f43aadc9613d7b" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -6699,10 +6626,9 @@
               <caom2:name>76</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-aeb2-1d36aa46ebdd" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:221631edb358b525b57fde78303c8e12" caom2:accMetaChecksum="md5:5c41cb8d4822e31e87bab081ee9dac03" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -6790,10 +6716,9 @@
               <caom2:name>77</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-bc16-ea3101f03562" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:172862ef338074f8c103615ffbed64cf" caom2:accMetaChecksum="md5:18379e0073d1f6aea8498836c7e74c16" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -6881,10 +6806,9 @@
               <caom2:name>78</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-9207-a76cfd3c353f" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:e2cdb9aaf2d7dd48aba039606a8ab103" caom2:accMetaChecksum="md5:df8fc59f7874a88ddb571eb6e02d4567" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -6972,10 +6896,9 @@
               <caom2:name>79</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-b73f-bf4a257bb8f9" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:41ab994858a36551eb204be3188f9255" caom2:accMetaChecksum="md5:a13cb0eb9d0f82e84844e8010227d4ea" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -7063,10 +6986,9 @@
               <caom2:name>8</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-bd4f-503cb1dd2bfa" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:66dea5e992a688ebe22099ea3d2d4001" caom2:accMetaChecksum="md5:bbf3013d3271bff05a8695605eb56530" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -7154,10 +7076,9 @@
               <caom2:name>80</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-9b44-88908b3cf293" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:be4e596c779be7e0a7a79c50204e0cd4" caom2:accMetaChecksum="md5:dfa510e5d7c52bbb222371e0284336b8" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -7245,10 +7166,9 @@
               <caom2:name>81</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-9882-648e08c158ce" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:ce1a1f0042f7d098a212883dbe890440" caom2:accMetaChecksum="md5:91506f81f7bcf4cebc280e704171e36b" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -7336,10 +7256,9 @@
               <caom2:name>82</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-b876-f63b1474555b" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:e0e8484907de673a10e9a84f047641d8" caom2:accMetaChecksum="md5:e51370045c266baa5e618c052133bc54" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -7427,10 +7346,9 @@
               <caom2:name>83</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-9da3-f51d004f6edd" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:c768a327359d271a584372c2791f0149" caom2:accMetaChecksum="md5:4d67c502de319a0793b66603f787c5b6" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -7518,10 +7436,9 @@
               <caom2:name>84</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-ac12-f5faaf72179b" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:d264de4c8d48eefed553225d637882b8" caom2:accMetaChecksum="md5:a188e494dcf99f9ea1c385d539034a60" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
@@ -7609,10 +7526,9 @@
               <caom2:name>9</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-a662-918750a5cda4" caom2:lastModified="2019-07-05T10:52:54.627" caom2:maxLastModified="2019-07-05T10:52:54.627" caom2:metaChecksum="md5:09a2f348b84eb2be2468382ee6f473f5" caom2:accMetaChecksum="md5:90de5f12e8f09b05d12ebe09219774a7" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>4</caom2:naxis>
+                  <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>

@@ -11,7 +11,6 @@ RUN pip install bs4 \
     caom2 \
     caom2repo \
     caom2utils \
-    ftputil \
     importlib-metadata \
     matplotlib \
     pillow \
@@ -31,8 +30,8 @@ ARG OPENCADC_REPO=opencadc
 ARG PIPE_BRANCH=master
 ARG PIPE_REPO=opencadc
 
-RUN pip install git+https://github.com/${PIPE_REPO}/caom2pipe@${PIPE_BRANCH}#egg=caom2pipe
+RUN pip install git+https://github.com/${OPENCADC_REPO}/caom2pipe@${OPENCADC_BRANCH}#egg=caom2pipe
 
-RUN pip install git+https://github.com/${OPENCADC_REPO}/gem2caom2@${OPENCADC_BRANCH}#egg=gem2caom2
+RUN pip install git+https://github.com/${PIPE_REPO}/gem2caom2@${PIPE_BRANCH}#egg=gem2caom2
 
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]

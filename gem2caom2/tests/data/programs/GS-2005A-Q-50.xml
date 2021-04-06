@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+
+<title>Detail for Program: GS-2005A-Q-50</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-2005A-Q-50</h1>
+
+<table>
+ <tr><td>Title:<td>The peculiar behaviour of the dust emission and absorption in AGN</tr>
+ <tr><td>PI:<td>Stuart Lumsden</tr>
+ <tr><td>Co-I(s):<td> Dave Alexander</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+Dust obscuration is the primary reason that we cannot see the broad line region in Seyfert 2 galaxies.
+That most luminous Seyfert 2s do have hidden broad line regions is clear from existing spectropolarimetry,
+and that dust is the reason we cannot see this broad lie region is equally evident from hard x-ray 
+spectroscopy.  By contrast Seyfert 1s show little if any obscuration.  In this sense orientation dependent
+unification for the different classes of Seyfert galaxies is clearly successful.
+
+Depsite this, there are several key problems with the unified model.  The subject of this proposal 
+regards the nature of the obscuring dust itself.  We naively expect the typically highly obscured Seyfert
+2s to show optically thick dust emission, and hence strong absorption in the 9.7 micron silicate feature.
+By contrast we would expect the optically thin emission in Seyert 1s to give rise to silicate emission.
+Neither of these are unambiguously true.  Most Seyfert 1s show flat featureless 10 micron spectra,
+and some highly obscured Seyfert 2s show very little absorption.  In addition, we have shown that 
+the observed 25micron luminosity of Seyfert galaxies is a remarkably good indicator of the underlying 
+AGN luminosity, seemingly regardless of the level of obscuraton present.
+
+More recent models may help to explain this behaviour but have never been tested fully.  By obtaining
+mid IR imaging and spectroscopy of a relatively nearby sample of AGN spanning a range of luminosty
+and obscuration we can test these models fully, and hence increase out understanding considerably 
+of orientation dependent unification in AGN.
+
+</div>
+
+
+<h2>Publications using this program's data</h2>
+<ul>
+<li>
+<a href="/searchform/publication=2013A&A...553A..35G" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2013A&A...553A..35G/abstract" target="_blank">[ADS]</a> Dust in active galactic nuclei. Mid-infrared T-ReCS/Gemini spectra using the new RedCan pipeline
+<li>
+<a href="/searchform/publication=2014ApJ...780...86E" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2014ApJ...780...86E/abstract" target="_blank">[ADS]</a> Nuclear Star Formation Activity and Black Hole Accretion in Nearby Seyfert Galaxies
+<li>
+<a href="/searchform/publication=2014MNRAS.439.1648A" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2014MNRAS.439.1648A/abstract" target="_blank">[ADS]</a> The subarcsecond mid-infrared view of local active galactic nuclei - I. The N- and Q-band imaging atlas
+<li>
+<a href="/searchform/publication=2015ApJ...803...57I" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2015ApJ...803...57I/abstract" target="_blank">[ADS]</a> The Differences in the Torus Geometry between Hidden and Non-hidden Broad Line Active Galactic Nuclei
+<li>
+<a href="/searchform/publication=2015A&A...578A..74G" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2015A&A...578A..74G/abstract" target="_blank">[ADS]</a> Nuclear obscuration in LINERs. Clues from Spitzer/IRS spectra on the Compton thickness and the existence of the dusty torus
+<li>
+<a href="/searchform/publication=2018ApJ...859..124E" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2018ApJ...859..124E/abstract" target="_blank">[ADS]</a> Circumnuclear Star Formation and AGN Activity: Clues from Surface Brightness Radial Profile of PAHs and [{\rm{S}}\,{\rm{IV}}]
+<li>
+<a href="/searchform/publication=2017MNRAS.470.2578G" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2017MNRAS.470.2578G/abstract" target="_blank">[ADS]</a> A mid-infrared statistical investigation of clumpy torus model predictions
+<li>
+<a href="/searchform/publication=2019MNRAS.488L..75D" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2019MNRAS.488L..75D/abstract" target="_blank">[ADS]</a> Evidence for the absorption of crystalline silicates at 11.1 μm in the spectra of the nucleus of the Circinus galaxy
+<li>
+<a href="/searchform/publication=2020ApJ...905...29E" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2020ApJ...905...29E/abstract" target="_blank">[ADS]</a> Active Galactic Nucleus Ghosts: A Systematic Search for Faded Nuclei
+<li>
+<a href="/searchform/publication=2020MNRAS.499.5107R" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2020MNRAS.499.5107R/abstract" target="_blank">[ADS]</a> On the origin of X-ray oxygen emission lines in obscured AGN 
+</ul>
+
+
+</body>
+</html>

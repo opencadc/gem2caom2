@@ -89,7 +89,7 @@ def test_builder(obs_metadata_mock, tap_client_mock):
     test_config.working_directory = '/test_files'
     test_config.proxy_fqn = os.path.join(gem_mocks.TEST_DATA_DIR,
                                          'test_proxy.pem')
-    em.init_global(incremental=True, config=test_config)
+    em.init_global(config=test_config)
     test_subject = builder.GemObsIDBuilder(test_config)
 
     test_entry = 'S20050825S0143.fits'
