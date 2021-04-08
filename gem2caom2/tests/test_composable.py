@@ -104,8 +104,8 @@ def write_gemini_data_file():
 def test_run(inst_mock, get_obs_mock, client_mock, run_mock):
     inst_mock.return_value = external_metadata.Inst.CIRPASS
     get_obs_mock.side_effect = gem_mocks.mock_get_obs_metadata
-    test_obs_id = 'GS-2004A-Q-6-27-0255'
-    test_f_id = '2004may19_0255'
+    test_obs_id = 'GS-CAL20141226-7-029'
+    test_f_id = 'S20141226S0206'
     test_f_name = f'{test_f_id}.fits'
     _write_todo(test_f_name)
 
@@ -140,8 +140,8 @@ def test_run(inst_mock, get_obs_mock, client_mock, run_mock):
 def test_run_errors(inst_mock, get_obs_mock, client_mock, run_mock):
     inst_mock.return_value = external_metadata.Inst.GMOSS
     get_obs_mock.side_effect = gem_mocks.mock_get_obs_metadata
-    test_obs_id = 'TX20131117_flt.3002'
-    test_f_id = 'TX20131117_flt.3002'
+    test_obs_id = 'GS-CAL20141226-7-029'
+    test_f_id = 'S20141226S0206'
     test_f_name = f'{test_f_id}.fits'
     _write_todo(test_f_name)
     getcwd_orig = os.getcwd
@@ -467,6 +467,7 @@ def _write_rejected(test_obs_id):
 
 
 def _write_cert():
-    if not os.path.exists('/usr/src/app/cadcproxy.pem'):
-        with open('/usr/src/app/cadcproxy.pem', 'w') as f:
+    fqn = '/usr/src/app/gem2caom2/gem2caom2/tests/data/cadcproxy.pem'
+    if not os.path.exists(fqn):
+        with open(fqn, 'w') as f:
             f.write('cadc proxy content')
