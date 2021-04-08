@@ -84,10 +84,11 @@ from caom2pipe import execute_composable as ec
 from caom2pipe import manage_composable as mc
 from gem2caom2 import composable, main_app, gem_name, external_metadata
 
-STATE_FILE = '/usr/src/app/state.yml'
-TODO_FILE = '/usr/src/app/todo.txt'
-REJECTED_FILE = '/usr/src/app/logs/rejected.yml'
-PROGRESS_FILE = '/usr/src/app/logs/progress.txt'
+
+STATE_FILE = f'{gem_mocks.TEST_DATA_DIR}/state.yml'
+TODO_FILE = f'{gem_mocks.TEST_DATA_DIR}/todo.txt'
+REJECTED_FILE = f'{gem_mocks.TEST_DATA_DIR}/logs/rejected.yml'
+PROGRESS_FILE = f'{gem_mocks.TEST_DATA_DIR}/logs/progress.txt'
 PUBLIC_TEST_JSON = f'{gem_mocks.TEST_DATA_DIR}/json/GN-2019B-ENG-1-160-008.json'
 
 
@@ -347,8 +348,8 @@ def test_run_by_incremental2(client_mock, query_mock, read_mock,
 def test_run_by_public(ds_mock, client_mock, tap_mock, exec_mock):
     exec_mock.side_effect = Mock(return_value=0)
     tap_mock.side_effect = gem_mocks.mock_query_tap
-    expected_fqn = f'/usr/src/app/logs/{gem_mocks.TEST_BUILDER_OBS_ID}' \
-                   f'.expected.xml'
+    expected_fqn = f'{gem_mocks.TEST_DATA_DIR}/logs/' \
+                   f'{gem_mocks.TEST_BUILDER_OBS_ID}.expected.xml'
     if not os.path.exists(expected_fqn):
         shutil.copy(
             f'{gem_mocks.TEST_DATA_DIR}/expected.xml', expected_fqn)
@@ -467,7 +468,7 @@ def _write_rejected(test_obs_id):
 
 
 def _write_cert():
-    fqn = '/usr/src/app/gem2caom2/gem2caom2/tests/data/cadcproxy.pem'
+    fqn = f'{gem_mocks.TEST_DATA_DIR}/cadcproxy.pem'
     if not os.path.exists(fqn):
         with open(fqn, 'w') as f:
             f.write('cadc proxy content')
