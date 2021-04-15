@@ -539,15 +539,17 @@ class CachingObsFileRelationship(GemObsFileRelationship):
         return repaired_obs_id
 
 
-def get_obs_id_from_cadc(file_id, tap_client, update_cache=None):
+def get_obs_id_from_cadc(file_id, tap_client, collection='GEMINI', 
+                         update_cache=None):
     logging.debug(f'Begin get_obs_id_from_cadc for {file_id}')
     file_name = gem_name.GemName.get_file_name_from(file_id)
     query_string = f"""
-    SELECT O.observationID, A.lastModified 
+    SELECT O.observationID, A.lastModified
     FROM caom2.Observation AS O
     JOIN caom2.Plane AS P on P.obsID = O.obsID
     JOIN caom2.Artifact AS A on A.planeID = P.planeID
-    WHERE A.uri LIKE '%{file_name}'
+    WHERE A.uri LIKE '%{file_name}' 
+    AND O.collection = '{collection}'
     """
     table = mc.query_tap_client(query_string, tap_client)
     result = None
