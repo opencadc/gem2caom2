@@ -1,0 +1,112 @@
+<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="f109bfc7-42ad-4273-9817-074c4ba86e03" caom2:lastModified="2019-08-14T00:05:42.157" caom2:maxLastModified="2019-11-08T23:29:43.518" caom2:metaChecksum="md5:8f9826fdf1c6724571ef2cfef0d905cc" caom2:accMetaChecksum="md5:e7b0057d1ca8154868f114784c56ddd3">
+  <caom2:collection>GEMINI</caom2:collection>
+  <caom2:observationID>GS-2005A-Q-50-55-003</caom2:observationID>
+  <caom2:metaRelease>2005-07-18T08:04:35.700</caom2:metaRelease>
+  <caom2:algorithm>
+    <caom2:name>exposure</caom2:name>
+  </caom2:algorithm>
+  <caom2:type>OBJECT</caom2:type>
+  <caom2:intent>science</caom2:intent>
+  <caom2:proposal>
+    <caom2:id>GS-2005A-Q-50</caom2:id>
+    <caom2:pi>Stuart Lumsden</caom2:pi>
+    <caom2:title>The peculiar behaviour of the dust emission and absorption in AGN</caom2:title>
+  </caom2:proposal>
+  <caom2:target>
+    <caom2:name>NGC7582</caom2:name>
+    <caom2:type>field</caom2:type>
+  </caom2:target>
+  <caom2:telescope>
+    <caom2:name>Gemini-South</caom2:name>
+    <caom2:geoLocationX>1820184.0557473274</caom2:geoLocationX>
+    <caom2:geoLocationY>-5208320.066618682</caom2:geoLocationY>
+    <caom2:geoLocationZ>-3194829.197152751</caom2:geoLocationZ>
+  </caom2:telescope>
+  <caom2:instrument>
+    <caom2:name>TReCS</caom2:name>
+  </caom2:instrument>
+  <caom2:planes>
+    <caom2:plane caom2:id="d1ad949c-8899-4418-b150-5558a6900051" caom2:lastModified="2019-08-14T00:05:42.157" caom2:maxLastModified="2019-11-08T23:29:43.518" caom2:metaChecksum="md5:5e29baff740f1c7b04d5108f173e0768" caom2:accMetaChecksum="md5:93b1d437754165d86f3845788a021a0e">
+      <caom2:productID>S20050718S0172</caom2:productID>
+      <caom2:metaRelease>2005-07-18T08:04:35.700</caom2:metaRelease>
+      <caom2:dataRelease>2007-01-18T00:00:00.000</caom2:dataRelease>
+      <caom2:dataProductType>image</caom2:dataProductType>
+      <caom2:calibrationLevel>1</caom2:calibrationLevel>
+      <caom2:provenance>
+        <caom2:name>Gemini Observatory Data</caom2:name>
+        <caom2:project>Gemini Archive</caom2:project>
+        <caom2:producer>NOAO-IRAF FITS Image Kernel July 2003</caom2:producer>
+        <caom2:reference>http://archive.gemini.edu/searchform/GS-2005A-Q-50-55-003</caom2:reference>
+      </caom2:provenance>
+      <caom2:artifacts>
+        <caom2:artifact caom2:id="494c242f-75e2-47ad-beef-22e058ea0399" caom2:lastModified="2019-08-14T00:05:42.157" caom2:maxLastModified="2019-11-08T23:29:43.518" caom2:metaChecksum="md5:beb5bd652491f6248e3e1bbf5a97f6e8" caom2:accMetaChecksum="md5:89d014dafabd8011a0f09723d15f8ac1">
+          <caom2:uri>gemini:GEM/S20050718S0172.fits</caom2:uri>
+          <caom2:productType>science</caom2:productType>
+          <caom2:releaseType>data</caom2:releaseType>
+          <caom2:contentType>application/fits</caom2:contentType>
+          <caom2:contentLength>5549760</caom2:contentLength>
+          <caom2:contentChecksum>md5:456c8bbac7451a23c09b0732fb938641</caom2:contentChecksum>
+          <caom2:parts>
+            <caom2:part caom2:id="7efbb62a-33e9-4fd7-8f46-95af37871849" caom2:lastModified="2019-08-14T00:05:42.157" caom2:maxLastModified="2019-08-14T00:05:42.157" caom2:metaChecksum="md5:c4d92cd68c646ced765e43fdc089bfad" caom2:accMetaChecksum="md5:6e8e829cb07314a6deea9c305383e328">
+              <caom2:name>0</caom2:name>
+              <caom2:chunks/>
+            </caom2:part>
+            <caom2:part caom2:id="d632fb3e-70e9-4b76-91d3-a40801dad2e2" caom2:lastModified="2019-08-14T00:05:42.157" caom2:maxLastModified="2019-08-14T00:05:42.157" caom2:metaChecksum="md5:36247349e0184a4babe624faed663819" caom2:accMetaChecksum="md5:858aba6298ae32f7d358b4dadd7dbdd8">
+              <caom2:name>1</caom2:name>
+              <caom2:chunks>
+                <caom2:chunk caom2:id="37e1214d-ce49-4ada-b873-90122b61df42" caom2:lastModified="2019-08-14T00:05:42.157" caom2:maxLastModified="2019-08-14T00:05:42.157" caom2:metaChecksum="md5:0feced9fd91bfbc77b134084b13edda6" caom2:accMetaChecksum="md5:8b8ad96a5c879fa6d5c1e97538e7bd7e">
+                  <caom2:energy>
+                    <caom2:axis>
+                      <caom2:axis>
+                        <caom2:ctype>WAVE</caom2:ctype>
+                        <caom2:cunit>um</caom2:cunit>
+                      </caom2:axis>
+                      <caom2:range>
+                        <caom2:start>
+                          <caom2:pix>0.5</caom2:pix>
+                          <caom2:val>7.707271291600001</caom2:val>
+                        </caom2:start>
+                        <caom2:end>
+                          <caom2:pix>1.5</caom2:pix>
+                          <caom2:val>12.944688</caom2:val>
+                        </caom2:end>
+                      </caom2:range>
+                    </caom2:axis>
+                    <caom2:specsys>TOPOCENT</caom2:specsys>
+                    <caom2:ssysobs>TOPOCENT</caom2:ssysobs>
+                    <caom2:ssyssrc>TOPOCENT</caom2:ssyssrc>
+                    <caom2:bandpassName>N</caom2:bandpassName>
+                    <caom2:resolvingPower>1.9715787802866134</caom2:resolvingPower>
+                  </caom2:energy>
+                  <caom2:time>
+                    <caom2:axis>
+                      <caom2:axis>
+                        <caom2:ctype>TIME</caom2:ctype>
+                        <caom2:cunit>d</caom2:cunit>
+                      </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
+                      <caom2:function>
+                        <caom2:naxis>1</caom2:naxis>
+                        <caom2:delta>0.000377063657407407</caom2:delta>
+                        <caom2:refCoord>
+                          <caom2:pix>0.5</caom2:pix>
+                          <caom2:val>53569.33652430555</caom2:val>
+                        </caom2:refCoord>
+                      </caom2:function>
+                    </caom2:axis>
+                    <caom2:timesys>UTC</caom2:timesys>
+                    <caom2:exposure>32.5783</caom2:exposure>
+                    <caom2:resolution>32.5783</caom2:resolution>
+                  </caom2:time>
+                </caom2:chunk>
+              </caom2:chunks>
+            </caom2:part>
+          </caom2:parts>
+        </caom2:artifact>
+      </caom2:artifacts>
+    </caom2:plane>
+  </caom2:planes>
+</caom2:Observation>

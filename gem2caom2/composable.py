@@ -77,7 +77,7 @@ from caom2pipe import name_builder_composable as nbc
 from caom2pipe import run_composable as rc
 from gem2caom2 import main_app, preview_augmentation, external_metadata
 from gem2caom2 import pull_augmentation, gem_name, data_source, builder
-from gem2caom2 import pull_v_augmentation
+from gem2caom2 import pull_v_augmentation, preview_v_augmentation
 
 DATA_VISITORS = []
 
@@ -85,7 +85,7 @@ DATA_VISITORS = []
 def _define_meta_visitors(config):
     meta_visitors = [preview_augmentation, pull_augmentation]
     if config.features.supports_latest_client:
-        meta_visitors = [preview_augmentation, pull_v_augmentation]
+        meta_visitors = [preview_v_augmentation, pull_v_augmentation]
     return meta_visitors
 
 
@@ -96,7 +96,7 @@ def _run():
     """
     config = mc.Config()
     config.get_executors()
-    external_metadata.init_global(incremental=False, config=config)
+    external_metadata.init_global(config=config)
     name_builder = builder.GemObsIDBuilder(config)
     meta_visitors = _define_meta_visitors(config)
     return rc.run_by_todo(config, name_builder, chooser=None,
@@ -136,7 +136,7 @@ def _run_single():
         storage_name = gem_name.GemName(file_name=sys.argv[1])
     else:
         raise mc.CadcException('No code to handle running GEM by obs id.')
-    external_metadata.init_global(incremental=False, config=config)
+    external_metadata.init_global(config=config)
     meta_visitors = _define_meta_visitors(config)
     return rc.run_single(config, storage_name, main_app.APPLICATION,
                          meta_visitors, DATA_VISITORS)
@@ -171,7 +171,7 @@ def _run_by_public():
     """
     config = mc.Config()
     config.get_executors()
-    external_metadata.init_global(incremental=True, config=config)
+    external_metadata.init_global(config=config)
     name_builder = nbc.FileNameBuilder(gem_name.GemName)
     incremental_source = data_source.PublicIncremental(config)
     meta_visitors = _define_meta_visitors(config)
@@ -205,7 +205,7 @@ def _run_by_incremental():
     """
     config = mc.Config()
     config.get_executors()
-    external_metadata.init_global(incremental=True, config=config)
+    external_metadata.init_global(config=config)
     name_builder = nbc.FileNameBuilder(gem_name.GemName)
     incremental_source = data_source.FileListIncrementalSource(config)
     meta_visitors = _define_meta_visitors(config)

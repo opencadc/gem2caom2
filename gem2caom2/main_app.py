@@ -511,9 +511,11 @@ def get_obs_intent(header):
     :return: The Observation intent, or None if not found.
     """
     result = ObservationIntentType.CALIBRATION
+    # DB 01-04-21
+    # PINHOLE is CALIBRATION
     cal_values = ['GCALflat', 'Bias', 'BIAS', 'Twilight', 'Ar', 'FLAT',
                   'flat', 'ARC', 'Domeflat', 'DARK', 'dark', 'gcal', 'ZERO',
-                  'SLIT', 'slit']
+                  'SLIT', 'slit', 'PINHOLE']
     dl = header.get('DATALAB')
     lookup = _get_obs_class(header)
     logging.debug('observation_class is {} for {}'.format(lookup, dl))
@@ -1278,7 +1280,7 @@ def update(observation, **kwargs):
                                 _update_chunk_energy_gnirs(
                                     c, plane.data_product_type,
                                     observation.observation_id,
-                                    filter_name)
+                                    filter_name, headers[0])
                             elif instrument is em.Inst.PHOENIX:
                                 _update_chunk_energy_phoenix(
                                     c, plane.data_product_type,
@@ -1453,6 +1455,16 @@ def update(observation, **kwargs):
                                 c.naxis is not None and c.naxis == 6):
                             c.naxis = 2
                             c.time_axis = None
+                        if (instrument in [em.Inst.MICHELLE, em.Inst.TRECS]
+                                and c.naxis == 4):
+                            if c.position is None:
+                                c.naxis = None
+                                if c.time_axis is not None:
+                                    c.time_axis = None
+                            else:
+                                if c.naxis == 4:
+                                    c.naxis = 2
+                                    c.time_axis = None
 
                 if isinstance(observation, DerivedObservation):
                     cc.update_plane_provenance(plane, headers[1:], 'IMCMB',
@@ -2294,6 +2306,9 @@ def _update_chunk_energy_nifs(chunk, data_product_type, obs_id, filter_name):
                                     nifs_lookup[grating][filter_name][1])
                     fm.central_wl = em.om.get('central_wavelength')
                     fm.resolving_power = nifs_lookup[grating][filter_name][3]
+                    if fm.central_wl is None:
+                        logging.warning(
+                            f'JSON central_wavelength is None for {obs_id}.')
                 else:
                     logging.info(
                         'NIFS: No energy. filter_name {} with disperser {}'
@@ -2314,7 +2329,7 @@ def _update_chunk_energy_nifs(chunk, data_product_type, obs_id, filter_name):
                 'NIFS: DataProductType {} for {}'.format(
                     data_product_type, obs_id))
 
-    if fm is None:
+    if fm is None or fm.central_wl is None:
         cc.reset_energy(chunk)
     else:
         _build_chunk_energy(chunk, filter_name, fm)
@@ -2322,7 +2337,8 @@ def _update_chunk_energy_nifs(chunk, data_product_type, obs_id, filter_name):
     logging.debug('End _update_chunk_energy_nifs')
 
 
-def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name):
+def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name,
+                               header):
     """GNIRS-specific chunk-level Energy WCS construction."""
     logging.debug('Begin _update_chunk_energy_gnirs')
     mc.check_param(chunk, Chunk)
@@ -2466,6 +2482,15 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name):
     # bandpass:  ‘PAH’: [3.270, 3.320, 570, 1800].  These are likely
     # mis-identified acquisition observations rather than science.
 
+    # DB 31-03-21
+    # It looks like Gemini changed FITS header content for gratings, etc. at
+    # some point in time.  There are two prisms used in cross-dispersed mode
+    # and these are identified by SXD and LXD but the leading letter.   If
+    # you find an “&XD” entry in the JSON disperser value, then look at the
+    # value of the FITS header PRISM = 'SXD_G5509' to find the letter that
+    # should be in front of the ‘XD’ in the JSON result? It might not be the
+    # first letter in the value: new files have PRISM   = 'SB+SXD_G5536'
+
     gnirs_lookup = {'10': {'X': [1.03, 1.17, 570, 2100],
                            'J': [1.17, 1.37, 570, 1600],
                            'H': [1.47, 1.80, 570, 1700],
@@ -2594,7 +2619,13 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name):
                             # we can’t identify in raw image.
 
                             lookup = None
-                            coverage = disperser[-3:]
+                            if '&XD' in disperser:
+                                prism = header.get('PRISM')
+                                cd_mode = prism[prism.index('XD') - 1]
+                                coverage = '{}XD'.format(cd_mode)
+                            else:
+                                coverage = disperser[-3:]
+
                             if camera.startswith('Short'):
                                 lookup = '{}+{}'.format('SB', coverage)
                             elif camera.startswith('Long'):
@@ -3708,10 +3739,11 @@ def _update_chunk_position_trecs(chunk, headers, extension, obs_id):
         chunk = Chunk()
 
     wcs_parser.augment_position(chunk)
-    chunk.position_axis_1 = 1
-    chunk.position_axis_2 = 2
-    chunk.position.coordsys = headers[0].get('FRAME')
-    chunk.position.equinox = mc.to_float(headers[0].get('EQUINOX'))
+    if chunk.position is not None:
+        chunk.position_axis_1 = 1
+        chunk.position_axis_2 = 2
+        chunk.position.coordsys = headers[0].get('FRAME')
+        chunk.position.equinox = mc.to_float(headers[0].get('EQUINOX'))
 
 
 def _update_chunk_position(chunk, header, instrument, extension, obs_id,

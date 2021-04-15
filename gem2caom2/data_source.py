@@ -165,9 +165,8 @@ class FileListIncrementalSource(dsc.DataSource):
             self._max_records_encountered = True
 
         entries = deque()
-        for key, value in temp.items():
-            entries.append(dsc.StateRunnerMeta(
-                value, datetime.fromtimestamp(key).isoformat()))
+        for timestamp, f_name in temp.items():
+            entries.append(dsc.StateRunnerMeta(f_name, timestamp))
         self._logger.debug('End get_time_box_work.')
         return entries
 
@@ -221,5 +220,6 @@ class PublicIncremental(dsc.QueryTimeBoxDataSource):
         entries = deque()
         for row in result:
             entries.append(dsc.StateRunnerMeta(
-                mc.CaomName(row['uri']).file_name, row['lastModified']))
+                mc.CaomName(row['uri']).file_name,
+                mc.make_time(row['lastModified']).timestamp()))
         return entries

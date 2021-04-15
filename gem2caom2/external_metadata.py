@@ -121,12 +121,9 @@ def set_ofr(value):
     gofr = value
 
 
-def init_global(incremental, config):
+def init_global(config):
     global om
-    if incremental:
-        om = gom.GeminiObsMetadataIncremental()
-    else:
-        om = gom.GeminiObsMetadata()
+    om = gom.GeminiObsMetadata()
     get_gofr(config)
     global gofr
     if gofr.tap_client is None and config.is_connected:
@@ -192,6 +189,9 @@ def get_obs_metadata(file_id):
             raise mc.CadcException(
                 f'Unable to download Gemini observation metadata from '
                 f'{gemini_url} because {str(e)}')
+        if len(metadata) == 0:
+            raise mc.CadcException(f'Could not find JSON record for {file_id} '
+                                   f'at archive.gemini.edu.')
         om.add(metadata, file_id)
     logging.debug('End get_obs_metadata for {}'.format(file_id))
 
@@ -348,7 +348,8 @@ def _repair_filter_name_for_svo(instrument, filter_names):
                            'Nprime': 'nprime',
                            'Qw': 'Qwide',
                            'Qs': 'Qa',
-                           'NeII_ref2': 'NeII_ref'}
+                           'NeII_ref2': 'NeII_ref',
+                           'SIV-10.5um': 'SIV'}
     FILTER_REPAIR_MICHELLE = {'I79B10': 'Si1',
                               'I88B10': 'Si2',
                               'I97B10': 'Si3',
@@ -538,17 +539,17 @@ class CachingObsFileRelationship(GemObsFileRelationship):
         return repaired_obs_id
 
 
-def get_obs_id_from_cadc(file_id, tap_client, update_cache=None):
+def get_obs_id_from_cadc(file_id, tap_client, collection='GEMINI', 
+                         update_cache=None):
     logging.debug(f'Begin get_obs_id_from_cadc for {file_id}')
     file_name = gem_name.GemName.get_file_name_from(file_id)
-    artifact_uri = cc.build_artifact_uri(
-        file_name, gem_name.ARCHIVE, gem_name.SCHEME)
     query_string = f"""
-    SELECT O.observationID, A.lastModified 
+    SELECT O.observationID, A.lastModified
     FROM caom2.Observation AS O
     JOIN caom2.Plane AS P on P.obsID = O.obsID
     JOIN caom2.Artifact AS A on A.planeID = P.planeID
-    WHERE A.uri = '{artifact_uri}'
+    WHERE A.uri LIKE '%{file_name}' 
+    AND O.collection = '{collection}'
     """
     table = mc.query_tap_client(query_string, tap_client)
     result = None
