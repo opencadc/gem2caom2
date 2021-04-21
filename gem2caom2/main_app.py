@@ -1498,6 +1498,7 @@ def update(observation, **kwargs):
         if isinstance(observation, DerivedObservation):
             cc.update_observation_members(observation)
 
+        em.value_repair.repair(observation)
     except Exception as e:
         logging.error('Error {} for {} instrument {}'.format(
             e, observation.observation_id, instrument))
