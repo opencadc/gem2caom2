@@ -106,8 +106,8 @@ def visit(observation, **kwargs):
         for plane in observation.planes.values():
             if (plane.data_release is None or
                     plane.data_release > datetime.utcnow()):
-                logging.info(f'Plane {plane.product_id} is proprietary. No '
-                             f'file access.')
+                logging.error(f'Plane {plane.product_id} is proprietary '
+                              f'until {plane.data_release}. No file access.')
                 continue
 
             for artifact in plane.artifacts.values():

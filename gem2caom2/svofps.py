@@ -195,6 +195,11 @@ class FilterMetadata(object):
         self.resolving_power = None
         self.instrument = instrument
 
+    def __str__(self):
+        return f'central_wl: {self._central_wl}\n' \
+               f'bandpass: {self._bandpass}\n' \
+               f'resolving_power: {self._resolving_power}'
+
     @property
     def central_wl(self):
         """Central wavelength for a filter."""

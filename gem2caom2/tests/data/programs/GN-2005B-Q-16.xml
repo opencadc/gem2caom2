@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+
+<title>Detail for Program: GN-2005B-Q-16</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GN-2005B-Q-16</h1>
+
+<table>
+ <tr><td>Title:<td>Crystalline silicate grains around post-AGB stars</tr>
+ <tr><td>PI:<td>Albert Zijlstra</tr>
+ <tr><td>Co-I(s):<td> Mike Barlow,  Mikako Matsuura,  Tim Gledhill,  Janet Bowey</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+The ISO mission revealed an array of sharp crystalline silicate emission features longwards of 17um in the spectra of many evolved sources. While some of these objects have O-rich exciting stars, as expected, a surprising number have C-rich exciting stars as well as strong PAH-like features shortwards of 14um - these have been dubbed dual-dust chemistry objects. Current interpretations point to binarity as being a key common thread, with previous evolutionary phases having resulted in the creation of compact disks or tori that harbour the cold crystalline silicates.  To confirm this scenario, high spatial resolution spectroscopy in the 10 and 20um region is required. Michelle on Gemini can provide the required angular resolution. We request long-slit spectra and direct images. 
+</div>
+
+
+<h2>Publications using this program's data</h2>
+<ul>
+<li>
+<a href="/searchform/publication=2011MNRAS.417...32L" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2011MNRAS.417...32L/abstract" target="_blank">[ADS]</a> A mid-infrared imaging catalogue of post-asymptotic giant branch stars
+</ul>
+
+
+</body>
+</html>

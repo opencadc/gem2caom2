@@ -1,0 +1,528 @@
+Filename: N20050826S0137.fits.bz2
+
+AstroData Tags: {'MICHELLE', 'GEMINI', 'UNPREPARED', 'NORTH', 'RAW', 'SIDEREAL', 'SPECT', 'LS'}
+
+
+--- PHU ---
+SIMPLE  =                    T / Fits standard                                  
+BITPIX  =                   16 / Bits per pixel                                 
+NAXIS   =                    0 / Number of axes                                 
+EXTEND  =                    T / File may contain extensions                    
+ORIGIN  = 'NOAO-IRAF FITS Image Kernel July 2003' / FITS file originator        
+DATE    = '2005-08-26'         / Date FITS file was generated                   
+IRAF-TLM= '21:45:48 (30/08/2005)' / Time of last modification                   
+COMMENT   FITS (Flexible Image Transport System) format defined in Astronomy and
+COMMENT   Astrophysics Supplement Series v44/p363, v44/p371, v73/p359, v73/p365.
+COMMENT   Contact the NASA Science Office of Standards and Technology for the   
+COMMENT   FITS Definition document #100 and other FITS information.             
+INSTRUME= 'michelle'           / Instrument used to acquire data                
+OBJECT  = 'BD+30 3639'         / Object Name                                    
+OBSTYPE = 'OBJECT  '           / Observation type                               
+OBSCLASS= 'science '           / Observe class                                  
+GEMPRGID= 'GN-2005B-Q-16'      / Gemini programme ID                            
+OBSID   = 'GN-2005B-Q-16-85'   / Observation ID / Data label                    
+DATALAB = 'GN-2005B-Q-16-85-001' / DHS data label                               
+OBSERVER= 'Roth    '           / Observer                                       
+OBSERVAT= 'Gemini-North'       / Name of telescope (Gemini-North|Gemini-South)  
+TELESCOP= 'Gemini-North'       / Gemini-North                                   
+PARALLAX=                   0. / Parallax of Target                             
+RADVEL  =                   0. / Heliocentric Radial Velocity                   
+EPOCH   =                2000. / Epoch for Target coordinates                   
+EQUINOX =                2000. / Equinox of coordinate system                   
+TRKEQUIN=                2000. / Tracking equinox                               
+SSA     = 'Fhima   '           / SSA                                            
+RA      =         293.68846667 / Right Ascension                                
+DEC     =          30.51637222 / Declination of Target                          
+ELEVATIO=     41.1874430555556 / Current Elevation                              
+AZIMUTH =    -66.2395611111111 / Current Azimuth                                
+CRPA    =     89.8226929435723 / Current Cass Rotator Position Angle            
+HA      = '+03:32:42.20'       / Telescope hour angle                           
+LT      = '01:10:22.2'         / Local time at start of observation             
+TRKFRAME= 'FK5     '           / Tracking co-ordinate                           
+DECTRACK=                   0. / Differential tracking rate Dec                 
+TRKEPOCH=         53608.458467 / Differential tracking reference epoch          
+RATRACK =                   0. / Differential tracking rate RA                  
+FRAME   = 'FK5     '           / Target coordinate system                       
+PMDEC   =                   0. / Proper Motion in Declination                   
+PMRA    =                   0. / Proper Motion in RA                            
+WAVELENG=              100000. / Effective Target Wavelength                    
+RAWIQ   = '20-percentile'      / Raw Image Quality                              
+RAWCC   = '50-percentile'      / Raw Cloud Cover                                
+RAWWV   = '50-percentile'      / Raw Water Vapour/Transparency                  
+RAWBG   = '80-percentile'      / Raw Background                                 
+RAWPIREQ= 'YES     '           / PI Requirements Met                            
+RAWGEMQA= 'USABLE  '           / Gemini Quality Assessment                      
+CGUIDMOD= 'Basic   '           / Carousel Mode                                  
+UT      = '11:10:23.2'         / UT at observation start                        
+M2BAFFLE= 'RETRACTED'          / Position of M2 baffle                          
+M2CENBAF= 'OPEN    '           / Position of M2 central hole baffle             
+ST      = '23:07:42.5'         / Sidereal time at the start of the exposure     
+XOFFSET =        4.00297880993 / Telescope offset in x in arcsec                
+YOFFSET =        1.34768410261 / Telescope offset in y in arcsec                
+POFFSET =       -3.98864666709 / Telescope offset in p in arcsec                
+QOFFSET =       -1.38952853816 / Telescope offset in q in arcsec                
+RAOFFSET=        3.98864666709 / Telescope offset in RA in arcsec               
+DECOFFSE=        1.38952853816 / Telescope offset in DEC in arcsec              
+RATRGOFF=                   0. / Target offset in RA in arcsec                  
+DECTRGOF=                   0. / Target offset in DEC in arcsec                 
+PA      =                   0. / Sky Position Angle at start of exposure        
+IAA     =                  0.6 / Instrument Alignment Angle                     
+SFRT2   =               -8.729 / Science fold rotation angle (degrees)          
+SFTILT  =                 0.54 / Science fold tilt angle (degrees)              
+SFLINEAR=              -343.38 / Science fold linear position (mm)              
+AOFOLD  = 'park-pos.'          / AO Pick-Off Mirror Position                    
+P2ARA   =          293.7942875 / RA of PWFS2 guide star                         
+P2ARV   =                   0. / PWFS2 Heliocentric Radial Velocity             
+P2AWAVEL=                7000. / PWFS2 Effective Target Wavelength              
+P2ADEC  =            30.573875 / Declination of PWFS2 guide star                
+P2AEPOCH=                2000. / Epoch for PWFS2 guide star coordinates         
+P2AEQUIN=                2000. / Equinox for PWFS2 guide star coordinates       
+P2AFRAME= 'FK5     '           / PWFS2 Target co-ordinate system                
+P2AOBJEC= '998.0   '           / Object Name for PWFS 2, Chop A                 
+P2APMDEC=                   0. / PWFS2 Proper Motion in Declination             
+P2APMRA =                   0. / PWFS2 Proper Motion in RA                      
+P2APARAL=                   0. / PWFS2 Parallax of Target                       
+HUMIDITY=                   4. / The Relative Humidity (fraction, 0..101).      
+TAMBIENT=                  4.6 / The ambient temp (C).                          
+TAMBIEN2=                40.28 / The ambient temp (F).                          
+PRESSURE=            462.17248 / The atmospheric pressure (mm Hg).              
+PRESSUR2=               61600. / The atmospheric pressure (Pa).                 
+DEWPOINT=                -33.6 / The dew point (C).                             
+DEWPOIN2=               -28.48 / The dew point (F).                             
+WINDSPEE=                  5.9 / The wind speed (m/s).                          
+WINDSPE2=              13.1983 / The wind speed (mph).                          
+WINDDIRE=                  88. / The wind direction (degrees).                  
+INPORT  =                    1 / Number of ISS port where Michelle was located  
+CTYPE1  = 'RA---TAN'           / R.A. in tangent plane projection               
+CRPIX1  =           160.311455 / Ref pix of axis 1                              
+CRVAL1  =           293.686875 / RA at Ref pix in decimal degrees               
+CTYPE2  = 'DEC--TAN'           / DEC. in tangent plane projection               
+CRPIX2  =           122.270451 / Ref pix of axis 2                              
+CRVAL2  =            30.515984 / DEC at Ref pix in decimal degrees              
+CD1_1   =                  -0. / WCS matrix element 1 1                         
+CD1_2   =             -2.8E-05 / WCS matrix element 1 2                         
+CD2_1   =             -2.8E-05 / WCS matrix element 2 1                         
+CD2_2   =                   0. / WCS matrix element 2 2                         
+RADECSYS= 'FK5     '           / R.A./DEC. coordinate system reference          
+MJD_OBS =         53608.466295 / Mean Julian day of observation                 
+FRAMENAM= 'Edict Frame'        / Name assigned to a frame of data.              
+DINDEX  =                    1 / Detector index position                        
+EXPOSURE=                 0.06 / [s] Exposure time for each coadd               
+NUMEXPOS=                  210 / Number of exposures in integration             
+NULLEXPO=                    0 / nullExposures                                  
+NUMREADS=                    1 / Number of reads per exposure                   
+NULLREAD=                    0 / ND reads prior to data                         
+MULTIREA=                    1 / multiReads                                     
+WFMPERIO=               240.15 / wfmPeriod                                      
+READINTE=                 0.01 / Time between reads                             
+NUMRESET=                    1 / No of det resets before first exp              
+RESETDEL=                 0.01 / Time twixt final reset & first read            
+CHOPDWEL=             0.475599 / Chop dwell                                     
+CHOPDELA=                  0.1 / Chop delay                                     
+MODE    = 'chop-nod'           / Observing mode                                 
+STARTTIM=             11.17667 / UT at observation start                        
+PIXELMON=                    F / pixelMon                                       
+GAIN    =                 500. / [electrons/ADU] Gain                           
+OBSSTART= '2005-08-26T11:10:36Z' / obsStart                                     
+NUMCOLUM=                  320 / numColumns                                     
+NUMROWS =                  240 / numRows                                        
+FIRSTCOL=                    1 / firstCol                                       
+LASTCOL =                  320 / lastCol                                        
+FIRSTROW=                    1 / firstRow                                       
+LASTROW =                  240 / lastRow                                        
+ENDTIME =             11.38722 / UT at observation end                          
+OBSTIME =     758.001708984375 / [s] Duration of observation                    
+OBSEND  = '2005-08-26T11:23:14Z' / obsEnd                                       
+NUMEXT  =                   16 / Number of extensions                           
+NOFFSETS=                    0 / Number of offset positions                     
+CYCLE   = 'ABBA    '           / Nod Cycle Type (A|AB|ABBA)                     
+UTDATE  = '2005-08-26'         / UT date in yyyymmdd format                     
+PIXELSIZ=                0.099 / [arcsec] Pixel size                            
+CAMERA  = 'spectroscopy'       / Camera mode (imaging|spectroscopy)             
+GRATNAME= 'LowN    '           / Grating name                                   
+GRATPOS =              10.4706 / [um] Grating wavelength                        
+GRATDISP=             0.024046 / [um/pixel] Grating dispersion                  
+GRATORD =                    1 / Grating order                                  
+GRATANG =             0.744582 / Grating Angle                                  
+SLITNAME= '2_pixels'           / Slit name                                      
+SLITANG =                0.455 / [deg] Slit angle                               
+FILTER  = 'NBlock  '           / Combined filter name                           
+FILTERA = 'F66LA   '           / Filter A name                                  
+FILTERB = 'Clear_B '           / Filter B name                                  
+FOCNAME = 'LowN    '           / Focus named position                           
+FOCMM   =                  2.8 / [mm] Focus position                            
+IRDEG   =               -0.456 / [deg] Image rotator angle                      
+GFLEXCOR= 'off     '           / Whether grating flexure correction enable      
+CALSELN = 'clear   '           / Calibration selection                          
+SAMPLING= '-0      '           / Oversampling type used                         
+DETINCR =                  -0. / [pixel] Increment between scan positions       
+DETNINCR=                    0 / Number of scan positions in scan               
+CHPANGLE=                   0. / [deg] Position angle of the chop               
+CHPTHROW=                  15. / [arcsec] Throw of the chop wrt middle position 
+CHOPFREQ=                1.051 / [Hz] Chop frequency                            
+CHOPDUTY=                78.99 / [%] Chop Duty Cyle                             
+CHPOFFST=                 0.02 / [Hz] CEM Chop frequency offset                 
+NULL_CYC=                    1 / Cycles prior to data taking                    
+NULL_EXP=                    0 / Exposures prior to data taking                 
+WAVEFORM= 'mch_str_bw'         / Waveform set name                              
+CNFINDEX=             15296634 / Configuration index                            
+ARRAYTMP=                10.11 / [K] Array temperature                          
+ARRYTMP2=                 5.44 / [K] Array temperature ch.2                     
+LN2TEMP =            96.100001 / [K] Temperature of LN2 can                     
+CCC1_TMP=            75.100001 / [K] CCC 1st stage temp.                        
+GRS_TEMP=            95.200001 / [K] Grad. rad. shield temp.                    
+CCC2_TMP=                 17.2 / [K] CCC 2nd stage temp.                        
+FRS_TEMP=            95.100001 / [K] Front rad. shield temp.                    
+GRTDRTMP=                 23.3 / [K] Grating drum temperature                   
+SRM_TEMP=                  24. / [K] SRM temperature                            
+IMSTPTMP=                 24.8 / [K] Imiger stop temperature                    
+JT1_TEMP=            61.600001 / [K] JT 1st stage temperature                   
+JT2_TEMP=                 15.6 / [K] JT 2nd stage temperature                   
+JT4KTEMP=                  4.4 / [K] JT 4K stage temperature                    
+FILT_TMP=            83.200001 / [K] Filter motor temperature                   
+VRSTUC  =                  -2. / [V] Bias voltage: vrstuc                       
+VCASUC  =                 -3.5 / [V] Bias voltage: vcasuc                       
+VNEG    =                  -7. / [V] Bias voltage: vneg                         
+VDETGRD =                 -5.1 / [V] Bias voltage: vdetgrd                      
+VGG1    =                   0. / [V] Bias voltage: vgg1                         
+VGG4    =                 -1.5 / [V] Bias voltage: vgg4                         
+VDETGRV =                 -6.8 / [V] Bias voltage: vdetgrv                      
+VGG2    =                 -1.8 / [V] Bias voltage: vgg2                         
+VGG3    =                -1.65 / [V] Bias voltage: vgg3                         
+IMUX    =                 -1.6 / [V] Bias voltage: imux                         
+VSHPCHG =                  -3. / [V] Bias voltage: vshpchg                      
+VSH     =                  -5. / [V] Bias voltage: vsh                          
+VSSD    =                  -5. / [V] Bias voltage: vssd                         
+VSS     =                  -5. / [V] Bias voltage: vss                          
+VPW     =                 -5.2 / [V] Bias voltage: vpw                          
+VCLOUT  =                 -4.3 / [V] Bias voltage: vclout                       
+VCLCOL  =                  -5. / [V] Bias voltage: vclcol                       
+VCAP    =                   0. / [V] Bias voltage: vcap                         
+VOFFSET =                 -2.7 / [V] Bias voltage: voffset                      
+VGATELO =                  -6. / [V] Clock voltage: vgatelow                    
+VGATEHI =                   0. / [V] Clock voltage: vgatehigh                   
+AIRMASS =                1.561 / Mean airmass for the observation               
+AMSTART =                1.517 / Airmass at start of exposure                   
+AMEND   =                1.607 / Airmass at end of exposure                     
+RELEASE = '2007-02-26        ' / End of proprietary period YYYY-MM-DD           
+ORIGNAME= 'N20050826S0137.fits' / Original filename prior to processing
+
+--- HDU 0 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                  -32 / number of bits per data pixel                  
+NAXIS   =                    4 / number of data axes                            
+NAXIS1  =                  320 / length of data axis 1                          
+NAXIS2  =                  240 / length of data axis 2                          
+NAXIS3  =                    3 / length of data axis 3                          
+NAXIS4  =                    1 / length of data axis 4                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+AXISLAB1= 'x       '           / Axis label                                     
+AXISLAB2= 'y       '           / Axis label                                     
+AXISLAB3= 'chop    '           / Axis label                                     
+AXISLAB4= 'saveset '           / Axis label                                     
+FRMNAME = 'data    '           / Name assigned to a frame of data.              
+FRAMEID = '1       '           / Frame Id                                       
+DATATYP = '        '           / Type of data frame                             
+EXTVER  =                    1 / Added by AstroData                             
+EXTNAME = 'SCI     '           / Added by AstroData
+
+--- HDU 1 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                  -32 / number of bits per data pixel                  
+NAXIS   =                    4 / number of data axes                            
+NAXIS1  =                  320 / length of data axis 1                          
+NAXIS2  =                  240 / length of data axis 2                          
+NAXIS3  =                    3 / length of data axis 3                          
+NAXIS4  =                    1 / length of data axis 4                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+AXISLAB1= 'x       '           / Axis label                                     
+AXISLAB2= 'y       '           / Axis label                                     
+AXISLAB3= 'chop    '           / Axis label                                     
+AXISLAB4= 'saveset '           / Axis label                                     
+FRMNAME = 'data    '           / Name assigned to a frame of data.              
+FRAMEID = '2       '           / Frame Id                                       
+DATATYP = '        '           / Type of data frame                             
+EXTVER  =                    2 / Added by AstroData                             
+EXTNAME = 'SCI     '           / Added by AstroData
+
+--- HDU 2 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                  -32 / number of bits per data pixel                  
+NAXIS   =                    4 / number of data axes                            
+NAXIS1  =                  320 / length of data axis 1                          
+NAXIS2  =                  240 / length of data axis 2                          
+NAXIS3  =                    3 / length of data axis 3                          
+NAXIS4  =                    1 / length of data axis 4                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+AXISLAB1= 'x       '           / Axis label                                     
+AXISLAB2= 'y       '           / Axis label                                     
+AXISLAB3= 'chop    '           / Axis label                                     
+AXISLAB4= 'saveset '           / Axis label                                     
+FRMNAME = 'data    '           / Name assigned to a frame of data.              
+FRAMEID = '3       '           / Frame Id                                       
+DATATYP = '        '           / Type of data frame                             
+EXTVER  =                    3 / Added by AstroData                             
+EXTNAME = 'SCI     '           / Added by AstroData
+
+--- HDU 3 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                  -32 / number of bits per data pixel                  
+NAXIS   =                    4 / number of data axes                            
+NAXIS1  =                  320 / length of data axis 1                          
+NAXIS2  =                  240 / length of data axis 2                          
+NAXIS3  =                    3 / length of data axis 3                          
+NAXIS4  =                    1 / length of data axis 4                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+AXISLAB1= 'x       '           / Axis label                                     
+AXISLAB2= 'y       '           / Axis label                                     
+AXISLAB3= 'chop    '           / Axis label                                     
+AXISLAB4= 'saveset '           / Axis label                                     
+FRMNAME = 'data    '           / Name assigned to a frame of data.              
+FRAMEID = '4       '           / Frame Id                                       
+DATATYP = '        '           / Type of data frame                             
+EXTVER  =                    4 / Added by AstroData                             
+EXTNAME = 'SCI     '           / Added by AstroData
+
+--- HDU 4 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                  -32 / number of bits per data pixel                  
+NAXIS   =                    4 / number of data axes                            
+NAXIS1  =                  320 / length of data axis 1                          
+NAXIS2  =                  240 / length of data axis 2                          
+NAXIS3  =                    3 / length of data axis 3                          
+NAXIS4  =                    1 / length of data axis 4                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+AXISLAB1= 'x       '           / Axis label                                     
+AXISLAB2= 'y       '           / Axis label                                     
+AXISLAB3= 'chop    '           / Axis label                                     
+AXISLAB4= 'saveset '           / Axis label                                     
+FRMNAME = 'data    '           / Name assigned to a frame of data.              
+FRAMEID = '5       '           / Frame Id                                       
+DATATYP = '        '           / Type of data frame                             
+EXTVER  =                    5 / Added by AstroData                             
+EXTNAME = 'SCI     '           / Added by AstroData
+
+--- HDU 5 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                  -32 / number of bits per data pixel                  
+NAXIS   =                    4 / number of data axes                            
+NAXIS1  =                  320 / length of data axis 1                          
+NAXIS2  =                  240 / length of data axis 2                          
+NAXIS3  =                    3 / length of data axis 3                          
+NAXIS4  =                    1 / length of data axis 4                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+AXISLAB1= 'x       '           / Axis label                                     
+AXISLAB2= 'y       '           / Axis label                                     
+AXISLAB3= 'chop    '           / Axis label                                     
+AXISLAB4= 'saveset '           / Axis label                                     
+FRMNAME = 'data    '           / Name assigned to a frame of data.              
+FRAMEID = '6       '           / Frame Id                                       
+DATATYP = '        '           / Type of data frame                             
+EXTVER  =                    6 / Added by AstroData                             
+EXTNAME = 'SCI     '           / Added by AstroData
+
+--- HDU 6 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                  -32 / number of bits per data pixel                  
+NAXIS   =                    4 / number of data axes                            
+NAXIS1  =                  320 / length of data axis 1                          
+NAXIS2  =                  240 / length of data axis 2                          
+NAXIS3  =                    3 / length of data axis 3                          
+NAXIS4  =                    1 / length of data axis 4                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+AXISLAB1= 'x       '           / Axis label                                     
+AXISLAB2= 'y       '           / Axis label                                     
+AXISLAB3= 'chop    '           / Axis label                                     
+AXISLAB4= 'saveset '           / Axis label                                     
+FRMNAME = 'data    '           / Name assigned to a frame of data.              
+FRAMEID = '7       '           / Frame Id                                       
+DATATYP = '        '           / Type of data frame                             
+EXTVER  =                    7 / Added by AstroData                             
+EXTNAME = 'SCI     '           / Added by AstroData
+
+--- HDU 7 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                  -32 / number of bits per data pixel                  
+NAXIS   =                    4 / number of data axes                            
+NAXIS1  =                  320 / length of data axis 1                          
+NAXIS2  =                  240 / length of data axis 2                          
+NAXIS3  =                    3 / length of data axis 3                          
+NAXIS4  =                    1 / length of data axis 4                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+AXISLAB1= 'x       '           / Axis label                                     
+AXISLAB2= 'y       '           / Axis label                                     
+AXISLAB3= 'chop    '           / Axis label                                     
+AXISLAB4= 'saveset '           / Axis label                                     
+FRMNAME = 'data    '           / Name assigned to a frame of data.              
+FRAMEID = '8       '           / Frame Id                                       
+DATATYP = '        '           / Type of data frame                             
+EXTVER  =                    8 / Added by AstroData                             
+EXTNAME = 'SCI     '           / Added by AstroData
+
+--- HDU 8 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                  -32 / number of bits per data pixel                  
+NAXIS   =                    4 / number of data axes                            
+NAXIS1  =                  320 / length of data axis 1                          
+NAXIS2  =                  240 / length of data axis 2                          
+NAXIS3  =                    3 / length of data axis 3                          
+NAXIS4  =                    1 / length of data axis 4                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+AXISLAB1= 'x       '           / Axis label                                     
+AXISLAB2= 'y       '           / Axis label                                     
+AXISLAB3= 'chop    '           / Axis label                                     
+AXISLAB4= 'saveset '           / Axis label                                     
+FRMNAME = 'data    '           / Name assigned to a frame of data.              
+FRAMEID = '9       '           / Frame Id                                       
+DATATYP = '        '           / Type of data frame                             
+EXTVER  =                    9 / Added by AstroData                             
+EXTNAME = 'SCI     '           / Added by AstroData
+
+--- HDU 9 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                  -32 / number of bits per data pixel                  
+NAXIS   =                    4 / number of data axes                            
+NAXIS1  =                  320 / length of data axis 1                          
+NAXIS2  =                  240 / length of data axis 2                          
+NAXIS3  =                    3 / length of data axis 3                          
+NAXIS4  =                    1 / length of data axis 4                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+AXISLAB1= 'x       '           / Axis label                                     
+AXISLAB2= 'y       '           / Axis label                                     
+AXISLAB3= 'chop    '           / Axis label                                     
+AXISLAB4= 'saveset '           / Axis label                                     
+FRMNAME = 'data    '           / Name assigned to a frame of data.              
+FRAMEID = '10      '           / Frame Id                                       
+DATATYP = '        '           / Type of data frame                             
+EXTVER  =                   10 / Added by AstroData                             
+EXTNAME = 'SCI     '           / Added by AstroData
+
+--- HDU 10 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                  -32 / number of bits per data pixel                  
+NAXIS   =                    4 / number of data axes                            
+NAXIS1  =                  320 / length of data axis 1                          
+NAXIS2  =                  240 / length of data axis 2                          
+NAXIS3  =                    3 / length of data axis 3                          
+NAXIS4  =                    1 / length of data axis 4                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+AXISLAB1= 'x       '           / Axis label                                     
+AXISLAB2= 'y       '           / Axis label                                     
+AXISLAB3= 'chop    '           / Axis label                                     
+AXISLAB4= 'saveset '           / Axis label                                     
+FRMNAME = 'data    '           / Name assigned to a frame of data.              
+FRAMEID = '11      '           / Frame Id                                       
+DATATYP = '        '           / Type of data frame                             
+EXTVER  =                   11 / Added by AstroData                             
+EXTNAME = 'SCI     '           / Added by AstroData
+
+--- HDU 11 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                  -32 / number of bits per data pixel                  
+NAXIS   =                    4 / number of data axes                            
+NAXIS1  =                  320 / length of data axis 1                          
+NAXIS2  =                  240 / length of data axis 2                          
+NAXIS3  =                    3 / length of data axis 3                          
+NAXIS4  =                    1 / length of data axis 4                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+AXISLAB1= 'x       '           / Axis label                                     
+AXISLAB2= 'y       '           / Axis label                                     
+AXISLAB3= 'chop    '           / Axis label                                     
+AXISLAB4= 'saveset '           / Axis label                                     
+FRMNAME = 'data    '           / Name assigned to a frame of data.              
+FRAMEID = '12      '           / Frame Id                                       
+DATATYP = '        '           / Type of data frame                             
+EXTVER  =                   12 / Added by AstroData                             
+EXTNAME = 'SCI     '           / Added by AstroData
+
+--- HDU 12 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                  -32 / number of bits per data pixel                  
+NAXIS   =                    4 / number of data axes                            
+NAXIS1  =                  320 / length of data axis 1                          
+NAXIS2  =                  240 / length of data axis 2                          
+NAXIS3  =                    3 / length of data axis 3                          
+NAXIS4  =                    1 / length of data axis 4                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+AXISLAB1= 'x       '           / Axis label                                     
+AXISLAB2= 'y       '           / Axis label                                     
+AXISLAB3= 'chop    '           / Axis label                                     
+AXISLAB4= 'saveset '           / Axis label                                     
+FRMNAME = 'data    '           / Name assigned to a frame of data.              
+FRAMEID = '13      '           / Frame Id                                       
+DATATYP = '        '           / Type of data frame                             
+EXTVER  =                   13 / Added by AstroData                             
+EXTNAME = 'SCI     '           / Added by AstroData
+
+--- HDU 13 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                  -32 / number of bits per data pixel                  
+NAXIS   =                    4 / number of data axes                            
+NAXIS1  =                  320 / length of data axis 1                          
+NAXIS2  =                  240 / length of data axis 2                          
+NAXIS3  =                    3 / length of data axis 3                          
+NAXIS4  =                    1 / length of data axis 4                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+AXISLAB1= 'x       '           / Axis label                                     
+AXISLAB2= 'y       '           / Axis label                                     
+AXISLAB3= 'chop    '           / Axis label                                     
+AXISLAB4= 'saveset '           / Axis label                                     
+FRMNAME = 'data    '           / Name assigned to a frame of data.              
+FRAMEID = '14      '           / Frame Id                                       
+DATATYP = '        '           / Type of data frame                             
+EXTVER  =                   14 / Added by AstroData                             
+EXTNAME = 'SCI     '           / Added by AstroData
+
+--- HDU 14 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                  -32 / number of bits per data pixel                  
+NAXIS   =                    4 / number of data axes                            
+NAXIS1  =                  320 / length of data axis 1                          
+NAXIS2  =                  240 / length of data axis 2                          
+NAXIS3  =                    3 / length of data axis 3                          
+NAXIS4  =                    1 / length of data axis 4                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+AXISLAB1= 'x       '           / Axis label                                     
+AXISLAB2= 'y       '           / Axis label                                     
+AXISLAB3= 'chop    '           / Axis label                                     
+AXISLAB4= 'saveset '           / Axis label                                     
+FRMNAME = 'data    '           / Name assigned to a frame of data.              
+FRAMEID = '15      '           / Frame Id                                       
+DATATYP = '        '           / Type of data frame                             
+EXTVER  =                   15 / Added by AstroData                             
+EXTNAME = 'SCI     '           / Added by AstroData
+
+--- HDU 15 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                  -32 / number of bits per data pixel                  
+NAXIS   =                    4 / number of data axes                            
+NAXIS1  =                  320 / length of data axis 1                          
+NAXIS2  =                  240 / length of data axis 2                          
+NAXIS3  =                    3 / length of data axis 3                          
+NAXIS4  =                    1 / length of data axis 4                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+AXISLAB1= 'x       '           / Axis label                                     
+AXISLAB2= 'y       '           / Axis label                                     
+AXISLAB3= 'chop    '           / Axis label                                     
+AXISLAB4= 'saveset '           / Axis label                                     
+FRMNAME = 'data    '           / Name assigned to a frame of data.              
+FRAMEID = '16      '           / Frame Id                                       
+DATATYP = '        '           / Type of data frame                             
+EXTVER  =                   16 / Added by AstroData                             
+EXTNAME = 'SCI     '           / Added by AstroData

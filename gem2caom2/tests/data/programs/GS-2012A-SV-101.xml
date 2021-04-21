@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+
+<title>Detail for Program: GS-2012A-SV-101</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-2012A-SV-101</h1>
+
+<table>
+ <tr><td>Title:<td>T-ReCS Performance Characterization/Monitoring</tr>
+ <tr><td>PI:<td>James Radomski</tr>
+ <tr><td>Co-I(s):<td></tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+Instrument performance monitoring is a Band 1 Gemini Observatory Priority.  Observations to monitor the throughput, sensitivity, and overall health of the various components of Gemini South will be defined and executed from this program. 
+</div>
+
+
+
+</body>
+</html>

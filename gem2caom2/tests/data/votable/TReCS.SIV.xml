@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<VOTABLE version="1.1" xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <INFO name="QUERY_STATUS" value="OK"/>
+  <RESOURCE type="results">
+    <TABLE utype="photdm:PhotometryFilter.transmissionCurve.spectrum">
+    <PARAM name="FilterProfileService" value="ivo://svo/fps" ucd="meta.ref.ivorn" utype="PhotometryFilter.fpsIdentifier" datatype="char" arraysize="*"/>
+    <PARAM name="filterID" value="Gemini/TReCS.SIV" ucd="meta.id" utype="photdm:PhotometryFilter.identifier" datatype="char" arraysize="*"/>
+    <PARAM name="WavelengthUnit" value="Angstrom" ucd="meta.unit" utype="PhotometryFilter.SpectralAxis.unit" datatype="char" arraysize="*"/>
+    <PARAM name="WavelengthUCD" value="em.wl" ucd="meta.ucd" utype="PhotometryFilter.SpectralAxis.UCD" datatype="char" arraysize="*"/>
+    <PARAM name="Description" value="TReCS SIV" ucd="meta.note" utype="photdm:PhotometryFilter.description" datatype="char" arraysize="*"/>
+    <PARAM name="PhotSystem" value="TReCS" utype="photdm:PhotometricSystem.description" datatype="char" arraysize="*"/>
+    <PARAM name="Instrument" value="TReCS" ucd="instr" datatype="char" arraysize="*"/>
+    <PARAM name="Facility" value="Gemini" ucd="instr.obsty" datatype="char" arraysize="*"/>
+    <PARAM name="ProfileReference" value="http://www.gemini.edu/sciops/instruments/trecs/imaging/filters" datatype="char" arraysize="*"/>
+    <PARAM name="Description" value="TReCS SIV" ucd="meta.note" utype="photdm:PhotometryFilter.description" datatype="char" arraysize="*"/>
+    <PARAM name="Comments" value="trecs_fSIV.dat
+ Transmission curve for T-ReCS SIV 10.5um filter
+ No blocking element needed.
+ Measurement temperature = 10K
+ Author: James De Buizer, digitized from info from U. Reading
+ Created: 2003 Apr 9
+" ucd="meta.note" datatype="char" arraysize="*"/>
+    <PARAM name="components" value="Filter" datatype="char" arraysize="*"/>
+    <PARAM name="WavelengthRef" value="104559.41157466" unit="Angstrom" ucd="em.wl" datatype="float" />
+    <PARAM name="WavelengthMean" value="104563.685572" unit="Angstrom" ucd="em.wl" utype="photdm:PhotometryFilter.SpectralAxis.Coverage.Location.Value" datatype="float" />
+    <PARAM name="WavelengthEff" value="104549.575968" unit="Angstrom" ucd="em.wl.effective" datatype="float" />
+    <PARAM name="WavelengthMin" value="103100" unit="Angstrom" ucd="em.wl;stat.min" utype="photdm:PhotometryFilter.SpectralAxis.Coverage.Bounds.Start" datatype="float" />
+    <PARAM name="WavelengthMax" value="106171.685714" unit="Angstrom" ucd="em.wl;stat.max" utype="photdm:PhotometryFilter.SpectralAxis.Coverage.Bounds.Stop" datatype="float" />
+    <PARAM name="WidthEff" value="1655.17077503" unit="Angstrom" ucd="instr.bandwidth" utype="photdm:PhotometryFilter.SpectralAxis.Coverage.Bounds.Extent" datatype="float" />
+    <PARAM name="WavelengthCen" value="104561.100529" unit="Angstrom" ucd="em.wl" datatype="float" />
+    <PARAM name="WavelengthPivot" value="104559.41157466" unit="Angstrom" ucd="em.wl" datatype="float" />
+    <PARAM name="WavelengthPeak" value="104620" unit="Angstrom" ucd="em.wl" datatype="float" />
+    <PARAM name="WavelengthPhot" value="104552.429532" unit="Angstrom" ucd="em.wl" datatype="float" />
+    <PARAM name="FWHM" value="1636.95994049" unit="Angstrom" ucd="instr.bandwidth" datatype="float" />
+    <PARAM name="Fsun" value="0.02043918175828" unit="erg/cm2/s/A" ucd="phot.flux.density" datatype="float" />
+    <PARAM name="PhotCalID" value="Gemini/TReCS.SIV/Vega" ucd="meta.id" utype="photdm:PhotCal.identifier" datatype="char" arraysize="*"/>
+    <PARAM name="MagSys" value="Vega" ucd="meta.code" utype="photdm:PhotCal.MagnitudeSystem.type" datatype="char" arraysize="*"/>
+    <PARAM name="ZeroPoint" value="35.3229650951" unit="Jy" ucd="phot.flux.density" utype="photdm:PhotCal.ZeroPoint.Flux.value" datatype="float" />
+    <PARAM name="ZeroPointUnit" value="Jy" ucd="meta.unit" utype="photdm:PhotCal.ZeroPoint.Flux.unit" datatype="char" arraysize="*"/>
+    <PARAM name="ZeroPointType" value="Pogson" ucd="meta.code" utype="photdm:PhotCal.ZeroPoint.type" datatype="char" arraysize="*"/>
+    </TABLE>
+  </RESOURCE>
+</VOTABLE>
