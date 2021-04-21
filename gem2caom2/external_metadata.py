@@ -105,6 +105,8 @@ fm = {}
 pm = {}
 # lazy initialization for the Gemini listing of files
 gofr = None
+# value repair cache
+value_repair = mc.ValueRepairCache()
 
 
 def get_gofr(config=None):
