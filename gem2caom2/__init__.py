@@ -4,5 +4,6 @@ from .gem_name import *  # noqa
 from .external_metadata import *  # noqa
 from .obs_file_relationship import *  # noqa
 from .preview_augmentation import *  # noqa
+from .preview_v_augmentation import *  # noqa
 from .pull_augmentation import *  # noqa
 from .pull_v_augmentation import *  # noqa
