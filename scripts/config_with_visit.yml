@@ -1,6 +1,7 @@
 working_directory: /usr/src/app
 proxy_file_name: /usr/src/app/cadcproxy.pem
 state_file_name: state.yml
+cache_file_name: cache.yml
 # operational value is ivo://cadc.nrc.ca/ams
 # resource_id: ivo://cadc.nrc.ca/sc2repo
 resource_id: ivo://cadc.nrc.ca/ams

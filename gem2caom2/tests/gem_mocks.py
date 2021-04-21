@@ -760,8 +760,7 @@ def mock_query_tap(query_string, mock_tap_client):
             f'gemini:GEMINI/N20191101S0007.fits,'
             f'2020-02-25T20:36:31.230\n'.split('\n'), format='csv')
     else:
-        file_id = query_string.split(
-            f'{gem_name.ARCHIVE}/')[1].replace('\'', '').replace(
+        file_id = query_string.split('%')[1].split('\'')[0].replace(
             '.fits', '').strip()
         result = TAP_QUERY_LOOKUP.get(file_id, 'test_data_label')
         return Table.read(f'observationID,lastModified\n'
