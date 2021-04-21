@@ -2308,8 +2308,13 @@ def _update_chunk_energy_nifs(chunk, data_product_type, obs_id, filter_name):
                     fm.central_wl = em.om.get('central_wavelength')
                     fm.resolving_power = nifs_lookup[grating][filter_name][3]
                     if fm.central_wl is None:
+                        # DB 14-04-21
+                        #  if no central wavelength in json then use filter
+                        #  bounds
+                        fm.central_wl = nifs_lookup[grating][filter_name][0]
                         logging.warning(
-                            f'JSON central_wavelength is None for {obs_id}.')
+                            f'JSON central_wavelength is None for {obs_id}. '
+                            f'Using {fm.central_wl} instead.')
                 else:
                     logging.info(
                         'NIFS: No energy. filter_name {} with disperser {}'
