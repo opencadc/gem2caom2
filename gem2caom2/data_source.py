@@ -74,38 +74,44 @@ from datetime import datetime, timezone
 
 from caom2pipe import data_source_composable as dsc
 from caom2pipe import manage_composable as mc
-from gem2caom2.scrape import read_json_file_list_page
 
 
-__all__ = ['FileListIncrementalSource', 'GEM_BOOKMARK', 'IncrementalSource',
-           'PublicIncremental']
+__all__ = ['GEM_BOOKMARK', 'IncrementalSource', 'PublicIncremental']
 
 GEM_BOOKMARK = 'gemini_timestamp'
 
 
 class IncrementalSource(dsc.DataSource):
     """Implements the identification of the work to be done, by querying
-    archive.gemini.edu's incremental endpoint, in time-boxed chunks."""
+    archive.gemini.edu's incremental endpoint, in time-boxed chunks.
+
+    OO - email 21-04-21
+    entrytime is when the DB record behind the JSON being displayed was
+    created.
+    """
 
     def __init__(self):
         super(IncrementalSource, self).__init__(config=None)
+        self._max_records_encountered = False
         self._logger = logging.getLogger(__name__)
 
     def get_time_box_work(self, prev_exec_time, exec_time):
         """
-        :param prev_exec_time datetime start of the timestamp chunk
-        :param exec_time datetime end of the timestamp chunk
-        :return: a list of file names with time they were modified from
-            archive.gemini.edu, structured as an astropy Table (for now).
+        :param prev_exec_time float timestamp start of the time-boxed chunk
+        :param exec_time float timestamp end of the time-boxed chunk
+        :return: a deque of file names with time their associated JSON (DB)
+            records were modified from archive.gemini.edu.
         """
 
-        self._logger.debug('Entering todo')
+        self._logger.debug(f'Begin get_time_box_work from {prev_exec_time} to '
+                           f'{exec_time}.')
         # datetime format 2019-12-01T00:00:00.000000
-        prev_dt_str = prev_exec_time.strftime(mc.ISO_8601_FORMAT)
-        exec_dt_str = exec_time.strftime(mc.ISO_8601_FORMAT)
-        url = f'http://arcdev.gemini.edu/jsonsummary/sr=179/notengineering/' \
-              f'NotFail/entrytime={prev_dt_str}%20{exec_dt_str}?order_by=' \
-              f'entrytime'
+        prev_dt_str = mc.make_time_tz(prev_exec_time).strftime(
+            mc.ISO_8601_FORMAT)
+        exec_dt_str = mc.make_time_tz(exec_time).strftime(mc.ISO_8601_FORMAT)
+        url = f'https://archive.gemini.edu/jsonsummary/canonical/' \
+              f'entrytimedaterange={prev_dt_str}%20{exec_dt_str}/' \
+              f'?orderby=entrytime'
 
         # needs to be ordered by timestamps when processed
         entries = deque()
@@ -125,48 +131,14 @@ class IncrementalSource(dsc.DataSource):
                     else:
                         for entry in metadata:
                             file_name = entry.get('name')
+                            entrytime = mc.make_time_tz(entry.get('entrytime'))
                             entries.append(dsc.StateRunnerMeta(
-                                file_name, entry.get('lastmod')))
+                                file_name, entrytime.timestamp()))
         finally:
             if response is not None:
                 response.close()
-        return entries
-
-
-class FileListIncrementalSource(dsc.DataSource):
-    """Implements the identification of the work to be done, by querying
-    archive.gemini.edu's jsonfilelist endpoint, in time-boxed chunks."""
-
-    def __init__(self, config):
-        super(FileListIncrementalSource, self).__init__(config=None)
-        self._logger = logging.getLogger(__name__)
-        state = mc.State(config.state_fqn)
-        temp = state.get_bookmark(GEM_BOOKMARK)
-        # make sure last_processed_time is type float
-        self._last_processed_time = mc.increment_time(temp, 0).timestamp()
-        # now decide on a timestamp for when to start ingestion
-        # for this attempt, say 14 days prior to the last ingestion
-        # timestamp - WAG
-        self._start_time_ts = self._last_processed_time - 14 * 1440 * 60
-        self._max_records_encountered = False
-
-    def get_time_box_work(self, prev_exec_time, exec_time):
-        """
-        :param prev_exec_time datetime start of the timestamp chunk
-        :param exec_time datetime end of the timestamp chunk
-        :return: a list of file names with time they were modified from
-            archive.gemini.edu, structured as an astropy Table (for now).
-        """
-        self._logger.debug(f'Begin get_time_box_work from '
-                           f'{prev_exec_time} to {exec_time}.')
-        temp = read_json_file_list_page(
-            prev_exec_time, self._last_processed_time)
-        if len(temp) == 2500:
+        if len(entries) == 2500:
             self._max_records_encountered = True
-
-        entries = deque()
-        for timestamp, f_name in temp.items():
-            entries.append(dsc.StateRunnerMeta(f_name, timestamp))
         self._logger.debug('End get_time_box_work.')
         return entries
 

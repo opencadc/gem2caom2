@@ -207,7 +207,7 @@ def _run_by_incremental():
     config.get_executors()
     external_metadata.init_global(config=config)
     name_builder = nbc.FileNameBuilder(gem_name.GemName)
-    incremental_source = data_source.FileListIncrementalSource(config)
+    incremental_source = data_source.IncrementalSource()
     meta_visitors = _define_meta_visitors(config)
     result = rc.run_by_state(config=None, name_builder=name_builder,
                              command_name=main_app.APPLICATION,

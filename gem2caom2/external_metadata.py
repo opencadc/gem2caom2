@@ -455,6 +455,7 @@ class CachingObsFileRelationship(GemObsFileRelationship):
 
         'connected' order, files on disk (i.e. not doing TaskType.SCRAPE):
         1 - the specifically constructed file from Paul, which is time-limited
+            (since it's already in memory, it should be faster to access)
         2 - file on disk
         3 - CAOM entries
         4 - archive.gemini.edu entries
@@ -472,9 +473,11 @@ class CachingObsFileRelationship(GemObsFileRelationship):
         super(CachingObsFileRelationship, self).__init__()
         self._use_local_files = False
         self._is_connected = True
+        self._collection = 'GEMINI'
         if config is not None:
             self._use_local_files = config.use_local_files
             self._is_connected = config.is_connected
+            self._collection = config.collection
         # use accessor methods for _tap_client, because of how this class
         # will eventually be used - as a global, accessible by all and
         # everywhere, and initialized before there's a config
@@ -506,7 +509,8 @@ class CachingObsFileRelationship(GemObsFileRelationship):
 
     def _get_obs_id_from_cadc(self, file_id):
         return get_obs_id_from_cadc(
-            file_id, self._tap_client, self._update_cache)
+            file_id, self._tap_client, self._collection, self._update_cache
+        )
 
     def _get_obs_id_from_headers(self, file_id):
         return get_obs_id_from_headers(file_id, self._update_cache)

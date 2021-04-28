@@ -80,9 +80,8 @@ from mock import patch, Mock
 import gem_mocks
 
 from caom2 import SimpleObservation, Algorithm
-from caom2pipe import execute_composable as ec
 from caom2pipe import manage_composable as mc
-from gem2caom2 import composable, main_app, gem_name, external_metadata
+from gem2caom2 import composable, gem_name, external_metadata
 
 
 STATE_FILE = f'{gem_mocks.TEST_DATA_DIR}/state.yml'
@@ -177,10 +176,10 @@ def test_run_incremental_rc(client_mock, tap_mock, get_obs_mock, query_mock,
                             run_mock):
 
     get_obs_mock.side_effect = gem_mocks.mock_get_obs_metadata
-    query_mock.side_effect = gem_mocks.mock_query_endpoint_3
+    query_mock.side_effect = gem_mocks.mock_query_endpoint_2
     tap_mock.side_effect = gem_mocks.mock_query_tap
 
-    _write_state(prior_timestamp='2020-03-06 03:22:10.787835')
+    _write_state(prior_timestamp='2021-01-01 20:03:00.000000')
     getcwd_orig = os.getcwd
     os.getcwd = Mock(return_value=gem_mocks.TEST_DATA_DIR)
     try:
@@ -191,28 +190,27 @@ def test_run_incremental_rc(client_mock, tap_mock, get_obs_mock, query_mock,
         assert isinstance(
             test_storage, gem_name.GemName), type(test_storage)
         assert test_storage.obs_id == 'test_data_label', 'wrong obs id'
-        assert test_storage.file_name == 'S20200303S0025.fits', \
-            'wrong file_name'
-        assert test_storage.file_id == 'S20200303S0025', 'wrong file_id'
-        assert test_storage.fname_on_disk == 'S20200303S0025.fits', \
+        test_fid = 'N20210101S0042'
+        assert test_storage.file_name == f'{test_fid}.fits', 'wrong file_name'
+        assert test_storage.file_id == f'{test_fid}', 'wrong file_id'
+        assert test_storage.fname_on_disk == f'{test_fid}.fits', \
             'wrong fname on disk'
         assert test_storage.url is None, 'wrong url'
         assert test_storage.lineage == \
-            'S20200303S0025/gemini:GEM/S20200303S0025.fits', 'wrong lineage'
+            f'{test_fid}/gemini:GEM/{test_fid}.fits', 'wrong lineage'
         assert test_storage.external_urls == \
-            'https://archive.gemini.edu/fullheader/S20200303S0025.fits', \
+            f'https://archive.gemini.edu/fullheader/{test_fid}.fits', \
             'wrong external urls'
     finally:
         os.getcwd = getcwd_orig
 
 
-@patch('caom2pipe.manage_composable.exec_cmd')
+@patch('gem2caom2.to_caom2')
 @patch('caom2pipe.execute_composable.CAOM2RepoClient')
 @patch('caom2pipe.execute_composable.CadcDataClient')
 @patch('caom2pipe.manage_composable.read_obs_from_file')
 @patch('caom2pipe.manage_composable.query_endpoint')
 @patch('gem2caom2.external_metadata.CadcTapClient')
-@pytest.mark.skip('waiting for gemini incremental endpoint')
 def test_run_by_incremental2(client_mock, query_mock, read_mock,
                              data_client_mock, repo_mock, exec_mock):
     data_client_mock.return_value.get_file_info.side_effect = \
@@ -303,6 +301,8 @@ def test_run_by_incremental2(client_mock, query_mock, read_mock,
     query_result.json = _query_mock
     query_mock.return_value = query_result
 
+    exec_mock.side_effect = _check_sys_argv_params
+
     _write_cert()
     prior_s = datetime.utcnow().timestamp() - 60
     _write_state(prior_s)
@@ -318,24 +318,6 @@ def test_run_by_incremental2(client_mock, query_mock, read_mock,
     assert repo_mock.return_value.create.called, 'create not called'
     assert repo_mock.return_value.read.called, 'read not called'
     assert exec_mock.called, 'exec mock not called'
-    param, level_as = ec.CaomExecute._specify_logging_level_param(
-        logging.ERROR)
-    py_version = f'{sys.version_info.major}.{sys.version_info.minor}'
-    exec_mock.assert_called_with(
-        (f'gem2caom2 --quiet --cert /usr/src/app/cadcproxy.pem '
-         f'--observation GEMINI GS-2002A-Q-8-4-0180 '
-         f'--out /usr/src/app/logs/GS-2002A-Q-8-4-0180.fits.xml '
-         f'--external_url '
-         f'https://archive.gemini.edu/fullheader/2002feb11_0180.fits '
-         f'--plugin '
-         f'/usr/local/lib/python{py_version}/site-packages/gem2caom2/'
-         f'gem2caom2.py '
-         f'--module '
-         f'/usr/local/lib/python{py_version}/site-packages/gem2caom2/'
-         f'gem2caom2.py '
-         f'--lineage 2002feb11_0180/gemini:GEM/2002feb11_0180.fits'),
-        level_as), \
-    'exec mock wrong parameters'
     assert not data_client_mock.return_value.get_file_info.called, \
         'data client mock get file info should not be not called'
     assert query_mock.called, 'query mock not called'
@@ -362,7 +344,6 @@ def test_run_by_public(ds_mock, client_mock, tap_mock, exec_mock):
     test_f_id = 'N20191101S0007'
     try:
         # execution
-        sys.argv = ['test command']
         test_result = composable._run_by_public()
         assert test_result == 0, 'wrong result'
     except Exception as e:
@@ -378,7 +359,7 @@ def test_run_by_public(ds_mock, client_mock, tap_mock, exec_mock):
     assert isinstance(
         test_storage, gem_name.GemName), type(test_storage)
     assert test_storage.obs_id == 'GN-2019B-ENG-1-160-008', 'wrong obs id'
-    assert test_storage.file_name == 'N20191101S0007.fits', 'wrong file_name'
+    assert test_storage.file_name == f'{test_f_id}.fits', 'wrong file_name'
     assert test_storage.file_id == test_f_id, 'wrong file_id'
     assert test_storage.fname_on_disk == f'{test_f_id}.fits', \
         'wrong fname on disk'
@@ -401,7 +382,7 @@ def test_run_by_public2(
         ds_mock, client_mock, tap_mock, get_obs_mock, query_mock, run_mock):
 
     get_obs_mock.side_effect = gem_mocks.mock_get_obs_metadata
-    query_mock.side_effect = gem_mocks.mock_query_endpoint_3
+    query_mock.side_effect = gem_mocks.mock_query_endpoint_2
     tap_mock.side_effect = gem_mocks.mock_query_tap
 
     _write_state(prior_timestamp='2020-03-06 03:22:10.787835')
@@ -434,6 +415,23 @@ def test_run_by_public2(
         assert False, e
     finally:
         os.getcwd = getcwd_orig
+
+
+def _check_sys_argv_params():
+    py_version = f'{sys.version_info.major}.{sys.version_info.minor}'
+    plugin = f'/usr/local/lib/python{py_version}/site-packages/gem2caom2/' \
+             f'gem2caom2.py'
+    temp = ' '.join(ii for ii in sys.argv)
+    assert temp == f'gem2caom2 --quiet --cert ' \
+                   f'{gem_mocks.TEST_DATA_DIR}/cadcproxy.pem --observation ' \
+                   f'GEMINI GS-2002A-Q-8-4-0180 --out ' \
+                   f'{gem_mocks.TEST_DATA_DIR}/logs/' \
+                   f'GS-2002A-Q-8-4-0180.fits.xml --external_url ' \
+                   f'https://archive.gemini.edu/fullheader/' \
+                   f'2002feb11_0180.fits --plugin {plugin} --module ' \
+                   f'{plugin} --lineage '\
+                   f'2002feb11_0180/gemini:GEM/2002feb11_0180.fits', \
+        'exec mock wrong parameters'
 
 
 def _write_todo(test_id):

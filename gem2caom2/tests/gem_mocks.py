@@ -622,25 +622,18 @@ def mock_query_endpoint(url, timeout=-1):
     return result
 
 
-def mock_query_endpoint_3(url, timeout=-1):
-    # returns json via response.text, depending on url
-    result = Object()
-    result.text = '[]'
-    if 'jsonfilelist' in url:
-        if 'filepre=S20200602' in url:
-            with open(f'{TEST_DATA_DIR}/edu_query/S20200303_filepre.json',
-                      'r') as f:
-                result.text = f.read()
-    return result
-
-
 def mock_query_endpoint_2(url, timeout=-1):
     # returns response.json
     def x():
-        if url.startswith('http://arcdev'):
-            with open(f'{TEST_DATA_DIR}/jsonfilelist_composable_test.json',
-                      'r') as f:
-                temp = f.read()
+        if 'entrytimedaterange' in url:
+            if '2021-01-01T20:03:00.000000' in url:
+                with open(f'{TEST_DATA_DIR}/incremental/with_records.json',
+                          'r') as f:
+                    temp = f.read()
+            else:
+                with open(f'{TEST_DATA_DIR}/incremental/empty.json',
+                          'r') as f:
+                    temp = f.read()
         elif url == 'https://archive.gemini.edu/jsonsummary/canonical/' \
                     'notengineering/NotFail//filepre=N20191101S0001.fits':
             with open(f'{TEST_DATA_DIR}/json/N20191101S0001.json',
