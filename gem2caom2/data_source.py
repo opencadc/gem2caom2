@@ -110,6 +110,7 @@ class IncrementalSource(dsc.DataSource):
             mc.ISO_8601_FORMAT)
         exec_dt_str = mc.make_time_tz(exec_time).strftime(mc.ISO_8601_FORMAT)
         url = f'https://archive.gemini.edu/jsonsummary/canonical/' \
+              f'NotFail/notengineering/' \
               f'entrytimedaterange={prev_dt_str}%20{exec_dt_str}/' \
               f'?orderby=entrytime'
 
