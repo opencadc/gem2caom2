@@ -3,7 +3,7 @@
 # ******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
 # *************  CENTRE CANADIEN DE DONNÉES ASTRONOMIQUES  **************
 #
-#  (c) 2019.                            (c) 2019.
+#  (c) 2021.                            (c) 2021.
 #  Government of Canada                 Gouvernement du Canada
 #  National Research Council            Conseil national de recherches
 #  Ottawa, Canada, K1A 0R6              Ottawa, Canada, K1A 0R6
@@ -62,63 +62,46 @@
 #  <http://www.gnu.org/licenses/>.      pas le cas, consultez :
 #                                       <http://www.gnu.org/licenses/>.
 #
-#  $Revision: 4 $
+#  : 4 $
 #
 # ***********************************************************************
 #
 
 from datetime import datetime
 from mock import patch
-
-from caom2pipe import manage_composable as mc
-
-from gem2caom2 import scrape
-
-import gem_mocks as gm
-
-DATA_FILE = f'{gm.TEST_DATA_DIR}/jsonfilelist.json'
+from gem2caom2 import data_source
+import gem_mocks
 
 
-def test_parse_json_file_list():
-    with open(DATA_FILE, 'r') as f:
-        json_string = f.read()
+@patch('caom2pipe.manage_composable.query_endpoint')
+def test_incremental_source(query_mock):
+    # https://archive.gemini.edu/jsonsummary/canonical/entrytimedaterange=
+    # 2021-01-01T20:03:00.000000%202021-01-01T22:13:00.000000/
+    # ?orderby=entrytime
+    # get results
+    query_mock.side_effect = gem_mocks.mock_query_endpoint_2
 
-    test_file_name = 'N20191101S0376.fits.bz2'
-    test_time_end = _get_end_time()
-    result = scrape.parse_json_file_list(json_string, test_time_end)
-    assert result is not None, 'expected result'
-    assert len(result) == 346, 'wrong number of results'
-    assert result[test_time_end] == test_file_name, 'wrong entries'
+    test_subject = data_source.IncrementalSource()
+    assert test_subject is not None, 'expect construction success'
+    prev_exec_time = datetime(year=2021, month=1, day=1,
+                              hour=20, minute=3, second=0).timestamp()
+    exec_time = datetime(year=2021, month=1, day=1,
+                         hour=22, minute=13, second=0).timestamp()
+    test_result = test_subject.get_time_box_work(prev_exec_time, exec_time)
+    assert test_result is not None, 'expect a result'
+    assert len(test_result) == 2, 'wrong number of results'
+    test_entry = test_result.popleft()
+    assert test_entry.entry_name == 'N20210101S0043.fits', 'wrong first file'
+    assert test_entry.entry_ts == 1609535565.237183, 'wrong first timestamp'
+    test_entry = test_result.popleft()
+    assert test_entry.entry_name == 'N20210101S0042.fits', 'wrong 2nd file'
+    assert test_entry.entry_ts == 1609535567.250666, 'wrong 2nd timestamp'
 
-
-def test_read_json_file_list_page():
-    test_file_name = 'N20191101S0119.fits.bz2'
-    test_end_time = _get_end_time()
-    test_start_time = test_end_time - 100000
-
-    with patch('caom2pipe.manage_composable.query_endpoint') as query_mock:
-        query_mock.side_effect = _mock_endpoint
-        test_work_list = scrape.read_json_file_list_page(
-            test_start_time,
-            test_end_time)
-        assert test_work_list is not None, 'expected result'
-        assert len(test_work_list) == 346
-        first_entry = test_work_list.popitem(last=False)
-        assert first_entry[1] == test_file_name
-
-
-def _get_end_time():
-    return datetime.strptime('2019-11-01 18:22:48.477300',
-                             '%Y-%m-%d %H:%M:%S.%f').timestamp()
-
-
-def _mock_endpoint(url, timeout=-1):
-    result = gm.Object()
-    result.text = None
-
-    if url.startswith(scrape.JSON_FILE_LIST):
-        with open(DATA_FILE, 'r') as f:
-            result.text = f.read()
-    else:
-        raise mc.CadcException('wut?')
-    return result
+    # get nothing
+    prev_exec_time = datetime(year=2019, month=1, day=1,
+                              hour=20, minute=3, second=0).timestamp()
+    exec_time = datetime(year=2019, month=2, day=1,
+                         hour=22, minute=13, second=0).timestamp()
+    test_result = test_subject.get_time_box_work(prev_exec_time, exec_time)
+    assert test_result is not None, 'expect a result'
+    assert len(test_result) == 0, 'wrong number of empty result list'
