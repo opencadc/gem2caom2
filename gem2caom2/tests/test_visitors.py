@@ -104,10 +104,12 @@ def test_preview_augment():
     test_config = mc.Config()
     test_observable = mc.Observable(test_rejected, mc.Metrics(test_config))
     cadc_client_mock = Mock()
-    kwargs = {'working_directory': '/test_files',
-              'cadc_client': cadc_client_mock,
-              'stream': 'stream',
-              'observable': test_observable}
+    kwargs = {
+        'working_directory': '/test_files',
+        'cadc_client': cadc_client_mock,
+        'stream': 'stream',
+        'observable': test_observable,
+    }
 
     test_prev = f'/test_files/{TEST_PRODUCT_ID}.jpg'
     if os.path.exists(test_prev):
@@ -116,23 +118,30 @@ def test_preview_augment():
     try:
         with patch('caom2pipe.manage_composable.http_get') as http_mock, \
                 patch('caom2pipe.manage_composable.data_put') as ad_put_mock, \
-                patch('caom2pipe.manage_composable.get_artifact_metadata') as \
-                art_mock:
-            def _art_mock(fqn, product_type, release_type, uri, temp):
+                patch(
+                    'caom2pipe.manage_composable.get_artifact_metadata_client'
+                ) as art_mock:
+            def _art_mock(
+                    ignore_client, fqn, product_type, release_type, uri, temp
+            ):
                 if '_th' in uri:
-                    return Artifact(uri,
-                                    ProductType.PREVIEW,
-                                    ReleaseType.DATA,
-                                    'image/jpeg',
-                                    13,
-                                    ChecksumURI('md5:13'))
+                    return Artifact(
+                        uri,
+                        ProductType.PREVIEW,
+                        ReleaseType.DATA,
+                        'image/jpeg',
+                        13,
+                        ChecksumURI('md5:13'),
+                    )
                 else:
-                    return Artifact(uri,
-                                    ProductType.PREVIEW,
-                                    ReleaseType.DATA,
-                                    'image/jpeg',
-                                    12,
-                                    ChecksumURI('md5:12'))
+                    return Artifact(
+                        uri,
+                        ProductType.PREVIEW,
+                        ReleaseType.DATA,
+                        'image/jpeg',
+                        12,
+                        ChecksumURI( 'md5:12' ),
+                    )
 
             cadc_client_mock.return_value.data_get.return_value = \
                 mc.CadcException('test')
@@ -142,21 +151,26 @@ def test_preview_augment():
             test_url = f'{preview_augmentation.PREVIEW_URL}' \
                        f'{TEST_PRODUCT_ID}.fits'
             assert http_mock.called, 'http mock should be called'
-            http_mock.assert_called_with(test_url, test_prev),  \
-                'mock not called'
+            http_mock.assert_called_with(
+                test_url, test_prev
+            ),  'mock not called'
             assert ad_put_mock.called, 'ad put mock not called'
             assert art_mock.called, 'art mock not called'
             assert result is not None, 'expect a result'
             assert result['artifacts'] == 2, 'artifacts should be added'
-            assert len(obs.planes[TEST_PRODUCT_ID].artifacts) == 3, \
-                'two new artifacts'
+            assert (
+                len(obs.planes[TEST_PRODUCT_ID].artifacts) == 3
+            ), 'two new artifacts'
             prev_uri = mc.build_uri(
-                ARCHIVE, f'{TEST_PRODUCT_ID}.jpg', SCHEME)
+                ARCHIVE, f'{TEST_PRODUCT_ID}.jpg', SCHEME
+            )
             thumb_uri = mc.build_uri(ARCHIVE, f'{TEST_PRODUCT_ID}_th.jpg')
-            assert prev_uri in obs.planes[TEST_PRODUCT_ID].artifacts.keys(), \
-                'no preview'
-            assert thumb_uri in obs.planes[TEST_PRODUCT_ID].artifacts, \
-                'no thumbnail'
+            assert (
+                prev_uri in obs.planes[TEST_PRODUCT_ID].artifacts.keys()
+            ), 'no preview'
+            assert (
+                thumb_uri in obs.planes[TEST_PRODUCT_ID].artifacts
+            ), 'no thumbnail'
     finally:
         if os.path.exists(test_prev):
             os.unlink(test_prev)
