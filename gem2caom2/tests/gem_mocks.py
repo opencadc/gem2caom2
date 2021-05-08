@@ -514,7 +514,7 @@ LOOKUP = {
 call_count = 0
 
 
-def mock_get_votable(url):
+def mock_get_votable(url, ignore_session):
     try:
         x = url.split('/')
         filter_name = x[-1].replace('&VERB=0', '')

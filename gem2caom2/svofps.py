@@ -72,7 +72,7 @@ import logging
 from caom2pipe import astro_composable as ac
 
 
-def filter_metadata(instrument, filters):
+def filter_metadata(instrument, filters, session):
     """
     For the given instrument and filters, go to the SVO Filter Profile Service
 
@@ -82,6 +82,7 @@ def filter_metadata(instrument, filters):
 
     :param instrument: The instrument name.
     :param filters: The filter name.
+    :param session: Session
     :return: FilterMetadata instance, or None, if there's no SVO information
         for the filter.
     """
@@ -112,13 +113,13 @@ def filter_metadata(instrument, filters):
             # only for 'w'arm filters.  First check for filter without 'w'
             # appended to the ID (which I assume means bandpass is for cold
             # filter), then search for 'w' if nothing is found...
-            votable, error_message = ac.get_vo_table(url)
+            votable, error_message = ac.get_vo_table_session(url, session)
             if not votable:
                 if instrument == 'Flamingos':
                     url = "{}KPNO/{}w&VERB=0".format(ac.SVO_URL, filter_id)
                 else:
                     url = "{}Gemini/{}w&VERB=0".format(ac.SVO_URL, filter_id)
-                votable, error_message = ac.get_vo_table(url)
+                votable, error_message = ac.get_vo_table_session(url, session)
             if not votable:
                 logging.error(
                     'Unable to download SVO filter data from {} because {}'

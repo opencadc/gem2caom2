@@ -138,7 +138,8 @@ def test_multi_plane(tap_mock, test_name):
                 gemini_client_mock, \
                 patch('gem2caom2.external_metadata.get_pi_metadata') as \
                 gemini_pi_mock, \
-                patch('caom2pipe.astro_composable.get_vo_table') as svofps_mock:
+                patch('caom2pipe.astro_composable.get_vo_table_session') as \
+                        svofps_mock:
 
             data_client_mock.return_value.get_file_info.side_effect = \
                 gem_mocks.mock_get_file_info

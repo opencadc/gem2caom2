@@ -163,3 +163,20 @@ def test_get_obs_metadata_not_at_gemini(tap_client_mock, session_mock):
     ext_md.init_global(config=test_config)
     with pytest.raises(mc.CadcException, match=f'Could not find JSON record *'):
         test_result = ext_md.get_obs_metadata('test_file_id')
+
+
+@patch('caom2pipe.astro_composable.get_vo_table_session')
+def test_get_filter_metadata(get_vo_mock):
+    try:
+        ext_md.get_gofr()
+        get_vo_mock.side_effect = gem_mocks.mock_get_votable
+        test_result = ext_md.get_filter_metadata(ext_md.Inst.NIRI, 'filters')
+        assert get_vo_mock.call_count == 2, 'wrong number of calls'
+        assert test_result is None, 'do not expect a result'
+        # do the same thing again, check that the result has been cached
+        test_result = ext_md.get_filter_metadata(ext_md.Inst.NIRI, 'filters')
+        assert get_vo_mock.call_count == 2, 'wrong number of calls'
+        assert test_result is None, 'do not expect a result this time either'
+    finally:
+        # undo the initialization
+        ext_md.set_ofr(None)

@@ -70,16 +70,12 @@
 import logging
 import os
 import re
-import requests
 from enum import Enum
-from requests.adapters import HTTPAdapter
-from urllib3 import Retry
 
 from bs4 import BeautifulSoup
 
 from cadctap import CadcTapClient
 from caom2utils import fits2caom2
-from caom2pipe import caom_composable as cc
 from caom2pipe import manage_composable as mc
 from gem2caom2.svofps import filter_metadata
 from gem2caom2 import gemini_obs_metadata as gom
@@ -176,21 +172,18 @@ def get_obs_metadata(file_id):
         gemini_url = '{}{}'.format(GEMINI_METADATA_URL, file_id)
 
         # Open the URL and fetch the JSON document for the observation
-        session = requests.Session()
-        retries = 10
-        retry = Retry(total=retries, read=retries, connect=retries,
-                      backoff_factor=0.5)
-        adapter = HTTPAdapter(max_retries=retry)
-        session.mount('http://', adapter)
-        session.mount('https://', adapter)
+        response = None
         try:
-            response = session.get(gemini_url, timeout=20)
+            global gofr
+            response = gofr.query_session.get(gemini_url, timeout=20)
             metadata = response.json()
-            response.close()
         except Exception as e:
             raise mc.CadcException(
                 f'Unable to download Gemini observation metadata from '
                 f'{gemini_url} because {str(e)}')
+        finally:
+            if response is not None:
+                response.close()
         if len(metadata) == 0:
             raise mc.CadcException(f'Could not find JSON record for {file_id} '
                                    f'at archive.gemini.edu.')
@@ -204,23 +197,19 @@ def get_pi_metadata(program_id):
         metadata = pm[program_id]
     else:
         program_url = 'https://archive.gemini.edu/programinfo/' + program_id
-
         # Open the URL and fetch the JSON document for the observation
-        session = requests.Session()
-        retries = 10
-        retry = Retry(total=retries, read=retries, connect=retries,
-                      backoff_factor=0.5)
-        adapter = HTTPAdapter(max_retries=retry)
-        session.mount('http://', adapter)
-        session.mount('https://', adapter)
+        response = None
         try:
-            response = session.get(program_url, timeout=20)
+            global gofr
+            response = gofr.query_session.get(program_url, timeout=20)
             xml_metadata = response.text
-            response.close()
         except Exception as e:
             raise mc.CadcException(
                 'Unable to download Gemini observation metadata from {} '
                 'because {}'.format(program_url, str(e)))
+        finally:
+            if response:
+                response.close()
         metadata = None
         soup = BeautifulSoup(xml_metadata, 'lxml')
         tds = soup.find_all('td')
@@ -253,7 +242,10 @@ def get_filter_metadata(instrument, filter_name):
         if result is not None:
             result.adjust_resolving_power()
     else:
-        result = filter_metadata(repaired_inst, repaired_filters)
+        global gofr
+        result = filter_metadata(
+            repaired_inst, repaired_filters, gofr.query_session
+        )
         if repaired_inst in fm:
             temp = fm[repaired_inst]
             temp[repaired_filters] = result
@@ -482,7 +474,12 @@ class CachingObsFileRelationship(GemObsFileRelationship):
         # will eventually be used - as a global, accessible by all and
         # everywhere, and initialized before there's a config
         self._tap_client = None
+        self._session = mc.get_endpoint_session()
         self._logger = logging.getLogger(__name__)
+
+    @property
+    def query_session(self):
+        return self._session
 
     @property
     def tap_client(self):
