@@ -243,7 +243,12 @@ def _augment(cadc_client, plane, uri, f_name, product_type):
     temp = None
     if uri in plane.artifacts:
         temp = plane.artifacts[uri]
-    logging.error(f_name)
     plane.artifacts[uri] = mc.get_artifact_metadata_client(
-        cadc_client, f_name, product_type, ReleaseType.DATA, uri, temp
+        cadc_client,
+        f_name,
+        product_type,
+        ReleaseType.DATA,
+        ARCHIVE,
+        uri,
+        temp,
     )

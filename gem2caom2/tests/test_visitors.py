@@ -122,7 +122,13 @@ def test_preview_augment():
                     'caom2pipe.manage_composable.get_artifact_metadata_client'
                 ) as art_mock:
             def _art_mock(
-                    ignore_client, fqn, product_type, release_type, uri, temp
+                    ignore_client,
+                    f_name,
+                    product_type,
+                    release_type,
+                    archive,
+                    uri,
+                    temp,
             ):
                 if '_th' in uri:
                     return Artifact(
