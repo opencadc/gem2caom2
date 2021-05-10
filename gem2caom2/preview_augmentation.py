@@ -202,10 +202,9 @@ def _do_prev(obs_id, working_dir, plane, cadc_client, stream, observable):
                 )
 
             _augment(
-                cadc_client,
                 plane,
                 gem_name.prev_uri,
-                os.path.basename(preview_fqn),
+                preview_fqn,
                 ProductType.PREVIEW,
             )
             count = 1
@@ -217,12 +216,10 @@ def _do_prev(obs_id, working_dir, plane, cadc_client, stream, observable):
             if thumb_fig is not None:
                 count = 1
 
-            thumb_uri = gem_name.thumb_uri
             _augment(
-                cadc_client,
                 plane,
-                thumb_uri,
-                os.path.basename(thumb_fqn),
+                gem_name.thumb_uri,
+                thumb_fqn,
                 ProductType.THUMBNAIL,
             )
             if cadc_client is not None:
@@ -232,23 +229,22 @@ def _do_prev(obs_id, working_dir, plane, cadc_client, stream, observable):
                     thumb,
                     ARCHIVE,
                     stream,
-                    MIME_TYPE, mime_encoding=None,
+                    MIME_TYPE,
+                    mime_encoding=None,
                     metrics=observable.metrics,
                 )
             count += 1
     return count
 
 
-def _augment(cadc_client, plane, uri, f_name, product_type):
+def _augment(plane, uri, fqn, product_type):
     temp = None
     if uri in plane.artifacts:
         temp = plane.artifacts[uri]
-    plane.artifacts[uri] = mc.get_artifact_metadata_client(
-        cadc_client,
-        f_name,
+    plane.artifacts[uri] = mc.get_artifact_metadata(
+        fqn,
         product_type,
         ReleaseType.DATA,
-        ARCHIVE,
         uri,
         temp,
     )

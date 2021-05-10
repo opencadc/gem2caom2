@@ -119,16 +119,14 @@ def test_preview_augment():
         with patch('caom2pipe.manage_composable.http_get') as http_mock, \
                 patch('caom2pipe.manage_composable.data_put') as ad_put_mock, \
                 patch(
-                    'caom2pipe.manage_composable.get_artifact_metadata_client'
+                    'caom2pipe.manage_composable.get_artifact_metadata'
                 ) as art_mock:
             def _art_mock(
-                    ignore_client,
-                    f_name,
+                    fqn,
                     product_type,
                     release_type,
-                    archive,
                     uri,
-                    temp,
+                    art_ignore,
             ):
                 if '_th' in uri:
                     return Artifact(
@@ -146,7 +144,7 @@ def test_preview_augment():
                         ReleaseType.DATA,
                         'image/jpeg',
                         12,
-                        ChecksumURI( 'md5:12' ),
+                        ChecksumURI('md5:12'),
                     )
 
             cadc_client_mock.return_value.data_get.return_value = \
