@@ -202,10 +202,7 @@ def _do_prev(obs_id, working_dir, plane, cadc_client, stream, observable):
                 )
 
             _augment(
-                plane,
-                gem_name.prev_uri,
-                preview_fqn,
-                ProductType.PREVIEW,
+                plane, gem_name.prev_uri, preview_fqn, ProductType.PREVIEW
             )
             count = 1
 
@@ -217,10 +214,7 @@ def _do_prev(obs_id, working_dir, plane, cadc_client, stream, observable):
                 count = 1
 
             _augment(
-                plane,
-                gem_name.thumb_uri,
-                thumb_fqn,
-                ProductType.THUMBNAIL,
+                plane, gem_name.thumb_uri, thumb_fqn, ProductType.THUMBNAIL
             )
             if cadc_client is not None:
                 mc.data_put(

@@ -128,34 +128,51 @@ def _do_prev(obs_id, working_dir, plane, cadc_client, observable):
     """
     count = 0
     gem_name = GemName(obs_id=obs_id, file_id=plane.product_id)
-    preview = gem_name.prev
-    if observable.rejected.is_no_preview(preview):
-        logging.info(f'Stopping visit because no preview exists for {preview} '
-                     f'in observation {obs_id}.')
-        observable.rejected.record(mc.Rejected.NO_PREVIEW, preview)
+    if observable.rejected.is_no_preview(gem_name.prev):
+        logging.info(
+            f'Stopping visit because no preview exists for {gem_name.prev} '
+            f'in observation {obs_id}.'
+        )
+        observable.rejected.record(mc.Rejected.NO_PREVIEW, gem_name.prev)
         count += _check_for_delete(
-            preview, gem_name.prev_uri, observable, plane)
+            gem_name.prev, gem_name.prev_uri, observable, plane
+        )
     else:
-        preview_fqn = os.path.join(working_dir, preview)
+        preview_fqn = os.path.join(working_dir, gem_name.prev)
         thumb = gem_name.thumb
         thumb_fqn = os.path.join(working_dir, thumb)
 
         # get the file - try disk first, then CADC, then Gemini
         if not os.access(preview_fqn, 0) and cadc_client is not None:
             try:
-                mc.data_get(cadc_client, working_dir, preview, ARCHIVE,
-                            observable.metrics)
+                mc.client_get(
+                    cadc_client,
+                    working_dir,
+                    gem_name.prev,
+                    gem_name.prev_uri,
+                    observable.metrics,
+                )
             except mc.CadcException:
-                preview_url = '{}{}.fits'.format(PREVIEW_URL, plane.product_id)
+                preview_url = f'{PREVIEW_URL}{plane.product_id}.fits'
                 try:
                     mc.http_get(preview_url, preview_fqn)
-                    mc.client_put(cadc_client, working_dir, preview,
-                                  gem_name.prev_uri,
-                                  metrics=observable.metrics)
+                    mc.client_put(
+                        cadc_client,
+                        working_dir,
+                        gem_name.prev,
+                        gem_name.prev_uri,
+                        metrics=observable.metrics,
+                    )
                 except Exception as e:
-                    if observable.rejected.check_and_record(str(e), preview):
+                    if observable.rejected.check_and_record(
+                            str(e), gem_name.prev
+                    ):
                         count += _check_for_delete(
-                            preview, gem_name.prev_uri, observable, plane)
+                            gem_name.prev,
+                            gem_name.prev_uri,
+                            observable,
+                            plane,
+                        )
                         return count
                     else:
                         raise e
@@ -170,21 +187,30 @@ def _do_prev(obs_id, working_dir, plane, cadc_client, observable):
                     f'generation for {plane.product_id}')
 
             _augment(
-                plane, gem_name.prev_uri, preview_fqn, ProductType.PREVIEW)
+                plane, gem_name.prev_uri, preview_fqn, ProductType.PREVIEW
+            )
             count = 1
 
-            logging.debug(f'Generate thumbnail for file id {plane.product_id}')
+            logging.debug(
+                f'Generate thumbnail for file id {plane.product_id}'
+            )
             if os.access(thumb_fqn, 0):
                 os.remove(thumb_fqn)
             thumb_fig = image.thumbnail(preview_fqn, thumb_fqn, scale=0.25)
             if thumb_fig is not None:
                 count = 1
 
-            thumb_uri = gem_name.thumb_uri
-            _augment(plane, thumb_uri, thumb_fqn, ProductType.THUMBNAIL)
+            _augment(
+                plane, gem_name.thumb_uri, thumb_fqn, ProductType.THUMBNAIL
+            )
             if cadc_client is not None:
-                mc.client_put(cadc_client, working_dir, thumb,
-                              gem_name.thumb_uri, metrics=observable.metrics)
+                mc.client_put(
+                    cadc_client,
+                    working_dir,
+                    thumb,
+                    gem_name.thumb_uri,
+                    metrics=observable.metrics,
+                )
             count += 1
     return count
 
@@ -194,4 +220,5 @@ def _augment(plane, uri, fqn, product_type):
     if uri in plane.artifacts:
         temp = plane.artifacts[uri]
     plane.artifacts[uri] = mc.get_artifact_metadata(
-        fqn, product_type, ReleaseType.DATA, uri, temp)
+        fqn, product_type, ReleaseType.DATA, uri, temp
+    )
