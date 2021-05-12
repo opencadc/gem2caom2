@@ -206,8 +206,8 @@ def test_run_incremental_rc(client_mock, tap_mock, get_obs_mock, query_mock,
 
 
 @patch('gem2caom2.to_caom2')
-@patch('caom2pipe.execute_composable.CAOM2RepoClient')
-@patch('caom2pipe.execute_composable.CadcDataClient')
+@patch('caom2pipe.run_composable.CAOM2RepoClient')
+@patch('caom2pipe.manage_composable.CadcDataClient')
 @patch('caom2pipe.manage_composable.read_obs_from_file')
 @patch('caom2pipe.manage_composable.query_endpoint')
 @patch('gem2caom2.external_metadata.CadcTapClient')

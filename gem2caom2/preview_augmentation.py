@@ -100,15 +100,26 @@ def visit(observation, **kwargs):
 
     count = 0
     for plane in observation.planes.values():
-        if (plane.data_release is None or
-                plane.data_release > datetime.utcnow()):
-            logging.info(f'Plane {plane.product_id} is proprietary. No '
-                         f'preview access or thumbnail creation.')
+        if (
+            plane.data_release is None or
+                plane.data_release > datetime.utcnow()
+        ):
+            logging.info(
+                f'Plane {plane.product_id} is proprietary. No preview '
+                f'access or thumbnail creation.'
+            )
             continue
-        count += _do_prev(observation.observation_id, working_dir,
-                          plane, cadc_client, stream, observable)
-    logging.info('Completed preview augmentation for {}.'.format(
-        observation.observation_id))
+        count += _do_prev(
+            observation.observation_id,
+            working_dir,
+            plane,
+            cadc_client,
+            stream,
+            observable,
+        )
+    logging.info(
+        f'Completed preview augmentation for {observation.observation_id}.'
+    )
     return {'artifacts': count}
 
 
@@ -116,8 +127,10 @@ def _check_for_delete(file_name, uri, observable, plane):
     """If the preview file doesn't exist, but the artifact that represents it
     does, remove that artifact from the Observation instance."""
     result = 0
-    if (observable.rejected.is_no_preview(
-            file_name) and uri in plane.artifacts.keys()):
+    if (
+        observable.rejected.is_no_preview(file_name) and
+            uri in plane.artifacts.keys()
+    ):
         logging.warning(f'Removing artifact for non-existent preview {uri}')
         plane.artifacts.pop(uri)
         result = 1
@@ -133,11 +146,14 @@ def _do_prev(obs_id, working_dir, plane, cadc_client, stream, observable):
     gem_name = GemName(obs_id=obs_id, file_id=plane.product_id)
     preview = gem_name.prev
     if observable.rejected.is_no_preview(preview):
-        logging.info(f'Stopping visit because no preview exists for {preview} '
-                     f'in observation {obs_id}.')
+        logging.info(
+            f'Stopping visit because no preview exists for {preview} in '
+            f'observation {obs_id}.'
+        )
         observable.rejected.record(mc.Rejected.NO_PREVIEW, preview)
         count += _check_for_delete(
-            preview, gem_name.prev_uri, observable, plane)
+            preview, gem_name.prev_uri, observable, plane
+        )
     else:
         preview_fqn = os.path.join(working_dir, preview)
         thumb = gem_name.thumb
@@ -146,15 +162,27 @@ def _do_prev(obs_id, working_dir, plane, cadc_client, stream, observable):
         # get the file - try disk first, then CADC, then Gemini
         if not os.access(preview_fqn, 0) and cadc_client is not None:
             try:
-                mc.data_get(cadc_client, working_dir, preview, ARCHIVE,
-                            observable.metrics)
+                mc.data_get(
+                    cadc_client,
+                    working_dir,
+                    preview,
+                    ARCHIVE,
+                    observable.metrics,
+                )
             except mc.CadcException:
-                preview_url = '{}{}.fits'.format(PREVIEW_URL, plane.product_id)
+                preview_url = f'{PREVIEW_URL}{plane.product_id}.fits'
                 try:
                     mc.http_get(preview_url, preview_fqn)
-                    mc.data_put(cadc_client, working_dir, preview, ARCHIVE,
-                                stream, MIME_TYPE, mime_encoding=None,
-                                metrics=observable.metrics)
+                    mc.data_put(
+                        cadc_client,
+                        working_dir,
+                        preview,
+                        ARCHIVE,
+                        stream,
+                        MIME_TYPE,
+                        mime_encoding=None,
+                        metrics=observable.metrics,
+                    )
                 except Exception as e:
                     if observable.rejected.check_and_record(str(e), preview):
                         count += _check_for_delete(
@@ -170,10 +198,12 @@ def _do_prev(obs_id, working_dir, plane, cadc_client, stream, observable):
             except PermissionError as e:
                 raise mc.CadcException(
                     f'Should not have reached this point in thumbnail '
-                    f'generation for {plane.product_id}')
+                    f'generation for {plane.product_id}'
+                )
 
             _augment(
-                plane, gem_name.prev_uri, preview_fqn, ProductType.PREVIEW)
+                plane, gem_name.prev_uri, preview_fqn, ProductType.PREVIEW
+            )
             count = 1
 
             logging.debug(f'Generate thumbnail for file id {plane.product_id}')
@@ -183,12 +213,20 @@ def _do_prev(obs_id, working_dir, plane, cadc_client, stream, observable):
             if thumb_fig is not None:
                 count = 1
 
-            thumb_uri = gem_name.thumb_uri
-            _augment(plane, thumb_uri, thumb_fqn, ProductType.THUMBNAIL)
+            _augment(
+                plane, gem_name.thumb_uri, thumb_fqn, ProductType.THUMBNAIL
+            )
             if cadc_client is not None:
-                mc.data_put(cadc_client, working_dir, thumb, ARCHIVE, stream,
-                            MIME_TYPE, mime_encoding=None,
-                            metrics=observable.metrics)
+                mc.data_put(
+                    cadc_client,
+                    working_dir,
+                    thumb,
+                    ARCHIVE,
+                    stream,
+                    MIME_TYPE,
+                    mime_encoding=None,
+                    metrics=observable.metrics,
+                )
             count += 1
     return count
 
@@ -198,4 +236,9 @@ def _augment(plane, uri, fqn, product_type):
     if uri in plane.artifacts:
         temp = plane.artifacts[uri]
     plane.artifacts[uri] = mc.get_artifact_metadata(
-        fqn, product_type, ReleaseType.DATA, uri, temp)
+        fqn,
+        product_type,
+        ReleaseType.DATA,
+        uri,
+        temp,
+    )

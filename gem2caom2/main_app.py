@@ -3148,6 +3148,11 @@ def _update_chunk_energy_gmos(chunk, data_product_type, obs_id, filter_name,
     # The Hartmann ‘filter’ is actually a mask that blocks off half of the
     # light path to the detector but is ‘open’ on the other half.  So same
     # ‘bandpass’ as ‘open’ or ‘empty’.    It’s used when focusing the camera.
+    #
+    # Blocking filters are only used when doing multi-object spectroscopy.  By
+    # reducing the wavelength coverage they are able to add a second row of
+    # slits to the mask since the spectra then don’t cover the entire width of
+    # the detector in the dispersion direction.
 
     # 0 = min
     # 1 = max

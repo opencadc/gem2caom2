@@ -115,8 +115,10 @@ def pytest_generate_tests(metafunc):
     metafunc.parametrize('test_name', obs_id_list)
 
 
+@patch('gem2caom2.external_metadata.get_obs_metadata')
 @patch('gem2caom2.external_metadata.CadcTapClient')
-def test_multi_plane(tap_mock, test_name):
+def test_multi_plane(tap_mock, gemini_client_mock, test_name):
+    gemini_client_mock.side_effect = gem_mocks.mock_get_obs_metadata
     getcwd_orig = os.getcwd
     os.getcwd = Mock(return_value=gem_mocks.TEST_DATA_DIR)
     try:
@@ -134,15 +136,13 @@ def test_multi_plane(tap_mock, test_name):
         plugin = gem_mocks.PLUGIN
 
         with patch('caom2utils.fits2caom2.CadcDataClient') as data_client_mock, \
-                patch('gem2caom2.external_metadata.requests.Session.get') as \
-                gemini_client_mock, \
                 patch('gem2caom2.external_metadata.get_pi_metadata') as \
                 gemini_pi_mock, \
-                patch('caom2pipe.astro_composable.get_vo_table') as svofps_mock:
+                patch('caom2pipe.astro_composable.get_vo_table_session') as \
+                        svofps_mock:
 
             data_client_mock.return_value.get_file_info.side_effect = \
                 gem_mocks.mock_get_file_info
-            gemini_client_mock.side_effect = _request_mock
             gemini_pi_mock.side_effect = gem_mocks.mock_get_pi_metadata
             svofps_mock.side_effect = gem_mocks.mock_get_votable
 
