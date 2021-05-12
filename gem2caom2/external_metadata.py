@@ -174,13 +174,10 @@ def get_obs_metadata(file_id):
         # Open the URL and fetch the JSON document for the observation
         response = None
         try:
-            global gofr
-            response = gofr.query_session.get(gemini_url, timeout=20)
+            response = mc.query_endpoint_session(
+                gemini_url, gofr.query_session
+            )
             metadata = response.json()
-        except Exception as e:
-            raise mc.CadcException(
-                f'Unable to download Gemini observation metadata from '
-                f'{gemini_url} because {str(e)}')
         finally:
             if response is not None:
                 response.close()
@@ -200,13 +197,10 @@ def get_pi_metadata(program_id):
         # Open the URL and fetch the JSON document for the observation
         response = None
         try:
-            global gofr
-            response = gofr.query_session.get(program_url, timeout=20)
+            response = mc.query_endpoint_session(
+                program_url, gofr.query_session
+            )
             xml_metadata = response.text
-        except Exception as e:
-            raise mc.CadcException(
-                'Unable to download Gemini observation metadata from {} '
-                'because {}'.format(program_url, str(e)))
         finally:
             if response:
                 response.close()
