@@ -93,6 +93,8 @@ class IncrementalSource(dsc.DataSource):
     def __init__(self):
         super(IncrementalSource, self).__init__(config=None)
         self._max_records_encountered = False
+        self._encounter_start = None
+        self._encounter_end = None
         self._logger = logging.getLogger(__name__)
 
     def get_time_box_work(self, prev_exec_time, exec_time):
@@ -138,13 +140,20 @@ class IncrementalSource(dsc.DataSource):
         finally:
             if response is not None:
                 response.close()
-        if len(entries) == 2500:
+        if len(entries) == 10000:
             self._max_records_encountered = True
+            self._encounter_start = prev_exec_time
+            self._encounter_end = exec_time
         self._logger.debug('End get_time_box_work.')
         return entries
 
     @property
     def max_records_encountered(self):
+        if self._max_records_encountered:
+            self._logger.error(
+                f'Max records window {self._encounter_start} to '
+                f'{self._encounter_end}.'
+            )
         return self._max_records_encountered
 
 

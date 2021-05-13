@@ -72,6 +72,8 @@ import sys
 import tempfile
 import traceback
 
+from datetime import datetime
+
 from caom2pipe import manage_composable as mc
 from caom2pipe import name_builder_composable as nbc
 from caom2pipe import run_composable as rc
@@ -205,20 +207,30 @@ def _run_by_incremental():
     """
     config = mc.Config()
     config.get_executors()
+    state = mc.State(config.state_fqn)
+    end_timestamp_s = state.bookmarks.get(data_source.GEM_BOOKMARK).get(
+        'end_timestamp', datetime.now()
+    )
+    end_timestamp_dt = mc.make_time_tz(end_timestamp_s)
+    logging.info(f'{main_app.APPLICATION} will end at {end_timestamp_s}')
     external_metadata.init_global(config=config)
     name_builder = nbc.FileNameBuilder(gem_name.GemName)
     incremental_source = data_source.IncrementalSource()
     meta_visitors = _define_meta_visitors(config)
-    result = rc.run_by_state(config=None, name_builder=name_builder,
-                             command_name=main_app.APPLICATION,
-                             bookmark_name=data_source.GEM_BOOKMARK,
-                             meta_visitors=meta_visitors,
-                             data_visitors=DATA_VISITORS,
-                             end_time=None, source=incremental_source,
-                             chooser=None)
+    result = rc.run_by_state(
+        config=config,
+        name_builder=name_builder,
+        command_name=main_app.APPLICATION,
+        bookmark_name=data_source.GEM_BOOKMARK,
+        meta_visitors=meta_visitors,
+        data_visitors=DATA_VISITORS,
+        end_time=end_timestamp_dt,
+        source=incremental_source,
+        chooser=None,
+    )
     if incremental_source.max_records_encountered:
         logging.warning('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-        logging.warning('Encountered more than 2500 records for a night')
+        logging.warning('Encountered maximum records!!')
         logging.warning('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
         result |= -1
     return result
