@@ -1470,8 +1470,16 @@ def update(observation, **kwargs):
                         # BIASes and DARKs for all instruments should ignore
                         # spatial and spectral wcs
                         if observation.type in ['BIAS', 'DARK']:
-                            if c.naxis == 2 and c.position is not None:
-                                c.naxis = None
+                            if c.position is not None:
+                                if c.naxis == 2:
+                                    c.naxis = None
+                                if c.naxis == 3 and c.time is not None:
+                                    if c.time.axis.function.naxis == 1:
+                                        c.naxis = None
+                                        c.time_axis = None
+                                    else:
+                                        c.naxis = 1
+                                        c.time_axis = 1
                             cc.reset_energy(c)
                             cc.reset_position(c)
 
