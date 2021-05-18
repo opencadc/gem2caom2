@@ -41,11 +41,11 @@
         <caom2:producer>NOAO-IRAF FITS Image Kernel July 2003</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/filepre=gS20190301S0556_bias.fits</caom2:reference>
         <caom2:inputs>
-          <caom2:planeURI>caom:GEMINI/test_data_label/S20190301S0559</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/S20190301S0558</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/test_data_label/S20190301S0556</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/S20190301S0559</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/test_data_label/S20190301S0557</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/test_data_label/S20190301S0560</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/S20190301S0558</caom2:planeURI>
         </caom2:inputs>
       </caom2:provenance>
       <caom2:artifacts>

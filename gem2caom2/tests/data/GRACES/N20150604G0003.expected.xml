@@ -24,8 +24,8 @@
   <caom2:instrument>
     <caom2:name>GRACES</caom2:name>
     <caom2:keywords>
-      <caom2:keyword>Spectroscopy,</caom2:keyword>
       <caom2:keyword>star+sky</caom2:keyword>
+      <caom2:keyword>Spectroscopy,</caom2:keyword>
     </caom2:keywords>
   </caom2:instrument>
   <caom2:planes>
@@ -62,28 +62,6 @@
               <caom2:name>1</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-b6f7-75009d6da12e" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:energy>
-                    <caom2:axis>
-                      <caom2:axis>
-                        <caom2:ctype>WAVE</caom2:ctype>
-                        <caom2:cunit>um</caom2:cunit>
-                      </caom2:axis>
-                      <caom2:range>
-                        <caom2:start>
-                          <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>0.4</caom2:val>
-                        </caom2:start>
-                        <caom2:end>
-                          <caom2:pix>1.5</caom2:pix>
-                          <caom2:val>1.0</caom2:val>
-                        </caom2:end>
-                      </caom2:range>
-                    </caom2:axis>
-                    <caom2:specsys>TOPOCENT</caom2:specsys>
-                    <caom2:ssysobs>TOPOCENT</caom2:ssysobs>
-                    <caom2:ssyssrc>TOPOCENT</caom2:ssyssrc>
-                    <caom2:resolvingPower>67500.0</caom2:resolvingPower>
-                  </caom2:energy>
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
