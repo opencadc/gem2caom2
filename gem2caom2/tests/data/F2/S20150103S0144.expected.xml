@@ -60,8 +60,6 @@
               <caom2:name>1</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-9abe-bdf075f1d22a" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>3</caom2:naxis>
-                  <caom2:timeAxis>3</caom2:timeAxis>
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
