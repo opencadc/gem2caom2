@@ -3396,21 +3396,21 @@ def _reset_energy(observation_type, data_label, instrument, filter_name):
     om_filter_name = em.om.get('filter_name')
 
     if (
+        (observation_type in ['BIAS', 'DARK']) or
         (
-            (observation_type in ['BIAS', 'DARK']) or
-            (
-                instrument in [em.Inst.GMOS, em.Inst.GMOSN, em.Inst.GMOSS] and
-                observation_type in ['BIAS', 'MASK']
+            instrument in [em.Inst.GMOS, em.Inst.GMOSN, em.Inst.GMOSS] and
+            observation_type in ['BIAS', 'MASK']
+        ) or
+        (
+            om_filter_name is not None and (
+                'blank' in om_filter_name or 'Blank' in om_filter_name
             )
         ) or
-            (
-                om_filter_name is not None and ('blank' in om_filter_name or
-                                                'Blank' in om_filter_name)
-            ) or
-            (
-                filter_name is not None and ('unknown' in filter_name or
-                                             filter_name == '')
+        (
+            filter_name is not None and (
+                'unknown' in filter_name or filter_name == ''
             )
+        )
     ):
         logging.info(
             'No chunk energy for {} obs type {} filter name {}'.format(
