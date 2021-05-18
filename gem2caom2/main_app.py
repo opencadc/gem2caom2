@@ -426,9 +426,11 @@ def get_dec(header):
     elif instrument is em.Inst.OSCIR:
         ra, dec = _get_sky_coord(header, 'RA_TEL', 'DEC_TEL')
         result = dec
-    elif instrument in [em.Inst.BHROS, em.Inst.NIFS, em.Inst.TEXES]:
+    elif instrument in [em.Inst.BHROS, em.Inst.TEXES]:
         # bHROS, TEXES ra/dec not in json
         # NIFS ra/dec not reliable in json
+        # DB - 18-05-21
+        # NIFS removed from 'if' statement
         result = header.get('DEC')
     elif instrument is em.Inst.CIRPASS:
         # DB - 06-03-19 - Must use FITS header info for most WCS info
@@ -716,9 +718,11 @@ def get_ra(header):
     elif instrument is em.Inst.OSCIR:
         ra, dec = _get_sky_coord(header, 'RA_TEL', 'DEC_TEL')
         result = ra
-    elif instrument in [em.Inst.BHROS, em.Inst.NIFS, em.Inst.TEXES]:
+    elif instrument in [em.Inst.BHROS, em.Inst.TEXES]:
         # bHROS, TEXES: ra/dec not in json
         # DB - 05-03-19 - NIFS: ra/dec not reliable in json
+        # DB - 18-05-21
+        # NIFS removed from 'if' statement
         result = header.get('RA')
     elif instrument is em.Inst.CIRPASS:
         # DB - 06-03-19 - Must use FITS header info for most WCS info
@@ -3881,6 +3885,11 @@ def _update_chunk_position(chunk, header, instrument, extension, obs_id,
         # DB 05-03-19 - persist NAXIS values for NIFS
         header['NAXIS1'] = n_axis1
         header['NAXIS2'] = n_axis2
+        # DB 18-05-21
+        # EQUINOX and RADESYS values should be fine for all NIFS files since
+        # that’s what is used for all other Gemini data as far as I’m aware.
+        header['EQUINOX'] = 2000.0
+        header['RADESYS'] = 'FK5'
     if instrument is em.Inst.CIRPASS:
         # So perhaps try:
         #     NAXIS1 = 33
