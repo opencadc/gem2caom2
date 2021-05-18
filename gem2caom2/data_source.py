@@ -117,6 +117,7 @@ class IncrementalSource(dsc.DataSource):
               f'?orderby=entrytime'
 
         # needs to be ordered by timestamps when processed
+        self._logger.info(f'Querying {url}')
         entries = deque()
         response = None
         try:

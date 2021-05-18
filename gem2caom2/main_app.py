@@ -1466,6 +1466,15 @@ def update(observation, **kwargs):
                                     c.naxis = 2
                                     c.time_axis = None
 
+                        # DB 04-17-21
+                        # BIASes and DARKs for all instruments should ignore
+                        # spatial and spectral wcs
+                        if observation.type in ['BIAS', 'DARK']:
+                            if c.naxis == 2 and c.position is not None:
+                                c.naxis = None
+                            cc.reset_energy(c)
+                            cc.reset_position(c)
+
                 if isinstance(observation, DerivedObservation):
                     cc.update_plane_provenance(plane, headers[1:], 'IMCMB',
                                                COLLECTION,

@@ -58,66 +58,6 @@
               <caom2:name>1</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="00000000-0000-0000-85aa-c169dedf77ff" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>2</caom2:naxis>
-                  <caom2:positionAxis1>1</caom2:positionAxis1>
-                  <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:position>
-                    <caom2:axis>
-                      <caom2:axis1>
-                        <caom2:ctype>RA---TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis1>
-                      <caom2:axis2>
-                        <caom2:ctype>DEC--TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis2>
-                      <caom2:function>
-                        <caom2:dimension>
-                          <caom2:naxis1>2048</caom2:naxis1>
-                          <caom2:naxis2>2048</caom2:naxis2>
-                        </caom2:dimension>
-                        <caom2:refCoord>
-                          <caom2:coord1>
-                            <caom2:pix>1024.5</caom2:pix>
-                            <caom2:val>209.76791667</caom2:val>
-                          </caom2:coord1>
-                          <caom2:coord2>
-                            <caom2:pix>1024.5</caom2:pix>
-                            <caom2:val>-58.44416667</caom2:val>
-                          </caom2:coord2>
-                        </caom2:refCoord>
-                        <caom2:cd11>-2.16e-05</caom2:cd11>
-                        <caom2:cd12>-0.0</caom2:cd12>
-                        <caom2:cd21>0.0</caom2:cd21>
-                        <caom2:cd22>2.16e-05</caom2:cd22>
-                      </caom2:function>
-                    </caom2:axis>
-                    <caom2:coordsys>FK5</caom2:coordsys>
-                    <caom2:equinox>2000.0</caom2:equinox>
-                  </caom2:position>
-                  <caom2:energy>
-                    <caom2:axis>
-                      <caom2:axis>
-                        <caom2:ctype>WAVE</caom2:ctype>
-                        <caom2:cunit>um</caom2:cunit>
-                      </caom2:axis>
-                      <caom2:range>
-                        <caom2:start>
-                          <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>1.1697916666666301</caom2:val>
-                        </caom2:start>
-                        <caom2:end>
-                          <caom2:pix>1.5</caom2:pix>
-                          <caom2:val>1.32613949843257</caom2:val>
-                        </caom2:end>
-                      </caom2:range>
-                    </caom2:axis>
-                    <caom2:specsys>TOPOCENT</caom2:specsys>
-                    <caom2:ssysobs>TOPOCENT</caom2:ssysobs>
-                    <caom2:ssyssrc>TOPOCENT</caom2:ssyssrc>
-                    <caom2:bandpassName>J</caom2:bandpassName>
-                    <caom2:resolvingPower>7.981982023376332</caom2:resolvingPower>
-                  </caom2:energy>
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>

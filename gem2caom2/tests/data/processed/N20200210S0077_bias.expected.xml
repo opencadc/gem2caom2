@@ -41,56 +41,56 @@
         <caom2:producer>NOAO-IRAF FITS Image Kernel July 2003</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/filepre=N20200210S0077_bias.fits</caom2:reference>
         <caom2:inputs>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200215S0160</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200214S1423</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200215S0158</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200218S0098</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200220S0420</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/test_data_label/N20200217S0700</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200214S1422</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200210S0078</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200217S0697</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200221S0431</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/test_data_label/N20200215S0159</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200218S0096</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200218S0097</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200219S0288</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200219S0289</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200219S0290</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200219S0291</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200219S0287</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200217S0697</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200214S1422</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/test_data_label/N20200214S1425</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/test_data_label/N20200215S0161</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200218S0097</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200217S0698</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200219S0291</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200219S0290</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200223S0386</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200220S0422</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200223S0384</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200222S0728</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200214S1426</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/test_data_label/N20200210S0080</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200223S0387</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200222S0729</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200217S0699</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200219S0287</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200219S0288</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200210S0081</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200220S0419</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200220S0421</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200210S0077</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200217S0701</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200218S0099</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200218S0096</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200222S0727</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200222S0730</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200223S0385</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200223S0388</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200215S0160</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/test_data_label/N20200222S0726</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200220S0418</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200221S0427</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200210S0079</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200221S0430</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200223S0387</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/test_data_label/N20200221S0428</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200218S0099</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200222S0730</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200221S0427</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200214S1426</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200220S0419</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200222S0727</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200222S0728</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200217S0698</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/test_data_label/N20200215S0157</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200219S0289</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/test_data_label/N20200214S1424</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200218S0095</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200218S0098</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200220S0418</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/test_data_label/N20200221S0429</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200221S0431</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200215S0158</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200214S1423</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200223S0388</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200220S0422</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200210S0077</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200223S0385</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200220S0421</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200220S0420</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200221S0430</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200210S0081</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200223S0384</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200218S0095</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200223S0386</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200217S0699</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200217S0701</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200210S0078</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200222S0729</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200210S0079</caom2:planeURI>
         </caom2:inputs>
       </caom2:provenance>
       <caom2:artifacts>
@@ -110,43 +110,6 @@
               <caom2:name>1</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="89f3481a-95a0-4a74-bbbb-6f3aa1f3d946" caom2:lastModified="2020-02-25T20:36:31.230" caom2:maxLastModified="2020-02-25T20:36:31.230" caom2:metaChecksum="md5:86f03ffa7f92f717cfd6fa757f485b55" caom2:accMetaChecksum="md5:c8cdb272e292cc2a3cb47dfacb35596a" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>2</caom2:naxis>
-                  <caom2:positionAxis1>1</caom2:positionAxis1>
-                  <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:position>
-                    <caom2:axis>
-                      <caom2:axis1>
-                        <caom2:ctype>RA---TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis1>
-                      <caom2:axis2>
-                        <caom2:ctype>DEC--TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis2>
-                      <caom2:function>
-                        <caom2:dimension>
-                          <caom2:naxis1>128</caom2:naxis1>
-                          <caom2:naxis2>1024</caom2:naxis2>
-                        </caom2:dimension>
-                        <caom2:refCoord>
-                          <caom2:coord1>
-                            <caom2:pix>783.547575549149</caom2:pix>
-                            <caom2:val>142.282187076502</caom2:val>
-                          </caom2:coord1>
-                          <caom2:coord2>
-                            <caom2:pix>512.953796429864</caom2:pix>
-                            <caom2:val>19.6070601247245</caom2:val>
-                          </caom2:coord2>
-                        </caom2:refCoord>
-                        <caom2:cd11>8.89820688903914e-05</caom2:cd11>
-                        <caom2:cd12>2.70538318975813e-06</caom2:cd12>
-                        <caom2:cd21>-1.08146406137937e-05</caom2:cd21>
-                        <caom2:cd22>2.22777129741309e-05</caom2:cd22>
-                      </caom2:function>
-                    </caom2:axis>
-                    <caom2:coordsys>FK5</caom2:coordsys>
-                    <caom2:equinox>2000.0</caom2:equinox>
-                  </caom2:position>
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
@@ -177,43 +140,6 @@
               <caom2:name>10</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="a9015540-a698-4ec5-9e96-b152c1973eae" caom2:lastModified="2020-02-25T20:36:31.230" caom2:maxLastModified="2020-02-25T20:36:31.230" caom2:metaChecksum="md5:3956ba954e2536b72b039a5740a69fee" caom2:accMetaChecksum="md5:d2ab8d22535e8b48d9e69b908d1455ab" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>2</caom2:naxis>
-                  <caom2:positionAxis1>1</caom2:positionAxis1>
-                  <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:position>
-                    <caom2:axis>
-                      <caom2:axis1>
-                        <caom2:ctype>RA---TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis1>
-                      <caom2:axis2>
-                        <caom2:ctype>DEC--TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis2>
-                      <caom2:function>
-                        <caom2:dimension>
-                          <caom2:naxis1>128</caom2:naxis1>
-                          <caom2:naxis2>1024</caom2:naxis2>
-                        </caom2:dimension>
-                        <caom2:refCoord>
-                          <caom2:coord1>
-                            <caom2:pix>-401.02192101216</caom2:pix>
-                            <caom2:val>142.282187076502</caom2:val>
-                          </caom2:coord1>
-                          <caom2:coord2>
-                            <caom2:pix>511.683117148057</caom2:pix>
-                            <caom2:val>19.6070601247245</caom2:val>
-                          </caom2:coord2>
-                        </caom2:refCoord>
-                        <caom2:cd11>8.89934355873775e-05</caom2:cd11>
-                        <caom2:cd12>2.71085884759402e-06</caom2:cd12>
-                        <caom2:cd21>-1.0817632552456e-05</caom2:cd21>
-                        <caom2:cd22>2.22806424628985e-05</caom2:cd22>
-                      </caom2:function>
-                    </caom2:axis>
-                    <caom2:coordsys>FK5</caom2:coordsys>
-                    <caom2:equinox>2000.0</caom2:equinox>
-                  </caom2:position>
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
@@ -244,43 +170,6 @@
               <caom2:name>11</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="28c7a7f2-74a0-4a53-9154-dcc2f89797ef" caom2:lastModified="2020-02-25T20:36:31.230" caom2:maxLastModified="2020-02-25T20:36:31.230" caom2:metaChecksum="md5:54f61845b9a808ba4b757897d068f3c3" caom2:accMetaChecksum="md5:d40dd07d8717e185dd2cf13396bdf7c0" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>2</caom2:naxis>
-                  <caom2:positionAxis1>1</caom2:positionAxis1>
-                  <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:position>
-                    <caom2:axis>
-                      <caom2:axis1>
-                        <caom2:ctype>RA---TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis1>
-                      <caom2:axis2>
-                        <caom2:ctype>DEC--TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis2>
-                      <caom2:function>
-                        <caom2:dimension>
-                          <caom2:naxis1>128</caom2:naxis1>
-                          <caom2:naxis2>1024</caom2:naxis2>
-                        </caom2:dimension>
-                        <caom2:refCoord>
-                          <caom2:coord1>
-                            <caom2:pix>-529.021921012161</caom2:pix>
-                            <caom2:val>142.282187076502</caom2:val>
-                          </caom2:coord1>
-                          <caom2:coord2>
-                            <caom2:pix>511.683117148052</caom2:pix>
-                            <caom2:val>19.6070601247245</caom2:val>
-                          </caom2:coord2>
-                        </caom2:refCoord>
-                        <caom2:cd11>8.8993435587377e-05</caom2:cd11>
-                        <caom2:cd12>2.71085884759402e-06</caom2:cd12>
-                        <caom2:cd21>-1.08176325524562e-05</caom2:cd21>
-                        <caom2:cd22>2.22806424628985e-05</caom2:cd22>
-                      </caom2:function>
-                    </caom2:axis>
-                    <caom2:coordsys>FK5</caom2:coordsys>
-                    <caom2:equinox>2000.0</caom2:equinox>
-                  </caom2:position>
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
@@ -311,43 +200,6 @@
               <caom2:name>12</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="3611e0e5-084b-4f0f-b614-a79721fc3f53" caom2:lastModified="2020-02-25T20:36:31.230" caom2:maxLastModified="2020-02-25T20:36:31.230" caom2:metaChecksum="md5:9470a752ba495c0c535320eaaae20bfb" caom2:accMetaChecksum="md5:c724009204c598b8d8024b4dd1ee3325" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>2</caom2:naxis>
-                  <caom2:positionAxis1>1</caom2:positionAxis1>
-                  <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:position>
-                    <caom2:axis>
-                      <caom2:axis1>
-                        <caom2:ctype>RA---TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis1>
-                      <caom2:axis2>
-                        <caom2:ctype>DEC--TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis2>
-                      <caom2:function>
-                        <caom2:dimension>
-                          <caom2:naxis1>128</caom2:naxis1>
-                          <caom2:naxis2>1024</caom2:naxis2>
-                        </caom2:dimension>
-                        <caom2:refCoord>
-                          <caom2:coord1>
-                            <caom2:pix>-656.771921012169</caom2:pix>
-                            <caom2:val>142.282187076502</caom2:val>
-                          </caom2:coord1>
-                          <caom2:coord2>
-                            <caom2:pix>511.683117148059</caom2:pix>
-                            <caom2:val>19.6070601247245</caom2:val>
-                          </caom2:coord2>
-                        </caom2:refCoord>
-                        <caom2:cd11>8.89934355873754e-05</caom2:cd11>
-                        <caom2:cd12>2.71085884759404e-06</caom2:cd12>
-                        <caom2:cd21>-1.08176325524556e-05</caom2:cd21>
-                        <caom2:cd22>2.22806424628985e-05</caom2:cd22>
-                      </caom2:function>
-                    </caom2:axis>
-                    <caom2:coordsys>FK5</caom2:coordsys>
-                    <caom2:equinox>2000.0</caom2:equinox>
-                  </caom2:position>
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
@@ -378,43 +230,6 @@
               <caom2:name>2</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="da95b9d9-7fc1-40a6-973f-0ba2eb54d264" caom2:lastModified="2020-02-25T20:36:31.230" caom2:maxLastModified="2020-02-25T20:36:31.230" caom2:metaChecksum="md5:4ac284c3dba102980fb75f620d2b3d03" caom2:accMetaChecksum="md5:4ea4eb21012884ce5ea36995db3abcc4" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>2</caom2:naxis>
-                  <caom2:positionAxis1>1</caom2:positionAxis1>
-                  <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:position>
-                    <caom2:axis>
-                      <caom2:axis1>
-                        <caom2:ctype>RA---TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis1>
-                      <caom2:axis2>
-                        <caom2:ctype>DEC--TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis2>
-                      <caom2:function>
-                        <caom2:dimension>
-                          <caom2:naxis1>128</caom2:naxis1>
-                          <caom2:naxis2>1024</caom2:naxis2>
-                        </caom2:dimension>
-                        <caom2:refCoord>
-                          <caom2:coord1>
-                            <caom2:pix>655.54757554915</caom2:pix>
-                            <caom2:val>142.282187076502</caom2:val>
-                          </caom2:coord1>
-                          <caom2:coord2>
-                            <caom2:pix>512.953796432513</caom2:pix>
-                            <caom2:val>19.6070601247245</caom2:val>
-                          </caom2:coord2>
-                        </caom2:refCoord>
-                        <caom2:cd11>8.8982068890376e-05</caom2:cd11>
-                        <caom2:cd12>2.70538318975813e-06</caom2:cd12>
-                        <caom2:cd21>-1.08146406139202e-05</caom2:cd21>
-                        <caom2:cd22>2.22777129741309e-05</caom2:cd22>
-                      </caom2:function>
-                    </caom2:axis>
-                    <caom2:coordsys>FK5</caom2:coordsys>
-                    <caom2:equinox>2000.0</caom2:equinox>
-                  </caom2:position>
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
@@ -445,43 +260,6 @@
               <caom2:name>3</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="b3d22423-838c-4d3c-92d7-290039519733" caom2:lastModified="2020-02-25T20:36:31.230" caom2:maxLastModified="2020-02-25T20:36:31.230" caom2:metaChecksum="md5:52b612f4e8fa608a24175c9de9861edc" caom2:accMetaChecksum="md5:71ebdcd5444cc64e43ee52e40a1f91f7" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>2</caom2:naxis>
-                  <caom2:positionAxis1>1</caom2:positionAxis1>
-                  <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:position>
-                    <caom2:axis>
-                      <caom2:axis1>
-                        <caom2:ctype>RA---TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis1>
-                      <caom2:axis2>
-                        <caom2:ctype>DEC--TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis2>
-                      <caom2:function>
-                        <caom2:dimension>
-                          <caom2:naxis1>128</caom2:naxis1>
-                          <caom2:naxis2>1024</caom2:naxis2>
-                        </caom2:dimension>
-                        <caom2:refCoord>
-                          <caom2:coord1>
-                            <caom2:pix>527.54757554914</caom2:pix>
-                            <caom2:val>142.282187076502</caom2:val>
-                          </caom2:coord1>
-                          <caom2:coord2>
-                            <caom2:pix>512.953796429817</caom2:pix>
-                            <caom2:val>19.6070601247245</caom2:val>
-                          </caom2:coord2>
-                        </caom2:refCoord>
-                        <caom2:cd11>8.89820688903939e-05</caom2:cd11>
-                        <caom2:cd12>2.70538318975813e-06</caom2:cd12>
-                        <caom2:cd21>-1.08146406137904e-05</caom2:cd21>
-                        <caom2:cd22>2.22777129741309e-05</caom2:cd22>
-                      </caom2:function>
-                    </caom2:axis>
-                    <caom2:coordsys>FK5</caom2:coordsys>
-                    <caom2:equinox>2000.0</caom2:equinox>
-                  </caom2:position>
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
@@ -512,43 +290,6 @@
               <caom2:name>4</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="acc704d5-2601-4263-9ab0-a7c80089eab7" caom2:lastModified="2020-02-25T20:36:31.230" caom2:maxLastModified="2020-02-25T20:36:31.230" caom2:metaChecksum="md5:794e1173328aa20edcd9ffca3d3b7efc" caom2:accMetaChecksum="md5:c6767af7c625f6682d61e501964d084b" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>2</caom2:naxis>
-                  <caom2:positionAxis1>1</caom2:positionAxis1>
-                  <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:position>
-                    <caom2:axis>
-                      <caom2:axis1>
-                        <caom2:ctype>RA---TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis1>
-                      <caom2:axis2>
-                        <caom2:ctype>DEC--TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis2>
-                      <caom2:function>
-                        <caom2:dimension>
-                          <caom2:naxis1>128</caom2:naxis1>
-                          <caom2:naxis2>1024</caom2:naxis2>
-                        </caom2:dimension>
-                        <caom2:refCoord>
-                          <caom2:coord1>
-                            <caom2:pix>399.547575549139</caom2:pix>
-                            <caom2:val>142.282187076502</caom2:val>
-                          </caom2:coord1>
-                          <caom2:coord2>
-                            <caom2:pix>512.953796429812</caom2:pix>
-                            <caom2:val>19.6070601247245</caom2:val>
-                          </caom2:coord2>
-                        </caom2:refCoord>
-                        <caom2:cd11>8.89820688903945e-05</caom2:cd11>
-                        <caom2:cd12>2.70538318975813e-06</caom2:cd12>
-                        <caom2:cd21>-1.08146406137899e-05</caom2:cd21>
-                        <caom2:cd22>2.22777129741309e-05</caom2:cd22>
-                      </caom2:function>
-                    </caom2:axis>
-                    <caom2:coordsys>FK5</caom2:coordsys>
-                    <caom2:equinox>2000.0</caom2:equinox>
-                  </caom2:position>
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
@@ -579,43 +320,6 @@
               <caom2:name>5</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="be579ce7-0c11-48e7-9578-1cf662d304a8" caom2:lastModified="2020-02-25T20:36:31.230" caom2:maxLastModified="2020-02-25T20:36:31.230" caom2:metaChecksum="md5:f9a7b7fcd605378625de5ae8087aed3c" caom2:accMetaChecksum="md5:34795d77eea51ecc3362ddc3f20ad34e" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>2</caom2:naxis>
-                  <caom2:positionAxis1>1</caom2:positionAxis1>
-                  <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:position>
-                    <caom2:axis>
-                      <caom2:axis1>
-                        <caom2:ctype>RA---TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis1>
-                      <caom2:axis2>
-                        <caom2:ctype>DEC--TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis2>
-                      <caom2:function>
-                        <caom2:dimension>
-                          <caom2:naxis1>128</caom2:naxis1>
-                          <caom2:naxis2>1024</caom2:naxis2>
-                        </caom2:dimension>
-                        <caom2:refCoord>
-                          <caom2:coord1>
-                            <caom2:pix>255.898543893206</caom2:pix>
-                            <caom2:val>142.282187076502</caom2:val>
-                          </caom2:coord1>
-                          <caom2:coord2>
-                            <caom2:pix>512.05665975211</caom2:pix>
-                            <caom2:val>19.6070601247245</caom2:val>
-                          </caom2:coord2>
-                        </caom2:refCoord>
-                        <caom2:cd11>8.92460838842048e-05</caom2:cd11>
-                        <caom2:cd12>2.70565158953834e-06</caom2:cd12>
-                        <caom2:cd21>-1.08269255400256e-05</caom2:cd21>
-                        <caom2:cd22>2.23138340831917e-05</caom2:cd22>
-                      </caom2:function>
-                    </caom2:axis>
-                    <caom2:coordsys>FK5</caom2:coordsys>
-                    <caom2:equinox>2000.0</caom2:equinox>
-                  </caom2:position>
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
@@ -646,43 +350,6 @@
               <caom2:name>6</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="0d73c2a4-192c-40d0-ab26-68d2302c30cb" caom2:lastModified="2020-02-25T20:36:31.230" caom2:maxLastModified="2020-02-25T20:36:31.230" caom2:metaChecksum="md5:aac1804dd0f36bc51ea71095bba73325" caom2:accMetaChecksum="md5:ed58f215ed9089f02a5d3442e3704276" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>2</caom2:naxis>
-                  <caom2:positionAxis1>1</caom2:positionAxis1>
-                  <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:position>
-                    <caom2:axis>
-                      <caom2:axis1>
-                        <caom2:ctype>RA---TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis1>
-                      <caom2:axis2>
-                        <caom2:ctype>DEC--TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis2>
-                      <caom2:function>
-                        <caom2:dimension>
-                          <caom2:naxis1>128</caom2:naxis1>
-                          <caom2:naxis2>1024</caom2:naxis2>
-                        </caom2:dimension>
-                        <caom2:refCoord>
-                          <caom2:coord1>
-                            <caom2:pix>127.898543893206</caom2:pix>
-                            <caom2:val>142.282187076502</caom2:val>
-                          </caom2:coord1>
-                          <caom2:coord2>
-                            <caom2:pix>512.05665975211</caom2:pix>
-                            <caom2:val>19.6070601247245</caom2:val>
-                          </caom2:coord2>
-                        </caom2:refCoord>
-                        <caom2:cd11>8.92460838842049e-05</caom2:cd11>
-                        <caom2:cd12>2.70565158953838e-06</caom2:cd12>
-                        <caom2:cd21>-1.08269255400254e-05</caom2:cd21>
-                        <caom2:cd22>2.23138340831917e-05</caom2:cd22>
-                      </caom2:function>
-                    </caom2:axis>
-                    <caom2:coordsys>FK5</caom2:coordsys>
-                    <caom2:equinox>2000.0</caom2:equinox>
-                  </caom2:position>
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
@@ -713,43 +380,6 @@
               <caom2:name>7</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="d33ccf10-d827-4d1f-9f69-8714359ffa9d" caom2:lastModified="2020-02-25T20:36:31.230" caom2:maxLastModified="2020-02-25T20:36:31.230" caom2:metaChecksum="md5:2fc087b735ac5d887c28557135160482" caom2:accMetaChecksum="md5:3e839aee1c37c11174883a0cddccff95" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>2</caom2:naxis>
-                  <caom2:positionAxis1>1</caom2:positionAxis1>
-                  <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:position>
-                    <caom2:axis>
-                      <caom2:axis1>
-                        <caom2:ctype>RA---TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis1>
-                      <caom2:axis2>
-                        <caom2:ctype>DEC--TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis2>
-                      <caom2:function>
-                        <caom2:dimension>
-                          <caom2:naxis1>128</caom2:naxis1>
-                          <caom2:naxis2>1024</caom2:naxis2>
-                        </caom2:dimension>
-                        <caom2:refCoord>
-                          <caom2:coord1>
-                            <caom2:pix>-0.101456106793794</caom2:pix>
-                            <caom2:val>142.282187076502</caom2:val>
-                          </caom2:coord1>
-                          <caom2:coord2>
-                            <caom2:pix>512.056659752111</caom2:pix>
-                            <caom2:val>19.6070601247245</caom2:val>
-                          </caom2:coord2>
-                        </caom2:refCoord>
-                        <caom2:cd11>8.92460838842049e-05</caom2:cd11>
-                        <caom2:cd12>2.70565158953837e-06</caom2:cd12>
-                        <caom2:cd21>-1.08269255400254e-05</caom2:cd21>
-                        <caom2:cd22>2.23138340831917e-05</caom2:cd22>
-                      </caom2:function>
-                    </caom2:axis>
-                    <caom2:coordsys>FK5</caom2:coordsys>
-                    <caom2:equinox>2000.0</caom2:equinox>
-                  </caom2:position>
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
@@ -780,43 +410,6 @@
               <caom2:name>8</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="b2432125-123d-4f28-866d-22edd5c2632d" caom2:lastModified="2020-02-25T20:36:31.230" caom2:maxLastModified="2020-02-25T20:36:31.230" caom2:metaChecksum="md5:91f5681bf4af6913e4d61977179477f0" caom2:accMetaChecksum="md5:3b23322811b1d0d5d79542b984223554" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>2</caom2:naxis>
-                  <caom2:positionAxis1>1</caom2:positionAxis1>
-                  <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:position>
-                    <caom2:axis>
-                      <caom2:axis1>
-                        <caom2:ctype>RA---TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis1>
-                      <caom2:axis2>
-                        <caom2:ctype>DEC--TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis2>
-                      <caom2:function>
-                        <caom2:dimension>
-                          <caom2:naxis1>128</caom2:naxis1>
-                          <caom2:naxis2>1024</caom2:naxis2>
-                        </caom2:dimension>
-                        <caom2:refCoord>
-                          <caom2:coord1>
-                            <caom2:pix>-128.101456106794</caom2:pix>
-                            <caom2:val>142.282187076502</caom2:val>
-                          </caom2:coord1>
-                          <caom2:coord2>
-                            <caom2:pix>512.056659752111</caom2:pix>
-                            <caom2:val>19.6070601247245</caom2:val>
-                          </caom2:coord2>
-                        </caom2:refCoord>
-                        <caom2:cd11>8.92460838842048e-05</caom2:cd11>
-                        <caom2:cd12>2.70565158953839e-06</caom2:cd12>
-                        <caom2:cd21>-1.08269255400253e-05</caom2:cd21>
-                        <caom2:cd22>2.23138340831917e-05</caom2:cd22>
-                      </caom2:function>
-                    </caom2:axis>
-                    <caom2:coordsys>FK5</caom2:coordsys>
-                    <caom2:equinox>2000.0</caom2:equinox>
-                  </caom2:position>
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
@@ -847,43 +440,6 @@
               <caom2:name>9</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="c7ada90d-e85b-4a90-8fff-cd96d06c4780" caom2:lastModified="2020-02-25T20:36:31.230" caom2:maxLastModified="2020-02-25T20:36:31.230" caom2:metaChecksum="md5:e6d5e097d9840f5a07ed8735727e4d70" caom2:accMetaChecksum="md5:d5eb7544e7d707202c74dc8f114c4974" caom2:metaProducer="gem2caom2/0.8.1">
-                  <caom2:naxis>2</caom2:naxis>
-                  <caom2:positionAxis1>1</caom2:positionAxis1>
-                  <caom2:positionAxis2>2</caom2:positionAxis2>
-                  <caom2:position>
-                    <caom2:axis>
-                      <caom2:axis1>
-                        <caom2:ctype>RA---TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis1>
-                      <caom2:axis2>
-                        <caom2:ctype>DEC--TAN</caom2:ctype>
-                        <caom2:cunit>deg</caom2:cunit>
-                      </caom2:axis2>
-                      <caom2:function>
-                        <caom2:dimension>
-                          <caom2:naxis1>128</caom2:naxis1>
-                          <caom2:naxis2>1024</caom2:naxis2>
-                        </caom2:dimension>
-                        <caom2:refCoord>
-                          <caom2:coord1>
-                            <caom2:pix>-273.021921012159</caom2:pix>
-                            <caom2:val>142.282187076502</caom2:val>
-                          </caom2:coord1>
-                          <caom2:coord2>
-                            <caom2:pix>511.683117148054</caom2:pix>
-                            <caom2:val>19.6070601247245</caom2:val>
-                          </caom2:coord2>
-                        </caom2:refCoord>
-                        <caom2:cd11>8.89934355873777e-05</caom2:cd11>
-                        <caom2:cd12>2.71085884759402e-06</caom2:cd12>
-                        <caom2:cd21>-1.08176325524561e-05</caom2:cd21>
-                        <caom2:cd22>2.22806424628985e-05</caom2:cd22>
-                      </caom2:function>
-                    </caom2:axis>
-                    <caom2:coordsys>FK5</caom2:coordsys>
-                    <caom2:equinox>2000.0</caom2:equinox>
-                  </caom2:position>
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>

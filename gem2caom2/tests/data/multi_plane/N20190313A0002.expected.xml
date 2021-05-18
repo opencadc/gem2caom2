@@ -53,40 +53,7 @@
               <caom2:chunks>
                 <caom2:chunk caom2:id="85b9804a-549f-42fd-9ca4-af3fd8fac728" caom2:metaProducer="gem2caom2/0.8.1">
                   <caom2:naxis>3</caom2:naxis>
-                  <caom2:positionAxis1>2</caom2:positionAxis1>
-                  <caom2:positionAxis2>1</caom2:positionAxis2>
                   <caom2:timeAxis>3</caom2:timeAxis>
-                  <caom2:position>
-                    <caom2:axis>
-                      <caom2:axis1>
-                        <caom2:ctype>RA---TAN</caom2:ctype>
-                      </caom2:axis1>
-                      <caom2:axis2>
-                        <caom2:ctype>DEC--TAN</caom2:ctype>
-                      </caom2:axis2>
-                      <caom2:function>
-                        <caom2:dimension>
-                          <caom2:naxis1>1024</caom2:naxis1>
-                          <caom2:naxis2>1024</caom2:naxis2>
-                        </caom2:dimension>
-                        <caom2:refCoord>
-                          <caom2:coord1>
-                            <caom2:pix>512.0</caom2:pix>
-                            <caom2:val>352.7083333333333</caom2:val>
-                          </caom2:coord1>
-                          <caom2:coord2>
-                            <caom2:pix>512.0</caom2:pix>
-                            <caom2:val>19.89833333333333</caom2:val>
-                          </caom2:coord2>
-                        </caom2:refCoord>
-                        <caom2:cd11>0.0</caom2:cd11>
-                        <caom2:cd12>2.0138889e-05</caom2:cd12>
-                        <caom2:cd21>2.0138889e-05</caom2:cd21>
-                        <caom2:cd22>-0.0</caom2:cd22>
-                      </caom2:function>
-                    </caom2:axis>
-                    <caom2:equinox>2000.0</caom2:equinox>
-                  </caom2:position>
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
@@ -143,40 +110,7 @@
               <caom2:chunks>
                 <caom2:chunk caom2:id="fc21d752-9c03-4df0-a50f-75735d904c0d" caom2:metaProducer="gem2caom2/0.8.1">
                   <caom2:naxis>3</caom2:naxis>
-                  <caom2:positionAxis1>2</caom2:positionAxis1>
-                  <caom2:positionAxis2>1</caom2:positionAxis2>
                   <caom2:timeAxis>3</caom2:timeAxis>
-                  <caom2:position>
-                    <caom2:axis>
-                      <caom2:axis1>
-                        <caom2:ctype>RA---TAN</caom2:ctype>
-                      </caom2:axis1>
-                      <caom2:axis2>
-                        <caom2:ctype>DEC--TAN</caom2:ctype>
-                      </caom2:axis2>
-                      <caom2:function>
-                        <caom2:dimension>
-                          <caom2:naxis1>1024</caom2:naxis1>
-                          <caom2:naxis2>1024</caom2:naxis2>
-                        </caom2:dimension>
-                        <caom2:refCoord>
-                          <caom2:coord1>
-                            <caom2:pix>512.0</caom2:pix>
-                            <caom2:val>352.7083333333333</caom2:val>
-                          </caom2:coord1>
-                          <caom2:coord2>
-                            <caom2:pix>512.0</caom2:pix>
-                            <caom2:val>19.89833333333333</caom2:val>
-                          </caom2:coord2>
-                        </caom2:refCoord>
-                        <caom2:cd11>0.0</caom2:cd11>
-                        <caom2:cd12>2.0138889e-05</caom2:cd12>
-                        <caom2:cd21>2.0138889e-05</caom2:cd21>
-                        <caom2:cd22>-0.0</caom2:cd22>
-                      </caom2:function>
-                    </caom2:axis>
-                    <caom2:equinox>2000.0</caom2:equinox>
-                  </caom2:position>
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
