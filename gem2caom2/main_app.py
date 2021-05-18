@@ -3885,6 +3885,11 @@ def _update_chunk_position(chunk, header, instrument, extension, obs_id,
         # DB 05-03-19 - persist NAXIS values for NIFS
         header['NAXIS1'] = n_axis1
         header['NAXIS2'] = n_axis2
+        # DB 18-05-21
+        # EQUINOX and RADESYS values should be fine for all NIFS files since
+        # that’s what is used for all other Gemini data as far as I’m aware.
+        header['EQUINOX'] = 2000.0
+        header['RADESYS'] = 'FK5'
     if instrument is em.Inst.CIRPASS:
         # So perhaps try:
         #     NAXIS1 = 33
