@@ -614,6 +614,9 @@ def get_obs_type(header):
                 break
         if 'dark' in temp:
             result = 'DARK'
+    elif instrument is em.Inst.FLAMINGOS:
+        ignore, obs_type = _get_flamingos_mode(header)
+        result = obs_type
     return result
 
 
@@ -1290,10 +1293,6 @@ def update(observation, **kwargs):
                                     c, plane.data_product_type,
                                     observation.observation_id,
                                     filter_name)
-                                ignore, obs_type = _get_flamingos_mode(header)
-                                if (obs_type is not None and
-                                        observation.type is None):
-                                    observation.type = obs_type
                             elif instrument is em.Inst.HOKUPAA:
                                 _update_chunk_energy_hokupaa(
                                     c, plane.data_product_type,
@@ -1333,24 +1332,13 @@ def update(observation, **kwargs):
 
                         # position WCS
                         mode = em.om.get('mode')
-                        if _reset_position(headers, instrument):
+                        if _reset_position(
+                                headers, instrument, observation.type
+                        ):
                             logging.debug(
                                 'Setting Spatial WCS to None for {}'.format(
                                     observation.observation_id))
                             cc.reset_position(c)
-                            # fix a very specific edge case where cal files
-                            # have useless WCS information for the purposes of
-                            # CAOM2.4 axis checks, and the corresponding
-                            # cutouts. No spatial wcs means invalid chunk.naxis
-                            # value, so set that to None, which then
-                            # invalidates the chunk.time_axis value
-                            # DB 06-01-21 - no calibration file cutouts to
-                            # support, so removing this axis information is
-                            # not removing downstream functionality
-                            if c.naxis == 3:
-                                c.naxis = None
-                                if c.time_axis == 3:
-                                    c.time_axis = None
                         else:
                             if (instrument in [em.Inst.PHOENIX, em.Inst.HOKUPAA,
                                                em.Inst.OSCIR] or
@@ -1468,20 +1456,27 @@ def update(observation, **kwargs):
 
                         # DB 04-17-21
                         # BIASes and DARKs for all instruments should ignore
-                        # spatial and spectral wcs
-                        if observation.type in ['BIAS', 'DARK']:
-                            if c.position is not None:
-                                if c.naxis == 2:
-                                    c.naxis = None
-                                if c.naxis == 3 and c.time is not None:
-                                    if c.time.axis.function.naxis == 1:
-                                        c.naxis = None
-                                        c.time_axis = None
-                                    else:
-                                        c.naxis = 1
-                                        c.time_axis = 1
-                            cc.reset_energy(c)
-                            cc.reset_position(c)
+                        # spatial and spectral wcs - clean up associated
+                        # axes
+                        # also fix a very specific edge case where cal files
+                        # have useless WCS information for the purposes of
+                        # CAOM2.4 axis checks, and the corresponding
+                        # cutouts. No spatial wcs means invalid chunk.naxis
+                        # value, so set that to None, which then
+                        # invalidates the chunk.time_axis value
+                        # DB 06-01-21 - no calibration file cutouts to
+                        # support, so removing this axis information is
+                        # not removing downstream functionality
+                        if (
+                            c.naxis == 3 and c.position is None and
+                                c.time is not None
+                        ):
+                            if c.time.axis.function.naxis == 1:
+                                c.naxis = None
+                                c.time_axis = None
+                            else:
+                                c.naxis = 1
+                                c.time_axis = 1
 
                 if isinstance(observation, DerivedObservation):
                     cc.update_plane_provenance(plane, headers[1:], 'IMCMB',
@@ -3400,22 +3395,32 @@ def _reset_energy(observation_type, data_label, instrument, filter_name):
     result = False
     om_filter_name = em.om.get('filter_name')
 
-    if ((observation_type is not None and
-         ((observation_type == 'DARK') or
-          (instrument in [em.Inst.GMOS, em.Inst.GMOSN, em.Inst.GMOSS] and
-           observation_type in ['BIAS', 'MASK']))) or
-            (om_filter_name is not None and ('blank' in om_filter_name or
-                                             'Blank' in om_filter_name)) or
-            (filter_name is not None and ('unknown' in filter_name or
-                                          filter_name == ''))):
+    if (
+        (
+            (observation_type in ['BIAS', 'DARK']) or
+            (
+                instrument in [em.Inst.GMOS, em.Inst.GMOSN, em.Inst.GMOSS] and
+                observation_type in ['BIAS', 'MASK']
+            )
+        ) or
+            (
+                om_filter_name is not None and ('blank' in om_filter_name or
+                                                'Blank' in om_filter_name)
+            ) or
+            (
+                filter_name is not None and ('unknown' in filter_name or
+                                             filter_name == '')
+            )
+    ):
         logging.info(
             'No chunk energy for {} obs type {} filter name {}'.format(
                 data_label, observation_type, om_filter_name))
-
         # 'unknown' in filter_name test obs is GN-2004B-Q-30-15-002
         # DB 23-04-19 - GN-2004B-Q-30-15-002: no energy
         # GMOS GS-2005A-Q-26-12-001.  Lots of missing metadata, including
         # release date so no energy (filter_name == '')
+        # DB 04-17-21
+        # BIASes and DARKs for all instruments should ignore spectral wcs
         result = True
     elif instrument is em.Inst.GNIRS and 'Moving' in filter_name:
         # DB 16-04-19
@@ -3456,7 +3461,7 @@ def _reset_energy(observation_type, data_label, instrument, filter_name):
     return result
 
 
-def _reset_position(headers, instrument):
+def _reset_position(headers, instrument, observation_type):
     """
     Return True if there should be no spatial WCS information created at
     the chunk level.
@@ -3539,6 +3544,11 @@ def _reset_position(headers, instrument):
         # DB - 21-08-19
         # GN-2001A-DD-2-3-1060:  header has UNKNOWN for values of coordinates
         # so no spatial WCS
+        result = True
+
+    if observation_type in ['BIAS', 'DARK']:
+        # DB 04-17-21
+        # BIASes and DARKs for all instruments should ignore spatial wcs
         result = True
     return result
 
