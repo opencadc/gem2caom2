@@ -3396,7 +3396,7 @@ def _reset_energy(observation_type, data_label, instrument, filter_name):
     om_filter_name = em.om.get('filter_name')
 
     if (
-        (observation_type in ['BIAS', 'DARK']) or
+        observation_type in ['BIAS', 'DARK'] or
         (
             instrument in [em.Inst.GMOS, em.Inst.GMOSN, em.Inst.GMOSS] and
             observation_type in ['BIAS', 'MASK']
