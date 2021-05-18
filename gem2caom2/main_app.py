@@ -426,9 +426,11 @@ def get_dec(header):
     elif instrument is em.Inst.OSCIR:
         ra, dec = _get_sky_coord(header, 'RA_TEL', 'DEC_TEL')
         result = dec
-    elif instrument in [em.Inst.BHROS, em.Inst.NIFS, em.Inst.TEXES]:
+    elif instrument in [em.Inst.BHROS, em.Inst.TEXES]:
         # bHROS, TEXES ra/dec not in json
         # NIFS ra/dec not reliable in json
+        # DB - 18-05-21
+        # NIFS removed from 'if' statement
         result = header.get('DEC')
     elif instrument is em.Inst.CIRPASS:
         # DB - 06-03-19 - Must use FITS header info for most WCS info
@@ -716,9 +718,11 @@ def get_ra(header):
     elif instrument is em.Inst.OSCIR:
         ra, dec = _get_sky_coord(header, 'RA_TEL', 'DEC_TEL')
         result = ra
-    elif instrument in [em.Inst.BHROS, em.Inst.NIFS, em.Inst.TEXES]:
+    elif instrument in [em.Inst.BHROS, em.Inst.TEXES]:
         # bHROS, TEXES: ra/dec not in json
         # DB - 05-03-19 - NIFS: ra/dec not reliable in json
+        # DB - 18-05-21
+        # NIFS removed from 'if' statement
         result = header.get('RA')
     elif instrument is em.Inst.CIRPASS:
         # DB - 06-03-19 - Must use FITS header info for most WCS info

@@ -81,11 +81,11 @@
                         <caom2:refCoord>
                           <caom2:coord1>
                             <caom2:pix>1.0</caom2:pix>
-                            <caom2:val>56.0892375</caom2:val>
+                            <caom2:val>56.120415132278</caom2:val>
                           </caom2:coord1>
                           <caom2:coord2>
                             <caom2:pix>1.0</caom2:pix>
-                            <caom2:val>31.99223889</caom2:val>
+                            <caom2:val>31.945323086172</caom2:val>
                           </caom2:coord2>
                         </caom2:refCoord>
                         <caom2:cd11>4.06901041666666e-07</caom2:cd11>
