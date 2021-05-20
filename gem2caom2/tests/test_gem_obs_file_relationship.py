@@ -227,7 +227,7 @@ def test_repair_data_label():
                     '2001nov16_0164', '2007sep15_0001', '01DEC05_004',
                     'N20061217S0228', 'N20050826S0137', 'S20120605S0053',
                     'S20050601S0032', 'S20050601S0411', 'S20050718S0172',
-                    'S20130922S0130']:
+                    'S20130922S0130', 'N20200103S0434']:
             # what happens when an entry is not found
             # note that the answer should actually be
             # GN-2006A-Q-90-1-001-MRG-ADD, but because the

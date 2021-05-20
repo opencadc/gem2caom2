@@ -82,7 +82,7 @@ from caom2.diff import get_differences
 from caom2pipe import manage_composable as mc
 
 import gem2caom2.external_metadata as em
-from gem2caom2 import composable, gem_name
+from gem2caom2 import composable
 
 
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
