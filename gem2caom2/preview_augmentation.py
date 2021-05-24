@@ -68,6 +68,7 @@
 #
 import logging
 import os
+import traceback
 
 from datetime import datetime
 
@@ -158,8 +159,11 @@ def _do_prev(obs_id, working_dir, plane, cadc_client, stream, observable):
         preview_fqn = os.path.join(working_dir, preview)
         thumb = gem_name.thumb
         thumb_fqn = os.path.join(working_dir, thumb)
+        new_retrieval = False
 
-        # get the file - try disk first, then CADC, then Gemini
+        # Get the file - try disk first, then CADC, then Gemini.
+        # Only try to retrieve from Gemini if the eventual purpose is
+        # storage, though
         if not os.access(preview_fqn, 0) and cadc_client is not None:
             try:
                 mc.data_get(
@@ -170,29 +174,17 @@ def _do_prev(obs_id, working_dir, plane, cadc_client, stream, observable):
                     observable.metrics,
                 )
             except mc.CadcException:
-                preview_url = f'{PREVIEW_URL}{plane.product_id}.fits'
-                try:
-                    mc.http_get(preview_url, preview_fqn)
-                    mc.data_put(
-                        cadc_client,
-                        working_dir,
-                        preview,
-                        ARCHIVE,
-                        stream,
-                        MIME_TYPE,
-                        mime_encoding=None,
-                        metrics=observable.metrics,
-                    )
-                except Exception as e:
-                    if observable.rejected.check_and_record(str(e), preview):
-                        count += _check_for_delete(
-                            preview, gem_name.prev_uri, observable, plane)
-                        return count
-                    else:
-                        raise e
+                new_retrieval = _retrieve_from_gemini(
+                    gem_name,
+                    observable,
+                    plane,
+                    preview_fqn,
+                )
 
         if os.path.exists(preview_fqn):
             # in case TaskType == SCRAPE + MODIFY
+            # always generate the thumbnails, but only store it if it's a
+            # new retrieval from archive.gemini.edu
             try:
                 fp = open(preview_fqn, 'r')
             except PermissionError as e:
@@ -201,22 +193,57 @@ def _do_prev(obs_id, working_dir, plane, cadc_client, stream, observable):
                     f'generation for {plane.product_id}'
                 )
 
+            logging.debug(f'Generate thumbnail for file id {plane.product_id}')
+            if os.access(thumb_fqn, 0):
+                os.remove(thumb_fqn)
+            try:
+                image.thumbnail(preview_fqn, thumb_fqn, scale=0.25)
+            except ValueError as e:
+                # probably the jpg did not transfer properly from
+                # archive.gemini.edu, so try to retrieve it one more time,
+                # but ignore the count, because the count before this is
+                # wrong
+                #
+                # have a retry here, because otherwise there's no way to
+                # update the file in CADC storage without intervention
+                # from Ops - i.e. the file will retrieve from CADC, so
+                # there will be no succeeding attempt to retrieve from Gemini
+                # that might otherwise fix the value
+                logging.debug(traceback.format_exc())
+                logging.warning(
+                    f'matplotlib error handling {gem_name.prev}.Try to '
+                    f'retrieve from {PREVIEW_URL} one more time.'
+                )
+                new_retrieval = _retrieve_from_gemini(
+                    gem_name,
+                    observable,
+                    plane,
+                    preview_fqn,
+                )
+                image.thumbnail(preview_fqn, thumb_fqn, scale=0.25)
+
             _augment(
                 plane, gem_name.prev_uri, preview_fqn, ProductType.PREVIEW
             )
             count = 1
 
-            logging.debug(f'Generate thumbnail for file id {plane.product_id}')
-            if os.access(thumb_fqn, 0):
-                os.remove(thumb_fqn)
-            thumb_fig = image.thumbnail(preview_fqn, thumb_fqn, scale=0.25)
-            if thumb_fig is not None:
-                count = 1
-
+            if cadc_client is not None and new_retrieval:
+                # if the thumbnail could be generated from the preview,
+                # the preview is probably not corrupted
+                mc.data_put(
+                    cadc_client,
+                    working_dir,
+                    gem_name.prev,
+                    ARCHIVE,
+                    stream,
+                    MIME_TYPE,
+                    mime_encoding=None,
+                    metrics=observable.metrics,
+                )
             _augment(
                 plane, gem_name.thumb_uri, thumb_fqn, ProductType.THUMBNAIL
             )
-            if cadc_client is not None:
+            if cadc_client is not None and new_retrieval:
                 mc.data_put(
                     cadc_client,
                     working_dir,
@@ -236,9 +263,23 @@ def _augment(plane, uri, fqn, product_type):
     if uri in plane.artifacts:
         temp = plane.artifacts[uri]
     plane.artifacts[uri] = mc.get_artifact_metadata(
-        fqn,
-        product_type,
-        ReleaseType.DATA,
-        uri,
-        temp,
+        fqn, product_type, ReleaseType.DATA, uri, temp
     )
+
+
+def _retrieve_from_gemini(
+    gem_name, observable, plane, preview_fqn,
+):
+    preview_url = f'{PREVIEW_URL}{plane.product_id}.fits'
+    new_retrieval = False
+    try:
+        mc.http_get(preview_url, preview_fqn)
+        new_retrieval = True
+    except Exception as e:
+        if observable.rejected.check_and_record(str(e), gem_name.prev):
+            _check_for_delete(
+                gem_name.prev, gem_name.prev_uri, observable, plane
+            )
+        else:
+            raise e
+    return new_retrieval
