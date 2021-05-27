@@ -520,7 +520,10 @@ def get_suffix(file_id, data_label):
         temp = file_id.split('-')[:1]
     elif '_' in file_id:
         if file_id.startswith(('p', 'P')):
-            if '_FLAT' in file_id or '_COMB' in file_id:
+            if (
+               '_FLAT' in file_id or '_COMB' in file_id or
+                '_flat' in file_id or '_comb' in file_id
+            ):
                 temp = file_id.split('_')[2:]
         elif file_id.startswith('TX2'):
             # when the data label is the file id, fix every

@@ -77,7 +77,8 @@ from mock import patch, Mock
 from caom2 import ChecksumURI, Artifact, ReleaseType, ProductType
 from gem2caom2 import preview_augmentation, pull_augmentation, SCHEME
 from gem2caom2 import ARCHIVE, pull_v_augmentation, COLLECTION
-from gem2caom2 import preview_v_augmentation
+from gem2caom2 import preview_v_augmentation, cleanup_augmentation
+from caom2pipe import caom_composable as cc
 from caom2pipe import manage_composable as mc
 
 pytest.main(args=['-s', os.path.abspath(__file__)])
@@ -414,6 +415,67 @@ def test_preview_augment_v(put_mock, http_mock):
     finally:
         if os.path.exists(test_prev):
             os.unlink(test_prev)
+
+
+def test_cleanup():
+    # test that cleanup occurs where it should
+    test_kwargs = {}
+    test_cleanup_file = f'{TEST_DATA_DIR}/cleanup_aug_start_obs.xml'
+    test_artifact_id = 'ad:GEM/N20140811S0033_BIAS_th.jpg'
+    obs = mc.read_obs_from_file(test_cleanup_file)
+    initial_all_artifact_keys = cc.get_all_artifact_keys(obs)
+    assert (
+        test_artifact_id in initial_all_artifact_keys
+    ), 'wrong initial conditions'
+    test_result = cleanup_augmentation.visit(obs, **test_kwargs)
+    assert test_result is not None, 'expect a result'
+    assert test_result.get('artifacts') is not None, 'expect artifact count'
+    assert test_result.get('artifacts') == 3, 'wrong artifact count'
+    assert test_result.get('planes') is not None, 'expect plane count'
+    assert test_result.get('planes') == 1, 'wrong plane count'
+    post_all_artifact_keys = cc.get_all_artifact_keys(obs)
+    assert (
+            test_artifact_id not in post_all_artifact_keys
+        ), 'wrong post conditions'
+
+    # test that cleaning up a clean observation won't break that
+    # observation
+    test_result = cleanup_augmentation.visit(obs, **test_kwargs)
+    _check_cleanup_zero_results(test_result)
+
+    # test that cleanup doesn't occur where it shouldn't
+    test_no_cleanup_file = (
+        f'{TEST_DATA_DIR}/cleanup_no_cleanup_aug_start_obs.xml'
+    )
+    no_cleanup_obs = mc.read_obs_from_file(test_no_cleanup_file)
+    all_artifact_keys = cc.get_all_artifact_keys(no_cleanup_obs)
+    assert len(all_artifact_keys) == 6, 'wrong no cleanup initial conditions'
+    test_no_cleanup_result = cleanup_augmentation.visit(
+        no_cleanup_obs, **test_kwargs
+    )
+    all_artifact_keys = cc.get_all_artifact_keys(no_cleanup_obs)
+    assert (
+        len(all_artifact_keys) == 6
+    ), 'wrong no cleanup post conditions, should not be different'
+    _check_cleanup_zero_results(test_no_cleanup_result)
+
+    # test a FOX observation, because it's odd to begin with
+    test_fox_file = f'{TEST_DATA_DIR}/cleanup_fox_aug_start.xml'
+    fox_obs = mc.read_obs_from_file(test_fox_file)
+    all_artifact_keys = cc.get_all_artifact_keys(fox_obs)
+    initial_fox_length = len(all_artifact_keys)
+    test_fox_result = cleanup_augmentation.visit(fox_obs, **test_kwargs)
+    post_fox_length = len(cc.get_all_artifact_keys(fox_obs))
+    assert initial_fox_length == post_fox_length, 'wrong fox post conditions'
+    _check_cleanup_zero_results(test_fox_result)
+
+
+def _check_cleanup_zero_results(test_result):
+    assert test_result is not None, 'expect a result'
+    assert test_result.get('artifacts') is not None, 'expect artifact count'
+    assert test_result.get('artifacts') == 0, 'wrong artifact count'
+    assert test_result.get('planes') is not None, 'expect plane count'
+    assert test_result.get('planes') == 0, 'wrong plane count'
 
 
 def _get_mock(url_ignore, fqn_ignore):

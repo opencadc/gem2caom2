@@ -1,0 +1,166 @@
+<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="2fe32bac-05b7-4133-b3b6-2786fd6b8e28" caom2:lastModified="2021-03-01T20:05:52.572" caom2:maxLastModified="2021-03-01T20:05:55.549" caom2:metaChecksum="md5:e2060c18681b623067fd7c2d1fa6dddc" caom2:accMetaChecksum="md5:d0e6a073938e2adad3467332b63257a7" caom2:metaProducer="gem2caom2/0.8.2">
+  <caom2:collection>GEMINI</caom2:collection>
+  <caom2:observationID>GS-2021A-Q-241-0-0</caom2:observationID>
+  <caom2:metaRelease>2021-03-01T05:10:28.000</caom2:metaRelease>
+  <caom2:algorithm>
+    <caom2:name>exposure</caom2:name>
+  </caom2:algorithm>
+  <caom2:type>OBJECT</caom2:type>
+  <caom2:intent>science</caom2:intent>
+  <caom2:proposal>
+    <caom2:id>GS-2021A-Q-241</caom2:id>
+    <caom2:pi>Saida Caballero-Nieves</caom2:pi>
+    <caom2:title>A Closer look at Be star Multiplicity properties</caom2:title>
+  </caom2:proposal>
+  <caom2:target>
+    <caom2:name>HR 3977</caom2:name>
+    <caom2:type>object</caom2:type>
+  </caom2:target>
+  <caom2:telescope>
+    <caom2:name>Gemini-South</caom2:name>
+    <caom2:geoLocationX>1820184.0557473274</caom2:geoLocationX>
+    <caom2:geoLocationY>-5208320.066618682</caom2:geoLocationY>
+    <caom2:geoLocationZ>-3194829.197152751</caom2:geoLocationZ>
+  </caom2:telescope>
+  <caom2:instrument>
+    <caom2:name>Zorro</caom2:name>
+  </caom2:instrument>
+  <caom2:planes>
+    <caom2:plane caom2:id="2fe24760-5796-434f-a05a-a1fd01df739a" caom2:lastModified="2021-02-25T19:46:15.837" caom2:maxLastModified="2021-02-25T19:46:15.837" caom2:metaChecksum="md5:e083b1a519665f733db5be26c57e976f" caom2:accMetaChecksum="md5:b561c683820ba59953d2354bcd664e06" caom2:metaProducer="gem2caom2/0.8">
+      <caom2:productID>S20210225Z0385b</caom2:productID>
+      <caom2:metaRelease>2021-02-25T03:45:03.000</caom2:metaRelease>
+      <caom2:dataRelease>2022-02-25T00:00:00.000</caom2:dataRelease>
+      <caom2:dataProductType>image</caom2:dataProductType>
+      <caom2:calibrationLevel>1</caom2:calibrationLevel>
+      <caom2:artifacts>
+        <caom2:artifact caom2:id="c85e645b-3bf9-48d5-ac3b-0e34fdfc51fd" caom2:lastModified="2021-02-25T19:46:15.837" caom2:maxLastModified="2021-02-25T19:46:15.837" caom2:metaChecksum="md5:29a218a450d527eb7083b00ae48532a5" caom2:accMetaChecksum="md5:44c55e50e718ea37064435720d8814bd" caom2:metaProducer="gem2caom2/0.8">
+          <caom2:uri>gemini:GEM/S20210225Z0385b.fits</caom2:uri>
+          <caom2:productType>science</caom2:productType>
+          <caom2:releaseType>data</caom2:releaseType>
+          <caom2:contentType>application/fits</caom2:contentType>
+          <caom2:contentLength>131094720</caom2:contentLength>
+          <caom2:contentChecksum>md5:5406324f3a454be026fabec1fcd17a37</caom2:contentChecksum>
+        </caom2:artifact>
+      </caom2:artifacts>
+    </caom2:plane>
+    <caom2:plane caom2:id="84ca9c86-c392-4f74-a6c4-5b6c78ae8385" caom2:lastModified="2021-02-25T19:46:17.555" caom2:maxLastModified="2021-02-25T19:46:17.555" caom2:metaChecksum="md5:00cee9333ed45b394800bcedfce7a056" caom2:accMetaChecksum="md5:98716c6cc604a60816293ea3b71094b8" caom2:metaProducer="gem2caom2/0.8">
+      <caom2:productID>S20210225Z0385r</caom2:productID>
+      <caom2:metaRelease>2021-02-25T03:45:03.000</caom2:metaRelease>
+      <caom2:dataRelease>2022-02-25T00:00:00.000</caom2:dataRelease>
+      <caom2:dataProductType>image</caom2:dataProductType>
+      <caom2:calibrationLevel>1</caom2:calibrationLevel>
+      <caom2:artifacts>
+        <caom2:artifact caom2:id="8fe83721-680a-4547-a3d0-9c55e248234b" caom2:lastModified="2021-02-25T19:46:17.555" caom2:maxLastModified="2021-02-25T19:46:17.555" caom2:metaChecksum="md5:70df4bb93954120ed1e70542284c436f" caom2:accMetaChecksum="md5:aaaf2af42d2d85a4205804d174868536" caom2:metaProducer="gem2caom2/0.8">
+          <caom2:uri>gemini:GEM/S20210225Z0385r.fits</caom2:uri>
+          <caom2:productType>science</caom2:productType>
+          <caom2:releaseType>data</caom2:releaseType>
+          <caom2:contentType>application/fits</caom2:contentType>
+          <caom2:contentLength>131094720</caom2:contentLength>
+          <caom2:contentChecksum>md5:5f356cbae5c3908698d39418ed8d00f8</caom2:contentChecksum>
+        </caom2:artifact>
+      </caom2:artifacts>
+    </caom2:plane>
+    <caom2:plane caom2:id="a9863954-58d1-4360-b08a-601746abe8ee" caom2:lastModified="2021-02-25T19:46:19.285" caom2:maxLastModified="2021-02-25T19:46:19.285" caom2:metaChecksum="md5:ae61ae5969c3a03c8cf2786f4d6fa33a" caom2:accMetaChecksum="md5:4907b0a1946fb40102ffe83ccba0d921" caom2:metaProducer="gem2caom2/0.8">
+      <caom2:productID>S20210225Z0386b</caom2:productID>
+      <caom2:metaRelease>2021-02-25T03:46:06.000</caom2:metaRelease>
+      <caom2:dataRelease>2022-02-25T00:00:00.000</caom2:dataRelease>
+      <caom2:dataProductType>image</caom2:dataProductType>
+      <caom2:calibrationLevel>1</caom2:calibrationLevel>
+      <caom2:artifacts>
+        <caom2:artifact caom2:id="54736a65-23a7-403c-a4cb-85524dec3233" caom2:lastModified="2021-02-25T19:46:19.285" caom2:maxLastModified="2021-02-25T19:46:19.285" caom2:metaChecksum="md5:e63bdc05249f4168015755881ac5ed2e" caom2:accMetaChecksum="md5:db30a0fe1bcdef854cd6c578aa28f4aa" caom2:metaProducer="gem2caom2/0.8">
+          <caom2:uri>gemini:GEM/S20210225Z0386b.fits</caom2:uri>
+          <caom2:productType>science</caom2:productType>
+          <caom2:releaseType>data</caom2:releaseType>
+          <caom2:contentType>application/fits</caom2:contentType>
+          <caom2:contentLength>131094720</caom2:contentLength>
+          <caom2:contentChecksum>md5:06b6a34b022591ec76b22743b7044359</caom2:contentChecksum>
+        </caom2:artifact>
+      </caom2:artifacts>
+    </caom2:plane>
+    <caom2:plane caom2:id="ee6cc40e-274a-4420-a3cb-cfd00ddc96ce" caom2:lastModified="2021-02-25T19:46:21.343" caom2:maxLastModified="2021-02-25T19:46:21.343" caom2:metaChecksum="md5:b3c787ba18dedfd849d25ba5a8c9e50d" caom2:accMetaChecksum="md5:ba1e9dcb175edf77a8c81fb8eca56838" caom2:metaProducer="gem2caom2/0.8">
+      <caom2:productID>S20210225Z0386r</caom2:productID>
+      <caom2:metaRelease>2021-02-25T03:46:06.000</caom2:metaRelease>
+      <caom2:dataRelease>2022-02-25T00:00:00.000</caom2:dataRelease>
+      <caom2:dataProductType>image</caom2:dataProductType>
+      <caom2:calibrationLevel>1</caom2:calibrationLevel>
+      <caom2:artifacts>
+        <caom2:artifact caom2:id="66e4ed0e-246e-4e50-84ac-4747e27afb46" caom2:lastModified="2021-02-25T19:46:21.343" caom2:maxLastModified="2021-02-25T19:46:21.343" caom2:metaChecksum="md5:9465959fbdc8d279be0a7eb3d5001d6d" caom2:accMetaChecksum="md5:5db40e9101d91c5ac5b89280d2ec2485" caom2:metaProducer="gem2caom2/0.8">
+          <caom2:uri>gemini:GEM/S20210225Z0386r.fits</caom2:uri>
+          <caom2:productType>science</caom2:productType>
+          <caom2:releaseType>data</caom2:releaseType>
+          <caom2:contentType>application/fits</caom2:contentType>
+          <caom2:contentLength>131094720</caom2:contentLength>
+          <caom2:contentChecksum>md5:df7dd2b55e678ae4ee8ef8ebdfdf1136</caom2:contentChecksum>
+        </caom2:artifact>
+      </caom2:artifacts>
+    </caom2:plane>
+    <caom2:plane caom2:id="dfbfd49a-6b1b-43f2-b94e-3ae33c1c0821" caom2:lastModified="2021-02-25T19:46:23.206" caom2:maxLastModified="2021-02-25T19:46:23.206" caom2:metaChecksum="md5:deff83253be64ccea88fb687bc285c02" caom2:accMetaChecksum="md5:1cacf8987fc18520e28464870286907a" caom2:metaProducer="gem2caom2/0.8">
+      <caom2:productID>S20210225Z0387b</caom2:productID>
+      <caom2:metaRelease>2021-02-25T03:47:08.000</caom2:metaRelease>
+      <caom2:dataRelease>2022-02-25T00:00:00.000</caom2:dataRelease>
+      <caom2:dataProductType>image</caom2:dataProductType>
+      <caom2:calibrationLevel>1</caom2:calibrationLevel>
+      <caom2:artifacts>
+        <caom2:artifact caom2:id="7fa8df8c-3ac6-4537-af62-09cfd5fbf4dc" caom2:lastModified="2021-02-25T19:46:23.206" caom2:maxLastModified="2021-02-25T19:46:23.206" caom2:metaChecksum="md5:aca7484adbbcc8bf3cc441352f64e674" caom2:accMetaChecksum="md5:505d72c8aca1dfce8a13f8e944cd73c5" caom2:metaProducer="gem2caom2/0.8">
+          <caom2:uri>gemini:GEM/S20210225Z0387b.fits</caom2:uri>
+          <caom2:productType>science</caom2:productType>
+          <caom2:releaseType>data</caom2:releaseType>
+          <caom2:contentType>application/fits</caom2:contentType>
+          <caom2:contentLength>131094720</caom2:contentLength>
+          <caom2:contentChecksum>md5:b3fb5ef38acee1f12a73ec9cce44e1e5</caom2:contentChecksum>
+        </caom2:artifact>
+      </caom2:artifacts>
+    </caom2:plane>
+    <caom2:plane caom2:id="83cb5e0d-810b-4dd4-b01e-79790171aa07" caom2:lastModified="2021-02-25T19:46:24.919" caom2:maxLastModified="2021-02-25T19:46:24.919" caom2:metaChecksum="md5:ac1a68264e6b62ca902414854383dd0a" caom2:accMetaChecksum="md5:592710706d2dc1f56bb14567064fa0fc" caom2:metaProducer="gem2caom2/0.8">
+      <caom2:productID>S20210225Z0387r</caom2:productID>
+      <caom2:metaRelease>2021-02-25T03:47:08.000</caom2:metaRelease>
+      <caom2:dataRelease>2022-02-25T00:00:00.000</caom2:dataRelease>
+      <caom2:dataProductType>image</caom2:dataProductType>
+      <caom2:calibrationLevel>1</caom2:calibrationLevel>
+      <caom2:artifacts>
+        <caom2:artifact caom2:id="e6192678-5ed9-4e05-9c60-47dce1268b5a" caom2:lastModified="2021-02-25T19:46:24.919" caom2:maxLastModified="2021-02-25T19:46:24.919" caom2:metaChecksum="md5:fc81ace8048f6de4e787c35dee75a207" caom2:accMetaChecksum="md5:76176abf54a7eb7606c5982edeecd0be" caom2:metaProducer="gem2caom2/0.8">
+          <caom2:uri>gemini:GEM/S20210225Z0387r.fits</caom2:uri>
+          <caom2:productType>science</caom2:productType>
+          <caom2:releaseType>data</caom2:releaseType>
+          <caom2:contentType>application/fits</caom2:contentType>
+          <caom2:contentLength>131094720</caom2:contentLength>
+          <caom2:contentChecksum>md5:9924125410d8760ec0c282585d1fd7a9</caom2:contentChecksum>
+        </caom2:artifact>
+      </caom2:artifacts>
+    </caom2:plane>
+    <caom2:plane caom2:id="0c18ddfa-8ae3-46ea-9a56-c631ed7d1dc1" caom2:lastModified="2021-02-25T19:46:27.132" caom2:maxLastModified="2021-02-25T19:46:27.132" caom2:metaChecksum="md5:0d91b93945d9e0982f206164b4626d78" caom2:accMetaChecksum="md5:c2224add820101d59a915b062c3b5f1c" caom2:metaProducer="gem2caom2/0.8">
+      <caom2:productID>S20210225Z0388b</caom2:productID>
+      <caom2:metaRelease>2021-02-25T03:48:11.000</caom2:metaRelease>
+      <caom2:dataRelease>2022-02-25T00:00:00.000</caom2:dataRelease>
+      <caom2:dataProductType>image</caom2:dataProductType>
+      <caom2:calibrationLevel>1</caom2:calibrationLevel>
+      <caom2:artifacts>
+        <caom2:artifact caom2:id="59752eaa-2ebd-44e8-acb9-499bed02e649" caom2:lastModified="2021-02-25T19:46:27.132" caom2:maxLastModified="2021-02-25T19:46:27.132" caom2:metaChecksum="md5:3f6ca993ba29dfd58a2724a824fa8f65" caom2:accMetaChecksum="md5:d560c835ea6ad1bbafc15acc37ce641f" caom2:metaProducer="gem2caom2/0.8">
+          <caom2:uri>gemini:GEM/S20210225Z0388b.fits</caom2:uri>
+          <caom2:productType>science</caom2:productType>
+          <caom2:releaseType>data</caom2:releaseType>
+          <caom2:contentType>application/fits</caom2:contentType>
+          <caom2:contentLength>131094720</caom2:contentLength>
+          <caom2:contentChecksum>md5:aa30a3309134adbb500dccb4ab6d19b8</caom2:contentChecksum>
+        </caom2:artifact>
+      </caom2:artifacts>
+    </caom2:plane>
+    <caom2:plane caom2:id="31321a83-6887-46ef-a747-2853e7aa7db8" caom2:lastModified="2021-02-25T19:46:29.074" caom2:maxLastModified="2021-02-25T19:46:29.074" caom2:metaChecksum="md5:cd4681e52884fee2f831bae4884b0415" caom2:accMetaChecksum="md5:f2887e569df5b896758d8503b9cc915a" caom2:metaProducer="gem2caom2/0.8">
+      <caom2:productID>S20210225Z0388r</caom2:productID>
+      <caom2:metaRelease>2021-02-25T03:48:11.000</caom2:metaRelease>
+      <caom2:dataRelease>2022-02-25T00:00:00.000</caom2:dataRelease>
+      <caom2:dataProductType>image</caom2:dataProductType>
+      <caom2:calibrationLevel>1</caom2:calibrationLevel>
+      <caom2:artifacts>
+        <caom2:artifact caom2:id="e59e64f7-a5ee-4fec-876c-4557cdf8af8e" caom2:lastModified="2021-02-25T19:46:29.074" caom2:maxLastModified="2021-02-25T19:46:29.074" caom2:metaChecksum="md5:d7ed1581f453519b1b2b6c617c5849db" caom2:accMetaChecksum="md5:a6ff03699666e40b758f71d237dc44d6" caom2:metaProducer="gem2caom2/0.8">
+          <caom2:uri>gemini:GEM/S20210225Z0388r.fits</caom2:uri>
+          <caom2:productType>science</caom2:productType>
+          <caom2:releaseType>data</caom2:releaseType>
+          <caom2:contentType>application/fits</caom2:contentType>
+          <caom2:contentLength>131094720</caom2:contentLength>
+          <caom2:contentChecksum>md5:76296c28afb9db30eed1c401304ab779</caom2:contentChecksum>
+        </caom2:artifact>
+      </caom2:artifacts>
+    </caom2:plane>
+  </caom2:planes>
+</caom2:Observation>
