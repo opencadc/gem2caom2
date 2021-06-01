@@ -1,0 +1,109 @@
+<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="12e3bdca-c456-4b52-a031-a083e5ef1c9e" caom2:lastModified="2021-05-25T17:13:28.338" caom2:maxLastModified="2021-05-25T17:13:28.338" caom2:metaChecksum="md5:e532fe192c2c6189c20a08203e2bd255" caom2:accMetaChecksum="md5:0c4bb22759f2bf3ea09a1c4d266821d3" caom2:metaProducer="gem2caom2/0.8.5">
+  <caom2:collection>GEMINI</caom2:collection>
+  <caom2:observationID>GS-2008B-Q-78-1-146</caom2:observationID>
+  <caom2:metaRelease>2008-12-05T07:25:16.000</caom2:metaRelease>
+  <caom2:algorithm>
+    <caom2:name>exposure</caom2:name>
+  </caom2:algorithm>
+  <caom2:type>OBJECT</caom2:type>
+  <caom2:intent>science</caom2:intent>
+  <caom2:proposal>
+    <caom2:id>GS-2008B-Q-78</caom2:id>
+    <caom2:pi>Zhongxiang Wang</caom2:pi>
+    <caom2:title>Time-Resolved Photometry of the Candidate Ultracompact Low-Mass X-Ray Binary 2S 0918-549</caom2:title>
+  </caom2:proposal>
+  <caom2:target>
+    <caom2:name>2S0918-549</caom2:name>
+    <caom2:type>field</caom2:type>
+  </caom2:target>
+  <caom2:telescope>
+    <caom2:name>Gemini-South</caom2:name>
+    <caom2:geoLocationX>1820184.0557473274</caom2:geoLocationX>
+    <caom2:geoLocationY>-5208320.066618682</caom2:geoLocationY>
+    <caom2:geoLocationZ>-3194829.197152751</caom2:geoLocationZ>
+  </caom2:telescope>
+  <caom2:instrument>
+    <caom2:name>GMOS-S</caom2:name>
+    <caom2:keywords>
+      <caom2:keyword>imaging</caom2:keyword>
+    </caom2:keywords>
+  </caom2:instrument>
+  <caom2:planes>
+    <caom2:plane caom2:id="190c1e09-1883-427d-a0d8-157bec190457" caom2:lastModified="2021-05-25T17:13:28.338" caom2:maxLastModified="2021-05-25T17:13:28.338" caom2:metaChecksum="md5:b7d120b5b835be0888cb0587385f09d2" caom2:accMetaChecksum="md5:855fefe1ba7ed8a11580919fe7a86bcd" caom2:metaProducer="gem2caom2/0.8.5">
+      <caom2:productID>S20081205S0217</caom2:productID>
+      <caom2:metaRelease>2008-12-05T07:25:16.000</caom2:metaRelease>
+      <caom2:dataRelease>2010-06-05T00:00:00.000</caom2:dataRelease>
+      <caom2:dataProductType>image</caom2:dataProductType>
+      <caom2:calibrationLevel>1</caom2:calibrationLevel>
+      <caom2:provenance>
+        <caom2:name>Gemini Observatory Data</caom2:name>
+        <caom2:project>Gemini Archive</caom2:project>
+        <caom2:producer>Gemini Observatory</caom2:producer>
+        <caom2:reference>http://archive.gemini.edu/searchform/GS-2008B-Q-78-1-146</caom2:reference>
+      </caom2:provenance>
+      <caom2:artifacts>
+        <caom2:artifact caom2:id="6047af84-c229-43d8-bfd4-5bf378279227" caom2:lastModified="2021-05-15T06:41:35.186" caom2:maxLastModified="2021-05-15T06:41:35.186" caom2:metaChecksum="md5:4c50aab40c9d0b4e5dc4000f5b733a53" caom2:accMetaChecksum="md5:384d84b7a69ebe2ce8982ea6090dd83c">
+          <caom2:uri>ad:GEM/S20081205S0217_th.jpg</caom2:uri>
+          <caom2:productType>thumbnail</caom2:productType>
+          <caom2:releaseType>data</caom2:releaseType>
+          <caom2:contentType>image/jpeg</caom2:contentType>
+          <caom2:contentLength>5482</caom2:contentLength>
+          <caom2:contentChecksum>md5:68571b5658cac3fbe04ba9c8233a1d0f</caom2:contentChecksum>
+          <caom2:parts/>
+        </caom2:artifact>
+        <caom2:artifact caom2:id="d6d616f1-1cdc-4e26-ae1b-da7659d0f00b" caom2:lastModified="2021-05-25T17:13:28.338" caom2:maxLastModified="2021-05-25T17:13:28.338" caom2:metaChecksum="md5:d3108d324a0d52a8c797e19a43be1d93" caom2:accMetaChecksum="md5:6e4d61df4ba3fd875f35573616a1d751" caom2:metaProducer="gem2caom2/0.8.5">
+          <caom2:uri>gemini:GEM/S20081205S0217.fits</caom2:uri>
+          <caom2:productType>science</caom2:productType>
+          <caom2:releaseType>data</caom2:releaseType>
+          <caom2:contentType>application/fits</caom2:contentType>
+          <caom2:contentLength>4887360</caom2:contentLength>
+          <caom2:contentChecksum>md5:34fe5009072f5a2dc6fa6ed42f7406c1</caom2:contentChecksum>
+        </caom2:artifact>
+        <caom2:artifact caom2:id="ecec80d7-fc33-4478-85b7-f8426f6b8468" caom2:lastModified="2019-07-15T17:25:50.504" caom2:maxLastModified="2019-07-15T17:25:50.504" caom2:metaChecksum="md5:ae1e4a5bfee78bdcd4d7f2f84a27c7aa" caom2:accMetaChecksum="md5:dbf067dea6f4546f72ce045c84caf644">
+          <caom2:uri>gemini:GEM/S20081205S0217.jpg</caom2:uri>
+          <caom2:productType>preview</caom2:productType>
+          <caom2:releaseType>data</caom2:releaseType>
+          <caom2:contentType>image/jpeg</caom2:contentType>
+          <caom2:contentLength>46134</caom2:contentLength>
+          <caom2:contentChecksum>md5:d8f95005477093efcfe8c6311cfdbdf9</caom2:contentChecksum>
+          <caom2:parts/>
+        </caom2:artifact>
+      </caom2:artifacts>
+    </caom2:plane>
+    <caom2:plane caom2:id="f8381b7b-75d3-4394-ba4c-0ceb171a5d75" caom2:lastModified="2019-08-01T22:39:11.190" caom2:maxLastModified="2021-05-15T06:41:35.186" caom2:metaChecksum="md5:f14a88e542d9295f195bec829a896aad" caom2:accMetaChecksum="md5:aeb687244db4fbb62c9e900081b6430b">
+      <caom2:productID>rgS20081205S0217</caom2:productID>
+      <caom2:metaRelease>2008-12-05T00:00:00.000</caom2:metaRelease>
+      <caom2:dataRelease>2010-06-05T00:00:00.000</caom2:dataRelease>
+      <caom2:dataProductType>image</caom2:dataProductType>
+      <caom2:calibrationLevel>2</caom2:calibrationLevel>
+      <caom2:artifacts>
+        <caom2:artifact caom2:id="a5403f40-1e99-47d2-a01f-5cb358ff93ab" caom2:lastModified="2021-05-15T06:41:35.186" caom2:maxLastModified="2021-05-15T06:41:35.186" caom2:metaChecksum="md5:61131bc0a16a37c6d22f8bc4ff6882f3" caom2:accMetaChecksum="md5:313de7424ed74bef46d002afc2d67358">
+          <caom2:uri>ad:GEM/rgS20081205S0217_th.jpg</caom2:uri>
+          <caom2:productType>thumbnail</caom2:productType>
+          <caom2:releaseType>data</caom2:releaseType>
+          <caom2:contentType>image/jpeg</caom2:contentType>
+          <caom2:contentLength>5440</caom2:contentLength>
+          <caom2:contentChecksum>md5:fd7ed6ba56d69ee0b8e065bf4b6b440d</caom2:contentChecksum>
+          <caom2:parts/>
+        </caom2:artifact>
+        <caom2:artifact caom2:id="01d6a705-2f2a-4422-85a9-6dfeb3142f76" caom2:lastModified="2017-06-25T10:45:07.485" caom2:maxLastModified="2019-11-08T11:29:39.958" caom2:metaChecksum="md5:9b58dff3edac28f77eb991b65966bdd1" caom2:accMetaChecksum="md5:5c4c63c7226ddeb1f8fb9439eeb08ca9">
+          <caom2:uri>gemini:GEM/rgS20081205S0217.fits</caom2:uri>
+          <caom2:productType>science</caom2:productType>
+          <caom2:releaseType>data</caom2:releaseType>
+          <caom2:contentType>application/fits</caom2:contentType>
+          <caom2:contentLength>9457920</caom2:contentLength>
+          <caom2:contentChecksum>md5:894d2a38801b24367f75b02a2423e046</caom2:contentChecksum>
+        </caom2:artifact>
+        <caom2:artifact caom2:id="f4c49f78-5613-4e46-ba70-b0fb2eaf325d" caom2:lastModified="2019-07-15T17:25:50.504" caom2:maxLastModified="2019-07-15T17:25:50.504" caom2:metaChecksum="md5:7b9b429187c1bb7e8e4c38df85a28f9b" caom2:accMetaChecksum="md5:096619e98b66e769c394d54f7b4fb2c5">
+          <caom2:uri>gemini:GEM/rgS20081205S0217.jpg</caom2:uri>
+          <caom2:productType>preview</caom2:productType>
+          <caom2:releaseType>data</caom2:releaseType>
+          <caom2:contentType>image/jpeg</caom2:contentType>
+          <caom2:contentLength>44801</caom2:contentLength>
+          <caom2:contentChecksum>md5:f7a4e58128a1a58d37fc145665249d35</caom2:contentChecksum>
+          <caom2:parts/>
+        </caom2:artifact>
+      </caom2:artifacts>
+    </caom2:plane>
+  </caom2:planes>
+</caom2:Observation>

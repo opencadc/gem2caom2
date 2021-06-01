@@ -80,14 +80,19 @@ from caom2pipe import run_composable as rc
 from gem2caom2 import main_app, preview_augmentation, external_metadata
 from gem2caom2 import pull_augmentation, gem_name, data_source, builder
 from gem2caom2 import pull_v_augmentation, preview_v_augmentation
+from gem2caom2 import cleanup_augmentation
 
 DATA_VISITORS = []
 
 
 def _define_meta_visitors(config):
-    meta_visitors = [preview_augmentation, pull_augmentation]
+    meta_visitors = [
+        preview_augmentation, pull_augmentation, cleanup_augmentation
+    ]
     if config.features.supports_latest_client:
-        meta_visitors = [preview_v_augmentation, pull_v_augmentation]
+        meta_visitors = [
+            preview_v_augmentation, pull_v_augmentation, cleanup_augmentation
+        ]
     return meta_visitors
 
 

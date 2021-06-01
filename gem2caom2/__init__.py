@@ -1,4 +1,5 @@
 from .main_app import *  # noqa
+from .cleanup_augmentation import *  # noqa
 from .composable import *  # noqa
 from .gem_name import *  # noqa
 from .external_metadata import *  # noqa

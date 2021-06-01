@@ -1,0 +1,103 @@
+<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:DerivedObservation" caom2:id="5e0be859-2ab3-4b25-824a-ed99c05484b5" caom2:lastModified="2021-05-24T18:54:19.268" caom2:maxLastModified="2021-05-24T19:38:47.324" caom2:metaChecksum="md5:46bedbfaa8c3839003c654e2d9f2cd39" caom2:accMetaChecksum="md5:e864cc855adccda90efefc63e5485145" caom2:metaProducer="gem2caom2/0.8.5">
+  <caom2:collection>GEMINI</caom2:collection>
+  <caom2:observationID>GN-CAL20140811-1-033-BIAS</caom2:observationID>
+  <caom2:metaRelease>2014-08-11T15:52:06.000</caom2:metaRelease>
+  <caom2:algorithm>
+    <caom2:name>composite</caom2:name>
+  </caom2:algorithm>
+  <caom2:type>BIAS</caom2:type>
+  <caom2:intent>calibration</caom2:intent>
+  <caom2:proposal>
+    <caom2:id>GN-CAL20140811</caom2:id>
+    <caom2:title>GN-CAL20140811</caom2:title>
+  </caom2:proposal>
+  <caom2:target>
+    <caom2:name>Bias</caom2:name>
+    <caom2:type>field</caom2:type>
+    <caom2:moving>true</caom2:moving>
+  </caom2:target>
+  <caom2:telescope>
+    <caom2:name>Gemini-North</caom2:name>
+    <caom2:geoLocationX>-5464284.386715498</caom2:geoLocationX>
+    <caom2:geoLocationY>-2493782.3091076654</caom2:geoLocationY>
+    <caom2:geoLocationZ>2150786.380689657</caom2:geoLocationZ>
+  </caom2:telescope>
+  <caom2:instrument>
+    <caom2:name>GMOS-N</caom2:name>
+    <caom2:keywords>
+      <caom2:keyword>imaging</caom2:keyword>
+    </caom2:keywords>
+  </caom2:instrument>
+  <caom2:planes>
+    <caom2:plane caom2:id="2a5ff14d-9bd4-48b1-8a50-6c4c70d5faff" caom2:lastModified="2021-05-24T18:54:19.268" caom2:maxLastModified="2021-05-24T19:38:47.324" caom2:metaChecksum="md5:e67785ee685ab669b256c0b09b7ba3ce" caom2:accMetaChecksum="md5:a681b50e1df31f694a78cb563a666823" caom2:metaProducer="gem2caom2/0.8.5">
+      <caom2:productID>N20140811S0033_BIAS</caom2:productID>
+      <caom2:metaRelease>2014-08-11T15:52:06.000</caom2:metaRelease>
+      <caom2:dataRelease>2014-08-11T00:00:00.000</caom2:dataRelease>
+      <caom2:dataProductType>image</caom2:dataProductType>
+      <caom2:calibrationLevel>2</caom2:calibrationLevel>
+      <caom2:artifacts>
+        <caom2:artifact caom2:id="f5d2d5e9-491b-41a5-ade2-a8477a0550aa" caom2:lastModified="2021-05-24T18:54:19.268" caom2:maxLastModified="2021-05-24T18:54:19.268" caom2:metaChecksum="md5:9c8d2ab397e3f82645b827a1efafa460" caom2:accMetaChecksum="md5:b58ac0ac9eda27f7565b4fe24b0b4e3a">
+          <caom2:uri>ad:GEM/N20140811S0033_BIAS_th.jpg</caom2:uri>
+          <caom2:productType>thumbnail</caom2:productType>
+          <caom2:releaseType>data</caom2:releaseType>
+          <caom2:contentType>image/jpeg</caom2:contentType>
+          <caom2:contentLength>1147</caom2:contentLength>
+          <caom2:contentChecksum>md5:5eb402730bc6964edf0d05d183f9b5e5</caom2:contentChecksum>
+          <caom2:parts/>
+        </caom2:artifact>
+        <caom2:artifact caom2:id="ace1249a-83ed-4807-973f-a2c69bb89859" caom2:lastModified="2021-05-24T18:54:19.268" caom2:maxLastModified="2021-05-24T19:38:47.324" caom2:metaChecksum="md5:59a2e0056bba138f0be0cff02c8e6963" caom2:accMetaChecksum="md5:ebf70c389574a9261f15d8703d1df93e" caom2:metaProducer="gem2caom2/0.8.5">
+          <caom2:uri>gemini:GEM/N20140811S0033_BIAS.fits</caom2:uri>
+          <caom2:productType>calibration</caom2:productType>
+          <caom2:releaseType>data</caom2:releaseType>
+          <caom2:contentType>application/fits</caom2:contentType>
+          <caom2:contentLength>28388160</caom2:contentLength>
+          <caom2:contentChecksum>md5:63dd8ff94d748f8523ff968f2ee94413</caom2:contentChecksum>
+        </caom2:artifact>
+        <caom2:artifact caom2:id="724ee8ce-7cd3-4195-b26b-80737b86a04a" caom2:lastModified="2019-07-26T14:22:07.397" caom2:maxLastModified="2019-07-26T14:22:07.397" caom2:metaChecksum="md5:2fdbb0e95853cd1538dc723a487077cc" caom2:accMetaChecksum="md5:a3b80e7900e535613a8f192f8f3138a4">
+          <caom2:uri>gemini:GEM/N20140811S0033_BIAS.jpg</caom2:uri>
+          <caom2:productType>preview</caom2:productType>
+          <caom2:releaseType>data</caom2:releaseType>
+          <caom2:contentType>image/jpeg</caom2:contentType>
+          <caom2:contentLength>8227</caom2:contentLength>
+          <caom2:contentChecksum>md5:41f90793197cd89d008730dab85247c6</caom2:contentChecksum>
+          <caom2:parts/>
+        </caom2:artifact>
+      </caom2:artifacts>
+    </caom2:plane>
+    <caom2:plane caom2:id="e6b8e117-ae93-4d0a-a052-44f324f4710b" caom2:lastModified="2021-05-24T18:54:19.268" caom2:maxLastModified="2021-05-24T18:54:19.268" caom2:metaChecksum="md5:b383e990b305249f301d2f007fbb0187" caom2:accMetaChecksum="md5:b88974ece8bafcf76f6629a438638ce5" caom2:metaProducer="gem2caom2/0.8.5">
+      <caom2:productID>N20140811S0033_bias</caom2:productID>
+      <caom2:metaRelease>2014-08-11T15:52:06.000</caom2:metaRelease>
+      <caom2:dataRelease>2014-08-11T00:00:00.000</caom2:dataRelease>
+      <caom2:dataProductType>image</caom2:dataProductType>
+      <caom2:calibrationLevel>2</caom2:calibrationLevel>
+      <caom2:artifacts>
+        <caom2:artifact caom2:id="2c9c0043-7933-4674-8ab4-114a3dbc841c" caom2:lastModified="2021-05-24T18:54:19.268" caom2:maxLastModified="2021-05-24T18:54:19.268" caom2:metaChecksum="md5:16600ea1dfc71a47f58ef8324796264d" caom2:accMetaChecksum="md5:f7583786a0dcabee93fc990a3a0d5582">
+          <caom2:uri>ad:GEM/N20140811S0033_bias_th.jpg</caom2:uri>
+          <caom2:productType>thumbnail</caom2:productType>
+          <caom2:releaseType>data</caom2:releaseType>
+          <caom2:contentType>image/jpeg</caom2:contentType>
+          <caom2:contentLength>1147</caom2:contentLength>
+          <caom2:contentChecksum>md5:5eb402730bc6964edf0d05d183f9b5e5</caom2:contentChecksum>
+          <caom2:parts/>
+        </caom2:artifact>
+        <caom2:artifact caom2:id="7fea3eff-86fd-445f-81e9-fe650e6e7d50" caom2:lastModified="2021-05-24T18:54:19.268" caom2:maxLastModified="2021-05-24T18:54:19.268" caom2:metaChecksum="md5:13fa87a58eaf5d2ae76a87c93d1fcb16" caom2:accMetaChecksum="md5:6b37d170270019e020af2fe7bc4db359" caom2:metaProducer="gem2caom2/0.8.5">
+          <caom2:uri>gemini:GEM/N20140811S0033_bias.fits</caom2:uri>
+          <caom2:productType>calibration</caom2:productType>
+          <caom2:releaseType>data</caom2:releaseType>
+          <caom2:contentType>application/fits</caom2:contentType>
+          <caom2:contentLength>28388160</caom2:contentLength>
+          <caom2:contentChecksum>md5:63dd8ff94d748f8523ff968f2ee94413</caom2:contentChecksum>
+        </caom2:artifact>
+        <caom2:artifact caom2:id="eb9ef6c6-abf7-4a8d-88f8-2254394c8eca" caom2:lastModified="2019-07-26T14:22:07.397" caom2:maxLastModified="2019-07-26T14:22:07.397" caom2:metaChecksum="md5:aabcf607a7dd5964b143c99d3d2094df" caom2:accMetaChecksum="md5:d40f417e15598dddd20bba4bb63c5a94">
+          <caom2:uri>gemini:GEM/N20140811S0033_bias.jpg</caom2:uri>
+          <caom2:productType>preview</caom2:productType>
+          <caom2:releaseType>data</caom2:releaseType>
+          <caom2:contentType>image/jpeg</caom2:contentType>
+          <caom2:contentLength>8227</caom2:contentLength>
+          <caom2:contentChecksum>md5:41f90793197cd89d008730dab85247c6</caom2:contentChecksum>
+          <caom2:parts/>
+        </caom2:artifact>
+      </caom2:artifacts>
+    </caom2:plane>
+  </caom2:planes>
+</caom2:Observation>

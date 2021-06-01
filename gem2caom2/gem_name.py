@@ -91,10 +91,16 @@ HEADER_URL = 'https://archive.gemini.edu/fullheader/'
 
 class GemName(mc.StorageName):
     """Naming rules:
-    - support mixed-case file name storage, exception for extensions, and
+    - support mixed-case file name storage, except for extensions, and
             mixed-case obs id values - the case the inputs are provided in are
             assumed to be correct.
     - support uncompressed files in storage
+    - from Oliver Oberdorf at Gemini, 26-05-21: "prefer lower case, as that's
+      what we use today"
+      e.g.The observation ID GN-CAL20140811-1-033-BIAS has two artifacts:
+            - N20140811S0033_BIAS.fits
+            - N20140811S0033_bias.fits
+
 
     ALOPEKE/ZORRO::
 
