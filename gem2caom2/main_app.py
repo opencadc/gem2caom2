@@ -490,18 +490,20 @@ def get_meta_release(parameters):
     file_id = GemName.remove_extensions(mc.CaomName(uri).file_name)
     em.om.reset_index(file_id)
 
-    # DB 21-08-19
-    # If PROP_MD is T, use JSON ‘release’ value for metadata release date.
-    # If no PROP_MD present or value is F use the JSON ut_datetime value.
     header = parameters.get('header')
     if header is None:
-        raise mc.CadcException('header missing from parameters.')
-
-    prop_md = header.get('PROP_MD')
-    if prop_md is None or prop_md is False or prop_md == 'F':
-        meta_release = em.om.get('ut_datetime')
-    else:
+        # GenericParser, so no headers retrieved from archive.gemini.edu,
+        # probably a 403 being returned by the site, assume proprietary
         meta_release = em.om.get('release')
+    else:
+        # DB 21-08-19
+        # If PROP_MD is T, use JSON ‘release’ value for metadata release date.
+        # If no PROP_MD present or value is F use the JSON ut_datetime value.
+        prop_md = header.get('PROP_MD')
+        if prop_md is None or prop_md is False or prop_md == 'F':
+            meta_release = em.om.get('ut_datetime')
+        else:
+            meta_release = em.om.get('release')
     return meta_release
 
 
@@ -518,7 +520,9 @@ def get_obs_intent(header):
     cal_values = ['GCALflat', 'Bias', 'BIAS', 'Twilight', 'Ar', 'FLAT',
                   'flat', 'ARC', 'Domeflat', 'DARK', 'dark', 'gcal', 'ZERO',
                   'SLIT', 'slit', 'PINHOLE']
-    dl = header.get('DATALAB')
+    dl = em.om.get('data_label')
+    if dl is None and header is not None:
+        dl = header.get('DATALAB')
     lookup = _get_obs_class(header)
     logging.debug('observation_class is {} for {}'.format(lookup, dl))
     if lookup is None:
@@ -527,8 +531,13 @@ def get_obs_intent(header):
         if type_lookup is None:
             data_label = _get_data_label()
             logging.debug('data_label is {}'.format(data_label))
-            if (data_label is None or
-                    (data_label is not None and '-CAL' not in data_label)):
+            if (
+                data_label is None or
+                (
+                    data_label is not None and '-CAL' not in data_label
+                ) and
+                header is not None
+            ):
                 object_value = header.get('OBJECT')
                 logging.debug(
                     'object_value is {} for {}'.format(object_value, dl))
@@ -803,9 +812,9 @@ def _get_obs_class(header):
     """Common location to lookup OBSCLASS from the FITS headers, and if
     it's not present, to lookup observation_class from JSON summary
     metadata."""
-    obs_class = header.get('OBSCLASS')
-    if obs_class is None:
-        obs_class = em.om.get('observation_class')
+    obs_class = em.om.get('observation_class')
+    if obs_class is None and header is not None:
+        obs_class = header.get('OBSCLASS')
     return obs_class
 
 
