@@ -1519,8 +1519,8 @@ def update(observation, **kwargs):
         logging.error('Error {} for {} instrument {}'.format(
             e, observation.observation_id, instrument))
         tb = traceback.format_exc()
-        logging.error(tb)
-        return None
+        logging.debug(tb)
+        raise mc.CadcException(e)
     logging.debug('Done update.')
     return observation
 
