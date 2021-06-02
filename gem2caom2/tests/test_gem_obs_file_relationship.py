@@ -227,7 +227,9 @@ def test_repair_data_label():
                     '2001nov16_0164', '2007sep15_0001', '01DEC05_004',
                     'N20061217S0228', 'N20050826S0137', 'S20120605S0053',
                     'S20050601S0032', 'S20050601S0411', 'S20050718S0172',
-                    'S20130922S0130', 'N20200103S0434']:
+                    'S20130922S0130', 'N20200103S0434',
+                    'gS20210428S0295_bias',
+        ]:
             # what happens when an entry is not found
             # note that the answer should actually be
             # GN-2006A-Q-90-1-001-MRG-ADD, but because the
@@ -662,10 +664,8 @@ def test_repair_provenance(gem_mock, tap_mock):
         test_config.get_executors()
         external_metadata.init_global(config=test_config)
         for ii in test_subjects:
-            ignore, test_fid = main_app._repair_provenance_value(ii[1],
-                                                                 'test obs')
-            assert test_fid is not None, 'failed lookup {}'.format(ii)
-            assert test_fid == ii[0], 'error {}'.format(ii[1])
+            temp = main_app._remove_processing_detritus([ii[1]], 'log_value')
+            assert temp[0] == ii[0], f'error {temp[0]} should be {ii[0]}'
     finally:
         os.getcwd = getcwd_orig
 

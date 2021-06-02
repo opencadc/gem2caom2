@@ -1492,10 +1492,19 @@ def update(observation, **kwargs):
                                 c.time_axis = 1
 
                 if isinstance(observation, DerivedObservation):
-                    cc.update_plane_provenance(plane, headers[1:], 'IMCMB',
-                                               COLLECTION,
-                                               _repair_provenance_value,
-                                               observation.observation_id)
+                    values = cc.find_keywords_in_headers(
+                        headers[1:], ['IMCMB']
+                    )
+                    repaired_values = _remove_processing_detritus(
+                        values, observation.observation_id
+                    )
+                    cc.update_plane_provenance_from_values(
+                        plane,
+                        _repair_provenance_value,
+                        repaired_values,
+                        COLLECTION,
+                        observation.observation_id,
+                    )
 
                 if ((processed or
                      isinstance(observation, DerivedObservation) or
@@ -4013,47 +4022,69 @@ def _update_composite(obs, instrument, current_product_id):
     return result
 
 
-def _repair_provenance_value(imcmb_value, obs_id):
-    """There are several naming patterns in the provenance for
-    processed files. Try to extract meaningful raw file names.
-    Return None if the encountered pattern is unexpected."""
+def _remove_processing_detritus(values, obs_id):
+    """
+    There are several naming patterns in the provenance for processed files.
+    Try to extract meaningful raw file names.
 
-    # e.g.
-    # IMCMB001 = 'tmpimgwsk9476kd_5.fits[SCI,1]'
-    # tmpfile22889S20141226S0203.fits[SCI,1]
-    # IMCMB001= 'rawdir$2004may20_0048.fits'
-    logging.debug(f'Being _repair_provenance_value for {obs_id}.')
+    Remove duplicates, so values used for provenance in multiple forms are
+    only looked up once.
+    :param values: A list of IMCMB* keyword values.
+    :param obs_id: str for logging information
+    :return: A list of unique provenance file names, such as may be found
+        at Gemini. The list may be empty.
+    """
+    logging.debug(f'Begin _remove_processing_detritus for {obs_id}')
+    result = []
+    for value in values:
+        # e.g.
+        # IMCMB001 = 'tmpimgwsk9476kd_5.fits[SCI,1]'
+        # tmpfile22889S20141226S0203.fits[SCI,1]
+        # IMCMB001= 'rawdir$2004may20_0048.fits'
 
-    if 'N' in imcmb_value:
-        temp = 'N' + imcmb_value.split('N', 1)[1]
-    elif 'S' in imcmb_value:
-        x = imcmb_value.split('S')
-        if len(x) == 2 and '[SCI' in imcmb_value:
-            logging.warning(
-                'Unrecognized IMCMB value {}'.format(imcmb_value))
-            return None, None
+        if 'N' in value:
+            temp = 'N' + value.split('N', 1)[1]
+        elif 'S' in value:
+            x = value.split('S')
+            if len(x) == 2 and '[SCI' in value:
+                logging.warning(f'Unrecognized IMCMB value {value}')
+                continue
+            else:
+                temp = 'S' + value.split('S', 1)[1]
+        elif '$' in value:
+            temp = value.split('$', 1)[1]
         else:
-            temp = 'S' + imcmb_value.split('S', 1)[1]
-    elif '$' in imcmb_value:
-        temp = imcmb_value.split('$', 1)[1]
-    else:
-        logging.warning(
-            'Unrecognized IMCMB value {}'.format(imcmb_value))
-        return None, None
+            logging.warning(f'Unrecognized IMCMB value {value}')
+            continue
 
-    if '_' in temp and (temp.startswith('S') or temp.startswith('N')):
-        temp1 = temp.split('_')[0]
-    elif '.fits' in temp:
-        temp1 = temp.split('.fits')[0]
-    elif '[SCI' in temp:
-        temp1 = temp.split('[SCI')[0]
-    else:
-        logging.warning(
-            'Failure to repair {} for {}'.format(temp, obs_id))
-        return None, None
+        if '_' in temp and (temp.startswith('S') or temp.startswith('N')):
+            temp1 = temp.split('_')[0]
+        elif '.fits' in temp:
+            temp1 = temp.split('.fits')[0]
+        elif '[SCI' in temp:
+            temp1 = temp.split('[SCI')[0]
+        else:
+            logging.warning(f'Failure to repair {temp}')
+            continue
 
-    prov_file_id = temp1[:14]
-    prov_obs_id = em.get_gofr().get_obs_id(prov_file_id)
+        result.append(temp1[:14])
+
+    logging.debug('End _remove_processing_detritus')
+    return list(set(result))
+
+
+def _repair_provenance_value(value, obs_id):
+    logging.debug(f'Being _repair_provenance_value for {obs_id}.')
+    prov_file_id = value
+    try:
+        prov_obs_id = em.get_gofr().get_obs_id(prov_file_id)
+    except mc.CadcException as e:
+        # the file id probably does not exist at Gemini, ignore, because
+        # it's provenance
+        logging.warning(
+            f'Failed to find {prov_file_id} at archive.gemini.edu'
+        )
+        prov_obs_id = 'not_found'
     logging.debug(f'End _repair_provenance_value. {prov_obs_id} '
                   f'{prov_file_id}')
     return prov_obs_id, prov_file_id
