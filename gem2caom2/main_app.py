@@ -517,9 +517,11 @@ def get_obs_intent(header):
     result = ObservationIntentType.CALIBRATION
     # DB 01-04-21
     # PINHOLE is CALIBRATION
+    # DB 03-06-21
+    # OBSCLASS = dayCal datasets should all have an intent of calibration.
     cal_values = ['GCALflat', 'Bias', 'BIAS', 'Twilight', 'Ar', 'FLAT',
                   'flat', 'ARC', 'Domeflat', 'DARK', 'dark', 'gcal', 'ZERO',
-                  'SLIT', 'slit', 'PINHOLE']
+                  'SLIT', 'slit', 'PINHOLE', 'dayCal']
     dl = em.om.get('data_label')
     if dl is None and header is not None:
         dl = header.get('DATALAB')
@@ -628,6 +630,12 @@ def get_obs_type(header):
     elif instrument is em.Inst.FLAMINGOS:
         ignore, obs_type = _get_flamingos_mode(header)
         result = obs_type
+    elif instrument is em.Inst.F2:
+        # DB 03-06-21
+        # check the 'types' JSON value
+        types = em.om.get('types')
+        if 'DARK' in types:
+            result = 'DARK'
     return result
 
 
@@ -1855,7 +1863,8 @@ def _update_chunk_energy_f2(chunk, header, data_product_type, obs_id,
     #  ref_wl = gemini_md[‘central_wavelength’]   or  GRWLEN header value
     #  grism = gemini_md[‘disperser’]  or  GRISM header value
     #  if gemini_md[‘mode’] == ‘LS’:  # long-slit
-    #    slit_width = MASKNAME header value, e.g. ‘4pix-slit’, but need only ‘4’
+    #    slit_width = MASKNAME header value, e.g. ‘4pix-slit’, but need
+    #                                                          only ‘4’
     #    use the table I sent you with slit/grism values to determine
     #    average resolution R
     #
@@ -4084,6 +4093,8 @@ def _repair_provenance_value(value, obs_id):
         logging.warning(
             f'Failed to find {prov_file_id} at archive.gemini.edu'
         )
+        # DB 01-06-21 - use not found for the DATALAB/observationID value
+        # so it's easy to find in the database and let Gemini know.
         prov_obs_id = 'not_found'
     logging.debug(f'End _repair_provenance_value. {prov_obs_id} '
                   f'{prov_file_id}')
