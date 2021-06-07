@@ -3798,6 +3798,10 @@ def _update_chunk_position_trecs(chunk, headers, extension, obs_id):
     if len(headers) > 1:
         ctype1 = headers[extension].get('CTYPE1')
         if isinstance(ctype1, str):
+            # value repair for a small subset of TReCS files  :(
+            # test is rS20060306S0090, GS-2005B-Q-10-63-003
+            if ctype1 == '0':
+                headers[extension]['CTYPE1'] = 'RA---TAN'
             wcs_parser = WcsParser(headers[extension], obs_id, extension)
         else:
             wcs_parser = WcsParser(headers[0], obs_id, extension)
