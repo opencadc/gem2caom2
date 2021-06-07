@@ -386,6 +386,9 @@ LOOKUP = {
     '2006apr02_0073': ['GS-2006A-DD-1-1-0073', em.Inst.PHOENIX,
                        'GS-2006A-DD-1'],
     '2006dec10_0052': ['GS-2006B-C-8-2-0052', em.Inst.PHOENIX, 'GS-2006B-C-8'],
+    '2003apr24_0080': [
+        'GS-2003A-Q-13-15-0080', em.Inst.PHOENIX, 'GS-2003A-Q-13'
+    ],
     '2002may12_0277': ['GS-CAL20020512-9-0277', em.Inst.PHOENIX,
                        'GS-CAL20020512'],
     '2007sep15_0001': ['GS-2007B-Q-214-45-0001', em.Inst.PHOENIX,

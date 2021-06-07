@@ -1438,7 +1438,10 @@ def update(observation, **kwargs):
                         # value of PIXEL.
                         if instrument is em.Inst.PHOENIX:
                             ctype = headers[0].get('CTYPE1')
-                            if ctype is None or ctype in ['LINEAR', 'PIXEL']:
+                            if (
+                                ctype is not None and
+                                    ctype in ['LINEAR', 'PIXEL']
+                            ):
                                 c.naxis = None
                                 c.position_axis_1 = None
                                 c.position_axis_2 = None
@@ -2865,36 +2868,40 @@ def _update_chunk_energy_phoenix(chunk, data_product_type, obs_id, filter_name):
         if '_' in filter_name:
             filter_name = filter_name.split('_')[0]
 
-    logging.debug(
-        'Phoenix: filter_name is {} for {}'.format(filter_name, obs_id))
-
-    fm = FilterMetadata('Phoenix')
-    if data_product_type in [DataProductType.SPECTRUM,
-                             DataProductType.IMAGE]:
-        logging.debug(
-            'Phoenix: DataProductType {} for {}.'.format(data_product_type,
-                                                         obs_id))
-        if filter_name in PHOENIX:
-            fm.set_bandpass(PHOENIX[filter_name][2], PHOENIX[filter_name][1])
-            fm.central_wl = PHOENIX[filter_name][0]
-        elif len(filter_name) == 0:
-            # DB 11-02-21
-            # With open filter in Phoenix the band pass coverage should be
-            # from 1 to 5 microns, so central wavelength of 3 microns and
-            # bandpass of 4 microns. Lines 2777 to 2778 should be changed as
-            # well as adding an ‘open_(1)’ filter
-            fm.set_bandpass(5.0, 1.0)
-            fm.set_central_wl(5.0, 1.0)
+    logging.debug(f'Phoenix: filter_name is {filter_name} for {obs_id}')
+    if filter_name == 'invalid':
+        cc.reset_energy(chunk)
+    else:
+        fm = FilterMetadata('Phoenix')
+        if data_product_type in [
+            DataProductType.SPECTRUM, DataProductType.IMAGE
+        ]:
+            logging.debug(
+                f'Phoenix: DataProductType {data_product_type} for {obs_id}.'
+            )
+            if filter_name in PHOENIX:
+                fm.set_bandpass(
+                    PHOENIX[filter_name][2], PHOENIX[filter_name][1]
+                )
+                fm.central_wl = PHOENIX[filter_name][0]
+            elif len(filter_name) == 0:
+                # DB 11-02-21
+                # With open filter in Phoenix the band pass coverage should
+                # be from 1 to 5 microns, so central wavelength of 3 microns
+                # and bandpass of 4 microns. Lines 2777 to 2778 should be
+                # changed as well as adding an ‘open_(1)’ filter
+                fm.set_bandpass(5.0, 1.0)
+                fm.set_central_wl(5.0, 1.0)
+            else:
+                raise mc.CadcException(
+                    f'Phoenix: mystery filter name {filter_name} for {obs_id}'
+                )
         else:
             raise mc.CadcException(
-                'Phoenix: mystery filter name {} for {}'.format(
-                    filter_name, obs_id))
-    else:
-        raise mc.CadcException(
-            'Phoenix: Unsupported DataProductType {} for {}'.format(
-                data_product_type, obs_id))
-
-    _build_chunk_energy(chunk, filter_name, fm)
+                f'Phoenix: Unsupported DataProductType {data_product_type} '
+                f'for {obs_id}'
+            )
+        _build_chunk_energy(chunk, filter_name, fm)
     logging.debug('End _update_chunk_energy_phoenix')
 
 
