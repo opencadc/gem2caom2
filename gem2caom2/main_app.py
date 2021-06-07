@@ -1394,8 +1394,17 @@ def update(observation, **kwargs):
                                 if part == '1':
                                     # equinox information only available from
                                     # 0th header
-                                    c.position.equinox = headers[0].get(
-                                        'TRKEQUIN')
+                                    equinox = headers[0].get('TRKEQUIN')
+                                    if (
+                                        equinox is not None and
+                                            1800.0 <= equinox <= 2500.0
+                                    ):
+                                        c.position.equinox = equinox
+                                    else:
+                                        # DB 07-06-21
+                                        # No spatial WCS in these cases.
+                                        cc.reset_position(c)
+
                             elif instrument is em.Inst.FLAMINGOS:
                                 _update_chunk_position_flamingos(
                                     c, header, observation.observation_id)
@@ -1411,6 +1420,13 @@ def update(observation, **kwargs):
                             elif instrument in [em.Inst.ALOPEKE, em.Inst.ZORRO]:
                                 _update_chunk_position_fox(
                                     c, observation.observation_id)
+                            elif instrument is em.Inst.NIRI:
+                                _update_chunk_position_niri(
+                                    c,
+                                    headers,
+                                    observation.observation_id,
+                                    int(part),
+                                )
 
                         # time WCS
                         if instrument is em.Inst.F2:
@@ -1429,7 +1445,10 @@ def update(observation, **kwargs):
                         # value of PIXEL.
                         if instrument is em.Inst.PHOENIX:
                             ctype = headers[0].get('CTYPE1')
-                            if ctype is None or ctype in ['LINEAR', 'PIXEL']:
+                            if (
+                                ctype is not None and
+                                    ctype in ['LINEAR', 'PIXEL']
+                            ):
                                 c.naxis = None
                                 c.position_axis_1 = None
                                 c.position_axis_2 = None
@@ -2856,35 +2875,36 @@ def _update_chunk_energy_phoenix(chunk, data_product_type, obs_id, filter_name):
         if '_' in filter_name:
             filter_name = filter_name.split('_')[0]
 
-    logging.debug(
-        'Phoenix: filter_name is {} for {}'.format(filter_name, obs_id))
-
+    logging.debug(f'Phoenix: filter_name is {filter_name} for {obs_id}')
     fm = FilterMetadata('Phoenix')
-    if data_product_type in [DataProductType.SPECTRUM,
-                             DataProductType.IMAGE]:
+    if data_product_type in [
+        DataProductType.SPECTRUM, DataProductType.IMAGE
+    ]:
         logging.debug(
-            'Phoenix: DataProductType {} for {}.'.format(data_product_type,
-                                                         obs_id))
+            f'Phoenix: DataProductType {data_product_type} for {obs_id}.'
+        )
         if filter_name in PHOENIX:
-            fm.set_bandpass(PHOENIX[filter_name][2], PHOENIX[filter_name][1])
+            fm.set_bandpass(
+                PHOENIX[filter_name][2], PHOENIX[filter_name][1]
+            )
             fm.central_wl = PHOENIX[filter_name][0]
         elif len(filter_name) == 0:
             # DB 11-02-21
-            # With open filter in Phoenix the band pass coverage should be
-            # from 1 to 5 microns, so central wavelength of 3 microns and
-            # bandpass of 4 microns. Lines 2777 to 2778 should be changed as
-            # well as adding an ‘open_(1)’ filter
+            # With open filter in Phoenix the band pass coverage should
+            # be from 1 to 5 microns, so central wavelength of 3 microns
+            # and bandpass of 4 microns. Lines 2777 to 2778 should be
+            # changed as well as adding an ‘open_(1)’ filter
             fm.set_bandpass(5.0, 1.0)
             fm.set_central_wl(5.0, 1.0)
         else:
             raise mc.CadcException(
-                'Phoenix: mystery filter name {} for {}'.format(
-                    filter_name, obs_id))
+                f'Phoenix: mystery filter name {filter_name} for {obs_id}'
+            )
     else:
         raise mc.CadcException(
-            'Phoenix: Unsupported DataProductType {} for {}'.format(
-                data_product_type, obs_id))
-
+            f'Phoenix: Unsupported DataProductType {data_product_type} '
+            f'for {obs_id}'
+        )
     _build_chunk_energy(chunk, filter_name, fm)
     logging.debug('End _update_chunk_energy_phoenix')
 
@@ -3489,6 +3509,10 @@ def _reset_energy(observation_type, data_label, instrument, filter_name):
         # DB 24-04-19
         # ‘Unknown+Blocked2’ filter, no spectral WCS.
         result = True
+    elif instrument is em.Inst.PHOENIX and 'invalid' in filter_name:
+        # DB 07-06-21
+        # set energy to None
+        result = True
     return result
 
 
@@ -3794,10 +3818,46 @@ def _update_chunk_position_flamingos(chunk, header, obs_id):
         logging.info(f'FLAMINGOS: Missing spatial wcs for {obs_id}')
 
 
+def _update_chunk_position_niri(chunk, headers, obs_id, extension):
+    logging.info(f'Begin _update_chunk_niri for {obs_id}')
+    # DB 07-06-21
+    # The extension CD values that are very, very close to 0 cause the
+    # problems with Spatial WCS:
+    # ERROR: spherepoly_from_array: a line segment overlaps or polygon too
+    #        large
+    # Try to use the primary values if this error occurs - there's an extra
+    # '5' in the exponent
+    if len(headers) > 1:
+        pdu = headers[0]
+        hdu0 = headers[1]
+        pdu_cd1_1 = pdu.get('CD1_1')
+        hdu0_cd1_1 = hdu0.get('CD1_1')
+        if (
+            not math.isclose(pdu_cd1_1, hdu0_cd1_1) and
+                math.isclose(pdu_cd1_1*1e-50, hdu0_cd1_1)
+        ):
+            pdu['NAXIS1'] = hdu0.get('NAXIS1')
+            pdu['NAXIS2'] = hdu0.get('NAXIS2')
+            wcs_parser = WcsParser(pdu, obs_id, extension)
+            if chunk is None:
+                chunk = Chunk()
+            wcs_parser.augment_position(chunk)
+            if chunk.position is not None:
+                chunk.position_axis_1 = 1
+                chunk.position_axis_2 = 2
+                chunk.position.coordsys = pdu.get('FRAME')
+                chunk.position.equinox = mc.to_float(pdu.get('EQUINOX'))
+    logging.info('End _update_chunk_niri')
+
+
 def _update_chunk_position_trecs(chunk, headers, extension, obs_id):
     if len(headers) > 1:
         ctype1 = headers[extension].get('CTYPE1')
         if isinstance(ctype1, str):
+            # value repair for a small subset of TReCS files  :(
+            # test is rS20060306S0090, GS-2005B-Q-10-63-003
+            if ctype1 == '0':
+                headers[extension]['CTYPE1'] = 'RA---TAN'
             wcs_parser = WcsParser(headers[extension], obs_id, extension)
         else:
             wcs_parser = WcsParser(headers[0], obs_id, extension)
@@ -3888,7 +3948,7 @@ def _update_chunk_position(chunk, header, instrument, extension, obs_id,
     # no spatial WCS
 
     if instrument is em.Inst.HOKUPAA:
-        equinox = header.get('EQUINOX')
+        equinox = mc.to_float(header.get('EQUINOX'))
         if not 1800.0 <= equinox <= 2500.0:
             logging.warning(
                 'EQUINOX value is wrong ({}), no spatial WCS for {}'.format(
