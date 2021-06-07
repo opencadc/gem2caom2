@@ -1394,8 +1394,17 @@ def update(observation, **kwargs):
                                 if part == '1':
                                     # equinox information only available from
                                     # 0th header
-                                    c.position.equinox = headers[0].get(
-                                        'TRKEQUIN')
+                                    equinox = headers[0].get('TRKEQUIN')
+                                    if (
+                                        equinox is not None and
+                                            1800.0 <= equinox <= 2500.0
+                                    ):
+                                        c.position.equinox = equinox
+                                    else:
+                                        # DB 07-06-21
+                                        # No spatial WCS in these cases.
+                                        cc.reset_position(c)
+
                             elif instrument is em.Inst.FLAMINGOS:
                                 _update_chunk_position_flamingos(
                                     c, header, observation.observation_id)
