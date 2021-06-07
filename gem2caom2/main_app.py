@@ -3892,7 +3892,7 @@ def _update_chunk_position(chunk, header, instrument, extension, obs_id,
     # no spatial WCS
 
     if instrument is em.Inst.HOKUPAA:
-        equinox = header.get('EQUINOX')
+        equinox = mc.to_float(header.get('EQUINOX'))
         if not 1800.0 <= equinox <= 2500.0:
             logging.warning(
                 'EQUINOX value is wrong ({}), no spatial WCS for {}'.format(
