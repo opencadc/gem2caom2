@@ -1420,6 +1420,13 @@ def update(observation, **kwargs):
                             elif instrument in [em.Inst.ALOPEKE, em.Inst.ZORRO]:
                                 _update_chunk_position_fox(
                                     c, observation.observation_id)
+                            elif instrument is em.Inst.NIRI:
+                                _update_chunk_position_niri(
+                                    c,
+                                    headers,
+                                    observation.observation_id,
+                                    int(part),
+                                )
 
                         # time WCS
                         if instrument is em.Inst.F2:
@@ -2870,6 +2877,8 @@ def _update_chunk_energy_phoenix(chunk, data_product_type, obs_id, filter_name):
 
     logging.debug(f'Phoenix: filter_name is {filter_name} for {obs_id}')
     if filter_name == 'invalid':
+        # DB 07-06-21
+        # set energy to None
         cc.reset_energy(chunk)
     else:
         fm = FilterMetadata('Phoenix')
@@ -3808,6 +3817,30 @@ def _update_chunk_position_flamingos(chunk, header, obs_id):
             cc.reset_position(chunk)
     else:
         logging.info(f'FLAMINGOS: Missing spatial wcs for {obs_id}')
+
+
+def _update_chunk_position_niri(chunk, headers, obs_id, extension):
+    logging.info(f'Begin _update_chunk_niri for {obs_id}')
+    if len(headers) > 1:
+        pdu = headers[0]
+        hdu0 = headers[1]
+        pdu_cd1_1 = pdu.get('CD1_1')
+        hdu0_cd1_1 = hdu0.get('CD1_1')
+        if math.isclose(pdu_cd1_1, hdu0_cd1_1):
+            pass
+        else:
+            pdu['NAXIS1'] = hdu0.get('NAXIS1')
+            pdu['NAXIS2'] = hdu0.get('NAXIS2')
+            wcs_parser = WcsParser(pdu, obs_id, extension)
+            if chunk is None:
+                chunk = Chunk()
+            wcs_parser.augment_position(chunk)
+            if chunk.position is not None:
+                chunk.position_axis_1 = 1
+                chunk.position_axis_2 = 2
+                chunk.position.coordsys = pdu.get('FRAME')
+                chunk.position.equinox = mc.to_float(pdu.get('EQUINOX'))
+    logging.info('End _update_chunk_niri')
 
 
 def _update_chunk_position_trecs(chunk, headers, extension, obs_id):
