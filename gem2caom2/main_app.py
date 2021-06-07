@@ -2876,41 +2876,36 @@ def _update_chunk_energy_phoenix(chunk, data_product_type, obs_id, filter_name):
             filter_name = filter_name.split('_')[0]
 
     logging.debug(f'Phoenix: filter_name is {filter_name} for {obs_id}')
-    if filter_name == 'invalid':
-        # DB 07-06-21
-        # set energy to None
-        cc.reset_energy(chunk)
-    else:
-        fm = FilterMetadata('Phoenix')
-        if data_product_type in [
-            DataProductType.SPECTRUM, DataProductType.IMAGE
-        ]:
-            logging.debug(
-                f'Phoenix: DataProductType {data_product_type} for {obs_id}.'
+    fm = FilterMetadata('Phoenix')
+    if data_product_type in [
+        DataProductType.SPECTRUM, DataProductType.IMAGE
+    ]:
+        logging.debug(
+            f'Phoenix: DataProductType {data_product_type} for {obs_id}.'
+        )
+        if filter_name in PHOENIX:
+            fm.set_bandpass(
+                PHOENIX[filter_name][2], PHOENIX[filter_name][1]
             )
-            if filter_name in PHOENIX:
-                fm.set_bandpass(
-                    PHOENIX[filter_name][2], PHOENIX[filter_name][1]
-                )
-                fm.central_wl = PHOENIX[filter_name][0]
-            elif len(filter_name) == 0:
-                # DB 11-02-21
-                # With open filter in Phoenix the band pass coverage should
-                # be from 1 to 5 microns, so central wavelength of 3 microns
-                # and bandpass of 4 microns. Lines 2777 to 2778 should be
-                # changed as well as adding an ‘open_(1)’ filter
-                fm.set_bandpass(5.0, 1.0)
-                fm.set_central_wl(5.0, 1.0)
-            else:
-                raise mc.CadcException(
-                    f'Phoenix: mystery filter name {filter_name} for {obs_id}'
-                )
+            fm.central_wl = PHOENIX[filter_name][0]
+        elif len(filter_name) == 0:
+            # DB 11-02-21
+            # With open filter in Phoenix the band pass coverage should
+            # be from 1 to 5 microns, so central wavelength of 3 microns
+            # and bandpass of 4 microns. Lines 2777 to 2778 should be
+            # changed as well as adding an ‘open_(1)’ filter
+            fm.set_bandpass(5.0, 1.0)
+            fm.set_central_wl(5.0, 1.0)
         else:
             raise mc.CadcException(
-                f'Phoenix: Unsupported DataProductType {data_product_type} '
-                f'for {obs_id}'
+                f'Phoenix: mystery filter name {filter_name} for {obs_id}'
             )
-        _build_chunk_energy(chunk, filter_name, fm)
+    else:
+        raise mc.CadcException(
+            f'Phoenix: Unsupported DataProductType {data_product_type} '
+            f'for {obs_id}'
+        )
+    _build_chunk_energy(chunk, filter_name, fm)
     logging.debug('End _update_chunk_energy_phoenix')
 
 
@@ -3514,6 +3509,10 @@ def _reset_energy(observation_type, data_label, instrument, filter_name):
         # DB 24-04-19
         # ‘Unknown+Blocked2’ filter, no spectral WCS.
         result = True
+    elif instrument is em.Inst.PHOENIX and 'invalid' in filter_name:
+        # DB 07-06-21
+        # set energy to None
+        result = True
     return result
 
 
@@ -3821,14 +3820,22 @@ def _update_chunk_position_flamingos(chunk, header, obs_id):
 
 def _update_chunk_position_niri(chunk, headers, obs_id, extension):
     logging.info(f'Begin _update_chunk_niri for {obs_id}')
+    # DB 07-06-21
+    # The extension CD values that are very, very close to 0 cause the
+    # problems with Spatial WCS:
+    # ERROR: spherepoly_from_array: a line segment overlaps or polygon too
+    #        large
+    # Try to use the primary values if this error occurs - there's an extra
+    # '5' in the exponent
     if len(headers) > 1:
         pdu = headers[0]
         hdu0 = headers[1]
         pdu_cd1_1 = pdu.get('CD1_1')
         hdu0_cd1_1 = hdu0.get('CD1_1')
-        if math.isclose(pdu_cd1_1, hdu0_cd1_1):
-            pass
-        else:
+        if (
+            not math.isclose(pdu_cd1_1, hdu0_cd1_1) and
+                math.isclose(pdu_cd1_1*1e-50, hdu0_cd1_1)
+        ):
             pdu['NAXIS1'] = hdu0.get('NAXIS1')
             pdu['NAXIS2'] = hdu0.get('NAXIS2')
             wcs_parser = WcsParser(pdu, obs_id, extension)
