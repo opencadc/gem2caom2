@@ -81,11 +81,14 @@ __all__ = ['GeminiValidator']
 class GeminiValidator(mc.Validator):
     def __init__(self):
         super(GeminiValidator, self).__init__(
-            source_name=main_app.COLLECTION, scheme=gem_name.SCHEME,
-            preview_suffix='_th.jpg')
+            source_name=main_app.COLLECTION,
+            scheme=gem_name.SCHEME,
+            preview_suffix='_th.jpg',
+        )
         self._gofr = external_metadata.get_gofr()
         self._max_date = datetime.fromtimestamp(
-            self._gofr.get_max_timestamp()).date()
+            self._gofr.get_max_timestamp()
+        ).date()
         logging.error(f'max date is {self._max_date}')
         self._rejected = mc.Rejected(self._config.rejected_fqn)
         self._logger = logging.getLogger(__name__)
@@ -153,7 +156,8 @@ class GeminiValidator(mc.Validator):
             if candidate.count('G') == 1:
                 splitter = 'G'
             result = datetime.strptime(
-                candidate.split(splitter)[0], pattern).date()
+                candidate.split(splitter)[0], pattern
+            ).date()
         except ValueError as ex:
             self._logger.error(
                 f'Do not understand date format in file name {file_name}'
@@ -184,7 +188,8 @@ class GeminiValidator(mc.Validator):
         remove = self._get_date_remove_set(self._source, 'source')
         self._source = list(set(self._source).difference(remove))
         remove = self._get_date_remove_set(
-            self._destination_meta, 'destination meta')
+            self._destination_meta, 'destination meta'
+        )
         self._destination_meta = list(
             set(self._destination_meta).difference(remove)
         )
@@ -234,6 +239,7 @@ def validate():
 
 if __name__ == '__main__':
     import sys
+
     try:
         logger = logging.getLogger()
         logger.setLevel(logging.DEBUG)

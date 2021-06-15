@@ -105,17 +105,17 @@ def test_builder(obs_metadata_mock, tap_client_mock):
             ), f'expect a result support {support}'
             expected_path = COLLECTION if support else ARCHIVE
             assert (
-                test_result.file_uri ==
-                f'{SCHEME}:{expected_path}/{test_entry}'
+                test_result.file_uri
+                == f'{SCHEME}:{expected_path}/{test_entry}'
             ), 'wrong file uri'
             assert (
-                test_result.prev_uri ==
-                f'{SCHEME}:{expected_path}/{test_result.prev}'
+                test_result.prev_uri
+                == f'{SCHEME}:{expected_path}/{test_result.prev}'
             ), 'wrong preview uri'
             expected_scheme = V_SCHEME if support else A_SCHEME
             assert (
-                test_result.thumb_uri ==
-                f'{expected_scheme}:{expected_path}/{test_result.thumb}'
+                test_result.thumb_uri
+                == f'{expected_scheme}:{expected_path}/{test_result.thumb}'
             ), 'wrong thumb uri'
 
         test_config.task_types = [mc.TaskType.INGEST]

@@ -227,15 +227,15 @@ class GemName(mc.StorageName):
                 if temp is not None:
                     self._obs_id = GemName.remove_extensions(temp)
             if (
-                self._fname_on_disk is None and
-                self._file_name is None and
-                self._obs_id is None
+                self._fname_on_disk is None
+                and self._file_name is None
+                and self._obs_id is None
             ):
                 raise mc.CadcException('Require a name.')
             if (
-                self._file_id is None and
-                self._obs_id is None and
-                file_id is not None
+                self._file_id is None
+                and self._obs_id is None
+                and file_id is not None
             ):
                 self._file_id = file_id
                 self._obs_id = file_id
@@ -360,12 +360,12 @@ class GemName(mc.StorageName):
         """How to get the file_id from a file_name."""
         # Note the .gz extension is on some TRECS files, not that it is
         # an accepted GEMINI extension
-        return name.replace(
-            '.fits', '').replace(
-            '.bz2', ''). replace(
-            '.header', '').replace(
-            '.jpg', '').replace(
-            '.gz', ''
+        return (
+            name.replace('.fits', '')
+            .replace('.bz2', '')
+            .replace('.header', '')
+            .replace('.jpg', '')
+            .replace('.gz', '')
         )
 
     @staticmethod

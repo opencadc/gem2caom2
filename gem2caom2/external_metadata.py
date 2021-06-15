@@ -99,8 +99,9 @@ __all__ = [
 ]
 
 
-GEMINI_METADATA_URL = \
+GEMINI_METADATA_URL = (
     'https://archive.gemini.edu/jsonsummary/canonical/filepre='
+)
 
 # lazy initialization for jsonsummary metadata from Gemini
 om = None

@@ -337,8 +337,8 @@ class GemObsFileRelationship(object):
                                 temp[0] = temp[0].replace('BIAS/MBIAS/', '')
                             elif 'PETRO' in temp[0]:
                                 temp[0] = temp[0].replace(
-                                    '-/NET/PETROHUE/DATAFLOW/',
-                                    '')
+                                    '-/NET/PETROHUE/DATAFLOW/', ''
+                                )
                             elif '12CD' in temp[0] or 'EXPORT/HOME' in temp[0]:
                                 temp[0] = temp[0].split('/', 1)[0]
                             else:
@@ -528,8 +528,10 @@ def get_suffix(file_id, data_label):
     elif '_' in file_id:
         if file_id.startswith(('p', 'P')):
             if (
-               '_FLAT' in file_id or '_COMB' in file_id or
-                '_flat' in file_id or '_comb' in file_id
+                '_FLAT' in file_id
+                or '_COMB' in file_id
+                or '_flat' in file_id
+                or '_comb' in file_id
             ):
                 temp = file_id.split('_')[2:]
         elif file_id.startswith('TX2'):
@@ -540,9 +542,8 @@ def get_suffix(file_id, data_label):
                     temp = ['flt']
         else:
             temp = file_id.split('_')[1:]
-    if (
-        data_label.endswith('-G') and
-        (file_id.startswith('rS') or file_id.startswith('rN'))
+    if data_label.endswith('-G') and (
+        file_id.startswith('rS') or file_id.startswith('rN')
     ):
         # DB 16-06-20
         # I think the ‘g’ prefix is used a little inconsistently.  It is
@@ -577,7 +578,9 @@ def is_processed(file_name):
     file_id = gem_name.GemName.remove_extensions(file_name)
     # ALOPEKE file id ends with 'r' or 'b', so avoid checking that letter
     if file_id.startswith(('S', 'N', 'GN', 'GS', 'c', 'abu')):
-        if file_id.endswith(('0', '1', '2', '3', '4', '5', '6', '7', '8', '9')):
+        if file_id.endswith(
+            ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9')
+        ):
             result = False
         if file_id[:15].endswith(('b', 'r')):
             result = False
@@ -588,8 +591,8 @@ def is_processed(file_name):
         result = False
     # OSCIR file naming pattern
     elif (
-        file_id.startswith('r') and
-        re.match('r\\w{7}_\\d{3}', file_id, flags=re.ASCII) is not None
+        file_id.startswith('r')
+        and re.match('r\\w{7}_\\d{3}', file_id, flags=re.ASCII) is not None
     ):
         result = False
     return result
@@ -674,22 +677,26 @@ def repair_data_label(file_name, data_label):
         # SGo - this means make the data labels the same
         if (
             (
-                ('mfrg' == prefix or 'mrg' == prefix or 'rg' == prefix) and
-                (
+                ('mfrg' == prefix or 'mrg' == prefix or 'rg' == prefix)
+                and (
                     not (
-                        'add' in suffix or 'ADD' in suffix or
-                        'fringe' in suffix or 'FRINGE' in suffix
+                        'add' in suffix
+                        or 'ADD' in suffix
+                        or 'fringe' in suffix
+                        or 'FRINGE' in suffix
                     )
                 )
-                ) or ('arc' in suffix or 'ARC' in suffix) or
-                ('r' == prefix or 'R' == prefix)
+            )
+            or ('arc' in suffix or 'ARC' in suffix)
+            or ('r' == prefix or 'R' == prefix)
         ):
             prefix = ''
             suffix = []
 
         if (
-            prefix == '' and len(suffix) == 1 and
-            ('FRINGE' in suffix or 'fringe' in suffix)
+            prefix == ''
+            and len(suffix) == 1
+            and ('FRINGE' in suffix or 'fringe' in suffix)
         ):
             suffix = []
 

@@ -88,7 +88,9 @@ STATE_FILE = f'{gem_mocks.TEST_DATA_DIR}/state.yml'
 TODO_FILE = f'{gem_mocks.TEST_DATA_DIR}/todo.txt'
 REJECTED_FILE = f'{gem_mocks.TEST_DATA_DIR}/logs/rejected.yml'
 PROGRESS_FILE = f'{gem_mocks.TEST_DATA_DIR}/logs/progress.txt'
-PUBLIC_TEST_JSON = f'{gem_mocks.TEST_DATA_DIR}/json/GN-2019B-ENG-1-160-008.json'
+PUBLIC_TEST_JSON = (
+    f'{gem_mocks.TEST_DATA_DIR}/json/GN-2019B-ENG-1-160-008.json'
+)
 
 
 @pytest.fixture(scope='session', autouse=True)
@@ -119,21 +121,17 @@ def test_run(inst_mock, get_obs_mock, client_mock, run_mock):
         assert run_mock.called, 'should have been called'
         args, kwargs = run_mock.call_args
         test_storage = args[0]
-        assert isinstance(
-            test_storage, gem_name.GemName
-        ), type(test_storage)
+        assert isinstance(test_storage, gem_name.GemName), type(test_storage)
         assert test_storage.obs_id == test_obs_id, 'wrong obs id'
         assert test_storage.file_name == test_f_name, 'wrong file name'
-        assert (
-            test_storage.fname_on_disk == test_f_name
-        ), 'wrong fname on disk'
+        assert test_storage.fname_on_disk == test_f_name, 'wrong fname on disk'
         assert test_storage.url is None, 'wrong url'
         assert (
             test_storage.lineage == f'{test_f_id}/gemini:GEM/{test_f_name}'
         ), 'wrong lineage'
         assert (
-            test_storage.external_urls ==
-            f'https://archive.gemini.edu/fullheader/{test_f_name}'
+            test_storage.external_urls
+            == f'https://archive.gemini.edu/fullheader/{test_f_name}'
         ), 'wrong external urls'
     finally:
         os.getcwd = getcwd_orig
@@ -157,22 +155,17 @@ def test_run_errors(inst_mock, get_obs_mock, client_mock, run_mock):
         assert run_mock.called, 'should have been called'
         args, kwargs = run_mock.call_args
         test_storage = args[0]
-        assert isinstance(
-            test_storage, gem_name.GemName
-        ), type(test_storage)
+        assert isinstance(test_storage, gem_name.GemName), type(test_storage)
         assert test_storage.obs_id == test_obs_id, 'wrong obs id'
         assert test_storage.file_name == test_f_name, 'wrong file name'
-        assert (
-            test_storage.fname_on_disk == test_f_name
-        ), 'wrong fname on disk'
+        assert test_storage.fname_on_disk == test_f_name, 'wrong fname on disk'
         assert test_storage.url is None, 'wrong url'
         assert (
-            test_storage.lineage ==
-            f'{test_f_id}/gemini:GEM/{test_f_id}.fits'
+            test_storage.lineage == f'{test_f_id}/gemini:GEM/{test_f_id}.fits'
         ), 'wrong lineage'
         assert (
-            test_storage.external_urls ==
-            f'https://archive.gemini.edu/fullheader/{test_f_id}.fits'
+            test_storage.external_urls
+            == f'https://archive.gemini.edu/fullheader/{test_f_id}.fits'
         ), 'wrong external urls'
     finally:
         os.getcwd = getcwd_orig
@@ -199,8 +192,7 @@ def test_run_incremental_rc(
         assert run_mock.called, 'should have been called'
         args, kwargs = run_mock.call_args
         test_storage = args[0]
-        assert isinstance(
-            test_storage, gem_name.GemName), type(test_storage)
+        assert isinstance(test_storage, gem_name.GemName), type(test_storage)
         assert test_storage.obs_id == 'test_data_label', 'wrong obs id'
         test_fid = 'N20210101S0042'
         assert test_storage.file_name == f'{test_fid}.fits', 'wrong file_name'
@@ -213,8 +205,8 @@ def test_run_incremental_rc(
             test_storage.lineage == f'{test_fid}/gemini:GEM/{test_fid}.fits'
         ), 'wrong lineage'
         assert (
-            test_storage.external_urls ==
-            f'https://archive.gemini.edu/fullheader/{test_fid}.fits'
+            test_storage.external_urls
+            == f'https://archive.gemini.edu/fullheader/{test_fid}.fits'
         ), 'wrong external urls'
     finally:
         os.getcwd = getcwd_orig
@@ -229,8 +221,9 @@ def test_run_incremental_rc(
 def test_run_by_incremental2(
     client_mock, query_mock, read_mock, data_client_mock, repo_mock, exec_mock
 ):
-    data_client_mock.return_value.get_file_info.side_effect = \
+    data_client_mock.return_value.get_file_info.side_effect = (
         gem_mocks.mock_get_file_info
+    )
     data_client_mock.return_value.get_file.side_effect = Mock()
     exec_mock.side_effect = Mock()
     repo_mock.return_value.create.side_effect = gem_mocks.mock_repo_create
@@ -243,10 +236,12 @@ def test_run_by_incremental2(
             observation_id='TEST_OBS_ID',
             algorithm=Algorithm('exposure'),
         )
+
     read_mock.side_effect = _read_mock
 
     def _query_mock():
-        x = json.loads("""[{
+        x = json.loads(
+            """[{
         "name": "2002feb11_0180.fits",
         "filename": "2002feb11_0180.fits.bz2",
         "path": "",
@@ -312,7 +307,8 @@ def test_run_by_incremental2(
         "types": "{'UNPREPARED', 'SOUTH', 'RAW', 'PHOENIX', 'GEMINI', 'SPECT'}",
         "phot_standard": null,
         "results_truncated": true
-    }]""")
+    }]"""
+        )
         return x
 
     query_result = gem_mocks.Object()
@@ -354,9 +350,7 @@ def test_run_by_public(ds_mock, client_mock, tap_mock, exec_mock):
         f'{gem_mocks.TEST_BUILDER_OBS_ID}.expected.xml'
     )
     if not os.path.exists(expected_fqn):
-        shutil.copy(
-            f'{gem_mocks.TEST_DATA_DIR}/expected.xml', expected_fqn
-        )
+        shutil.copy(f'{gem_mocks.TEST_DATA_DIR}/expected.xml', expected_fqn)
 
     _write_cert()
     prior_s = datetime.utcnow().timestamp() - 1440 * 60
@@ -371,6 +365,7 @@ def test_run_by_public(ds_mock, client_mock, tap_mock, exec_mock):
     except Exception as e:
         import logging
         import traceback
+
         logging.error(traceback.format_exc())
     finally:
         os.getcwd = getcwd_orig
@@ -378,9 +373,7 @@ def test_run_by_public(ds_mock, client_mock, tap_mock, exec_mock):
     assert exec_mock.called, 'exec mock not called'
     args, kwargs = exec_mock.call_args
     test_storage = args[0]
-    assert isinstance(
-        test_storage, gem_name.GemName
-    ), type(test_storage)
+    assert isinstance(test_storage, gem_name.GemName), type(test_storage)
     assert test_storage.obs_id == 'GN-2019B-ENG-1-160-008', 'wrong obs id'
     assert test_storage.file_name == f'{test_f_id}.fits', 'wrong file_name'
     assert test_storage.file_id == test_f_id, 'wrong file_id'
@@ -392,8 +385,8 @@ def test_run_by_public(ds_mock, client_mock, tap_mock, exec_mock):
         test_storage.lineage == f'{test_f_id}/gemini:GEM/{test_f_id}.fits'
     ), 'wrong lineage'
     assert (
-       test_storage.external_urls ==
-       f'https://archive.gemini.edu/fullheader/{test_f_id}.fits'
+        test_storage.external_urls
+        == f'https://archive.gemini.edu/fullheader/{test_f_id}.fits'
     ), 'wrong external urls'
     assert tap_mock.called, 'tap mock not called'
 
@@ -420,9 +413,7 @@ def test_run_by_public2(
         assert run_mock.called, 'should have been called'
         args, kwargs = run_mock.call_args
         test_storage = args[0]
-        assert isinstance(
-            test_storage, gem_name.GemName
-        ), type(test_storage)
+        assert isinstance(test_storage, gem_name.GemName), type(test_storage)
         assert test_storage.obs_id == 'GN-2019B-ENG-1-160-008', 'wrong obs id'
         assert (
             test_storage.file_name == 'N20191101S0007.fits'
@@ -435,12 +426,12 @@ def test_run_by_public2(
         # there are six files returned by the mock, and they each have the
         # same data label, so they all end up in this lineage
         assert (
-            test_storage.lineage ==
-            'N20191101S0007/gemini:GEM/N20191101S0007.fits'
+            test_storage.lineage
+            == 'N20191101S0007/gemini:GEM/N20191101S0007.fits'
         ), 'wrong lineage'
         assert (
-            test_storage.external_urls ==
-            'https://archive.gemini.edu/fullheader/N20191101S0007.fits'
+            test_storage.external_urls
+            == 'https://archive.gemini.edu/fullheader/N20191101S0007.fits'
         ), 'wrong external urls'
     except Exception as e:
         assert False, e
@@ -450,8 +441,10 @@ def test_run_by_public2(
 
 def _check_sys_argv_params():
     py_version = f'{sys.version_info.major}.{sys.version_info.minor}'
-    plugin = f'/usr/local/lib/python{py_version}/site-packages/gem2caom2/' \
-             f'gem2caom2.py'
+    plugin = (
+        f'/usr/local/lib/python{py_version}/site-packages/gem2caom2/'
+        f'gem2caom2.py'
+    )
     temp = ' '.join(ii for ii in sys.argv)
     assert temp == (
         f'gem2caom2 --quiet --cert '

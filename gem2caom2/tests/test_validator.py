@@ -116,9 +116,7 @@ def test_validator(caps_mock, tap_mock):
             f.write('proxy content')
 
     rejected_file = f'{gem_mocks.TEST_DATA_DIR}/rejected/rejected.yml'
-    test_rejected = (
-        f'{gem_mocks.TEST_DATA_DIR}/validate/test_rejected.yml'
-    )
+    test_rejected = f'{gem_mocks.TEST_DATA_DIR}/validate/test_rejected.yml'
     shutil.copy(test_rejected, rejected_file)
 
     getcwd_orig = os.getcwd
@@ -141,14 +139,12 @@ def test_validator(caps_mock, tap_mock):
 
         assert test_meta is not None, 'expected destination result'
         assert len(test_meta) == 2, 'wrong # of destination results'
-        assert (
-            'S20170102S0663.fits' in test_meta
-        ), 'wrong destination content'
+        assert 'S20170102S0663.fits' in test_meta, 'wrong destination content'
         assert os.path.exists(test_listing_fqn), 'should create file record'
 
         test_subject.write_todo()
-        assert (
-            os.path.exists(test_subject._config.work_fqn)
+        assert os.path.exists(
+            test_subject._config.work_fqn
         ), 'should create file record'
         with open(test_subject._config.work_fqn, 'r') as f:
             content = f.readlines()

@@ -73,20 +73,14 @@ from gem2caom2 import external_metadata as em
 
 def test_is_valid():
     mock_obs_id = 'GN-2013B-Q-28-150-002'
-    assert GemName(
-        file_name='anything.fits', obs_id=mock_obs_id
-    ).is_valid()
-    assert GemName(
-        file_name='anything.jpg', obs_id=mock_obs_id
-    ).is_valid()
+    assert GemName(file_name='anything.fits', obs_id=mock_obs_id).is_valid()
+    assert GemName(file_name='anything.jpg', obs_id=mock_obs_id).is_valid()
 
 
 def test_storage_name():
     em.set_ofr(None)
     mock_obs_id = 'GN-2013B-Q-28-150-002'
-    test_sn = GemName(
-        file_name='N20131203S0006i.fits.bz2', obs_id=mock_obs_id
-    )
+    test_sn = GemName(file_name='N20131203S0006i.fits.bz2', obs_id=mock_obs_id)
     assert test_sn.file_uri == f'{SCHEME}:{ARCHIVE}/N20131203S0006i.fits'
     assert test_sn.file_name == 'N20131203S0006i.fits'
     assert test_sn.prev == 'N20131203S0006i.jpg'
@@ -94,9 +88,7 @@ def test_storage_name():
     assert test_sn.compressed_file_name is None
     assert test_sn.get_file_id(test_sn.file_name) == 'N20131203S0006i'
 
-    test_sn = GemName(
-        file_name='S20060920S0137.jpg', obs_id=mock_obs_id
-    )
+    test_sn = GemName(file_name='S20060920S0137.jpg', obs_id=mock_obs_id)
     assert test_sn.file_uri == f'{SCHEME}:{ARCHIVE}/S20060920S0137.jpg'
     assert test_sn.file_name == 'S20060920S0137.jpg'
     assert test_sn.prev == 'S20060920S0137.jpg'
@@ -107,8 +99,8 @@ def test_storage_name():
     assert test_sn.obs_id == 'GN-2009B-Q-121-15-001', 'wrong obs id'
     assert test_sn.file_uri == f'{SCHEME}:{ARCHIVE}/N20100104S0208.fits'
     assert (
-        test_sn.external_urls ==
-        'https://archive.gemini.edu/fullheader/N20100104S0208.fits'
+        test_sn.external_urls
+        == 'https://archive.gemini.edu/fullheader/N20100104S0208.fits'
     )
 
     test_sn = GemName(
@@ -118,10 +110,10 @@ def test_storage_name():
     assert test_sn.product_id == 'N20200810A0490r', 'wrong product id'
     assert test_sn.file_uri == f'{SCHEME}:{ARCHIVE}/N20200810A0490r.fits'
     assert (
-        test_sn.external_urls ==
-        'https://archive.gemini.edu/fullheader/N20200810A0490r.fits'
+        test_sn.external_urls
+        == 'https://archive.gemini.edu/fullheader/N20200810A0490r.fits'
     )
     assert (
-        test_sn.lineage ==
-        f'{test_sn.obs_id}r/{SCHEME}:{ARCHIVE}/{test_sn.file_id}.fits'
+        test_sn.lineage
+        == f'{test_sn.obs_id}r/{SCHEME}:{ARCHIVE}/{test_sn.file_id}.fits'
     ), 'wrong lineage'

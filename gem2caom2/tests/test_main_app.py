@@ -118,7 +118,7 @@ def pytest_generate_tests(metafunc):
         ]:
             walk_dir = _get_inst_name(ii)
             for root, dirs, files in os.walk(
-                    '{}/{}'.format(gem_mocks.TEST_DATA_DIR, walk_dir)
+                '{}/{}'.format(gem_mocks.TEST_DATA_DIR, walk_dir)
             ):
                 for file in files:
                     if file.endswith(".header"):
@@ -165,14 +165,17 @@ def test_main_app(client_mock, tap_mock, gemini_client_mock, test_name):
         local = _get_local(test_name)
         plugin = gem_mocks.PLUGIN
 
-        with patch('caom2utils.fits2caom2.CadcDataClient') as data_client_mock, \
-                patch('gem2caom2.external_metadata.get_pi_metadata') as \
-                gemini_pi_mock, \
-                patch('caom2pipe.astro_composable.get_vo_table_session') as \
-                        svofps_mock:
+        with patch(
+            'caom2utils.fits2caom2.CadcDataClient'
+        ) as data_client_mock, patch(
+            'gem2caom2.external_metadata.get_pi_metadata'
+        ) as gemini_pi_mock, patch(
+            'caom2pipe.astro_composable.get_vo_table_session'
+        ) as svofps_mock:
 
-            data_client_mock.return_value.get_file_info.side_effect = \
+            data_client_mock.return_value.get_file_info.side_effect = (
                 gem_mocks.mock_get_file_info
+            )
             gemini_pi_mock.side_effect = gem_mocks.mock_get_pi_metadata
             svofps_mock.side_effect = gem_mocks.mock_get_votable
 
@@ -230,8 +233,9 @@ def test_main_app_v(
     gemini_pi_mock.side_effect = gem_mocks.mock_get_pi_metadata
     svofps_mock.side_effect = gem_mocks.mock_get_votable
     tap_mock.side_effect = gem_mocks.mock_query_tap
-    get_file_info_mock.return_value.get_file_info.side_effect = \
+    get_file_info_mock.return_value.get_file_info.side_effect = (
         gem_mocks.mock_get_file_info
+    )
 
     getcwd_orig = os.getcwd
     os.getcwd = Mock(
@@ -246,7 +250,8 @@ def test_main_app_v(
         em.set_ofr(None)
         em.init_global(test_config)
         test_data_size = os.stat(
-            os.path.join(gem_mocks.TEST_DATA_DIR, 'from_paul.txt'))
+            os.path.join(gem_mocks.TEST_DATA_DIR, 'from_paul.txt')
+        )
         app_size = os.stat('/app/data/from_paul.txt')
         if test_data_size.st_size != app_size.st_size:
             copyfile(
@@ -286,7 +291,8 @@ def test_main_app_v(
         expected_fqn = _get_expected_file_name(dirname, product_id)
 
         compare_result = _new_si_compare_differences(
-            actual_fqn, expected_fqn, test_config)
+            actual_fqn, expected_fqn, test_config
+        )
         if compare_result is not None:
             raise AssertionError(compare_result)
         # assert False  # cause I want to see logging messages
@@ -365,7 +371,8 @@ def _do_botched_compare(actual_fqn, expected_fqn):
     actual = mc.read_obs_from_file(actual_fqn)
     expected = mc.read_obs_from_file(expected_fqn)
     result = _compare_keys(
-        expected.planes.keys(), actual.planes.keys(), 'plane')
+        expected.planes.keys(), actual.planes.keys(), 'plane'
+    )
     if result is None:
         for plane in actual.planes.values():
             e_plane = expected.planes[plane.product_id]
@@ -411,9 +418,7 @@ def _do_botched_compare(actual_fqn, expected_fqn):
 
 def _rationalize_keys(in_keys):
     return list(
-        set(
-            [ii.replace('GEM/', 'GEMINI/') for ii in in_keys if '.fits' in ii]
-        )
+        set([ii.replace('GEM/', 'GEMINI/') for ii in in_keys if '.fits' in ii])
     )
 
 
@@ -424,8 +429,7 @@ def _compare_keys(expected_keys, actual_keys, key_type):
     for entry in [expected_missing, actual_missing]:
         if len(entry) > 0:
             result = (
-                 f'{result}\n'
-                 f'Expected:: missing {len(entry)} {key_type}.'
+                f'{result}\n Expected:: missing {len(entry)} {key_type}.'
             )
     if len(result) == 0:
         result = None

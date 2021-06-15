@@ -117,17 +117,18 @@ def test_preview_augment():
         os.unlink(test_prev)
 
     try:
-        with patch('caom2pipe.manage_composable.http_get') as http_mock, \
-                patch('caom2pipe.manage_composable.data_put') as ad_put_mock, \
-                patch(
-                    'caom2pipe.manage_composable.get_artifact_metadata'
-                ) as art_mock:
+        with patch('caom2pipe.manage_composable.http_get') as http_mock, patch(
+            'caom2pipe.manage_composable.data_put'
+        ) as ad_put_mock, patch(
+            'caom2pipe.manage_composable.get_artifact_metadata'
+        ) as art_mock:
+
             def _art_mock(
-                    fqn,
-                    product_type,
-                    release_type,
-                    uri,
-                    art_ignore,
+                fqn,
+                product_type,
+                release_type,
+                uri,
+                art_ignore,
             ):
                 if '_th' in uri:
                     return Artifact(
@@ -148,17 +149,19 @@ def test_preview_augment():
                         ChecksumURI('md5:12'),
                     )
 
-            cadc_client_mock.return_value.data_get.return_value = \
+            cadc_client_mock.return_value.data_get.return_value = (
                 mc.CadcException('test')
+            )
             art_mock.side_effect = _art_mock
             http_mock.side_effect = _get_mock
             result = preview_augmentation.visit(obs, **kwargs)
-            test_url = f'{preview_augmentation.PREVIEW_URL}' \
-                       f'{TEST_PRODUCT_ID}.fits'
+            test_url = (
+                f'{preview_augmentation.PREVIEW_URL}' f'{TEST_PRODUCT_ID}.fits'
+            )
             assert http_mock.called, 'http mock should be called'
             http_mock.assert_called_with(
                 test_url, test_prev
-            ),  'mock not called'
+            ), 'mock not called'
             assert ad_put_mock.called, 'ad put mock not called'
             assert art_mock.called, 'art mock not called'
             assert result is not None, 'expect a result'
@@ -166,9 +169,7 @@ def test_preview_augment():
             assert (
                 len(obs.planes[TEST_PRODUCT_ID].artifacts) == 3
             ), 'two new artifacts'
-            prev_uri = mc.build_uri(
-                ARCHIVE, f'{TEST_PRODUCT_ID}.jpg', SCHEME
-            )
+            prev_uri = mc.build_uri(ARCHIVE, f'{TEST_PRODUCT_ID}.jpg', SCHEME)
             thumb_uri = mc.build_uri(ARCHIVE, f'{TEST_PRODUCT_ID}_th.jpg')
             assert (
                 prev_uri in obs.planes[TEST_PRODUCT_ID].artifacts.keys()
@@ -196,13 +197,9 @@ def test_preview_augment_known_no_preview():
         if os.path.exists(REJECTED_FILE):
             os.unlink(REJECTED_FILE)
         test_rejected = mc.Rejected(REJECTED_FILE)
-        test_rejected.record(
-            mc.Rejected.NO_PREVIEW, f'{TEST_PRODUCT_ID}.jpg'
-        )
+        test_rejected.record(mc.Rejected.NO_PREVIEW, f'{TEST_PRODUCT_ID}.jpg')
         test_config = mc.Config()
-        test_observable = mc.Observable(
-            test_rejected, mc.Metrics(test_config)
-        )
+        test_observable = mc.Observable(test_rejected, mc.Metrics(test_config))
 
         cadc_client_mock = Mock()
         kwargs = {
@@ -212,13 +209,16 @@ def test_preview_augment_known_no_preview():
             'observable': test_observable,
         }
 
-        with patch('caom2pipe.manage_composable.http_get') as http_mock, \
-                patch('caom2pipe.manage_composable.data_put') as ad_put_mock, \
-                patch('caom2pipe.manage_composable.get_artifact_metadata') as \
-                art_mock, \
-                patch('caom2pipe.manage_composable.exec_cmd') as exec_mock:
-            cadc_client_mock.return_value.data_get.return_value = mc.CadcException(
-                'test')
+        with patch('caom2pipe.manage_composable.http_get') as http_mock, patch(
+            'caom2pipe.manage_composable.data_put'
+        ) as ad_put_mock, patch(
+            'caom2pipe.manage_composable.get_artifact_metadata'
+        ) as art_mock, patch(
+            'caom2pipe.manage_composable.exec_cmd'
+        ) as exec_mock:
+            cadc_client_mock.return_value.data_get.return_value = (
+                mc.CadcException('test')
+            )
             result = preview_augmentation.visit(obs, **kwargs)
             assert not http_mock.called, 'http mock should not be called'
             assert not ad_put_mock.called, 'ad put mock should not be called'
@@ -259,25 +259,28 @@ def test_preview_augment_unknown_no_preview():
     }
 
     with patch(
-            'caom2pipe.manage_composable.http_get',
-            side_effect=mc.CadcException(
-                   'Internal Server Error for url: '
-                   'https://archive.gemini.edu/preview'
-            )
-    ) as http_mock, \
-        patch('caom2pipe.manage_composable.data_put') as ad_put_mock, \
-        patch('caom2pipe.manage_composable.get_artifact_metadata') as \
-            art_mock, \
-            patch('caom2pipe.manage_composable.exec_cmd') as exec_mock:
+        'caom2pipe.manage_composable.http_get',
+        side_effect=mc.CadcException(
+            'Internal Server Error for url: '
+            'https://archive.gemini.edu/preview'
+        ),
+    ) as http_mock, patch(
+        'caom2pipe.manage_composable.data_put'
+    ) as ad_put_mock, patch(
+        'caom2pipe.manage_composable.get_artifact_metadata'
+    ) as art_mock, patch(
+        'caom2pipe.manage_composable.exec_cmd'
+    ) as exec_mock:
         cadc_client_mock.return_value.data_get.return_value = mc.CadcException(
-            'test')
+            'test'
+        )
         result = preview_augmentation.visit(obs, **kwargs)
         assert result is not None, 'expect result'
         # 0 because the preview artifact doesn't already exist
         assert result['artifacts'] == 0, 'wrong result'
         test_url = f'{preview_augmentation.PREVIEW_URL}{TEST_PRODUCT_ID}.fits'
         test_prev = f'{TEST_DATA_DIR}/{TEST_PRODUCT_ID}.jpg'
-        http_mock.assert_called_with(test_url, test_prev),  'mock not called'
+        http_mock.assert_called_with(test_url, test_prev), 'mock not called'
         assert not ad_put_mock.called, 'ad put mock should not be called'
         assert not art_mock.called, 'art mock should not be called'
         assert not exec_mock.called, 'exec mock should not be called'
@@ -292,26 +295,31 @@ def test_pull_augmentation():
     test_config = mc.Config()
     test_observable = mc.Observable(test_rejected, mc.Metrics(test_config))
     cadc_client_mock = Mock()
-    kwargs = {'working_directory': TEST_DATA_DIR,
-              'cadc_client': cadc_client_mock,
-              'stream': 'stream',
-              'observable': test_observable}
+    kwargs = {
+        'working_directory': TEST_DATA_DIR,
+        'cadc_client': cadc_client_mock,
+        'stream': 'stream',
+        'observable': test_observable,
+    }
 
-    with patch('caom2pipe.manage_composable.http_get') as http_mock, \
-            patch('caom2pipe.manage_composable.data_put') as ad_put_mock:
+    with patch('caom2pipe.manage_composable.http_get') as http_mock, patch(
+        'caom2pipe.manage_composable.data_put'
+    ) as ad_put_mock:
         cadc_client_mock.return_value.data_get.return_value = mc.CadcException(
-            'test')
+            'test'
+        )
         # no scheme from cadc client
         cadc_client_mock.get_file_info.return_value = {'md5sum': '1234'}
         result = pull_augmentation.visit(obs, **kwargs)
         test_url = f'{pull_augmentation.FILE_URL}/{TEST_PRODUCT_ID}.fits'
         test_prev = f'{TEST_DATA_DIR}/{TEST_PRODUCT_ID}.fits'
-        http_mock.assert_called_with(test_url, test_prev),  'mock not called'
+        http_mock.assert_called_with(test_url, test_prev), 'mock not called'
         assert ad_put_mock.called, 'ad put mock not called'
         assert result is not None, 'expect a result'
         assert result['observation'] == 0, 'no updated metadata'
-        assert len(obs.planes[TEST_PRODUCT_ID].artifacts) == 1, \
-            'no new artifacts'
+        assert (
+            len(obs.planes[TEST_PRODUCT_ID].artifacts) == 1
+        ), 'no new artifacts'
 
 
 @patch('caom2pipe.manage_composable.http_get')
@@ -329,14 +337,16 @@ def test_pull_v_augmentation(put_mock, http_mock):
     test_config = mc.Config()
     test_observable = mc.Observable(test_rejected, mc.Metrics(test_config))
     cadc_client_mock = Mock()
-    kwargs = {'working_directory': TEST_DATA_DIR,
-              'cadc_client': cadc_client_mock,
-              'observable': test_observable}
+    kwargs = {
+        'working_directory': TEST_DATA_DIR,
+        'cadc_client': cadc_client_mock,
+        'observable': test_observable,
+    }
 
     result = pull_v_augmentation.visit(obs, **kwargs)
     test_url = f'{pull_augmentation.FILE_URL}/{TEST_PRODUCT_ID}.fits'
     test_prev = f'{TEST_DATA_DIR}/{TEST_PRODUCT_ID}.fits'
-    http_mock.assert_called_with(test_url, test_prev),  'mock not called'
+    http_mock.assert_called_with(test_url, test_prev), 'mock not called'
     assert put_mock.called, 'put mock not called'
     args, kwargs = put_mock.call_args
     assert args[1] == TEST_DATA_DIR, 'wrong working dir'
@@ -344,8 +354,7 @@ def test_pull_v_augmentation(put_mock, http_mock):
     assert args[3] == test_uri, 'wrong storage name'
     assert result is not None, 'expect a result'
     assert result['observation'] == 0, 'no updated metadata'
-    assert len(obs.planes[TEST_PRODUCT_ID].artifacts) == 1, \
-        'no new artifacts'
+    assert len(obs.planes[TEST_PRODUCT_ID].artifacts) == 1, 'no new artifacts'
 
 
 def test_preview_augment_delete_preview():
@@ -358,17 +367,21 @@ def test_preview_augment_delete_preview():
     test_rejected = mc.Rejected('/tmp/nonexistent')
     test_rejected.content = {
         'bad_metadata': [],
-        'no_preview':
-            ['S20080610S0043.jpg',
-             'S20080610S0041.jpg',
-             'S20080610S0044.jpg',
-             'S20080610S0045.jpg']}
+        'no_preview': [
+            'S20080610S0043.jpg',
+            'S20080610S0041.jpg',
+            'S20080610S0044.jpg',
+            'S20080610S0045.jpg',
+        ],
+    }
     test_config = mc.Config()
     test_observable = mc.Observable(test_rejected, mc.Metrics(test_config))
-    kwargs = {'working_directory': TEST_DATA_DIR,
-              'cadc_client': None,
-              'stream': 'stream',
-              'observable': test_observable}
+    kwargs = {
+        'working_directory': TEST_DATA_DIR,
+        'cadc_client': None,
+        'stream': 'stream',
+        'observable': test_observable,
+    }
     result = preview_augmentation.visit(obs, **kwargs)
     assert result is not None, 'expect a result'
     assert result['artifacts'] == 1, 'wrong result'
@@ -390,39 +403,48 @@ def test_preview_augment_v(put_mock, http_mock):
     test_metrics = mc.Metrics(test_config)
     test_observable = mc.Observable(test_rejected, test_metrics)
     cadc_client_mock = Mock()
-    kwargs = {'working_directory': '/test_files',
-              'cadc_client': cadc_client_mock,
-              'observable': test_observable}
+    kwargs = {
+        'working_directory': '/test_files',
+        'cadc_client': cadc_client_mock,
+        'observable': test_observable,
+    }
 
     test_prev = f'/test_files/{TEST_PRODUCT_ID}.jpg'
     if os.path.exists(test_prev):
         os.unlink(test_prev)
 
     try:
-        cadc_client_mock.return_value.data_get.return_value = \
-            mc.CadcException('test')
+        cadc_client_mock.return_value.data_get.return_value = mc.CadcException(
+            'test'
+        )
         http_mock.side_effect = _get_mock
         result = preview_v_augmentation.visit(obs, **kwargs)
-        test_url = f'{preview_augmentation.PREVIEW_URL}' \
-                   f'{TEST_PRODUCT_ID}.fits'
+        test_url = (
+            f'{preview_augmentation.PREVIEW_URL}' f'{TEST_PRODUCT_ID}.fits'
+        )
         assert http_mock.called, 'http mock should be called'
-        http_mock.assert_called_with(test_url, test_prev), \
-            'mock not called'
+        http_mock.assert_called_with(test_url, test_prev), 'mock not called'
         assert put_mock.called, 'put mock not called'
         put_mock.assert_called_with(
-            cadc_client_mock, '/test_files', 'GN2001BQ013-04_th.jpg',
-            'ad:GEM/GN2001BQ013-04_th.jpg', metrics=test_metrics)
+            cadc_client_mock,
+            '/test_files',
+            'GN2001BQ013-04_th.jpg',
+            'ad:GEM/GN2001BQ013-04_th.jpg',
+            metrics=test_metrics,
+        )
         assert result is not None, 'expect a result'
         assert result['artifacts'] == 2, 'artifacts should be added'
-        assert len(obs.planes[TEST_PRODUCT_ID].artifacts) == 3, \
-            'two new artifacts'
-        prev_uri = mc.build_uri(
-            ARCHIVE, f'{TEST_PRODUCT_ID}.jpg', SCHEME)
+        assert (
+            len(obs.planes[TEST_PRODUCT_ID].artifacts) == 3
+        ), 'two new artifacts'
+        prev_uri = mc.build_uri(ARCHIVE, f'{TEST_PRODUCT_ID}.jpg', SCHEME)
         thumb_uri = mc.build_uri(ARCHIVE, f'{TEST_PRODUCT_ID}_th.jpg')
-        assert prev_uri in obs.planes[TEST_PRODUCT_ID].artifacts.keys(), \
-            'no preview'
-        assert thumb_uri in obs.planes[TEST_PRODUCT_ID].artifacts, \
-            'no thumbnail'
+        assert (
+            prev_uri in obs.planes[TEST_PRODUCT_ID].artifacts.keys()
+        ), 'no preview'
+        assert (
+            thumb_uri in obs.planes[TEST_PRODUCT_ID].artifacts
+        ), 'no thumbnail'
     finally:
         if os.path.exists(test_prev):
             os.unlink(test_prev)
@@ -446,8 +468,8 @@ def test_cleanup():
     assert test_result.get('planes') == 1, 'wrong plane count'
     post_all_artifact_keys = cc.get_all_artifact_keys(obs)
     assert (
-            test_artifact_id not in post_all_artifact_keys
-        ), 'wrong post conditions'
+        test_artifact_id not in post_all_artifact_keys
+    ), 'wrong post conditions'
 
     # test that cleaning up a clean observation won't break that
     # observation
@@ -490,5 +512,6 @@ def _check_cleanup_zero_results(test_result):
 
 
 def _get_mock(url_ignore, fqn_ignore):
-    shutil.copy(f'{TEST_DATA_DIR}/{TEST_FILE}',
-                f'/test_files/{TEST_PRODUCT_ID}.jpg')
+    shutil.copy(
+        f'{TEST_DATA_DIR}/{TEST_FILE}', f'/test_files/{TEST_PRODUCT_ID}.jpg'
+    )

@@ -110,9 +110,9 @@ class IncrementalSource(dsc.DataSource):
             f'Begin get_time_box_work from {prev_exec_time} to {exec_time}.'
         )
         # datetime format 2019-12-01T00:00:00.000000
-        prev_dt_str = mc.make_time_tz(
-            prev_exec_time
-        ).strftime(mc.ISO_8601_FORMAT)
+        prev_dt_str = mc.make_time_tz(prev_exec_time).strftime(
+            mc.ISO_8601_FORMAT
+        )
         exec_dt_str = mc.make_time_tz(exec_time).strftime(mc.ISO_8601_FORMAT)
         url = (
             f'https://archive.gemini.edu/jsonsummary/canonical/'
@@ -142,8 +142,10 @@ class IncrementalSource(dsc.DataSource):
                         for entry in metadata:
                             file_name = entry.get('name')
                             entrytime = mc.make_time_tz(entry.get('entrytime'))
-                            entries.append(dsc.StateRunnerMeta(
-                                file_name, entrytime.timestamp())
+                            entries.append(
+                                dsc.StateRunnerMeta(
+                                    file_name, entrytime.timestamp()
+                                )
                             )
         finally:
             if response is not None:

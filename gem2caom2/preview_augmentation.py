@@ -103,8 +103,8 @@ def visit(observation, **kwargs):
     count = 0
     for plane in observation.planes.values():
         if (
-            plane.data_release is None or
-                plane.data_release > datetime.utcnow()
+            plane.data_release is None
+            or plane.data_release > datetime.utcnow()
         ):
             logging.info(
                 f'Plane {plane.product_id} is proprietary. No preview '
@@ -130,8 +130,8 @@ def _check_for_delete(file_name, uri, observable, plane):
     does, remove that artifact from the Observation instance."""
     result = 0
     if (
-        observable.rejected.is_no_preview(file_name) and
-            uri in plane.artifacts.keys()
+        observable.rejected.is_no_preview(file_name)
+        and uri in plane.artifacts.keys()
     ):
         logging.warning(f'Removing artifact for non-existent preview {uri}')
         plane.artifacts.pop(uri)
@@ -269,7 +269,10 @@ def _augment(plane, uri, fqn, product_type):
 
 
 def _retrieve_from_gemini(
-    gem_name, observable, plane, preview_fqn,
+    gem_name,
+    observable,
+    plane,
+    preview_fqn,
 ):
     preview_url = f'{PREVIEW_URL}{plane.product_id}.fits'
     new_retrieval = False

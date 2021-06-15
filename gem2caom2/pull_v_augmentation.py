@@ -103,8 +103,10 @@ def visit(observation, **kwargs):
         )
     else:
         for plane in observation.planes.values():
-            if (plane.data_release is None or
-                    plane.data_release > datetime.utcnow()):
+            if (
+                plane.data_release is None
+                or plane.data_release > datetime.utcnow()
+            ):
                 logging.info(
                     f'Plane {plane.product_id} is proprietary. No file '
                     f'access.'

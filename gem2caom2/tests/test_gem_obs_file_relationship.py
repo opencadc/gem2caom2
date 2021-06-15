@@ -85,20 +85,16 @@ def test_subset_all():
     gofr = GemObsFileRelationship()
     temp = gofr.subset()
     assert temp is not None, 'should have content'
-    assert (
-        temp[0].startswith(
-          'GEMINI GN-CAL20170616-11-022 2017-06-19T03:21:29.345'
-        )
+    assert temp[0].startswith(
+        'GEMINI GN-CAL20170616-11-022 2017-06-19T03:21:29.345'
     ), 'wrong content'
     assert len(list(temp)) == 532, 'wrong count'
     result = gofr.get_file_names('GN-2015B-Q-1-12-1003')
-    assert (
-        result == [
-            'N20150807G0044m.fits',
-            'N20150807G0044i.fits',
-            'N20150807G0044.fits',
-        ]
-    ), 'entry missing {}'.format(result)
+    assert result == [
+        'N20150807G0044m.fits',
+        'N20150807G0044i.fits',
+        'N20150807G0044.fits',
+    ], 'entry missing {}'.format(result)
 
 
 def test_subset_only_start():
@@ -106,19 +102,15 @@ def test_subset_only_start():
     gofr = GemObsFileRelationship()
     temp = gofr.subset(start=start)
     assert temp is not None, 'should have content'
-    assert (
-        temp[0].startswith(
-            'GEMINI GN-2018B-FT-113-24-015 2018-12-17T18:08:29.362'
-        )
+    assert temp[0].startswith(
+        'GEMINI GN-2018B-FT-113-24-015 2018-12-17T18:08:29.362'
     ), 'wrong content'
     assert len(list(temp)) == 97, 'wrong count'
 
     temp = gofr.subset(start=start, maxrec=3)
     assert temp is not None, 'should have content'
-    assert (
-        temp[0].startswith(
-            'GEMINI GN-2018B-FT-113-24-015 2018-12-17T18:08:29.362'
-        )
+    assert temp[0].startswith(
+        'GEMINI GN-2018B-FT-113-24-015 2018-12-17T18:08:29.362'
     ), 'wrong content'
     assert len(list(temp)) == 3, 'wrong maxrec count'
 
@@ -128,19 +120,15 @@ def test_subset_only_end():
     gofr = GemObsFileRelationship()
     temp = gofr.subset(end=end)
     assert temp is not None, 'should have content'
-    assert (
-        temp[0].startswith(
-            'GEMINI GN-CAL20170616-11-022 2017-06-19T03:21:29.345'
-        )
+    assert temp[0].startswith(
+        'GEMINI GN-CAL20170616-11-022 2017-06-19T03:21:29.345'
     ), 'wrong content'
     assert len(list(temp)) == 435, 'wrong count'
 
     temp = gofr.subset(end=end, maxrec=3)
     assert temp is not None, 'should have content'
-    assert (
-        temp[0].startswith(
-            'GEMINI GN-CAL20170616-11-022 2017-06-19T03:21:29.345'
-        )
+    assert temp[0].startswith(
+        'GEMINI GN-CAL20170616-11-022 2017-06-19T03:21:29.345'
     ), 'wrong content'
     assert len(list(temp)) == 3, 'wrong maxrec count'
 
@@ -151,19 +139,15 @@ def test_subset_start_end():
     test_subject = GemObsFileRelationship()
     temp = test_subject.subset(start=start, end=end)
     assert temp is not None, 'should have content'
-    assert (
-        temp[0].startswith(
-            'GEMINI GN-CAL20150925-2-007 2017-06-20T14:50:59.795'
-        )
+    assert temp[0].startswith(
+        'GEMINI GN-CAL20150925-2-007 2017-06-20T14:50:59.795'
     ), 'wrong content'
     assert len(list(temp)) == 332, 'wrong count'
 
     temp = test_subject.subset(start=start, end=end, maxrec=3)
     assert temp is not None, 'should have content'
-    assert (
-        temp[0].startswith(
-            'GEMINI GN-CAL20150925-2-007 2017-06-20T14:50:59.795'
-        )
+    assert temp[0].startswith(
+        'GEMINI GN-CAL20150925-2-007 2017-06-20T14:50:59.795'
     ), 'wrong content'
     assert len(list(temp)) == 3, 'wrong maxrec count'
 
@@ -232,21 +216,21 @@ def test_repair_data_label():
             assert (
                 test_result == 'S20181230S0025'
             ), 'repair failed for {} actual {} expected {}'.format(
-                    ii, test_result, gem_mocks.LOOKUP[ii][0]
+                ii, test_result, gem_mocks.LOOKUP[ii][0]
             )
         elif ii == 'N20200210S0077_bias':
             # what happens when an entry is not found
             assert (
                 test_result == 'N20200210S0077_bias'
             ), 'repair failed for {} actual {} expected {}'.format(
-                    ii, test_result, gem_mocks.LOOKUP[ii][0]
+                ii, test_result, gem_mocks.LOOKUP[ii][0]
             )
         elif ii == 'S20201023Z0001b':
             # what happens when an entry is not found
             assert (
                 test_result == 'S20201023Z0001b'
             ), 'repair failed for {} actual {} expected {}'.format(
-                    ii, test_result, gem_mocks.LOOKUP[ii][0]
+                ii, test_result, gem_mocks.LOOKUP[ii][0]
             )
         elif ii in [
             'mrgN20060130S0149_add',
@@ -282,13 +266,13 @@ def test_repair_data_label():
             assert (
                 test_result == ii
             ), 'repair failed for {} actual {} expected {}'.format(
-                    ii, test_result, gem_mocks.LOOKUP[ii][0]
+                ii, test_result, gem_mocks.LOOKUP[ii][0]
             )
         else:
             assert (
                 test_result == gem_mocks.LOOKUP[ii][0]
             ), 'repair failed for {} actual {} expected {}'.format(
-                    ii, test_result, gem_mocks.LOOKUP[ii][0]
+                ii, test_result, gem_mocks.LOOKUP[ii][0]
             )
     test_result = external_metadata.gofr.repair_data_label('N20181217S0266')
     assert test_result is not None, 'no result'
@@ -739,6 +723,7 @@ def test_mixed_case_file_names():
 
     for f_name in [mixed_case_f_names_order_1, mixed_case_f_names_order_2]:
         import shutil
+
         shutil.copy(f_name, '/app/data/from_paul.txt')
         test_subject = GemObsFileRelationship()
 
@@ -751,21 +736,23 @@ def test_mixed_case_file_names():
         assert test_timestamp == 1498316473.885391, 'wrong timestamp'
 
         result_file_names = test_subject.get_file_names(test_obs_id)
-        assert (
-            result_file_names is not None
-        ), 'expected result {}'.format(f_name)
-        assert (
-            len(result_file_names) == 1
-        ), 'wrong size result {}'.format(f_name)
-        assert (
-            result_file_names[0] == '{}.fits'.format(test_file_id)
+        assert result_file_names is not None, 'expected result {}'.format(
+            f_name
+        )
+        assert len(result_file_names) == 1, 'wrong size result {}'.format(
+            f_name
+        )
+        assert result_file_names[0] == '{}.fits'.format(
+            test_file_id
         ), 'wrong result {} {}'.format(f_name, result_file_names)
 
 
 def test_repair_data_label_2():
     repairs = {
-        'rgS20180122S0236_fringe.fits':
-            ['GS-CAL20180122-1-001', 'GS-CAL20180122-1-001-RG-FRINGE'],
+        'rgS20180122S0236_fringe.fits': [
+            'GS-CAL20180122-1-001',
+            'GS-CAL20180122-1-001-RG-FRINGE',
+        ],
     }
     for f_name in repairs.keys():
         result = obs_file_relationship.repair_data_label(

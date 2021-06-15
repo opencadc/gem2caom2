@@ -167,7 +167,9 @@ def test_get_obs_metadata_not_at_gemini(tap_client_mock, session_mock):
     test_config.working_directory = gem_mocks.TEST_DATA_DIR
     test_config.proxy_file_name = 'test_proxy.pem'
     ext_md.init_global(config=test_config)
-    with pytest.raises(mc.CadcException, match=f'Could not find JSON record *'):
+    with pytest.raises(
+        mc.CadcException, match=f'Could not find JSON record *'
+    ):
         test_result = ext_md.get_obs_metadata('test_file_id')
 
 

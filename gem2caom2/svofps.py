@@ -94,7 +94,7 @@ def filter_metadata(instrument, filters, session):
         wl_max = 100000.0
         width_min = 100000.0
         wl_width = wl_max - wl_min
-        wl_eff = (wl_max + wl_min)/2.0
+        wl_eff = (wl_max + wl_min) / 2.0
 
         # does the filter exist at SVO?
         filter_name_found = False
@@ -136,8 +136,8 @@ def filter_metadata(instrument, filters, session):
             filter_name_found = True
             wl_width = votable.get_field_by_id('FWHM').value
             wl_eff = votable.get_field_by_id('WavelengthCen').value
-            w_min = wl_eff - wl_width/2.0
-            w_max = wl_eff + wl_width/2.0
+            w_min = wl_eff - wl_width / 2.0
+            w_max = wl_eff + wl_width / 2.0
 
             if w_min > wl_min:
                 wl_min = w_min
@@ -162,6 +162,7 @@ def filter_metadata(instrument, filters, session):
     except Exception as e:
         logging.error(e)
         import traceback
+
         tb = traceback.format_exc()
         logging.error(tb)
 
@@ -241,12 +242,12 @@ class FilterMetadata(object):
         self._resolving_power = value
 
     def adjust_bandpass(self, variance):
-        self.bandpass = (
-            (self.central_wl + variance) - (self.central_wl - variance)
+        self.bandpass = (self.central_wl + variance) - (
+            self.central_wl - variance
         )
 
     def set_bandpass(self, w_max, w_min):
-        self.bandpass = (w_max - w_min)
+        self.bandpass = w_max - w_min
 
     def set_central_wl(self, w_max, w_min):
         self.central_wl = (w_max + w_min) / 2.0

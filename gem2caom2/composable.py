@@ -87,11 +87,15 @@ DATA_VISITORS = []
 
 def _define_meta_visitors(config):
     meta_visitors = [
-        preview_augmentation, pull_augmentation, cleanup_augmentation
+        preview_augmentation,
+        pull_augmentation,
+        cleanup_augmentation,
     ]
     if config.features.supports_latest_client:
         meta_visitors = [
-            preview_v_augmentation, pull_v_augmentation, cleanup_augmentation
+            preview_v_augmentation,
+            pull_v_augmentation,
+            cleanup_augmentation,
         ]
     return meta_visitors
 

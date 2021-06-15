@@ -88,14 +88,20 @@ LOOKUP = {
     'GS-CAL20101028-5-004': ['mrgS20101028S0134', 'S20101028S0134'],
     'GN-2007B-C-6-5-005': ['TX20071021_RAW.2037', 'TX20071021_SUM.2037'],
     'TX20170321.2505': [
-        'TX20170321_raw.2505', 'TX20170321_red.2505', 'TX20170321_sum.2505'
+        'TX20170321_raw.2505',
+        'TX20170321_red.2505',
+        'TX20170321_sum.2505',
     ],
     'TX20170321.2507': ['TX20170321_raw.2507', 'TX20170321_red.2507'],
     'GS-2002B-Q-22-13-0161': [
-        '2002dec02_0161', 'P2002DEC02_0161_SUB.0001', 'P2002DEC02_0161_SUB'
+        '2002dec02_0161',
+        'P2002DEC02_0161_SUB.0001',
+        'P2002DEC02_0161_SUB',
     ],
     'GN-2015B-Q-1-12-1003': [
-        'N20150807G0044', 'N20150807G0044i', 'N20150807G0044m'
+        'N20150807G0044',
+        'N20150807G0044i',
+        'N20150807G0044m',
     ],
     'GN-2012A-Q-124-1-003': ['N20120905S0122', 'N20120905S0122_arc'],
     'GS-2006A-Q-60-11-001': ['S20060412S0056', 'rS20060412S0056'],
@@ -131,21 +137,26 @@ def test_multi_plane(tap_mock, gemini_client_mock, test_name):
         obs_id = test_name
         lineage = _get_lineage(obs_id)
         input_file = '{}/{}/{}.in.xml'.format(
-            gem_mocks.TEST_DATA_DIR, DIR_NAME, obs_id)
+            gem_mocks.TEST_DATA_DIR, DIR_NAME, obs_id
+        )
         actual_fqn = '{}/{}/{}.actual.xml'.format(
-            gem_mocks.TEST_DATA_DIR, DIR_NAME, obs_id)
+            gem_mocks.TEST_DATA_DIR, DIR_NAME, obs_id
+        )
 
         local = _get_local(test_name)
         plugin = gem_mocks.PLUGIN
 
-        with patch('caom2utils.fits2caom2.CadcDataClient') as data_client_mock, \
-                patch('gem2caom2.external_metadata.get_pi_metadata') as \
-                gemini_pi_mock, \
-                patch('caom2pipe.astro_composable.get_vo_table_session') as \
-                        svofps_mock:
+        with patch(
+            'caom2utils.fits2caom2.CadcDataClient'
+        ) as data_client_mock, patch(
+            'gem2caom2.external_metadata.get_pi_metadata'
+        ) as gemini_pi_mock, patch(
+            'caom2pipe.astro_composable.get_vo_table_session'
+        ) as svofps_mock:
 
-            data_client_mock.return_value.get_file_info.side_effect = \
+            data_client_mock.return_value.get_file_info.side_effect = (
                 gem_mocks.mock_get_file_info
+            )
             gemini_pi_mock.side_effect = gem_mocks.mock_get_pi_metadata
             svofps_mock.side_effect = gem_mocks.mock_get_votable
 

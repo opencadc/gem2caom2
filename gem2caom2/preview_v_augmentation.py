@@ -100,13 +100,22 @@ def visit(observation, **kwargs):
 
     count = 0
     for plane in observation.planes.values():
-        if (plane.data_release is None or
-                plane.data_release > datetime.utcnow()):
-            logging.info(f'Plane {plane.product_id} is proprietary. No '
-                         f'preview access or thumbnail creation.')
+        if (
+            plane.data_release is None
+            or plane.data_release > datetime.utcnow()
+        ):
+            logging.info(
+                f'Plane {plane.product_id} is proprietary. No '
+                f'preview access or thumbnail creation.'
+            )
             continue
-        count += _do_prev(observation.observation_id, working_dir,
-                          plane, cadc_client, observable)
+        count += _do_prev(
+            observation.observation_id,
+            working_dir,
+            plane,
+            cadc_client,
+            observable,
+        )
     logging.info(
         f'Completed preview augmentation for {observation.observation_id}.'
     )
@@ -117,8 +126,10 @@ def _check_for_delete(file_name, uri, observable, plane):
     """If the preview file doesn't exist, but the artifact that represents it
     does, remove that artifact from the Observation instance."""
     result = 0
-    if (observable.rejected.is_no_preview(
-            file_name) and uri in plane.artifacts.keys()):
+    if (
+        observable.rejected.is_no_preview(file_name)
+        and uri in plane.artifacts.keys()
+    ):
         logging.warning(f'Removing artifact for non-existent preview {uri}')
         plane.artifacts.pop(uri)
         result = 1
@@ -174,11 +185,10 @@ def _do_prev(obs_id, working_dir, plane, cadc_client, observable):
             except PermissionError as e:
                 raise mc.CadcException(
                     f'Should not have reached this point in thumbnail '
-                    f'generation for {plane.product_id}')
+                    f'generation for {plane.product_id}'
+                )
 
-            logging.debug(
-                f'Generate thumbnail for file id {plane.product_id}'
-            )
+            logging.debug(f'Generate thumbnail for file id {plane.product_id}')
             if os.access(thumb_fqn, 0):
                 os.remove(thumb_fqn)
             try:

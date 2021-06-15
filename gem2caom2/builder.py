@@ -114,7 +114,8 @@ class EduQueryBuilder(nbc.StorageNameBuilder):
             )
 
         external_metadata.get_obs_metadata(
-            gem_name.GemName.remove_extensions(entry))
+            gem_name.GemName.remove_extensions(entry)
+        )
         instrument = get_instrument()
         storage_name = gem_name.GemName(file_name=entry, instrument=instrument)
         return storage_name
@@ -142,9 +143,7 @@ class GemObsIDBuilder(nbc.StorageNameBuilder):
         self._instrument = external_metadata.Inst(headers[0].get('INSTRUME'))
 
     def _read_instrument_remotely(self, entry):
-        self._logger.debug(
-            'Read instrument from archive.gemini.edu.'
-        )
+        self._logger.debug('Read instrument from archive.gemini.edu.')
         file_id = gem_name.GemName.remove_extensions(entry)
         external_metadata.get_obs_metadata(file_id)
         self._instrument = get_instrument()
@@ -159,8 +158,8 @@ class GemObsIDBuilder(nbc.StorageNameBuilder):
         try:
             if self._config.features.supports_latest_client:
                 if (
-                    mc.TaskType.SCRAPE in self._config.task_types or
-                    self._config.use_local_files
+                    mc.TaskType.SCRAPE in self._config.task_types
+                    or self._config.use_local_files
                 ):
                     self._read_instrument_locally(entry)
                     result = gem_name.GemName(
@@ -186,8 +185,8 @@ class GemObsIDBuilder(nbc.StorageNameBuilder):
                     )
             else:
                 if (
-                    mc.TaskType.INGEST_OBS in self._config.task_types and
-                    '.fits' not in entry
+                    mc.TaskType.INGEST_OBS in self._config.task_types
+                    and '.fits' not in entry
                 ):
                     # anything that is NOT ALOPEKE/ZORRO, which are the only
                     # two instruments that change the behaviour of the
@@ -199,8 +198,8 @@ class GemObsIDBuilder(nbc.StorageNameBuilder):
                         obs_id=entry, instrument=instrument, entry=entry
                     )
                 elif (
-                    mc.TaskType.SCRAPE in self._config.task_types or
-                    self._config.use_local_files
+                    mc.TaskType.SCRAPE in self._config.task_types
+                    or self._config.use_local_files
                 ):
                     self._read_instrument_locally(entry)
                     result = gem_name.GemName(
