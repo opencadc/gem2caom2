@@ -99,7 +99,7 @@ def test_repair_filter_name():
 
 
 @patch('gem2caom2.external_metadata.get_obs_metadata')
-@patch('caom2pipe.manage_composable.query_tap_client')
+@patch('caom2pipe.client_composable.query_tap_client')
 def test_caching_relationship(tap_mock, get_obs_mock):
     shutil.copyfile(f'{gem_mocks.TEST_DATA_DIR}/from_paul.txt',
                     '/app/data/from_paul.txt')

@@ -77,7 +77,7 @@ from mock import patch, Mock
 import gem_mocks
 
 
-@patch('caom2pipe.manage_composable.query_tap_client')
+@patch('caom2pipe.client_composable.query_tap_client')
 @patch('gem2caom2.external_metadata.get_obs_metadata')
 def test_missing_provenance(get_obs_mock, cadc_get_obs_mock):
     test_config = mc.Config()

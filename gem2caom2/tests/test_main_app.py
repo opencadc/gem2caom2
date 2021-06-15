@@ -110,7 +110,7 @@ def pytest_generate_tests(metafunc):
 
 
 @patch('gem2caom2.external_metadata.get_obs_metadata')
-@patch('caom2pipe.manage_composable.query_tap_client')
+@patch('caom2pipe.client_composable.query_tap_client')
 @patch('gem2caom2.external_metadata.CadcTapClient')
 def test_main_app(client_mock, tap_mock, gemini_client_mock, test_name):
     # client_mock present because of global in external_metadata
@@ -190,7 +190,7 @@ def test_main_app(client_mock, tap_mock, gemini_client_mock, test_name):
 @patch('caom2pipe.astro_composable.get_vo_table_session')
 @patch('gem2caom2.external_metadata.get_pi_metadata')
 @patch('gem2caom2.external_metadata.get_obs_metadata')
-@patch('caom2pipe.manage_composable.query_tap_client')
+@patch('caom2pipe.client_composable.query_tap_client')
 @patch('gem2caom2.external_metadata.CadcTapClient')
 def test_main_app_v(client_mock, tap_mock, gemini_client_mock, gemini_pi_mock,
                     svofps_mock, cadc_client_mock, get_file_info_mock,

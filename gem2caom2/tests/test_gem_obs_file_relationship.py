@@ -222,13 +222,30 @@ def test_repair_data_label():
             assert test_result == 'S20201023Z0001b', \
                 'repair failed for {} actual {} expected {}'.format(
                     ii, test_result, gem_mocks.LOOKUP[ii][0])
-        elif ii in ['mrgN20060130S0149_add', 'rgnN20140428S0171_flat',
-                    'S20191214S0301', '02jun24.0057', '01MAY08_023',
-                    '2001nov16_0164', '2007sep15_0001', '01DEC05_004',
-                    'N20061217S0228', 'N20050826S0137', 'S20120605S0053',
-                    'S20050601S0032', 'S20050601S0411', 'S20050718S0172',
-                    'S20130922S0130', 'N20200103S0434',
-                    'gS20210428S0295_bias', 'S20141130S0001',
+        elif ii in [
+            'mrgN20060130S0149_add',
+            'rgnN20140428S0171_flat',
+            'S20191214S0301',
+            '02jun24.0057',
+            '01MAY08_023',
+            '2001nov16_0164',
+            '2007sep15_0001',
+            '01DEC05_004',
+            'N20061217S0228',
+            'N20050826S0137',
+            'S20120605S0053',
+            'S20050601S0032',
+            'S20050601S0411',
+            'S20050718S0172',
+            'S20130922S0130',
+            'N20200103S0434',
+            'gS20210428S0295_bias',
+            'S20141130S0001',
+            'S20200118S0371',
+            '01sep20_044',
+            'N20030325S0098',
+            '2003apr24_0080',
+            'rS20060306S0090',
         ]:
             # what happens when an entry is not found
             # note that the answer should actually be
@@ -647,7 +664,7 @@ test_subjects = [
 ]
 
 
-@patch('caom2pipe.manage_composable.query_tap_client')
+@patch('caom2pipe.client_composable.query_tap_client')
 @patch('gem2caom2.external_metadata.get_obs_metadata')
 @patch('caom2repo.core.net.BaseWsClient', Mock())
 def test_repair_provenance(gem_mock, tap_mock):

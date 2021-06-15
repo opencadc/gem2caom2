@@ -304,7 +304,7 @@ def test_pull_augmentation():
 
 
 @patch('caom2pipe.manage_composable.http_get')
-@patch('caom2pipe.manage_composable.client_put')
+@patch('caom2pipe.client_composable.client_put')
 def test_pull_v_augmentation(put_mock, http_mock):
     obs = mc.read_obs_from_file(TEST_OBS_FILE)
     obs.planes[TEST_PRODUCT_ID].data_release = datetime.utcnow()
@@ -365,7 +365,7 @@ def test_preview_augment_delete_preview():
 
 
 @patch('caom2pipe.manage_composable.http_get')
-@patch('caom2pipe.manage_composable.client_put')
+@patch('caom2pipe.client_composable.client_put')
 def test_preview_augment_v(put_mock, http_mock):
     # this should result in two new artifacts being added to the plane
     # one for a thumbnail and one for a preview

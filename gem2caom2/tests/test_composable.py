@@ -170,7 +170,7 @@ def test_run_errors(inst_mock, get_obs_mock, client_mock, run_mock):
 @patch('caom2pipe.execute_composable.OrganizeExecutes.do_one')
 @patch('caom2pipe.manage_composable.query_endpoint')
 @patch('gem2caom2.external_metadata.get_obs_metadata')
-@patch('caom2pipe.manage_composable.query_tap_client')
+@patch('caom2pipe.client_composable.query_tap_client')
 @patch('gem2caom2.external_metadata.CadcTapClient')
 def test_run_incremental_rc(client_mock, tap_mock, get_obs_mock, query_mock,
                             run_mock):
@@ -206,8 +206,8 @@ def test_run_incremental_rc(client_mock, tap_mock, get_obs_mock, query_mock,
 
 
 @patch('gem2caom2.to_caom2')
-@patch('caom2pipe.run_composable.CAOM2RepoClient')
-@patch('caom2pipe.manage_composable.CadcDataClient')
+@patch('caom2pipe.client_composable.CAOM2RepoClient')
+@patch('caom2pipe.client_composable.CadcDataClient')
 @patch('caom2pipe.manage_composable.read_obs_from_file')
 @patch('caom2pipe.manage_composable.query_endpoint')
 @patch('gem2caom2.external_metadata.CadcTapClient')
@@ -324,7 +324,7 @@ def test_run_by_incremental2(client_mock, query_mock, read_mock,
 
 
 @patch('caom2pipe.execute_composable.OrganizeExecutes.do_one')
-@patch('caom2pipe.manage_composable.query_tap_client')
+@patch('caom2pipe.client_composable.query_tap_client')
 @patch('gem2caom2.external_metadata.CadcTapClient')
 @patch('caom2pipe.data_source_composable.CadcTapClient')
 def test_run_by_public(ds_mock, client_mock, tap_mock, exec_mock):
@@ -375,7 +375,7 @@ def test_run_by_public(ds_mock, client_mock, tap_mock, exec_mock):
 @patch('caom2pipe.execute_composable.OrganizeExecutes.do_one')
 @patch('caom2pipe.manage_composable.query_endpoint')
 @patch('gem2caom2.external_metadata.get_obs_metadata')
-@patch('caom2pipe.manage_composable.query_tap_client')
+@patch('caom2pipe.client_composable.query_tap_client')
 @patch('gem2caom2.external_metadata.CadcTapClient')
 @patch('caom2pipe.data_source_composable.CadcTapClient')
 def test_run_by_public2(
@@ -426,12 +426,12 @@ def _check_sys_argv_params():
                    f'{gem_mocks.TEST_DATA_DIR}/cadcproxy.pem --observation ' \
                    f'GEMINI GS-2002A-Q-8-4-0180 --out ' \
                    f'{gem_mocks.TEST_DATA_DIR}/logs/' \
-                   f'GS-2002A-Q-8-4-0180.fits.xml --external_url ' \
+                   f'GS-2002A-Q-8-4-0180.xml --external_url ' \
                    f'https://archive.gemini.edu/fullheader/' \
                    f'2002feb11_0180.fits --plugin {plugin} --module ' \
                    f'{plugin} --lineage '\
                    f'2002feb11_0180/gemini:GEM/2002feb11_0180.fits', \
-        'exec mock wrong parameters'
+        f'exec mock wrong parameters {temp}'
 
 
 def _write_todo(test_id):

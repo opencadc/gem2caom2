@@ -75,6 +75,7 @@ from datetime import datetime
 import matplotlib.image as image
 
 from caom2 import Observation, ProductType
+from caom2pipe import client_composable as clc
 from caom2pipe import manage_composable as mc
 from gem2caom2.gem_name import GemName
 from gem2caom2 import preview_augmentation
@@ -150,7 +151,7 @@ def _do_prev(obs_id, working_dir, plane, cadc_client, observable):
         # storage (i.e. cadc_client is not None), though
         if not os.access(preview_fqn, 0) and cadc_client is not None:
             try:
-                mc.client_get(
+                clc.client_get(
                     cadc_client,
                     working_dir,
                     gem_name.prev,
@@ -209,7 +210,7 @@ def _do_prev(obs_id, working_dir, plane, cadc_client, observable):
                 plane, gem_name.prev_uri, preview_fqn, ProductType.PREVIEW
             )
             if cadc_client is not None and new_retrieval:
-                mc.client_put(
+                clc.client_put(
                     cadc_client,
                     working_dir,
                     gem_name.prev,
@@ -222,7 +223,7 @@ def _do_prev(obs_id, working_dir, plane, cadc_client, observable):
                 plane, gem_name.thumb_uri, thumb_fqn, ProductType.THUMBNAIL
             )
             if cadc_client is not None and new_retrieval:
-                mc.client_put(
+                clc.client_put(
                     cadc_client,
                     working_dir,
                     thumb,

@@ -75,6 +75,7 @@ from datetime import datetime
 import matplotlib.image as image
 
 from caom2 import Observation, ProductType, ReleaseType
+from caom2pipe import client_composable as clc
 from caom2pipe import manage_composable as mc
 from gem2caom2.gem_name import GemName, ARCHIVE
 
@@ -166,7 +167,7 @@ def _do_prev(obs_id, working_dir, plane, cadc_client, stream, observable):
         # storage, though
         if not os.access(preview_fqn, 0) and cadc_client is not None:
             try:
-                mc.data_get(
+                clc.data_get(
                     cadc_client,
                     working_dir,
                     preview,

@@ -76,6 +76,7 @@ from bs4 import BeautifulSoup
 
 from cadctap import CadcTapClient
 from caom2utils import fits2caom2
+from caom2pipe import client_composable as clc
 from caom2pipe import manage_composable as mc
 from gem2caom2.svofps import filter_metadata
 from gem2caom2 import gemini_obs_metadata as gom
@@ -125,7 +126,7 @@ def init_global(config):
     get_gofr(config)
     global gofr
     if gofr.tap_client is None and config.is_connected:
-        subject = mc.define_subject(config)
+        subject = clc.define_subject(config)
         tap_client = CadcTapClient(subject=subject, resource_id=config.tap_id)
         gofr.tap_client = tap_client
 
@@ -548,7 +549,7 @@ def get_obs_id_from_cadc(file_id, tap_client, collection='GEMINI',
     WHERE A.uri LIKE '%{file_name}' 
     AND O.collection = '{collection}'
     """
-    table = mc.query_tap_client(query_string, tap_client)
+    table = clc.query_tap_client(query_string, tap_client)
     result = None
     if len(table) == 1:
         result = table[0]['observationID']

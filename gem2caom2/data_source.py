@@ -72,6 +72,7 @@ import logging
 from collections import deque
 from datetime import datetime, timezone
 
+from caom2pipe import client_composable as clc
 from caom2pipe import data_source_composable as dsc
 from caom2pipe import manage_composable as mc
 
@@ -196,7 +197,7 @@ class PublicIncremental(dsc.QueryTimeBoxDataSource):
                 f"AND P.dataRelease <= '{exec_dt_str}' " \
                 f"ORDER BY O.maxLastModified ASC " \
                 ""
-        result = mc.query_tap_client(query, self._client)
+        result = clc.query_tap_client(query, self._client)
         # results look like:
         # gemini:GEM/N20191202S0125.fits, ISO 8601
 
