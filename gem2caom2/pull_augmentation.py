@@ -101,14 +101,18 @@ def visit(observation, **kwargs):
 
     count = 0
     if observable.rejected.is_bad_metadata(observation.observation_id):
-        logging.info(f'Stopping visit for {observation.observation_id} '
-                     f'because of bad metadata.')
+        logging.info(
+            f'Stopping visit for {observation.observation_id} '
+            f'because of bad metadata.'
+        )
     else:
         for plane in observation.planes.values():
             if (plane.data_release is None or
                     plane.data_release > datetime.utcnow()):
-                logging.error(f'Plane {plane.product_id} is proprietary '
-                              f'until {plane.data_release}. No file access.')
+                logging.error(
+                    f'Plane {plane.product_id} is proprietary '
+                    f'until {plane.data_release}. No file access.'
+                )
                 continue
 
             for artifact in plane.artifacts.values():
@@ -117,14 +121,23 @@ def visit(observation, **kwargs):
                 try:
                     f_name = mc.CaomName(artifact.uri).file_name
                     file_url = '{}/{}'.format(FILE_URL, f_name)
-                    clc.look_pull_and_put(f_name, working_dir, file_url,
-                                          gem_name.ARCHIVE, stream, MIME_TYPE,
-                                          cadc_client,
-                                          artifact.content_checksum.checksum,
-                                          observable.metrics)
+                    clc.look_pull_and_put(
+                        f_name,
+                        working_dir,
+                        file_url,
+                        gem_name.ARCHIVE,
+                        stream,
+                        MIME_TYPE,
+                        cadc_client,
+                        artifact.content_checksum.checksum,
+                        observable.metrics,
+                    )
                 except Exception as e:
-                    if not (observable.rejected.check_and_record(
-                            str(e), observation.observation_id)):
+                    if not (
+                        observable.rejected.check_and_record(
+                            str(e), observation.observation_id
+                        )
+                    ):
                         raise e
     logging.info(f'Completed pull visitor for {observation.observation_id}.')
     return {'observation': count}

@@ -92,16 +92,34 @@ def pytest_generate_tests(metafunc):
     if os.path.exists(gem_mocks.TEST_DATA_DIR):
 
         file_list = []
-        for ii in [em.Inst.GMOS, em.Inst.NIRI, em.Inst.GPI, em.Inst.F2,
-                   em.Inst.GSAOI, em.Inst.NICI, em.Inst.TRECS,
-                   em.Inst.MICHELLE, em.Inst.GRACES, em.Inst.NIFS,
-                   em.Inst.GNIRS, em.Inst.PHOENIX, em.Inst.FLAMINGOS,
-                   em.Inst.HRWFS, em.Inst.HOKUPAA, em.Inst.OSCIR,
-                   em.Inst.BHROS, em.Inst.CIRPASS, em.Inst.TEXES, 'processed',
-                   em.Inst.ALOPEKE, em.Inst.ZORRO]:
+        for ii in [
+            em.Inst.GMOS,
+            em.Inst.NIRI,
+            em.Inst.GPI,
+            em.Inst.F2,
+            em.Inst.GSAOI,
+            em.Inst.NICI,
+            em.Inst.TRECS,
+            em.Inst.MICHELLE,
+            em.Inst.GRACES,
+            em.Inst.NIFS,
+            em.Inst.GNIRS,
+            em.Inst.PHOENIX,
+            em.Inst.FLAMINGOS,
+            em.Inst.HRWFS,
+            em.Inst.HOKUPAA,
+            em.Inst.OSCIR,
+            em.Inst.BHROS,
+            em.Inst.CIRPASS,
+            em.Inst.TEXES,
+            'processed',
+            em.Inst.ALOPEKE,
+            em.Inst.ZORRO,
+        ]:
             walk_dir = _get_inst_name(ii)
             for root, dirs, files in os.walk(
-                    '{}/{}'.format(gem_mocks.TEST_DATA_DIR, walk_dir)):
+                    '{}/{}'.format(gem_mocks.TEST_DATA_DIR, walk_dir)
+            ):
                 for file in files:
                     if file.endswith(".header"):
                         file_list.append(os.path.join(root, file))
@@ -127,11 +145,14 @@ def test_main_app(client_mock, tap_mock, gemini_client_mock, test_name):
         em.set_ofr(None)
         em.init_global(test_config)
         test_data_size = os.stat(
-            os.path.join(gem_mocks.TEST_DATA_DIR, 'from_paul.txt'))
+            os.path.join(gem_mocks.TEST_DATA_DIR, 'from_paul.txt')
+        )
         app_size = os.stat('/app/data/from_paul.txt')
         if test_data_size.st_size != app_size.st_size:
-            copyfile(os.path.join(gem_mocks.TEST_DATA_DIR, 'from_paul.txt'),
-                     '/app/data/from_paul.txt')
+            copyfile(
+                os.path.join(gem_mocks.TEST_DATA_DIR, 'from_paul.txt'),
+                '/app/data/from_paul.txt',
+            )
         basename = os.path.basename(test_name)
         dirname = os.path.dirname(test_name)
         file_id = _get_file_id(basename)
@@ -159,25 +180,26 @@ def test_main_app(client_mock, tap_mock, gemini_client_mock, test_name):
                 os.remove(actual_fqn)
 
             if os.path.exists(os.path.join(dirname, input_file)):
-                sys.argv = \
-                    ('{} --quiet --no_validate --local {} '
-                     '--plugin {} --module {} --in {}/{} --out {} --lineage {}'.
-                     format(main_app.APPLICATION, local, plugin, plugin, dirname,
-                            input_file, actual_fqn, lineage)).split()
+                sys.argv = (
+                    f'{main_app.APPLICATION} --quiet --no_validate --local '
+                    f'{local} --plugin {plugin} --module {plugin} '
+                    f'--in {dirname}/{input_file} --out {actual_fqn} '
+                    f'--lineage {lineage}'
+                ).split()
             else:
-                sys.argv = \
-                    ('{} --quiet --no_validate --local {} '
-                     '--plugin {} --module {} --observation {} {} --out {} '
-                     '--lineage {}'.
-                     format(main_app.APPLICATION, local, plugin, plugin,
-                            main_app.COLLECTION, obs_id, actual_fqn,
-                            lineage)).split()
+                sys.argv = (
+                    f'{main_app.APPLICATION} --quiet --no_validate --local '
+                    f'{local} --plugin {plugin} --module {plugin} '
+                    f'--observation {main_app.COLLECTION} {obs_id} '
+                    f'--out {actual_fqn} --lineage {lineage}'
+                ).split()
             print(sys.argv)
             main_app.to_caom2()
             expected_fqn = _get_expected_file_name(dirname, product_id)
 
             compare_result = _new_si_compare_differences(
-                actual_fqn, expected_fqn, test_config)
+                actual_fqn, expected_fqn, test_config
+            )
             if compare_result is not None:
                 raise AssertionError(compare_result)
             # assert False  # cause I want to see logging messages
@@ -192,9 +214,16 @@ def test_main_app(client_mock, tap_mock, gemini_client_mock, test_name):
 @patch('gem2caom2.external_metadata.get_obs_metadata')
 @patch('caom2pipe.client_composable.query_tap_client')
 @patch('gem2caom2.external_metadata.CadcTapClient')
-def test_main_app_v(client_mock, tap_mock, gemini_client_mock, gemini_pi_mock,
-                    svofps_mock, cadc_client_mock, get_file_info_mock,
-                    test_name):
+def test_main_app_v(
+    client_mock,
+    tap_mock,
+    gemini_client_mock,
+    gemini_pi_mock,
+    svofps_mock,
+    cadc_client_mock,
+    get_file_info_mock,
+    test_name,
+):
     # client_mock present because of global in external_metadata
     cadc_client_mock.get_node.side_effect = gem_mocks.mock_get_node
     gemini_client_mock.side_effect = gem_mocks.mock_get_obs_metadata
@@ -205,8 +234,9 @@ def test_main_app_v(client_mock, tap_mock, gemini_client_mock, gemini_pi_mock,
         gem_mocks.mock_get_file_info
 
     getcwd_orig = os.getcwd
-    os.getcwd = Mock(return_value=os.path.join(gem_mocks.TEST_DATA_DIR,
-                                               'si_config'))
+    os.getcwd = Mock(
+        return_value=os.path.join(gem_mocks.TEST_DATA_DIR, 'si_config'),
+    )
 
     try:
         test_config = mc.Config()
@@ -219,8 +249,10 @@ def test_main_app_v(client_mock, tap_mock, gemini_client_mock, gemini_pi_mock,
             os.path.join(gem_mocks.TEST_DATA_DIR, 'from_paul.txt'))
         app_size = os.stat('/app/data/from_paul.txt')
         if test_data_size.st_size != app_size.st_size:
-            copyfile(os.path.join(gem_mocks.TEST_DATA_DIR, 'from_paul.txt'),
-                     '/app/data/from_paul.txt')
+            copyfile(
+                os.path.join(gem_mocks.TEST_DATA_DIR, 'from_paul.txt'),
+                '/app/data/from_paul.txt',
+            )
         basename = os.path.basename(test_name)
         dirname = os.path.dirname(test_name)
         file_id = _get_file_id(basename)
@@ -236,19 +268,19 @@ def test_main_app_v(client_mock, tap_mock, gemini_client_mock, gemini_pi_mock,
             os.remove(actual_fqn)
 
         if os.path.exists(os.path.join(dirname, input_file)):
-            sys.argv = \
-                ('{} --quiet --no_validate --local {} '
-                 '--plugin {} --module {} --in {}/{} --out {} --lineage {}'.
-                 format(main_app.APPLICATION, local, plugin, plugin, dirname,
-                        input_file, actual_fqn, lineage)).split()
+            sys.argv = (
+                f'{main_app.APPLICATION} --quiet --no_validate --local '
+                f'{local} --plugin {plugin} --module {plugin} '
+                f'--in {dirname}/{input_file} --out {actual_fqn} '
+                f'--lineage {lineage}'
+            ).split()
         else:
-            sys.argv = \
-                ('{} --quiet --no_validate --local {} '
-                 '--plugin {} --module {} --observation {} {} --out {} '
-                 '--lineage {}'.
-                 format(main_app.APPLICATION, local, plugin, plugin,
-                        main_app.COLLECTION, obs_id, actual_fqn,
-                        lineage)).split()
+            sys.argv = (
+                f'{main_app.APPLICATION} --quiet --no_validate --local '
+                f'{local} --plugin {plugin} --module {plugin} '
+                f'--observation {main_app.COLLECTION} {obs_id} '
+                f'--out {actual_fqn} --lineage {lineage}'
+            ).split()
         print(sys.argv)
         main_app.to_caom2()
         expected_fqn = _get_expected_file_name(dirname, product_id)
@@ -340,7 +372,8 @@ def _do_botched_compare(actual_fqn, expected_fqn):
             expected_a_keys = _rationalize_keys(e_plane.artifacts.keys())
             actual_a_keys = _rationalize_keys(plane.artifacts.keys())
             result = _compare_keys(
-                expected_a_keys, actual_a_keys, f'artifact.{plane.product_id}')
+                expected_a_keys, actual_a_keys, f'artifact.{plane.product_id}'
+            )
             if result is None:
                 for artifact in plane.artifacts.values():
                     if 'gemini:GEM/' in artifact.uri:
@@ -352,28 +385,36 @@ def _do_botched_compare(actual_fqn, expected_fqn):
                     expected_artifact.uri = artifact.uri
                     if expected_id in e_plane.artifacts.keys():
                         temp = get_differences(
-                            artifact, expected_artifact, 'Artifact')
+                            artifact, expected_artifact, 'Artifact'
+                        )
                         if temp is not None:
                             if result is None:
                                 result = temp
                             else:
                                 result = f'{result}\n{temp}'
                     else:
-                        temp = f'Artifact {expected_id} in actual ' \
-                                 f'but not expected.'
+                        temp = (
+                            f'Artifact {expected_id} in actual but not '
+                            f'expected.'
+                        )
                         if result is None:
                             result = temp
                         else:
                             result = f'{result}\n{temp}'
     else:
-        result = f'Got {len(actual.planes)} planes. Expected ' \
-                 f'{len(expected.planes)} planes.'
+        result = (
+            f'Got {len(actual.planes)} planes. Expected '
+            f'{len(expected.planes)} planes.'
+        )
     return result
 
 
 def _rationalize_keys(in_keys):
-    return list(set([ii.replace('GEM/', 'GEMINI/') for ii in
-                     in_keys if '.fits' in ii]))
+    return list(
+        set(
+            [ii.replace('GEM/', 'GEMINI/') for ii in in_keys if '.fits' in ii]
+        )
+    )
 
 
 def _compare_keys(expected_keys, actual_keys, key_type):
@@ -382,8 +423,10 @@ def _compare_keys(expected_keys, actual_keys, key_type):
     actual_missing = mc.find_missing(actual_keys, expected_keys)
     for entry in [expected_missing, actual_missing]:
         if len(entry) > 0:
-            result = f'{result}\n' \
-                     f'Expected:: missing {len(entry)} {key_type}.'
+            result = (
+                 f'{result}\n'
+                 f'Expected:: missing {len(entry)} {key_type}.'
+            )
     if len(result) == 0:
         result = None
     return result

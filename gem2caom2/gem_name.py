@@ -74,8 +74,14 @@ from caom2pipe import manage_composable as mc
 from gem2caom2 import external_metadata as em
 
 
-__all__ = ['GemName', 'COLLECTION', 'ARCHIVE', 'A_SCHEME', 'SCHEME',
-           'V_SCHEME']
+__all__ = [
+    'GemName',
+    'COLLECTION',
+    'ARCHIVE',
+    'A_SCHEME',
+    'SCHEME',
+    'V_SCHEME',
+]
 
 
 COLLECTION = 'GEMINI'
@@ -155,14 +161,23 @@ class GemName(mc.StorageName):
 
     GEM_NAME_PATTERN = '*'
 
-    def __init__(self, fname_on_disk=None, file_name=None, obs_id=None,
-                 file_id=None, instrument=None, entry=None,
-                 v_collection=None, v_scheme=None):
-        logging.debug('parameters fname_on_disk {} file_name {}'
-                      ' obs id {} file id {}'.format(fname_on_disk,
-                                                     file_name,
-                                                     obs_id,
-                                                     file_id))
+    def __init__(
+        self,
+        fname_on_disk=None,
+        file_name=None,
+        obs_id=None,
+        file_id=None,
+        instrument=None,
+        entry=None,
+        v_collection=None,
+        v_scheme=None,
+    ):
+        logging.debug(
+            'parameters fname_on_disk {} file_name {} obs id {} file id '
+            '{}'.format(
+                fname_on_disk, file_name, obs_id, file_id
+            )
+        )
         if instrument in [em.Inst.ALOPEKE, em.Inst.ZORRO]:
             if file_name is None and fname_on_disk is None:
                 raise mc.CadcException(f'Need a file name of some sort.')
@@ -178,10 +193,13 @@ class GemName(mc.StorageName):
             # because the following super call works for prior to the CADC
             # storage system change-over
             super(GemName, self).__init__(
-                obs_id=self._obs_id, collection=ARCHIVE,
+                obs_id=self._obs_id,
+                collection=ARCHIVE,
                 collection_pattern=GemName.GEM_NAME_PATTERN,
                 fname_on_disk=self._file_name,
-                scheme=SCHEME, entry=entry)
+                scheme=SCHEME,
+                entry=entry,
+            )
         else:
             # try to set the file name, if that information is available
 
@@ -199,19 +217,28 @@ class GemName(mc.StorageName):
             if obs_id is not None:
                 self._obs_id = obs_id
             super(GemName, self).__init__(
-                obs_id=obs_id, collection=ARCHIVE,
+                obs_id=obs_id,
+                collection=ARCHIVE,
                 collection_pattern=GemName.GEM_NAME_PATTERN,
                 fname_on_disk=self.file_name,
-                scheme=SCHEME, entry=entry)
+                scheme=SCHEME,
+                entry=entry,
+            )
             if self._obs_id is None:
                 temp = em.get_gofr().get_obs_id(self._file_id)
                 if temp is not None:
                     self._obs_id = GemName.remove_extensions(temp)
-            if (self._fname_on_disk is None and self._file_name is None and
-                    self._obs_id is None):
+            if (
+                self._fname_on_disk is None and
+                self._file_name is None and
+                self._obs_id is None
+            ):
                 raise mc.CadcException('Require a name.')
-            if (self._file_id is None and self._obs_id is None and
-                    file_id is not None):
+            if (
+                self._file_id is None and
+                self._obs_id is None and
+                file_id is not None
+            ):
                 self._file_id = file_id
                 self._obs_id = file_id
             if file_id is not None:
@@ -226,9 +253,11 @@ class GemName(mc.StorageName):
         self._logger.debug(self)
 
     def __str__(self):
-        return f'obs_id {self._obs_id}, ' \
-               f'file_id {self._file_id}, ' \
-               f'file_name {self._file_name}'
+        return (
+            f'obs_id {self._obs_id}, '
+            f'file_id {self._file_id}, '
+            f'file_name {self._file_name}'
+        )
 
     @property
     def file_uri(self):
@@ -270,14 +299,23 @@ class GemName(mc.StorageName):
         if self._use_vo_naming:
             if '_th.jpg' in self._file_name:
                 # thumbnail
-                return mc.get_lineage(self._v_collection, self.product_id,
-                                      self._file_name, self._v_scheme)
+                return mc.get_lineage(
+                    self._v_collection,
+                    self.product_id,
+                    self._file_name,
+                    self._v_scheme,
+                )
             else:
-                return mc.get_lineage(self._v_collection, self.product_id,
-                                      self._file_name, SCHEME)
+                return mc.get_lineage(
+                    self._v_collection,
+                    self.product_id,
+                    self._file_name,
+                    SCHEME,
+                )
         else:
-            return mc.get_lineage(ARCHIVE, self.product_id, self._file_name,
-                                  self.scheme)
+            return mc.get_lineage(
+                ARCHIVE, self.product_id, self._file_name, self.scheme
+            )
 
     @property
     def external_urls(self):
@@ -324,8 +362,13 @@ class GemName(mc.StorageName):
         """How to get the file_id from a file_name."""
         # Note the .gz extension is on some TRECS files, not that it is
         # an accepted GEMINI extension
-        return name.replace('.fits', '').replace('.bz2', ''). \
-            replace('.header', '').replace('.jpg', '').replace('.gz', '')
+        return name.replace(
+            '.fits', '').replace(
+            '.bz2', ''). replace(
+            '.header', '').replace(
+            '.jpg', '').replace(
+            '.gz', ''
+        )
 
     @staticmethod
     def is_preview(entry):

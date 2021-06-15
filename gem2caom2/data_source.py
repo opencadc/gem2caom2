@@ -106,16 +106,20 @@ class IncrementalSource(dsc.DataSource):
             records were modified from archive.gemini.edu.
         """
 
-        self._logger.debug(f'Begin get_time_box_work from {prev_exec_time} to '
-                           f'{exec_time}.')
+        self._logger.debug(
+            f'Begin get_time_box_work from {prev_exec_time} to {exec_time}.'
+        )
         # datetime format 2019-12-01T00:00:00.000000
-        prev_dt_str = mc.make_time_tz(prev_exec_time).strftime(
-            mc.ISO_8601_FORMAT)
+        prev_dt_str = mc.make_time_tz(
+            prev_exec_time
+        ).strftime(mc.ISO_8601_FORMAT)
         exec_dt_str = mc.make_time_tz(exec_time).strftime(mc.ISO_8601_FORMAT)
-        url = f'https://archive.gemini.edu/jsonsummary/canonical/' \
-              f'NotFail/notengineering/' \
-              f'entrytimedaterange={prev_dt_str}%20{exec_dt_str}/' \
-              f'?orderby=entrytime'
+        url = (
+            f'https://archive.gemini.edu/jsonsummary/canonical/'
+            f'NotFail/notengineering/'
+            f'entrytimedaterange={prev_dt_str}%20{exec_dt_str}/'
+            f'?orderby=entrytime'
+        )
 
         # needs to be ordered by timestamps when processed
         self._logger.info(f'Querying {url}')
@@ -130,15 +134,17 @@ class IncrementalSource(dsc.DataSource):
                 response.close()
                 if metadata is not None:
                     if len(metadata) == 0:
-                        self._logger.warning(f'No query results returned for '
-                                             f'interval from {prev_exec_time} '
-                                             f'to {exec_time}.')
+                        self._logger.warning(
+                            f'No query results returned for interval from '
+                            f'{prev_exec_time} to {exec_time}.'
+                        )
                     else:
                         for entry in metadata:
                             file_name = entry.get('name')
                             entrytime = mc.make_time_tz(entry.get('entrytime'))
                             entries.append(dsc.StateRunnerMeta(
-                                file_name, entrytime.timestamp()))
+                                file_name, entrytime.timestamp())
+                            )
         finally:
             if response is not None:
                 response.close()
@@ -178,32 +184,39 @@ class PublicIncremental(dsc.QueryTimeBoxDataSource):
         self._logger.debug('Entering get_time_box_work')
         # datetime format 2019-12-01T00:00:00.000000
         prev_dt_str = datetime.fromtimestamp(
-            prev_exec_time, tz=timezone.utc).strftime(mc.ISO_8601_FORMAT)
+            prev_exec_time, tz=timezone.utc
+        ).strftime(mc.ISO_8601_FORMAT)
         exec_dt_str = datetime.fromtimestamp(
-            exec_time, tz=timezone.utc).strftime(mc.ISO_8601_FORMAT)
-        query = f"SELECT A.uri, A.lastModified " \
-                f"FROM caom2.Observation AS O " \
-                f"JOIN caom2.Plane AS P ON O.obsID = P.obsID " \
-                f"JOIN caom2.Artifact AS A ON P.planeID = A.planeID " \
-                f"WHERE P.planeID IN ( " \
-                f"  SELECT A.planeID " \
-                f"  FROM caom2.Observation AS O " \
-                f"  JOIN caom2.Plane AS P ON O.obsID = P.obsID " \
-                f"  JOIN caom2.Artifact AS A ON P.planeID = A.planeID " \
-                f"  WHERE O.collection = '{self._config.collection}' " \
-                f"  GROUP BY A.planeID " \
-                f"  HAVING COUNT(A.artifactID) = 1 ) " \
-                f"AND P.dataRelease > '{prev_dt_str}' " \
-                f"AND P.dataRelease <= '{exec_dt_str}' " \
-                f"ORDER BY O.maxLastModified ASC " \
-                ""
+            exec_time, tz=timezone.utc
+        ).strftime(mc.ISO_8601_FORMAT)
+        query = (
+            f"SELECT A.uri, A.lastModified "
+            f"FROM caom2.Observation AS O "
+            f"JOIN caom2.Plane AS P ON O.obsID = P.obsID "
+            f"JOIN caom2.Artifact AS A ON P.planeID = A.planeID "
+            f"WHERE P.planeID IN ( "
+            f"  SELECT A.planeID "
+            f"  FROM caom2.Observation AS O "
+            f"  JOIN caom2.Plane AS P ON O.obsID = P.obsID "
+            f"  JOIN caom2.Artifact AS A ON P.planeID = A.planeID "
+            f"  WHERE O.collection = '{self._config.collection}' "
+            f"  GROUP BY A.planeID "
+            f"  HAVING COUNT(A.artifactID) = 1 ) "
+            f"AND P.dataRelease > '{prev_dt_str}' "
+            f"AND P.dataRelease <= '{exec_dt_str}' "
+            f"ORDER BY O.maxLastModified ASC "
+            ""
+        )
         result = clc.query_tap_client(query, self._client)
         # results look like:
         # gemini:GEM/N20191202S0125.fits, ISO 8601
 
         entries = deque()
         for row in result:
-            entries.append(dsc.StateRunnerMeta(
-                mc.CaomName(row['uri']).file_name,
-                mc.make_time(row['lastModified']).timestamp()))
+            entries.append(
+                dsc.StateRunnerMeta(
+                    mc.CaomName(row['uri']).file_name,
+                    mc.make_time(row['lastModified']).timestamp(),
+                )
+            )
         return entries

@@ -123,7 +123,8 @@ def filter_metadata(instrument, filters, session):
             if not votable:
                 logging.error(
                     'Unable to download SVO filter data from {} because {}'
-                    .format(url, error_message))
+                    .format(url, error_message)
+                )
                 continue
 
             # DB - 14-04-19 After discussion with a few others use the
@@ -152,8 +153,10 @@ def filter_metadata(instrument, filters, session):
             fm.central_wl = wl_eff / 1.0e4
             fm.bandpass = wl_width / 1.0e4
             logging.info(
-                'Filter(s): {}  MD: {}, {}'.format(filter_names, fm.central_wl,
-                                                   fm.bandpass))
+                'Filter(s): {}  MD: {}, {}'.format(
+                    filter_names, fm.central_wl, fm.bandpass
+                )
+            )
             return fm
         else:
             return None
@@ -197,9 +200,11 @@ class FilterMetadata(object):
         self.instrument = instrument
 
     def __str__(self):
-        return f'central_wl: {self._central_wl}\n' \
-               f'bandpass: {self._bandpass}\n' \
-               f'resolving_power: {self._resolving_power}'
+        return (
+            f'central_wl: {self._central_wl}\n'
+            f'bandpass: {self._bandpass}\n'
+            f'resolving_power: {self._resolving_power}'
+        )
 
     @property
     def central_wl(self):
@@ -237,8 +242,9 @@ class FilterMetadata(object):
         self._resolving_power = value
 
     def adjust_bandpass(self, variance):
-        self.bandpass = ((self.central_wl + variance) -
-                         (self.central_wl - variance))
+        self.bandpass = (
+            (self.central_wl + variance) - (self.central_wl - variance)
+        )
 
     def set_bandpass(self, w_max, w_min):
         self.bandpass = (w_max - w_min)

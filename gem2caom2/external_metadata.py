@@ -85,10 +85,18 @@ from gem2caom2.obs_file_relationship import repair_data_label
 from gem2caom2 import gem_name
 
 
-__all__ = ['get_gofr', 'Inst', 'get_obs_id_from_cadc',
-           'get_obs_id_from_headers', 'get_obs_metadata', 'get_pi_metadata',
-           'get_filter_metadata', 'set_ofr', 'init_global',
-           'CachingObsFileRelationship']
+__all__ = [
+    'CachingObsFileRelationship',
+    'get_gofr',
+    'get_filter_metadata',
+    'get_obs_id_from_cadc',
+    'get_obs_id_from_headers',
+    'get_obs_metadata',
+    'get_pi_metadata',
+    'init_global',
+    'Inst',
+    'set_ofr',
+]
 
 
 GEMINI_METADATA_URL = \
@@ -183,8 +191,10 @@ def get_obs_metadata(file_id):
             if response is not None:
                 response.close()
         if len(metadata) == 0:
-            raise mc.CadcException(f'Could not find JSON record for {file_id} '
-                                   f'at archive.gemini.edu.')
+            raise mc.CadcException(
+                f'Could not find JSON record for {file_id} at '
+                f'archive.gemini.edu.'
+            )
         om.add(metadata, file_id)
     logging.debug('End get_obs_metadata for {}'.format(file_id))
 
@@ -217,8 +227,10 @@ def get_pi_metadata(program_id):
             pi_name = None
             if len(tds[3].contents) > 0:
                 pi_name = tds[3].contents[0]
-            metadata = {'title': title,
-                        'pi_name': pi_name}
+            metadata = {
+                'title': title,
+                'pi_name': pi_name,
+            }
             pm[program_id] = metadata
         logging.debug('End get_obs_metadata')
     return metadata
@@ -263,8 +275,10 @@ def _repair_instrument_name_for_svo(instrument):
         if telescope is None:
             obs_id = om.get('data_label')
             raise mc.CadcException(
-                '{}: No observatory information for {}'.format(instrument,
-                                                               obs_id))
+                '{}: No observatory information for {}'.format(
+                    instrument, obs_id
+                )
+            )
         else:
             if 'Gemini-South' == telescope:
                 result = 'AcqCam-S'
@@ -291,64 +305,74 @@ def _repair_filter_name_for_svo(instrument, filter_names):
     :return filter_name the SVO version
     """
     # Alopeke/ZORRO == FOX in Hawaiian and Spanish
-    FILTER_REPAIR_FOX = {'Red-832': 'EO_832',
-                         'Blue-u': 'u_sdss',
-                         'Blue-466': 'EO_466',
-                         'Blue-g': 'g_sdss',
-                         'Blue-562': 'EO_562',
-                         'Blue-r': 'r_sdss',
-                         'Blue-Halpha': 'Halpha',
-                         'Red-716': 'EO_716',
-                         'Red-i': 'i_sdss',
-                         'Red-z': 'z_sdss'}
-    FILTER_REPAIR_NICI = {'CH4-H4S': 'ED451',
-                          'CH4-H4L': 'ED449',
-                          'CH4-H1S': 'ED286',
-                          'CH4-H1Sp': 'ED379',
-                          '': 'ED299',
-                          'CH4-H1L': 'ED381',
-                          'CH4-H1L_2': 'ED283'}
+    FILTER_REPAIR_FOX = {
+        'Red-832': 'EO_832',
+        'Blue-u': 'u_sdss',
+        'Blue-466': 'EO_466',
+        'Blue-g': 'g_sdss',
+        'Blue-562': 'EO_562',
+        'Blue-r': 'r_sdss',
+        'Blue-Halpha': 'Halpha',
+        'Red-716': 'EO_716',
+        'Red-i': 'i_sdss',
+        'Red-z': 'z_sdss',
+    }
+    FILTER_REPAIR_NICI = {
+        'CH4-H4S': 'ED451',
+        'CH4-H4L': 'ED449',
+        'CH4-H1S': 'ED286',
+        'CH4-H1Sp': 'ED379',
+        '': 'ED299',
+        'CH4-H1L': 'ED381',
+        'CH4-H1L_2': 'ED283',
+    }
     # note the lookup repair values are not what comes from the files,
     # they're what's left after the re.sub calls have completed
     # DB 06-05-19
     # The NIRI filter should map to SVO’s NIRI.CO2-0bh-G0225. bh = band-head.
-    FILTER_REPAIR_NIRI = {'H2v=2-1s1-G0220': 'H2S1v2-1-G0220',
-                          'H2v=2-1S1-G0220w': 'H2S1v2-1-G0220w',
-                          'H2v=2-1S1-G0220': 'H2S1v2-1-G0220',
-                          'H2v=1-0s1-G0216': 'H2S1v1-0-G0216',
-                          'H2v=1-0S1-G0216': 'H2S1v1-0-G0216',
-                          'H2Oice_G0230': 'H2Oice-G0230w',
-                          'Brgamma-G0218': 'BrG-G0218',
-                          'Bra-G0238': 'BrAlpha-G0238',
-                          'Bracontt-G0237': 'BrAlphaCont-G0237',
-                          'CH4ice227-G0243': 'CH4ice2275-G0243',
-                          'COv=2-0bh-G0225': 'CO2-0bh-G0225',
-                          'hydrocarb-G0231': 'hydrocarbon-G0231',
-                          'H2Oice204-G0242': 'H2Oice2045-G0242',
-                          'Jcont121-G0232': 'Jcont1207-G0232',
-                          'H2v=2-1s1_G0220': 'H2S1v2-1-G0220'}
+    FILTER_REPAIR_NIRI = {
+        'H2v=2-1s1-G0220': 'H2S1v2-1-G0220',
+        'H2v=2-1S1-G0220w': 'H2S1v2-1-G0220w',
+        'H2v=2-1S1-G0220': 'H2S1v2-1-G0220',
+        'H2v=1-0s1-G0216': 'H2S1v1-0-G0216',
+        'H2v=1-0S1-G0216': 'H2S1v1-0-G0216',
+        'H2Oice_G0230': 'H2Oice-G0230w',
+        'Brgamma-G0218': 'BrG-G0218',
+        'Bra-G0238': 'BrAlpha-G0238',
+        'Bracontt-G0237': 'BrAlphaCont-G0237',
+        'CH4ice227-G0243': 'CH4ice2275-G0243',
+        'COv=2-0bh-G0225': 'CO2-0bh-G0225',
+        'hydrocarb-G0231': 'hydrocarbon-G0231',
+        'H2Oice204-G0242': 'H2Oice2045-G0242',
+        'Jcont121-G0232': 'Jcont1207-G0232',
+        'H2v=2-1s1_G0220': 'H2S1v2-1-G0220',
+    }
     # DB 23-04-19
     # The Qs-18.3um is likely intended to be the same as Qa since 18.3 is the
     # central wavelength of that filter.
-    FILTER_REPAIR_TRECS = {'K': 'k',
-                           'L': 'l',
-                           'M': 'm',
-                           'N': 'n',
-                           'Nprime': 'nprime',
-                           'Qw': 'Qwide',
-                           'Qs': 'Qa',
-                           'NeII_ref2': 'NeII_ref',
-                           'SIV-10.5um': 'SIV'}
-    FILTER_REPAIR_MICHELLE = {'I79B10': 'Si1',
-                              'I88B10': 'Si2',
-                              'I97B10': 'Si3',
-                              'I103B10': 'Si4',
-                              'I105B53': 'N',
-                              'I112B21': 'Np',
-                              'I116B9': 'Si5',
-                              'I125B9': 'Si6',
-                              'I185B9': 'Qa',
-                              'I209B42': 'Q'}
+    FILTER_REPAIR_TRECS = {
+        'K': 'k',
+        'L': 'l',
+        'M': 'm',
+        'N': 'n',
+        'Nprime': 'nprime',
+        'Qw': 'Qwide',
+        'Qs': 'Qa',
+        'NeII_ref2': 'NeII_ref',
+        'SIV-10.5um': 'SIV',
+    }
+    FILTER_REPAIR_MICHELLE = {
+        'I79B10': 'Si1',
+        'I88B10': 'Si2',
+        'I97B10': 'Si3',
+        'I103B10': 'Si4',
+        'I105B53': 'N',
+        'I112B21': 'Np',
+        'I116B9': 'Si5',
+        'I125B9': 'Si6',
+        'I185B9': 'Qa',
+        'I209B42': 'Q',
+    }
     # DB 02-04-19
     # The GSAOI filter CO2360 should map to SVO filter GSAOI.CO
     # DB 04-24-19
@@ -363,16 +387,18 @@ def _repair_filter_name_for_svo(instrument, filter_names):
     # observation and set the filter to “H2 2-1 (S1)“.
     # DB 06-05-19
     # PaB = HIPaBeta.
-    FILTER_REPAIR_GSAOI = {'BrG': 'HIBrGamma',
-                           'CO2360': 'CO',
-                           'HeI1083': 'HeI',
-                           'HeI-2p2s': 'HeI2p2s',
-                           'H2(1-0)': 'H2_1-0',
-                           'H2(2-1)': 'H2_2-1_S1',
-                           'Kcntlong': 'Klong_cont',
-                           'Kcntshrt': 'Kshort_cont',
-                           'PaB': 'HIPaBeta',
-                           'PaG': 'HIPaGamma'}
+    FILTER_REPAIR_GSAOI = {
+        'BrG': 'HIBrGamma',
+        'CO2360': 'CO',
+        'HeI1083': 'HeI',
+        'HeI-2p2s': 'HeI2p2s',
+        'H2(1-0)': 'H2_1-0',
+        'H2(2-1)': 'H2_2-1_S1',
+        'Kcntlong': 'Klong_cont',
+        'Kcntshrt': 'Kshort_cont',
+        'PaB': 'HIPaBeta',
+        'PaG': 'HIPaGamma',
+    }
 
     result = []
     for filter_name in filter_names.split('+'):
@@ -389,7 +415,8 @@ def _repair_filter_name_for_svo(instrument, filter_names):
                 temp = FILTER_REPAIR_NICI[temp]
             else:
                 logging.info(
-                    '{} filter {} not at SVO.'.format(instrument, temp))
+                    '{} filter {} not at SVO.'.format(instrument, temp)
+                )
                 temp = None
         elif instrument is Inst.TRECS:
             temp = filter_name.split('-')
@@ -491,8 +518,10 @@ class CachingObsFileRelationship(GemObsFileRelationship):
             if self._use_local_files:
                 result = self._get_obs_id_from_headers(file_id)
                 if result is None:
-                    self._logger.warning(f'Could not obtain an Observation ID '
-                                         f'for {file_id} on disk.')
+                    self._logger.warning(
+                        f'Could not obtain an Observation ID for {file_id} '
+                        f'on disk.'
+                    )
             if self._is_connected and result is None:
                 result = self._get_obs_id_from_cadc(file_id)
                 if result is None:
@@ -537,8 +566,9 @@ class CachingObsFileRelationship(GemObsFileRelationship):
         return repaired_obs_id
 
 
-def get_obs_id_from_cadc(file_id, tap_client, collection='GEMINI', 
-                         update_cache=None):
+def get_obs_id_from_cadc(
+    file_id, tap_client, collection='GEMINI', update_cache=None
+):
     logging.debug(f'Begin get_obs_id_from_cadc for {file_id}')
     file_name = gem_name.GemName.get_file_name_from(file_id)
     query_string = f"""
@@ -563,10 +593,12 @@ def get_obs_id_from_cadc(file_id, tap_client, collection='GEMINI',
 def get_obs_id_from_headers(file_id, update_cache=None):
     logging.debug(f'Begin get_obs_id_from_headers for {file_id}')
     temp = gem_name.GemName.remove_extensions(file_id)
-    try_these = [f'{os.getcwd()}/{temp}.fits',
-                 f'{os.getcwd()}/{temp}.fits.header',
-                 f'{os.getcwd()}/{temp}.fits.bz2',
-                 f'{os.getcwd()}/{temp}.fits.gz']
+    try_these = [
+        f'{os.getcwd()}/{temp}.fits',
+        f'{os.getcwd()}/{temp}.fits.header',
+        f'{os.getcwd()}/{temp}.fits.bz2',
+        f'{os.getcwd()}/{temp}.fits.gz',
+    ]
     result = None
     for f_name in try_these:
         if os.path.exists(f_name):

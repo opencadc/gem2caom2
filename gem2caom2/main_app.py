@@ -117,7 +117,9 @@ from gem2caom2.svofps import FilterMetadata
 from gem2caom2.builder import get_instrument, GemObsIDBuilder
 
 
-__all__ = ['gem_main_app', 'to_caom2', 'update', 'APPLICATION']
+__all__ = [
+    'gem_main_app', 'to_caom2', 'update', 'APPLICATION'
+]
 
 APPLICATION = 'gem2caom2'
 
@@ -131,14 +133,16 @@ APPLICATION = 'gem2caom2'
 # HOKUPAA - http://www.gemini.edu/sciops/instruments/uhaos/uhaosIndex.html
 # NIFS - DB - 04-03-19 - hard-code 3" FOV
 # TEXES - DB - 07-03-19 - cd11=cd22 = 5.0/3600.0
-RADIUS_LOOKUP = {em.Inst.GPI: 2.8 / 3600.0,  # units are arcseconds
-                 em.Inst.GRACES: 1.2 / 3600.0,
-                 em.Inst.PHOENIX: 5.0 / 3600.0,
-                 em.Inst.OSCIR: 0.0890 / 3600.0,
-                 em.Inst.HOKUPAA: 4.0 / 3600.0,
-                 em.Inst.BHROS: 0.9 / 3600.0,
-                 em.Inst.NIFS: 3.0 / 3600.0,
-                 em.Inst.TEXES: 5.0 / 3600.0}
+RADIUS_LOOKUP = {
+    em.Inst.GPI: 2.8 / 3600.0,  # units are arcseconds
+    em.Inst.GRACES: 1.2 / 3600.0,
+    em.Inst.PHOENIX: 5.0 / 3600.0,
+    em.Inst.OSCIR: 0.0890 / 3600.0,
+    em.Inst.HOKUPAA: 4.0 / 3600.0,
+    em.Inst.BHROS: 0.9 / 3600.0,
+    em.Inst.NIFS: 3.0 / 3600.0,
+    em.Inst.TEXES: 5.0 / 3600.0,
+}
 
 
 def get_time_delta(header):
@@ -161,18 +165,26 @@ def get_calibration_level(uri):
     result = CalibrationLevel.RAW_STANDARD
     reduction = em.om.get('reduction')
     instrument = get_instrument()
-    if ((reduction is not None and
-         (('PROCESSED' in reduction) or ('PREPARED' in reduction))) or
-            (instrument is em.Inst.TEXES and
-             ('_red' in uri.lower() or '_sum' in uri.lower())) or
-            (instrument is em.Inst.PHOENIX and
-             mc.CaomName(uri.lower()).file_id.startswith('p')) or
-            # DB 23-02-21
-            # The best thing to do with OSCIR 'r' files is to add them as a
-            # second cal level 2 plane and use the same metadata as the
-            # unprocessed plane.
-            (instrument is em.Inst.OSCIR and
-             mc.CaomName(uri.lower()).file_id.startswith('r'))):
+    if (
+        (
+            reduction is not None and (
+                ('PROCESSED' in reduction) or ('PREPARED' in reduction)
+            )
+        ) or (
+            instrument is em.Inst.TEXES and
+             ('_red' in uri.lower() or '_sum' in uri.lower())
+        ) or (
+            instrument is em.Inst.PHOENIX and
+            mc.CaomName(uri.lower()).file_id.startswith('p')
+        ) or (
+            instrument is em.Inst.OSCIR and
+            mc.CaomName(uri.lower()).file_id.startswith('r')
+        )
+    ):
+        # DB 23-02-21
+        # The best thing to do with OSCIR 'r' files is to add them as a
+        # second cal level 2 plane and use the same metadata as the
+        # unprocessed plane.
         result = CalibrationLevel.CALIBRATED
     return result
 
@@ -192,8 +204,10 @@ def get_art_product_type(header):
     obs_class = _get_obs_class(header)
 
     logging.debug(
-        'obs type is {} obs class is {} for '.format(obs_type, obs_class,
-                                                     _get_data_label()))
+        'obs type is {} obs class is {} for '.format(
+            obs_type, obs_class, _get_data_label()
+        )
+    )
     if obs_type is not None and obs_type == 'MASK':
         result = ProductType.AUXILIARY
     elif obs_class is None:
@@ -256,7 +270,8 @@ def get_cd11(header):
         # 499 lenslets cover the FOV: about 33 along one axis and 15 along the
         # other.
         #
-        # LENS_SCL determines the scale/lenslet:  0.36 or 0.25 (arcseconds per lens)
+        # LENS_SCL determines the scale/lenslet:  0.36 or 0.25
+        # (arcseconds per lens)
         #     if 0.36 then FOV is 13.0" x 4.7" (RA and Dec)
         #     if 0.25 then FOV is 9.3" x 3.5"
         #     cd11 = LENS_SCL/3600.0
@@ -385,9 +400,13 @@ def get_data_product_type(header):
             else:
                 raise mc.CadcException(
                     'Mystery GPI mode {} for {}'.format(
-                        mode, em.om.get('filename')))
-        elif ((mode == 'imaging') or
-              (obs_type is not None and obs_type == 'MASK')):
+                        mode, em.om.get('filename')
+                    )
+                )
+        elif (
+            (mode == 'imaging') or
+            (obs_type is not None and obs_type == 'MASK')
+        ):
             result = DataProductType.IMAGE
         else:
             result = DataProductType.SPECTRUM
@@ -519,9 +538,25 @@ def get_obs_intent(header):
     # PINHOLE is CALIBRATION
     # DB 03-06-21
     # OBSCLASS = dayCal datasets should all have an intent of calibration.
-    cal_values = ['GCALflat', 'Bias', 'BIAS', 'Twilight', 'Ar', 'FLAT',
-                  'flat', 'ARC', 'Domeflat', 'DARK', 'dark', 'gcal', 'ZERO',
-                  'SLIT', 'slit', 'PINHOLE', 'dayCal']
+    cal_values = [
+        'GCALflat',
+        'Bias',
+        'BIAS',
+        'Twilight',
+        'Ar',
+        'FLAT',
+        'flat',
+        'ARC',
+        'Domeflat',
+        'DARK',
+        'dark',
+        'gcal',
+        'ZERO',
+        'SLIT',
+        'slit',
+        'PINHOLE',
+        'dayCal',
+    ]
     dl = em.om.get('data_label')
     if dl is None and header is not None:
         dl = header.get('DATALAB')
@@ -686,8 +721,11 @@ def get_provenance_producer(parameters):
     uri = parameters.get('uri')
     cal_level = get_calibration_level(uri)
     header = parameters.get('header')
-    if cal_level in [CalibrationLevel.CALIBRATED, CalibrationLevel.PRODUCT,
-                     CalibrationLevel.ANALYSIS_PRODUCT]:
+    if cal_level in [
+        CalibrationLevel.CALIBRATED,
+        CalibrationLevel.PRODUCT,
+        CalibrationLevel.ANALYSIS_PRODUCT,
+    ]:
         comments = str(header.get('COMMENT'))
         result = comments.split('Processed by the')[1].split('|')[0]
     else:
@@ -712,8 +750,11 @@ def _get_provenance_breakout(parameters, fn):
     result = None
     uri = parameters.get('uri')
     cal_level = get_calibration_level(uri)
-    if cal_level in [CalibrationLevel.CALIBRATED, CalibrationLevel.PRODUCT,
-                     CalibrationLevel.ANALYSIS_PRODUCT]:
+    if cal_level in [
+        CalibrationLevel.CALIBRATED,
+        CalibrationLevel.PRODUCT,
+        CalibrationLevel.ANALYSIS_PRODUCT,
+    ]:
         header = parameters.get('header')
         comments = str(header.get('COMMENT'))
         result = fn(comments)
@@ -779,8 +820,10 @@ def get_target_type(uri):
     result = TargetType.FIELD
     spectroscopy = em.om.get('spectroscopy')
     instrument = get_instrument()
-    if (spectroscopy or
-            instrument in [em.Inst.ALOPEKE, em.Inst.TEXES, em.Inst.ZORRO]):
+    if (
+        spectroscopy or
+        instrument in [em.Inst.ALOPEKE, em.Inst.TEXES, em.Inst.ZORRO]
+    ):
         result = TargetType.OBJECT
     return result
 
@@ -882,8 +925,9 @@ def _get_flamingos_mode(header):
                     data_type = DataProductType.SPECTRUM
                     obs_type = 'DARK'
     else:
-        raise mc.CadcException('No mode information found for {}'.format(
-            em.om.get('filename')))
+        raise mc.CadcException(
+            'No mode information found for {}'.format(em.om.get('filename'))
+        )
     if obs_type is None:
         # DB - Also, since I’ve found FLAMINGOS spectra if OBJECT keyword or
         # json value contains ‘arc’ (any case) then it’s an ARC observation
@@ -916,14 +960,21 @@ def _get_data_label():
 def _get_sky_coord(header, ra_key, dec_key):
     ra_hours = header.get(ra_key)
     dec_hours = header.get(dec_key)
-    if (ra_hours is None or dec_hours is None or ra_hours == 'INDEF' or
-            dec_hours == 'INDEF' or ra_hours == 'Unknown' or
-            dec_hours == 'Unknown'):
+    if (
+        ra_hours is None or
+        dec_hours is None or
+        ra_hours == 'INDEF' or
+        dec_hours == 'INDEF' or
+        ra_hours == 'Unknown' or
+        dec_hours == 'Unknown'
+    ):
         ra_deg = None
         dec_deg = None
     else:
-        result = SkyCoord('{} {}'.format(ra_hours, dec_hours),
-                          unit=(units.hourangle, units.deg))
+        result = SkyCoord(
+            '{} {}'.format(ra_hours, dec_hours),
+            unit=(units.hourangle, units.deg),
+        )
         ra_deg = result.ra.degree
         dec_deg = result.dec.degree
     return ra_deg, dec_deg
@@ -953,8 +1004,10 @@ def _get_phoenix_obs_type(header):
     view_pos = header.get('VIEW_POS')
     if 'flat' in object_value:
         result = 'FLAT'
-    elif ('dark' in object_value or
-          (view_pos is not None and 'dark' in view_pos)):
+    elif (
+        'dark' in object_value or
+        (view_pos is not None and 'dark' in view_pos)
+    ):
         result = 'DARK'
     elif 'gcal' in object_value:
         result = 'FLAT'
@@ -999,13 +1052,15 @@ def _is_oscir_calibration(header):
 
 def _is_phoenix_calibration(header):
     object_value = header.get('OBJECT').lower()
-    if ('flat ' in object_value or
-            'dark ' in object_value or
-            'arc' in object_value or
-            'comp' in object_value or
-            'lamp' in object_value or
-            'comparison' in object_value or
-            'slit' in object_value):
+    if (
+        'flat ' in object_value or
+        'dark ' in object_value or
+        'arc' in object_value or
+        'comp' in object_value or
+        'lamp' in object_value or
+        'comparison' in object_value or
+        'slit' in object_value
+    ):
         return True
     return False
 
@@ -1038,8 +1093,9 @@ def accumulate_fits_bp(bp, file_id, uri):
     bp.clear('Observation.algorithm.name')
     instrument = get_instrument()
     if instrument in [em.Inst.GMOSN, em.Inst.GMOSS, em.Inst.GMOS]:
-        bp.set('Observation.instrument.keywords',
-               'get_provenance_keywords(uri)')
+        bp.set(
+            'Observation.instrument.keywords', 'get_provenance_keywords(uri)'
+        )
     telescope = em.om.get('telescope')
     if telescope is not None:
         if 'North' in telescope:
@@ -1063,22 +1119,34 @@ def accumulate_fits_bp(bp, file_id, uri):
     bp.add_fits_attribute('Plane.provenance.producer', 'IMAGESWV')
     bp.set_default('Plane.provenance.producer', 'Gemini Observatory')
     if instrument in [em.Inst.ALOPEKE, em.Inst.ZORRO]:
-        bp.set('Plane.provenance.reference',
-               f'http://archive.gemini.edu/searchform/filepre={file_id}.fits')
+        bp.set(
+            'Plane.provenance.reference',
+            f'http://archive.gemini.edu/searchform/filepre={file_id}.fits',
+        )
     elif instrument is not em.Inst.TEXES:
         data_label = _get_data_label()
-        bp.set('Plane.provenance.reference',
-               'http://archive.gemini.edu/searchform/{}'.format(data_label))
+        bp.set(
+            'Plane.provenance.reference',
+            'http://archive.gemini.edu/searchform/{}'.format(data_label),
+        )
 
     if instrument is em.Inst.GRACES:
-        bp.set('Plane.provenance.lastExecuted',
-               'get_provenance_last_executed(parameters)')
-        bp.set('Plane.provenance.producer',
-               'get_provenance_producer(parameters)')
-        bp.set('Plane.provenance.reference',
-               'get_provenance_reference(parameters)')
-        bp.set('Plane.provenance.version',
-               'get_provenance_version(parameters)')
+        bp.set(
+            'Plane.provenance.lastExecuted',
+            'get_provenance_last_executed(parameters)',
+        )
+        bp.set(
+            'Plane.provenance.producer',
+            'get_provenance_producer(parameters)',
+        )
+        bp.set(
+            'Plane.provenance.reference',
+            'get_provenance_reference(parameters)',
+        )
+        bp.set(
+            'Plane.provenance.version',
+            'get_provenance_version(parameters)',
+        )
 
     bp.set('Artifact.metaProducer', meta_producer)
     bp.set('Artifact.productType', 'get_art_product_type(header)')
@@ -1092,10 +1160,20 @@ def accumulate_fits_bp(bp, file_id, uri):
     if instrument is em.Inst.CIRPASS:
         bp.set_default('Observation.telescope.name', 'Gemini-South')
     mode = em.om.get('mode')
-    if not (instrument in [em.Inst.GPI, em.Inst.PHOENIX, em.Inst.HOKUPAA,
-                           em.Inst.OSCIR, em.Inst.BHROS, em.Inst.TRECS] or
-            (instrument is em.Inst.GRACES and mode is not None and
-             mode != 'imaging')):
+    if not (
+        instrument in [
+            em.Inst.GPI,
+            em.Inst.PHOENIX,
+            em.Inst.HOKUPAA,
+            em.Inst.OSCIR,
+            em.Inst.BHROS,
+            em.Inst.TRECS,
+        ] or (
+            instrument is em.Inst.GRACES and
+            mode is not None and
+            mode != 'imaging'
+        )
+    ):
         bp.configure_position_axes((1, 2))
 
     if instrument is em.Inst.FLAMINGOS:
@@ -1130,8 +1208,10 @@ def accumulate_fits_bp(bp, file_id, uri):
 
     bp.set('Chunk.time.axis.function.delta', 'get_time_delta(header)')
     bp.set('Chunk.time.axis.function.refCoord.pix', '0.5')
-    bp.set('Chunk.time.axis.function.refCoord.val',
-           'get_time_function_val(header)')
+    bp.set(
+        'Chunk.time.axis.function.refCoord.val',
+        'get_time_function_val(header)',
+    )
 
     logging.debug('Done accumulate_fits_bp.')
 
@@ -1154,8 +1234,10 @@ def update(observation, **kwargs):
         current_product_id = None
 
     if headers is None:
-        logging.info(f'Returning an un-modified observation '
-                     f'{observation.observation_id}.')
+        logging.info(
+            f'Returning an un-modified observation '
+            f'{observation.observation_id}.'
+        )
         return observation
 
     if observation.instrument.name == 'oscir':
@@ -1174,10 +1256,13 @@ def update(observation, **kwargs):
     instrument = em.Inst(observation.instrument.name)
 
     # processed files
-    if (cc.is_composite(headers) and not
-            isinstance(observation, DerivedObservation)):
+    if (
+        cc.is_composite(headers) and not
+        isinstance(observation, DerivedObservation)
+    ):
         observation = _update_composite(
-            observation, instrument, current_product_id)
+            observation, instrument, current_product_id
+        )
 
     if instrument in [em.Inst.MICHELLE, em.Inst.GNIRS]:
         # DB 16-04-19
@@ -1196,7 +1281,8 @@ def update(observation, **kwargs):
         if len(headers) == 1:
             logging.warning(
                 '{}: no image data for {}. Cannot build an '
-                'observation.'.format(instrument, observation.observation_id))
+                'observation.'.format(instrument, observation.observation_id)
+            )
             return None
 
     config = mc.Config()
@@ -1204,8 +1290,10 @@ def update(observation, **kwargs):
     try:
         for plane in observation.planes.values():
             delete_list = []
-            if (current_product_id is not None and
-                    current_product_id != plane.product_id):
+            if (
+                current_product_id is not None and
+                current_product_id != plane.product_id
+            ):
                 continue
 
             for artifact in plane.artifacts.values():
@@ -1215,11 +1303,14 @@ def update(observation, **kwargs):
 
                 caom_name = mc.CaomName(artifact.uri)
                 file_id = GemName.remove_extensions(
-                    mc.CaomName(caom_name.uri).file_name)
+                    mc.CaomName(caom_name.uri).file_name
+                )
                 em.om.reset_index(file_id)
                 processed = ofr.is_processed(caom_name.file_name)
-                if (instrument in
-                        [em.Inst.MICHELLE, em.Inst.TRECS, em.Inst.GNIRS]):
+                if (
+                    instrument in
+                        [em.Inst.MICHELLE, em.Inst.TRECS, em.Inst.GNIRS]
+                ):
                     # Michelle is a retired visitor instrument.
                     # Spatial WCS info is in primary header. There
                     # are a variable number of FITS extensions
@@ -1231,8 +1322,11 @@ def update(observation, **kwargs):
                     # DB - 01-18-19 - GNIRS has no WCS info in extension; use
                     # primary header
                     _update_position_from_zeroth_header(
-                        artifact, headers,
-                        instrument, observation.observation_id)
+                        artifact,
+                        headers,
+                        instrument,
+                        observation.observation_id,
+                    )
 
                 for part in artifact.parts:
 
@@ -1240,9 +1334,10 @@ def update(observation, **kwargs):
                         # GPI data sets have two extensions. First is science
                         # image (with WCS), second is data quality for each
                         # pixel (no WCS).
-                        logging.info(f'GPI: Setting chunks to None for part '
-                                     f'{part} for '
-                                     f'{observation.observation_id}')
+                        logging.info(
+                            f'GPI: Setting chunks to None for part {part} '
+                            f'for {observation.observation_id}'
+                        )
                         artifact.parts[part].chunks = TypedList(Chunk, )
                         continue
                     for c in artifact.parts[part].chunks:
@@ -1250,106 +1345,167 @@ def update(observation, **kwargs):
 
                         # energy WCS
                         filter_name = get_filter_name(
-                            headers[0], header, observation.observation_id,
-                            instrument)
-                        if _reset_energy(observation.type, plane.product_id,
-                                         instrument, filter_name):
+                            headers[0],
+                            header,
+                            observation.observation_id,
+                            instrument,
+                        )
+                        if _reset_energy(
+                                observation.type,
+                                plane.product_id,
+                                instrument,
+                                filter_name,
+                        ):
                             cc.reset_energy(c)
                         else:
                             if instrument is em.Inst.NIRI:
                                 _update_chunk_energy_niri(
-                                    c, plane.data_product_type,
-                                    observation.observation_id, filter_name)
+                                    c,
+                                    plane.data_product_type,
+                                    observation.observation_id,
+                                    filter_name,
+                                )
                             elif instrument is em.Inst.GPI:
                                 _update_chunk_energy_gpi(
-                                    c, plane.data_product_type,
-                                    observation.observation_id, filter_name)
+                                    c,
+                                    plane.data_product_type,
+                                    observation.observation_id,
+                                    filter_name,
+                                )
                             elif instrument is em.Inst.F2:
                                 _update_chunk_energy_f2(
-                                    c, headers[0],
+                                    c,
+                                    headers[0],
                                     plane.data_product_type,
                                     observation.observation_id,
-                                    filter_name)
+                                    filter_name,
+                                )
                             elif instrument is em.Inst.GSAOI:
                                 _update_chunk_energy_general(
-                                    c, instrument, [DataProductType.IMAGE],
+                                    c, instrument,
+                                    [DataProductType.IMAGE],
                                     plane.data_product_type,
                                     observation.observation_id,
-                                    filter_name)
+                                    filter_name,
+                                )
                             elif instrument is em.Inst.HRWFS:
                                 _update_chunk_energy_hrwfs(
-                                    c, plane.data_product_type,
-                                    observation.observation_id,
-                                    filter_name)
-                            elif instrument is em.Inst.NICI:
-                                _update_chunk_energy_nici(
-                                    c, plane.data_product_type,
-                                    observation.observation_id, filter_name)
-                            elif instrument is em.Inst.TRECS:
-                                _update_chunk_energy_trecs(
-                                    c, plane.data_product_type,
-                                    observation.observation_id,
-                                    filter_name)
-                            elif instrument is em.Inst.MICHELLE:
-                                _update_chunk_energy_michelle(
-                                    c, plane.data_product_type,
-                                    observation.observation_id,
-                                    filter_name)
-                            elif instrument is em.Inst.NIFS:
-                                _update_chunk_energy_nifs(
-                                    c, plane.data_product_type,
-                                    observation.observation_id,
-                                    filter_name)
-                            elif instrument is em.Inst.GNIRS:
-                                _update_chunk_energy_gnirs(
-                                    c, plane.data_product_type,
-                                    observation.observation_id,
-                                    filter_name, headers[0])
-                            elif instrument is em.Inst.PHOENIX:
-                                _update_chunk_energy_phoenix(
-                                    c, plane.data_product_type,
-                                    observation.observation_id, filter_name)
-                            elif instrument is em.Inst.FLAMINGOS:
-                                _update_chunk_energy_flamingos(
-                                    c, plane.data_product_type,
-                                    observation.observation_id,
-                                    filter_name)
-                            elif instrument is em.Inst.HOKUPAA:
-                                _update_chunk_energy_hokupaa(
-                                    c, plane.data_product_type,
-                                    observation.observation_id, filter_name)
-                            elif instrument is em.Inst.OSCIR:
-                                _update_chunk_energy_oscir(
-                                    c, plane.data_product_type,
-                                    observation.observation_id, filter_name)
-                            elif instrument is em.Inst.BHROS:
-                                _update_chunk_energy_bhros(
-                                    c, header, plane.data_product_type,
-                                    observation.observation_id)
-                            elif instrument is em.Inst.GRACES:
-                                _update_chunk_energy_graces(
-                                    c, plane.data_product_type,
-                                    observation.observation_id)
-                            elif instrument in [em.Inst.GMOS, em.Inst.GMOSN,
-                                                em.Inst.GMOSS]:
-                                _update_chunk_energy_gmos(
-                                    c, plane.data_product_type,
-                                    observation.observation_id, filter_name,
-                                    instrument)
-                            elif instrument is em.Inst.CIRPASS:
-                                _update_chunk_energy_cirpass(
-                                    c, plane.data_product_type,
-                                    observation.observation_id)
-                            elif instrument is em.Inst.TEXES:
-                                _update_chunk_energy_texes(
-                                    c, headers[0], plane.data_product_type,
-                                    observation.observation_id)
-                            elif instrument in [em.Inst.ALOPEKE, em.Inst.ZORRO]:
-                                _update_chunk_energy_general(
-                                    c, instrument, [DataProductType.IMAGE],
+                                    c,
                                     plane.data_product_type,
                                     observation.observation_id,
-                                    filter_name)
+                                    filter_name,
+                                )
+                            elif instrument is em.Inst.NICI:
+                                _update_chunk_energy_nici(
+                                    c,
+                                    plane.data_product_type,
+                                    observation.observation_id,
+                                    filter_name,
+                                )
+                            elif instrument is em.Inst.TRECS:
+                                _update_chunk_energy_trecs(
+                                    c,
+                                    plane.data_product_type,
+                                    observation.observation_id,
+                                    filter_name,
+                                )
+                            elif instrument is em.Inst.MICHELLE:
+                                _update_chunk_energy_michelle(
+                                    c,
+                                    plane.data_product_type,
+                                    observation.observation_id,
+                                    filter_name,
+                                )
+                            elif instrument is em.Inst.NIFS:
+                                _update_chunk_energy_nifs(
+                                    c,
+                                    plane.data_product_type,
+                                    observation.observation_id,
+                                    filter_name,
+                                )
+                            elif instrument is em.Inst.GNIRS:
+                                _update_chunk_energy_gnirs(
+                                    c,
+                                    plane.data_product_type,
+                                    observation.observation_id,
+                                    filter_name,
+                                    headers[0],
+                                )
+                            elif instrument is em.Inst.PHOENIX:
+                                _update_chunk_energy_phoenix(
+                                    c,
+                                    plane.data_product_type,
+                                    observation.observation_id,
+                                    filter_name,
+                                )
+                            elif instrument is em.Inst.FLAMINGOS:
+                                _update_chunk_energy_flamingos(
+                                    c,
+                                    plane.data_product_type,
+                                    observation.observation_id,
+                                    filter_name,
+                                )
+                            elif instrument is em.Inst.HOKUPAA:
+                                _update_chunk_energy_hokupaa(
+                                    c,
+                                    plane.data_product_type,
+                                    observation.observation_id,
+                                    filter_name,
+                                )
+                            elif instrument is em.Inst.OSCIR:
+                                _update_chunk_energy_oscir(
+                                    c,
+                                    plane.data_product_type,
+                                    observation.observation_id,
+                                    filter_name,
+                                )
+                            elif instrument is em.Inst.BHROS:
+                                _update_chunk_energy_bhros(
+                                    c,
+                                    header,
+                                    plane.data_product_type,
+                                    observation.observation_id,
+                                )
+                            elif instrument is em.Inst.GRACES:
+                                _update_chunk_energy_graces(
+                                    c,
+                                    plane.data_product_type,
+                                    observation.observation_id,
+                                )
+                            elif instrument in [
+                                em.Inst.GMOS, em.Inst.GMOSN, em.Inst.GMOSS
+                            ]:
+                                _update_chunk_energy_gmos(
+                                    c,
+                                    plane.data_product_type,
+                                    observation.observation_id,
+                                    filter_name,
+                                    instrument,
+                                )
+                            elif instrument is em.Inst.CIRPASS:
+                                _update_chunk_energy_cirpass(
+                                    c,
+                                    plane.data_product_type,
+                                    observation.observation_id,
+                                )
+                            elif instrument is em.Inst.TEXES:
+                                _update_chunk_energy_texes(
+                                    c,
+                                    headers[0],
+                                    plane.data_product_type,
+                                    observation.observation_id,
+                                )
+                            elif instrument in [
+                                em.Inst.ALOPEKE, em.Inst.ZORRO
+                            ]:
+                                _update_chunk_energy_general(
+                                    c,
+                                    instrument,
+                                    [DataProductType.IMAGE],
+                                    plane.data_product_type,
+                                    observation.observation_id,
+                                    filter_name,
+                                )
 
                         # position WCS
                         mode = em.om.get('mode')
@@ -1358,21 +1514,37 @@ def update(observation, **kwargs):
                         ):
                             logging.debug(
                                 'Setting Spatial WCS to None for {}'.format(
-                                    observation.observation_id))
+                                    observation.observation_id)
+                            )
                             cc.reset_position(c)
                         else:
-                            if (instrument in [em.Inst.PHOENIX, em.Inst.HOKUPAA,
-                                               em.Inst.OSCIR] or
-                                    (instrument is em.Inst.GRACES and
-                                     mode is not None and mode != 'imaging')):
+                            if (
+                                instrument in [
+                                    em.Inst.PHOENIX,
+                                    em.Inst.HOKUPAA,
+                                    em.Inst.OSCIR,
+                                ] or (
+                                    instrument is em.Inst.GRACES and
+                                    mode is not None and mode != 'imaging'
+                                )
+                            ):
                                 _update_chunk_position(
-                                    c, header, instrument, int(part),
-                                    observation.observation_id)
-                            elif instrument in [em.Inst.BHROS, em.Inst.CIRPASS,
-                                                em.Inst.TEXES]:
+                                    c,
+                                    header,
+                                    instrument,
+                                    int(part),
+                                    observation.observation_id,
+                                )
+                            elif instrument in [
+                                em.Inst.BHROS, em.Inst.CIRPASS, em.Inst.TEXES
+                            ]:
                                 _update_chunk_position(
-                                    c, headers[0], instrument,
-                                    int(part), observation.observation_id)
+                                    c,
+                                    headers[0],
+                                    instrument,
+                                    int(part),
+                                    observation.observation_id,
+                                )
                             elif instrument is em.Inst.NIFS:
                                 # DB - 01-18-19 - NIFS has no WCS info in
                                 # extension; use primary header
@@ -1384,13 +1556,22 @@ def update(observation, **kwargs):
                                 n_axis1 = headers[-1]['NAXIS1']
                                 n_axis2 = headers[-1]['NAXIS2']
                                 _update_chunk_position(
-                                    c, headers[0], instrument,
-                                    int(part), observation.observation_id,
-                                    n_axis1, n_axis2)
+                                    c,
+                                    headers[0],
+                                    instrument,
+                                    int(part),
+                                    observation.observation_id,
+                                    n_axis1,
+                                    n_axis2,
+                                )
                             elif instrument is em.Inst.GPI:
                                 _update_chunk_position(
-                                    c, headers[1], instrument, int(part),
-                                    observation.observation_id)
+                                    c,
+                                    headers[1],
+                                    instrument,
+                                    int(part),
+                                    observation.observation_id,
+                                )
                                 if part == '1':
                                     # equinox information only available from
                                     # 0th header
@@ -1407,7 +1588,8 @@ def update(observation, **kwargs):
 
                             elif instrument is em.Inst.FLAMINGOS:
                                 _update_chunk_position_flamingos(
-                                    c, header, observation.observation_id)
+                                    c, header, observation.observation_id
+                                )
                             elif instrument is em.Inst.TRECS:
                                 # DB 22-08-19
                                 # For the file with CTYPE1 = 0 in HDU 1, all
@@ -1415,11 +1597,17 @@ def update(observation, **kwargs):
                                 # (i.e. identical with the primary header).
                                 # Use the HDU 0 values.
                                 _update_chunk_position_trecs(
-                                    c, headers, int(part),
-                                    observation.observation_id)
-                            elif instrument in [em.Inst.ALOPEKE, em.Inst.ZORRO]:
+                                    c,
+                                    headers,
+                                    int(part),
+                                    observation.observation_id,
+                                )
+                            elif instrument in [
+                                em.Inst.ALOPEKE, em.Inst.ZORRO
+                            ]:
                                 _update_chunk_position_fox(
-                                    c, observation.observation_id)
+                                    c, observation.observation_id
+                                )
                             elif instrument is em.Inst.NIRI:
                                 _update_chunk_position_niri(
                                     c,
@@ -1431,7 +1619,8 @@ def update(observation, **kwargs):
                         # time WCS
                         if instrument is em.Inst.F2:
                             _update_chunk_time_f2(
-                                c, observation.observation_id)
+                                c, observation.observation_id
+                            )
 
                         # DB - 05-06-20
                         # That’s a composite observation (but with no way of
@@ -1457,7 +1646,8 @@ def update(observation, **kwargs):
 
                         if instrument in [em.Inst.ALOPEKE, em.Inst.ZORRO]:
                             _update_chunk_time_fox(
-                                c, header, observation.observation_id)
+                                c, header, observation.observation_id
+                            )
                         if c.naxis is not None and c.naxis <= 2:
                             if c.position_axis_1 is None:
                                 c.naxis = None
@@ -1533,16 +1723,21 @@ def update(observation, **kwargs):
                         observation.observation_id,
                     )
 
-                if ((processed or
-                     isinstance(observation, DerivedObservation) or
-                     instrument is em.Inst.TEXES)
-                        and 'jpg' not in caom_name.file_name):
+                if (
+                    (
+                        processed or
+                        isinstance(observation, DerivedObservation) or
+                        instrument is em.Inst.TEXES
+                    )
+                    and 'jpg' not in caom_name.file_name
+                ):
                     # not the preview artifact
                     if plane.provenance is not None:
                         if instrument is not em.Inst.GRACES:
-                            plane.provenance.reference = \
+                            plane.provenance.reference = (
                                 'http://archive.gemini.edu/searchform/' \
                                 'filepre={}'.format(caom_name.file_name)
+                            )
 
             program = em.get_pi_metadata(observation.proposal.id)
             if program is not None:
@@ -1551,9 +1746,10 @@ def update(observation, **kwargs):
 
             temp = list(set(delete_list))
             for entry in temp:
-                logging.warning(f'Removing artifact {entry} from observation '
-                                f'{observation.observation_id}, plane '
-                                f'{plane.product_id}.')
+                logging.warning(
+                    f'Removing artifact {entry} from observation '
+                    f'{observation.observation_id}, plane {plane.product_id}.'
+                )
                 plane.artifacts.pop(entry)
 
         if isinstance(observation, DerivedObservation):
@@ -1561,8 +1757,11 @@ def update(observation, **kwargs):
 
         em.value_repair.repair(observation)
     except Exception as e:
-        logging.error('Error {} for {} instrument {}'.format(
-            e, observation.observation_id, instrument))
+        logging.error(
+            'Error {} for {} instrument {}'.format(
+                e, observation.observation_id, instrument
+            )
+        )
         tb = traceback.format_exc()
         logging.debug(tb)
         raise mc.CadcException(e)
@@ -1600,19 +1799,24 @@ def _build_chunk_energy(chunk, filter_name, fm):
             bandpass_name = bandpass_name.replace('+', '').strip()
 
     if math.isclose(fm.central_wl, 0.0):
-        energy = SpectralWCS(axis=CoordAxis1D(axis=Axis(ctype='WAVE',
-                                                        cunit='um')),
-                             specsys='TOPOCENT',
-                             ssyssrc=None,
-                             ssysobs=None,
-                             bandpass_name=bandpass_name)
+        energy = SpectralWCS(
+            axis=CoordAxis1D(
+                axis=Axis(ctype='WAVE', cunit='um')
+            ),
+            specsys='TOPOCENT',
+            ssyssrc=None,
+            ssysobs=None,
+            bandpass_name=bandpass_name,
+        )
     else:
-        energy = SpectralWCS(axis=axis,
-                             specsys='TOPOCENT',
-                             ssyssrc='TOPOCENT',
-                             ssysobs='TOPOCENT',
-                             bandpass_name=bandpass_name,
-                             resolving_power=fm.resolving_power)
+        energy = SpectralWCS(
+            axis=axis,
+            specsys='TOPOCENT',
+            ssyssrc='TOPOCENT',
+            ssysobs='TOPOCENT',
+            bandpass_name=bandpass_name,
+            resolving_power=fm.resolving_power,
+        )
     chunk.energy = energy
     # no chunk energy is derived from FITS file axis metadata, so no cutouts
     # to support
@@ -1657,7 +1861,7 @@ NIRI_RESOLVING_POWER = {
         'f6-6pixBl': 480.0,
         'f32-4pix': 1000.0,
         'f32-6pix': 620.0,  # f32-7pix
-        'f32-9pix': 450.0  # f32-10pix
+        'f32-9pix': 450.0,  # f32-10pix
     },
     'H': {
         'f6-2pix': 1650.0,
@@ -1668,7 +1872,7 @@ NIRI_RESOLVING_POWER = {
         'f6-6pixBl': 550.0,
         'f32-4pix': 880.0,
         'f32-6pix': 630.0,  # f32-7pix
-        'f32-9pix': 500.0  # f32-10pix
+        'f32-9pix': 500.0,  # f32-10pix
     },
     'L': {
         'f6-2pix': 1100.0,
@@ -1696,7 +1900,7 @@ NIRI_RESOLVING_POWER = {
         'f6-6pixBl': 520.0,
         'f32-4pix': 1280.0,
         'f32-6pix': 775.0,  # f32-7pix
-        'f32-9pix': 570.0  # f32-10pix
+        'f32-9pix': 570.0,  # f32-10pix
     }
 }
 
@@ -1764,8 +1968,11 @@ def _update_chunk_energy_niri(chunk, data_product_type, obs_id, filter_name):
     else:
         filter_md = em.get_filter_metadata(em.Inst.NIRI, filter_name)
         if filter_md is None:
-            raise mc.CadcException('{}: mystery filter {} for {}'.format(
-                em.Inst.NIRI, filter_name, obs_id))
+            raise mc.CadcException(
+                '{}: mystery filter {} for {}'.format(
+                em.Inst.NIRI, filter_name, obs_id
+                )
+            )
 
     filter_name = em.om.get('filter_name')
     if data_product_type == DataProductType.IMAGE:
@@ -1773,44 +1980,65 @@ def _update_chunk_energy_niri(chunk, data_product_type, obs_id, filter_name):
         fm = filter_md
         fm.adjust_resolving_power()
     elif data_product_type == DataProductType.SPECTRUM:
-        logging.debug('NIRI: SpectralWCS spectroscopy for {}.'.format(
-            obs_id))
+        logging.debug(
+            'NIRI: SpectralWCS spectroscopy for {}.'.format(obs_id)
+        )
         fm = FilterMetadata('NIRI')
         fm.central_wl = filter_md.central_wl
         fm.bandpass = filter_md.bandpass
         disperser = em.om.get('disperser')
-        if disperser in ['Jgrism', 'Jgrismf32', 'Hgrism', 'Hgrismf32',
-                         'Kgrism', 'Kgrismf32', 'Lgrism', 'Mgrism']:
+        if disperser in [
+            'Jgrism',
+            'Jgrismf32',
+            'Hgrism',
+            'Hgrismf32',
+            'Kgrism',
+            'Kgrismf32',
+            'Lgrism',
+            'Mgrism',
+        ]:
             bandpass_name = disperser[0]
             f_ratio = em.om.get('focal_plane_mask')
             logging.debug(
                 'NIRI: Bandpass name is {} f_ratio is {} for {}'.format(
-                    bandpass_name, f_ratio, obs_id))
-            if (bandpass_name in NIRI_RESOLVING_POWER and
-                    f_ratio in NIRI_RESOLVING_POWER[bandpass_name]):
+                    bandpass_name, f_ratio, obs_id
+                )
+            )
+            if (
+                bandpass_name in NIRI_RESOLVING_POWER and
+                f_ratio in NIRI_RESOLVING_POWER[bandpass_name]
+            ):
                 fm.resolving_power = \
                     NIRI_RESOLVING_POWER[bandpass_name][f_ratio]
             elif 'pinhole' in f_ratio:
                 logging.info(
-                    'Pinhole. Setting energy to None for {}'.format(obs_id))
+                    'Pinhole. Setting energy to None for {}'.format(obs_id)
+                )
                 reset_energy = True
             elif f_ratio == 'INVALID':
                 logging.info(
                     'INVALID f_ratio. Setting energy to None for {}'.format(
-                        obs_id))
+                        obs_id
+                    )
+                )
                 reset_energy = True
             else:
                 raise mc.CadcException(
                     'NIRI: Mystery bandpass name {} or f_ratio {} for '
-                    '{}.'.format(bandpass_name, f_ratio, obs_id))
+                    '{}.'.format(bandpass_name, f_ratio, obs_id)
+                )
         else:
             raise mc.CadcException(
-                'NIRI: Mystery disperser value {} for {}'.format(disperser,
-                                                                 obs_id))
+                'NIRI: Mystery disperser value {} for {}'.format(
+                    disperser, obs_id
+                )
+            )
     else:
         raise mc.CadcException(
             'NIRI: Do not understand mode {} for {}'.format(
-                data_product_type, obs_id))
+                data_product_type, obs_id
+            )
+        )
 
     if reset_energy:
         cc.reset_energy(chunk)
@@ -1837,11 +2065,13 @@ def _update_chunk_energy_gpi(chunk, data_product_type, obs_id, filter_name):
     # https://www.gemini.edu/sciops/instruments/gpi/observing-modes-metamodes.
     # Use mean of column 4 range.  e.g. for H filter use 46.5
     # units are microns
-    gpi_lookup = {'Y': (36 + 34) / 2.0,
-                  'J': (39 + 35) / 2.0,
-                  'H': (49 + 44) / 2.0,
-                  'K1': (70 + 62) / 2.0,
-                  'K2': (83 + 75) / 2.0}
+    gpi_lookup = {
+        'Y': (36 + 34) / 2.0,
+        'J': (39 + 35) / 2.0,
+        'H': (49 + 44) / 2.0,
+        'K1': (70 + 62) / 2.0,
+        'K2': (83 + 75) / 2.0,
+    }
 
     filter_md = em.get_filter_metadata(em.Inst.GPI, filter_name)
     if data_product_type == DataProductType.IMAGE:
@@ -1849,7 +2079,8 @@ def _update_chunk_energy_gpi(chunk, data_product_type, obs_id, filter_name):
         fm = filter_md
     elif data_product_type == DataProductType.SPECTRUM:
         logging.debug(
-            'GPI: SpectralWCS Spectroscopy mode for {}.'.format(obs_id))
+            'GPI: SpectralWCS Spectroscopy mode for {}.'.format(obs_id)
+        )
         fm = FilterMetadata()
         fm.central_wl = filter_md.central_wl
         fm.bandpass = filter_md.bandpass
@@ -1858,18 +2089,23 @@ def _update_chunk_energy_gpi(chunk, data_product_type, obs_id, filter_name):
         else:
             raise mc.CadcException(
                 'GPI: Mystery filter name {} for resolving power {}.'.format(
-                    filter_name, obs_id))
+                    filter_name, obs_id
+                )
+            )
     else:
         raise mc.CadcException(
             'GPI: Do not understand DataProductType {} for {}'.format(
-                data_product_type, obs_id))
+                data_product_type, obs_id
+            )
+        )
 
     _build_chunk_energy(chunk, filter_name, fm)
     logging.debug('End _update_chunk_energy_gpi')
 
 
-def _update_chunk_energy_f2(chunk, header, data_product_type, obs_id,
-                            filter_name):
+def _update_chunk_energy_f2(
+    chunk, header, data_product_type, obs_id, filter_name
+):
     """F2-specific chunk-level Energy WCS construction."""
     logging.debug('Begin _update_chunk_energy_f2')
     mc.check_param(chunk, Chunk)
@@ -1909,11 +2145,14 @@ def _update_chunk_energy_f2(chunk, header, data_product_type, obs_id,
     else:
         filter_md = em.get_filter_metadata(em.Inst.F2, filter_name)
         if data_product_type == DataProductType.IMAGE:
-            logging.debug('SpectralWCS: F2 imaging mode for {}.'.format(obs_id))
+            logging.debug(
+                'SpectralWCS: F2 imaging mode for {}.'.format(obs_id)
+            )
             fm = filter_md
         elif data_product_type == DataProductType.SPECTRUM:
             logging.debug(
-                'SpectralWCS: F2 LS|Spectroscopy mode for {}.'.format(obs_id))
+                'SpectralWCS: F2 LS|Spectroscopy mode for {}.'.format(obs_id)
+            )
             fp_mask = header.get('MASKNAME')
             mode = em.om.get('mode')
             slit_width = None
@@ -1924,9 +2163,10 @@ def _update_chunk_energy_f2(chunk, header, data_product_type, obs_id,
             fm.bandpass = filter_md.bandpass
             grism_name = header.get('GRISM')
             logging.debug(
-                'F2: grism name is {} fp_mask is {} for {}'.format(grism_name,
-                                                                   fp_mask,
-                                                                   obs_id))
+                'F2: grism name is {} fp_mask is {} for {}'.format(
+                    grism_name, fp_mask, obs_id
+                )
+            )
             # lookup values from
             # https://www.gemini.edu/sciops/instruments/flamingos2/spectroscopy/longslit-spectroscopy
             lookup = {'1': [1300.0, 3600.0],
@@ -1947,37 +2187,47 @@ def _update_chunk_energy_f2(chunk, header, data_product_type, obs_id,
         else:
             raise mc.CadcException(
                 'F2: Do not understand DataProductType {} for {}'.format(
-                    data_product_type, obs_id))
+                    data_product_type, obs_id
+                )
+            )
 
     if reset_energy:
         logging.info(
             'Setting spectral WCs to none for {} instrument {}'.format(
-                obs_id, em.Inst.F2))
+                obs_id, em.Inst.F2
+            )
+        )
         cc.reset_energy(chunk)
     else:
         _build_chunk_energy(chunk, filter_name, fm)
     logging.debug('End _update_chunk_energy_f2')
 
 
-def _update_chunk_energy_general(chunk, instrument, allowable_types,
-                                 data_product_type, obs_id, filter_name):
+def _update_chunk_energy_general(
+    chunk, instrument, allowable_types, data_product_type, obs_id, filter_name
+):
     """General chunk-level Energy WCS construction."""
     logging.debug('Begin _update_chunk_energy_{}'.format(instrument))
     mc.check_param(chunk, Chunk)
 
     if data_product_type in allowable_types:
-        logging.debug('{} Spectral WCS {} mode for {}.'.format(instrument,
-                                                               data_product_type,
-                                                               obs_id))
+        logging.debug(
+            '{} Spectral WCS {} mode for {}.'.format(
+                instrument, data_product_type, obs_id
+            )
+        )
         filter_md = em.get_filter_metadata(instrument, filter_name)
         if filter_md is None:
             raise mc.CadcException(
-                '{}: mystery filter {}'.format(instrument, filter_name))
+                '{}: mystery filter {}'.format(instrument, filter_name)
+            )
         _build_chunk_energy(chunk, filter_name, filter_md)
     else:
         raise mc.CadcException(
             '{} no Spectral WCS support when DataProductType {} for {}'.format(
-                instrument, data_product_type, obs_id))
+                instrument, data_product_type, obs_id
+            )
+        )
 
     logging.debug('End _update_chunk_energy_{}'.format(instrument))
 
@@ -1994,10 +2244,15 @@ def _update_chunk_energy_hrwfs(chunk, data_product_type, obs_id, filter_name):
 
     if data_product_type == DataProductType.IMAGE:
         logging.debug(
-            'hrwfs Spectral WCS {} mode for {}.'.format(data_product_type,
-                                                        obs_id))
-        if ('open' in filter_name or 'neutral' in filter_name or
-                'undefined' in filter_name):
+            'hrwfs Spectral WCS {} mode for {}.'.format(
+                data_product_type, obs_id
+            )
+        )
+        if (
+            'open' in filter_name or
+            'neutral' in filter_name or
+            'undefined' in filter_name
+        ):
             w_min = 0.35
             w_max = 1.0
             filter_md = FilterMetadata()
@@ -2017,7 +2272,9 @@ def _update_chunk_energy_hrwfs(chunk, data_product_type, obs_id, filter_name):
     else:
         raise mc.CadcException(
             'hrwfs no Spectral WCS support when DataProductType {} for '
-            '{}'.format(data_product_type, obs_id))
+            '{}'.format(data_product_type, obs_id
+            )
+        )
 
     logging.debug('End _update_chunk_energy_hrwfs')
 
@@ -2054,8 +2311,9 @@ michelle = {
 }
 
 
-def _update_chunk_energy_michelle(chunk, data_product_type, obs_id,
-                                  filter_name):
+def _update_chunk_energy_michelle(
+    chunk, data_product_type, obs_id, filter_name
+):
     """General chunk-level Energy WCS construction."""
     logging.debug('Begin _update_chunk_energy_michelle')
     mc.check_param(chunk, Chunk)
@@ -2095,42 +2353,48 @@ def _update_chunk_energy_michelle(chunk, data_product_type, obs_id,
 
     # 0 = R
     # 1 = ratio for slit width
-    lookup = {'LowN': [200, 2.0],
-              'LowQ': [110, 3.0],
-              'MedN1': [1000, 2.0],
-              'MedN2': [3000, 2.0],
-              'Echelle': [30000, 2.0]
-              }
+    lookup = {
+        'LowN': [200, 2.0],
+        'LowQ': [110, 3.0],
+        'MedN1': [1000, 2.0],
+        'MedN2': [3000, 2.0],
+        'Echelle': [30000, 2.0],
+    }
 
     filter_md = em.get_filter_metadata(em.Inst.MICHELLE, filter_name)
     if filter_md is None:  # means filter_name not found
         # DB 09-04-19 - Use 100 microns for the initial max for michelle.
-        w_max, w_min = _multiple_filter_lookup(filter_name, michelle,
-                                               obs_id, em.Inst.MICHELLE,
-                                               wl_max=100)
+        w_max, w_min = _multiple_filter_lookup(
+            filter_name, michelle, obs_id, em.Inst.MICHELLE, wl_max=100
+        )
         filter_md = FilterMetadata()
         filter_md.set_bandpass(w_max, w_min)
         filter_md.set_central_wl(w_max, w_min)
     if data_product_type == DataProductType.SPECTRUM:
         logging.debug(
-            'michelle: Spectral WCS spectrum for {}.'.format(obs_id))
+            'michelle: Spectral WCS spectrum for {}.'.format(obs_id)
+        )
         if data_product_type == DataProductType.SPECTRUM:
             disperser = em.om.get('disperser')
             focal_plane_mask = em.om.get('focal_plane_mask')
             slit_width = float(focal_plane_mask.split('_')[0])
             if disperser not in lookup:
                 raise mc.CadcException(
-                    'michelle: Mystery disperser {} for {}'.format(disperser,
-                                                                   obs_id))
+                    'michelle: Mystery disperser {} for {}'.format(
+                        disperser, obs_id
+                    )
+                )
             filter_md.resolving_power = \
                 lookup[disperser][0] * lookup[disperser][1] / slit_width
     elif data_product_type == DataProductType.IMAGE:
         logging.debug(
-            'michelle: Spectral WCS imaging mode for {}.'.format(obs_id))
+            'michelle: Spectral WCS imaging mode for {}.'.format(obs_id)
+        )
     else:
         raise mc.CadcException(
             'michelle: no Spectral WCS support when DataProductType {} for '
-            '{}'.format(data_product_type, obs_id))
+            '{}'.format(data_product_type, obs_id)
+        )
 
     # use the json value for bandpass_name value - it's representative of
     # multiple filters
@@ -2147,27 +2411,29 @@ def _update_chunk_energy_michelle(chunk, data_product_type, obs_id,
 #
 # dict with the barcodes stripped from the names as returned by query
 # DB - 22-02-19 - units are microns
-NICI = {'Br-gamma': [2.168600, 2.153900, 2.183300],
-        'CH4-H1%L': [1.628000, 1.619300, 1.636700],
-        'CH4-H1%S': [1.587000, 1.579500, 1.594500],
-        'CH4-H1%Sp': [1.603000, 1.594900, 1.611100],
-        'CH4-H4%L': [1.652000, 1.619000, 1.685000],
-        'CH4-H4%S': [1.578000, 1.547000, 1.609000],
-        'CH4-H6.5%L': [1.701000, 1.652400, 1.749600],
-        'CH4-H6.5%S': [1.596000, 1.537250, 1.654750],
-        'CH4-K5%L': [2.241000, 2.187500, 2.294500],
-        'CH4-K5%S': [2.080000, 2.027500, 2.132500],
-        'FeII': [1.644000, 1.631670, 1.656330],
-        'H2-1-0-S1': [2.123900, 2.110800, 2.137000],
-        'H20-Ice-L': [3.090000, 3.020000, 3.150000],
-        'H': [1.650000, 1.490000, 1.780000],
-        'J': [1.250000, 1.150000, 1.330000],
-        'K': [2.200000, 2.030000, 2.360000],
-        'Kcont': [2.271800, 2.254194, 2.289406],
-        'Kprime': [2.120000, 1.950000, 2.300000],
-        'Ks': [2.150000, 1.990000, 2.300000],
-        'Lprime': [3.780000, 3.430000, 4.130000],
-        'Mprime': [4.680000, 4.550000, 4.790000]}
+NICI = {
+    'Br-gamma': [2.168600, 2.153900, 2.183300],
+    'CH4-H1%L': [1.628000, 1.619300, 1.636700],
+    'CH4-H1%S': [1.587000, 1.579500, 1.594500],
+    'CH4-H1%Sp': [1.603000, 1.594900, 1.611100],
+    'CH4-H4%L': [1.652000, 1.619000, 1.685000],
+    'CH4-H4%S': [1.578000, 1.547000, 1.609000],
+    'CH4-H6.5%L': [1.701000, 1.652400, 1.749600],
+    'CH4-H6.5%S': [1.596000, 1.537250, 1.654750],
+    'CH4-K5%L': [2.241000, 2.187500, 2.294500],
+    'CH4-K5%S': [2.080000, 2.027500, 2.132500],
+    'FeII': [1.644000, 1.631670, 1.656330],
+    'H2-1-0-S1': [2.123900, 2.110800, 2.137000],
+    'H20-Ice-L': [3.090000, 3.020000, 3.150000],
+    'H': [1.650000, 1.490000, 1.780000],
+    'J': [1.250000, 1.150000, 1.330000],
+    'K': [2.200000, 2.030000, 2.360000],
+    'Kcont': [2.271800, 2.254194, 2.289406],
+    'Kprime': [2.120000, 1.950000, 2.300000],
+    'Ks': [2.150000, 1.990000, 2.300000],
+    'Lprime': [3.780000, 3.430000, 4.130000],
+    'Mprime': [4.680000, 4.550000, 4.790000],
+}
 
 
 def _update_chunk_energy_nici(chunk, data_product_type, obs_id, filter_name):
@@ -2193,10 +2459,12 @@ def _update_chunk_energy_nici(chunk, data_product_type, obs_id, filter_name):
 
         if data_product_type == DataProductType.IMAGE:
             logging.debug(
-                'NICI: SpectralWCS imaging mode for {}.'.format(obs_id))
+                'NICI: SpectralWCS imaging mode for {}.'.format(obs_id)
+            )
             if filter_md is None:  # means filter_name not found
-                w_max, w_min = _multiple_filter_lookup(filter_name, NICI,
-                                                       obs_id, em.Inst.NICI)
+                w_max, w_min = _multiple_filter_lookup(
+                    filter_name, NICI, obs_id, em.Inst.NICI
+                )
                 fm = FilterMetadata()
                 fm.set_bandpass(w_max, w_min)
                 fm.set_central_wl(w_max, w_min)
@@ -2215,7 +2483,9 @@ def _update_chunk_energy_nici(chunk, data_product_type, obs_id, filter_name):
         else:
             raise mc.CadcException(
                 'NICI: Do not understand DataProductType {} from {}'.format(
-                    data_product_type, obs_id))
+                    data_product_type, obs_id
+                )
+            )
 
     logging.debug('End _update_chunk_energy_nici')
 
@@ -2237,8 +2507,11 @@ def _update_chunk_energy_trecs(chunk, data_product_type, obs_id, filter_name):
         # I think it might be better to not provide wavelength info rather
         # than a very wide range.  That’s how some other TReCS data with null
         # filter names are treated.
-        logging.info('Filter is {}, no Spectral WCS for {}'.format(
-            filter_name, obs_id))
+        logging.info(
+            'Filter is {}, no Spectral WCS for {}'.format(
+                filter_name, obs_id
+            )
+        )
     else:
         if filter_name == 'Qone-17.8um':
             # DB 22-08-19
@@ -2255,7 +2528,8 @@ def _update_chunk_energy_trecs(chunk, data_product_type, obs_id, filter_name):
             filter_md = em.get_filter_metadata(em.Inst.TRECS, filter_name)
         if filter_md is None:
             raise mc.CadcException(
-                '{}: Mystery filter {}'.format(em.Inst.TRECS, filter_name))
+                '{}: Mystery filter {}'.format(em.Inst.TRECS, filter_name)
+            )
         if data_product_type == DataProductType.IMAGE:
             logging.debug('TRECS: imaging mode for {}.'.format(obs_id))
         elif data_product_type == DataProductType.SPECTRUM:
@@ -2269,7 +2543,9 @@ def _update_chunk_energy_trecs(chunk, data_product_type, obs_id, filter_name):
         else:
             raise mc.CadcException(
                 'TReCS: Do not understand mode {} for {}'.format(
-                    data_product_type, obs_id))
+                    data_product_type, obs_id
+                )
+            )
         _build_chunk_energy(chunk, filter_name, filter_md)
     logging.debug('End _update_chunk_energy_trecs')
 
@@ -2345,14 +2621,28 @@ def _update_chunk_energy_nifs(chunk, data_product_type, obs_id, filter_name):
     # not in the lookup.   Also, I see a ‘Blocked’ filter for NIFS.
     # Those should also skip energy WCS.
 
-    nifs_lookup = {'Z': {'ZJ': [1.05, 0.94, 1.15, 4990.0, 60.1]},
-                   'J': {'ZJ': [1.25, 1.15, 1.33, 6040.0, 49.6],
-                         'JH': [1.25, 1.15, 1.33, 6040.0, 49.6]},
-                   'H': {'JH': [1.65, 1.49, 1.80, 5290.0, 56.8],
-                         'HK': [1.65, 1.49, 1.80, 5290.0, 56.8]},
-                   'K': {'HK': [2.20, 1.99, 2.40, 5290.0, 56.7]},
-                   'K_Short': {'HK': [2.20, 1.98, 2.41, 5290.0, 56.7]},
-                   'K_Long': {'HK': [2.20, 1.98, 2.41, 5290.0, 56.7]}}
+    nifs_lookup = {
+        'Z': {
+            'ZJ': [1.05, 0.94, 1.15, 4990.0, 60.1],
+        },
+        'J': {
+            'ZJ': [1.25, 1.15, 1.33, 6040.0, 49.6],
+            'JH': [1.25, 1.15, 1.33, 6040.0, 49.6],
+        },
+        'H': {
+            'JH': [1.65, 1.49, 1.80, 5290.0, 56.8],
+            'HK': [1.65, 1.49, 1.80, 5290.0, 56.8],
+        },
+        'K': {
+            'HK': [2.20, 1.99, 2.40, 5290.0, 56.7],
+        },
+        'K_Short': {
+            'HK': [2.20, 1.98, 2.41, 5290.0, 56.7],
+        },
+        'K_Long': {
+            'HK': [2.20, 1.98, 2.41, 5290.0, 56.7],
+        },
+    }
 
     if 'INVALID' in filter_name or 'Blocked' in filter_name:
         fm = None
@@ -2365,8 +2655,10 @@ def _update_chunk_energy_nifs(chunk, data_product_type, obs_id, filter_name):
             if grating in nifs_lookup:
                 if filter_name in nifs_lookup[grating]:
                     fm = FilterMetadata('NIFS')
-                    fm.set_bandpass(nifs_lookup[grating][filter_name][2],
-                                    nifs_lookup[grating][filter_name][1])
+                    fm.set_bandpass(
+                        nifs_lookup[grating][filter_name][2],
+                        nifs_lookup[grating][filter_name][1],
+                    )
                     fm.central_wl = em.om.get('central_wavelength')
                     fm.resolving_power = nifs_lookup[grating][filter_name][3]
                     if fm.central_wl is None:
@@ -2376,16 +2668,20 @@ def _update_chunk_energy_nifs(chunk, data_product_type, obs_id, filter_name):
                         fm.central_wl = nifs_lookup[grating][filter_name][0]
                         logging.warning(
                             f'JSON central_wavelength is None for {obs_id}. '
-                            f'Using {fm.central_wl} instead.')
+                            f'Using {fm.central_wl} instead.'
+                        )
                 else:
                     logging.info(
                         'NIFS: No energy. filter_name {} with disperser {}'
-                        ' for {}'.format(filter_name, grating, obs_id))
+                        ' for {}'.format(filter_name, grating, obs_id)
+                    )
                     fm = None
             else:
                 logging.info(
                     'NIFS: No energy. grating {} for {}'.format(
-                        grating, obs_id))
+                        grating, obs_id
+                    )
+                )
                 fm = None
         elif data_product_type == DataProductType.IMAGE:
             logging.debug('NIFS: imaging for {}.'.format(obs_id))
@@ -2395,7 +2691,9 @@ def _update_chunk_energy_nifs(chunk, data_product_type, obs_id, filter_name):
         else:
             raise mc.CadcException(
                 'NIFS: DataProductType {} for {}'.format(
-                    data_product_type, obs_id))
+                    data_product_type, obs_id
+                )
+            )
 
     if fm is None or fm.central_wl is None:
         cc.reset_energy(chunk)
@@ -2405,8 +2703,9 @@ def _update_chunk_energy_nifs(chunk, data_product_type, obs_id, filter_name):
     logging.debug('End _update_chunk_energy_nifs')
 
 
-def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name,
-                               header):
+def _update_chunk_energy_gnirs(
+    chunk, data_product_type, obs_id, filter_name, header
+):
     """GNIRS-specific chunk-level Energy WCS construction."""
     logging.debug('Begin _update_chunk_energy_gnirs')
     mc.check_param(chunk, Chunk)
@@ -2559,36 +2858,44 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name,
     # should be in front of the ‘XD’ in the JSON result? It might not be the
     # first letter in the value: new files have PRISM   = 'SB+SXD_G5536'
 
-    gnirs_lookup = {'10': {'X': [1.03, 1.17, 570, 2100],
-                           'J': [1.17, 1.37, 570, 1600],
-                           'H': [1.47, 1.80, 570, 1700],
-                           'K': [1.91, 2.49, 570, 1700],
-                           'L': [2.80, 4.20, 570, 1800],
-                           'M': [4.40, 6.00, 570, 1200],
-                           'LB+LXD': [0.9, 2.5, 1800],
-                           'LB+SXD': [1.2, 2.5, 1800],
-                           'PAH': [3.270, 3.320, 570, 1800]},
-                    '32': {'X': [1.03, 1.17, 1700, 5100, 1400],
-                           'J': [1.17, 1.37, 1600, 4800, 1400],
-                           'H': [1.49, 1.80, 1700, 5100, 1400],
-                           'K': [1.91, 2.49, 1700, 5100, 1300],
-                           'L': [2.80, 4.20, 1800, 5400, 1800],
-                           'M': [4.40, 6.00, 1240, 3700, 1240],
-                           'SB+SXD': [0.9, 2.5, 1800, 1800],
-                           'SB+LXD': [0.9, 2.5, 5400, 5400],
-                           'LB+LXD': [0.9, 2.5, 5400, 5400],
-                           'LB+SXD': [1.2, 2.5, 1800, 1800],
-                           'PAH': [3.270, 3.320, None, None]},
-                    '111': {'X': [1.03, 1.17, 6600, 17800],
-                            'J': [1.17, 1.37, 7200, 17000],
-                            'H': [1.49, 1.80, 5900, 17800],
-                            'K': [1.91, 2.49, 5900, 17800],
-                            'L': [2.80, 4.20, 6400, 19000],
-                            'M': [4.40, 6.00, 4300, 12800],
-                            'SB+SXD': [0.9, 2.5, 5400],
-                            'LB+SXD': [0.9, 2.5, 5400],
-                            'LB+LXD': [0.9, 2.5, 17000],
-                            'PAH': [3.270, 3.320, None, None]}}
+    gnirs_lookup = {
+        '10': {
+            'X': [1.03, 1.17, 570, 2100],
+            'J': [1.17, 1.37, 570, 1600],
+            'H': [1.47, 1.80, 570, 1700],
+            'K': [1.91, 2.49, 570, 1700],
+            'L': [2.80, 4.20, 570, 1800],
+            'M': [4.40, 6.00, 570, 1200],
+            'LB+LXD': [0.9, 2.5, 1800],
+            'LB+SXD': [1.2, 2.5, 1800],
+            'PAH': [3.270, 3.320, 570, 1800],
+        },
+        '32': {
+            'X': [1.03, 1.17, 1700, 5100, 1400],
+            'J': [1.17, 1.37, 1600, 4800, 1400],
+            'H': [1.49, 1.80, 1700, 5100, 1400],
+            'K': [1.91, 2.49, 1700, 5100, 1300],
+            'L': [2.80, 4.20, 1800, 5400, 1800],
+            'M': [4.40, 6.00, 1240, 3700, 1240],
+            'SB+SXD': [0.9, 2.5, 1800, 1800],
+            'SB+LXD': [0.9, 2.5, 5400, 5400],
+            'LB+LXD': [0.9, 2.5, 5400, 5400],
+            'LB+SXD': [1.2, 2.5, 1800, 1800],
+            'PAH': [3.270, 3.320, None, None],
+        },
+        '111': {
+            'X': [1.03, 1.17, 6600, 17800],
+            'J': [1.17, 1.37, 7200, 17000],
+            'H': [1.49, 1.80, 5900, 17800],
+            'K': [1.91, 2.49, 5900, 17800],
+            'L': [2.80, 4.20, 6400, 19000],
+            'M': [4.40, 6.00, 4300, 12800],
+            'SB+SXD': [0.9, 2.5, 5400],
+            'LB+SXD': [0.9, 2.5, 5400],
+            'LB+LXD': [0.9, 2.5, 17000],
+            'PAH': [3.270, 3.320, None, None],
+        },
+    }
 
     reset_energy = False
     if 'Dark' in filter_name or 'DARK' in filter_name:
@@ -2598,7 +2905,9 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name,
         reset_energy = True
         logging.warning(
             'GNIRS: filter is {}. No spectral WCS for {}.'.format(
-                filter_name, obs_id))
+                filter_name, obs_id
+            )
+        )
     elif 'open' in filter_name:
         # DB 21-08-19
         # GS-2004A-DD-8-10-001:  set the bandpass to between 1 micron and 6
@@ -2614,7 +2923,8 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name,
         fm = FilterMetadata('GNIRS')
         if data_product_type == DataProductType.SPECTRUM:
             logging.info(
-                'gnirs: SpectralWCS Spectroscopy mode for {}.'.format(obs_id))
+                'gnirs: SpectralWCS Spectroscopy mode for {}.'.format(obs_id)
+            )
             disperser = em.om.get('disperser')
             if disperser is None:
                 logging.info('No disperser. No energy for {}'.format(obs_id))
@@ -2623,22 +2933,30 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name,
                 grating = disperser.split('_')[0]
                 # 'UNKNOWN' in grating test obs GS-CAL20040924-6-006
                 # 'ENG -' in grating test obs GN-CAL20130813-22-010
-                if ('UNKNOWN' in grating or 'Moving' in grating or
-                        'ENG' in grating):
+                if (
+                    'UNKNOWN' in grating or
+                    'Moving' in grating or
+                    'ENG' in grating
+                ):
                     # DB 23-04-19 - GNIRS grating UNKNOWN:  no energy
                     # DB 18-04-19
                     # If grating is moving then the observation is almost
                     # certainly garbage so ignore energy WCS.
                     # DB 13-05-19
                     # No energy for the invalid “ENG - 170000" grating entry.
-                    logging.warning('grating is {}. No energy for {}'.format(
-                        grating, obs_id))
+                    logging.warning(
+                        'grating is {}. No energy for {}'.format(
+                            grating, obs_id
+                        )
+                    )
                     reset_energy = True
                 else:
                     if grating not in gnirs_lookup:
                         raise mc.CadcException(
                             'GNIRS: Mystery grating {} for {}'.format(
-                                grating, obs_id))
+                                grating, obs_id
+                            )
+                        )
 
                     camera = em.om.get('camera')
                     if camera == 'Moving':
@@ -2646,24 +2964,31 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name,
                         # No energy for the ‘moving’ camera
                         logging.info(
                             'Camera is moving. No energy for {}'.format(
-                                obs_id))
+                                obs_id
+                            )
+                        )
                         reset_energy = True
                     else:
                         focal_plane_mask = em.om.get('focal_plane_mask')
-                        if (focal_plane_mask is None or
-                                'arcsec' not in focal_plane_mask):
+                        if (
+                            focal_plane_mask is None or
+                            'arcsec' not in focal_plane_mask
+                        ):
                             # DB 24-04-19
                             # Assume slit width of 1.0 for GNIRS observation
                             # without a focal plane mask value.
                             slit_width = 1.0
                         else:
-                            slit_width = float(focal_plane_mask.split(
-                                'arcsec')[0])
+                            slit_width = mc.to_float(
+                                focal_plane_mask.split('arcsec')[0]
+                            )
 
                         if 'XD' in disperser:
                             logging.debug(
                                 'gnirs: cross dispersed mode for {}.'.format(
-                                    obs_id))
+                                    obs_id
+                                )
+                            )
                             # https://www.gemini.edu/sciops/instruments/gnirs/spectroscopy/crossdispersed-xd-spectroscopy/xd-prisms
                             #
                             # 0 = lower
@@ -2673,7 +2998,8 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name,
                             # row to 1800.0 since the resolving power is the
                             # same for all 3 cases
                             #
-                            # Add line to find grating ID (from long-slit code):
+                            # Add line to find grating ID (from long-slit
+                            # code):
                             # grating = disperser.split(‘_’)[0]
                             #
                             # Then change ‘lookup’ to include grating.
@@ -2708,10 +3034,13 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name,
                             else:
                                 raise mc.CadcException(
                                     'GNIRS: Mystery camera definition {} '
-                                    'for {}'.format(camera, obs_id))
+                                    'for {}'.format(camera, obs_id
+                                    )
+                                )
                         else:
-                            logging.debug('gnirs: long slit mode for '
-                                          '{}.'.format(obs_id))
+                            logging.debug(
+                                'gnirs: long slit mode for {}.'.format(obs_id)
+                            )
                             if filter_name == 'PAH':
                                 lookup = filter_name
                             else:
@@ -2722,9 +3051,13 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name,
                                     lookup_index = 3
                                 elif camera.startswith('Short'):
                                     date_time = ac.get_datetime(
-                                        em.om.get('ut_datetime'))
-                                    if date_time > ac.get_datetime(
-                                            '2012-11-01T00:00:00'):
+                                        em.om.get('ut_datetime')
+                                    )
+                                    if (
+                                        date_time > ac.get_datetime(
+                                            '2012-11-01T00:00:00'
+                                        )
+                                    ):
                                         slit_table_value = 0.3
                                         if grating == '32':
                                             lookup_index = 4
@@ -2736,13 +3069,15 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name,
                                 else:
                                     raise mc.CadcException(
                                         'GNIRS: Mystery camera definition '
-                                        '{} for {}'.format(camera, obs_id))
+                                        '{} for {}'.format(camera, obs_id)
+                                    )
 
                         lookup = lookup.upper()
                         if lookup not in gnirs_lookup[grating]:
                             raise mc.CadcException(
                                 'GNIRS: Mystery lookup {} for grating {}, '
-                                'obs {}'.format(lookup, grating, obs_id))
+                                'obs {}'.format(lookup, grating, obs_id)
+                            )
                         bounds = gnirs_lookup[grating][lookup]
                         fm.set_bandpass(bounds[1], bounds[0])
                         if lookup == 'PAH':
@@ -2752,8 +3087,9 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name,
                                 lookup_index] / slit_width
                         fm.set_central_wl(bounds[1], bounds[0])
         elif data_product_type == DataProductType.IMAGE:
-            logging.debug('gnirs: SpectralWCS imaging mode for {}.'.format(
-                obs_id))
+            logging.debug(
+                'gnirs: SpectralWCS imaging mode for {}.'.format(obs_id)
+            )
             # https://www.gemini.edu/sciops/instruments/gnirs/imaging
             # https://www.gemini.edu/sciops/instruments/gnirs/spectroscopy/orderblocking-acq-nd-filters
 
@@ -2768,18 +3104,20 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name,
 
             # 0 - min wavelength
             # 1 - max wavelength
-            imaging = {'Y': [0.97, 1.07],
-                       'J': [1.17, 1.33],
-                       'J order blocking)': [1.17, 1.37],
-                       'H': [1.49, 1.80],
-                       'K': [2.03, 2.37],
-                       'K order blocking': [1.91, 2.49],
-                       'H2': [2.105, 2.137],
-                       'PAH': [3.27, 3.32],
-                       'X': [1.03, 1.17],
-                       'XD': [0.9, 2.56],
-                       'M': [4.4, 6.0],
-                       'L': [2.8, 4.2]}
+            imaging = {
+                'Y': [0.97, 1.07],
+                'J': [1.17, 1.33],
+                'J order blocking)': [1.17, 1.37],
+                'H': [1.49, 1.80],
+                'K': [2.03, 2.37],
+                'K order blocking': [1.91, 2.49],
+                'H2': [2.105, 2.137],
+                'PAH': [3.27, 3.32],
+                'X': [1.03, 1.17],
+                'XD': [0.9, 2.56],
+                'M': [4.4, 6.0],
+                'L': [2.8, 4.2],
+            }
 
             # DB 30-04-19
             # GN-CAL20180607-27-001:  ignore ‘PupilViewer’ if possible.
@@ -2790,8 +3128,12 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name,
                 'PupilViewer', '').replace('PV', '')
             filter_name = filter_name.strip('+')
 
-            if (len(filter_name) == 1 or filter_name == 'H2' or
-                    filter_name == 'PAH' or filter_name == 'XD'):
+            if (
+                len(filter_name) == 1 or
+                filter_name == 'H2' or
+                filter_name == 'PAH' or
+                filter_name == 'XD'
+            ):
                 bandpass = filter_name
             else:
                 bandpass = filter_name[0]
@@ -2802,14 +3144,18 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name,
             else:
                 raise mc.CadcException(
                     'GNIRS: Unexpected filter_name {} for {}'.format(
-                        filter_name, obs_id))
+                        filter_name, obs_id
+                    )
+                )
 
             fm.set_central_wl(bounds[1], bounds[0])
             fm.set_bandpass(bounds[1], bounds[0])
         else:
             raise mc.CadcException(
                 'GNIRS: Unexpected DataProductType {} for {}'.format(
-                    data_product_type, obs_id))
+                    data_product_type, obs_id
+                )
+            )
 
     if reset_energy:
         cc.reset_energy(chunk)
@@ -2832,32 +3178,35 @@ def _update_chunk_energy_gnirs(chunk, data_product_type, obs_id, filter_name,
 # A new filter not previously available.  Add info from here,
 # https://www.noao.edu/kpno/phoenix/filters.html
 
-PHOENIX = {'2030': [4.929000, 4.808000, 5.050000],
-           '2150': [4.658500, 4.566000, 4.751000],
-           '2462': [4.078500, 4.008000, 4.149000],
-           '2734': [3.670500, 3.610000, 3.731000],
-           '2870': [3.490500, 3.436000, 3.545000],
-           '3010': [3.334500, 3.279000, 3.390000],
-           '3100': [3.240000, 3.180000, 3.300000],
-           '3290': [3.032500, 2.980000, 3.085000],
-           '4220': [2.370000, 2.348000, 2.392000],
-           '4308': [2.322500, 2.296000, 2.349000],
-           '4396': [2.272500, 2.249000, 2.296000],
-           '4484': [2.230000, 2.210000, 2.250000],
-           '4578': [2.185000, 2.160000, 2.210000],
-           '4667': [2.143000, 2.120000, 2.166000],
-           '4748': [2.104000, 2.082000, 2.126000],
-           '6073': [1.647000, 1.632000, 1.662000],
-           '6420': [1.557500, 1.547000, 1.568000],
-           '7799': [1.280500, 1.271000, 1.290000],
-           '8265': [1.204500, 1.196000, 1.213000],
-           '9232': [1.083000, 1.077000, 1.089000],
-           'L2870': [3.490500, 3.436000, 3.545000],
-           '9440': [1.058500, 1.053000, 1.064000],
-           'open': [3.0, 1.0, 5.0]}
+PHOENIX = {
+    '2030': [4.929000, 4.808000, 5.050000],
+    '2150': [4.658500, 4.566000, 4.751000],
+    '2462': [4.078500, 4.008000, 4.149000],
+    '2734': [3.670500, 3.610000, 3.731000],
+    '2870': [3.490500, 3.436000, 3.545000],
+    '3010': [3.334500, 3.279000, 3.390000],
+    '3100': [3.240000, 3.180000, 3.300000],
+    '3290': [3.032500, 2.980000, 3.085000],
+    '4220': [2.370000, 2.348000, 2.392000],
+    '4308': [2.322500, 2.296000, 2.349000],
+    '4396': [2.272500, 2.249000, 2.296000],
+    '4484': [2.230000, 2.210000, 2.250000],
+    '4578': [2.185000, 2.160000, 2.210000],
+    '4667': [2.143000, 2.120000, 2.166000],
+    '4748': [2.104000, 2.082000, 2.126000],
+    '6073': [1.647000, 1.632000, 1.662000],
+    '6420': [1.557500, 1.547000, 1.568000],
+    '7799': [1.280500, 1.271000, 1.290000],
+    '8265': [1.204500, 1.196000, 1.213000],
+    '9232': [1.083000, 1.077000, 1.089000],
+    'L2870': [3.490500, 3.436000, 3.545000],
+    '9440': [1.058500, 1.053000, 1.064000],
+    'open': [3.0, 1.0, 5.0],
+}
 
 
-def _update_chunk_energy_phoenix(chunk, data_product_type, obs_id, filter_name):
+def _update_chunk_energy_phoenix(chunk, data_product_type, obs_id,
+    filter_name):
     """Phoenix-specific chunk-level Energy WCS construction."""
     logging.debug('Begin _update_chunk_energy_phoenix')
     mc.check_param(chunk, Chunk)
@@ -2909,8 +3258,9 @@ def _update_chunk_energy_phoenix(chunk, data_product_type, obs_id, filter_name):
     logging.debug('End _update_chunk_energy_phoenix')
 
 
-def _update_chunk_energy_flamingos(chunk, data_product_type, obs_id,
-                                   filter_name):
+def _update_chunk_energy_flamingos(
+    chunk, data_product_type, obs_id, filter_name
+):
     """Flamingos-specific chunk-level Energy WCS construction."""
     logging.debug('Begin _update_chunk_energy_flamingos')
     mc.check_param(chunk, Chunk)
@@ -2943,25 +3293,32 @@ def _update_chunk_energy_flamingos(chunk, data_product_type, obs_id,
         fm = em.get_filter_metadata(em.Inst.FLAMINGOS, filter_name)
         if fm is None:
             raise mc.CadcException(
-                'Flamingos: Mystery filter {} for {}'.format(filter_name,
-                                                             obs_id))
+                'Flamingos: Mystery filter {} for {}'.format(
+                    filter_name, obs_id
+                )
+            )
 
     if data_product_type == DataProductType.SPECTRUM:
         logging.debug('Flamingos: SpectralWCS for {}.'.format(obs_id))
         fm.resolving_power = 1300.0
     elif data_product_type == DataProductType.IMAGE:
         logging.debug(
-            'Flamingos: SpectralWCS imaging mode for {}.'.format(obs_id))
+            'Flamingos: SpectralWCS imaging mode for {}.'.format(obs_id)
+        )
     else:
         raise mc.CadcException(
             'Flamingos: mystery data product type {} for {}'.format(
-                data_product_type, obs_id))
+                data_product_type, obs_id
+            )
+        )
 
     _build_chunk_energy(chunk, filter_name, fm)
     logging.debug('End _update_chunk_energy_flamingos')
 
 
-def _update_chunk_energy_hokupaa(chunk, data_product_type, obs_id, filter_name):
+def _update_chunk_energy_hokupaa(
+    chunk, data_product_type, obs_id, filter_name
+):
     """hokupaa-specific chunk-level Energy WCS construction."""
     logging.debug('Begin _update_chunk_energy_hokupaa')
     mc.check_param(chunk, Chunk)
@@ -2977,21 +3334,22 @@ def _update_chunk_energy_hokupaa(chunk, data_product_type, obs_id, filter_name):
     # J+CO is "Dark Position", units are microns
     # 0 - central wavelength
     # 1 - bandpass
-    hokupaa_lookup = {'J': [1.25, 0.171],
-                      'H': [1.65, 0.296],
-                      'K': [2.2, 0.336],
-                      'K\'': [2.12, 0.41],
-                      'Kp': [2.12, 0.41],
-                      'H+K notch': [1.8, 0.7],
-                      'methane low': [1.56, 0.0120],
-                      'methane high': [1.71, 0.0120],
-                      'FeII': [1.65, 0.0170],
-                      'HeI': [2.06, 0.0030],
-                      '1-0 S(1) H2': [2.12, 0.0023],
-                      'H Br(gamma)': [2.166, 0.0150],
-                      'K-continuum': [2.26, 0.0060],
-                      'CO': [2.29, 0.0020]
-                      }
+    hokupaa_lookup = {
+        'J': [1.25, 0.171],
+        'H': [1.65, 0.296],
+        'K': [2.2, 0.336],
+        'K\'': [2.12, 0.41],
+        'Kp': [2.12, 0.41],
+        'H+K notch': [1.8, 0.7],
+        'methane low': [1.56, 0.0120],
+        'methane high': [1.71, 0.0120],
+        'FeII': [1.65, 0.0170],
+        'HeI': [2.06, 0.0030],
+        '1-0 S(1) H2': [2.12, 0.0023],
+        'H Br(gamma)': [2.166, 0.0150],
+        'K-continuum': [2.26, 0.0060],
+        'CO': [2.29, 0.0020],
+    }
 
     # DB 27-05-19
     # The bandpasses for the 7 bottom entries have to be corrected because of
@@ -3025,14 +3383,16 @@ def _update_chunk_energy_hokupaa(chunk, data_product_type, obs_id, filter_name):
     # label returns 3 files with different file names:  23, 24 and 25
     # February.  EQUINOX only seems to be incorrect in 01FEB23_537.fits.
 
-    filter_name_repair = {'H2/23': '1-0 S(1) H2',
-                          'HKnotch': 'H+K notch',
-                          '1.56/120': 'methane low',
-                          '1.71/120': 'methane high',
-                          'FeI/17': 'FeII',
-                          '2.26/60': 'K-continuum',
-                          'BrG/20': 'H Br(gamma)',
-                          'HeI/30': 'HeI'}
+    filter_name_repair = {
+        'H2/23': '1-0 S(1) H2',
+        'HKnotch': 'H+K notch',
+        '1.56/120': 'methane low',
+        '1.71/120': 'methane high',
+        'FeI/17': 'FeII',
+        '2.26/60': 'K-continuum',
+        'BrG/20': 'H Br(gamma)',
+        'HeI/30': 'HeI',
+    }
     reset_energy = False
 
     # DB 14-08-19
@@ -3045,17 +3405,21 @@ def _update_chunk_energy_hokupaa(chunk, data_product_type, obs_id, filter_name):
             filter_name = filter_name_repair[filter_name]
         if filter_name not in hokupaa_lookup:
             raise mc.CadcException(
-                'hokupaa: Mystery filter {} for {}'.format(filter_name, obs_id))
+                'hokupaa: Mystery filter {} for {}'.format(filter_name, obs_id)
+            )
         if data_product_type == DataProductType.IMAGE:
             logging.debug(
-                'hokupaa: SpectralWCS imaging mode for {}.'.format(obs_id))
+                'hokupaa: SpectralWCS imaging mode for {}.'.format(obs_id)
+            )
             fm = FilterMetadata()
             fm.central_wl = hokupaa_lookup[filter_name][0]
             fm.bandpass = hokupaa_lookup[filter_name][1]
         else:
             raise mc.CadcException(
                 'hokupaa: mystery data product type {} for {}'.format(
-                    data_product_type, obs_id))
+                    data_product_type, obs_id
+                )
+            )
 
     if reset_energy:
         cc.reset_energy(chunk)
@@ -3087,22 +3451,26 @@ def _update_chunk_energy_oscir(chunk, data_product_type, obs_id, filter_name):
     # 0 - central wavelenth
     # 1 - bandpass
     # units are microns
-    oscir_lookup = {'S_7.9': [7.91, 0.755],
-                    'S_8.8': [8.81, 0.871],
-                    'S_9.8': [9.80, 0.952],
-                    'S_10.3': [10.27, 1.103],
-                    'S_11.7': [11.70, 1.110],
-                    'S_12.5': [12.49, 1.156],
-                    'N_wide': [10.75, 5.230],
-                    'IHW_(17-19)': [18.17, 1.651],
-                    'Q3': [20.8, 1.650]}
+    oscir_lookup = {
+        'S_7.9': [7.91, 0.755],
+        'S_8.8': [8.81, 0.871],
+        'S_9.8': [9.80, 0.952],
+        'S_10.3': [10.27, 1.103],
+        'S_11.7': [11.70, 1.110],
+        'S_12.5': [12.49, 1.156],
+        'N_wide': [10.75, 5.230],
+        'IHW_(17-19)': [18.17, 1.651],
+        'Q3': [20.8, 1.650],
+    }
 
     temp = filter_name
     filter_name = temp.split()[0]
     if filter_name not in oscir_lookup:
         raise mc.CadcException(
             'oscir: Mystery FILTER keyword {} for {}'.format(
-                filter_name, obs_id))
+                filter_name, obs_id
+            )
+        )
     # DB 23-02-21
     # OSCIR files with the 'r' prefix will cause issues because they are
     # classified as spectra so remove the check
@@ -3154,7 +3522,9 @@ def _update_chunk_energy_bhros(chunk, header, data_product_type, obs_id):
     else:
         raise mc.CadcException(
             'bhros: mystery data product type {} for {}'.format(
-                data_product_type, obs_id))
+                data_product_type, obs_id
+            )
+        )
 
     logging.debug('End _update_chunk_energy_bhros')
 
@@ -3186,23 +3556,27 @@ def _update_chunk_energy_graces(chunk, data_product_type, obs_id):
     else:
         raise mc.CadcException(
             'graces: mystery data product type {} for {}'.format(
-                data_product_type, obs_id))
+                data_product_type, obs_id
+            )
+        )
 
     logging.debug('End _update_chunk_energy_graces')
 
 
-def _update_chunk_energy_gmos(chunk, data_product_type, obs_id, filter_name,
-                              instrument):
-    logging.debug('Begin _update_chunk_energy_gmos')
+GMOS_RESOLVING_POWER = {
+    'B1200': 3744.0,
+    'R831': 4396.0,
+    'B600': 1688.0,
+    'R600': 3744.0,
+    'R400': 1918.0,
+    'R150': 631.0,
+}
 
-    GMOS_RESOLVING_POWER = {
-        'B1200': 3744.0,
-        'R831': 4396.0,
-        'B600': 1688.0,
-        'R600': 3744.0,
-        'R400': 1918.0,
-        'R150': 631.0
-    }
+
+def _update_chunk_energy_gmos(
+    chunk, data_product_type, obs_id, filter_name, instrument
+):
+    logging.debug('Begin _update_chunk_energy_gmos')
 
     # DB 02-12-19
     # Found basic info for the Lya395 filter in a published paper.
@@ -3220,18 +3594,20 @@ def _update_chunk_energy_gmos(chunk, data_product_type, obs_id, filter_name,
     # 0 = min
     # 1 = max
     # units are microns
-    lookup = {'GG455': [0.46000, 1.10000],
-              'OG515': [0.52000, 1.10000],
-              'RG610': [0.61500, 1.10000],
-              'RG780': [0.7800, 1.10000],
-              'Lya395': [0.393865, 0.397135],
-              'open': [0.35000, 1.10000],
-              'open2-8': [0.35000, 1.10000],
-              'empty': [0.35000, 1.10000],
-              'HartmannA': [0.35000, 1.1000],
-              'HartmannB': [0.35000, 1.1000],
-              'HartmannC': [0.35000, 1.1000],
-              'HartmannD': [0.35000, 1.1000]}
+    lookup = {
+        'GG455': [0.46000, 1.10000],
+        'OG515': [0.52000, 1.10000],
+        'RG610': [0.61500, 1.10000],
+        'RG780': [0.7800, 1.10000],
+        'Lya395': [0.393865, 0.397135],
+        'open': [0.35000, 1.10000],
+        'open2-8': [0.35000, 1.10000],
+        'empty': [0.35000, 1.10000],
+        'HartmannA': [0.35000, 1.1000],
+        'HartmannB': [0.35000, 1.1000],
+        'HartmannC': [0.35000, 1.1000],
+        'HartmannD': [0.35000, 1.1000],
+    }
 
     # DB - 04-04-19
 
@@ -3262,8 +3638,11 @@ def _update_chunk_energy_gmos(chunk, data_product_type, obs_id, filter_name,
     reset_energy = False
 
     filter_md = None
-    if ('open' not in filter_name and 'No_Value' not in filter_name and
-            'empty' not in filter_name):
+    if (
+        'open' not in filter_name and
+        'No_Value' not in filter_name and
+        'empty' not in filter_name
+    ):
         filter_md = em.get_filter_metadata(instrument, filter_name)
 
     if 'empty' in filter_name:
@@ -3297,19 +3676,28 @@ def _update_chunk_energy_gmos(chunk, data_product_type, obs_id, filter_name,
     filter_md.set_resolving_power(w_max, w_min)
 
     if data_product_type == DataProductType.SPECTRUM:
-        logging.debug('{}: SpectralWCS spectroscopy for {}.'.format(
-            instrument, obs_id))
+        logging.debug(
+            '{}: SpectralWCS spectroscopy for {}.'.format(
+                instrument, obs_id
+            )
+        )
         if math.isclose(filter_md.central_wl, 0.0):
             logging.info(
                 '{}: no spectral wcs, central wavelength is {} for {}'.format(
-                    instrument, filter_md.central_wl, obs_id))
+                    instrument, filter_md.central_wl, obs_id
+                )
+            )
             return
         disperser = em.om.get('disperser')
         # 'unknown' in disperser test obs is GN-2004B-Q-30-15-002
         # 'OLDMIRROR' in disperser test obs is GN-CAL20020329-2-025
         # 'No Value' in disperser test obs is GN-2013B-SV-152-120-001
-        if (disperser is None or 'unknown' in disperser or
-                'OLDMIRROR' in disperser or 'No Value' in disperser):
+        if (
+            disperser is None or
+            'unknown' in disperser or
+            'OLDMIRROR' in disperser or
+            'No Value' in disperser
+        ):
             # DB 23-04-19
             # GMOS observation with OLDMIRROR looks to be a direct image
             # with the pinhole mask in the beam.  But Gemini json info is
@@ -3322,8 +3710,9 @@ def _update_chunk_energy_gmos(chunk, data_product_type, obs_id, filter_name,
             # DB 13-05-19
             # “No Value” for filter?  Yes, no energy WCS.  Lots of other bogus
             # values in header as well.
-            logging.warning('{}: disperser is {}, no energy.'.format(
-                instrument, disperser))
+            logging.warning(
+                '{}: disperser is {}, no energy.'.format(instrument, disperser)
+            )
             reset_energy = True
         else:
             fm = FilterMetadata()
@@ -3349,15 +3738,21 @@ def _update_chunk_energy_gmos(chunk, data_product_type, obs_id, filter_name,
                 fm.resolving_power = GMOS_RESOLVING_POWER[disperser]
             else:
                 raise mc.CadcException(
-                    'gmos: mystery disperser {} for {}'.format(disperser, obs_id))
+                    'gmos: mystery disperser {} for {}'.format(
+                        disperser, obs_id
+                    )
+                )
     elif data_product_type == DataProductType.IMAGE:
-        logging.debug('{}: SpectralWCS imaging for {}.'.format(
-            instrument, obs_id))
+        logging.debug(
+            '{}: SpectralWCS imaging for {}.'.format(instrument, obs_id)
+        )
         fm = filter_md
     else:
         raise mc.CadcException(
             '{}: mystery data product type {} for {}'.format(
-                instrument, data_product_type, obs_id))
+                instrument, data_product_type, obs_id
+            )
+        )
     if reset_energy:
         cc.reset_energy(chunk)
     else:
@@ -3377,7 +3772,8 @@ def _update_chunk_energy_cirpass(chunk, data_product_type, obs_id):
     logging.debug('Begin _update_chunk_energy_cirpass')
     if data_product_type == DataProductType.SPECTRUM:
         logging.debug(
-            'cirpass: SpectralWCS spectral mode for {}.'.format(obs_id))
+            'cirpass: SpectralWCS spectral mode for {}.'.format(obs_id)
+        )
         fm = FilterMetadata()
         fm.set_central_wl(1.0, 1.67)
         fm.set_bandpass(1.0, 1.67)
@@ -3385,7 +3781,9 @@ def _update_chunk_energy_cirpass(chunk, data_product_type, obs_id):
     else:
         raise mc.CadcException(
             'cirpass: mystery data product type {} for {}'.format(
-                data_product_type, obs_id))
+                data_product_type, obs_id
+            )
+        )
     _build_chunk_energy(chunk, '', fm)
     logging.debug('End _update_chunk_energy_cirpass')
 
@@ -3420,7 +3818,8 @@ def _update_chunk_energy_texes(chunk, header, data_product_type, obs_id):
     logging.debug('Begin _update_chunk_energy_texes')
     if data_product_type == DataProductType.SPECTRUM:
         logging.debug(
-            'texes: SpectralWCS spectral mode for {}.'.format(obs_id))
+            'texes: SpectralWCS spectral mode for {}.'.format(obs_id)
+        )
         fm = FilterMetadata('TEXES')
         fm.central_wl = 10000/header.get('WAVENO0')
         fm.bandpass = 0.25
@@ -3428,7 +3827,9 @@ def _update_chunk_energy_texes(chunk, header, data_product_type, obs_id):
         # data_type/observing mode is always spectroscopy
         raise mc.CadcException(
             'texes: mystery data product type {} for {}'.format(
-                data_product_type, obs_id))
+                data_product_type, obs_id
+            )
+        )
     _build_chunk_energy(chunk, '', fm)
     logging.debug('End _update_chunk_energy_texes')
 
@@ -3465,7 +3866,9 @@ def _reset_energy(observation_type, data_label, instrument, filter_name):
     ):
         logging.info(
             'No chunk energy for {} obs type {} filter name {}'.format(
-                data_label, observation_type, om_filter_name))
+                data_label, observation_type, om_filter_name
+            )
+        )
         # 'unknown' in filter_name test obs is GN-2004B-Q-30-15-002
         # DB 23-04-19 - GN-2004B-Q-30-15-002: no energy
         # GMOS GS-2005A-Q-26-12-001.  Lots of missing metadata, including
@@ -3504,8 +3907,11 @@ def _reset_energy(observation_type, data_label, instrument, filter_name):
         # should likely be skipped.  In this case the json value is
         # INVALID&INVALID.
         result = True
-    elif (instrument is em.Inst.GSAOI and (
-            'Unknown' in filter_name or 'Blocked' in filter_name)):
+    elif (
+        instrument is em.Inst.GSAOI and (
+            'Unknown' in filter_name or 'Blocked' in filter_name
+        )
+    ):
         # DB 24-04-19
         # ‘Unknown+Blocked2’ filter, no spectral WCS.
         result = True
@@ -3559,8 +3965,10 @@ def _reset_position(headers, instrument, observation_type):
         dec = em.om.get('dec')
         if ra is None and dec is None:
             result = True
-        elif (ra is not None and math.isclose(ra, 0.0) and
-              dec is not None and math.isclose(dec, 0.0)):
+        elif (
+            ra is not None and math.isclose(ra, 0.0) and
+            dec is not None and math.isclose(dec, 0.0)
+        ):
             result = True
     elif _is_gmos_mask(headers[0]):
         # DB - 04-03-19
@@ -3608,7 +4016,9 @@ def _reset_position(headers, instrument, observation_type):
     return result
 
 
-def _multiple_filter_lookup(filter_name, lookup, obs_id, instrument, wl_max=None):
+def _multiple_filter_lookup(
+    filter_name, lookup, obs_id, instrument, wl_max=None
+):
     w_max = 10.0 if wl_max is None else wl_max
     w_min = 0.0
     for ii in filter_name.split('+'):
@@ -3618,8 +4028,10 @@ def _multiple_filter_lookup(filter_name, lookup, obs_id, instrument, wl_max=None
         else:
             msg = '{}: Unprepared for filter {} from {}'.format(
                 instrument, ii, obs_id)
-            if (instrument == em.Inst.MICHELLE and
-                    (ii.startswith('I') or (ii == 'Grid_T'))):
+            if (
+                instrument == em.Inst.MICHELLE and
+                (ii.startswith('I') or (ii == 'Grid_T'))
+            ):
                 logging.info(msg)
                 continue
             else:
@@ -3674,8 +4086,10 @@ def get_filter_name(primary_header, header, obs_id, instrument=None):
                 if fn.startswith('ND'):
                     filter_name = filter_name.replace(fn, '')
             filter_name = filter_name.strip('+')
-    if (filter_name is None or
-            (filter_name is not None and len(filter_name.strip()) == 0)):
+    if (
+        filter_name is None or
+        (filter_name is not None and len(filter_name.strip()) == 0)
+    ):
         # DB - 04-02-19 - strip out anything with 'pupil' as it doesn't affect
         # energy transmission
         #
@@ -3710,9 +4124,10 @@ def get_filter_name(primary_header, header, obs_id, instrument=None):
                         header_filters.append(search_header.get(key).strip())
             filter_name = '+'.join(header_filters)
     logging.info(
-        'Filter names are {} for instrument {} in {}'.format(filter_name,
-                                                             instrument,
-                                                             obs_id))
+        'Filter names are {} for instrument {} in {}'.format(
+            filter_name, instrument, obs_id
+        )
+    )
     return filter_name
 
 
@@ -3731,9 +4146,10 @@ def _update_position_from_zeroth_header(artifact, headers, instrument, obs_id):
     ra = get_ra(headers[0])
     ra_json = em.om.get('ra')
     dec_json = em.om.get('dec')
-    if (('AZEL_TARGET' in types and ra is None) or
-            (instrument is em.Inst.GNIRS and ra_json is None and
-             dec_json is None)):
+    if (
+        ('AZEL_TARGET' in types and ra is None) or
+        (instrument is em.Inst.GNIRS and ra_json is None and dec_json is None)
+    ):
         # DB - 02-04-19 - Az-El coordinate frame likely means the telescope
         # was parked or at least not tracking so spatial information is
         # irrelevant.
@@ -3747,7 +4163,8 @@ def _update_position_from_zeroth_header(artifact, headers, instrument, obs_id):
         # Ignore spatial WCS if RA/Dec are not available for GNIRS.
 
         logging.info(
-            '{}: Spatial WCS is None for {}'.format(instrument, obs_id))
+            '{}: Spatial WCS is None for {}'.format(instrument, obs_id)
+        )
     else:
         wcs_parser = WcsParser(primary_header, obs_id, 0)
         wcs_parser.augment_position(primary_chunk)
@@ -3764,9 +4181,11 @@ def _update_position_from_zeroth_header(artifact, headers, instrument, obs_id):
 
 def _update_chunk_position_fox(chunk, obs_id):
     logging.debug(f'Begin _update_chunk_position_fox for {obs_id}')
-    if (chunk is not None and chunk.position is not None and
-            chunk.position.axis is not None and
-            chunk.position.axis.axis1.ctype == 'RA--TAN'):
+    if (
+        chunk is not None and chunk.position is not None and
+        chunk.position.axis is not None and
+        chunk.position.axis.axis1.ctype == 'RA--TAN'
+    ):
         chunk.position.axis.axis1.ctype = 'RA---TAN'
     logging.debug(f'End _update_chunk_position_fox.')
 
@@ -3782,24 +4201,30 @@ def _update_chunk_position_flamingos(chunk, header, obs_id):
 
     # Note that there is not a crota2 keyword (it would have the same value
     # as crota1 if it existed)
-    if (chunk is not None and chunk.position is not None and
-            chunk.position.axis is not None and
-            chunk.position.axis.function is not None):
+    if (
+        chunk is not None and chunk.position is not None and
+        chunk.position.axis is not None and
+        chunk.position.axis.function is not None
+    ):
         crval1 = header.get('CRVAL1')
         crval2 = header.get('CRVAL2')
         if 0.0 <= crval1 <= 360.0 and -90.0 <= crval2 <= 90.0:
             c_delt1 = header.get('CDELT1')
             c_delt2 = header.get('CDELT2')
             c_rota1 = header.get('CROTA1')
-            if (c_delt1 is not None and c_delt2 is not None and
-                    c_rota1 is not None):
+            if (
+                c_delt1 is not None and
+                c_delt2 is not None and
+                c_rota1 is not None
+            ):
                 chunk.position.axis.function.cd11 = c_delt1 * math.cos(c_rota1)
                 chunk.position.axis.function.cd12 = -c_delt2 * math.sin(c_rota1)
                 chunk.position.axis.function.cd21 = c_delt1 * math.sin(c_rota1)
                 chunk.position.axis.function.cd22 = c_delt2 * math.cos(c_rota1)
             else:
                 logging.info(
-                    f'FLAMINGOS: Missing spatial wcs inputs for {obs_id}')
+                    f'FLAMINGOS: Missing spatial wcs inputs for {obs_id}'
+                )
                 chunk.position.axis.function.cd11 = None
                 chunk.position.axis.function.cd12 = None
                 chunk.position.axis.function.cd21 = None
@@ -3810,9 +4235,10 @@ def _update_chunk_position_flamingos(chunk, header, obs_id):
             # The header has “CRVAL1  =           3581.13808 ” which is
             # supposed to be in degrees and shouldn’t be > 360. Skip spatial
             # WCS if errors like this occur.
-            logging.warning(f'FLAMINGOS: Spatial WCS set to None for {obs_id} '
-                            f'because CRVAL1 == {crval1} '
-                            f'and CRVAL2 == {crval2}.')
+            logging.warning(
+                f'FLAMINGOS: Spatial WCS set to None for {obs_id} '
+                f'because CRVAL1 == {crval1} and CRVAL2 == {crval2}.'
+            )
             cc.reset_position(chunk)
     else:
         logging.info(f'FLAMINGOS: Missing spatial wcs for {obs_id}')
@@ -3875,8 +4301,9 @@ def _update_chunk_position_trecs(chunk, headers, extension, obs_id):
         chunk.position.equinox = mc.to_float(headers[0].get('EQUINOX'))
 
 
-def _update_chunk_position(chunk, header, instrument, extension, obs_id,
-                           n_axis1=None, n_axis2=None):
+def _update_chunk_position(
+    chunk, header, instrument, extension, obs_id, n_axis1=None, n_axis2=None
+):
     logging.debug('Begin _update_chunk_position')
     mc.check_param(chunk, Chunk)
 
@@ -3952,7 +4379,9 @@ def _update_chunk_position(chunk, header, instrument, extension, obs_id,
         if not 1800.0 <= equinox <= 2500.0:
             logging.warning(
                 'EQUINOX value is wrong ({}), no spatial WCS for {}'.format(
-                    equinox, obs_id))
+                    equinox, obs_id
+                )
+            )
             return
 
     header['CTYPE1'] = 'RA---TAN'
@@ -4033,8 +4462,11 @@ def _update_chunk_time_f2(chunk, obs_id):
     specifically here."""
     logging.debug('Begin _update_chunk_time_f2 {}'.format(obs_id))
     mc.check_param(chunk, Chunk)
-    if (chunk.time is not None and chunk.time.axis is not None and
-            chunk.time.axis.function is not None):
+    if (
+        chunk.time is not None and
+        chunk.time.axis is not None and
+        chunk.time.axis.function is not None
+    ):
         chunk.time.axis.function.delta = get_time_delta(None)
         logging.info('F2: Updated time delta for {}'.format(obs_id))
     logging.debug('End _update_chunk_time_f2 {}'.format(obs_id))
@@ -4073,9 +4505,13 @@ def _update_chunk_time_gmos(chunk, obs_id):
 
 def _update_composite(obs, instrument, current_product_id):
     if instrument is em.Inst.TRECS:
-        if (current_product_id is not None and
-                (current_product_id.startswith('rS') or
-                 (current_product_id.startswith('rN')))):
+        if (
+            current_product_id is not None and
+            (
+                current_product_id.startswith('rS') or
+                current_product_id.startswith('rN')
+            )
+        ):
             # DB 02-06-20
             # processed TReCS files in Gemini's archive are derived by
             # combining the NNODSETS x NSAVSETS contained within a single
@@ -4156,8 +4592,9 @@ def _repair_provenance_value(value, obs_id):
         # DB 01-06-21 - use not found for the DATALAB/observationID value
         # so it's easy to find in the database and let Gemini know.
         prov_obs_id = 'not_found'
-    logging.debug(f'End _repair_provenance_value. {prov_obs_id} '
-                  f'{prov_file_id}')
+    logging.debug(
+        f'End _repair_provenance_value. {prov_obs_id} {prov_file_id}'
+    )
     return prov_obs_id, prov_file_id
 
 
@@ -4197,7 +4634,8 @@ def _get_uris(args):
             result.append(name_builder.build(os.path.basename(ii)).file_uri)
     else:
         raise mc.CadcException(
-            'Could not define uri from these args {}'.format(args))
+            'Could not define uri from these args {}'.format(args)
+        )
     return result
 
 

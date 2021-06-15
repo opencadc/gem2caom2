@@ -146,7 +146,8 @@ class GeminiValidator(mc.Validator):
             else:
                 logging.warning(
                     f'Pretty sure this is an unexpected file name format '
-                    f'{file_name}')
+                    f'{file_name}'
+                )
 
             candidate = candidate[index:]
             if candidate.count('G') == 1:
@@ -155,7 +156,8 @@ class GeminiValidator(mc.Validator):
                 candidate.split(splitter)[0], pattern).date()
         except ValueError as ex:
             self._logger.error(
-                f'Do not understand date format in file name {file_name}')
+                f'Do not understand date format in file name {file_name}'
+            )
             result = None
 
         return result
@@ -183,19 +185,22 @@ class GeminiValidator(mc.Validator):
         self._source = list(set(self._source).difference(remove))
         remove = self._get_date_remove_set(
             self._destination_meta, 'destination meta')
-        self._destination_meta = \
-            list(set(self._destination_meta).difference(remove))
+        self._destination_meta = list(
+            set(self._destination_meta).difference(remove)
+        )
         remove = self._get_date_remove_set(
-            self._destination_data, 'destination data')
-        self._destination_data = \
-            list(set(self._destination_data).difference(remove))
+            self._destination_data, 'destination data'
+        )
+        self._destination_data = list(
+            set(self._destination_data).difference(remove)
+        )
 
     def read_from_source(self):
         result = {}
         file_ids = self._gofr.name_list.keys()
-        # begin with the assumption there's a preview file for every fits file,
-        # but do not add entries for preview files that have been identified
-        # as unavailable for some reason from archive.gemini.edu
+        # begin with the assumption there's a preview file for every fits
+        # file, but do not add entries for preview files that have been
+        # identified as unavailable for some reason from archive.gemini.edu
         #
         # ignore fits files that have been rejected because of bad
         # metadata

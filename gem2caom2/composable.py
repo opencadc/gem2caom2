@@ -106,9 +106,13 @@ def _run():
     external_metadata.init_global(config=config)
     name_builder = builder.GemObsIDBuilder(config)
     meta_visitors = _define_meta_visitors(config)
-    return rc.run_by_todo(config, name_builder, chooser=None,
-                          command_name=main_app.APPLICATION,
-                          meta_visitors=meta_visitors)
+    return rc.run_by_todo(
+        config,
+        name_builder,
+        chooser=None,
+        command_name=main_app.APPLICATION,
+        meta_visitors=meta_visitors,
+    )
 
 
 def run():
@@ -145,8 +149,13 @@ def _run_single():
         raise mc.CadcException('No code to handle running GEM by obs id.')
     external_metadata.init_global(config=config)
     meta_visitors = _define_meta_visitors(config)
-    return rc.run_single(config, storage_name, main_app.APPLICATION,
-                         meta_visitors, DATA_VISITORS)
+    return rc.run_single(
+        config,
+        storage_name,
+        main_app.APPLICATION,
+        meta_visitors,
+        DATA_VISITORS,
+    )
 
 
 def run_single():
@@ -182,13 +191,17 @@ def _run_by_public():
     name_builder = nbc.FileNameBuilder(gem_name.GemName)
     incremental_source = data_source.PublicIncremental(config)
     meta_visitors = _define_meta_visitors(config)
-    return rc.run_by_state(config=config, name_builder=name_builder,
-                           command_name=main_app.APPLICATION,
-                           bookmark_name=data_source.GEM_BOOKMARK,
-                           meta_visitors=meta_visitors,
-                           data_visitors=DATA_VISITORS,
-                           end_time=None, source=incremental_source,
-                           chooser=None)
+    return rc.run_by_state(
+        config=config,
+        name_builder=name_builder,
+        command_name=main_app.APPLICATION,
+        bookmark_name=data_source.GEM_BOOKMARK,
+        meta_visitors=meta_visitors,
+        data_visitors=DATA_VISITORS,
+        end_time=None,
+        source=incremental_source,
+        chooser=None,
+    )
 
 
 def run_by_public():

@@ -303,8 +303,9 @@ class GemObsFileRelationship(object):
 
         # this structure means an observation ID occurs more than once with
         # different last modified times
-        self.time_list = collections.OrderedDict(sorted(temp_content.items(),
-                                                        key=lambda t: t[0]))
+        self.time_list = collections.OrderedDict(
+            sorted(temp_content.items(), key=lambda t: t[0])
+        )
         self.logger.info('Observation list initialized in memory.')
 
     def _read_file(self, fqn):
@@ -348,16 +349,19 @@ class GemObsFileRelationship(object):
                                 temp[0] = temp[0].replace('?', '11')
                             else:
                                 logging.warning(
-                                    'Mystery data label {}'.format(temp[0]))
+                                    'Mystery data label {}'.format(temp[0])
+                                )
                         elif '"' in temp[0]:
                             temp[0] = temp[0].replace('"', '')
                         if len(temp[0].strip()) > 1:
                             results.append(
-                                [temp[0].strip(), time_string, temp[1].strip()])
+                                [temp[0].strip(), time_string, temp[1].strip()]
+                            )
                         else:
                             # no data label in the file, so use the file name
                             results.append(
-                                [temp[1].strip(), time_string, temp[1].strip()])
+                                [temp[1].strip(), time_string, temp[1].strip()]
+                            )
 
         except Exception as e:
             self.logger.error('Could not read from csv file {}'.format(fqn))
@@ -379,8 +383,11 @@ class GemObsFileRelationship(object):
 
     def _subset(self, start_s, end_s):
         """Get only part of the observation list, limited by timestamps."""
-        self.logger.debug('Timestamp endpoints are between {} and {}.'.format(
-            start_s, end_s))
+        self.logger.debug(
+            'Timestamp endpoints are between {} and {}.'.format(
+                start_s, end_s
+            )
+        )
         temp = []
         for ii in self.time_list:
             if start_s <= ii <= end_s:
@@ -389,7 +396,10 @@ class GemObsFileRelationship(object):
                         '{} {} {}'.format(
                             gem_name.COLLECTION, jj,
                             datetime.fromtimestamp(ii).isoformat(
-                                timespec='milliseconds')))
+                                timespec='milliseconds'
+                            )
+                        )
+                    )
             if ii > end_s:
                 break
         return temp
@@ -467,7 +477,8 @@ class GemObsFileRelationship(object):
             repaired = repair_data_label(file_id, repaired)
         else:
             logging.warning(
-                'File name {} not found in the Gemini list.'.format(file_id))
+                'File name {} not found in the Gemini list.'.format(file_id)
+            )
             repaired = file_id
         return repaired
 
@@ -482,10 +493,14 @@ class GemObsFileRelationship(object):
         """
         if re.search(r'_BIAS|_FLAT', file_id) is not None:
             duplicate_check = re.sub(
-                '_FLAT', '_flat', re.sub('_BIAS', '_bias', file_id))
+                '_FLAT',
+                '_flat',
+                re.sub('_BIAS', '_bias', file_id),
+            )
             if duplicate_check in self.name_list:
-                logging.warning('Replacing {} with {}'.format(
-                    file_id, duplicate_check))
+                logging.warning(
+                    'Replacing {} with {}'.format(file_id, duplicate_check)
+                )
                 file_id = duplicate_check
         return file_id
 
@@ -508,7 +523,8 @@ def get_prefix(file_id):
         prefix = file_id.split('S', 1)[0]
     else:
         logging.warning(
-            'Unrecognized file_id pattern {}'.format(file_id))
+            'Unrecognized file_id pattern {}'.format(file_id)
+        )
         prefix = ''
     return prefix
 
@@ -533,8 +549,10 @@ def get_suffix(file_id, data_label):
                     temp = ['flt']
         else:
             temp = file_id.split('_')[1:]
-    if (data_label.endswith('-G') and
-            (file_id.startswith('rS') or file_id.startswith('rN'))):
+    if (
+        data_label.endswith('-G') and
+        (file_id.startswith('rS') or file_id.startswith('rN'))
+    ):
         # DB 16-06-20
         # I think the ‘g’ prefix is used a little inconsistently.  It is
         # supposed to be set whenever the IRAF GPREPARE is executed and I
@@ -578,8 +596,10 @@ def is_processed(file_name):
     elif file_id.startswith('TX2') and '_raw' in file_id:
         result = False
     # OSCIR file naming pattern
-    elif (file_id.startswith('r') and
-          re.match('r\\w{7}_\\d{3}', file_id, flags=re.ASCII) is not None):
+    elif (
+        file_id.startswith('r') and
+        re.match('r\\w{7}_\\d{3}', file_id, flags=re.ASCII) is not None
+    ):
         result = False
     return result
 
@@ -661,16 +681,25 @@ def repair_data_label(file_name, data_label):
         # plane in a single observation.
         #
         # SGo - this means make the data labels the same
-        if ((('mfrg' == prefix or 'mrg' == prefix or 'rg' == prefix) and
-             (not ('add' in suffix or 'ADD' in suffix or
-                   'fringe' in suffix or 'FRINGE' in suffix))) or
-                ('arc' in suffix or 'ARC' in suffix) or
-                ('r' == prefix or 'R' == prefix)):
+        if (
+            (
+                ('mfrg' == prefix or 'mrg' == prefix or 'rg' == prefix) and
+                (
+                    not (
+                        'add' in suffix or 'ADD' in suffix or
+                        'fringe' in suffix or 'FRINGE' in suffix
+                    )
+                )
+                ) or ('arc' in suffix or 'ARC' in suffix) or
+                ('r' == prefix or 'R' == prefix)
+        ):
             prefix = ''
             suffix = []
 
-        if (prefix == '' and len(suffix) == 1 and
-                ('FRINGE' in suffix or 'fringe' in suffix)):
+        if (
+            prefix == '' and len(suffix) == 1 and
+            ('FRINGE' in suffix or 'fringe' in suffix)
+        ):
             suffix = []
 
         if len(prefix) > 0:

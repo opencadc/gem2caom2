@@ -87,8 +87,9 @@ def test_builder(obs_metadata_mock, tap_client_mock):
 
     test_config = mc.Config()
     test_config.working_directory = '/test_files'
-    test_config.proxy_fqn = os.path.join(gem_mocks.TEST_DATA_DIR,
-                                         'test_proxy.pem')
+    test_config.proxy_fqn = os.path.join(
+        gem_mocks.TEST_DATA_DIR, 'test_proxy.pem'
+    )
     em.init_global(config=test_config)
     test_subject = builder.GemObsIDBuilder(test_config)
 
@@ -99,18 +100,23 @@ def test_builder(obs_metadata_mock, tap_client_mock):
         for task_type in [mc.TaskType.INGEST, mc.TaskType.SCRAPE]:
             test_config.task_types = [task_type]
             test_result = test_subject.build(test_entry)
-            assert test_result is not None, \
-                f'expect a result support {support}'
+            assert (
+                test_result is not None
+            ), f'expect a result support {support}'
             expected_path = COLLECTION if support else ARCHIVE
-            assert test_result.file_uri == \
-                   f'{SCHEME}:{expected_path}/{test_entry}', 'wrong file uri'
-            assert test_result.prev_uri == \
-                   f'{SCHEME}:{expected_path}/{test_result.prev}', \
-                   'wrong preview uri'
+            assert (
+                test_result.file_uri ==
+                f'{SCHEME}:{expected_path}/{test_entry}'
+            ), 'wrong file uri'
+            assert (
+                test_result.prev_uri ==
+                f'{SCHEME}:{expected_path}/{test_result.prev}'
+            ), 'wrong preview uri'
             expected_scheme = V_SCHEME if support else A_SCHEME
-            assert test_result.thumb_uri == \
-                   f'{expected_scheme}:{expected_path}/{test_result.thumb}', \
-                   'wrong thumb uri'
+            assert (
+                test_result.thumb_uri ==
+                f'{expected_scheme}:{expected_path}/{test_result.thumb}'
+            ), 'wrong thumb uri'
 
         test_config.task_types = [mc.TaskType.INGEST]
         test_config.features.use_file_names = False

@@ -83,10 +83,12 @@ def test_incremental_source(query_mock):
 
     test_subject = data_source.IncrementalSource()
     assert test_subject is not None, 'expect construction success'
-    prev_exec_time = datetime(year=2021, month=1, day=1,
-                              hour=20, minute=3, second=0).timestamp()
-    exec_time = datetime(year=2021, month=1, day=1,
-                         hour=22, minute=13, second=0).timestamp()
+    prev_exec_time = datetime(
+        year=2021, month=1, day=1, hour=20, minute=3, second=0
+    ).timestamp()
+    exec_time = datetime(
+        year=2021, month=1, day=1, hour=22, minute=13, second=0
+    ).timestamp()
     test_result = test_subject.get_time_box_work(prev_exec_time, exec_time)
     assert test_result is not None, 'expect a result'
     assert len(test_result) == 2, 'wrong number of results'
@@ -98,10 +100,12 @@ def test_incremental_source(query_mock):
     assert test_entry.entry_ts == 1609535567.250666, 'wrong 2nd timestamp'
 
     # get nothing
-    prev_exec_time = datetime(year=2019, month=1, day=1,
-                              hour=20, minute=3, second=0).timestamp()
-    exec_time = datetime(year=2019, month=2, day=1,
-                         hour=22, minute=13, second=0).timestamp()
+    prev_exec_time = datetime(
+        year=2019, month=1, day=1, hour=20, minute=3, second=0
+    ).timestamp()
+    exec_time = datetime(
+        year=2019, month=2, day=1, hour=22, minute=13, second=0
+    ).timestamp()
     test_result = test_subject.get_time_box_work(prev_exec_time, exec_time)
     assert test_result is not None, 'expect a result'
     assert len(test_result) == 0, 'wrong number of empty result list'

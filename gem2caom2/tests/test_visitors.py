@@ -189,23 +189,28 @@ def test_preview_augment_known_no_preview():
     try:
         obs = mc.read_obs_from_file(TEST_OBS_FILE)
         obs.planes[TEST_PRODUCT_ID].data_release = datetime.utcnow()
-        assert len(obs.planes[TEST_PRODUCT_ID].artifacts) == 1, \
-            'initial condition'
+        assert (
+            len(obs.planes[TEST_PRODUCT_ID].artifacts) == 1
+        ), 'initial condition'
 
         if os.path.exists(REJECTED_FILE):
             os.unlink(REJECTED_FILE)
         test_rejected = mc.Rejected(REJECTED_FILE)
         test_rejected.record(
-            mc.Rejected.NO_PREVIEW, f'{TEST_PRODUCT_ID}.jpg')
+            mc.Rejected.NO_PREVIEW, f'{TEST_PRODUCT_ID}.jpg'
+        )
         test_config = mc.Config()
         test_observable = mc.Observable(
-            test_rejected, mc.Metrics(test_config))
+            test_rejected, mc.Metrics(test_config)
+        )
 
         cadc_client_mock = Mock()
-        kwargs = {'working_directory': TEST_DATA_DIR,
-                  'cadc_client': cadc_client_mock,
-                  'stream': 'stream',
-                  'observable': test_observable}
+        kwargs = {
+            'working_directory': TEST_DATA_DIR,
+            'cadc_client': cadc_client_mock,
+            'stream': 'stream',
+            'observable': test_observable,
+        }
 
         with patch('caom2pipe.manage_composable.http_get') as http_mock, \
                 patch('caom2pipe.manage_composable.data_put') as ad_put_mock, \
@@ -221,8 +226,9 @@ def test_preview_augment_known_no_preview():
             assert not exec_mock.called, 'exec mock should not be called'
             assert result is not None, 'expect a result'
             assert result['artifacts'] == 0, 'no artifacts should be updated'
-            assert len(obs.planes[TEST_PRODUCT_ID].artifacts) == 1, \
-                'no new artifacts'
+            assert (
+                len(obs.planes[TEST_PRODUCT_ID].artifacts) == 1
+            ), 'no new artifacts'
 
         test_rejected.persist_state()
         assert os.path.exists(REJECTED_FILE)
@@ -245,18 +251,23 @@ def test_preview_augment_unknown_no_preview():
     test_observable = mc.Observable(test_rejected, mc.Metrics(test_config))
 
     cadc_client_mock = Mock()
-    kwargs = {'working_directory': TEST_DATA_DIR,
-              'cadc_client': cadc_client_mock,
-              'stream': 'stream',
-              'observable': test_observable}
+    kwargs = {
+        'working_directory': TEST_DATA_DIR,
+        'cadc_client': cadc_client_mock,
+        'stream': 'stream',
+        'observable': test_observable,
+    }
 
-    with patch('caom2pipe.manage_composable.http_get',
-               side_effect=mc.CadcException(
+    with patch(
+            'caom2pipe.manage_composable.http_get',
+            side_effect=mc.CadcException(
                    'Internal Server Error for url: '
-                   'https://archive.gemini.edu/preview')) as http_mock, \
-            patch('caom2pipe.manage_composable.data_put') as ad_put_mock, \
-            patch('caom2pipe.manage_composable.get_artifact_metadata') as \
-                art_mock, \
+                   'https://archive.gemini.edu/preview'
+            )
+    ) as http_mock, \
+        patch('caom2pipe.manage_composable.data_put') as ad_put_mock, \
+        patch('caom2pipe.manage_composable.get_artifact_metadata') as \
+            art_mock, \
             patch('caom2pipe.manage_composable.exec_cmd') as exec_mock:
         cadc_client_mock.return_value.data_get.return_value = mc.CadcException(
             'test')
