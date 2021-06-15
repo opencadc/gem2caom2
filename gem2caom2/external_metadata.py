@@ -173,12 +173,12 @@ def get_obs_metadata(file_id):
     :param file_id: The file ID
     :return: Dictionary of observation metadata.
     """
-    logging.debug('Begin get_obs_metadata for {}'.format(file_id))
+    logging.debug(f'Begin get_obs_metadata for {file_id}')
     global om
     if om.contains(file_id):
         om.reset_index(file_id)
     else:
-        gemini_url = '{}{}'.format(GEMINI_METADATA_URL, file_id)
+        gemini_url = f'{GEMINI_METADATA_URL}{file_id}'
 
         # Open the URL and fetch the JSON document for the observation
         response = None
@@ -196,7 +196,7 @@ def get_obs_metadata(file_id):
                 f'archive.gemini.edu.'
             )
         om.add(metadata, file_id)
-    logging.debug('End get_obs_metadata for {}'.format(file_id))
+    logging.debug(f'End get_obs_metadata for {file_id}')
 
 
 def get_pi_metadata(program_id):
@@ -275,9 +275,7 @@ def _repair_instrument_name_for_svo(instrument):
         if telescope is None:
             obs_id = om.get('data_label')
             raise mc.CadcException(
-                '{}: No observatory information for {}'.format(
-                    instrument, obs_id
-                )
+                f'{instrument}: No observatory information for {obs_id}'
             )
         else:
             if 'Gemini-South' == telescope:
@@ -414,9 +412,7 @@ def _repair_filter_name_for_svo(instrument, filter_names):
             if temp in FILTER_REPAIR_NICI:
                 temp = FILTER_REPAIR_NICI[temp]
             else:
-                logging.info(
-                    '{} filter {} not at SVO.'.format(instrument, temp)
-                )
+                logging.info(f'{instrument} filter {temp} not at SVO.')
                 temp = None
         elif instrument is Inst.TRECS:
             temp = filter_name.split('-')

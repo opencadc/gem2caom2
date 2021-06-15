@@ -101,12 +101,12 @@ def filter_metadata(instrument, filters, session):
 
         for index in filter_names:
             filter_name = index.strip()
-            filter_id = "{}.{}".format(instrument, filter_name)
+            filter_id = f"{instrument}.{filter_name}"
             # VERB=0 parameter means the smallest amount returned
             if instrument == 'Flamingos':
-                url = "{}KPNO/{}&VERB=0".format(ac.SVO_URL, filter_id)
+                url = f"{ac.SVO_URL}KPNO/{filter_id}&VERB=0"
             else:
-                url = "{}Gemini/{}&VERB=0".format(ac.SVO_URL, filter_id)
+                url = f"{ac.SVO_URL}Gemini/{filter_id}&VERB=0"
 
             # Open the URL and fetch the VOTable document.
             # Some Gemini filters in SVO filter database have bandpass info
@@ -116,14 +116,14 @@ def filter_metadata(instrument, filters, session):
             votable, error_message = ac.get_vo_table_session(url, session)
             if not votable:
                 if instrument == 'Flamingos':
-                    url = "{}KPNO/{}w&VERB=0".format(ac.SVO_URL, filter_id)
+                    url = f"{ac.SVO_URL}KPNO/{filter_id}w&VERB=0"
                 else:
-                    url = "{}Gemini/{}w&VERB=0".format(ac.SVO_URL, filter_id)
+                    url = f"{ac.SVO_URL}Gemini/{filter_id}w&VERB=0"
                 votable, error_message = ac.get_vo_table_session(url, session)
             if not votable:
                 logging.error(
-                    'Unable to download SVO filter data from {} because {}'
-                    .format(url, error_message)
+                    f'Unable to download SVO filter data from {url} because '
+                    f'{error_message}'
                 )
                 continue
 
@@ -153,9 +153,8 @@ def filter_metadata(instrument, filters, session):
             fm.central_wl = wl_eff / 1.0e4
             fm.bandpass = wl_width / 1.0e4
             logging.info(
-                'Filter(s): {}  MD: {}, {}'.format(
-                    filter_names, fm.central_wl, fm.bandpass
-                )
+                f'Filter(s): {filter_names}  MD: {fm.central_wl}, '
+                f'{fm.bandpass}'
             )
             return fm
         else:

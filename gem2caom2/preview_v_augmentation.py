@@ -107,8 +107,9 @@ def visit(observation, **kwargs):
             continue
         count += _do_prev(observation.observation_id, working_dir,
                           plane, cadc_client, observable)
-    logging.info('Completed preview augmentation for {}.'.format(
-        observation.observation_id))
+    logging.info(
+        f'Completed preview augmentation for {observation.observation_id}.'
+    )
     return {'artifacts': count}
 
 

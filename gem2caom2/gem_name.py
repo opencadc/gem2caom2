@@ -173,10 +173,8 @@ class GemName(mc.StorageName):
         v_scheme=None,
     ):
         logging.debug(
-            'parameters fname_on_disk {} file_name {} obs id {} file id '
-            '{}'.format(
-                fname_on_disk, file_name, obs_id, file_id
-            )
+            f'parameters fname_on_disk {fname_on_disk} file_name {file_name} '
+            f'obs id {obs_id} file id {file_id}'
         )
         if instrument in [em.Inst.ALOPEKE, em.Inst.ZORRO]:
             if file_name is None and fname_on_disk is None:
@@ -280,11 +278,11 @@ class GemName(mc.StorageName):
 
     @property
     def prev(self):
-        return '{}.jpg'.format(self._file_id)
+        return f'{self._file_id}.jpg'
 
     @property
     def thumb(self):
-        return '{}_th.jpg'.format(self._file_id)
+        return f'{self._file_id}_th.jpg'
 
     @property
     def file_id(self):

@@ -343,13 +343,14 @@ class GemObsFileRelationship(object):
                                 temp[0] = temp[0].split('/', 1)[0]
                             else:
                                 logging.warning(
-                                    'Mystery data label {}'.format(temp[0]))
+                                    f'Mystery data label {temp[0]}'
+                                )
                         elif '?' in temp[0]:
                             if 'GS-2002A-DD-1-?' in temp[0]:
                                 temp[0] = temp[0].replace('?', '11')
                             else:
                                 logging.warning(
-                                    'Mystery data label {}'.format(temp[0])
+                                    f'Mystery data label {temp[0]}'
                                 )
                         elif '"' in temp[0]:
                             temp[0] = temp[0].replace('"', '')
@@ -364,7 +365,7 @@ class GemObsFileRelationship(object):
                             )
 
         except Exception as e:
-            self.logger.error('Could not read from csv file {}'.format(fqn))
+            self.logger.error(f'Could not read from csv file {fqn}')
             raise mc.CadcException(e)
         return results
 
@@ -384,22 +385,16 @@ class GemObsFileRelationship(object):
     def _subset(self, start_s, end_s):
         """Get only part of the observation list, limited by timestamps."""
         self.logger.debug(
-            'Timestamp endpoints are between {} and {}.'.format(
-                start_s, end_s
-            )
+            f'Timestamp endpoints are between {start_s} and {end_s}.'
         )
         temp = []
         for ii in self.time_list:
             if start_s <= ii <= end_s:
                 for jj in self.time_list[ii]:
-                    temp.append(
-                        '{} {} {}'.format(
-                            gem_name.COLLECTION, jj,
-                            datetime.fromtimestamp(ii).isoformat(
-                                timespec='milliseconds'
-                            )
-                        )
+                    dt = datetime.fromtimestamp(ii).isoformat(
+                        timespec="milliseconds"
                     )
+                    temp.append(f'{gem_name.COLLECTION} {jj} {dt}')
             if ii > end_s:
                 break
         return temp
@@ -418,7 +413,7 @@ class GemObsFileRelationship(object):
                     temp_list = []
                     for f_name in self.id_list[obs_id]:
                         x = self._check_duplicate(f_name.replace('.fits', ''))
-                        temp_list.append('{}.fits'.format(x))
+                        temp_list.append(f'{x}.fits')
                     return list(set(temp_list))
             else:
                 return self.id_list[obs_id]
@@ -477,7 +472,7 @@ class GemObsFileRelationship(object):
             repaired = repair_data_label(file_id, repaired)
         else:
             logging.warning(
-                'File name {} not found in the Gemini list.'.format(file_id)
+                f'File name {file_id} not found in the Gemini list.'
             )
             repaired = file_id
         return repaired
@@ -498,9 +493,7 @@ class GemObsFileRelationship(object):
                 re.sub('_BIAS', '_bias', file_id),
             )
             if duplicate_check in self.name_list:
-                logging.warning(
-                    'Replacing {} with {}'.format(file_id, duplicate_check)
-                )
+                logging.warning(f'Replacing {file_id} with {duplicate_check}')
                 file_id = duplicate_check
         return file_id
 
@@ -522,9 +515,7 @@ def get_prefix(file_id):
     elif 'S' in file_id:
         prefix = file_id.split('S', 1)[0]
     else:
-        logging.warning(
-            'Unrecognized file_id pattern {}'.format(file_id)
-        )
+        logging.warning(f'Unrecognized file_id pattern {file_id}')
         prefix = ''
     return prefix
 
