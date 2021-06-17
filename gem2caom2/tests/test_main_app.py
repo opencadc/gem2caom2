@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # ***********************************************************************
 # ******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
 # *************  CENTRE CANADIEN DE DONNÉES ASTRONOMIQUES  **************
@@ -81,7 +80,7 @@ import gem2caom2.external_metadata as em
 from gem2caom2 import main_app, gem_name, builder
 from caom2pipe import manage_composable as mc
 
-from mock import patch, Mock
+from unittest.mock import patch, Mock
 import gem_mocks
 
 
@@ -118,7 +117,7 @@ def pytest_generate_tests(metafunc):
         ]:
             walk_dir = _get_inst_name(ii)
             for root, dirs, files in os.walk(
-                '{}/{}'.format(gem_mocks.TEST_DATA_DIR, walk_dir)
+                f'{gem_mocks.TEST_DATA_DIR}/{walk_dir}'
             ):
                 for file in files:
                     if file.endswith(".header"):
@@ -159,7 +158,7 @@ def test_main_app(client_mock, tap_mock, gemini_client_mock, test_name):
         obs_id = _get_obs_id(file_id)
         product_id = file_id
         lineage = _get_lineage(dirname, basename, test_config)
-        input_file = '{}.in.xml'.format(product_id)
+        input_file = f'{product_id}.in.xml'
         actual_fqn = _get_actual_file_name(dirname, product_id)
 
         local = _get_local(test_name)
@@ -264,7 +263,7 @@ def test_main_app_v(
         obs_id = _get_obs_id(file_id)
         product_id = file_id
         lineage = _get_lineage(dirname, basename, test_config)
-        input_file = '{}.in.xml'.format(product_id)
+        input_file = f'{product_id}.in.xml'
         actual_fqn = _get_actual_file_name(dirname, product_id)
         local = _get_local(test_name)
         plugin = gem_mocks.PLUGIN
@@ -317,7 +316,7 @@ def _get_local(test_name):
     jpg = test_name.replace('.fits.header', '.jpg')
     header_name = test_name
     if os.path.exists(jpg):
-        return '{} {}'.format(jpg, header_name)
+        return f'{jpg} {header_name}'
     else:
         return header_name
 
@@ -344,11 +343,11 @@ def _get_lineage(dirname, basename, config):
 
 
 def _get_expected_file_name(dirname, product_id):
-    return '{}/{}.expected.xml'.format(dirname, product_id)
+    return f'{dirname}/{product_id}.expected.xml'
 
 
 def _get_actual_file_name(dirname, product_id):
-    return '{}/{}.actual.xml'.format(dirname, product_id)
+    return f'{dirname}/{product_id}.actual.xml'
 
 
 def _get_inst_name(inst):
@@ -418,7 +417,7 @@ def _do_botched_compare(actual_fqn, expected_fqn):
 
 def _rationalize_keys(in_keys):
     return list(
-        set([ii.replace('GEM/', 'GEMINI/') for ii in in_keys if '.fits' in ii])
+        {ii.replace('GEM/', 'GEMINI/') for ii in in_keys if '.fits' in ii}
     )
 
 
@@ -428,9 +427,7 @@ def _compare_keys(expected_keys, actual_keys, key_type):
     actual_missing = mc.find_missing(actual_keys, expected_keys)
     for entry in [expected_missing, actual_missing]:
         if len(entry) > 0:
-            result = (
-                f'{result}\n Expected:: missing {len(entry)} {key_type}.'
-            )
+            result = f'{result}\n Expected:: missing {len(entry)} {key_type}.'
     if len(result) == 0:
         result = None
     return result

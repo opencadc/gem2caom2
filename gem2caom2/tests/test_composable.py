@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # ***********************************************************************
 # ******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
 # *************  CENTRE CANADIEN DE DONNÉES ASTRONOMIQUES  **************
@@ -76,7 +75,7 @@ import sys
 
 from datetime import datetime
 from shutil import copyfile
-from mock import patch, Mock
+from unittest.mock import patch, Mock
 import gem_mocks
 
 from caom2 import SimpleObservation, Algorithm
@@ -461,7 +460,7 @@ def _check_sys_argv_params():
 
 def _write_todo(test_id):
     with open(TODO_FILE, 'w') as f:
-        f.write('{}\n'.format(test_id))
+        f.write(f'{test_id}\n')
 
 
 def _write_state(prior_timestamp=None):

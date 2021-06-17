@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # ***********************************************************************
 # ******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
 # *************  CENTRE CANADIEN DE DONNÉES ASTRONOMIQUES  **************
@@ -985,7 +984,7 @@ def mock_get_file_info(archive, file_id):
     if '_prev' in file_id:
         return {
             'size': 10290,
-            'md5sum': 'md5:{}'.format(md5('-37'.encode()).hexdigest()),
+            'md5sum': 'md5:{}'.format(md5(b'-37').hexdigest()),
             'type': 'image/jpeg',
             'name': file_id,
         }
@@ -1022,7 +1021,7 @@ def mock_get_obs_metadata(file_id):
         logging.error(tb)
 
 
-class Object(object):
+class Object:
     pass
 
     def close(self):
@@ -1036,7 +1035,7 @@ def mock_query_endpoint(url, timeout=-1):
     global call_count
 
     if call_count == 0 and '20030106' not in url:
-        with open(FIRST_FILE_LIST, 'r') as f:
+        with open(FIRST_FILE_LIST) as f:
             temp = f.read()
             now_dt = datetime.utcnow()
             now_date_str = datetime.strftime(now_dt, '%Y-%m-%d')
@@ -1045,16 +1044,16 @@ def mock_query_endpoint(url, timeout=-1):
                 '05:09:24', now_time_str
             )
     elif call_count == 1 and '20030106' not in url:
-        with open(SECOND_FILE_LIST, 'r') as f:
+        with open(SECOND_FILE_LIST) as f:
             result.text = f.read()
     elif '20030106' in url:
-        with open(TOO_MANY_FILE_LIST, 'r') as f:
+        with open(TOO_MANY_FILE_LIST) as f:
             result.text = f.read()
     else:
         if '20030107' in url or '20030105' in url:
             pass
         else:
-            raise Exception('wut {} count {}'.format(url, call_count))
+            raise Exception(f'wut {url} count {call_count}')
     call_count += 1
     return result
 
@@ -1065,17 +1064,17 @@ def mock_query_endpoint_2(url, timeout=-1):
         if 'entrytimedaterange' in url:
             if '2021-01-01T20:03:00.000000' in url:
                 with open(
-                    f'{TEST_DATA_DIR}/incremental/with_records.json', 'r'
+                    f'{TEST_DATA_DIR}/incremental/with_records.json'
                 ) as f:
                     temp = f.read()
             else:
-                with open(f'{TEST_DATA_DIR}/incremental/empty.json', 'r') as f:
+                with open(f'{TEST_DATA_DIR}/incremental/empty.json') as f:
                     temp = f.read()
         elif (
             url == 'https://archive.gemini.edu/jsonsummary/canonical/'
             'notengineering/NotFail//filepre=N20191101S0001.fits'
         ):
-            with open(f'{TEST_DATA_DIR}/json/N20191101S0001.json', 'r') as f:
+            with open(f'{TEST_DATA_DIR}/json/N20191101S0001.json') as f:
                 temp = f.read()
         else:
             # raise mc.CadcException(f'more wut? {url}')

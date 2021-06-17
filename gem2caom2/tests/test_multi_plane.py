@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # ***********************************************************************
 # ******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
 # *************  CENTRE CANADIEN DE DONNÉES ASTRONOMIQUES  **************
@@ -75,7 +74,7 @@ import sys
 from caom2pipe import manage_composable as mc
 from gem2caom2 import main_app, gem_name, external_metadata
 
-from mock import patch, Mock
+from unittest.mock import patch, Mock
 
 import gem_mocks
 
@@ -136,11 +135,9 @@ def test_multi_plane(tap_mock, gemini_client_mock, test_name):
         external_metadata.init_global(test_config)
         obs_id = test_name
         lineage = _get_lineage(obs_id)
-        input_file = '{}/{}/{}.in.xml'.format(
-            gem_mocks.TEST_DATA_DIR, DIR_NAME, obs_id
-        )
-        actual_fqn = '{}/{}/{}.actual.xml'.format(
-            gem_mocks.TEST_DATA_DIR, DIR_NAME, obs_id
+        input_file = f'{gem_mocks.TEST_DATA_DIR}/{DIR_NAME}/{obs_id}.in.xml'
+        actual_fqn = (
+            f'{gem_mocks.TEST_DATA_DIR}/{DIR_NAME}/{obs_id}.actual.xml'
         )
 
         local = _get_local(test_name)
@@ -171,8 +168,8 @@ def test_multi_plane(tap_mock, gemini_client_mock, test_name):
             ).split()
             print(sys.argv)
             main_app.to_caom2()
-            expected_fqn = '{}/{}/{}.expected.xml'.format(
-                gem_mocks.TEST_DATA_DIR, DIR_NAME, obs_id
+            expected_fqn = (
+                f'{gem_mocks.TEST_DATA_DIR}/{DIR_NAME}/{obs_id}.expected.xml'
             )
 
             compare_result = mc.compare_observations(actual_fqn, expected_fqn)

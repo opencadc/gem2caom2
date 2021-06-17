@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # ***********************************************************************
 # ******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
 # *************  CENTRE CANADIEN DE DONNÉES ASTRONOMIQUES  **************
@@ -70,7 +69,7 @@
 import os
 
 from datetime import datetime
-from mock import patch, Mock
+from unittest.mock import patch, Mock
 from shutil import copyfile
 
 from caom2pipe import manage_composable as mc
@@ -94,7 +93,7 @@ def test_subset_all():
         'N20150807G0044m.fits',
         'N20150807G0044i.fits',
         'N20150807G0044.fits',
-    ], 'entry missing {}'.format(result)
+    ], f'entry missing {result}'
 
 
 def test_subset_only_start():
@@ -200,7 +199,7 @@ def test_is_processed():
     for ii in tests:
         assert (
             obs_file_relationship.is_processed(ii) == tests[ii]
-        ), 'failed {}'.format(ii)
+        ), f'failed {ii}'
 
 
 def test_repair_data_label():
@@ -213,24 +212,21 @@ def test_repair_data_label():
         test_result = external_metadata.gofr.repair_data_label(ii)
         if ii == 'S20181230S0025':
             # what happens when an entry is not found
-            assert (
-                test_result == 'S20181230S0025'
-            ), 'repair failed for {} actual {} expected {}'.format(
-                ii, test_result, gem_mocks.LOOKUP[ii][0]
+            assert test_result == 'S20181230S0025', (
+                f'repair failed for {ii} actual {test_result} expected '
+                f'{gem_mocks.LOOKUP[ii][0]}'
             )
         elif ii == 'N20200210S0077_bias':
             # what happens when an entry is not found
-            assert (
-                test_result == 'N20200210S0077_bias'
-            ), 'repair failed for {} actual {} expected {}'.format(
-                ii, test_result, gem_mocks.LOOKUP[ii][0]
+            assert test_result == 'N20200210S0077_bias', (
+                f'repair failed for {ii} actual {test_result} expected '
+                f'{gem_mocks.LOOKUP[ii][0]}'
             )
         elif ii == 'S20201023Z0001b':
             # what happens when an entry is not found
-            assert (
-                test_result == 'S20201023Z0001b'
-            ), 'repair failed for {} actual {} expected {}'.format(
-                ii, test_result, gem_mocks.LOOKUP[ii][0]
+            assert test_result == 'S20201023Z0001b', (
+                f'repair failed for {ii} actual {test_result} expected '
+                f'{gem_mocks.LOOKUP[ii][0]}'
             )
         elif ii in [
             'mrgN20060130S0149_add',
@@ -263,16 +259,14 @@ def test_repair_data_label():
             # cadc tap lookup, and the archive.gemini.edu query are not
             # mocked here, the default behaviour of returning the
             # file name is what actually occurs
-            assert (
-                test_result == ii
-            ), 'repair failed for {} actual {} expected {}'.format(
-                ii, test_result, gem_mocks.LOOKUP[ii][0]
+            assert test_result == ii, (
+                f'repair failed for {ii} actual {test_result} expected '
+                f'{gem_mocks.LOOKUP[ii][0]}'
             )
         else:
-            assert (
-                test_result == gem_mocks.LOOKUP[ii][0]
-            ), 'repair failed for {} actual {} expected {}'.format(
-                ii, test_result, gem_mocks.LOOKUP[ii][0]
+            assert test_result == gem_mocks.LOOKUP[ii][0], (
+                f'repair failed for {ii} actual {test_result} expected '
+                f'{gem_mocks.LOOKUP[ii][0]}'
             )
     test_result = external_metadata.gofr.repair_data_label('N20181217S0266')
     assert test_result is not None, 'no result'
@@ -728,23 +722,19 @@ def test_mixed_case_file_names():
         test_subject = GemObsFileRelationship()
 
         result_obs_id = test_subject.get_obs_id(test_file_id)
-        assert result_obs_id is not None, 'expected result {}'.format(f_name)
-        assert result_obs_id == test_obs_id, 'wrong result {}'.format(f_name)
+        assert result_obs_id is not None, f'expected result {f_name}'
+        assert result_obs_id == test_obs_id, f'wrong result {f_name}'
 
         test_timestamp = test_subject.get_timestamp(test_file_id)
-        assert test_timestamp is not None, 'expected result {}'.format(f_name)
+        assert test_timestamp is not None, f'expected result {f_name}'
         assert test_timestamp == 1498316473.885391, 'wrong timestamp'
 
         result_file_names = test_subject.get_file_names(test_obs_id)
-        assert result_file_names is not None, 'expected result {}'.format(
-            f_name
-        )
-        assert len(result_file_names) == 1, 'wrong size result {}'.format(
-            f_name
-        )
-        assert result_file_names[0] == '{}.fits'.format(
-            test_file_id
-        ), 'wrong result {} {}'.format(f_name, result_file_names)
+        assert result_file_names is not None, f'expected result {f_name}'
+        assert len(result_file_names) == 1, f'wrong size result {f_name}'
+        assert (
+            result_file_names[0] == f'{test_file_id}.fits'
+        ), f'wrong result {f_name} {result_file_names}'
 
 
 def test_repair_data_label_2():
