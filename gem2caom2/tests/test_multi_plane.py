@@ -209,7 +209,9 @@ def _get_lineage(obs_id):
 def _get_local(obs_id):
     result = ''
     for ii in LOOKUP[obs_id]:
-        result = f'{result} {gem_mocks.TEST_DATA_DIR}/{DIR_NAME}/{ii}'
+        result = (
+            f'{result} {gem_mocks.TEST_DATA_DIR}/{DIR_NAME}/{ii}.fits.header'
+        )
     return result
 
 
