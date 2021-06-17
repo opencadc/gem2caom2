@@ -1366,9 +1366,7 @@ def update(observation, **kwargs):
 
                         # position WCS
                         mode = em.om.get('mode')
-                        if _reset_position(
-                            headers, instrument, observation.type
-                        ):
+                        if x.reset_position(headers, observation.type):
                             logging.debug(
                                 f'Setting Spatial WCS to None for '
                                 f'{observation.observation_id}'
@@ -1637,102 +1635,6 @@ def _should_artifact_be_deleted(artifact, config, delete_list):
                 delete_list.append(artifact.uri)
         if artifact.uri.startswith('ad'):
             delete_list.append(artifact.uri)
-
-
-def _reset_position(headers, instrument, observation_type):
-    """
-    Return True if there should be no spatial WCS information created at
-    the chunk level.
-    """
-    result = False
-    types = em.om.get('types')
-    ra = get_ra(headers[0])
-    if 'AZEL_TARGET' in types and ra is None:
-        # DB - 02-04-19 - Az-El coordinate frame likely means the telescope
-        # was parked or at least not tracking so spatial information is
-        # irrelevant.
-
-        # DB - 09-04-19 - AZEL_TARGET should likely be checked for all
-        # datasets, and means the spatial WCS should be ignored. since this
-        # generally means the telescope is not tracking and so spatial WCS
-        # info isn’t relevant since the position is changing with time.
-        result = True
-    elif instrument in [em.Inst.NIFS, em.Inst.PHOENIX]:
-        # DB - 08-04-19 - json ra/dec values are null for
-        # the file with things set to -9999.  Ignore
-        # spatial WCS for these cases.
-
-        # get the values from JSON directly, because the
-        # function uses header values, which are set to
-        # unlikely defaults
-
-        # DB 30-04-19
-        # Looks like many relatively recent PHOENIX files have no RA/Dec
-        # values in the header and so will have no spatial WCS.
-        # Base this decision on json null values.  But looking at all
-        # of the PHOENIX data from 2016 until 3 December 2017 it looks
-        # like json ra/dec values are either null or 0.0 for all.
-        # In both cases spatial WCS should be ignored.  (It will be
-        # very difficult for users to find anything of interest in
-        # these datasets other than searching by free-form target
-        # names…)  PHOENIX returned as a visitor instrument in May 2016
-        # after about 5 years away.
-
-        ra = em.om.get('ra')
-        dec = em.om.get('dec')
-        if ra is None and dec is None:
-            result = True
-        elif (
-            ra is not None
-            and math.isclose(ra, 0.0)
-            and dec is not None
-            and math.isclose(dec, 0.0)
-        ):
-            result = True
-    elif _is_gmos_mask(headers[0]):
-        # DB - 04-03-19
-        # Another type of GMOS-N/S dataset to archive.
-        # Mask images.   json observation_type = “MASK”.
-        # These have no WCS info at all, although I guess
-        # json ut_date_time could be used as the start date
-        # with null exposure time. These would have only
-        # instrument, obstype, datatype (spectrum) and
-        # product type (AUXILIARY) set.
-        result = True
-    elif instrument is em.Inst.GRACES:
-        # DB 23-04-19
-        # Ignore spatial WCS for the GRACES dataset with EPOCH=0.0.  Not
-        # important for a bias. For GMOS we skip spatial WCS for biases
-        # (and maybe for some other instruments).
-
-        # DB 24-04-19
-        # GRACES:  you can ignore spatial WCS for flats if RA/Dec are not
-        # available.   Ditto for GNIRS darks.
-
-        # DB 30-04-19
-        # Ignore spatial WCS for any GRACES arcs without RA/Dec values.
-
-        ra = em.om.get('ra')
-        dec = em.om.get('dec')
-        if ra is None and dec is None:
-            obstype = get_obs_type(headers[0])
-            if obstype in ['BIAS', 'FLAT', 'ARC']:
-                result = True
-    elif instrument is em.Inst.FLAMINGOS:
-        ra_tel = headers[0].get('RA_TEL')
-        if ra_tel == 'Unavailable':
-            result = True
-    elif instrument is em.Inst.HOKUPAA and ra is None:
-        # DB - 21-08-19
-        # GN-2001A-DD-2-3-1060:  header has UNKNOWN for values of coordinates
-        # so no spatial WCS
-        result = True
-
-    if observation_type in ['BIAS', 'DARK']:
-        # DB 04-17-21
-        # BIASes and DARKs for all instruments should ignore spatial wcs
-        result = True
-    return result
 
 
 def get_filter_name(primary_header, header, obs_id, instrument=None):

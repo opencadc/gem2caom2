@@ -78,7 +78,7 @@ from caom2pipe import caom_composable as cc
 from caom2pipe import manage_composable as mc
 from gem2caom2 import external_metadata, svofps
 
-__all__ = ['Cirpass', 'Instrument']
+__all__ = ['Instrument']
 
 
 class Instrument:
@@ -133,6 +133,10 @@ class Instrument:
     def obs_id(self, value):
         self._obs_id = value
 
+    @staticmethod
+    def get_ra(header_ignore):
+        return external_metadata.om.get('ra')
+
     def reset_energy(self, observation_type):
         result = False
         om_filter_name = external_metadata.om.get('filter_name')
@@ -166,6 +170,36 @@ class Instrument:
             # DB 04-17-21
             # BIASes and DARKs for all instruments should ignore spectral wcs
             result = True
+        return result
+
+    def reset_position(self, headers, observation_type):
+        """
+        Return True if there should be no spatial WCS information created at
+        the chunk level.
+        """
+        result = False
+        types = external_metadata.om.get('types')
+        ra = Instrument.get_ra(headers[0])
+        if (
+            ('AZEL_TARGET' in types and ra is None) or
+            observation_type in ['BIAS', 'DARK']
+        ):
+            # DB - 02-04-19 - Az-El coordinate frame likely means the
+            # telescope was parked or at least not tracking so spatial
+            # information is irrelevant.
+
+            # DB - 09-04-19 - AZEL_TARGET should likely be checked for all
+            # datasets, and means the spatial WCS should be ignored. since
+            # this generally means the telescope is not tracking and so
+            # spatial WCS info isn’t relevant since the position is changing
+            # with time.
+
+            # DB 04-17-21
+            # BIASes and DARKs for all instruments should ignore spatial wcs
+
+            result = True
+        # if observation_type in ['BIAS', 'DARK']:
+        #     result = True
         return result
 
     def update_energy(self):
@@ -248,13 +282,50 @@ class Instrument:
             if wl_min > w_min:
                 w_min = wl_min
         return w_max, w_min
+    #
+    # @staticmethod
+    # def get_obs_class(header):
+    #     """Common location to lookup observation_class from JSON summary
+    #     metadata, and if it's not present, to lookup OBSCLASS from the FITS
+    #     headers."""
+    #     obs_class = external_metadata.om.get('observation_class')
+    #     if obs_class is None and header is not None:
+    #         obs_class = header.get('OBSCLASS')
+    #     return obs_class
+    #
+    # @staticmethod
+    # def get_obs_type(header):
+    #     """Common location to lookup observation_type from JSON summary
+    #     metadata, and if it's not present, to lookup OBSTYPE from the FITS
+    #     headers."""
+    #     obs_type = external_metadata.om.get('observation_type')
+    #     if obs_type is None:
+    #         obs_type = header.get('OBSTYPE')
+    #     return obs_type
+
+    @staticmethod
+    def get_sky_coord(header, ra_key, dec_key):
+        ra_hours = header.get(ra_key)
+        dec_hours = header.get(dec_key)
+        if (
+                ra_hours is None
+                or dec_hours is None
+                or ra_hours == 'INDEF'
+                or dec_hours == 'INDEF'
+                or ra_hours == 'Unknown'
+                or dec_hours == 'Unknown'
+        ):
+            ra_deg = None
+            dec_deg = None
+        else:
+            ra_deg, dec_deg = ac.build_ra_dec_as_deg(ra_hours, dec_hours)
+        return ra_deg, dec_deg
 
 
 class Bhros(Instrument):
     def __init__(self, header):
         super(Bhros, self).__init__(external_metadata.Inst.BHROS)
         self._header = header
-        self._logger = logging.getLogger(__class__.__name__)
 
     def update_energy(self):
         """bhros-specific chunk-level Energy WCS construction."""
@@ -299,11 +370,15 @@ class Bhros(Instrument):
             )
         self._logger.debug(f'End update_energy {self._name}')
 
+    @staticmethod
+    def get_ra(header):
+        # bHROS, TEXES: ra/dec not in json
+        return header.get('RA')
+
 
 class Cirpass(Instrument):
     def __init__(self):
         super(Cirpass, self).__init__(external_metadata.Inst.CIRPASS)
-        self._logger = logging.getLogger(__class__.__name__)
 
     def update_energy(self):
         self._logger.debug(f'Begin update_energy {self._name}')
@@ -323,6 +398,12 @@ class Cirpass(Instrument):
             )
         self.build_chunk_energy()
         self._logger.debug(f'End update_energy {self._name}')
+
+    @staticmethod
+    def get_ra(header):
+        # DB - 06-03-19 - Must use FITS header info for most WCS info
+        ra, dec = Instrument.get_sky_coord(header, 'TEL_RA', 'TEL_DEC')
+        return ra
 
 
 class F2(Instrument):
@@ -428,7 +509,15 @@ class F2(Instrument):
 class Flamingos(Instrument):
     def __init__(self):
         super(Flamingos, self).__init__(external_metadata.Inst.FLAMINGOS)
-        self._logger = logging.getLogger(__class__.__name__)
+
+    def reset_position(self, headers, observation_type):
+        result = super(Flamingos, self).reset_position(
+            headers, observation_type
+        )
+        ra_tel = headers[0].get('RA_TEL')
+        if ra_tel == 'Unavailable':
+            result = True
+        return result
 
     def update_energy(self):
         """Flamingos-specific chunk-level Energy WCS construction."""
@@ -517,7 +606,20 @@ class Fox(Instrument):
 class Gmos(Instrument):
     def __init__(self, name):
         super(Gmos, self).__init__(name)
-        self._logger = logging.getLogger(__class__.__name__)
+
+    def reset_position(self, headers, observation_type):
+        # DB - 04-03-19
+        # Another type of GMOS-N/S dataset to archive.
+        # Mask images.   json observation_type = “MASK”.
+        # These have no WCS info at all, although I guess
+        # json ut_date_time could be used as the start date
+        # with null exposure time. These would have only
+        # instrument, obstype, datatype (spectrum) and
+        # product type (AUXILIARY) set.
+        return (
+            super(Gmos, self).reset_position(headers, observation_type) or
+            observation_type == 'MASK'
+        )
 
     def update_energy(self):
         self._logger.debug('Begin _update_chunk_energy_gmos')
@@ -1246,7 +1348,31 @@ class Gpi(Instrument):
 class Graces(Instrument):
     def __init__(self):
         super(Graces, self).__init__(external_metadata.Inst.GRACES)
-        self._logger = logging.getLogger(__class__.__name__)
+
+    def reset_position(self, headers, observation_type):
+        result = super(Graces, self).reset_position(
+            headers, observation_type
+        )
+        # DB 23-04-19
+        # Ignore spatial WCS for the GRACES dataset with EPOCH=0.0.  Not
+        # important for a bias. For GMOS we skip spatial WCS for biases
+        # (and maybe for some other instruments).
+
+        # DB 24-04-19
+        # GRACES:  you can ignore spatial WCS for flats if RA/Dec are not
+        # available.   Ditto for GNIRS darks.
+
+        # DB 30-04-19
+        # Ignore spatial WCS for any GRACES arcs without RA/Dec values.
+
+        ra = external_metadata.om.get('ra')
+        dec = external_metadata.om.get('dec')
+        if (
+            (ra is None and dec is None) or
+            observation_type in ['BIAS', 'FLAT', 'ARC']
+        ):
+            result = True
+        return result
 
     def update_energy(self):
         """graces-specific chunk-level Energy WCS construction."""
@@ -1339,6 +1465,15 @@ class Hokupaa(Instrument):
                 )
             )
         )
+
+    def reset_position(self, headers, observation_type):
+        result = super(Hokupaa, self).reset_position(
+            headers, observation_type
+        )
+        ra = Hokupaa.get_ra(headers[0])
+        if ra is None:
+            result = True
+        return result
 
     def update_energy(self):
         """hokupaa-specific chunk-level Energy WCS construction."""
@@ -1439,6 +1574,11 @@ class Hokupaa(Instrument):
             )
         self.build_chunk_energy()
         self._logger.debug(f'End update_energy {self._name}')
+
+    @staticmethod
+    def get_ra(header):
+        ra, dec_ignore = Instrument.get_sky_coord(header, 'RA', 'DEC')
+        return ra
 
 
 class Hrwfs(Instrument):
@@ -1731,6 +1871,29 @@ class Nifs(Instrument):
                 )
             )
         )
+
+    def reset_position(self, headers, observation_type):
+        result = super(Nifs, self).reset_position(headers, observation_type)
+
+        # DB - 08-04-19 - json ra/dec values are null for
+        # the file with things set to -9999.  Ignore
+        # spatial WCS for these cases.
+
+        # get the values from JSON directly, because the
+        # function uses header values, which are set to
+        # unlikely defaults
+        ra = external_metadata.om.get('ra')
+        dec = external_metadata.om.get('dec')
+        if ra is None and dec is None:
+            result = True
+        elif (
+                ra is not None
+                and math.isclose(ra, 0.0)
+                and dec is not None
+                and math.isclose(dec, 0.0)
+        ):
+            result = True
+        return result
 
     def update_energy(self):
         self._logger.debug('Begin _update_chunk_energy_nifs')
@@ -2104,7 +2267,6 @@ class Niri(Instrument):
 class Oscir(Instrument):
     def __init__(self):
         super(Oscir, self).__init__(external_metadata.Inst.OSCIR)
-        self._logger = logging.getLogger(__class__.__name__)
 
     def update_energy(self):
         """oscir-specific chunk-level Energy WCS construction."""
@@ -2160,6 +2322,11 @@ class Oscir(Instrument):
         self.build_chunk_energy()
         self._logger.debug(f'End update_energy {self._name}')
 
+    @staticmethod
+    def get_ra(header):
+        ra, dec = Instrument.get_sky_coord(header, 'RA_TEL', 'DEC_TEL')
+        return ra
+
 
 class Phoenix(Instrument):
     def __init__(self):
@@ -2172,6 +2339,36 @@ class Phoenix(Instrument):
             super(Phoenix, self).reset_energy(observation_type) or
             (self.filter_name is not None and 'invalid' in self.filter_name)
         )
+
+    def reset_position(self, headers, observation_type):
+        result = super(Phoenix, self).reset_position(
+            headers, observation_type
+        )
+
+        # DB 30-04-19
+        # Looks like many relatively recent PHOENIX files have no RA/Dec
+        # values in the header and so will have no spatial WCS.
+        # Base this decision on json null values.  But looking at all
+        # of the PHOENIX data from 2016 until 3 December 2017 it looks
+        # like json ra/dec values are either null or 0.0 for all.
+        # In both cases spatial WCS should be ignored.  (It will be
+        # very difficult for users to find anything of interest in
+        # these datasets other than searching by free-form target
+        # names…)  PHOENIX returned as a visitor instrument in May 2016
+        # after about 5 years away.
+
+        ra = external_metadata.om.get('ra')
+        dec = external_metadata.om.get('dec')
+        if ra is None and dec is None:
+            result = True
+        elif (
+                ra is not None
+                and math.isclose(ra, 0.0)
+                and dec is not None
+                and math.isclose(dec, 0.0)
+        ):
+            result = True
+        return result
 
     def update_energy(self):
         self._logger.debug('Begin update_energy')
@@ -2270,7 +2467,6 @@ class Texes(Instrument):
     def __init__(self, header):
         super(Texes, self).__init__(external_metadata.Inst.TEXES)
         self._header = header
-        self._logger = logging.getLogger(__class__.__name__)
 
     def update_energy(self):
         # DB - 07-03-19
@@ -2317,6 +2513,11 @@ class Texes(Instrument):
             )
         self.build_chunk_energy()
         self._logger.debug(f'End update_energy {self._name}')
+
+    @staticmethod
+    def get_ra(header):
+        # bHROS, TEXES: ra/dec not in json
+        return header.get('RA')
 
 
 class Trecs(Instrument):
