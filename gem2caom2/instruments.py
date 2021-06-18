@@ -240,6 +240,39 @@ class InstrumentType:
     def get_cd22(self, header):
         return self.get_cd11(header, 'CDELT2')
 
+    def make_axes_consistent(self):
+        # DB 04-17-21
+        # BIASes and DARKs for all instruments should ignore spatial and
+        # spectral wcs - clean up associated axes
+        #
+        # also fix a very specific edge case where cal files have useless WCS
+        # information for the purposes of CAOM2.4 axis checks, and the
+        # corresponding cutouts. No spatial wcs means invalid chunk.naxis
+        # value, so set that to None, which then invalidates the
+        # chunk.time_axis value DB 06-01-21 - no calibration file cutouts to
+        # support, so removing this axis information is not removing
+        # downstream functionality
+        if (
+            self.chunk.naxis == 3
+            and self.chunk.position is None
+            and self.chunk.time is not None
+        ):
+            if self.chunk.time.axis.function.naxis == 1:
+                self.chunk.naxis = None
+                self.chunk.time_axis = None
+            else:
+                self.chunk.naxis = 1
+                self.chunk.time_axis = 1
+
+        if (
+            (self.chunk.naxis is not None and self.chunk.naxis <= 2) and not
+            # the following exempts the Fox use case
+            (self.chunk.naxis == 1 and self.chunk.time_axis == 1)
+        ):
+            if self.chunk.position_axis_1 is None:
+                self.chunk.naxis = None
+            self.chunk.time_axis = None
+
     def multiple_filter_lookup(self, lookup, wl_max=None):
         w_max = 10.0 if wl_max is None else wl_max
         w_min = 0.0
@@ -2090,6 +2123,18 @@ class Michelle(InstrumentType):
     def __init__(self):
         super(Michelle, self).__init__(external_metadata.Inst.MICHELLE)
 
+    def make_axes_consistent(self):
+        super(Michelle, self).make_axes_consistent()
+        if self.chunk.naxis == 4:
+            if self.chunk.position is None:
+                self.chunk.naxis = None
+                if self.chunk.time_axis is not None:
+                    self.chunk.time_axis = None
+            else:
+                if self.chunk.naxis == 4:
+                    self.chunk.naxis = 2
+                    self.chunk.time_axis = None
+
     def reset_energy(self, observation_type):
         # 'No Value' in filter_name test obs GN-2005A-C-14-45-002
         # DB 09-04-19 - “Blank-B” -> no energy.  It is a bias exposure
@@ -2842,6 +2887,26 @@ class Oscir(InstrumentType):
     def get_cd22(self, header):
         return self.get_cd11(header)
 
+    def make_axes_consistent(self):
+        # DB - 01-02-21
+        # OSCIR data should all have NAXIS=6 in the header. Axis 1/2 are
+        # position axes.  Axis 3 is the number of chop positions (1 or usually
+        # = 2), axis 5 is the number of nod positions (1 or usually = 2), axis
+        # 4 gives the number of ‘savesets’ per nod position and axis 6 gives
+        # the number of ‘nod sets’.
+        #
+        # For that particular example you gave me I think the NAXIS6 = 1 is
+        # incorrect.  Think it should equal the value of NODSETS.  And TOTFRMS
+        # = 360 should equal naxis1 x naxis2 x naxis3 x naxis4.
+        #
+        # Spatial cutouts would use axes 1 and 2, although the precise
+        # positions of each chop/nod position are not captured by the CAOM2
+        # data.
+        super(Oscir, self).make_axes_consistent()
+        if self.chunk.naxis is not None and self.chunk.naxis == 6:
+            self.chunk.naxis = 2
+            self.chunk.time_axis = None
+
     def update_energy(self):
         """oscir-specific chunk-level Energy WCS construction."""
         self._logger.debug(f'Begin update_energy {self._name}')
@@ -2938,9 +3003,10 @@ class Oscir(InstrumentType):
 
 
 class Phoenix(InstrumentType):
-    def __init__(self, header, extension):
+    def __init__(self, headers, extension):
         super(Phoenix, self).__init__(external_metadata.Inst.PHOENIX)
-        self._header = header
+        self._headers = headers
+        self._header = headers[extension]
         self._extension = extension
 
     def reset_energy(self, observation_type):
@@ -2980,6 +3046,37 @@ class Phoenix(InstrumentType):
         ):
             result = True
         return result
+
+    def make_axes_consistent(self):
+        super(Phoenix, self).make_axes_consistent()
+        if self.chunk.naxis == 4:
+            if self.chunk.position is None:
+                self.chunk.naxis = None
+                if self.chunk.time_axis is not None:
+                    self.chunk.time_axis = None
+            else:
+                if self.chunk.naxis == 4:
+                    self.chunk.naxis = 2
+                    self.chunk.time_axis = None
+
+        # DB - 05-06-20
+        # That’s a composite observation (but with no way of determining the 4
+        # members from the header) and it is an extracted spectrum and
+        # (despite some header info suggesting otherwise) has no wavelength
+        # scale. LINEAR must be a reference to the fact that the spacing of
+        # each pixel is constant.  Since the scale is simply in pixels….
+        # CTYPE1 will refer to the energy axis.   Would likely make more sense
+        # for a value of PIXEL.
+        ctype = self._headers[0].get('CTYPE1')
+        if ctype is not None and ctype in [
+            'LINEAR',
+            'PIXEL',
+        ]:
+            self.chunk.naxis = None
+            self.chunk.position_axis_1 = None
+            self.chunk.position_axis_2 = None
+            self.chunk.time_axis = None
+            self.chunk.energy_axis = None
 
     def update_energy(self):
         self._logger.debug('Begin update_energy')
@@ -3209,6 +3306,18 @@ class Trecs(InstrumentType):
         self._headers = headers
         self._extension = extension
 
+    def make_axes_consistent(self):
+        super(Trecs, self).make_axes_consistent()
+        if self.chunk.naxis == 4:
+            if self.chunk.position is None:
+                self.chunk.naxis = None
+                if self.chunk.time_axis is not None:
+                    self.chunk.time_axis = None
+            else:
+                if self.chunk.naxis == 4:
+                    self.chunk.naxis = 2
+                    self.chunk.time_axis = None
+
     def reset_energy(self, observation_type):
         # DB 23-04-19
         # GMOS GS-2005A-Q-26-12-001.  Lots of missing metadata, including
@@ -3364,7 +3473,7 @@ def instrument_factory(name, headers, extension):
     elif name is external_metadata.Inst.OSCIR:
         return Oscir(header, extension)
     elif name is external_metadata.Inst.PHOENIX:
-        return Phoenix(header, extension)
+        return Phoenix(headers, extension)
     elif name is external_metadata.Inst.TEXES:
         return Texes(headers[0], extension)
     elif name is external_metadata.Inst.TRECS:
