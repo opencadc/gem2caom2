@@ -1377,10 +1377,7 @@ def update(observation, **kwargs):
                             x.update_position()
 
                         # time WCS
-                        if instrument is em.Inst.F2:
-                            _update_chunk_time_f2(
-                                c, observation.observation_id
-                            )
+                        x.update_time()
 
                         # DB - 05-06-20
                         # That’s a composite observation (but with no way of
@@ -1404,10 +1401,6 @@ def update(observation, **kwargs):
                                 c.time_axis = None
                                 c.energy_axis = None
 
-                        if instrument in [em.Inst.ALOPEKE, em.Inst.ZORRO]:
-                            _update_chunk_time_fox(
-                                c, header, observation.observation_id
-                            )
                         if c.naxis is not None and c.naxis <= 2:
                             if c.position_axis_1 is None:
                                 c.naxis = None
@@ -1669,53 +1662,6 @@ def _update_position_from_zeroth_header(artifact, headers, instrument, obs_id):
                 chunk.position = primary_chunk.position
                 chunk.position_axis_1 = 1
                 chunk.position_axis_2 = 2
-
-
-def _update_chunk_time_f2(chunk, obs_id):
-    """F2 FITS files have a CD3_3 element that's not supported by fits2caom2,
-    so using the blueprint will not work to adjust that value. Set delta
-    specifically here."""
-    logging.debug(f'Begin _update_chunk_time_f2 {obs_id}')
-    mc.check_param(chunk, Chunk)
-    if (
-        chunk.time is not None
-        and chunk.time.axis is not None
-        and chunk.time.axis.function is not None
-    ):
-        chunk.time.axis.function.delta = get_time_delta(None)
-        logging.info(f'F2: Updated time delta for {obs_id}')
-    logging.debug(f'End _update_chunk_time_f2 {obs_id}')
-
-
-def _update_chunk_time_fox(chunk, header, obs_id):
-    """
-    DB 02-09-20
-    Exposure time using JSON values isn’t correct.  I know that for this
-    example Gemini shows the exposure time is 0.02 seconds but there are
-    1000 x 0.02-second exposures in the cube.  The keyword EXPOSURE gives the
-    total exposure time (in seconds), time.exposure, or 20 in this case while
-    the json exposure_time should be the time.resolution.
-    """
-    logging.debug(f'Begin _update_chunk_time_fox {obs_id}')
-    mc.check_param(chunk, Chunk)
-    if chunk.time is not None:
-        chunk.time.exposure = header.get('EXPOSURE')
-        # chunk.time.resolution already set by blueprint
-    logging.debug(f'End _update_chunk_time_fox {obs_id}')
-
-
-def _update_chunk_time_gmos(chunk, obs_id):
-    """"""
-    logging.debug(f'Begin _update_chunk_time_gmos {obs_id}')
-    mc.check_param(chunk, Chunk)
-    if chunk.time is not None and chunk.time.axis is not None:
-        mjd_start = get_time_function_val(None)
-        start = RefCoord(0.5, mjd_start.value)
-        end = RefCoord(1.5, mjd_start.value)
-        chunk.time.exposure = 0.0
-        chunk.time.axis.range = CoordRange1D(start, end)
-        chunk.time.axis.function = None
-    logging.debug(f'End _update_chunk_time_gmos {obs_id}')
 
 
 def _update_composite(obs, instrument, current_product_id):

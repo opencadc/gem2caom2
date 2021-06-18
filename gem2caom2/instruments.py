@@ -356,6 +356,10 @@ class InstrumentType:
         # the default is to do nothing, so not a NotImplemented exception
         pass
 
+    def update_time(self):
+        # the default is to do nothing
+        pass
+
     @staticmethod
     def get_crpix1(header):
         return 1.0
@@ -680,6 +684,22 @@ class F2(InstrumentType):
             self.build_chunk_energy()
         self._logger.debug('End _update_chunk_energy_f2')
 
+    def update_time(self):
+        """F2 FITS files have a CD3_3 element that's not supported by
+        fits2caom2, so using the blueprint will not work to adjust that
+        value. Set delta specifically here."""
+        self._logger.debug(f'Begin update_time {self.obs_id}')
+        mc.check_param(self.chunk, Chunk)
+        if (
+                self.chunk.time is not None
+                and self.chunk.time.axis is not None
+                and self.chunk.time.axis.function is not None
+        ):
+            exposure = mc.to_float(external_metadata.om.get('exposure_time'))
+            self.chunk.time.axis.function.delta = mc.convert_to_days(exposure)
+            logging.info(f'Updated time delta for {self.obs_id}')
+        self._logger.debug(f'End update_time {self.obs_id}')
+
 
 class Flamingos(InstrumentType):
     def __init__(self, header):
@@ -807,8 +827,9 @@ class Flamingos(InstrumentType):
 
 
 class Fox(InstrumentType):
-    def __init__(self, name):
+    def __init__(self, name, header):
         super(Fox, self).__init__(name)
+        self._header = header
 
     def update_energy(self):
         """General chunk-level Energy WCS construction."""
@@ -843,6 +864,21 @@ class Fox(InstrumentType):
         ):
             self.chunk.position.axis.axis1.ctype = 'RA---TAN'
         self._logger.debug('End update_position.')
+
+    def update_time(self):
+        """
+        DB 02-09-20
+        Exposure time using JSON values isn’t correct.  I know that for this
+        example Gemini shows the exposure time is 0.02 seconds but there are
+        1000 x 0.02-second exposures in the cube.  The keyword EXPOSURE gives
+        the total exposure time (in seconds), time.exposure, or 20 in this
+        case while the json exposure_time should be the time.resolution.
+        """
+        self._logger.debug(f'Begin _update_chunk_time_fox {self.obs_id}')
+        if self.chunk.time is not None:
+            self.chunk.time.exposure = self._header.get('EXPOSURE')
+            # chunk.time.resolution already set by blueprint
+        self._logger.debug(f'End _update_chunk_time_fox {self.obs_id}')
 
 
 class Gmos(InstrumentType):
@@ -3298,7 +3334,7 @@ def instrument_factory(name, headers, extension):
     elif name in [
         external_metadata.Inst.ALOPEKE, external_metadata.Inst.ZORRO
     ]:
-        return Fox(name)
+        return Fox(name, header)
     elif name in [
         external_metadata.Inst.GMOS,
         external_metadata.Inst.GMOSN,
