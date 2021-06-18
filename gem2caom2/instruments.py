@@ -2131,9 +2131,8 @@ class Michelle(InstrumentType):
                 if self.chunk.time_axis is not None:
                     self.chunk.time_axis = None
             else:
-                if self.chunk.naxis == 4:
-                    self.chunk.naxis = 2
-                    self.chunk.time_axis = None
+                self.chunk.naxis = 2
+                self.chunk.time_axis = None
 
     def reset_energy(self, observation_type):
         # 'No Value' in filter_name test obs GN-2005A-C-14-45-002
@@ -3055,9 +3054,8 @@ class Phoenix(InstrumentType):
                 if self.chunk.time_axis is not None:
                     self.chunk.time_axis = None
             else:
-                if self.chunk.naxis == 4:
-                    self.chunk.naxis = 2
-                    self.chunk.time_axis = None
+                self.chunk.naxis = 2
+                self.chunk.time_axis = None
 
         # DB - 05-06-20
         # That’s a composite observation (but with no way of determining the 4
@@ -3314,9 +3312,8 @@ class Trecs(InstrumentType):
                 if self.chunk.time_axis is not None:
                     self.chunk.time_axis = None
             else:
-                if self.chunk.naxis == 4:
-                    self.chunk.naxis = 2
-                    self.chunk.time_axis = None
+                self.chunk.naxis = 2
+                self.chunk.time_axis = None
 
     def reset_energy(self, observation_type):
         # DB 23-04-19
