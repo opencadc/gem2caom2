@@ -252,9 +252,11 @@ class GemName(mc.StorageName):
 
     def __str__(self):
         return (
-            f'obs_id {self._obs_id}, '
-            f'file_id {self._file_id}, '
-            f'file_name {self._file_name}'
+            f'\n'
+            f'     obs_id:{self._obs_id}\n'
+            f'    file_id:{self._file_id}\n'
+            f'   file_name:{self._file_name}\n'
+            f'source_names:{self._source_names}\n'
         )
 
     @property

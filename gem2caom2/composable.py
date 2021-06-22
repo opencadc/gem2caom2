@@ -74,6 +74,7 @@ import traceback
 
 from datetime import datetime
 
+from caom2pipe import data_source_composable as dsc
 from caom2pipe import manage_composable as mc
 from caom2pipe import name_builder_composable as nbc
 from caom2pipe import run_composable as rc
@@ -110,12 +111,17 @@ def _run():
     external_metadata.init_global(config=config)
     name_builder = builder.GemObsIDBuilder(config)
     meta_visitors = _define_meta_visitors(config)
+    if config.use_local_files:
+        data_source = dsc.ListDirDataSource(config, chooser=None)
+    else:
+        data_source = dsc.TodoFileDataSource(config)
     return rc.run_by_todo(
         config,
         name_builder,
         chooser=None,
         command_name=main_app.APPLICATION,
         meta_visitors=meta_visitors,
+        source = data_source,
     )
 
 

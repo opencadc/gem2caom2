@@ -70,6 +70,8 @@
 import logging
 import traceback
 
+from os import path
+
 from caom2pipe import astro_composable as ac
 from caom2pipe import manage_composable as mc
 from caom2pipe import name_builder_composable as nbc
@@ -169,6 +171,9 @@ class GemObsIDBuilder(nbc.StorageNameBuilder):
                         v_scheme=gem_name.V_SCHEME,
                         entry=entry,
                     )
+                    result.source_names = [path.join(
+                        self._config.working_directory, result.file_name
+                    )]
                 elif self._config.features.use_file_names:
                     self._read_instrument_remotely(entry)
                     result = gem_name.GemName(
@@ -178,6 +183,7 @@ class GemObsIDBuilder(nbc.StorageNameBuilder):
                         v_scheme=gem_name.V_SCHEME,
                         entry=entry,
                     )
+                    result.source_names = [result.file_name]
                 else:
                     raise mc.CadcException(
                         'The need has not been encountered in the real world '
@@ -207,6 +213,9 @@ class GemObsIDBuilder(nbc.StorageNameBuilder):
                         instrument=self._instrument,
                         entry=entry,
                     )
+                    result.source_names = [path.join(
+                        self._config.working_directory, result.file_name
+                    )]
                 elif self._config.features.use_file_names:
                     self._read_instrument_remotely(entry)
                     result = gem_name.GemName(
@@ -214,6 +223,7 @@ class GemObsIDBuilder(nbc.StorageNameBuilder):
                         instrument=self._instrument,
                         entry=entry,
                     )
+                    result.source_names = [result.file_name]
                 else:
                     raise mc.CadcException(
                         'The need has not been encountered in the real world '
