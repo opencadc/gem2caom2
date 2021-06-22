@@ -115,6 +115,9 @@ gofr = None
 value_repair = mc.ValueRepairCache()
 
 
+# globals are BAD, but if this existed in a class instance, that
+# class instance would need to be visible in main_app.py, which is not
+# something that fits2caom2 handles right now
 def get_gofr(config=None):
     global gofr
     if gofr is None:
@@ -179,24 +182,28 @@ def get_obs_metadata(file_id):
     if om.contains(file_id):
         om.reset_index(file_id)
     else:
-        gemini_url = f'{GEMINI_METADATA_URL}{file_id}'
+        # for TaskType.SCRAPE
+        if gofr.query_session is None:
+            logging.warning(f'No external access. No observation metadata.')
+        else:
+            gemini_url = f'{GEMINI_METADATA_URL}{file_id}'
 
-        # Open the URL and fetch the JSON document for the observation
-        response = None
-        try:
-            response = mc.query_endpoint_session(
-                gemini_url, gofr.query_session
-            )
-            metadata = response.json()
-        finally:
-            if response is not None:
-                response.close()
-        if len(metadata) == 0:
-            raise mc.CadcException(
-                f'Could not find JSON record for {file_id} at '
-                f'archive.gemini.edu.'
-            )
-        om.add(metadata, file_id)
+            # Open the URL and fetch the JSON document for the observation
+            response = None
+            try:
+                response = mc.query_endpoint_session(
+                    gemini_url, gofr.query_session
+                )
+                metadata = response.json()
+            finally:
+                if response is not None:
+                    response.close()
+            if len(metadata) == 0:
+                raise mc.CadcException(
+                    f'Could not find JSON record for {file_id} at '
+                    f'archive.gemini.edu.'
+                )
+            om.add(metadata, file_id)
     logging.debug(f'End get_obs_metadata for {file_id}')
 
 
@@ -205,34 +212,40 @@ def get_pi_metadata(program_id):
     if program_id in pm:
         metadata = pm[program_id]
     else:
-        program_url = 'https://archive.gemini.edu/programinfo/' + program_id
-        # Open the URL and fetch the JSON document for the observation
-        response = None
-        try:
-            response = mc.query_endpoint_session(
-                program_url, gofr.query_session
+        # for TaskType.SCRAPE
+        if gofr.query_session is None:
+            logging.warning(f'No external access. No PI metadata.')
+        else:
+            program_url = (
+                f'https://archive.gemini.edu/programinfo/{program_id}'
             )
-            xml_metadata = response.text
-        finally:
-            if response:
-                response.close()
-        metadata = None
-        soup = BeautifulSoup(xml_metadata, 'lxml')
-        tds = soup.find_all('td')
-        if len(tds) > 0:
-            # sometimes the program id points to an html page with an empty
-            # table, see e.g. N20200210S0077_bias
-            title = None
-            if len(tds[1].contents) > 0:
-                title = tds[1].contents[0].replace('\n', ' ')
-            pi_name = None
-            if len(tds[3].contents) > 0:
-                pi_name = tds[3].contents[0]
-            metadata = {
-                'title': title,
-                'pi_name': pi_name,
-            }
-            pm[program_id] = metadata
+            # Open the URL and fetch the JSON document for the observation
+            response = None
+            try:
+                response = mc.query_endpoint_session(
+                    program_url, gofr.query_session
+                )
+                xml_metadata = response.text
+            finally:
+                if response:
+                    response.close()
+            metadata = None
+            soup = BeautifulSoup(xml_metadata, 'lxml')
+            tds = soup.find_all('td')
+            if len(tds) > 0:
+                # sometimes the program id points to an html page with an
+                # empty table, see e.g. N20200210S0077_bias
+                title = None
+                if len(tds[1].contents) > 0:
+                    title = tds[1].contents[0].replace('\n', ' ')
+                pi_name = None
+                if len(tds[3].contents) > 0:
+                    pi_name = tds[3].contents[0]
+                metadata = {
+                    'title': title,
+                    'pi_name': pi_name,
+                }
+                pm[program_id] = metadata
         logging.debug('End get_obs_metadata')
     return metadata
 
@@ -493,7 +506,9 @@ class CachingObsFileRelationship(GemObsFileRelationship):
         # will eventually be used - as a global, accessible by all and
         # everywhere, and initialized before there's a config
         self._tap_client = None
-        self._session = mc.get_endpoint_session()
+        self._session = None
+        if self._is_connected:
+            self._session = mc.get_endpoint_session()
         self._logger = logging.getLogger(__name__)
 
     @property
