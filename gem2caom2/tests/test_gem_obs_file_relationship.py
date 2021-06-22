@@ -252,6 +252,8 @@ def test_repair_data_label():
             'N20030325S0098',
             '2003apr24_0080',
             'rS20060306S0090',
+            'N20070818S0031',
+            '2003jun30_3385',
         ]:
             # what happens when an entry is not found
             # note that the answer should actually be
