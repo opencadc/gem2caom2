@@ -214,6 +214,7 @@ def get_pi_metadata(program_id):
     else:
         # for TaskType.SCRAPE
         if gofr.query_session is None:
+            metadata = None
             logging.warning(f'No external access. No PI metadata.')
         else:
             program_url = (
