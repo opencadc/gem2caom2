@@ -2782,7 +2782,9 @@ class Niri(InstrumentType):
             self.fm = svofps.FilterMetadata('NIRI')
             self.fm.central_wl = filter_md.central_wl
             self.fm.bandpass = filter_md.bandpass
-            disperser = external_metadata.om.get('disperser')
+            # add the 'split' call because NIRI: Mystery disperser value
+            # Mgrism_G5206 for GN-2007B-Q-75-61-003
+            disperser = external_metadata.om.get('disperser').split('_')[0]
             if disperser in [
                 'Jgrism',
                 'Jgrismf32',

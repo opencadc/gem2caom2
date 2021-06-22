@@ -1328,6 +1328,7 @@ def update(observation, **kwargs):
                         observation.observation_id,
                     )
 
+                delete_these_parts = []
                 for part in artifact.parts:
 
                     if part == '2' and instrument is em.Inst.GPI:
@@ -1343,6 +1344,12 @@ def update(observation, **kwargs):
                         )
                         continue
                     for c in artifact.parts[part].chunks:
+                        # example is CIRPASS/2003jun30_3385.fits - older
+                        # versions of the file had more headers
+                        if int(part) >= len(headers):
+                            delete_these_parts.append(part)
+                            continue
+
                         header = headers[int(part)]
 
                         # energy WCS
@@ -1407,6 +1414,12 @@ def update(observation, **kwargs):
                                 f'http://archive.gemini.edu/searchform/'
                                 f'filepre={caom_name.file_name}'
                             )
+
+                for part in delete_these_parts:
+                    logging.warning(
+                        f'Delete part {part} from artifact {artifact.uri}'
+                    )
+                    artifact.parts.pop(part)
 
             program = em.get_pi_metadata(observation.proposal.id)
             if program is not None:
