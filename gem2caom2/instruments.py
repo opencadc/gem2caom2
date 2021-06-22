@@ -1721,7 +1721,7 @@ class Gpi(InstrumentType):
         self.chunk.position_axis_1 = 1
         self.chunk.position_axis_2 = 2
         self.chunk.position.coordsys = header.get('RADESYS')
-        if self._extension is 1:
+        if self._extension == 1:
             # equinox information only available from
             # 0th header
             equinox = self._headers[0].get('TRKEQUIN')
