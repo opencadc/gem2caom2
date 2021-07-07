@@ -46,5 +46,3 @@ task_types:
   - visit
 features:
   supports_multiple_files: False
-  use_file_names: True
-  use_urls: False

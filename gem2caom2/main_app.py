@@ -91,9 +91,7 @@ can retrieve the observation ID value from the headers for a file.
 """
 import importlib
 import logging
-import math
 import os
-import re
 import sys
 import traceback
 
@@ -101,9 +99,8 @@ from astropy import units
 from astropy.coordinates import SkyCoord
 
 from caom2 import Observation, ObservationIntentType, DataProductType
-from caom2 import CalibrationLevel, TargetType, ProductType, Chunk, Axis
-from caom2 import SpectralWCS, CoordAxis1D, RefCoord, Instrument
-from caom2 import TypedList, CoordRange1D, DerivedObservation
+from caom2 import CalibrationLevel, TargetType, ProductType, Chunk
+from caom2 import Instrument, TypedList, DerivedObservation
 from caom2utils import ObsBlueprint, get_gen_proc_arg_parser, gen_proc
 from caom2utils import WcsParser
 from caom2pipe import manage_composable as mc
@@ -113,7 +110,6 @@ from caom2pipe import astro_composable as ac
 import gem2caom2.external_metadata as em
 import gem2caom2.obs_file_relationship as ofr
 from gem2caom2.gem_name import GemName, COLLECTION
-from gem2caom2.svofps import FilterMetadata
 from gem2caom2.builder import get_instrument, GemObsIDBuilder
 from gem2caom2 import instruments
 

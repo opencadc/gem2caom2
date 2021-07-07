@@ -93,10 +93,9 @@ def test_builder(obs_metadata_mock, tap_client_mock):
     em.init_global(config=test_config)
     test_subject = builder.GemObsIDBuilder(test_config)
 
-    test_entry = 'S20050825S0143.fits'
     for support in [False, True]:
         test_config.features.supports_latest_client = support
-        test_config.features.use_file_names = True
+        test_entry = 'S20050825S0143.fits'
         for task_type in [mc.TaskType.INGEST, mc.TaskType.SCRAPE]:
             test_config.task_types = [task_type]
             test_result = test_subject.build(test_entry)
@@ -119,6 +118,6 @@ def test_builder(obs_metadata_mock, tap_client_mock):
             ), 'wrong thumb uri'
 
         test_config.task_types = [mc.TaskType.INGEST]
-        test_config.features.use_file_names = False
+        test_entry = 'GN-DATA-LABEL'
         with pytest.raises(mc.CadcException):
             test_result = test_subject.build(test_entry)

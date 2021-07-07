@@ -47,5 +47,3 @@ task_types:
 features:
   supports_latest_client: True
   supports_multiple_files: False
-  use_file_names: True
-  use_urls: False

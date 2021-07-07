@@ -174,7 +174,7 @@ class GemObsIDBuilder(nbc.StorageNameBuilder):
                     result.source_names = [path.join(
                         self._config.working_directory, result.file_name
                     )]
-                elif self._config.features.use_file_names:
+                elif '.fits' in entry or '.jpg' in entry:
                     self._read_instrument_remotely(entry)
                     result = gem_name.GemName(
                         file_name=entry,
@@ -216,7 +216,7 @@ class GemObsIDBuilder(nbc.StorageNameBuilder):
                     result.source_names = [path.join(
                         self._config.working_directory, result.file_name
                     )]
-                elif self._config.features.use_file_names:
+                elif '.fits' in entry or '.jpg' in entry:
                     self._read_instrument_remotely(entry)
                     result = gem_name.GemName(
                         file_name=entry,

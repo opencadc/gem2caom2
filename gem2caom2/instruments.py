@@ -79,7 +79,7 @@ from caom2pipe import caom_composable as cc
 from caom2pipe import manage_composable as mc
 from gem2caom2 import external_metadata, svofps
 
-__all__ = ['InstrumentType']
+__all__ = ['instrument_factory', 'InstrumentType']
 
 # GPI radius == 2.8 arcseconds, according to Christian Marois via DB 02-07-19
 # DB - 18-02-19 - Replace “5.0” for “2.8" for GPI field of view.
