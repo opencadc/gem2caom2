@@ -115,6 +115,8 @@ RADIUS_LOOKUP = {
 # CTYPE1 = RA---TAN
 # CTYPE2 = DEC--TAN
 
+current_instrument = None
+
 
 class InstrumentType:
     def __init__(self, name):
@@ -123,6 +125,8 @@ class InstrumentType:
         self._data_product_type = None
         self._fm = None
         self._filter_name = None
+        self._extension = None
+        self._headers = None
         self._mode = None
         self._obs_id = None
         self._logger = logging.getLogger(name.value)
@@ -144,6 +148,14 @@ class InstrumentType:
         self._data_product_type = value
 
     @property
+    def extension(self):
+        return self._extension
+
+    @extension.setter
+    def extension(self, value):
+        self._extension = value
+
+    @property
     def filter_name(self):
         return self._filter_name
 
@@ -160,6 +172,14 @@ class InstrumentType:
     @fm.setter
     def fm(self, value):
         self._fm = value
+
+    @property
+    def headers(self):
+        return self._headers
+
+    @headers.setter
+    def headers(self, value):
+        self._headers = value
 
     @property
     def mode(self):
@@ -429,10 +449,8 @@ class InstrumentType:
 
 
 class Bhros(InstrumentType):
-    def __init__(self, headers, extension):
-        super(Bhros, self).__init__(external_metadata.Inst.BHROS)
-        self._header = headers[0]
-        self._extension = extension
+    def __init__(self, name):
+        super(Bhros, self).__init__(name)
 
     def update_energy(self):
         """bhros-specific chunk-level Energy WCS construction."""
@@ -465,7 +483,7 @@ class Bhros(InstrumentType):
             self.fm.central_wl = external_metadata.om.get('central_wavelength')
             self.fm.adjust_bandpass(0.2)
             self.fm.resolving_power = 150000.0
-            ccd_sum = self._header.get('CCDSUM')
+            ccd_sum = self._headers[0].get('CCDSUM')
             if ccd_sum is not None:
                 temp = float(ccd_sum.split()[1])
                 self.fm.resolving_power = 150000.0 / temp
@@ -478,32 +496,38 @@ class Bhros(InstrumentType):
         self._logger.debug(f'End update_energy {self._name}')
 
     def update_position(self):
-        self._header['CTYPE1'] = 'RA---TAN'
-        self._header['CTYPE2'] = 'DEC--TAN'
-        self._header['CUNIT1'] = 'deg'
-        self._header['CUNIT2'] = 'deg'
-        self._header['CRVAL1'] = Bhros.get_ra(self._header)
-        self._header['CRVAL2'] = Bhros.get_dec(self._header)
-        self._header['CDELT1'] = RADIUS_LOOKUP[self._name]
-        self._header['CDELT2'] = RADIUS_LOOKUP[self._name]
-        self._header['CROTA1'] = 0.0
-        self._header['NAXIS1'] = 1
-        self._header['NAXIS2'] = 1
-        self._header['CRPIX1'] = InstrumentType.get_crpix1(self._header)
-        self._header['CRPIX2'] = InstrumentType.get_crpix2(self._header)
-        self._header['CD1_1'] = self.get_cd11(self._header)
-        self._header['CD1_2'] = 0.0
-        self._header['CD2_1'] = 0.0
-        self._header['CD2_2'] = self.get_cd22(self._header)
-        self._header['EQUINOX'] = mc.to_float(self._header.get('TRKEQUIN'))
+        self._headers[0]['CTYPE1'] = 'RA---TAN'
+        self._headers[0]['CTYPE2'] = 'DEC--TAN'
+        self._headers[0]['CUNIT1'] = 'deg'
+        self._headers[0]['CUNIT2'] = 'deg'
+        self._headers[0]['CRVAL1'] = Bhros.get_ra(self._headers[0])
+        self._headers[0]['CRVAL2'] = Bhros.get_dec(self._headers[0])
+        self._headers[0]['CDELT1'] = RADIUS_LOOKUP[self._name]
+        self._headers[0]['CDELT2'] = RADIUS_LOOKUP[self._name]
+        self._headers[0]['CROTA1'] = 0.0
+        self._headers[0]['NAXIS1'] = 1
+        self._headers[0]['NAXIS2'] = 1
+        self._headers[0]['CRPIX1'] = InstrumentType.get_crpix1(
+            self._headers[0]
+        )
+        self._headers[0]['CRPIX2'] = InstrumentType.get_crpix2(
+            self._headers[0]
+        )
+        self._headers[0]['CD1_1'] = self.get_cd11(self._headers[0])
+        self._headers[0]['CD1_2'] = 0.0
+        self._headers[0]['CD2_1'] = 0.0
+        self._headers[0]['CD2_2'] = self.get_cd22(self._headers[0])
+        self._headers[0]['EQUINOX'] = mc.to_float(
+            self._headers[0].get('TRKEQUIN')
+        )
         wcs_parser = fits2caom2.WcsParser(
-            self._header, self.obs_id, self._extension)
+            self._headers[0], self.obs_id, self._extension)
         if self.chunk is None:
             self.chunk = Chunk()
         wcs_parser.augment_position(self.chunk)
         self.chunk.position_axis_1 = 1
         self.chunk.position_axis_2 = 2
-        self.chunk.position.coordsys = self._header.get('TRKFRAME')
+        self.chunk.position.coordsys = self._headers[0].get('TRKFRAME')
         self._logger.debug('End _update_chunk_position')
 
     @staticmethod
@@ -518,10 +542,8 @@ class Bhros(InstrumentType):
 
 
 class Cirpass(InstrumentType):
-    def __init__(self, headers, extension):
-        super(Cirpass, self).__init__(external_metadata.Inst.CIRPASS)
-        self._header = headers[0]
-        self._extension = extension
+    def __init__(self, name):
+        super(Cirpass, self).__init__(name)
 
     def get_cd11(self, header, keyword='CDELT1'):
         lens_scl = header.get('LENS_SCL')
@@ -550,18 +572,18 @@ class Cirpass(InstrumentType):
         self._logger.debug(f'End update_energy {self._name}')
 
     def update_position(self):
-        self._header['CTYPE1'] = 'RA---TAN'
-        self._header['CTYPE2'] = 'DEC--TAN'
-        self._header['CUNIT1'] = 'deg'
-        self._header['CUNIT2'] = 'deg'
-        self._header['CRVAL1'] = Cirpass.get_ra(self._header)
-        self._header['CRVAL2'] = Cirpass.get_dec(self._header)
-        self._header['CROTA1'] = 0.0
+        self._headers[0]['CTYPE1'] = 'RA---TAN'
+        self._headers[0]['CTYPE2'] = 'DEC--TAN'
+        self._headers[0]['CUNIT1'] = 'deg'
+        self._headers[0]['CUNIT2'] = 'deg'
+        self._headers[0]['CRVAL1'] = Cirpass.get_ra(self._headers[0])
+        self._headers[0]['CRVAL2'] = Cirpass.get_dec(self._headers[0])
+        self._headers[0]['CROTA1'] = 0.0
         # So perhaps try:
         #     NAXIS1 = 33
         #     NAXIS2 = 15
-        self._header['NAXIS1'] = 33
-        self._header['NAXIS2'] = 15
+        self._headers[0]['NAXIS1'] = 33
+        self._headers[0]['NAXIS2'] = 15
 
         # TODO TODO TODO - add the get_crpix1, get_crpix2, get_cd11, get_cd22
         # methods, because that may allow for extraction of common code??????
@@ -570,13 +592,13 @@ class Cirpass(InstrumentType):
         # per lens)
         #     if 0.36 then FOV is 13.0" x 4.7" (RA and Dec)
         #     if 0.25 then FOV is 9.3" x 3.5"
-        lens_scl = self._header.get('LENS_SCL')
+        lens_scl = self._headers[0].get('LENS_SCL')
         if lens_scl == '0.36':
-            self._header['CDELT1'] = 13.0 / 3600.0
-            self._header['CDELT2'] = 4.7 / 3600.0
+            self._headers[0]['CDELT1'] = 13.0 / 3600.0
+            self._headers[0]['CDELT2'] = 4.7 / 3600.0
         else:
-            self._header['CDELT1'] = 9.3 / 3600.0
-            self._header['CDELT2'] = 3.5 / 3600.0
+            self._headers[0]['CDELT1'] = 9.3 / 3600.0
+            self._headers[0]['CDELT2'] = 3.5 / 3600.0
         # DB - 06-03-19
         # FOV is fixed at two possible values and has no bearing on NAXIS1/2
         # values. See
@@ -590,14 +612,18 @@ class Cirpass(InstrumentType):
         #     if 0.25 then FOV is 9.3" x 3.5"
         #     cd11 = LENS_SCL/3600.0
         #     cd22 = LENS_SCL/3600.0
-        self._header['CRPIX1'] = InstrumentType.get_crpix1(self._header)
-        self._header['CRPIX2'] = InstrumentType.get_crpix2(self._header)
-        self._header['CD1_1'] = self.get_cd11(self._header)
-        self._header['CD1_2'] = 0.0
-        self._header['CD2_1'] = 0.0
-        self._header['CD2_2'] = self.get_cd22(self._header)
+        self._headers[0]['CRPIX1'] = InstrumentType.get_crpix1(
+            self._headers[0]
+        )
+        self._headers[0]['CRPIX2'] = InstrumentType.get_crpix2(
+            self._headers[0]
+        )
+        self._headers[0]['CD1_1'] = self.get_cd11(self._headers[0])
+        self._headers[0]['CD1_2'] = 0.0
+        self._headers[0]['CD2_1'] = 0.0
+        self._headers[0]['CD2_2'] = self.get_cd22(self._headers[0])
         wcs_parser = fits2caom2.WcsParser(
-            self._header, self.obs_id, self._extension)
+            self._headers[0], self.obs_id, self._extension)
         if self.chunk is None:
             self.chunk = Chunk()
         wcs_parser.augment_position(self.chunk)
@@ -619,9 +645,8 @@ class Cirpass(InstrumentType):
 
 
 class F2(InstrumentType):
-    def __init__(self, header):
-        self._header = header
-        super(F2, self).__init__(external_metadata.Inst.F2)
+    def __init__(self, name):
+        super(F2, self).__init__(name)
 
     def update_energy(self):
         logging.debug('Begin _update_chunk_energy_f2')
@@ -670,7 +695,7 @@ class F2(InstrumentType):
                 self._logger.debug(
                     f'SpectralWCS: F2 LS|Spectroscopy mode for {self.obs_id}.'
                 )
-                fp_mask = self._header.get('MASKNAME')
+                fp_mask = self._headers[0].get('MASKNAME')
                 mode = external_metadata.om.get('mode')
                 slit_width = None
                 if mode == 'LS':
@@ -678,7 +703,7 @@ class F2(InstrumentType):
                 self.fm = svofps.FilterMetadata()
                 self.fm.central_wl = filter_md.central_wl
                 self.fm.bandpass = filter_md.bandpass
-                grism_name = self._header.get('GRISM')
+                grism_name = self._headers[0].get('GRISM')
                 self._logger.debug(
                     f'F2: grism name is {grism_name} fp_mask is {fp_mask} for '
                     f'{self.obs_id}'
@@ -735,9 +760,8 @@ class F2(InstrumentType):
 
 
 class Flamingos(InstrumentType):
-    def __init__(self, header):
-        super(Flamingos, self).__init__(external_metadata.Inst.FLAMINGOS)
-        self._header = header
+    def __init__(self, name):
+        super(Flamingos, self).__init__(name)
 
     def reset_position(self, headers, observation_type):
         result = super(Flamingos, self).reset_position(
@@ -819,12 +843,13 @@ class Flamingos(InstrumentType):
                 and self.chunk.position.axis is not None
                 and self.chunk.position.axis.function is not None
         ):
-            crval1 = self._header.get('CRVAL1')
-            crval2 = self._header.get('CRVAL2')
+            header = self._headers[self._extension]
+            crval1 = header.get('CRVAL1')
+            crval2 = header.get('CRVAL2')
             if 0.0 <= crval1 <= 360.0 and -90.0 <= crval2 <= 90.0:
-                c_delt1 = self._header.get('CDELT1')
-                c_delt2 = self._header.get('CDELT2')
-                c_rota1 = self._header.get('CROTA1')
+                c_delt1 = header.get('CDELT1')
+                c_delt2 = header.get('CDELT2')
+                c_rota1 = header.get('CROTA1')
                 if (
                         c_delt1 is not None
                         and c_delt2 is not None
@@ -860,9 +885,8 @@ class Flamingos(InstrumentType):
 
 
 class Fox(InstrumentType):
-    def __init__(self, name, header):
+    def __init__(self, name):
         super(Fox, self).__init__(name)
-        self._header = header
 
     def update_energy(self):
         """General chunk-level Energy WCS construction."""
@@ -909,7 +933,9 @@ class Fox(InstrumentType):
         """
         self._logger.debug(f'Begin _update_chunk_time_fox {self.obs_id}')
         if self.chunk.time is not None:
-            self.chunk.time.exposure = self._header.get('EXPOSURE')
+            self.chunk.time.exposure = self._headers[self._extension].get(
+                'EXPOSURE'
+            )
             # chunk.time.resolution already set by blueprint
         self._logger.debug(f'End _update_chunk_time_fox {self.obs_id}')
 
@@ -1123,9 +1149,8 @@ class Gmos(InstrumentType):
 
 
 class Gnirs(InstrumentType):
-    def __init__(self, header):
-        super(Gnirs, self).__init__(external_metadata.Inst.GNIRS)
-        self._header = header
+    def __init__(self, name):
+        super(Gnirs, self).__init__(name)
 
     def reset_energy(self, observation_type):
         # DB 16-04-19
@@ -1444,7 +1469,7 @@ class Gnirs(InstrumentType):
 
                                 lookup = None
                                 if '&XD' in disperser:
-                                    prism = self._header.get('PRISM')
+                                    prism = self._headers[0].get('PRISM')
                                     cd_mode = prism[prism.index('XD') - 1]
                                     coverage = f'{cd_mode}XD'
                                 else:
@@ -1598,14 +1623,10 @@ class Gnirs(InstrumentType):
 
 
 class Gpi(InstrumentType):
-    def __init__(self, headers, extension):
-        super(Gpi, self).__init__(external_metadata.Inst.GPI)
-        self._headers = headers
-        self._extension = extension
+    def __init__(self, name):
+        super(Gpi, self).__init__(name)
 
     def get_cd11(self, header):
-        # DB - 05-03-19 - NIFS needs a division by NAXIS1/2 for the
-        # cdelta1/2 calculations.
         return RADIUS_LOOKUP[self._name] / header.get('NAXIS1')
 
     def get_cd22(self, header):
@@ -1751,10 +1772,8 @@ class Gpi(InstrumentType):
 
 
 class Graces(InstrumentType):
-    def __init__(self, header, extension):
-        super(Graces, self).__init__(external_metadata.Inst.GRACES)
-        self._header = header
-        self._extension = extension
+    def __init__(self, name):
+        super(Graces, self).__init__(name)
 
     def reset_position(self, headers, observation_type):
         result = super(Graces, self).reset_position(
@@ -1816,25 +1835,26 @@ class Graces(InstrumentType):
 
     def update_position(self):
         if self.mode is not None and self.mode != 'imaging':
-            self._header['CTYPE1'] = 'RA---TAN'
-            self._header['CTYPE2'] = 'DEC--TAN'
-            self._header['CUNIT1'] = 'deg'
-            self._header['CUNIT2'] = 'deg'
-            self._header['CRVAL1'] = InstrumentType.get_ra(self._header)
-            self._header['CRVAL2'] = InstrumentType.get_dec(self._header)
-            self._header['CDELT1'] = RADIUS_LOOKUP[self._name]
-            self._header['CDELT2'] = RADIUS_LOOKUP[self._name]
-            self._header['CROTA1'] = 0.0
-            self._header['NAXIS1'] = 1
-            self._header['NAXIS2'] = 1
-            self._header['CRPIX1'] = InstrumentType.get_crpix1(self._header)
-            self._header['CRPIX2'] = InstrumentType.get_crpix2(self._header)
-            self._header['CD1_1'] = self.get_cd11(self._header)
-            self._header['CD1_2'] = 0.0
-            self._header['CD2_1'] = 0.0
-            self._header['CD2_2'] = self.get_cd22(self._header)
+            header = self._headers[self._extension]
+            header['CTYPE1'] = 'RA---TAN'
+            header['CTYPE2'] = 'DEC--TAN'
+            header['CUNIT1'] = 'deg'
+            header['CUNIT2'] = 'deg'
+            header['CRVAL1'] = InstrumentType.get_ra(header)
+            header['CRVAL2'] = InstrumentType.get_dec(header)
+            header['CDELT1'] = RADIUS_LOOKUP[self._name]
+            header['CDELT2'] = RADIUS_LOOKUP[self._name]
+            header['CROTA1'] = 0.0
+            header['NAXIS1'] = 1
+            header['NAXIS2'] = 1
+            header['CRPIX1'] = InstrumentType.get_crpix1(header)
+            header['CRPIX2'] = InstrumentType.get_crpix2(header)
+            header['CD1_1'] = self.get_cd11(header)
+            header['CD1_2'] = 0.0
+            header['CD2_1'] = 0.0
+            header['CD2_2'] = self.get_cd22(header)
             wcs_parser = fits2caom2.WcsParser(
-                self._header, self.obs_id, self._extension
+                header, self.obs_id, self._extension
             )
             if self.chunk is None:
                 self.chunk = Chunk()
@@ -1845,8 +1865,8 @@ class Graces(InstrumentType):
 
 
 class Gsaoi(InstrumentType):
-    def __init__(self):
-        super(Gsaoi, self).__init__(external_metadata.Inst.GSAOI)
+    def __init__(self, name):
+        super(Gsaoi, self).__init__(name)
 
     def reset_energy(self, observation_type):
         # DB 24-04-19
@@ -1887,10 +1907,8 @@ class Gsaoi(InstrumentType):
 
 
 class Hokupaa(InstrumentType):
-    def __init__(self, header, extension):
-        super(Hokupaa, self).__init__(external_metadata.Inst.HOKUPAA)
-        self._header = header
-        self._extension = extension
+    def __init__(self, name):
+        super(Hokupaa, self).__init__(name)
 
     def get_cd11(self, header):
         pix_scale = header.get('PIXSCALE')
@@ -2025,7 +2043,8 @@ class Hokupaa(InstrumentType):
         self._logger.debug(f'End update_energy {self._name}')
 
     def update_position(self):
-        equinox = mc.to_float(self._header.get('EQUINOX'))
+        header = self._headers[self._extension]
+        equinox = mc.to_float(header.get('EQUINOX'))
         if not 1800.0 <= equinox <= 2500.0:
             self._logger.warning(
                 f'EQUINOX value is wrong ({equinox}), no spatial WCS for '
@@ -2033,26 +2052,26 @@ class Hokupaa(InstrumentType):
             )
             return
 
-        self._header['CTYPE1'] = 'RA---TAN'
-        self._header['CTYPE2'] = 'DEC--TAN'
-        self._header['CUNIT1'] = 'deg'
-        self._header['CUNIT2'] = 'deg'
-        self._header['CRVAL1'] = Hokupaa.get_ra(self._header)
-        self._header['CRVAL2'] = Hokupaa.get_dec(self._header)
-        self._header['CDELT1'] = RADIUS_LOOKUP[self._name]
-        self._header['CDELT2'] = RADIUS_LOOKUP[self._name]
-        self._header['CROTA1'] = 0.0
-        self._header['NAXIS1'] = 1
-        self._header['NAXIS2'] = 1
-        self._header['CRPIX1'] = Gpi.get_crpix1(self._header, 'CRPIX1')
-        self._header['CRPIX2'] = Gpi.get_crpix1(self._header, 'CRPIX2')
-        self._header['CD1_1'] = self.get_cd11(self._header)
-        self._header['CD1_2'] = 0.0
-        self._header['CD2_1'] = 0.0
-        self._header['CD2_2'] = self.get_cd22(self._header)
+        header['CTYPE1'] = 'RA---TAN'
+        header['CTYPE2'] = 'DEC--TAN'
+        header['CUNIT1'] = 'deg'
+        header['CUNIT2'] = 'deg'
+        header['CRVAL1'] = Hokupaa.get_ra(header)
+        header['CRVAL2'] = Hokupaa.get_dec(header)
+        header['CDELT1'] = RADIUS_LOOKUP[self._name]
+        header['CDELT2'] = RADIUS_LOOKUP[self._name]
+        header['CROTA1'] = 0.0
+        header['NAXIS1'] = 1
+        header['NAXIS2'] = 1
+        header['CRPIX1'] = Gpi.get_crpix1(header, 'CRPIX1')
+        header['CRPIX2'] = Gpi.get_crpix1(header, 'CRPIX2')
+        header['CD1_1'] = self.get_cd11(header)
+        header['CD1_2'] = 0.0
+        header['CD2_1'] = 0.0
+        header['CD2_2'] = self.get_cd22(header)
 
         wcs_parser = fits2caom2.WcsParser(
-            self._header, self.obs_id, self._extension
+            header, self.obs_id, self._extension
         )
         if self.chunk is None:
             self.chunk = Chunk()
@@ -2073,9 +2092,8 @@ class Hokupaa(InstrumentType):
 
 
 class Hrwfs(InstrumentType):
-    def __init__(self):
-        super(Hrwfs, self).__init__(external_metadata.Inst.HRWFS)
-        self._logger = logging.getLogger(__class__.__name__)
+    def __init__(self, name):
+        super(Hrwfs, self).__init__(name)
 
     def update_energy(self):
         self._logger.debug('Begin _update_chunk_energy_hrwfs')
@@ -2120,8 +2138,8 @@ class Hrwfs(InstrumentType):
 
 
 class Michelle(InstrumentType):
-    def __init__(self):
-        super(Michelle, self).__init__(external_metadata.Inst.MICHELLE)
+    def __init__(self, name):
+        super(Michelle, self).__init__(name)
 
     def make_axes_consistent(self):
         super(Michelle, self).make_axes_consistent()
@@ -2265,8 +2283,8 @@ class Michelle(InstrumentType):
 
 
 class Nici(InstrumentType):
-    def __init__(self):
-        super(Nici, self).__init__(external_metadata.Inst.NICI)
+    def __init__(self, name):
+        super(Nici, self).__init__(name)
 
     def reset_energy(self, observation_type):
         # DB 04-04-19
@@ -2350,10 +2368,8 @@ class Nici(InstrumentType):
 
 
 class Nifs(InstrumentType):
-    def __init__(self, headers, extension):
-        super(Nifs, self).__init__(external_metadata.Inst.NIFS)
-        self._headers = headers
-        self._extension = extension
+    def __init__(self, name):
+        super(Nifs, self).__init__(name)
 
     def get_cd11(self, header):
         # DB - 05-03-19 - NIFS needs a division by NAXIS1/2 for the
@@ -2618,10 +2634,8 @@ class Nifs(InstrumentType):
 
 
 class Niri(InstrumentType):
-    def __init__(self, headers, extension):
-        super(Niri, self).__init__(external_metadata.Inst.NIRI)
-        self._headers = headers
-        self._extension = extension
+    def __init__(self, name):
+        super(Niri, self).__init__(name)
 
     def reset_energy(self, observation_type):
         return (
@@ -2633,7 +2647,7 @@ class Niri(InstrumentType):
         )
 
     def update_energy(self):
-        self._logger.debug('Begin _update_chunk_energy_niri')
+        self._logger.debug('Begin update_energy')
         reset_energy = False
 
         # values from
@@ -2877,16 +2891,17 @@ class Niri(InstrumentType):
 
 
 class Oscir(InstrumentType):
-    def __init__(self, header, extension):
-        super(Oscir, self).__init__(external_metadata.Inst.OSCIR)
-        self._header = header
-        self._extension = extension
+    def __init__(self, name):
+        super(Oscir, self).__init__(name)
 
     def get_cd11(self, header):
         return RADIUS_LOOKUP[self._name]
 
     def get_cd22(self, header):
         return self.get_cd11(header)
+
+    def get_exposure(self, header):
+        return external_metadata.om.get('exposure_time') * 60.0
 
     def make_axes_consistent(self):
         # DB - 01-02-21
@@ -2963,24 +2978,25 @@ class Oscir(InstrumentType):
         self._logger.debug(f'End update_energy {self._name}')
 
     def update_position(self):
-        self._header['CTYPE1'] = 'RA---TAN'
-        self._header['CTYPE2'] = 'DEC--TAN'
-        self._header['CUNIT1'] = 'deg'
-        self._header['CUNIT2'] = 'deg'
-        self._header['CRVAL1'] = Oscir.get_ra(self._header)
-        self._header['CRVAL2'] = Oscir.get_dec(self._header)
-        self._header['CDELT1'] = RADIUS_LOOKUP[self._name]
-        self._header['CDELT2'] = RADIUS_LOOKUP[self._name]
-        self._header['CROTA1'] = 0.0
-        self._header['CRPIX1'] = Gpi.get_crpix1(self._header)
-        self._header['CRPIX2'] = Gpi.get_crpix2(self._header)
-        self._header['CD1_1'] = self.get_cd11(self._header)
-        self._header['CD1_2'] = 0.0
-        self._header['CD2_1'] = 0.0
-        self._header['CD2_2'] = self.get_cd22(self._header)
+        header = self._headers[self._extension]
+        header['CTYPE1'] = 'RA---TAN'
+        header['CTYPE2'] = 'DEC--TAN'
+        header['CUNIT1'] = 'deg'
+        header['CUNIT2'] = 'deg'
+        header['CRVAL1'] = Oscir.get_ra(header)
+        header['CRVAL2'] = Oscir.get_dec(header)
+        header['CDELT1'] = RADIUS_LOOKUP[self._name]
+        header['CDELT2'] = RADIUS_LOOKUP[self._name]
+        header['CROTA1'] = 0.0
+        header['CRPIX1'] = Gpi.get_crpix1(header)
+        header['CRPIX2'] = Gpi.get_crpix2(header)
+        header['CD1_1'] = self.get_cd11(header)
+        header['CD1_2'] = 0.0
+        header['CD2_1'] = 0.0
+        header['CD2_2'] = self.get_cd22(header)
 
         wcs_parser = fits2caom2.WcsParser(
-            self._header, self.obs_id, self._extension
+            header, self.obs_id, self._extension
         )
         if self.chunk is None:
             self.chunk = Chunk()
@@ -2988,8 +3004,8 @@ class Oscir(InstrumentType):
         self.chunk.position_axis_1 = 1
         self.chunk.position_axis_2 = 2
 
-        self.chunk.position.coordsys = self._header.get('FRAMEPA')
-        self.chunk.position.equinox = mc.to_float(self._header.get('EQUINOX'))
+        self.chunk.position.coordsys = header.get('FRAMEPA')
+        self.chunk.position.equinox = mc.to_float(header.get('EQUINOX'))
         logging.debug('End _update_chunk_position')
 
     @staticmethod
@@ -3004,11 +3020,8 @@ class Oscir(InstrumentType):
 
 
 class Phoenix(InstrumentType):
-    def __init__(self, headers, extension):
-        super(Phoenix, self).__init__(external_metadata.Inst.PHOENIX)
-        self._headers = headers
-        self._header = headers[extension]
-        self._extension = extension
+    def __init__(self, name):
+        super(Phoenix, self).__init__(name)
 
     def reset_energy(self, observation_type):
         # DB 07-06-21
@@ -3172,29 +3185,30 @@ class Phoenix(InstrumentType):
 
     def update_position(self):
         self._logger.debug('Begin update_position')
-        self._header['CTYPE1'] = 'RA---TAN'
-        self._header['CTYPE2'] = 'DEC--TAN'
-        self._header['CUNIT1'] = 'deg'
-        self._header['CUNIT2'] = 'deg'
-        self._header['CRVAL1'] = InstrumentType.get_ra(self._header)
-        self._header['CRVAL2'] = InstrumentType.get_dec(self._header)
-        self._header['CDELT1'] = RADIUS_LOOKUP[self._name]
-        self._header['CDELT2'] = RADIUS_LOOKUP[self._name]
-        self._header['CROTA1'] = 0.0
-        self._header['NAXIS1'] = 1
-        self._header['NAXIS2'] = 1
-        self._header['CRPIX1'] = InstrumentType.get_crpix1(self._header)
-        self._header['CRPIX2'] = InstrumentType.get_crpix2(self._header)
-        self._header['CD1_1'] = self.get_cd11(self._header)
-        self._header['CD1_2'] = 0.0
-        self._header['CD2_1'] = 0.0
-        self._header['CD2_2'] = self.get_cd22(self._header)
-        temp = self._header.get('EQUINOX')
+        header = self._headers[self._extension]
+        header['CTYPE1'] = 'RA---TAN'
+        header['CTYPE2'] = 'DEC--TAN'
+        header['CUNIT1'] = 'deg'
+        header['CUNIT2'] = 'deg'
+        header['CRVAL1'] = InstrumentType.get_ra(header)
+        header['CRVAL2'] = InstrumentType.get_dec(header)
+        header['CDELT1'] = RADIUS_LOOKUP[self._name]
+        header['CDELT2'] = RADIUS_LOOKUP[self._name]
+        header['CROTA1'] = 0.0
+        header['NAXIS1'] = 1
+        header['NAXIS2'] = 1
+        header['CRPIX1'] = InstrumentType.get_crpix1(header)
+        header['CRPIX2'] = InstrumentType.get_crpix2(header)
+        header['CD1_1'] = self.get_cd11(header)
+        header['CD1_2'] = 0.0
+        header['CD2_1'] = 0.0
+        header['CD2_2'] = self.get_cd22(header)
+        temp = header.get('EQUINOX')
         if temp is None or math.isclose(temp, 0.0):
-            self._header['EQUINOX'] = self._header.get('EPOCH')
+            header['EQUINOX'] = header.get('EPOCH')
 
         wcs_parser = fits2caom2.WcsParser(
-            self._header, self.obs_id, self._extension
+            header, self.obs_id, self._extension
         )
         if self.chunk is None:
             self.chunk = Chunk()
@@ -3205,10 +3219,8 @@ class Phoenix(InstrumentType):
 
 
 class Texes(InstrumentType):
-    def __init__(self, header, extension):
-        super(Texes, self).__init__(external_metadata.Inst.TEXES)
-        self._header = header
-        self._extension = extension
+    def __init__(self, name):
+        super(Texes, self).__init__(name)
 
     def get_cd11(self, header, keyword='CDELT1'):
         return RADIUS_LOOKUP[self._name]
@@ -3251,7 +3263,7 @@ class Texes(InstrumentType):
                 f'SpectralWCS spectral mode for {self.obs_id}.'
             )
             self.fm = svofps.FilterMetadata('TEXES')
-            self.fm.central_wl = 10000 / self._header.get('WAVENO0')
+            self.fm.central_wl = 10000 / self._headers[0].get('WAVENO0')
             self.fm.bandpass = 0.25
         else:
             # data_type/observing mode is always spectroscopy
@@ -3263,25 +3275,26 @@ class Texes(InstrumentType):
         self._logger.debug(f'End update_energy {self._name}')
 
     def update_position(self):
-        self._header['CTYPE1'] = 'RA---TAN'
-        self._header['CTYPE2'] = 'DEC--TAN'
-        self._header['CUNIT1'] = 'deg'
-        self._header['CUNIT2'] = 'deg'
-        self._header['CRVAL1'] = Texes.get_ra(self._header)
-        self._header['CRVAL2'] = Texes.get_dec(self._header)
-        self._header['CDELT1'] = RADIUS_LOOKUP[self._name]
-        self._header['CDELT2'] = RADIUS_LOOKUP[self._name]
-        self._header['CROTA1'] = 0.0
-        self._header['NAXIS1'] = 1
-        self._header['NAXIS2'] = 1
-        self._header['CRPIX1'] = InstrumentType.get_crpix1(self._header)
-        self._header['CRPIX2'] = InstrumentType.get_crpix2(self._header)
-        self._header['CD1_1'] = self.get_cd11(self._header)
-        self._header['CD1_2'] = 0.0
-        self._header['CD2_1'] = 0.0
-        self._header['CD2_2'] = self.get_cd22(self._header)
+        header = self._headers[0]
+        header['CTYPE1'] = 'RA---TAN'
+        header['CTYPE2'] = 'DEC--TAN'
+        header['CUNIT1'] = 'deg'
+        header['CUNIT2'] = 'deg'
+        header['CRVAL1'] = Texes.get_ra(header)
+        header['CRVAL2'] = Texes.get_dec(header)
+        header['CDELT1'] = RADIUS_LOOKUP[self._name]
+        header['CDELT2'] = RADIUS_LOOKUP[self._name]
+        header['CROTA1'] = 0.0
+        header['NAXIS1'] = 1
+        header['NAXIS2'] = 1
+        header['CRPIX1'] = InstrumentType.get_crpix1(header)
+        header['CRPIX2'] = InstrumentType.get_crpix2(header)
+        header['CD1_1'] = self.get_cd11(header)
+        header['CD1_2'] = 0.0
+        header['CD2_1'] = 0.0
+        header['CD2_2'] = self.get_cd22(header)
         wcs_parser = fits2caom2.WcsParser(
-            self._header, self.obs_id, self._extension)
+            header, self.obs_id, self._extension)
         if self.chunk is None:
             self.chunk = Chunk()
         wcs_parser.augment_position(self.chunk)
@@ -3301,10 +3314,8 @@ class Texes(InstrumentType):
 
 
 class Trecs(InstrumentType):
-    def __init__(self, headers, extension):
-        super(Trecs, self).__init__(external_metadata.Inst.TRECS)
-        self._headers = headers
-        self._extension = extension
+    def __init__(self, name):
+        super(Trecs, self).__init__(name)
 
     def make_axes_consistent(self):
         super(Trecs, self).make_axes_consistent()
@@ -3425,57 +3436,30 @@ class Trecs(InstrumentType):
             )
 
 
-def instrument_factory(name, headers, extension):
-    # lookup = {
-    #     external_metadata.Inst.NIFS: 'Nifs()',
-    # }
-    # return exec(lookup.get(name))
-    header = headers[extension]
-    if name is external_metadata.Inst.BHROS:
-        return Bhros(headers, extension)
-    elif name is external_metadata.Inst.CIRPASS:
-        return Cirpass(headers, extension)
-    elif name is external_metadata.Inst.F2:
-        return F2(headers[0])
-    elif name is external_metadata.Inst.FLAMINGOS:
-        return Flamingos(header)
-    elif name in [
-        external_metadata.Inst.ALOPEKE, external_metadata.Inst.ZORRO
-    ]:
-        return Fox(name, header)
-    elif name in [
-        external_metadata.Inst.GMOS,
-        external_metadata.Inst.GMOSN,
-        external_metadata.Inst.GMOSS,
-    ]:
-        return Gmos(name)
-    elif name is external_metadata.Inst.GNIRS:
-        return Gnirs(headers[0])
-    elif name is external_metadata.Inst.GPI:
-        return Gpi(headers, extension)
-    elif name is external_metadata.Inst.GRACES:
-        return Graces(header, extension)
-    elif name is external_metadata.Inst.GSAOI:
-        return Gsaoi()
-    elif name is external_metadata.Inst.HOKUPAA:
-        return Hokupaa(header, extension)
-    elif name is external_metadata.Inst.HRWFS:
-        return Hrwfs()
-    elif name is external_metadata.Inst.MICHELLE:
-        return Michelle()
-    elif name is external_metadata.Inst.NICI:
-        return Nici()
-    elif name is external_metadata.Inst.NIFS:
-        return Nifs(headers, extension)
-    elif name is external_metadata.Inst.NIRI:
-        return Niri(headers, extension)
-    elif name is external_metadata.Inst.OSCIR:
-        return Oscir(header, extension)
-    elif name is external_metadata.Inst.PHOENIX:
-        return Phoenix(headers, extension)
-    elif name is external_metadata.Inst.TEXES:
-        return Texes(headers[0], extension)
-    elif name is external_metadata.Inst.TRECS:
-        return Trecs(headers, extension)
-    else:
-        return InstrumentType(name)
+def instrument_factory(name):
+    lookup = {
+        external_metadata.Inst.BHROS: Bhros,
+        external_metadata.Inst.CIRPASS: Cirpass,
+        external_metadata.Inst.F2: F2,
+        external_metadata.Inst.FLAMINGOS: Flamingos,
+        external_metadata.Inst.ALOPEKE: Fox,
+        external_metadata.Inst.ZORRO: Fox,
+        external_metadata.Inst.GMOS: Gmos,
+        external_metadata.Inst.GMOSS: Gmos,
+        external_metadata.Inst.GMOSN: Gmos,
+        external_metadata.Inst.GNIRS: Gnirs,
+        external_metadata.Inst.GPI: Gpi,
+        external_metadata.Inst.GRACES: Graces,
+        external_metadata.Inst.GSAOI: Gsaoi,
+        external_metadata.Inst.HOKUPAA: Hokupaa,
+        external_metadata.Inst.HRWFS: Hrwfs,
+        external_metadata.Inst.MICHELLE: Michelle,
+        external_metadata.Inst.NICI: Nici,
+        external_metadata.Inst.NIFS: Nifs,
+        external_metadata.Inst.NIRI: Niri,
+        external_metadata.Inst.OSCIR: Oscir,
+        external_metadata.Inst.PHOENIX: Phoenix,
+        external_metadata.Inst.TEXES: Texes,
+        external_metadata.Inst.TRECS: Trecs,
+    }
+    return lookup.get(name)(name)
