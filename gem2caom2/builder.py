@@ -75,7 +75,7 @@ from os import path
 from caom2pipe import astro_composable as ac
 from caom2pipe import manage_composable as mc
 from caom2pipe import name_builder_composable as nbc
-from gem2caom2 import gem_name, external_metadata
+from gem2caom2 import gem_name, external_metadata, instruments
 
 
 __all__ = ['EduQueryBuilder', 'GemObsIDBuilder', 'get_instrument']
@@ -237,6 +237,9 @@ class GemObsIDBuilder(nbc.StorageNameBuilder):
             raise mc.CadcException(e)
 
 
+current_instrument = None
+
+
 def get_instrument():
     inst = external_metadata.om.get('instrument')
     if inst == 'ALOPEKE':
@@ -245,4 +248,8 @@ def get_instrument():
         inst = 'Alopeke'
     if inst == 'ZORRO':
         inst = 'Zorro'
+    global current_instrument
+    current_instrument = instruments.instrument_factory(
+        external_metadata.Inst(inst)
+    )
     return external_metadata.Inst(inst)

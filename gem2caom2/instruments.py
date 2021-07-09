@@ -72,7 +72,8 @@ import math
 import re
 
 from caom2 import DataProductType, CoordAxis1D, RefCoord, Axis, CoordRange1D
-from caom2 import SpectralWCS, Chunk
+from caom2 import SpectralWCS, Chunk, ObservationIntentType, TargetType
+from caom2 import ProductType, CalibrationLevel
 from caom2utils import fits2caom2
 from caom2pipe import astro_composable as ac
 from caom2pipe import caom_composable as cc
@@ -80,6 +81,40 @@ from caom2pipe import manage_composable as mc
 from gem2caom2 import external_metadata, svofps
 
 __all__ = ['instrument_factory', 'InstrumentType']
+
+
+# DB 01-04-21
+# PINHOLE is CALIBRATION
+# DB 03-06-21
+# OBSCLASS = dayCal datasets should all have an intent of calibration.
+CAL_VALUES = [
+    'GCALflat',
+    'Bias',
+    'BIAS',
+    'Twilight',
+    'Ar',
+    'FLAT',
+    'flat',
+    'ARC',
+    'Domeflat',
+    'DARK',
+    'dark',
+    'gcal',
+    'ZERO',
+    'SLIT',
+    'slit',
+    'PINHOLE',
+    'dayCal',
+]
+
+
+# DB - 04-02-19 - strip out anything with 'pupil' as it doesn't affect
+# energy transmission
+#
+# DB 24-04-19
+# Other instruments occasionally have ND filters in the beam.
+FILTER_VALUES_TO_IGNORE = ['open', 'invalid', 'pupil', 'clear', 'nd']
+
 
 # GPI radius == 2.8 arcseconds, according to Christian Marois via DB 02-07-19
 # DB - 18-02-19 - Replace “5.0” for “2.8" for GPI field of view.
@@ -122,14 +157,22 @@ class InstrumentType:
     def __init__(self, name):
         self._name = name
         self._chunk = None
+        self._data_label = None
         self._data_product_type = None
         self._fm = None
         self._filter_name = None
         self._extension = None
         self._headers = None
         self._mode = None
+        self._obs_class = None
         self._obs_id = None
+        self._obs_type = None
         self._logger = logging.getLogger(name.value)
+
+    def _another_init_that_i_need_to_figure_out_where_to_call(self, header):
+        self._get_data_label(header)
+        self._get_obs_type(header)
+        self._get_obs_class(header)
 
     @property
     def chunk(self):
@@ -197,6 +240,27 @@ class InstrumentType:
     def obs_id(self, value):
         self._obs_id = value
 
+    def _get_data_label(self, header):
+        self._data_label = external_metadata.om.get('data_label')
+        if self._data_label is None and header is not None:
+            self._data_label = header.get('DATALAB')
+
+    def _get_obs_class(self, header):
+        """Common location to lookup OBSCLASS from the FITS headers, and if
+        it's not present, to lookup observation_class from JSON summary
+        metadata."""
+        self._obs_class = external_metadata.om.get('observation_class')
+        if self._obs_class is None and header is not None:
+            self._obs_class = header.get('OBSCLASS')
+
+    def _get_obs_type(self, header):
+        """Common location to lookup OBSTYPE from the FITS headers, and if
+        it's not present, to lookup observation_type from JSON summary
+        metadata."""
+        self._obs_type = external_metadata.om.get('observation_type')
+        if self._obs_type is None:
+            self._obs_type = header.get('OBSTYPE')
+
     def build_chunk_energy(self):
         # If n_axis=1 (as I guess it will be for all but processes GRACES
         # spectra now?) that means crpix=0.5 and the corresponding crval would
@@ -251,6 +315,56 @@ class InstrumentType:
         # cutouts to support
         self.chunk.energy_axis = None
 
+    def get_art_product_type(self, header):
+        """
+        Calculate the Artifact ProductType.
+
+        If obsclass is unknown then CAOM2 ProductType is set to CALIBRATION.
+        This should only effect early data when OBSCLASS was not in the JSON
+        summary metadata or FITS headers.
+
+        :param header:  The FITS header for the current extension.
+        :return: The Artifact ProductType, or None if not found.
+        """
+        self._get_data_label(header)
+        self._get_obs_type(header)
+        self._get_obs_class(header)
+
+        self._logger.debug(
+            f'obs type is {self._obs_type} obs class is {self._obs_class} '
+            f'for {self._data_label}'
+        )
+        if self._obs_type is not None and self._obs_type == 'MASK':
+            result = ProductType.AUXILIARY
+        elif self._obs_class is None:
+            # 'unknown' is the value of observation_class for CIRPASS
+            if (
+                self._obs_type is not None and
+                self._obs_type in ['OBJECT', 'unknown']
+            ):
+                if self._data_label is not None and 'CAL' in self._data_label:
+                    result = ProductType.CALIBRATION
+                else:
+                    result = ProductType.SCIENCE
+            else:
+                result = ProductType.CALIBRATION
+        elif self._obs_class is not None and self._obs_class == 'science':
+            result = ProductType.SCIENCE
+        else:
+            result = ProductType.CALIBRATION
+        return result
+
+    def get_calibration_level(self, uri):
+        result = CalibrationLevel.RAW_STANDARD
+        reduction = external_metadata.om.get('reduction')
+        if (
+            reduction is not None and (
+                'PROCESSED' in reduction or 'PREPARED' in reduction
+            )
+        ):
+            result = CalibrationLevel.CALIBRATED
+        return result
+
     def get_cd11(self, header, keyword='CDELT1'):
         result = header.get(keyword)
         if result is None:
@@ -259,6 +373,219 @@ class InstrumentType:
 
     def get_cd22(self, header):
         return self.get_cd11(header, 'CDELT2')
+
+    def get_data_product_type(self, header):
+        """
+        Calculate the Plane DataProductType.
+
+        :param header:  The FITS header for the current extension.
+        :return: The Plane DataProductType, or None if not found.
+        """
+        mode = external_metadata.om.get('mode')
+        self._get_obs_type(header)
+        if mode is None:
+            raise mc.CadcException(
+                f'No mode information found for '
+                f'{external_metadata.om.get("filename")}'
+            )
+        elif (mode == 'imaging') or (
+                self._obs_type is not None and self._obs_type == 'MASK'
+        ):
+            result = DataProductType.IMAGE
+        else:
+            result = DataProductType.SPECTRUM
+        return result
+
+    def get_dec(self, header):
+        """
+        Get the declination. Rely on the JSON metadata, because it's all in
+        the same units (degrees).
+
+        :param header:  The FITS header for the current extension.
+        :return: declination, or None if not found.
+        """
+        return external_metadata.om.get('dec')
+
+    def get_exposure(self, header):
+        """
+        Calculate the exposure time. EXPTIME in the header is not always the
+        total exposure time for some of the IR instruments.  For these EXPTIME
+        is usually the individual exposure time for each chop/nod and a bunch
+        of chops/nods are executed for one observation.  Gemini correctly
+         allows for this in the json ‘exposure_time’ value.
+
+        :param header:  The FITS header for the current extension (unused).
+        :return: The exposure time, or None if not found.
+        """
+        return external_metadata.om.get('exposure_time')
+
+    def get_filter_name(self):
+        """
+        Create the filter names for use by update_energy methods.
+
+        :return: The filter names, or None if none found.
+        """
+        filter_name = external_metadata.om.get('filter_name')
+
+        # DB 24-04-19
+        # ND = neutral density and so any ND* filter can be ignored as it
+        # shouldn’t affect transmission band.  Likely observing a bright
+        # Other instruments occasionally have ND filters in the beam.
+        if filter_name is not None:
+            filter_name = filter_name.replace('&', '+')
+            temp = filter_name.split('+')
+            for fn in temp:
+                if fn.startswith('ND'):
+                    filter_name = filter_name.replace(fn, '')
+            filter_name = filter_name.strip('+')
+        if filter_name is None or len(filter_name.strip()) == 0:
+            result = InstrumentType._search_through_keys(
+                self._headers[0], ['FILTER'], FILTER_VALUES_TO_IGNORE)
+            filter_name = result
+        self._logger.info(
+            f'Filter names are {filter_name} in {self._data_label}'
+        )
+        self.filter_name = filter_name
+
+    @staticmethod
+    def _search_through_keys(header, search_keys, values_to_ignore):
+        result = []
+        for key in header.keys():
+            for lookup in search_keys:
+                if lookup in key:
+                    value = header.get(key).lower()
+                    ignore = False
+                    for ii in values_to_ignore:
+                        if ii.startswith(value) or value.startswith(ii):
+                            ignore = True
+                            break
+                    if ignore:
+                        continue
+                    else:
+                        result.append(header.get(key).strip())
+        return '+'.join(result)
+
+    def get_obs_intent(self, header):
+        """
+        Determine the Observation intent.
+
+        :param header:  The FITS header for the current extension.
+        :return: The Observation intent, or None if not found.
+        """
+        result = ObservationIntentType.CALIBRATION
+        self._get_data_label(header)
+        self._get_obs_class(header)
+        self._logger.error(
+            f'observation_class is {self._obs_class} for {self._data_label}'
+        )
+        if self._obs_class is None:
+            self._get_obs_type(header)
+            self._logger.error(
+                f'observation_type is {self._obs_type} for {self._data_label}'
+            )
+            if self._obs_type is None:
+                self._logger.error(f'data_label is {self._data_label}')
+                if (
+                        self._data_label is None or (
+                            self._data_label is not None and
+                            '-CAL' not in self._data_label
+                        )
+                        and header is not None
+                ):
+                    object_value = header.get('OBJECT')
+                    self._logger.error(
+                        f'object_value is {object_value} for '
+                        f'{self._data_label}'
+                    )
+                    if object_value is not None:
+                        if object_value in CAL_VALUES:
+                            result = ObservationIntentType.CALIBRATION
+                        else:
+                            # check that an individual cal value is not part
+                            # of the object_value
+                            cal_value_found = False
+                            for ii in CAL_VALUES:
+                                if ii in object_value:
+                                    result = ObservationIntentType.CALIBRATION
+                                    cal_value_found = True
+                                    break
+                            if not cal_value_found:
+                                result = ObservationIntentType.SCIENCE
+                else:
+                    if '-CAL' in self._data_label:
+                        result = ObservationIntentType.CALIBRATION
+                    else:
+                        result = ObservationIntentType.SCIENCE
+            else:
+                if self._obs_type in CAL_VALUES:
+                    result = ObservationIntentType.CALIBRATION
+                else:
+                    result = ObservationIntentType.SCIENCE
+        elif 'science' in self._obs_class:
+            result = ObservationIntentType.SCIENCE
+        return result
+
+    def get_obs_type(self, header):
+        """
+        Determine the Observation type.
+
+        :param header:  The FITS header for the current extension.
+        :return: The Observation type, or None if not found.
+        """
+        self._get_obs_type(header)
+        result = self._obs_type
+        self._get_obs_class(header)
+        self._logger.error(
+            f'obs_type {self._obs_type} obs_class {self._obs_class}'
+        )
+        if (
+            self._obs_class is not None and
+            (self._obs_class == 'acq' or self._obs_class == 'acqCal')
+        ):
+            result = 'ACQUISITION'
+        return result
+
+    def get_ra(self, header):
+        """
+        Get the right ascension. Rely on the JSON metadata, because it's all in
+        the same units (degrees).
+
+        :param header:  The FITS header for the current extension.
+        :return: ra, or None if not found.
+        """
+        return external_metadata.om.get('ra')
+
+    def get_target_type(self):
+        """
+        Calculate the Target TargetType
+        """
+        result = TargetType.FIELD
+        spectroscopy = external_metadata.om.get('spectroscopy')
+        if spectroscopy:
+            result = TargetType.OBJECT
+        return result
+
+    def get_time_delta(self, header):
+        """
+        Calculate the Time WCS delta.
+
+        :param header: The FITS header for the current extension.
+        :return: The Time delta, or None if none found.
+        """
+        exptime = self.get_exposure(header)
+        if exptime is None:
+            return None
+        return mc.to_float(exptime) / (24.0 * 3600.0)
+
+    def get_time_function_val(self, header):
+        """
+        Calculate the Chunk Time WCS function value, in 'mjd'.
+
+        :param header:  The FITS header for the current extension (not used).
+        :return: The Time WCS value from JSON Summary Metadata.
+        """
+        time_string = external_metadata.om.get('ut_datetime')
+        return ac.get_datetime(time_string)
 
     def make_axes_consistent(self):
         # DB 04-17-21
@@ -359,7 +686,7 @@ class InstrumentType:
         """
         result = False
         types = external_metadata.om.get('types')
-        ra = InstrumentType.get_ra(headers[0])
+        ra = self.get_ra(headers[0])
         if (
             ('AZEL_TARGET' in types and ra is None) or
             observation_type in ['BIAS', 'DARK']
@@ -384,26 +711,6 @@ class InstrumentType:
 
     def update_energy(self):
         raise NotImplementedError
-    #
-    # @staticmethod
-    # def get_obs_class(header):
-    #     """Common location to lookup observation_class from JSON summary
-    #     metadata, and if it's not present, to lookup OBSCLASS from the FITS
-    #     headers."""
-    #     obs_class = external_metadata.om.get('observation_class')
-    #     if obs_class is None and header is not None:
-    #         obs_class = header.get('OBSCLASS')
-    #     return obs_class
-    #
-    # @staticmethod
-    # def get_obs_type(header):
-    #     """Common location to lookup observation_type from JSON summary
-    #     metadata, and if it's not present, to lookup OBSTYPE from the FITS
-    #     headers."""
-    #     obs_type = external_metadata.om.get('observation_type')
-    #     if obs_type is None:
-    #         obs_type = header.get('OBSTYPE')
-    #     return obs_type
 
     def update_position(self):
         # the default is to do nothing, so not a NotImplemented exception
@@ -420,14 +727,6 @@ class InstrumentType:
     @staticmethod
     def get_crpix2(header):
         return 1.0
-
-    @staticmethod
-    def get_dec(header_ignore):
-        return external_metadata.om.get('dec')
-
-    @staticmethod
-    def get_ra(header_ignore):
-        return external_metadata.om.get('ra')
 
     @staticmethod
     def get_sky_coord(header, ra_key, dec_key):
@@ -451,6 +750,14 @@ class InstrumentType:
 class Bhros(InstrumentType):
     def __init__(self, name):
         super(Bhros, self).__init__(name)
+
+    def get_dec(self, header):
+        # bHROS, TEXES ra/dec not in json
+        return header.get('DEC')
+
+    def get_ra(self, header):
+        # bHROS, TEXES: ra/dec not in json
+        return header.get('RA')
 
     def update_energy(self):
         """bhros-specific chunk-level Energy WCS construction."""
@@ -500,8 +807,8 @@ class Bhros(InstrumentType):
         self._headers[0]['CTYPE2'] = 'DEC--TAN'
         self._headers[0]['CUNIT1'] = 'deg'
         self._headers[0]['CUNIT2'] = 'deg'
-        self._headers[0]['CRVAL1'] = Bhros.get_ra(self._headers[0])
-        self._headers[0]['CRVAL2'] = Bhros.get_dec(self._headers[0])
+        self._headers[0]['CRVAL1'] = self.get_ra(self._headers[0])
+        self._headers[0]['CRVAL2'] = self.get_dec(self._headers[0])
         self._headers[0]['CDELT1'] = RADIUS_LOOKUP[self._name]
         self._headers[0]['CDELT2'] = RADIUS_LOOKUP[self._name]
         self._headers[0]['CROTA1'] = 0.0
@@ -530,16 +837,6 @@ class Bhros(InstrumentType):
         self.chunk.position.coordsys = self._headers[0].get('TRKFRAME')
         self._logger.debug('End _update_chunk_position')
 
-    @staticmethod
-    def get_dec(header):
-        # bHROS, TEXES ra/dec not in json
-        return header.get('DEC')
-
-    @staticmethod
-    def get_ra(header):
-        # bHROS, TEXES: ra/dec not in json
-        return header.get('RA')
-
 
 class Cirpass(InstrumentType):
     def __init__(self, name):
@@ -551,6 +848,57 @@ class Cirpass(InstrumentType):
 
     def get_cd22(self, header):
         return self.get_cd11(header)
+
+    def get_data_product_type(self, header):
+        return DataProductType.SPECTRUM
+
+    def get_dec(self, header):
+        # DB - 06-03-19 - Must use FITS header info for most WCS info
+        ra, dec = InstrumentType.get_sky_coord(header, 'TEL_RA', 'TEL_DEC')
+        return dec
+
+    def get_exposure(self, header):
+        # exposure_time is null in the JSON
+        # DB - 06-03-19 Use value of header keyword EXP_TIME for exposure time.
+        return mc.to_float(header.get('EXP_TIME'))
+
+    def get_obs_intent(self, header):
+        data_label = header.get('DATALAB')
+        if data_label is not None and '-CAL' in data_label:
+            result = ObservationIntentType.CALIBRATION
+        else:
+            obs_type = header.get('OBS_TYPE')
+            if obs_type in CAL_VALUES:
+                result = ObservationIntentType.CALIBRATION
+            else:
+                result = ObservationIntentType.SCIENCE
+        return result
+
+    def get_obs_type(self, header):
+        # DB - 06-03-19
+        temp = header.get('OBJECT')
+        # if ‘dome’ or ‘flat’ or ‘twilight’ or ‘gcal’ in
+        #       object string:  obstype = FLAT
+        # if ‘argon’ or ‘arc’ in string: obstype = ARC
+        # if ‘dark’ in string: obstype = DARK
+        # Otherwise assume obstype = OBJECT
+        result = 'OBJECT'
+        for ii in ['dome', 'flat', 'twilight', 'gcal']:
+            if ii in temp:
+                result = 'FLAT'
+                break
+        for ii in ['argon', 'arc']:
+            if ii in temp:
+                result = 'ARC'
+                break
+        if 'dark' in temp:
+            result = 'DARK'
+        return result
+
+    def get_ra(self, header):
+        # DB - 06-03-19 - Must use FITS header info for most WCS info
+        ra, dec = InstrumentType.get_sky_coord(header, 'TEL_RA', 'TEL_DEC')
+        return ra
 
     def update_energy(self):
         self._logger.debug(f'Begin update_energy {self._name}')
@@ -576,8 +924,8 @@ class Cirpass(InstrumentType):
         self._headers[0]['CTYPE2'] = 'DEC--TAN'
         self._headers[0]['CUNIT1'] = 'deg'
         self._headers[0]['CUNIT2'] = 'deg'
-        self._headers[0]['CRVAL1'] = Cirpass.get_ra(self._headers[0])
-        self._headers[0]['CRVAL2'] = Cirpass.get_dec(self._headers[0])
+        self._headers[0]['CRVAL1'] = self.get_ra(self._headers[0])
+        self._headers[0]['CRVAL2'] = self.get_dec(self._headers[0])
         self._headers[0]['CROTA1'] = 0.0
         # So perhaps try:
         #     NAXIS1 = 33
@@ -631,25 +979,22 @@ class Cirpass(InstrumentType):
         self.chunk.position_axis_2 = 2
         self._logger.debug('End _update_chunk_position')
 
-    @staticmethod
-    def get_dec(header):
-        # DB - 06-03-19 - Must use FITS header info for most WCS info
-        ra, dec = InstrumentType.get_sky_coord(header, 'TEL_RA', 'TEL_DEC')
-        return dec
-
-    @staticmethod
-    def get_ra(header):
-        # DB - 06-03-19 - Must use FITS header info for most WCS info
-        ra, dec = InstrumentType.get_sky_coord(header, 'TEL_RA', 'TEL_DEC')
-        return ra
-
 
 class F2(InstrumentType):
     def __init__(self, name):
         super(F2, self).__init__(name)
 
+    def get_obs_type(self, header):
+        # DB 03-06-21
+        # check the 'types' JSON value
+        result = super(F2, self).get_obs_type(header)
+        types = external_metadata.om.get('types')
+        if 'DARK' in types:
+            result = 'DARK'
+        return result
+
     def update_energy(self):
-        logging.debug('Begin _update_chunk_energy_f2')
+        self._logger.debug('Begin update_energy')
         # DB - 02-05-19
         # For F2 use SVO filter service for bandpass or ‘delta’ for images and
         # spectroscopy.  Treat images as for other instruments but…
@@ -720,8 +1065,8 @@ class F2(InstrumentType):
                 }
                 if slit_width is None or slit_width not in lookup:
                     # DB 02-04-19
-                    # For F2 at line 1409 of main_app.py set slit_width = ‘2’ as
-                    # a default of slit_width[0] is not a numeric value
+                    # For F2 at line 1409 of main_app.py set slit_width = ‘2’
+                    # as a default of slit_width[0] is not a numeric value
                     slit_width = '2'
                 if grism_name.startswith('R3K_'):
                     self.fm.resolving_power = lookup[slit_width][1]
@@ -740,7 +1085,7 @@ class F2(InstrumentType):
             cc.reset_energy(self.chunk)
         else:
             self.build_chunk_energy()
-        self._logger.debug('End _update_chunk_energy_f2')
+        self._logger.debug('End _update_energy')
 
     def update_time(self):
         """F2 FITS files have a CD3_3 element that's not supported by
@@ -762,6 +1107,143 @@ class F2(InstrumentType):
 class Flamingos(InstrumentType):
     def __init__(self, name):
         super(Flamingos, self).__init__(name)
+
+    def get_art_product_type(self, header):
+        # DB - 28-02-19
+        # Another relatively minor thing for FLAMINGOS:  get_obs_intent likely
+        # has to have FLAMINGOS added to it.  If obs_type is DARK,
+        # ACQUISIITON, FLAT or ARC then the intent is calibration, otherwise
+        # science. cal_values should have those obs_type values in it as well.
+        # So if ‘CAL’ is not in the data_label and obs_type is not in
+        # cal_values then it’s science.
+        object_value = external_metadata.om.get('object')
+        for ii in ['Dark', 'DARK', 'Arc', 'flat', 'Flat', 'Acq', 'acq']:
+            if ii in object_value:
+                return ProductType.CALIBRATION
+        self._get_data_label(header)
+        if self._data_label is not None and 'CAL' in self._data_label:
+            return ProductType.CALIBRATION
+        return ProductType.SCIENCE
+
+    def get_data_product_type(self, header):
+        # DB - 18-02-19
+        # Determine mode from DECKER and GRISM keywords:
+        #
+        # If DECKER = imaging
+        # observing mode = imaging
+        # else if DECKER = mos or slit
+        # if GRISM contains the string ‘open’
+        # observation mode = imaging and observation type = ACQUISITION
+        # else if GRISM contains the string ‘dark’
+        # observation mode = spectroscopy and observation type = DARK
+        # else
+        # observation mode = spectroscopy
+        # else
+        # error? DECKER might also be ‘dark’ at times in which case
+        # observation type = dark and observation mode can be either
+        # spectroscopy or imaging but I haven’t found an example yet.
+        #
+        # As indicated above in if/else code, if GRISM  keyword
+        # contains substring ‘dark’ then that is another way to
+        # identify a dark observation.
+        decker = header.get('DECKER')
+        data_type = DataProductType.SPECTRUM
+        if decker is None:
+            raise mc.CadcException(
+                f'No mode information found for '
+                f'{external_metadata.om.get("filename")}'
+            )
+        else:
+            if decker == 'imaging':
+                data_type = DataProductType.IMAGE
+            elif decker in ['mos', 'slit']:
+                grism = header.get('GRISM')
+                if grism is not None:
+                    if 'open' in grism:
+                        data_type = DataProductType.IMAGE
+                    elif 'dark' in grism:
+                        data_type = DataProductType.SPECTRUM
+        return data_type
+
+    def get_exposure(self, header):
+        # exposure_time is null in the JSON
+        # DB - 06-03-19 Use value of header keyword EXP_TIME for exposure
+        # time.
+        return mc.to_float(header.get('EXP_TIME'))
+
+    def get_obs_type(self, header):
+        # DB - 18-02-19
+        # Determine mode from DECKER and GRISM keywords:
+        #
+        # If DECKER = imaging
+        # observing mode = imaging
+        # else if DECKER = mos or slit
+        # if GRISM contains the string ‘open’
+        # observation mode = imaging and observation type = ACQUISITION
+        # else if GRISM contains the string ‘dark’
+        # observation mode = spectroscopy and observation type = DARK
+        # else
+        # observation mode = spectroscopy
+        # else
+        # error? DECKER might also be ‘dark’ at times in which case
+        # observation type = dark and observation mode can be either
+        # spectroscopy or imaging but I haven’t found an example yet.
+        #
+        # As indicated above in if/else code, if GRISM  keyword
+        # contains substring ‘dark’ then that is another way to
+        # identify a dark observation.
+        decker = header.get('DECKER')
+        data_type = DataProductType.SPECTRUM
+        obs_type = None
+        if decker is not None:
+            if decker == 'imaging':
+                data_type = DataProductType.IMAGE
+            elif decker in ['mos', 'slit']:
+                grism = header.get('GRISM')
+                if grism is not None:
+                    if 'open' in grism:
+                        data_type = DataProductType.IMAGE
+                        obs_type = 'ACQUISITION'
+                    elif 'dark' in grism:
+                        data_type = DataProductType.SPECTRUM
+                        obs_type = 'DARK'
+        else:
+            raise mc.CadcException(
+                f'No mode information found for '
+                f'{external_metadata.om.get("filename")}'
+            )
+        if obs_type is None:
+            # DB - Also, since I’ve found FLAMINGOS spectra if OBJECT keyword
+            # or json value contains ‘arc’ (any case) then it’s an ARC
+            # observation type
+            #
+            # For FLAMINGOS since OBS_TYPE seems to always be set to ‘Object’
+            # could in principal look at the OBJECT keyword value or json
+            # value: if it contains ‘flat’ as a substring (any case) then set
+            # observation type to ‘flat’.  Ditto for ‘dark’
+            object_value = external_metadata.om.get('object')
+            if object_value is None:
+                object_value = header.get('OBJECT')
+            object_value = object_value.lower()
+            if 'arc' in object_value:
+                obs_type = 'ARC'
+            elif 'flat' in object_value:
+                obs_type = 'FLAT'
+            elif 'dark' in object_value:
+                obs_type = 'DARK'
+            else:
+                # DB - 27-02-19 - Default to 'OBJECT'
+                obs_type = 'OBJECT'
+        return obs_type
+
+    def get_time_function_val(self, header):
+        # Another FLAMINGOS correction needed:  DATE-OBS in header and
+        # json doesn’t include the time  but sets it to 00:00:00.  You have
+        # two choices:  concatenate DATE-OBS and UTC header values to the
+        # standard form “2002-11-06T07:06:00.3” and use as you use json
+        # value for computing temporal WCS data or, for FLAMINGOS only,
+        # use the MJD header value in the header as the CRVAL for time.
+        return header.get('MJD')
 
     def reset_position(self, headers, observation_type):
         result = super(Flamingos, self).reset_position(
@@ -888,6 +1370,24 @@ class Fox(InstrumentType):
     def __init__(self, name):
         super(Fox, self).__init__(name)
 
+    def get_data_product_type(self, header):
+        # DB 31-08-20
+        # Both cameras are used for speckle imaging.  Datasets consist of
+        # cubes of 256 x 256 x 1000 images.  i.e. 1000 short exposures << 1
+        # second long with 256 x 256 pixel images (or smaller images if the
+        # CCD is binned).
+        #
+        # So dataProductType = cube
+        #
+        # PD 02-09-20
+        # if those two files are images in the normal sense then it could make
+        # sense to create separate planes with dataProductType = image that
+        # end up with the correct (distinct) energy metadata.
+        return DataProductType.IMAGE
+
+    def get_target_type(self):
+        return TargetType.OBJECT
+
     def update_energy(self):
         """General chunk-level Energy WCS construction."""
         self._logger.debug(f'Begin update_energy {self._name}')
@@ -943,6 +1443,21 @@ class Fox(InstrumentType):
 class Gmos(InstrumentType):
     def __init__(self, name):
         super(Gmos, self).__init__(name)
+
+    def get_exposure(self, header):
+        if self.get_obs_type(header) == 'MASK':
+            result = 0.0
+        else:
+            result = super(Gmos, self).get_exposure(header)
+        return result
+
+    def get_time_delta(self, header):
+        if self.get_obs_type(header) == 'MASK':
+            # DB - 05-03-19 - delta hardcoded to 0
+            exptime = 0.0
+        else:
+            exptime = super(Gmos, self).get_time_delta(header)
+        return exptime
 
     def reset_position(self, headers, observation_type):
         # DB - 04-03-19
@@ -1151,6 +1666,15 @@ class Gmos(InstrumentType):
 class Gnirs(InstrumentType):
     def __init__(self, name):
         super(Gnirs, self).__init__(name)
+
+    def get_data_product_type(self, header):
+        # DB - 03-04-19
+        # if disperser for GNIRS = MIRROR
+        # then it’s an image, otherwise a spectrum.
+        result = DataProductType.SPECTRUM
+        if external_metadata.om.get('disperser') == 'MIRROR':
+            result = DataProductType.IMAGE
+        return result
 
     def reset_energy(self, observation_type):
         # DB 16-04-19
@@ -1632,6 +2156,28 @@ class Gpi(InstrumentType):
     def get_cd22(self, header):
         return self.get_cd11(header)
 
+    def get_data_product_type(self, header):
+        mode = external_metadata.om.get('mode')
+        if mode is None:
+            raise mc.CadcException(
+                f'No mode information found for '
+                f'{external_metadata.om.get("filename")}'
+            )
+        # DB - 22-02-19 FOR GPI only:  To determine if the data type
+        # is an ‘image’ or ‘spectrum’:
+        #     json ‘mode’ = IFP then ‘image’
+        #     json ‘mode’ = IFS then ‘spectrum’
+        if mode in ['IFP', 'imaging']:
+            result = DataProductType.IMAGE
+        elif mode == 'IFS':
+            result = DataProductType.SPECTRUM
+        else:
+            raise mc.CadcException(
+                f'Mystery GPI mode {mode} for '
+                f'{external_metadata.om.get("filename")}'
+            )
+        return result
+
     def update_energy(self):
         self._logger.debug('Begin _update_chunk_energy_gpi')
 
@@ -1724,8 +2270,8 @@ class Gpi(InstrumentType):
         header['CTYPE2'] = 'DEC--TAN'
         header['CUNIT1'] = 'deg'
         header['CUNIT2'] = 'deg'
-        header['CRVAL1'] = InstrumentType.get_ra(header)
-        header['CRVAL2'] = InstrumentType.get_dec(header)
+        header['CRVAL1'] = self.get_ra(header)
+        header['CRVAL2'] = self.get_dec(header)
         header['CRPIX1'] = Gpi.get_crpix1(header)
         header['CRPIX2'] = Gpi.get_crpix2(header)
         header['CD1_1'] = self.get_cd11(header)
@@ -1774,6 +2320,9 @@ class Gpi(InstrumentType):
 class Graces(InstrumentType):
     def __init__(self, name):
         super(Graces, self).__init__(name)
+
+    def get_filter_name(self):
+        self._filter_name = None
 
     def reset_position(self, headers, observation_type):
         result = super(Graces, self).reset_position(
@@ -1840,8 +2389,8 @@ class Graces(InstrumentType):
             header['CTYPE2'] = 'DEC--TAN'
             header['CUNIT1'] = 'deg'
             header['CUNIT2'] = 'deg'
-            header['CRVAL1'] = InstrumentType.get_ra(header)
-            header['CRVAL2'] = InstrumentType.get_dec(header)
+            header['CRVAL1'] = self.get_ra(header)
+            header['CRVAL2'] = self.get_dec(header)
             header['CDELT1'] = RADIUS_LOOKUP[self._name]
             header['CDELT2'] = RADIUS_LOOKUP[self._name]
             header['CROTA1'] = 0.0
@@ -1910,6 +2459,14 @@ class Hokupaa(InstrumentType):
     def __init__(self, name):
         super(Hokupaa, self).__init__(name)
 
+    def get_art_product_type(self, header):
+        result = ProductType.SCIENCE
+        image_type = header.get('IMAGETYP')
+        # took the list from the AS GEMINI Obs. Type values
+        if image_type in ['DARK', 'BIAS', 'CAL', 'ARC', 'FLAT']:
+            result = ProductType.CALIBRATION
+        return result
+
     def get_cd11(self, header):
         pix_scale = header.get('PIXSCALE')
         if pix_scale is None:
@@ -1920,6 +2477,18 @@ class Hokupaa(InstrumentType):
 
     def get_cd22(self, header):
         return self.get_cd11(header)
+
+    def get_dec(self, header):
+        ra_ignore, dec = InstrumentType.get_sky_coord(header, 'RA', 'DEC')
+        return dec
+
+    def get_obs_type(self, header):
+        # DB - 01-18-19 Use IMAGETYP as the keyword
+        return header.get('IMAGETYP')
+
+    def get_ra(self, header):
+        ra, dec_ignore = InstrumentType.get_sky_coord(header, 'RA', 'DEC')
+        return ra
 
     def reset_energy(self, observation_type):
         # DB 14-08-19
@@ -1937,7 +2506,7 @@ class Hokupaa(InstrumentType):
         result = super(Hokupaa, self).reset_position(
             headers, observation_type
         )
-        ra = Hokupaa.get_ra(headers[0])
+        ra = self.get_ra(headers[0])
         if ra is None:
             result = True
         return result
@@ -2056,8 +2625,8 @@ class Hokupaa(InstrumentType):
         header['CTYPE2'] = 'DEC--TAN'
         header['CUNIT1'] = 'deg'
         header['CUNIT2'] = 'deg'
-        header['CRVAL1'] = Hokupaa.get_ra(header)
-        header['CRVAL2'] = Hokupaa.get_dec(header)
+        header['CRVAL1'] = self.get_ra(header)
+        header['CRVAL2'] = self.get_dec(header)
         header['CDELT1'] = RADIUS_LOOKUP[self._name]
         header['CDELT2'] = RADIUS_LOOKUP[self._name]
         header['CROTA1'] = 0.0
@@ -2079,16 +2648,6 @@ class Hokupaa(InstrumentType):
         self.chunk.position_axis_1 = 1
         self.chunk.position_axis_2 = 2
         self._logger.debug('End update_position')
-
-    @staticmethod
-    def get_dec(header):
-        ra_ignore, dec = InstrumentType.get_sky_coord(header, 'RA', 'DEC')
-        return dec
-
-    @staticmethod
-    def get_ra(header):
-        ra, dec_ignore = InstrumentType.get_sky_coord(header, 'RA', 'DEC')
-        return ra
 
 
 class Hrwfs(InstrumentType):
@@ -2140,6 +2699,19 @@ class Hrwfs(InstrumentType):
 class Michelle(InstrumentType):
     def __init__(self, name):
         super(Michelle, self).__init__(name)
+
+    def get_filter_name(self):
+        # DB - 08-04-19
+        # Use header FILTERA and FILTERB values to determine the filter
+        # bandpass
+        # 08-04-19
+        # Note that FILTERB sometimes has a value “Clear_B” and that should
+        # be ignored.  Not sure if “Clear_A” is possible but maybe best to
+        # allow for it.
+        result = InstrumentType._search_through_keys(
+            self._headers[0], ['FILTER'], FILTER_VALUES_TO_IGNORE,
+        )
+        self._filter_name = result
 
     def make_axes_consistent(self):
         super(Michelle, self).make_axes_consistent()
@@ -2285,6 +2857,16 @@ class Michelle(InstrumentType):
 class Nici(InstrumentType):
     def __init__(self, name):
         super(Nici, self).__init__(name)
+
+    def get_filter_name(self):
+        # NICI - use filter names from headers, because there's a different
+        # filter/header, and the JSON summary value obfuscates that
+        result = InstrumentType._search_through_keys(
+            self._headers[self._extension],
+            ['FILTER'],
+            FILTER_VALUES_TO_IGNORE,
+        )
+        self._filter_name = result
 
     def reset_energy(self, observation_type):
         # DB 04-04-19
@@ -2601,8 +3183,8 @@ class Nifs(InstrumentType):
         header['CTYPE2'] = 'DEC--TAN'
         header['CUNIT1'] = 'deg'
         header['CUNIT2'] = 'deg'
-        header['CRVAL1'] = InstrumentType.get_ra(header)
-        header['CRVAL2'] = InstrumentType.get_dec(header)
+        header['CRVAL1'] = self.get_ra(header)
+        header['CRVAL2'] = self.get_dec(header)
         header['CDELT1'] = RADIUS_LOOKUP[self._name]
         header['CDELT2'] = RADIUS_LOOKUP[self._name]
         header['CROTA1'] = 0.0
@@ -2636,6 +3218,14 @@ class Nifs(InstrumentType):
 class Niri(InstrumentType):
     def __init__(self, name):
         super(Niri, self).__init__(name)
+
+    def get_filter_name(self):
+        # NIRI - prefer header keywords
+        result = InstrumentType._search_through_keys(
+            self._headers[0], ['FILTER'], FILTER_VALUES_TO_IGNORE,
+        )
+        filter_names = result
+        self.filter_name = filter_names
 
     def reset_energy(self, observation_type):
         return (
@@ -2894,14 +3484,51 @@ class Oscir(InstrumentType):
     def __init__(self, name):
         super(Oscir, self).__init__(name)
 
+    def get_art_product_type(self, header):
+        # TODO - don't know what else to do right now
+        return ProductType.SCIENCE
+
+    def get_calibration_level(self, uri):
+        result = CalibrationLevel.RAW_STANDARD
+        if mc.CaomName(uri.lower()).file_id.startswith('r'):
+            # DB 23-02-21
+            # The best thing to do with OSCIR 'r' files is to add them as a
+            # second cal level 2 plane and use the same metadata as the
+            # unprocessed plane.
+            result = CalibrationLevel.CALIBRATED
+        return result
+
     def get_cd11(self, header):
         return RADIUS_LOOKUP[self._name]
 
     def get_cd22(self, header):
         return self.get_cd11(header)
 
+    def get_dec(self, header):
+        ra_ignore, dec = InstrumentType.get_sky_coord(
+            header, 'RA_TEL', 'DEC_TEL'
+        )
+        return dec
+
     def get_exposure(self, header):
+        # DB - 20-02-19 - json ‘exposure_time’ is in minutes, so multiply
+        # by 60.0.
         return external_metadata.om.get('exposure_time') * 60.0
+
+    def get_ra(self, header):
+        ra, dec_ignore = InstrumentType.get_sky_coord(
+            header, 'RA_TEL', 'DEC_TEL'
+        )
+        return ra
+
+    def get_time_function_val(self, header):
+        # DB - 20-02-19 - OSCIR json ‘ut_datetime’ is not correct.  Must
+        # concatenate DATE-OBS and UTC1 values and convert to MJD as usual
+        # or use MJD directly (seems to be correct starting MJD)
+        #
+        # DB - 06-03-19 json ut_date_time Gemini is based on DATE keyword.
+        # Better to use MJD header keyword value directly.
+        return header.get('MJD')
 
     def make_axes_consistent(self):
         # DB - 01-02-21
@@ -2983,8 +3610,8 @@ class Oscir(InstrumentType):
         header['CTYPE2'] = 'DEC--TAN'
         header['CUNIT1'] = 'deg'
         header['CUNIT2'] = 'deg'
-        header['CRVAL1'] = Oscir.get_ra(header)
-        header['CRVAL2'] = Oscir.get_dec(header)
+        header['CRVAL1'] = self.get_ra(header)
+        header['CRVAL2'] = self.get_dec(header)
         header['CDELT1'] = RADIUS_LOOKUP[self._name]
         header['CDELT2'] = RADIUS_LOOKUP[self._name]
         header['CROTA1'] = 0.0
@@ -3008,20 +3635,80 @@ class Oscir(InstrumentType):
         self.chunk.position.equinox = mc.to_float(header.get('EQUINOX'))
         logging.debug('End _update_chunk_position')
 
-    @staticmethod
-    def get_dec(header):
-        ra_ignore, dec = InstrumentType.get_sky_coord(header, 'RA_TEL', 'DEC_TEL')
-        return dec
-
-    @staticmethod
-    def get_ra(header):
-        ra, dec_ignore = InstrumentType.get_sky_coord(header, 'RA_TEL', 'DEC_TEL')
-        return ra
-
 
 class Phoenix(InstrumentType):
     def __init__(self, name):
         super(Phoenix, self).__init__(name)
+
+    def get_art_product_type(self, header):
+        result = ProductType.SCIENCE
+        object_value = header.get('OBJECT').lower()
+        if (
+                'flat ' in object_value
+                or 'dark ' in object_value
+                or 'arc' in object_value
+                or 'comp' in object_value
+                or 'lamp' in object_value
+                or 'comparison' in object_value
+                or 'slit' in object_value
+        ):
+            result = ProductType.CALIBRATION
+        return result
+
+    def get_calibration_level(self, uri):
+        result = CalibrationLevel.RAW_STANDARD
+        if mc.CaomName(uri.lower()).file_id.startswith('p'):
+            result = CalibrationLevel.CALIBRATED
+        return result
+
+    def get_filter_name(self):
+        super(Phoenix, self).get_filter_name()
+        if self._filter_name is None or len(self._filter_name.strip()) == 0:
+            result = InstrumentType._search_through_keys(
+                self._headers[self._extension],
+                ['CVF_POS', 'FILT_POS'],
+                FILTER_VALUES_TO_IGNORE,
+            )
+            self._filter_name = result
+
+    def get_obs_type(self, header):
+        # DB - 18-02-19 - make PHOENIX searches more useful by making
+        # estimated guesses at observation type
+        #
+        # Looking at a few random nights it looks like a reasonable way to
+        # determine if an observation is a FLAT is to look for ‘flat’ (any
+        # case combination) in the json ‘object’ value or ‘gcal’ or ‘GCAL’.
+        # But if ‘gcal’ AND ‘dark’ are in the ‘object’ string it’s a DARK.
+        # (see below)
+
+        # Ditto for an ARC if json ‘object’ contains the string ‘arc’
+
+        # It’s a DARK obs type if the value of FITS header VIEW_POS contains
+        # the string ‘dark’ OR if ‘dark’ is in json ‘object’ string.
+        # (There appear to be cases where darks are taken with the
+        # VIEW_POS = open.)  When it’s a dark do NOT generate WCS for energy
+        # since the filter is often ‘open’ and energy info isn’t important for
+        # DARK exposures.
+
+        result = 'OBJECT'
+        object_value = external_metadata.om.get('object').lower()
+        view_pos = header.get('VIEW_POS')
+        if 'flat' in object_value:
+            result = 'FLAT'
+        elif 'dark' in object_value or (
+                view_pos is not None and 'dark' in view_pos
+        ):
+            result = 'DARK'
+        elif 'gcal' in object_value:
+            result = 'FLAT'
+        elif 'arc' in object_value:
+            result = 'ARC'
+        elif 'slit' in object_value:
+            # DB 22-02-21
+            # These are images that show the slit location so I think it’s best
+            # to add a new OBSTYPE of SLIT (sort of like MASK for GMOS-N/S).
+            result = 'SLIT'
+        return result
 
     def reset_energy(self, observation_type):
         # DB 07-06-21
@@ -3190,8 +3877,8 @@ class Phoenix(InstrumentType):
         header['CTYPE2'] = 'DEC--TAN'
         header['CUNIT1'] = 'deg'
         header['CUNIT2'] = 'deg'
-        header['CRVAL1'] = InstrumentType.get_ra(header)
-        header['CRVAL2'] = InstrumentType.get_dec(header)
+        header['CRVAL1'] = self.get_ra(header)
+        header['CRVAL2'] = self.get_dec(header)
         header['CDELT1'] = RADIUS_LOOKUP[self._name]
         header['CDELT2'] = RADIUS_LOOKUP[self._name]
         header['CROTA1'] = 0.0
@@ -3222,11 +3909,39 @@ class Texes(InstrumentType):
     def __init__(self, name):
         super(Texes, self).__init__(name)
 
+    def get_calibration_level(self, uri):
+        result = CalibrationLevel.RAW_STANDARD
+        if '_red' in uri.lower() or '_sum' in uri.lower():
+            result = CalibrationLevel.CALIBRATED
+        return result
+
     def get_cd11(self, header, keyword='CDELT1'):
         return RADIUS_LOOKUP[self._name]
 
     def get_cd22(self, header):
         return self.get_cd11(header)
+
+    def get_data_product_type(self, header):
+        return DataProductType.SPECTRUM
+
+    def get_dec(self, header):
+        # bHROS, TEXES: ra/dec not in json
+        return header.get('DEC')
+
+    def get_exposure(self, header):
+        # DB - 07-03-19 -  Use header ‘OBSTIME’ value as exposure time in
+        # seconds.
+        return mc.to_float(header.get('OBSTIME'))
+
+    def get_filter_name(self):
+        self._filter_name = None
+
+    def get_ra(self, header):
+        # bHROS, TEXES: ra/dec not in json
+        return header.get('RA')
+
+    def get_target_type(self):
+        return TargetType.OBJECT
 
     def update_energy(self):
         # DB - 07-03-19
@@ -3254,10 +3969,10 @@ class Texes(InstrumentType):
         #
         # Central wavelength is given by 10,000/header(WAVENO0).  I have to do
         # some more investigation to see if we can determine wavelength
-        # coverage (i.e. see if I can identify the echelle/echelon info rom the
-        # header - I don’t think so).  For now use 0.25 microns as the fixed
-        # FWHM bandpass.
-        self._logger.debug(f'Begin update_energy {self._name}')
+        # coverage (i.e. see if I can identify the echelle/echelon info from
+        # the header - I don’t think so).  For now use 0.25 microns as the
+        # fixed FWHM bandpass.
+        self._logger.debug('Begin update_energy')
         if self.data_product_type == DataProductType.SPECTRUM:
             self._logger.debug(
                 f'SpectralWCS spectral mode for {self.obs_id}.'
@@ -3272,7 +3987,7 @@ class Texes(InstrumentType):
                 f'{self.data_product_type} for {self.obs_id}'
             )
         self.build_chunk_energy()
-        self._logger.debug(f'End update_energy {self._name}')
+        self._logger.debug('End update_energy')
 
     def update_position(self):
         header = self._headers[0]
@@ -3280,8 +3995,8 @@ class Texes(InstrumentType):
         header['CTYPE2'] = 'DEC--TAN'
         header['CUNIT1'] = 'deg'
         header['CUNIT2'] = 'deg'
-        header['CRVAL1'] = Texes.get_ra(header)
-        header['CRVAL2'] = Texes.get_dec(header)
+        header['CRVAL1'] = self.get_ra(header)
+        header['CRVAL2'] = self.get_dec(header)
         header['CDELT1'] = RADIUS_LOOKUP[self._name]
         header['CDELT2'] = RADIUS_LOOKUP[self._name]
         header['CROTA1'] = 0.0
@@ -3302,20 +4017,26 @@ class Texes(InstrumentType):
         self.chunk.position_axis_2 = 2
         self._logger.debug('End _update_chunk_position')
 
-    @staticmethod
-    def get_dec(header):
-        # bHROS, TEXES: ra/dec not in json
-        return header.get('DEC')
-
-    @staticmethod
-    def get_ra(header):
-        # bHROS, TEXES: ra/dec not in json
-        return header.get('RA')
-
 
 class Trecs(InstrumentType):
     def __init__(self, name):
         super(Trecs, self).__init__(name)
+
+    def get_obs_intent(self, header):
+        self._get_obs_class(header)
+        result = ObservationIntentType.CALIBRATION
+        if self._obs_class is None:
+            self._get_obs_type(header)
+            if self._obs_type in CAL_VALUES:
+                result = ObservationIntentType.CALIBRATION
+            else:
+                result = ObservationIntentType.SCIENCE
+                data_label = header.get('DATALAB')
+                if data_label is not None and '-CAL' in data_label:
+                    result = ObservationIntentType.CALIBRATION
+        elif 'science' in self._obs_class:
+            result = ObservationIntentType.SCIENCE
+        return result
 
     def make_axes_consistent(self):
         super(Trecs, self).make_axes_consistent()
