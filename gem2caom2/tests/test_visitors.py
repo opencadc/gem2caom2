@@ -323,7 +323,7 @@ def test_pull_augmentation():
 
 
 @patch('caom2pipe.manage_composable.http_get')
-@patch('caom2pipe.client_composable.client_put')
+@patch('caom2pipe.client_composable.si_client_put')
 def test_pull_v_augmentation(put_mock, http_mock):
     obs = mc.read_obs_from_file(TEST_OBS_FILE)
     obs.planes[TEST_PRODUCT_ID].data_release = datetime.utcnow()
@@ -349,9 +349,10 @@ def test_pull_v_augmentation(put_mock, http_mock):
     http_mock.assert_called_with(test_url, test_prev), 'mock not called'
     assert put_mock.called, 'put mock not called'
     args, kwargs = put_mock.call_args
-    assert args[1] == TEST_DATA_DIR, 'wrong working dir'
-    assert args[2] == f'{TEST_PRODUCT_ID}.fits', 'wrong file name'
-    assert args[3] == test_uri, 'wrong storage name'
+    assert (
+        args[1] == os.path.join(TEST_DATA_DIR, f'{TEST_PRODUCT_ID}.fits')
+    ), 'wrong working dir'
+    assert args[2] == test_uri, 'wrong uri'
     assert result is not None, 'expect a result'
     assert result['observation'] == 0, 'no updated metadata'
     assert len(obs.planes[TEST_PRODUCT_ID].artifacts) == 1, 'no new artifacts'

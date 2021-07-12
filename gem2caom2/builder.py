@@ -237,6 +237,9 @@ class GemObsIDBuilder(nbc.StorageNameBuilder):
             raise mc.CadcException(e)
 
 
+# a globally accessible pointer to the latest instance of InstrumentType,
+# placed here so that it survives the importlib.import_module call from
+# fits2caom2
 current_instrument = None
 
 

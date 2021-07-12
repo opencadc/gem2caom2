@@ -68,6 +68,7 @@
 #
 
 import logging
+import os
 
 from datetime import datetime
 
@@ -119,10 +120,10 @@ def visit(observation, **kwargs):
                 try:
                     f_name = mc.CaomName(artifact.uri).file_name
                     file_url = f'{FILE_URL}/{f_name}'
-                    clc.look_pull_and_put_v(
+                    fqn = os.path.join(working_dir, f_name)
+                    clc.look_pull_and_put_si(
                         artifact.uri,
-                        f_name,
-                        working_dir,
+                        fqn,
                         file_url,
                         cadc_client,
                         artifact.content_checksum.checksum,
