@@ -163,10 +163,10 @@ def _do_prev(obs_id, working_dir, plane, cadc_client, observable):
         # storage (i.e. cadc_client is not None), though
         if not os.access(preview_fqn, 0) and cadc_client is not None:
             try:
-                clc.client_get(
+                fqn = os.path.join(working_dir, gem_name.prev)
+                clc.si_client_get(
                     cadc_client,
-                    working_dir,
-                    gem_name.prev,
+                    fqn,
                     gem_name.prev_uri,
                     observable.metrics,
                 )
@@ -221,10 +221,9 @@ def _do_prev(obs_id, working_dir, plane, cadc_client, observable):
                 plane, gem_name.prev_uri, preview_fqn, ProductType.PREVIEW
             )
             if cadc_client is not None and new_retrieval:
-                clc.client_put(
+                clc.si_client_put(
                     cadc_client,
-                    working_dir,
-                    gem_name.prev,
+                    preview_fqn,
                     gem_name.prev_uri,
                     metrics=observable.metrics,
                 )
@@ -234,10 +233,9 @@ def _do_prev(obs_id, working_dir, plane, cadc_client, observable):
                 plane, gem_name.thumb_uri, thumb_fqn, ProductType.THUMBNAIL
             )
             if cadc_client is not None and new_retrieval:
-                clc.client_put(
+                clc.si_client_put(
                     cadc_client,
-                    working_dir,
-                    thumb,
+                    thumb_fqn,
                     gem_name.thumb_uri,
                     metrics=observable.metrics,
                 )

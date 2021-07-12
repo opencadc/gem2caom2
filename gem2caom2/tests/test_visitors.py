@@ -390,7 +390,7 @@ def test_preview_augment_delete_preview():
 
 
 @patch('caom2pipe.manage_composable.http_get')
-@patch('caom2pipe.client_composable.client_put')
+@patch('caom2pipe.client_composable.si_client_put')
 def test_preview_augment_v(put_mock, http_mock):
     # this should result in two new artifacts being added to the plane
     # one for a thumbnail and one for a preview
@@ -428,8 +428,7 @@ def test_preview_augment_v(put_mock, http_mock):
         assert put_mock.called, 'put mock not called'
         put_mock.assert_called_with(
             cadc_client_mock,
-            '/test_files',
-            'GN2001BQ013-04_th.jpg',
+            '/test_files/GN2001BQ013-04_th.jpg',
             'ad:GEM/GN2001BQ013-04_th.jpg',
             metrics=test_metrics,
         )
