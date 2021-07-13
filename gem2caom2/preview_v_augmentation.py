@@ -83,7 +83,7 @@ from gem2caom2 import preview_augmentation
 __all__ = ['visit']
 
 
-PREVIEW_URL = 'https://archive.gemini.edu/preview/'
+PREVIEW_URL = 'https://archive.gemini.edu/preview'
 MIME_TYPE = 'image/jpeg'
 
 
@@ -122,20 +122,6 @@ def visit(observation, **kwargs):
     return {'artifacts': count}
 
 
-def _check_for_delete(file_name, uri, observable, plane):
-    """If the preview file doesn't exist, but the artifact that represents it
-    does, remove that artifact from the Observation instance."""
-    result = 0
-    if (
-        observable.rejected.is_no_preview(file_name)
-        and uri in plane.artifacts.keys()
-    ):
-        logging.warning(f'Removing artifact for non-existent preview {uri}')
-        plane.artifacts.pop(uri)
-        result = 1
-    return result
-
-
 def _do_prev(obs_id, working_dir, plane, cadc_client, observable):
     """Retrieve the preview file, so that a thumbnail can be made,
     store the preview if necessary, and the thumbnail, to ad.
@@ -154,7 +140,7 @@ def _do_prev(obs_id, working_dir, plane, cadc_client, observable):
             f'in observation {obs_id}.'
         )
         observable.rejected.record(mc.Rejected.NO_PREVIEW, gem_name.prev)
-        count += _check_for_delete(
+        count += preview_augmentation._check_for_delete(
             gem_name.prev, gem_name.prev_uri, observable, plane
         )
     else:

@@ -121,6 +121,23 @@ def visit(observation, **kwargs):
                     f_name = mc.CaomName(artifact.uri).file_name
                     file_url = f'{FILE_URL}/{f_name}'
                     fqn = os.path.join(working_dir, f_name)
+                    if artifact.uri.startswith('ad:'):
+                        artifact.uri = artifact.uri.replace(
+                            'ad:', 'cadc:'
+                        )
+                        logging.warning(
+                            f'Modified scheme for artifact.uri {artifact.uri}'
+                        )
+                        count = 1
+                    if f'{gem_name.ARCHIVE}/' in artifact.uri:
+                        artifact.uri = artifact.uri.replace(
+                            gem_name.ARCHIVE, gem_name.COLLECTION
+                        )
+                        logging.warning(
+                            f'Modified collection for artifact.uri '
+                            f'{artifact.uri}'
+                        )
+                        count = 1
                     clc.look_pull_and_put_si(
                         artifact.uri,
                         fqn,
