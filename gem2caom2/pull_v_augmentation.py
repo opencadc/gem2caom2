@@ -146,6 +146,12 @@ def visit(observation, **kwargs):
                         artifact.content_checksum.checksum,
                         observable.metrics,
                     )
+                    if os.path.exists(fqn):
+                        logging.info(
+                            f'Removing local copy of {f_name} after '
+                            f'successful storage call.'
+                        )
+                        os.unlink(fqn)
                 except Exception as e:
                     if not (
                         observable.rejected.check_and_record(
