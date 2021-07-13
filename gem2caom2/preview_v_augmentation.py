@@ -77,7 +77,7 @@ import matplotlib.image as image
 from caom2 import Observation, ProductType
 from caom2pipe import client_composable as clc
 from caom2pipe import manage_composable as mc
-from gem2caom2.gem_name import GemName
+from gem2caom2.gem_name import GemName, COLLECTION, V_SCHEME
 from gem2caom2 import preview_augmentation
 
 __all__ = ['visit']
@@ -142,7 +142,12 @@ def _do_prev(obs_id, working_dir, plane, cadc_client, observable):
     Then augment the CAOM observation with the two additional artifacts.
     """
     count = 0
-    gem_name = GemName(obs_id=obs_id, file_id=plane.product_id)
+    gem_name = GemName(
+        obs_id=obs_id,
+        file_id=plane.product_id,
+        v_collection=COLLECTION,
+        v_scheme=V_SCHEME,
+    )
     if observable.rejected.is_no_preview(gem_name.prev):
         logging.info(
             f'Stopping visit because no preview exists for {gem_name.prev} '

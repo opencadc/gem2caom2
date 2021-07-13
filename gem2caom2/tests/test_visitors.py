@@ -429,7 +429,7 @@ def test_preview_augment_v(put_mock, http_mock):
         put_mock.assert_called_with(
             cadc_client_mock,
             '/test_files/GN2001BQ013-04_th.jpg',
-            'ad:GEM/GN2001BQ013-04_th.jpg',
+            'cadc:GEMINI/GN2001BQ013-04_th.jpg',
             metrics=test_metrics,
         )
         assert result is not None, 'expect a result'
@@ -437,8 +437,10 @@ def test_preview_augment_v(put_mock, http_mock):
         assert (
             len(obs.planes[TEST_PRODUCT_ID].artifacts) == 3
         ), 'two new artifacts'
-        prev_uri = mc.build_uri(ARCHIVE, f'{TEST_PRODUCT_ID}.jpg', SCHEME)
-        thumb_uri = mc.build_uri(ARCHIVE, f'{TEST_PRODUCT_ID}_th.jpg')
+        prev_uri = mc.build_uri(COLLECTION, f'{TEST_PRODUCT_ID}.jpg', SCHEME)
+        thumb_uri = mc.build_uri(
+            COLLECTION, f'{TEST_PRODUCT_ID}_th.jpg', 'cadc'
+        )
         assert (
             prev_uri in obs.planes[TEST_PRODUCT_ID].artifacts.keys()
         ), 'no preview'
