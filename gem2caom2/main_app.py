@@ -548,7 +548,7 @@ def update(observation, **kwargs):
                 continue
 
             for artifact in plane.artifacts.values():
-                _should_artifact_be_deleted(artifact, config, delete_list)
+                _should_artifact_be_deleted(artifact, delete_list)
                 if GemName.is_preview(artifact.uri):
                     continue
 
@@ -694,13 +694,12 @@ def update(observation, **kwargs):
     return observation
 
 
-def _should_artifact_be_deleted(artifact, config, delete_list):
-    if config.features.supports_latest_client:
-        if artifact.uri.startswith('gemini'):
-            if 'GEMINI' not in artifact.uri:
-                delete_list.append(artifact.uri)
-        if artifact.uri.startswith('ad'):
+def _should_artifact_be_deleted(artifact, delete_list):
+    if artifact.uri.startswith('gemini'):
+        if 'GEMINI' not in artifact.uri:
             delete_list.append(artifact.uri)
+    if artifact.uri.startswith('ad'):
+        delete_list.append(artifact.uri)
 
 
 def _update_position_from_zeroth_header(artifact, headers, instrument, obs_id):

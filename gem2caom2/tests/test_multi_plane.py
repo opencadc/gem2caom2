@@ -144,14 +144,14 @@ def test_multi_plane(tap_mock, gemini_client_mock, test_name):
         plugin = gem_mocks.PLUGIN
 
         with patch(
-            'caom2utils.fits2caom2.CadcDataClient'
+            'caom2utils.fits2caom2.StorageInventoryClient'
         ) as data_client_mock, patch(
             'gem2caom2.external_metadata.get_pi_metadata'
         ) as gemini_pi_mock, patch(
             'caom2pipe.astro_composable.get_vo_table_session'
         ) as svofps_mock:
 
-            data_client_mock.return_value.get_file_info.side_effect = (
+            data_client_mock.return_value.cadcinfo.side_effect = (
                 gem_mocks.mock_get_file_info
             )
             gemini_pi_mock.side_effect = gem_mocks.mock_get_pi_metadata
@@ -185,13 +185,13 @@ def _get_lineage(obs_id):
     if obs_id == 'GN-2020A-Q-132-0-0':
         product_id = LOOKUP[obs_id][0][:-1]
         x = mc.get_lineage(
-            gem_name.ARCHIVE,
+            gem_name.COLLECTION,
             product_id,
             f'{LOOKUP[obs_id][0]}.fits',
             gem_name.SCHEME,
         )
         y = mc.get_lineage(
-            gem_name.ARCHIVE,
+            gem_name.COLLECTION,
             product_id,
             f'{LOOKUP[obs_id][1]}.fits',
             gem_name.SCHEME,
@@ -200,7 +200,7 @@ def _get_lineage(obs_id):
     else:
         for ii in LOOKUP[obs_id]:
             fits = mc.get_lineage(
-                gem_name.ARCHIVE, ii, f'{ii}.fits', gem_name.SCHEME
+                gem_name.COLLECTION, ii, f'{ii}.fits', gem_name.SCHEME
             )
             result = f'{result} {fits}'
     return result

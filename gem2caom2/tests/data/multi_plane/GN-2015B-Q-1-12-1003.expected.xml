@@ -27,8 +27,8 @@
     <caom2:name>GRACES</caom2:name>
     <caom2:keywords>
       <caom2:keyword>star</caom2:keyword>
-      <caom2:keyword>Spectroscopy,</caom2:keyword>
       <caom2:keyword>only</caom2:keyword>
+      <caom2:keyword>Spectroscopy,</caom2:keyword>
     </caom2:keywords>
   </caom2:instrument>
   <caom2:planes>
@@ -50,7 +50,7 @@
       <caom2:polarization/>
       <caom2:artifacts>
         <caom2:artifact caom2:id="00000000-0000-0000-89ee-a283dd2c9d93" caom2:lastModified="2018-10-08T21:01:21.704" caom2:maxLastModified="2018-10-08T21:01:21.704" caom2:metaChecksum="md5:61a7181890cc9be1423fa100f2371795" caom2:accMetaChecksum="md5:fcbed865b226707dd0a7ec7f4eef8258" caom2:metaProducer="gem2caom2/0.8.1">
-          <caom2:uri>gemini:GEM/N20150807G0044.fits</caom2:uri>
+          <caom2:uri>gemini:GEMINI/N20150807G0044.fits</caom2:uri>
           <caom2:productType>science</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>
@@ -153,7 +153,7 @@
           </caom2:parts>
         </caom2:artifact>
         <caom2:artifact caom2:id="00000000-0000-0000-b602-a91a4c6ebe9c" caom2:lastModified="2018-10-08T21:01:21.704" caom2:maxLastModified="2018-10-08T21:01:21.704" caom2:metaChecksum="md5:028f3bd54f27bdb7243c5ae6203e2e8c" caom2:accMetaChecksum="md5:46ac9a09d0ca94adfa92b8cd483997ac" caom2:metaProducer="gem2caom2/0.8.1">
-          <caom2:uri>gemini:GEM/N20150807G0044.jpg</caom2:uri>
+          <caom2:uri>gemini:GEMINI/N20150807G0044.jpg</caom2:uri>
           <caom2:productType>preview</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>image/jpeg</caom2:contentType>
@@ -177,7 +177,7 @@
       </caom2:provenance>
       <caom2:artifacts>
         <caom2:artifact caom2:id="00000000-0000-0000-9346-26b6046ce539" caom2:metaProducer="gem2caom2/0.8.1">
-          <caom2:uri>gemini:GEM/N20150807G0044i.fits</caom2:uri>
+          <caom2:uri>gemini:GEMINI/N20150807G0044i.fits</caom2:uri>
           <caom2:productType>science</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>
@@ -297,7 +297,7 @@
       </caom2:provenance>
       <caom2:artifacts>
         <caom2:artifact caom2:id="00000000-0000-0000-aedc-050794bbff30" caom2:metaProducer="gem2caom2/0.8.1">
-          <caom2:uri>gemini:GEM/N20150807G0044m.fits</caom2:uri>
+          <caom2:uri>gemini:GEMINI/N20150807G0044m.fits</caom2:uri>
           <caom2:productType>science</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>

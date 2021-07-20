@@ -74,10 +74,8 @@ import shutil
 from datetime import datetime
 from mock import patch, Mock
 
-from caom2 import ChecksumURI, Artifact, ReleaseType, ProductType
 from gem2caom2 import preview_augmentation, pull_augmentation, SCHEME
-from gem2caom2 import ARCHIVE, pull_v_augmentation, COLLECTION, V_SCHEME
-from gem2caom2 import preview_v_augmentation, cleanup_augmentation
+from gem2caom2 import COLLECTION, cleanup_augmentation
 from caom2pipe import caom_composable as cc
 from caom2pipe import manage_composable as mc
 
@@ -91,95 +89,6 @@ TEST_FP_FILE = 'N20150404S0726.fits'
 TEST_OBS_FILE = f'{TEST_DATA_DIR}/visit_obs_start.xml'
 TEST_PRODUCT_ID = 'GN2001BQ013-04'
 REJECTED_FILE = os.path.join(TEST_DATA_DIR, 'rejected.yml')
-
-
-def test_preview_augment():
-    # this should result in two new artifacts being added to the plane
-    # one for a thumbnail and one for a preview
-
-    obs = mc.read_obs_from_file(TEST_OBS_FILE)
-    obs.planes[TEST_PRODUCT_ID].data_release = datetime.utcnow()
-    assert len(obs.planes[TEST_PRODUCT_ID].artifacts) == 1, 'initial condition'
-
-    test_rejected = mc.Rejected(REJECTED_FILE)
-    test_config = mc.Config()
-    test_observable = mc.Observable(test_rejected, mc.Metrics(test_config))
-    cadc_client_mock = Mock()
-    kwargs = {
-        'working_directory': '/test_files',
-        'cadc_client': cadc_client_mock,
-        'stream': 'stream',
-        'observable': test_observable,
-    }
-
-    test_prev = f'/test_files/{TEST_PRODUCT_ID}.jpg'
-    if os.path.exists(test_prev):
-        os.unlink(test_prev)
-
-    try:
-        with patch('caom2pipe.manage_composable.http_get') as http_mock, patch(
-            'caom2pipe.manage_composable.data_put'
-        ) as ad_put_mock, patch(
-            'caom2pipe.manage_composable.get_artifact_metadata'
-        ) as art_mock:
-
-            def _art_mock(
-                fqn,
-                product_type,
-                release_type,
-                uri,
-                art_ignore,
-            ):
-                if '_th' in uri:
-                    return Artifact(
-                        uri,
-                        ProductType.PREVIEW,
-                        ReleaseType.DATA,
-                        'image/jpeg',
-                        13,
-                        ChecksumURI('md5:13'),
-                    )
-                else:
-                    return Artifact(
-                        uri,
-                        ProductType.PREVIEW,
-                        ReleaseType.DATA,
-                        'image/jpeg',
-                        12,
-                        ChecksumURI('md5:12'),
-                    )
-
-            cadc_client_mock.return_value.data_get.return_value = (
-                mc.CadcException('test')
-            )
-            art_mock.side_effect = _art_mock
-            http_mock.side_effect = _get_mock
-            result = preview_augmentation.visit(obs, **kwargs)
-            test_url = (
-                f'{preview_augmentation.PREVIEW_URL}' f'{TEST_PRODUCT_ID}.fits'
-            )
-            assert http_mock.called, 'http mock should be called'
-            http_mock.assert_called_with(
-                test_url, test_prev
-            ), 'mock not called'
-            assert ad_put_mock.called, 'ad put mock not called'
-            assert art_mock.called, 'art mock not called'
-            assert result is not None, 'expect a result'
-            assert result['artifacts'] == 2, 'artifacts should be added'
-            assert (
-                len(obs.planes[TEST_PRODUCT_ID].artifacts) == 3
-            ), 'two new artifacts'
-            prev_uri = mc.build_uri(ARCHIVE, f'{TEST_PRODUCT_ID}.jpg', SCHEME)
-            thumb_uri = mc.build_uri(ARCHIVE, f'{TEST_PRODUCT_ID}_th.jpg')
-            assert (
-                prev_uri in obs.planes[TEST_PRODUCT_ID].artifacts.keys()
-            ), 'no preview'
-            assert (
-                thumb_uri in obs.planes[TEST_PRODUCT_ID].artifacts
-            ), 'no thumbnail'
-    finally:
-        if os.path.exists(test_prev):
-            os.unlink(test_prev)
 
 
 def test_preview_augment_known_no_preview():
@@ -286,45 +195,9 @@ def test_preview_augment_unknown_no_preview():
         assert not exec_mock.called, 'exec mock should not be called'
 
 
-def test_pull_augmentation():
-    obs = mc.read_obs_from_file(TEST_OBS_FILE)
-    obs.planes[TEST_PRODUCT_ID].data_release = datetime.utcnow()
-    assert len(obs.planes[TEST_PRODUCT_ID].artifacts) == 1, 'initial condition'
-
-    test_rejected = mc.Rejected(REJECTED_FILE)
-    test_config = mc.Config()
-    test_observable = mc.Observable(test_rejected, mc.Metrics(test_config))
-    cadc_client_mock = Mock()
-    kwargs = {
-        'working_directory': TEST_DATA_DIR,
-        'cadc_client': cadc_client_mock,
-        'stream': 'stream',
-        'observable': test_observable,
-    }
-
-    with patch('caom2pipe.manage_composable.http_get') as http_mock, patch(
-        'caom2pipe.manage_composable.data_put'
-    ) as ad_put_mock:
-        cadc_client_mock.return_value.data_get.return_value = mc.CadcException(
-            'test'
-        )
-        # no scheme from cadc client
-        cadc_client_mock.get_file_info.return_value = {'md5sum': '1234'}
-        result = pull_augmentation.visit(obs, **kwargs)
-        test_url = f'{pull_augmentation.FILE_URL}/{TEST_PRODUCT_ID}.fits'
-        test_prev = f'{TEST_DATA_DIR}/{TEST_PRODUCT_ID}.fits'
-        http_mock.assert_called_with(test_url, test_prev), 'mock not called'
-        assert ad_put_mock.called, 'ad put mock not called'
-        assert result is not None, 'expect a result'
-        assert result['observation'] == 0, 'no updated metadata'
-        assert (
-            len(obs.planes[TEST_PRODUCT_ID].artifacts) == 1
-        ), 'no new artifacts'
-
-
 @patch('caom2pipe.manage_composable.http_get')
 @patch('caom2pipe.client_composable.si_client_put')
-def test_pull_v_augmentation(put_mock, http_mock):
+def test_pull_augmentation(put_mock, http_mock):
     obs = mc.read_obs_from_file(TEST_OBS_FILE)
     obs.planes[TEST_PRODUCT_ID].data_release = datetime.utcnow()
     original_uri = 'gemini:GEM/GN2001BQ013-04.fits'
@@ -344,7 +217,7 @@ def test_pull_v_augmentation(put_mock, http_mock):
         'observable': test_observable,
     }
 
-    result = pull_v_augmentation.visit(obs, **kwargs)
+    result = pull_augmentation.visit(obs, **kwargs)
     test_url = f'{pull_augmentation.FILE_URL}/{TEST_PRODUCT_ID}.fits'
     test_prev = f'{TEST_DATA_DIR}/{TEST_PRODUCT_ID}.fits'
     http_mock.assert_called_with(test_url, test_prev), 'mock not called'
@@ -398,7 +271,7 @@ def test_preview_augment_delete_preview():
 
 @patch('caom2pipe.manage_composable.http_get')
 @patch('caom2pipe.client_composable.si_client_put')
-def test_preview_augment_v(put_mock, http_mock):
+def test_preview_augment(put_mock, http_mock):
     # this should result in two new artifacts being added to the plane
     # one for a thumbnail and one for a preview
 
@@ -426,7 +299,7 @@ def test_preview_augment_v(put_mock, http_mock):
             'test'
         )
         http_mock.side_effect = _get_mock
-        result = preview_v_augmentation.visit(obs, **kwargs)
+        result = preview_augmentation.visit(obs, **kwargs)
         test_url = (
             f'{preview_augmentation.PREVIEW_URL}' f'{TEST_PRODUCT_ID}.fits'
         )
@@ -461,7 +334,7 @@ def test_preview_augment_v(put_mock, http_mock):
 
 @patch('caom2pipe.manage_composable.http_get')
 @patch('caom2pipe.client_composable.si_client_put')
-def test_preview_augment_v_failure(put_mock, http_mock):
+def test_preview_augment_failure(put_mock, http_mock):
     # mimic 'Not Found' behaviour
     # this should result in no new artifacts being added to the plane
     # but a record for 'no preview exists at Gemini' added to the
@@ -499,7 +372,7 @@ def test_preview_augment_v_failure(put_mock, http_mock):
             'test'
         )
         http_mock.side_effect = _failure_mock
-        result = preview_v_augmentation.visit(obs, **kwargs)
+        result = preview_augmentation.visit(obs, **kwargs)
         test_url = (
             f'{preview_augmentation.PREVIEW_URL}' f'{TEST_PRODUCT_ID}.fits'
         )
@@ -528,7 +401,7 @@ def test_preview_augment_v_failure(put_mock, http_mock):
         assert http_mock.call_count == 1, 'wrong number of calls'
         # now try again to generate the preview, and ensure that the
         # rejected tracking is working
-        result = preview_v_augmentation.visit(obs, **kwargs)
+        result = preview_augmentation.visit(obs, **kwargs)
         assert result is not None, 'expect a result the second time'
         assert http_mock.call_count == 1, 'wrong number of calls'
         assert result['artifacts'] == 0, 'artifacts not added second time'

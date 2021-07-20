@@ -41,16 +41,16 @@
         <caom2:producer>NOAO-IRAF FITS Image Kernel July 2003</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/filepre=gS20190301S0556_bias.fits</caom2:reference>
         <caom2:inputs>
+          <caom2:planeURI>caom:GEMINI/test_data_label/S20190301S0557</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/test_data_label/S20190301S0558</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/test_data_label/S20190301S0556</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/S20190301S0559</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/S20190301S0557</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/test_data_label/S20190301S0560</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/S20190301S0559</caom2:planeURI>
         </caom2:inputs>
       </caom2:provenance>
       <caom2:artifacts>
         <caom2:artifact caom2:id="00000000-0000-0000-baa3-f225ae908cd4" caom2:metaProducer="gem2caom2/0.8.1">
-          <caom2:uri>gemini:GEM/gS20190301S0556_bias.fits</caom2:uri>
+          <caom2:uri>gemini:GEMINI/gS20190301S0556_bias.fits</caom2:uri>
           <caom2:productType>calibration</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>

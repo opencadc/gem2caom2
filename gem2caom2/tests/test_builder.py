@@ -73,7 +73,7 @@ import pytest
 from mock import patch
 
 from caom2pipe import manage_composable as mc
-from gem2caom2 import A_SCHEME, SCHEME, V_SCHEME, COLLECTION, ARCHIVE
+from gem2caom2 import SCHEME, V_SCHEME, COLLECTION
 from gem2caom2 import builder
 from gem2caom2 import external_metadata as em
 
@@ -93,31 +93,27 @@ def test_builder(obs_metadata_mock, tap_client_mock):
     em.init_global(config=test_config)
     test_subject = builder.GemObsIDBuilder(test_config)
 
-    for support in [False, True]:
-        test_config.features.supports_latest_client = support
-        test_entry = 'S20050825S0143.fits'
-        for task_type in [mc.TaskType.INGEST, mc.TaskType.SCRAPE]:
-            test_config.task_types = [task_type]
-            test_result = test_subject.build(test_entry)
-            assert (
-                test_result is not None
-            ), f'expect a result support {support}'
-            expected_path = COLLECTION if support else ARCHIVE
-            assert (
-                test_result.file_uri
-                == f'{SCHEME}:{expected_path}/{test_entry}'
-            ), 'wrong file uri'
-            assert (
-                test_result.prev_uri
-                == f'{SCHEME}:{expected_path}/{test_result.prev}'
-            ), 'wrong preview uri'
-            expected_scheme = V_SCHEME if support else A_SCHEME
-            assert (
-                test_result.thumb_uri
-                == f'{expected_scheme}:{expected_path}/{test_result.thumb}'
-            ), 'wrong thumb uri'
+    test_entry = 'S20050825S0143.fits'
+    for task_type in [mc.TaskType.INGEST, mc.TaskType.SCRAPE]:
+        test_config.task_types = [task_type]
+        test_result = test_subject.build(test_entry)
+        assert (
+            test_result is not None
+        ), f'expect a result'
+        assert (
+            test_result.file_uri
+            == f'{SCHEME}:{COLLECTION}/{test_entry}'
+        ), 'wrong file uri'
+        assert (
+            test_result.prev_uri
+            == f'{SCHEME}:{COLLECTION}/{test_result.prev}'
+        ), 'wrong preview uri'
+        assert (
+            test_result.thumb_uri
+            == f'{V_SCHEME}:{COLLECTION}/{test_result.thumb}'
+        ), 'wrong thumb uri'
 
-        test_config.task_types = [mc.TaskType.INGEST]
-        test_entry = 'GN-DATA-LABEL'
-        with pytest.raises(mc.CadcException):
-            test_result = test_subject.build(test_entry)
+    test_config.task_types = [mc.TaskType.INGEST]
+    test_entry = 'GN-DATA-LABEL'
+    with pytest.raises(mc.CadcException):
+        ignore = test_subject.build(test_entry)

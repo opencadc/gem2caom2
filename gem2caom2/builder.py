@@ -158,77 +158,36 @@ class GemObsIDBuilder(nbc.StorageNameBuilder):
         """
         self._logger.debug(f'Build a StorageName instance for {entry}.')
         try:
-            if self._config.features.supports_latest_client:
-                if (
-                    mc.TaskType.SCRAPE in self._config.task_types
-                    or self._config.use_local_files
-                ):
-                    self._read_instrument_locally(entry)
-                    result = gem_name.GemName(
-                        file_name=entry,
-                        instrument=self._instrument,
-                        v_collection=gem_name.COLLECTION,
-                        v_scheme=gem_name.V_SCHEME,
-                        entry=entry,
-                    )
-                    result.source_names = [path.join(
-                        self._config.working_directory, result.file_name
-                    )]
-                elif '.fits' in entry or '.jpg' in entry:
-                    self._read_instrument_remotely(entry)
-                    result = gem_name.GemName(
-                        file_name=entry,
-                        instrument=self._instrument,
-                        v_collection=gem_name.COLLECTION,
-                        v_scheme=gem_name.V_SCHEME,
-                        entry=entry,
-                    )
-                    result.source_names = [result.file_name]
-                else:
-                    raise mc.CadcException(
-                        'The need has not been encountered in the real world '
-                        'yet.'
-                    )
+            if (
+                mc.TaskType.SCRAPE in self._config.task_types
+                or self._config.use_local_files
+            ):
+                self._read_instrument_locally(entry)
+                result = gem_name.GemName(
+                    file_name=entry,
+                    instrument=self._instrument,
+                    v_collection=gem_name.COLLECTION,
+                    v_scheme=gem_name.V_SCHEME,
+                    entry=entry,
+                )
+                result.source_names = [path.join(
+                    self._config.working_directory, result.file_name
+                )]
+            elif '.fits' in entry or '.jpg' in entry:
+                self._read_instrument_remotely(entry)
+                result = gem_name.GemName(
+                    file_name=entry,
+                    instrument=self._instrument,
+                    v_collection=gem_name.COLLECTION,
+                    v_scheme=gem_name.V_SCHEME,
+                    entry=entry,
+                )
+                result.source_names = [result.file_name]
             else:
-                if (
-                    mc.TaskType.INGEST_OBS in self._config.task_types
-                    and '.fits' not in entry
-                ):
-                    # anything that is NOT ALOPEKE/ZORRO, which are the only
-                    # two instruments that change the behaviour of the
-                    # GemName constructor - and yeah, that abstraction is
-                    # leaking like a sieve.
-                    self._logger.debug('INGEST_OBS, hard-coded instrument.')
-                    instrument = external_metadata.Inst.CIRPASS
-                    result = gem_name.GemName(
-                        obs_id=entry, instrument=instrument, entry=entry
-                    )
-                elif (
-                    mc.TaskType.SCRAPE in self._config.task_types
-                    or self._config.use_local_files
-                ):
-                    self._read_instrument_locally(entry)
-                    result = gem_name.GemName(
-                        file_name=entry,
-                        instrument=self._instrument,
-                        entry=entry,
-                    )
-                    result.source_names = [path.join(
-                        self._config.working_directory, result.file_name
-                    )]
-                elif '.fits' in entry or '.jpg' in entry:
-                    self._read_instrument_remotely(entry)
-                    result = gem_name.GemName(
-                        file_name=entry,
-                        instrument=self._instrument,
-                        entry=entry,
-                    )
-                    result.source_names = [result.file_name]
-                else:
-                    raise mc.CadcException(
-                        'The need has not been encountered in the real world '
-                        'yet.'
-                    )
+                raise mc.CadcException(
+                    'The need has not been encountered in the real world '
+                    'yet.'
+                )
             self._logger.debug('Done build.')
             return result
         except Exception as e:

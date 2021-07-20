@@ -42,13 +42,13 @@
         <caom2:producer>NOAO-IRAF FITS Image Kernel July 2003</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/filepre=mfrgS20041117S0073_add.fits</caom2:reference>
         <caom2:inputs>
-          <caom2:planeURI>caom:GEMINI/GS-2004B-Q-42-1-001/S20041117S0073</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/GS-2004B-Q-42-1-002/S20041117S0074</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GS-2004B-Q-42-1-001/S20041117S0073</caom2:planeURI>
         </caom2:inputs>
       </caom2:provenance>
       <caom2:artifacts>
         <caom2:artifact caom2:id="00000000-0000-0000-a0c3-da3a6429df83" caom2:metaProducer="gem2caom2/0.8.1">
-          <caom2:uri>gemini:GEM/mfrgS20041117S0073_add.fits</caom2:uri>
+          <caom2:uri>gemini:GEMINI/mfrgS20041117S0073_add.fits</caom2:uri>
           <caom2:productType>science</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>
@@ -151,7 +151,7 @@
           </caom2:parts>
         </caom2:artifact>
         <caom2:artifact caom2:id="00000000-0000-0000-bf9f-f59a76e0b5f0" caom2:metaProducer="gem2caom2/0.8.1">
-          <caom2:uri>gemini:GEM/mfrgS20041117S0073_add.jpg</caom2:uri>
+          <caom2:uri>gemini:GEMINI/mfrgS20041117S0073_add.jpg</caom2:uri>
           <caom2:productType>preview</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>image/jpeg</caom2:contentType>

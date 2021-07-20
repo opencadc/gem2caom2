@@ -5,5 +5,4 @@
   <caom2:algorithm>
     <caom2:name>exposure</caom2:name>
   </caom2:algorithm>
-  <caom2:planes/>
 </caom2:Observation>

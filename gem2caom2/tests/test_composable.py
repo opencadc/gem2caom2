@@ -80,7 +80,8 @@ import gem_mocks
 
 from caom2 import SimpleObservation, Algorithm
 from caom2pipe import manage_composable as mc
-from gem2caom2 import composable, gem_name, external_metadata
+from gem2caom2 import composable, gem_name, external_metadata, COLLECTION
+from gem2caom2 import SCHEME
 
 
 STATE_FILE = f'{gem_mocks.TEST_DATA_DIR}/state.yml'
@@ -126,7 +127,8 @@ def test_run(inst_mock, get_obs_mock, client_mock, run_mock):
         assert test_storage.fname_on_disk == test_f_name, 'wrong fname on disk'
         assert test_storage.url is None, 'wrong url'
         assert (
-            test_storage.lineage == f'{test_f_id}/gemini:GEM/{test_f_name}'
+            test_storage.lineage ==
+            f'{test_f_id}/{SCHEME}:{COLLECTION}/{test_f_name}'
         ), 'wrong lineage'
         assert (
             test_storage.external_urls
@@ -160,7 +162,8 @@ def test_run_errors(inst_mock, get_obs_mock, client_mock, run_mock):
         assert test_storage.fname_on_disk == test_f_name, 'wrong fname on disk'
         assert test_storage.url is None, 'wrong url'
         assert (
-            test_storage.lineage == f'{test_f_id}/gemini:GEM/{test_f_id}.fits'
+            test_storage.lineage ==
+            f'{test_f_id}/{SCHEME}:{COLLECTION}/{test_f_id}.fits'
         ), 'wrong lineage'
         assert (
             test_storage.external_urls
@@ -201,7 +204,8 @@ def test_run_incremental_rc(
         ), 'wrong fname on disk'
         assert test_storage.url is None, 'wrong url'
         assert (
-            test_storage.lineage == f'{test_fid}/gemini:GEM/{test_fid}.fits'
+            test_storage.lineage ==
+            f'{test_fid}/{SCHEME}:{COLLECTION}/{test_fid}.fits'
         ), 'wrong lineage'
         assert (
             test_storage.external_urls
@@ -213,17 +217,17 @@ def test_run_incremental_rc(
 
 @patch('gem2caom2.to_caom2')
 @patch('caom2pipe.client_composable.CAOM2RepoClient')
-@patch('caom2pipe.client_composable.CadcDataClient')
+@patch('caom2pipe.client_composable.StorageInventoryClient')
 @patch('caom2pipe.manage_composable.read_obs_from_file')
 @patch('caom2pipe.manage_composable.query_endpoint')
 @patch('gem2caom2.external_metadata.CadcTapClient')
 def test_run_by_incremental2(
     client_mock, query_mock, read_mock, data_client_mock, repo_mock, exec_mock
 ):
-    data_client_mock.return_value.get_file_info.side_effect = (
+    data_client_mock.return_value.cadcinfo.side_effect = (
         gem_mocks.mock_get_file_info
     )
-    data_client_mock.return_value.get_file.side_effect = Mock()
+    data_client_mock.return_value.cadcget.side_effect = Mock()
     exec_mock.side_effect = Mock()
     repo_mock.return_value.create.side_effect = gem_mocks.mock_repo_create
     repo_mock.return_value.read.side_effect = gem_mocks.mock_repo_read
@@ -332,7 +336,7 @@ def test_run_by_incremental2(
     assert repo_mock.return_value.read.called, 'read not called'
     assert exec_mock.called, 'exec mock not called'
     assert not (
-        data_client_mock.return_value.get_file_info.called
+        data_client_mock.return_value.cadcinfo.called
     ), 'data client mock get file info should not be not called'
     assert query_mock.called, 'query mock not called'
 
@@ -381,7 +385,8 @@ def test_run_by_public(ds_mock, client_mock, tap_mock, exec_mock):
     ), 'wrong fname on disk'
     assert test_storage.url is None, 'wrong url'
     assert (
-        test_storage.lineage == f'{test_f_id}/gemini:GEM/{test_f_id}.fits'
+        test_storage.lineage ==
+        f'{test_f_id}/{SCHEME}:{COLLECTION}/{test_f_id}.fits'
     ), 'wrong lineage'
     assert (
         test_storage.external_urls
@@ -426,7 +431,7 @@ def test_run_by_public2(
         # same data label, so they all end up in this lineage
         assert (
             test_storage.lineage
-            == 'N20191101S0007/gemini:GEM/N20191101S0007.fits'
+            == f'N20191101S0007/{SCHEME}:{COLLECTION}/N20191101S0007.fits'
         ), 'wrong lineage'
         assert (
             test_storage.external_urls
@@ -454,7 +459,8 @@ def _check_sys_argv_params():
         f'https://archive.gemini.edu/fullheader/'
         f'2002feb11_0180.fits --plugin {plugin} --module '
         f'{plugin} --lineage '
-        f'2002feb11_0180/gemini:GEM/2002feb11_0180.fits'
+        f'2002feb11_0180/{SCHEME}:{COLLECTION}/2002feb11_0180.fits '
+        f'--resource-id ivo://cadc.nrc.ca/test'
     ), f'exec mock wrong parameters {temp}'
 
 

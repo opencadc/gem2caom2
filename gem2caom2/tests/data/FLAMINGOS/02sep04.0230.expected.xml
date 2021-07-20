@@ -129,7 +129,7 @@
       <caom2:polarization/>
       <caom2:artifacts>
         <caom2:artifact caom2:id="00000000-0000-0000-8a6c-cde0d6f544da" caom2:lastModified="2019-02-18T21:43:31.142" caom2:maxLastModified="2019-02-18T21:43:31.142" caom2:metaChecksum="md5:58645ddfd8a3b594b5e76a7aaa3e3ee1" caom2:accMetaChecksum="md5:7406b505510fd141ebf3052c8ff73ad5" caom2:metaProducer="gem2caom2/0.8.1">
-          <caom2:uri>gemini:GEM/02sep04.0230.fits</caom2:uri>
+          <caom2:uri>gemini:GEMINI/02sep04.0230.fits</caom2:uri>
           <caom2:productType>science</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>
@@ -233,7 +233,7 @@
           </caom2:parts>
         </caom2:artifact>
         <caom2:artifact caom2:id="00000000-0000-0000-b3f3-67b2e1858d97" caom2:lastModified="2018-10-10T02:09:52.897" caom2:maxLastModified="2018-10-10T02:09:52.897" caom2:metaChecksum="md5:98cab0d3d9f6c8bc62677b0c573ad0ec" caom2:accMetaChecksum="md5:5ef9502b570f27e6d0a316700d7a550e" caom2:metaProducer="gem2caom2/0.8.1">
-          <caom2:uri>gemini:GEM/02sep04.0230.jpg</caom2:uri>
+          <caom2:uri>gemini:GEMINI/02sep04.0230.jpg</caom2:uri>
           <caom2:productType>preview</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>image/jpeg</caom2:contentType>

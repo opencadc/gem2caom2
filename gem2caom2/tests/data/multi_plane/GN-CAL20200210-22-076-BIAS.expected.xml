@@ -36,7 +36,9 @@
         <caom2:project>Gemini Archive</caom2:project>
         <caom2:producer>NOAO-IRAF FITS Image Kernel July 2003</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/filepre=N20200210S0077_bias.fits</caom2:reference>
-        <caom2:inputs>caom:N20200210S0077.fits</caom2:inputs>
+        <caom2:inputs>
+          <caom2:planeURI>caom:GEMINI/GN-CAL20200210-22-076/N20200210S0077</caom2:planeURI>
+        </caom2:inputs>
       </caom2:provenance>
       <caom2:artifacts>
         <caom2:artifact caom2:id="fdab17dd-1ee4-4c9d-9750-e95b9048d4fd" caom2:lastModified="2020-02-25T20:36:31.230" caom2:maxLastModified="2020-02-25T20:36:31.230" caom2:metaChecksum="md5:b55a6fbdb5a93070fad30d8cb9e30687" caom2:accMetaChecksum="md5:176fac1047966e4a1d6d257a99ee35f0">

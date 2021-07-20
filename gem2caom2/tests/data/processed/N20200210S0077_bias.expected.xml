@@ -41,61 +41,61 @@
         <caom2:producer>NOAO-IRAF FITS Image Kernel July 2003</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/filepre=N20200210S0077_bias.fits</caom2:reference>
         <caom2:inputs>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200217S0700</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200215S0159</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200218S0096</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200218S0097</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200219S0288</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200219S0289</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200219S0290</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200219S0291</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200219S0287</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200217S0697</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200214S1422</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200214S1425</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200215S0161</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200210S0080</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200215S0160</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200222S0726</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200223S0387</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200221S0428</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200218S0099</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200222S0730</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200221S0427</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200214S1426</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200220S0419</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200222S0727</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200222S0728</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200217S0698</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200215S0157</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200214S1424</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200218S0098</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200220S0418</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200221S0429</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200221S0431</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200215S0158</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200214S1423</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200223S0388</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200220S0422</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200210S0077</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200223S0385</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200220S0421</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200220S0420</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200221S0430</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/test_data_label/N20200210S0081</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200223S0384</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200218S0095</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200223S0386</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200217S0699</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200217S0701</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200210S0078</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200222S0729</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200221S0427</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/test_data_label/N20200210S0079</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200219S0289</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200220S0422</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200218S0097</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200214S1426</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200223S0388</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200220S0420</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200217S0699</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200222S0726</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200221S0429</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200210S0080</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200214S1425</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200210S0077</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200222S0730</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200217S0698</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200223S0386</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200220S0421</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200215S0157</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200219S0290</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200215S0161</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200214S1424</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200215S0158</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200217S0701</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200222S0728</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200221S0431</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200218S0095</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200223S0385</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200220S0418</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200215S0160</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200222S0729</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200219S0291</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200219S0288</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200218S0099</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200210S0078</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200214S1422</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200222S0727</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200218S0096</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200217S0697</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200217S0700</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200218S0098</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200219S0287</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200215S0159</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200221S0428</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200223S0387</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200214S1423</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200223S0384</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200221S0430</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/N20200220S0419</caom2:planeURI>
         </caom2:inputs>
       </caom2:provenance>
       <caom2:artifacts>
         <caom2:artifact caom2:id="fdab17dd-1ee4-4c9d-9750-e95b9048d4fd" caom2:lastModified="2020-02-25T20:36:31.230" caom2:maxLastModified="2020-02-25T20:36:31.230" caom2:metaChecksum="md5:b55a6fbdb5a93070fad30d8cb9e30687" caom2:accMetaChecksum="md5:176fac1047966e4a1d6d257a99ee35f0" caom2:metaProducer="gem2caom2/0.8.1">
-          <caom2:uri>gemini:GEM/N20200210S0077_bias.fits</caom2:uri>
+          <caom2:uri>gemini:GEMINI/N20200210S0077_bias.fits</caom2:uri>
           <caom2:productType>calibration</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>

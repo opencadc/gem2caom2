@@ -49,7 +49,7 @@
       </caom2:provenance>
       <caom2:artifacts>
         <caom2:artifact caom2:id="66fcdea3-9572-41d8-beef-1665cec5a98e" caom2:lastModified="2019-07-19T15:12:57.137" caom2:maxLastModified="2019-12-03T21:20:49.426" caom2:metaChecksum="md5:5c41b4a87d11fa5adf6b0714cad18d13" caom2:accMetaChecksum="md5:15f0bcbb638d3c13a2b0d2f228152dd5" caom2:metaProducer="gem2caom2/0.8.1">
-          <caom2:uri>gemini:GEM/mrgN20060130S0149_add.fits</caom2:uri>
+          <caom2:uri>gemini:GEMINI/mrgN20060130S0149_add.fits</caom2:uri>
           <caom2:productType>science</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>
@@ -155,8 +155,8 @@
     </caom2:plane>
   </caom2:planes>
   <caom2:members>
-    <caom2:observationURI>caom:GEMINI/GN-2006A-Q-90-1-002</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GN-2006A-Q-90-1-001</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GN-2006A-Q-90-1-003</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GN-2006A-Q-90-1-002</caom2:observationURI>
   </caom2:members>
 </caom2:Observation>

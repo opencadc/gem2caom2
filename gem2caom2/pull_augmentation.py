@@ -3,7 +3,7 @@
 # ******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
 # *************  CENTRE CANADIEN DE DONNÉES ASTRONOMIQUES  **************
 #
-#  (c) 2019.                            (c) 2019.
+#  (c) 2020.                            (c) 2020.
 #  Government of Canada                 Gouvernement du Canada
 #  National Research Council            Conseil national de recherches
 #  Ottawa, Canada, K1A 0R6              Ottawa, Canada, K1A 0R6
@@ -68,6 +68,7 @@
 #
 
 import logging
+import os
 
 from datetime import datetime
 
@@ -78,7 +79,6 @@ from caom2pipe import manage_composable as mc
 from gem2caom2 import gem_name
 
 FILE_URL = 'https://archive.gemini.edu/file'
-MIME_TYPE = 'application/fits'
 
 
 def visit(observation, **kwargs):
@@ -92,9 +92,6 @@ def visit(observation, **kwargs):
     if cadc_client is None:
         logging.warning('Need a cadc_client to update. Stopping pull visitor.')
         return
-    stream = kwargs.get('stream')
-    if stream is None:
-        raise mc.CadcException('Visitor needs a stream parameter.')
     observable = kwargs.get('observable')
     if observable is None:
         raise mc.CadcException('Visitor needs a observable parameter.')
@@ -111,9 +108,9 @@ def visit(observation, **kwargs):
                 plane.data_release is None
                 or plane.data_release > datetime.utcnow()
             ):
-                logging.error(
-                    f'Plane {plane.product_id} is proprietary '
-                    f'until {plane.data_release}. No file access.'
+                logging.info(
+                    f'Plane {plane.product_id} is proprietary. No file '
+                    f'access.'
                 )
                 continue
 
@@ -123,17 +120,38 @@ def visit(observation, **kwargs):
                 try:
                     f_name = mc.CaomName(artifact.uri).file_name
                     file_url = f'{FILE_URL}/{f_name}'
-                    clc.look_pull_and_put(
-                        f_name,
-                        working_dir,
+                    fqn = os.path.join(working_dir, f_name)
+                    if artifact.uri.startswith('ad:'):
+                        artifact.uri = artifact.uri.replace(
+                            'ad:', 'cadc:'
+                        )
+                        logging.warning(
+                            f'Modified scheme for artifact.uri {artifact.uri}'
+                        )
+                        count = 1
+                    if f'GEM/' in artifact.uri:
+                        artifact.uri = artifact.uri.replace(
+                            'GEM/', f'{gem_name.COLLECTION}/'
+                        )
+                        logging.warning(
+                            f'Modified collection for artifact.uri '
+                            f'{artifact.uri}'
+                        )
+                        count = 1
+                    clc.look_pull_and_put_si(
+                        artifact.uri,
+                        fqn,
                         file_url,
-                        gem_name.ARCHIVE,
-                        stream,
-                        MIME_TYPE,
                         cadc_client,
                         artifact.content_checksum.checksum,
                         observable.metrics,
                     )
+                    if os.path.exists(fqn):
+                        logging.info(
+                            f'Removing local copy of {f_name} after '
+                            f'successful storage call.'
+                        )
+                        os.unlink(fqn)
                 except Exception as e:
                     if not (
                         observable.rejected.check_and_record(

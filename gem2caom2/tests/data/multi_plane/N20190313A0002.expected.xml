@@ -41,7 +41,7 @@
       </caom2:provenance>
       <caom2:artifacts>
         <caom2:artifact caom2:id="c4374edb-a961-44e6-aecd-b1b86c8975a0" caom2:metaProducer="gem2caom2/0.8.1">
-          <caom2:uri>gemini:GEM/N20190313A0002b.fits</caom2:uri>
+          <caom2:uri>gemini:GEMINI/N20190313A0002b.fits</caom2:uri>
           <caom2:productType>calibration</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>
@@ -98,7 +98,7 @@
       </caom2:provenance>
       <caom2:artifacts>
         <caom2:artifact caom2:id="0dcd2373-5a7d-43db-b281-b7953787867b" caom2:metaProducer="gem2caom2/0.8.1">
-          <caom2:uri>gemini:GEM/N20190313A0002r.fits</caom2:uri>
+          <caom2:uri>gemini:GEMINI/N20190313A0002r.fits</caom2:uri>
           <caom2:productType>calibration</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>

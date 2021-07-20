@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:CompositeObservation" caom2:id="00000000-0000-0000-ba0f-335b19752196">
+<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:DerivedObservation" caom2:id="00000000-0000-0000-ba0f-335b19752196">
   <caom2:collection>GEMINI</caom2:collection>
   <caom2:observationID>GS-CAL20161227-5-001</caom2:observationID>
   <caom2:metaRelease>2016-12-27T00:00:00.000</caom2:metaRelease>
@@ -37,13 +37,13 @@
         <caom2:producer>NOAO-IRAF FITS Image Kernel July 2003</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/filepre=rgS20161227S0051_fringe.fits</caom2:reference>
         <caom2:inputs>
-          <caom2:planeURI>caom:GEMINI/GS-CAL20161227-5-001/GS-CAL20161227-5-001</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/GS-CAL20161227-5-007/GS-CAL20161227-5-007</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GS-CAL20161227-5-001/GS-CAL20161227-5-001</caom2:planeURI>
         </caom2:inputs>
       </caom2:provenance>
       <caom2:artifacts>
         <caom2:artifact caom2:id="00000000-0000-0000-a8c7-54aa8b5443cc">
-          <caom2:uri>gemini:GEM/rgS20161227S0051_fringe.fits</caom2:uri>
+          <caom2:uri>gemini:GEMINI/rgS20161227S0051_fringe.fits</caom2:uri>
           <caom2:productType>calibration</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>

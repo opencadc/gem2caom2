@@ -108,7 +108,8 @@ def test_missing_provenance(get_obs_mock, cadc_get_obs_mock):
         f'--local {test_fqn} '
         f'--plugin {gem_mocks.PLUGIN} --module {gem_mocks.PLUGIN} '
         f'--observation {COLLECTION} {test_obs_id} --out {actual_fqn} '
-        f'--lineage {test_storage_name.lineage}'
+        f'--lineage {test_storage_name.lineage} '
+        f'--resource-id ivo://cadc.nrc.ca/uvic/minoc '
     ).split()
     main_app.to_caom2()
     expected_fqn = (

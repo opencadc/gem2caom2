@@ -78,6 +78,7 @@ from collections import OrderedDict
 from datetime import datetime
 from hashlib import md5
 
+from cadcdata import FileInfo
 from caom2.diff import get_differences
 from caom2pipe import manage_composable as mc
 
@@ -986,21 +987,21 @@ def mock_get_pi_metadata(program_id):
         logging.error(tb)
 
 
-def mock_get_file_info(archive, file_id):
+def mock_get_file_info(file_id):
     if '_prev' in file_id:
-        return {
-            'size': 10290,
-            'md5sum': 'md5:{}'.format(md5(b'-37').hexdigest()),
-            'type': 'image/jpeg',
-            'name': file_id,
-        }
+        return FileInfo(
+            size=10290,
+            md5sum='{}'.format(md5(b'-37').hexdigest()),
+            file_type='image/jpeg',
+            id=file_id,
+        )
     else:
-        return {
-            'size': 665345,
-            'md5sum': 'md5:a347f2754ff2fd4b6209e7566637efad',
-            'type': 'application/fits',
-            'name': file_id,
-        }
+        return FileInfo(
+            size=665345,
+            md5sum='a347f2754ff2fd4b6209e7566637efad',
+            file_type='application/fits',
+            id=file_id,
+        )
 
 
 def mock_get_obs_metadata(file_id):

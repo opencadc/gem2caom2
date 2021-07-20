@@ -13,7 +13,7 @@
       <caom2:dataRelease>2015-09-13T00:00:00.000</caom2:dataRelease>
       <caom2:artifacts>
         <caom2:artifact caom2:id="00000000-0000-0000-a16e-efee103fe9b1" caom2:metaProducer="gem2caom2/0.8.1">
-          <caom2:uri>gemini:GEM/N20140313S0072_flat.fits</caom2:uri>
+          <caom2:uri>gemini:GEMINI/N20140313S0072_flat.fits</caom2:uri>
           <caom2:productType>calibration</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>
@@ -22,7 +22,7 @@
           <caom2:parts/>
         </caom2:artifact>
         <caom2:artifact caom2:id="00000000-0000-0000-8cd9-24a33f5fb000" caom2:metaProducer="gem2caom2/0.8.1">
-          <caom2:uri>gemini:GEM/N20140313S0072_flat.jpg</caom2:uri>
+          <caom2:uri>gemini:GEMINI/N20140313S0072_flat.jpg</caom2:uri>
           <caom2:productType>preview</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>image/jpeg</caom2:contentType>
