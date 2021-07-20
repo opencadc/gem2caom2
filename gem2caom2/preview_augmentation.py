@@ -82,7 +82,7 @@ from gem2caom2.gem_name import GemName, COLLECTION, V_SCHEME
 __all__ = ['visit']
 
 
-PREVIEW_URL = 'https://archive.gemini.edu/preview'
+PREVIEW_URL = 'https://archive.gemini.edu/preview/'
 MIME_TYPE = 'image/jpeg'
 
 
