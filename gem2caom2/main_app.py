@@ -540,7 +540,6 @@ def update(observation, **kwargs):
     config.get_executors()
     try:
         for plane in observation.planes.values():
-            delete_list = []
             if (
                 current_product_id is not None
                 and current_product_id != plane.product_id
@@ -548,7 +547,7 @@ def update(observation, **kwargs):
                 continue
 
             for artifact in plane.artifacts.values():
-                _should_artifact_be_deleted(artifact, delete_list)
+                _should_artifact_be_renamed(artifact)
                 if GemName.is_preview(artifact.uri):
                     continue
 
@@ -670,14 +669,6 @@ def update(observation, **kwargs):
                 observation.proposal.pi_name = program['pi_name']
                 observation.proposal.title = program['title']
 
-            temp = list(set(delete_list))
-            for entry in temp:
-                logging.warning(
-                    f'Removing artifact {entry} from observation '
-                    f'{observation.observation_id}, plane {plane.product_id}.'
-                )
-                plane.artifacts.pop(entry)
-
         if isinstance(observation, DerivedObservation):
             cc.update_observation_members(observation)
 
@@ -694,12 +685,16 @@ def update(observation, **kwargs):
     return observation
 
 
-def _should_artifact_be_deleted(artifact, delete_list):
+def _should_artifact_be_renamed(artifact):
     if artifact.uri.startswith('gemini'):
-        if 'GEMINI' not in artifact.uri:
-            delete_list.append(artifact.uri)
+        if artifact.uri.startswith('gemini:GEM/'):
+            artifact.uri = artifact.uri.replace(
+                'gemini:GEM/', 'gemini:GEMINI/'
+            )
     if artifact.uri.startswith('ad'):
-        delete_list.append(artifact.uri)
+        artifact.uri = artifact.uri.replace(
+            'ad:GEM/', 'cadc:GEMINI/'
+        )
 
 
 def _update_position_from_zeroth_header(artifact, headers, instrument, obs_id):
