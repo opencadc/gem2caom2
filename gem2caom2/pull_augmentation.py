@@ -138,13 +138,12 @@ def visit(observation, **kwargs):
                             f'{artifact.uri}'
                         )
                         count = 1
-                    clc.look_pull_and_put_si(
+                    clc.look_pull_and_put(
                         artifact.uri,
                         fqn,
                         file_url,
                         cadc_client,
                         artifact.content_checksum.checksum,
-                        observable.metrics,
                     )
                     if os.path.exists(fqn):
                         logging.info(

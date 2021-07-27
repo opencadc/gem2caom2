@@ -74,6 +74,7 @@ import shutil
 from datetime import datetime
 from mock import patch, Mock
 
+from cadcutils import exceptions
 from gem2caom2 import preview_augmentation, pull_augmentation, SCHEME
 from gem2caom2 import COLLECTION, cleanup_augmentation
 from caom2pipe import caom_composable as cc
@@ -180,7 +181,7 @@ def test_preview_augment_unknown_no_preview():
     ) as art_mock, patch(
         'caom2pipe.manage_composable.exec_cmd'
     ) as exec_mock:
-        cadc_client_mock.return_value.data_get.return_value = mc.CadcException(
+        cadc_client_mock.get.side_effect = exceptions.UnexpectedException(
             'test'
         )
         result = preview_augmentation.visit(obs, **kwargs)
@@ -196,8 +197,7 @@ def test_preview_augment_unknown_no_preview():
 
 
 @patch('caom2pipe.manage_composable.http_get')
-@patch('caom2pipe.client_composable.si_client_put')
-def test_pull_augmentation(put_mock, http_mock):
+def test_pull_augmentation(http_mock):
     obs = mc.read_obs_from_file(TEST_OBS_FILE)
     obs.planes[TEST_PRODUCT_ID].data_release = datetime.utcnow()
     original_uri = 'gemini:GEM/GN2001BQ013-04.fits'
@@ -221,12 +221,10 @@ def test_pull_augmentation(put_mock, http_mock):
     test_url = f'{pull_augmentation.FILE_URL}/{TEST_PRODUCT_ID}.fits'
     test_prev = f'{TEST_DATA_DIR}/{TEST_PRODUCT_ID}.fits'
     http_mock.assert_called_with(test_url, test_prev), 'mock not called'
-    assert put_mock.called, 'put mock not called'
-    args, kwargs = put_mock.call_args
-    assert (
-        args[1] == os.path.join(TEST_DATA_DIR, f'{TEST_PRODUCT_ID}.fits')
-    ), 'wrong working dir'
-    assert args[2] == test_uri, 'wrong uri'
+    assert cadc_client_mock.put.called, 'put mock not called'
+    cadc_client_mock.put.assert_called_with(
+        TEST_DATA_DIR, 'gemini:GEMINI/GN2001BQ013-04.fits'
+    ), 'wrong put args'
     assert result is not None, 'expect a result'
     assert result['observation'] == 1, 'updated metadata: change artifact uri'
     assert len(obs.planes[TEST_PRODUCT_ID].artifacts) == 1, 'no new artifacts'
@@ -270,8 +268,7 @@ def test_preview_augment_delete_preview():
 
 
 @patch('caom2pipe.manage_composable.http_get')
-@patch('caom2pipe.client_composable.si_client_put')
-def test_preview_augment(put_mock, http_mock):
+def test_preview_augment(http_mock):
     # this should result in two new artifacts being added to the plane
     # one for a thumbnail and one for a preview
 
@@ -295,7 +292,7 @@ def test_preview_augment(put_mock, http_mock):
         os.unlink(test_prev)
 
     try:
-        cadc_client_mock.return_value.cadcget.return_value = mc.CadcException(
+        cadc_client_mock.get.side_effect = exceptions.UnexpectedException(
             'test'
         )
         http_mock.side_effect = _get_mock
@@ -305,13 +302,10 @@ def test_preview_augment(put_mock, http_mock):
         )
         assert http_mock.called, 'http mock should be called'
         http_mock.assert_called_with(test_url, test_prev), 'mock not called'
-        assert put_mock.called, 'put mock not called'
-        put_mock.assert_called_with(
-            cadc_client_mock,
-            '/test_files/GN2001BQ013-04_th.jpg',
-            'cadc:GEMINI/GN2001BQ013-04_th.jpg',
-            metrics=test_metrics,
-        )
+        assert cadc_client_mock.put.called, 'put mock not called'
+        cadc_client_mock.put.assert_called_with(
+            '/test_files', 'cadc:GEMINI/GN2001BQ013-04_th.jpg',
+        ), 'wrong put arguments'
         assert result is not None, 'expect a result'
         assert result['artifacts'] == 2, 'artifacts should be added'
         assert (
@@ -333,8 +327,7 @@ def test_preview_augment(put_mock, http_mock):
 
 
 @patch('caom2pipe.manage_composable.http_get')
-@patch('caom2pipe.client_composable.si_client_put')
-def test_preview_augment_failure(put_mock, http_mock):
+def test_preview_augment_failure(http_mock):
     # mimic 'Not Found' behaviour
     # this should result in no new artifacts being added to the plane
     # but a record for 'no preview exists at Gemini' added to the
@@ -368,7 +361,7 @@ def test_preview_augment_failure(put_mock, http_mock):
         os.unlink(test_prev)
 
     try:
-        cadc_client_mock.return_value.cadcget.return_value = mc.CadcException(
+        cadc_client_mock.get.side_effect = exceptions.UnexpectedException(
             'test'
         )
         http_mock.side_effect = _failure_mock
@@ -378,7 +371,7 @@ def test_preview_augment_failure(put_mock, http_mock):
         )
         assert http_mock.called, 'http mock should be called'
         http_mock.assert_called_with(test_url, test_prev), 'mock not called'
-        assert not put_mock.called, 'put mock should not be called'
+        assert not cadc_client_mock.put.called, 'put mock should not be called'
         assert result is not None, 'expect a result'
         assert result['artifacts'] == 0, 'artifacts should not be added'
         assert (

@@ -74,8 +74,8 @@ from datetime import datetime
 
 import matplotlib.image as image
 
+from cadcutils import exceptions
 from caom2 import Observation, ProductType, ReleaseType
-from caom2pipe import client_composable as clc
 from caom2pipe import manage_composable as mc
 from gem2caom2.gem_name import GemName, COLLECTION, V_SCHEME
 
@@ -153,14 +153,12 @@ def _do_prev(obs_id, working_dir, plane, cadc_client, observable):
         # storage (i.e. cadc_client is not None), though
         if not os.access(preview_fqn, 0) and cadc_client is not None:
             try:
-                fqn = os.path.join(working_dir, gem_name.prev)
-                clc.si_client_get(
-                    cadc_client,
-                    fqn,
-                    gem_name.prev_uri,
-                    observable.metrics,
+                logging.debug(f'Check CADC for {gem_name.prev}.')
+                cadc_client.get(gem_name.prev_uri)
+            except exceptions.UnexpectedException:
+                logging.debug(
+                    f'Retrieve {gem_name.prev} from archive.gemini.edu.'
                 )
-            except mc.CadcException:
                 new_retrieval = _retrieve_from_gemini(
                     gem_name,
                     observable,
@@ -211,24 +209,14 @@ def _do_prev(obs_id, working_dir, plane, cadc_client, observable):
                 plane, gem_name.prev_uri, preview_fqn, ProductType.PREVIEW
             )
             if cadc_client is not None and new_retrieval:
-                clc.si_client_put(
-                    cadc_client,
-                    preview_fqn,
-                    gem_name.prev_uri,
-                    metrics=observable.metrics,
-                )
+                cadc_client.put(working_dir, gem_name.prev_uri)
             count = 1
 
             _augment(
                 plane, gem_name.thumb_uri, thumb_fqn, ProductType.THUMBNAIL
             )
             if cadc_client is not None and new_retrieval:
-                clc.si_client_put(
-                    cadc_client,
-                    thumb_fqn,
-                    gem_name.thumb_uri,
-                    metrics=observable.metrics,
-                )
+                cadc_client.put(working_dir, gem_name.thumb_uri)
             count += 1
     return count
 
