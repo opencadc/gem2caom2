@@ -153,8 +153,8 @@ def _do_prev(obs_id, working_dir, plane, cadc_client, observable):
         # storage (i.e. cadc_client is not None), though
         if not os.access(preview_fqn, 0) and cadc_client is not None:
             try:
-                logging.debug(f'Check CADC for {gem_name.prev}.')
-                cadc_client.get(gem_name.prev_uri)
+                logging.debug(f'Check CADC for {gem_name.prev_uri}.')
+                cadc_client.get(working_dir, gem_name.prev_uri)
             except exceptions.UnexpectedException:
                 logging.debug(
                     f'Retrieve {gem_name.prev} from archive.gemini.edu.'
