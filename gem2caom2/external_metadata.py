@@ -75,7 +75,7 @@ from enum import Enum
 from bs4 import BeautifulSoup
 
 from cadctap import CadcTapClient
-from caom2utils import fits2caom2
+from caom2utils import cadc_client_wrapper
 from caom2pipe import client_composable as clc
 from caom2pipe import manage_composable as mc
 from gem2caom2.svofps import filter_metadata
@@ -615,7 +615,7 @@ def get_obs_id_from_headers(file_id, update_cache=None):
     result = None
     for f_name in try_these:
         if os.path.exists(f_name):
-            headers = fits2caom2.get_cadc_headers(f'file://{f_name}')
+            headers = cadc_client_wrapper.get_local_file_headers(f_name)
             result = headers[0].get('DATALAB').upper()
             if result is not None:
                 if update_cache is not None:

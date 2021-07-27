@@ -144,7 +144,7 @@ def test_multi_plane(tap_mock, gemini_client_mock, test_name):
         plugin = gem_mocks.PLUGIN
 
         with patch(
-            'caom2utils.fits2caom2.StorageInventoryClient'
+            'caom2utils.cadc_client_wrapper.StorageClientWrapper'
         ) as data_client_mock, patch(
             'gem2caom2.external_metadata.get_pi_metadata'
         ) as gemini_pi_mock, patch(

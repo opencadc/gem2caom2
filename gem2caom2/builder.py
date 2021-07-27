@@ -72,7 +72,7 @@ import traceback
 
 from os import path
 
-from caom2pipe import astro_composable as ac
+from caom2utils import cadc_client_wrapper
 from caom2pipe import manage_composable as mc
 from caom2pipe import name_builder_composable as nbc
 from gem2caom2 import gem_name, external_metadata, instruments
@@ -139,7 +139,7 @@ class GemObsIDBuilder(nbc.StorageNameBuilder):
             f'Use a local file to read instrument from the headers for '
             f'{entry}.'
         )
-        headers = ac.read_fits_headers(
+        headers = cadc_client_wrapper.get_local_headers_from_fits(
             f'{self._config.working_directory}/{entry}'
         )
         self._instrument = external_metadata.Inst(headers[0].get('INSTRUME'))

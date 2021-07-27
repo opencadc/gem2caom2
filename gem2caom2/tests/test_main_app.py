@@ -124,7 +124,7 @@ def pytest_generate_tests(metafunc):
         metafunc.parametrize('test_name', file_list)
 
 
-@patch('caom2utils.fits2caom2.StorageInventoryClient')
+@patch('caom2utils.cadc_client_wrapper.StorageClientWrapper')
 @patch('caom2utils.fits2caom2.Client')
 @patch('caom2pipe.astro_composable.get_vo_table_session')
 @patch('gem2caom2.external_metadata.get_pi_metadata')
@@ -147,7 +147,7 @@ def test_main_app(
     gemini_pi_mock.side_effect = gem_mocks.mock_get_pi_metadata
     svofps_mock.side_effect = gem_mocks.mock_get_votable
     tap_mock.side_effect = gem_mocks.mock_query_tap
-    get_file_info_mock.return_value.cadcinfo.side_effect = (
+    get_file_info_mock.return_value.info.side_effect = (
         gem_mocks.mock_get_file_info
     )
 
