@@ -79,49 +79,7 @@ from gem2caom2 import gem_name, external_metadata, instruments
 from gem2caom2 import obs_file_relationship
 
 
-__all__ = ['EduQueryBuilder', 'GemObsIDBuilder', 'get_instrument']
-
-
-class EduQueryBuilder(nbc.StorageNameBuilder):
-    """
-    Get the file metadata by querying archive.gemini.edu. This information is
-    required to find the data label for a file name, so that a StorageName
-    instance can be built.
-
-    This class delays the time when the metadata must be queried until
-    just before it is used by the execute_composable methods, so that the
-    memory footprint of the pipeline does not have to support the
-    gemini-sourced metadata of all entries in the list of work to be done.
-    """
-
-    def __init__(self, config):
-        super(EduQueryBuilder, self).__init__()
-        self._todo_list = None
-
-    @property
-    def todo_list(self):
-        return self._todo_list
-
-    @todo_list.setter
-    def todo_list(self, to_list):
-        self._todo_list = {value: key for key, value in to_list.items()}
-
-    def build(self, entry):
-        """
-        :param entry: a Gemini file name
-        :return: an instance of StorageName for use in execute_composable.
-        """
-        if self._config.use_local_files:
-            raise NotImplementedError(
-                'The need has not been encountered in the real world.'
-            )
-
-        external_metadata.get_obs_metadata(
-            gem_name.GemName.remove_extensions(entry)
-        )
-        instrument = get_instrument()
-        storage_name = gem_name.GemName(file_name=entry, instrument=instrument)
-        return storage_name
+__all__ = ['GemObsIDBuilder', 'get_instrument']
 
 
 class GemObsIDBuilder(nbc.StorageNameBuilder):
