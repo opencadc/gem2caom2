@@ -88,6 +88,7 @@ TEST_FILE = 'N20131203S0006.jpg'
 TEST_FP_OBS = 'GN-2015A-C-1-20-001'
 TEST_FP_FILE = 'N20150404S0726.fits'
 TEST_OBS_FILE = f'{TEST_DATA_DIR}/visit_obs_start.xml'
+TEST_OBS_AD_URI_FILE = f'{TEST_DATA_DIR}/visit_original_uri_start.xml'
 TEST_PRODUCT_ID = 'GN2001BQ013-04'
 REJECTED_FILE = os.path.join(TEST_DATA_DIR, 'rejected.yml')
 
@@ -198,7 +199,7 @@ def test_preview_augment_unknown_no_preview():
 
 @patch('caom2pipe.manage_composable.http_get')
 def test_pull_augmentation(http_mock):
-    obs = mc.read_obs_from_file(TEST_OBS_FILE)
+    obs = mc.read_obs_from_file(TEST_OBS_AD_URI_FILE)
     obs.planes[TEST_PRODUCT_ID].data_release = datetime.utcnow()
     original_uri = 'gemini:GEM/GN2001BQ013-04.fits'
     assert len(obs.planes[TEST_PRODUCT_ID].artifacts) == 1, 'initial condition'

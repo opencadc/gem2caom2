@@ -144,7 +144,6 @@ class GemName(mc.StorageName):
     two planes probably captures the goal of this instrument/observing mode
     more directly.
 
-
     PD 15-12-20 IPM
     When working with the new storage system at CADC:
     Artifact URIs for files, previews, obtained from archive.gemini.edu
@@ -158,38 +157,21 @@ class GemName(mc.StorageName):
 
     def __init__(
         self,
-        fname_on_disk=None,
         file_name=None,
         obs_id=None,
-        file_id=None,
         instrument=None,
         entry=None,
-        v_collection=None,
-        v_scheme=None,
     ):
-        logging.debug(
-            f'parameters fname_on_disk {fname_on_disk} file_name {file_name} '
-            f'obs id {obs_id} file id {file_id}'
-        )
         if instrument in [em.Inst.ALOPEKE, em.Inst.ZORRO]:
-            if file_name is None and fname_on_disk is None:
-                raise mc.CadcException(f'Need a file name of some sort.')
-            if file_name is None:
-                self._file_name = fname_on_disk
-            else:
-                self._file_name = file_name
+            self._file_name = file_name
             self._file_id = GemName.remove_extensions(self._file_name)
             self._obs_id = self._file_id[:-1]
             self._product_id = self._file_id
-            #
-            # don't use the v_collection parameter from the constructor here
-            # because the following super call works for prior to the CADC
-            # storage system change-over
             super(GemName, self).__init__(
                 obs_id=self._obs_id,
                 collection=COLLECTION,
                 collection_pattern=GemName.GEM_NAME_PATTERN,
-                fname_on_disk=self._file_name,
+                fname_on_disk=self.file_name,
                 scheme=SCHEME,
                 entry=entry,
             )
@@ -204,9 +186,6 @@ class GemName(mc.StorageName):
             if file_name is not None:
                 self._file_id = GemName.get_file_id(file_name)
                 self.file_name = file_name
-            if fname_on_disk is not None:
-                self._file_id = GemName.get_file_id(fname_on_disk)
-                self.file_name = fname_on_disk
             if obs_id is not None:
                 self._obs_id = obs_id
             super(GemName, self).__init__(
@@ -227,15 +206,6 @@ class GemName(mc.StorageName):
                 and self._obs_id is None
             ):
                 raise mc.CadcException('Require a name.')
-            if (
-                self._file_id is None
-                and self._obs_id is None
-                and file_id is not None
-            ):
-                self._file_id = file_id
-                self._obs_id = file_id
-            if file_id is not None:
-                self._file_id = file_id
             self._product_id = self._file_id
         self._v_scheme = V_SCHEME
         self._v_collection = COLLECTION
@@ -264,7 +234,10 @@ class GemName(mc.StorageName):
 
     @file_name.setter
     def file_name(self, value):
-        self._file_name = value.replace('.bz2', '').replace('.header', '')
+        if value is None:
+            self._file_name = None
+        else:
+            self._file_name = value.replace('.bz2', '').replace('.header', '')
 
     @property
     def compressed_file_name(self):
@@ -322,8 +295,8 @@ class GemName(mc.StorageName):
 
     @property
     def thumb_uri(self):
-        """Note the 'ad' scheme - the thumbnail is generated at CADC,
-        so acknowledge that with the ad URI."""
+        """Note the v_scheme - the thumbnail is generated at CADC,
+        so acknowledge that with the CADC URI."""
         return f'{self._v_scheme}:{self._v_collection}/{self.thumb}'
 
     def is_valid(self):

@@ -76,10 +76,9 @@ from datetime import datetime
 
 from caom2pipe import data_source_composable as dsc
 from caom2pipe import manage_composable as mc
-from caom2pipe import name_builder_composable as nbc
 from caom2pipe import run_composable as rc
 from gem2caom2 import main_app, preview_augmentation, external_metadata
-from gem2caom2 import pull_augmentation, gem_name, data_source, builder
+from gem2caom2 import pull_augmentation, data_source, builder
 from gem2caom2 import cleanup_augmentation
 
 DATA_VISITORS = []
@@ -142,7 +141,7 @@ def _run_single():
         config.proxy = sys.argv[2]
     config.stream = 'default'
     if config.features.use_file_names:
-        storage_name = gem_name.GemName(file_name=sys.argv[1])
+        storage_name = builder.GemObsIDBuilder(config).build(sys.argv[1])
     else:
         raise mc.CadcException('No code to handle running GEM by obs id.')
     external_metadata.init_global(config=config)
@@ -185,7 +184,7 @@ def _run_by_public():
     config = mc.Config()
     config.get_executors()
     external_metadata.init_global(config=config)
-    name_builder = nbc.FileNameBuilder(gem_name.GemName)
+    name_builder = builder.GemObsIDBuilder(config)
     incremental_source = data_source.PublicIncremental(config)
     return rc.run_by_state(
         config=config,
@@ -228,7 +227,7 @@ def _run_by_incremental():
     end_timestamp_dt = mc.make_time_tz(end_timestamp_s)
     logging.info(f'{main_app.APPLICATION} will end at {end_timestamp_s}')
     external_metadata.init_global(config=config)
-    name_builder = nbc.FileNameBuilder(gem_name.GemName)
+    name_builder = builder.GemObsIDBuilder(config)
     incremental_source = data_source.IncrementalSource()
     result = rc.run_by_state(
         config=config,

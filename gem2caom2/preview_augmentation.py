@@ -110,6 +110,7 @@ def visit(observation, **kwargs):
             continue
         count += _do_prev(
             observation.observation_id,
+            observation.instrument.name,
             working_dir,
             plane,
             cadc_client,
@@ -121,18 +122,25 @@ def visit(observation, **kwargs):
     return {'artifacts': count}
 
 
-def _do_prev(obs_id, working_dir, plane, cadc_client, observable):
+def _do_prev(
+    obs_id, instrument_name, working_dir, plane, cadc_client, observable
+):
     """Retrieve the preview file, so that a thumbnail can be made,
     store the preview if necessary, and the thumbnail, to ad.
     Then augment the CAOM observation with the two additional artifacts.
     """
     count = 0
+    # file name construction is very very ugly here, and completely wrong
+    # which is why theres' the tricksy file_name set to None right
+    # after construction
     gem_name = GemName(
+        file_name=f'{plane.product_id}.fits',
         obs_id=obs_id,
-        file_id=plane.product_id,
-        v_collection=COLLECTION,
-        v_scheme=V_SCHEME,
+        instrument=instrument_name,
     )
+    gem_name.file_name = None
+    logging.debug(gem_name)
+
     if observable.rejected.is_no_preview(gem_name.prev):
         logging.info(
             f'Stopping visit because no preview exists for {gem_name.prev} '

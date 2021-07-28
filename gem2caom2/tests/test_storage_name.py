@@ -95,7 +95,10 @@ def test_storage_name():
     assert test_sn.thumb == 'S20060920S0137_th.jpg'
     assert test_sn.compressed_file_name is None
 
-    test_sn = GemName(fname_on_disk='N20100104S0208.fits.header')
+    test_sn = GemName(
+        file_name='N20100104S0208.fits.header',
+        instrument=em.Inst.GMOS,
+    )
     assert test_sn.obs_id == 'GN-2009B-Q-121-15-001', 'wrong obs id'
     assert test_sn.file_uri == f'{SCHEME}:{COLLECTION}/N20100104S0208.fits'
     assert (
@@ -104,7 +107,7 @@ def test_storage_name():
     )
 
     test_sn = GemName(
-        fname_on_disk='N20200810A0490r.fits', instrument=em.Inst.ALOPEKE
+        file_name='N20200810A0490r.fits', instrument=em.Inst.ALOPEKE
     )
     assert test_sn.obs_id == 'N20200810A0490', 'wrong obs id'
     assert test_sn.product_id == 'N20200810A0490r', 'wrong product id'

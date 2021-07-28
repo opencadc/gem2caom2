@@ -80,8 +80,8 @@ import gem_mocks
 
 from caom2 import SimpleObservation, Algorithm
 from caom2pipe import manage_composable as mc
-from gem2caom2 import composable, gem_name, external_metadata, COLLECTION
-from gem2caom2 import SCHEME
+from gem2caom2 import composable, gem_name, external_metadata, instruments
+from gem2caom2 import COLLECTION, SCHEME
 
 
 STATE_FILE = f'{gem_mocks.TEST_DATA_DIR}/state.yml'
@@ -107,6 +107,10 @@ def write_gemini_data_file():
 @patch('gem2caom2.builder.get_instrument')
 def test_run(inst_mock, get_obs_mock, client_mock, run_mock):
     inst_mock.return_value = external_metadata.Inst.CIRPASS
+    global current_instrument
+    current_instrument = instruments.instrument_factory(
+        external_metadata.Inst.CIRPASS
+    )
     get_obs_mock.side_effect = gem_mocks.mock_get_obs_metadata
     test_obs_id = 'GS-CAL20141226-7-029'
     test_f_id = 'S20141226S0206'
@@ -144,6 +148,10 @@ def test_run(inst_mock, get_obs_mock, client_mock, run_mock):
 @patch('gem2caom2.builder.get_instrument')
 def test_run_errors(inst_mock, get_obs_mock, client_mock, run_mock):
     inst_mock.return_value = external_metadata.Inst.GMOSS
+    global current_instrument
+    current_instrument = instruments.instrument_factory(
+        external_metadata.Inst.CIRPASS
+    )
     get_obs_mock.side_effect = gem_mocks.mock_get_obs_metadata
     test_obs_id = 'GS-CAL20141226-7-029'
     test_f_id = 'S20141226S0206'
@@ -173,25 +181,35 @@ def test_run_errors(inst_mock, get_obs_mock, client_mock, run_mock):
         os.getcwd = getcwd_orig
 
 
+@patch('gem2caom2.builder.get_instrument')
 @patch('caom2pipe.execute_composable.OrganizeExecutes.do_one')
 @patch('caom2pipe.manage_composable.query_endpoint')
 @patch('gem2caom2.external_metadata.get_obs_metadata')
 @patch('caom2pipe.client_composable.query_tap_client')
 @patch('gem2caom2.external_metadata.CadcTapClient')
 def test_run_incremental_rc(
-    client_mock, tap_mock, get_obs_mock, query_mock, run_mock
+    client_mock, tap_mock, get_obs_mock, query_mock, run_mock, inst_mock
 ):
-
+    inst_mock.return_value = external_metadata.Inst.GMOSS
+    global current_instrument
+    current_instrument = instruments.instrument_factory(
+        external_metadata.Inst.CIRPASS
+    )
     get_obs_mock.side_effect = gem_mocks.mock_get_obs_metadata
     query_mock.side_effect = gem_mocks.mock_query_endpoint_2
     tap_mock.side_effect = gem_mocks.mock_query_tap
 
-    _write_state(prior_timestamp='2021-01-01 20:03:00.000000')
+    _write_state(
+        prior_timestamp='2021-01-01 20:03:00.000000',
+        end_timestamp=datetime(
+            year=2021, month=1, day=4, hour=23, minute=3, second=0
+        ),
+    )
     getcwd_orig = os.getcwd
     os.getcwd = Mock(return_value=gem_mocks.TEST_DATA_DIR)
     try:
         composable._run_by_incremental()
-        assert run_mock.called, 'should have been called'
+        assert run_mock.called, 'run_mock should have been called'
         args, kwargs = run_mock.call_args
         test_storage = args[0]
         assert isinstance(test_storage, gem_name.GemName), type(test_storage)
@@ -228,7 +246,7 @@ def test_run_by_incremental2(
         gem_mocks.mock_get_file_info
     )
     data_client_mock.return_value.get.side_effect = Mock()
-    exec_mock.side_effect = Mock()
+    exec_mock.return_value = 0
     repo_mock.return_value.create.side_effect = gem_mocks.mock_repo_create
     repo_mock.return_value.read.side_effect = gem_mocks.mock_repo_read
     repo_mock.return_value.update.side_effect = gem_mocks.mock_repo_update
@@ -471,7 +489,7 @@ def _write_todo(test_id):
         f.write(f'{test_id}\n')
 
 
-def _write_state(prior_timestamp=None):
+def _write_state(prior_timestamp=None, end_timestamp=None):
     # to ensure at least one spin through the execution loop, test case
     # must have a starting time greater than one config.interval prior
     # to 'now', default interval is 10 minutes
@@ -484,13 +502,24 @@ def _write_state(prior_timestamp=None):
             prior_s = mc.make_seconds(prior_timestamp)
     test_start_time = datetime.fromtimestamp(prior_s).isoformat()
     logging.error(f'test_start_time {test_start_time}')
-    test_bookmark = {
-        'bookmarks': {
-            'gemini_timestamp': {
-                'last_record': test_start_time,
+    if end_timestamp is None:
+        test_bookmark = {
+            'bookmarks': {
+                'gemini_timestamp': {
+                    'last_record': test_start_time,
+                },
             },
-        },
-    }
+        }
+    else:
+        assert isinstance(end_timestamp, datetime), 'end_timestamp wrong type'
+        test_bookmark = {
+            'bookmarks': {
+                'gemini_timestamp': {
+                    'last_record': test_start_time,
+                    'end_timestamp': end_timestamp,
+                },
+            },
+        }
     mc.write_as_yaml(test_bookmark, STATE_FILE)
 
 

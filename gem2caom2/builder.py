@@ -132,6 +132,7 @@ class GemObsIDBuilder(nbc.StorageNameBuilder):
         super(GemObsIDBuilder, self).__init__()
         self._config = config
         self._instrument = None
+        self._obs_id = None
         self._logger = logging.getLogger(__name__)
 
     def _read_instrument_locally(self, entry):
@@ -143,12 +144,30 @@ class GemObsIDBuilder(nbc.StorageNameBuilder):
             f'{self._config.working_directory}/{entry}'
         )
         self._instrument = external_metadata.Inst(headers[0].get('INSTRUME'))
+        if self._instrument in [
+            external_metadata.Inst.ALOPEKE,
+            external_metadata.Inst.ZORRO,
+        ]:
+            file_id = gem_name.GemName.remove_extensions(
+                path.basename(entry)
+            )
+            self._obs_id = file_id
+        else:
+            self._obs_id = headers[0].get('DATALAB')
 
     def _read_instrument_remotely(self, entry):
+        # TODO ask CADC first - does this code already exist somewhere?
         self._logger.debug('Read instrument from archive.gemini.edu.')
         file_id = gem_name.GemName.remove_extensions(entry)
         external_metadata.get_obs_metadata(file_id)
         self._instrument = get_instrument()
+        if self._instrument in [
+            external_metadata.Inst.ALOPEKE,
+            external_metadata.Inst.ZORRO,
+        ]:
+            self._obs_id = file_id
+        else:
+            self._obs_id = external_metadata.om.get('data_label')
 
     def build(self, entry):
         """
@@ -166,9 +185,8 @@ class GemObsIDBuilder(nbc.StorageNameBuilder):
                 result = gem_name.GemName(
                     file_name=entry,
                     instrument=self._instrument,
-                    v_collection=gem_name.COLLECTION,
-                    v_scheme=gem_name.V_SCHEME,
                     entry=entry,
+                    obs_id=self._obs_id,
                 )
                 result.source_names = [path.join(
                     self._config.working_directory, result.file_name
@@ -178,9 +196,8 @@ class GemObsIDBuilder(nbc.StorageNameBuilder):
                 result = gem_name.GemName(
                     file_name=entry,
                     instrument=self._instrument,
-                    v_collection=gem_name.COLLECTION,
-                    v_scheme=gem_name.V_SCHEME,
                     entry=entry,
+                    obs_id=self._obs_id,
                 )
                 result.source_names = [result.file_name]
             else:
