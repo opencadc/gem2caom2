@@ -626,8 +626,12 @@ def repair_data_label(file_name, data_label):
     """
     # if the data label is missing, the file name, including
     # extensions, is treated as the data label, so get rid of .fits
+    logging.debug(
+        f'Begin repair_data_label with file {file_name} and data label '
+        f'{data_label}.'
+    )
     file_id = gem_name.GemName.remove_extensions(file_name)
-    repaired = data_label
+    repaired = data_label if data_label else ''
     if is_processed(file_id) or file_id.startswith('TX2'):
         if not file_id.startswith('TX2'):
             repaired = repaired.split('_')[0]
@@ -709,4 +713,8 @@ def repair_data_label(file_name, data_label):
                 repaired = f'{repaired}-{ii.upper()}'
     else:
         repaired = file_id if repaired is None else repaired
+    logging.debug(
+        f'End repair_data_label with file {file_name} and data label '
+        f'{repaired}.'
+    )
     return repaired

@@ -76,6 +76,7 @@ from caom2utils import cadc_client_wrapper
 from caom2pipe import manage_composable as mc
 from caom2pipe import name_builder_composable as nbc
 from gem2caom2 import gem_name, external_metadata, instruments
+from gem2caom2 import obs_file_relationship
 
 
 __all__ = ['EduQueryBuilder', 'GemObsIDBuilder', 'get_instrument']
@@ -144,16 +145,18 @@ class GemObsIDBuilder(nbc.StorageNameBuilder):
             f'{self._config.working_directory}/{entry}'
         )
         self._instrument = external_metadata.Inst(headers[0].get('INSTRUME'))
+        file_id = gem_name.GemName.remove_extensions(path.basename(entry))
         if self._instrument in [
             external_metadata.Inst.ALOPEKE,
             external_metadata.Inst.ZORRO,
         ]:
-            file_id = gem_name.GemName.remove_extensions(
-                path.basename(entry)
-            )
             self._obs_id = file_id
         else:
             self._obs_id = headers[0].get('DATALAB')
+        repaired_obs_id = obs_file_relationship.repair_data_label(
+            file_id, self._obs_id
+        )
+        self._obs_id = repaired_obs_id
 
     def _read_instrument_remotely(self, entry):
         # TODO ask CADC first - does this code already exist somewhere?
@@ -168,6 +171,10 @@ class GemObsIDBuilder(nbc.StorageNameBuilder):
             self._obs_id = file_id
         else:
             self._obs_id = external_metadata.om.get('data_label')
+        repaired_obs_id = obs_file_relationship.repair_data_label(
+            file_id, self._obs_id
+        )
+        self._obs_id = repaired_obs_id
 
     def build(self, entry):
         """
