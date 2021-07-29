@@ -73,7 +73,8 @@ import traceback
 from datetime import datetime
 
 from caom2pipe import manage_composable as mc
-from gem2caom2 import main_app, external_metadata, gem_name
+from gem2caom2 import external_metadata
+from gem2caom2.util import COLLECTION, SCHEME
 
 __all__ = ['GeminiValidator']
 
@@ -81,8 +82,8 @@ __all__ = ['GeminiValidator']
 class GeminiValidator(mc.Validator):
     def __init__(self):
         super(GeminiValidator, self).__init__(
-            source_name=main_app.COLLECTION,
-            scheme=gem_name.SCHEME,
+            source_name=COLLECTION,
+            scheme=SCHEME,
             preview_suffix='_th.jpg',
         )
         self._gofr = external_metadata.get_gofr()

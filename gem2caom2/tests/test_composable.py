@@ -80,8 +80,8 @@ import gem_mocks
 
 from caom2 import SimpleObservation, Algorithm
 from caom2pipe import manage_composable as mc
-from gem2caom2 import composable, gem_name, external_metadata, instruments
-from gem2caom2 import COLLECTION, SCHEME
+from gem2caom2 import composable, gem_name, instruments
+from gem2caom2.util import Inst, COLLECTION, SCHEME
 
 
 STATE_FILE = f'{gem_mocks.TEST_DATA_DIR}/state.yml'
@@ -106,10 +106,10 @@ def write_gemini_data_file():
 @patch('gem2caom2.external_metadata.get_obs_metadata')
 @patch('gem2caom2.builder.get_instrument')
 def test_run(inst_mock, get_obs_mock, client_mock, run_mock):
-    inst_mock.return_value = external_metadata.Inst.CIRPASS
+    inst_mock.return_value = Inst.CIRPASS
     global current_instrument
     current_instrument = instruments.instrument_factory(
-        external_metadata.Inst.CIRPASS
+        Inst.CIRPASS
     )
     get_obs_mock.side_effect = gem_mocks.mock_get_obs_metadata
     test_obs_id = 'GS-CAL20141226-7-029'
@@ -147,10 +147,10 @@ def test_run(inst_mock, get_obs_mock, client_mock, run_mock):
 @patch('gem2caom2.external_metadata.get_obs_metadata')
 @patch('gem2caom2.builder.get_instrument')
 def test_run_errors(inst_mock, get_obs_mock, client_mock, run_mock):
-    inst_mock.return_value = external_metadata.Inst.GMOSS
+    inst_mock.return_value = Inst.GMOSS
     global current_instrument
     current_instrument = instruments.instrument_factory(
-        external_metadata.Inst.CIRPASS
+        Inst.CIRPASS
     )
     get_obs_mock.side_effect = gem_mocks.mock_get_obs_metadata
     test_obs_id = 'GS-CAL20141226-7-029'
@@ -190,10 +190,10 @@ def test_run_errors(inst_mock, get_obs_mock, client_mock, run_mock):
 def test_run_incremental_rc(
     client_mock, tap_mock, get_obs_mock, query_mock, run_mock, inst_mock
 ):
-    inst_mock.return_value = external_metadata.Inst.GMOSS
+    inst_mock.return_value = Inst.GMOSS
     global current_instrument
     current_instrument = instruments.instrument_factory(
-        external_metadata.Inst.CIRPASS
+        Inst.CIRPASS
     )
     get_obs_mock.side_effect = gem_mocks.mock_get_obs_metadata
     query_mock.side_effect = gem_mocks.mock_query_endpoint_2

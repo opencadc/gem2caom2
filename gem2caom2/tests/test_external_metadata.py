@@ -75,19 +75,21 @@ from mock import patch, Mock
 
 from caom2pipe import manage_composable as mc
 from gem2caom2 import external_metadata as ext_md
+from gem2caom2.util import Inst
+
 
 import gem_mocks
 
 test_subjects = {
-    'H2v=2-1S1_G0220': [ext_md.Inst.NIRI, 'H2S1v2-1-G0220'],
-    'Kprime_G0206': [ext_md.Inst.NIRI, 'Kprime-G0206'],
-    'H2Oice204_G0242': [ext_md.Inst.NIRI, 'H2Oice2045-G0242'],
-    'Jcon(121)_G0232': [ext_md.Inst.NIRI, 'Jcont1207-G0232'],
-    'Bra_G0238': [ext_md.Inst.NIRI, 'BrAlpha-G0238'],
-    'Bracont_G0237': [ext_md.Inst.NIRI, 'BrAlphaCont-G0237'],
-    'Brgamma_G0218': [ext_md.Inst.NIRI, 'BrG-G0218'],
-    'Jcon1065_G0239': [ext_md.Inst.NIRI, 'Jcont1065-G0239'],
-    'hydrocarb_G0231': [ext_md.Inst.NIRI, 'hydrocarbon-G0231'],
+    'H2v=2-1S1_G0220': [Inst.NIRI, 'H2S1v2-1-G0220'],
+    'Kprime_G0206': [Inst.NIRI, 'Kprime-G0206'],
+    'H2Oice204_G0242': [Inst.NIRI, 'H2Oice2045-G0242'],
+    'Jcon(121)_G0232': [Inst.NIRI, 'Jcont1207-G0232'],
+    'Bra_G0238': [Inst.NIRI, 'BrAlpha-G0238'],
+    'Bracont_G0237': [Inst.NIRI, 'BrAlphaCont-G0237'],
+    'Brgamma_G0218': [Inst.NIRI, 'BrG-G0218'],
+    'Jcon1065_G0239': [Inst.NIRI, 'Jcont1065-G0239'],
+    'hydrocarb_G0231': [Inst.NIRI, 'hydrocarbon-G0231'],
 }
 
 
@@ -178,11 +180,11 @@ def test_get_filter_metadata(get_vo_mock):
     try:
         ext_md.get_gofr()
         get_vo_mock.side_effect = gem_mocks.mock_get_votable
-        test_result = ext_md.get_filter_metadata(ext_md.Inst.NIRI, 'filters')
+        test_result = ext_md.get_filter_metadata(Inst.NIRI, 'filters')
         assert get_vo_mock.call_count == 2, 'wrong number of calls'
         assert test_result is None, 'do not expect a result'
         # do the same thing again, check that the result has been cached
-        test_result = ext_md.get_filter_metadata(ext_md.Inst.NIRI, 'filters')
+        test_result = ext_md.get_filter_metadata(Inst.NIRI, 'filters')
         assert get_vo_mock.call_count == 2, 'wrong number of calls'
         assert test_result is None, 'do not expect a result this time either'
     finally:

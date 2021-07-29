@@ -77,7 +77,7 @@ import matplotlib.image as image
 from cadcutils import exceptions
 from caom2 import Observation, ProductType, ReleaseType
 from caom2pipe import manage_composable as mc
-from gem2caom2.gem_name import GemName, COLLECTION, V_SCHEME
+from gem2caom2.gem_name import GemName
 
 __all__ = ['visit']
 

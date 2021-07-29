@@ -70,7 +70,6 @@
 import logging
 import os
 import re
-from enum import Enum
 
 from bs4 import BeautifulSoup
 
@@ -83,6 +82,7 @@ from gem2caom2 import gemini_obs_metadata as gom
 from gem2caom2.obs_file_relationship import GemObsFileRelationship
 from gem2caom2.obs_file_relationship import repair_data_label
 from gem2caom2 import gem_name
+from gem2caom2.util import Inst
 
 
 __all__ = [
@@ -94,7 +94,7 @@ __all__ = [
     'get_obs_metadata',
     'get_pi_metadata',
     'init_global',
-    'Inst',
+    # 'Inst',
     'set_ofr',
 ]
 
@@ -141,33 +141,33 @@ def init_global(config):
         subject = clc.define_subject(config)
         tap_client = CadcTapClient(subject=subject, resource_id=config.tap_id)
         gofr.tap_client = tap_client
-
-
-class Inst(Enum):
-
-    ALOPEKE = 'Alopeke'
-    BHROS = 'bHROS'
-    CIRPASS = 'CIRPASS'
-    F2 = 'F2'
-    FLAMINGOS = 'FLAMINGOS'
-    GMOS = 'GMOS'
-    GMOSN = 'GMOS-N'
-    GMOSS = 'GMOS-S'
-    GNIRS = 'GNIRS'
-    GPI = 'GPI'
-    GRACES = 'GRACES'
-    GSAOI = 'GSAOI'
-    HOKUPAA = 'Hokupaa+QUIRC'
-    HRWFS = 'hrwfs'
-    MICHELLE = 'michelle'
-    NICI = 'NICI'
-    NIFS = 'NIFS'
-    NIRI = 'NIRI'
-    OSCIR = 'OSCIR'
-    PHOENIX = 'PHOENIX'
-    TEXES = 'TEXES'
-    TRECS = 'TReCS'
-    ZORRO = 'Zorro'
+#
+#
+# class Inst(Enum):
+#
+#     ALOPEKE = 'Alopeke'
+#     BHROS = 'bHROS'
+#     CIRPASS = 'CIRPASS'
+#     F2 = 'F2'
+#     FLAMINGOS = 'FLAMINGOS'
+#     GMOS = 'GMOS'
+#     GMOSN = 'GMOS-N'
+#     GMOSS = 'GMOS-S'
+#     GNIRS = 'GNIRS'
+#     GPI = 'GPI'
+#     GRACES = 'GRACES'
+#     GSAOI = 'GSAOI'
+#     HOKUPAA = 'Hokupaa+QUIRC'
+#     HRWFS = 'hrwfs'
+#     MICHELLE = 'michelle'
+#     NICI = 'NICI'
+#     NIFS = 'NIFS'
+#     NIRI = 'NIRI'
+#     OSCIR = 'OSCIR'
+#     PHOENIX = 'PHOENIX'
+#     TEXES = 'TEXES'
+#     TRECS = 'TReCS'
+#     ZORRO = 'Zorro'
 
 
 def get_obs_metadata(file_id):

@@ -105,9 +105,10 @@ from caom2pipe import astro_composable as ac
 
 import gem2caom2.external_metadata as em
 import gem2caom2.obs_file_relationship as ofr
-from gem2caom2.gem_name import GemName, COLLECTION
+from gem2caom2.gem_name import GemName
 from gem2caom2.builder import get_instrument, GemObsIDBuilder
 from gem2caom2 import instruments, builder
+from gem2caom2.util import Inst, COLLECTION
 
 
 __all__ = ['gem_main_app', 'to_caom2', 'update', 'APPLICATION']
@@ -342,7 +343,7 @@ def accumulate_fits_bp(bp, file_id, uri):
 
     bp.clear('Observation.algorithm.name')
     instrument = get_instrument()
-    if instrument in [em.Inst.GMOSN, em.Inst.GMOSS, em.Inst.GMOS]:
+    if instrument in [Inst.GMOSN, Inst.GMOSS, Inst.GMOS]:
         bp.set(
             'Observation.instrument.keywords', 'get_provenance_keywords(uri)'
         )
@@ -368,19 +369,19 @@ def accumulate_fits_bp(bp, file_id, uri):
     # Add IMAGESWV for GRACES
     bp.add_fits_attribute('Plane.provenance.producer', 'IMAGESWV')
     bp.set_default('Plane.provenance.producer', 'Gemini Observatory')
-    if instrument in [em.Inst.ALOPEKE, em.Inst.ZORRO]:
+    if instrument in [Inst.ALOPEKE, Inst.ZORRO]:
         bp.set(
             'Plane.provenance.reference',
             f'http://archive.gemini.edu/searchform/filepre={file_id}.fits',
         )
-    elif instrument is not em.Inst.TEXES:
+    elif instrument is not Inst.TEXES:
         data_label = _get_data_label()
         bp.set(
             'Plane.provenance.reference',
             f'http://archive.gemini.edu/searchform/{data_label}',
         )
 
-    if instrument is em.Inst.GRACES:
+    if instrument is Inst.GRACES:
         bp.set(
             'Plane.provenance.lastExecuted',
             'get_provenance_last_executed(parameters)',
@@ -407,28 +408,28 @@ def accumulate_fits_bp(bp, file_id, uri):
     bp.set('Artifact.releaseType', 'data')
     bp.set('Artifact.uri', uri)
 
-    if instrument is em.Inst.CIRPASS:
+    if instrument is Inst.CIRPASS:
         bp.set_default('Observation.telescope.name', 'Gemini-South')
     mode = em.om.get('mode')
     if not (
         instrument
         in [
-            em.Inst.GPI,
-            em.Inst.PHOENIX,
-            em.Inst.HOKUPAA,
-            em.Inst.OSCIR,
-            em.Inst.BHROS,
-            em.Inst.TRECS,
+            Inst.GPI,
+            Inst.PHOENIX,
+            Inst.HOKUPAA,
+            Inst.OSCIR,
+            Inst.BHROS,
+            Inst.TRECS,
         ]
         or (
-            instrument is em.Inst.GRACES
+            instrument is Inst.GRACES
             and mode is not None
             and mode != 'imaging'
         )
     ):
         bp.configure_position_axes((1, 2))
 
-    if instrument is em.Inst.FLAMINGOS:
+    if instrument is Inst.FLAMINGOS:
         # DB 27-05-19
         # Flamingos, you actually want to use the EQUINOX value, not the
         # EPOCH.   And I think EQUINOX header value is usually 2000.0, even
@@ -453,7 +454,7 @@ def accumulate_fits_bp(bp, file_id, uri):
     bp.set('Chunk.time.axis.error.syser', '1e-07')
     bp.set('Chunk.time.axis.error.rnder', '1e-07')
     bp.set('Chunk.time.axis.function.naxis', '1')
-    if instrument in [em.Inst.ALOPEKE, em.Inst.ZORRO]:
+    if instrument in [Inst.ALOPEKE, Inst.ZORRO]:
         bp.clear('Chunk.time.axis.function.naxis')
         bp.add_fits_attribute('Chunk.time.axis.function.naxis', 'NAXIS3')
         bp.set_default('Chunk.time.axis.function.naxis', 1)
@@ -505,7 +506,7 @@ def update(observation, **kwargs):
         # GN-2001A-C-2-8-009
         # GN-2001A-C-2-9-010
         observation.instrument = Instrument(name='OSCIR')
-    instrument = em.Inst(observation.instrument.name)
+    instrument = Inst(observation.instrument.name)
 
     # processed files
     if cc.is_composite(headers) and not isinstance(
@@ -515,7 +516,7 @@ def update(observation, **kwargs):
             observation, instrument, current_product_id
         )
 
-    if instrument in [em.Inst.MICHELLE, em.Inst.GNIRS]:
+    if instrument in [Inst.MICHELLE, Inst.GNIRS]:
         # DB 16-04-19
         # The more important issue with this and other files is that they
         # contain no image extensions.  The file is downloadable from
@@ -558,9 +559,9 @@ def update(observation, **kwargs):
                 em.om.reset_index(file_id)
                 processed = ofr.is_processed(caom_name.file_name)
                 if instrument in [
-                    em.Inst.MICHELLE,
-                    em.Inst.TRECS,
-                    em.Inst.GNIRS,
+                    Inst.MICHELLE,
+                    Inst.TRECS,
+                    Inst.GNIRS,
                 ]:
                     # Michelle is a retired visitor instrument.
                     # Spatial WCS info is in primary header. There
@@ -582,7 +583,7 @@ def update(observation, **kwargs):
                 delete_these_parts = []
                 for part in artifact.parts:
 
-                    if part == '2' and instrument is em.Inst.GPI:
+                    if part == '2' and instrument is Inst.GPI:
                         # GPI data sets have two extensions. First is science
                         # image (with WCS), second is data quality for each
                         # pixel (no WCS).
@@ -648,11 +649,11 @@ def update(observation, **kwargs):
                 if (
                     processed
                     or isinstance(observation, DerivedObservation)
-                    or instrument is em.Inst.TEXES
+                    or instrument is Inst.TEXES
                 ) and 'jpg' not in caom_name.file_name:
                     # not the preview artifact
                     if plane.provenance is not None:
-                        if instrument is not em.Inst.GRACES:
+                        if instrument is not Inst.GRACES:
                             plane.provenance.reference = (
                                 f'http://archive.gemini.edu/searchform/'
                                 f'filepre={caom_name.file_name}'
@@ -713,7 +714,7 @@ def _update_position_from_zeroth_header(artifact, headers, instrument, obs_id):
     ra_json = em.om.get('ra')
     dec_json = em.om.get('dec')
     if ('AZEL_TARGET' in types and ra is None) or (
-        instrument is em.Inst.GNIRS and ra_json is None and dec_json is None
+        instrument is Inst.GNIRS and ra_json is None and dec_json is None
     ):
         # DB - 02-04-19 - Az-El coordinate frame likely means the telescope
         # was parked or at least not tracking so spatial information is
@@ -743,7 +744,7 @@ def _update_position_from_zeroth_header(artifact, headers, instrument, obs_id):
 
 
 def _update_composite(obs, instrument, current_product_id):
-    if instrument is em.Inst.TRECS:
+    if instrument is Inst.TRECS:
         if current_product_id is not None and (
             current_product_id.startswith('rS')
             or current_product_id.startswith('rN')

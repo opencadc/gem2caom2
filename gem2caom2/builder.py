@@ -77,6 +77,7 @@ from caom2pipe import manage_composable as mc
 from caom2pipe import name_builder_composable as nbc
 from gem2caom2 import gem_name, external_metadata, instruments
 from gem2caom2 import obs_file_relationship
+from gem2caom2.util import Inst
 
 
 __all__ = ['GemObsIDBuilder', 'get_instrument']
@@ -102,11 +103,11 @@ class GemObsIDBuilder(nbc.StorageNameBuilder):
         headers = cadc_client_wrapper.get_local_headers_from_fits(
             f'{self._config.working_directory}/{entry}'
         )
-        self._instrument = external_metadata.Inst(headers[0].get('INSTRUME'))
+        self._instrument = Inst(headers[0].get('INSTRUME'))
         file_id = gem_name.GemName.remove_extensions(path.basename(entry))
         if self._instrument in [
-            external_metadata.Inst.ALOPEKE,
-            external_metadata.Inst.ZORRO,
+            Inst.ALOPEKE,
+            Inst.ZORRO,
         ]:
             self._obs_id = file_id
         else:
@@ -123,8 +124,8 @@ class GemObsIDBuilder(nbc.StorageNameBuilder):
         external_metadata.get_obs_metadata(file_id)
         self._instrument = get_instrument()
         if self._instrument in [
-            external_metadata.Inst.ALOPEKE,
-            external_metadata.Inst.ZORRO,
+            Inst.ALOPEKE,
+            Inst.ZORRO,
         ]:
             self._obs_id = file_id
         else:
@@ -194,6 +195,6 @@ def get_instrument():
         inst = 'Zorro'
     global current_instrument
     current_instrument = instruments.instrument_factory(
-        external_metadata.Inst(inst)
+        Inst(inst)
     )
-    return external_metadata.Inst(inst)
+    return Inst(inst)

@@ -69,9 +69,9 @@
 
 import sys
 
-from astropy.table import Table
 from caom2pipe import manage_composable as mc
-from gem2caom2 import main_app, COLLECTION, GemName, external_metadata
+from gem2caom2 import main_app, GemName, external_metadata
+from gem2caom2.util import Inst, COLLECTION
 
 from mock import patch, Mock
 import gem_mocks
@@ -97,7 +97,7 @@ def test_missing_provenance(get_obs_mock, cadc_get_obs_mock):
     test_storage_name = GemName(
         obs_id=test_obs_id,
         file_name=test_f_name,
-        instrument=external_metadata.Inst.GMOSS,
+        instrument=Inst.GMOSS,
     )
     test_fqn = f'{gem_mocks.TEST_DATA_DIR}/broken_files/{test_f_name}'
     actual_fqn = (

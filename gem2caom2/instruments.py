@@ -79,6 +79,8 @@ from caom2pipe import astro_composable as ac
 from caom2pipe import caom_composable as cc
 from caom2pipe import manage_composable as mc
 from gem2caom2 import external_metadata, svofps
+from gem2caom2.util import Inst
+
 
 __all__ = ['instrument_factory', 'InstrumentType']
 
@@ -127,14 +129,14 @@ FILTER_VALUES_TO_IGNORE = ['open', 'invalid', 'pupil', 'clear', 'nd']
 # NIFS - DB - 04-03-19 - hard-code 3" FOV
 # TEXES - DB - 07-03-19 - cd11=cd22 = 5.0/3600.0
 RADIUS_LOOKUP = {
-    external_metadata.Inst.GPI: 2.8 / 3600.0,  # units are arcseconds
-    external_metadata.Inst.GRACES: 1.2 / 3600.0,
-    external_metadata.Inst.PHOENIX: 5.0 / 3600.0,
-    external_metadata.Inst.OSCIR: 0.0890 / 3600.0,
-    external_metadata.Inst.HOKUPAA: 4.0 / 3600.0,
-    external_metadata.Inst.BHROS: 0.9 / 3600.0,
-    external_metadata.Inst.NIFS: 3.0 / 3600.0,
-    external_metadata.Inst.TEXES: 5.0 / 3600.0,
+    Inst.GPI: 2.8 / 3600.0,  # units are arcseconds
+    Inst.GRACES: 1.2 / 3600.0,
+    Inst.PHOENIX: 5.0 / 3600.0,
+    Inst.OSCIR: 0.0890 / 3600.0,
+    Inst.HOKUPAA: 4.0 / 3600.0,
+    Inst.BHROS: 0.9 / 3600.0,
+    Inst.NIFS: 3.0 / 3600.0,
+    Inst.TEXES: 5.0 / 3600.0,
 }
 # DB - 18-02-19 - for hard-coded field of views use:
 # CRVAL1  = RA value from json or header (degrees
@@ -631,7 +633,7 @@ class InstrumentType:
                 msg = (
                     f'Unprepared for filter {ii} from {self.obs_id}'
                 )
-                if self._name == external_metadata.Inst.MICHELLE and (
+                if self._name == Inst.MICHELLE and (
                         ii.startswith('I') or (ii == 'Grid_T')
                 ):
                     self._logger.info(msg)
@@ -651,9 +653,9 @@ class InstrumentType:
             observation_type in ['BIAS', 'DARK']
             or (
                 self._name in [
-                    external_metadata.Inst.GMOS,
-                    external_metadata.Inst.GMOSN,
-                    external_metadata.Inst.GMOSS,
+                    Inst.GMOS,
+                    Inst.GMOSN,
+                    Inst.GMOSS,
                 ]
                 and observation_type in ['BIAS', 'MASK']
             )
@@ -1029,7 +1031,7 @@ class F2(InstrumentType):
             reset_energy = True
         else:
             filter_md = external_metadata.get_filter_metadata(
-                external_metadata.Inst.F2, self.filter_name
+                Inst.F2, self.filter_name
             )
             if self.data_product_type == DataProductType.IMAGE:
                 self._logger.debug(
@@ -1286,7 +1288,7 @@ class Flamingos(InstrumentType):
             self.fm.bandpass = lookup[self.filter_name][1]
         else:
             self.fm = external_metadata.get_filter_metadata(
-                external_metadata.Inst.FLAMINGOS, self.filter_name
+                Inst.FLAMINGOS, self.filter_name
             )
             if self.fm is None:
                 raise mc.CadcException(
@@ -2681,7 +2683,7 @@ class Hrwfs(InstrumentType):
                 self.filter_name = ''
             else:
                 self.fm = external_metadata.get_filter_metadata(
-                    external_metadata.Inst.HRWFS, self.filter_name
+                    Inst.HRWFS, self.filter_name
                 )
                 temp = []
                 for ii in self.filter_name.split('+'):
@@ -2815,7 +2817,7 @@ class Michelle(InstrumentType):
         }
 
         self.fm = external_metadata.get_filter_metadata(
-            external_metadata.Inst.MICHELLE, self.filter_name
+            Inst.MICHELLE, self.filter_name
         )
         if self.fm is None:  # means filter_name not found
             # DB 09-04-19 - Use 100 microns for the initial max for michelle.
@@ -2920,7 +2922,7 @@ class Nici(InstrumentType):
         self.filter_name = self.filter_name.split('_G')[0]
         self.filter_name = self.filter_name.replace('[FeII]', 'FeII')
         self.fm = external_metadata.get_filter_metadata(
-            external_metadata.Inst.NICI, self.filter_name
+            Inst.NICI, self.filter_name
         )
         if self.data_product_type == DataProductType.IMAGE:
             self._logger.debug(
@@ -3098,7 +3100,7 @@ class Nifs(InstrumentType):
         }
 
         self.fm = external_metadata.get_filter_metadata(
-            external_metadata.Inst.NIFS, self.filter_name
+            Inst.NIFS, self.filter_name
         )
 
         if self.data_product_type == DataProductType.SPECTRUM:
@@ -4092,11 +4094,11 @@ class Trecs(InstrumentType):
                 self.fm.set_resolving_power(w_max, w_min)
             else:
                 self.fm = external_metadata.get_filter_metadata(
-                    external_metadata.Inst.TRECS, self.filter_name
+                    Inst.TRECS, self.filter_name
                 )
             if self.fm is None:
                 raise mc.CadcException(
-                    f'{external_metadata.Inst.TRECS}: Mystery filter '
+                    f'{Inst.TRECS}: Mystery filter '
                     f'{self.filter_name}'
                 )
             if self.data_product_type == DataProductType.IMAGE:
@@ -4159,28 +4161,28 @@ class Trecs(InstrumentType):
 
 def instrument_factory(name):
     lookup = {
-        external_metadata.Inst.BHROS: Bhros,
-        external_metadata.Inst.CIRPASS: Cirpass,
-        external_metadata.Inst.F2: F2,
-        external_metadata.Inst.FLAMINGOS: Flamingos,
-        external_metadata.Inst.ALOPEKE: Fox,
-        external_metadata.Inst.ZORRO: Fox,
-        external_metadata.Inst.GMOS: Gmos,
-        external_metadata.Inst.GMOSS: Gmos,
-        external_metadata.Inst.GMOSN: Gmos,
-        external_metadata.Inst.GNIRS: Gnirs,
-        external_metadata.Inst.GPI: Gpi,
-        external_metadata.Inst.GRACES: Graces,
-        external_metadata.Inst.GSAOI: Gsaoi,
-        external_metadata.Inst.HOKUPAA: Hokupaa,
-        external_metadata.Inst.HRWFS: Hrwfs,
-        external_metadata.Inst.MICHELLE: Michelle,
-        external_metadata.Inst.NICI: Nici,
-        external_metadata.Inst.NIFS: Nifs,
-        external_metadata.Inst.NIRI: Niri,
-        external_metadata.Inst.OSCIR: Oscir,
-        external_metadata.Inst.PHOENIX: Phoenix,
-        external_metadata.Inst.TEXES: Texes,
-        external_metadata.Inst.TRECS: Trecs,
+        Inst.BHROS: Bhros,
+        Inst.CIRPASS: Cirpass,
+        Inst.F2: F2,
+        Inst.FLAMINGOS: Flamingos,
+        Inst.ALOPEKE: Fox,
+        Inst.ZORRO: Fox,
+        Inst.GMOS: Gmos,
+        Inst.GMOSS: Gmos,
+        Inst.GMOSN: Gmos,
+        Inst.GNIRS: Gnirs,
+        Inst.GPI: Gpi,
+        Inst.GRACES: Graces,
+        Inst.GSAOI: Gsaoi,
+        Inst.HOKUPAA: Hokupaa,
+        Inst.HRWFS: Hrwfs,
+        Inst.MICHELLE: Michelle,
+        Inst.NICI: Nici,
+        Inst.NIFS: Nifs,
+        Inst.NIRI: Niri,
+        Inst.OSCIR: Oscir,
+        Inst.PHOENIX: Phoenix,
+        Inst.TEXES: Texes,
+        Inst.TRECS: Trecs,
     }
     return lookup.get(name)(name)

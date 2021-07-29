@@ -72,21 +72,12 @@ import logging
 from caom2pipe import manage_composable as mc
 
 from gem2caom2 import external_metadata as em
+from gem2caom2.util import Inst, COLLECTION, SCHEME, V_SCHEME
 
 
-__all__ = [
-    'GemName',
-    'COLLECTION',
-    'SCHEME',
-    'V_SCHEME',
-]
+__all__ = ['GemName']
 
 
-COLLECTION = 'GEMINI'
-# originates at gemini scheme
-SCHEME = 'gemini'
-# after ad storage scheme
-V_SCHEME = 'cadc'
 HEADER_URL = 'https://archive.gemini.edu/fullheader/'
 
 
@@ -162,7 +153,7 @@ class GemName(mc.StorageName):
         instrument=None,
         entry=None,
     ):
-        if instrument in [em.Inst.ALOPEKE, em.Inst.ZORRO]:
+        if instrument in [Inst.ALOPEKE, Inst.ZORRO]:
             self._file_name = file_name
             self._file_id = GemName.remove_extensions(self._file_name)
             self._obs_id = self._file_id[:-1]
