@@ -75,6 +75,8 @@ from datetime import datetime, timezone
 from caom2pipe import client_composable as clc
 from caom2pipe import data_source_composable as dsc
 from caom2pipe import manage_composable as mc
+from gem2caom2.obs_metadata import JSONLookup
+from gem2caom2.gem_name import GemName
 
 
 __all__ = ['GEM_BOOKMARK', 'IncrementalSource', 'PublicIncremental']
@@ -96,6 +98,7 @@ class IncrementalSource(dsc.DataSource):
         self._max_records_encountered = False
         self._encounter_start = None
         self._encounter_end = None
+        self._json_cache = JSONLookup()
         self._logger = logging.getLogger(__name__)
 
     def get_time_box_work(self, prev_exec_time, exec_time):
@@ -109,6 +112,7 @@ class IncrementalSource(dsc.DataSource):
         self._logger.debug(
             f'Begin get_time_box_work from {prev_exec_time} to {exec_time}.'
         )
+        self._json_cache.flush()
         # datetime format 2019-12-01T00:00:00.000000
         prev_dt_str = mc.make_time_tz(prev_exec_time).strftime(
             mc.ISO_8601_FORMAT
@@ -146,6 +150,9 @@ class IncrementalSource(dsc.DataSource):
                                 dsc.StateRunnerMeta(
                                     file_name, entrytime.timestamp()
                                 )
+                            )
+                            self._json_cache.add(
+                                entry, GemName.remove_extensions(file_name)
                             )
         finally:
             if response is not None:

@@ -78,7 +78,7 @@ from caom2utils import cadc_client_wrapper
 from caom2pipe import client_composable as clc
 from caom2pipe import manage_composable as mc
 from gem2caom2.svofps import filter_metadata
-from gem2caom2 import gemini_obs_metadata as gom
+from gem2caom2 import obs_metadata as gom
 from gem2caom2.obs_file_relationship import GemObsFileRelationship
 from gem2caom2.obs_file_relationship import repair_data_label
 from gem2caom2 import gem_name
@@ -94,7 +94,6 @@ __all__ = [
     'get_obs_metadata',
     'get_pi_metadata',
     'init_global',
-    # 'Inst',
     'set_ofr',
 ]
 
@@ -134,7 +133,7 @@ def set_ofr(value):
 
 def init_global(config):
     global om
-    om = gom.GeminiObsMetadata()
+    om = gom.JSONLookup()
     get_gofr(config)
     global gofr
     if gofr.tap_client is None and config.is_connected:

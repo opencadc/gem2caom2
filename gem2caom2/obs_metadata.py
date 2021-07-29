@@ -71,8 +71,8 @@ from caom2pipe import manage_composable as mc
 from gem2caom2.gem_name import GemName
 
 
-class GeminiObsMetadata(object):
-    """A place to hold access to output from multiple jsonsummary
+class JSONLookup(object):
+    """A singleton class to hold access to output from multiple jsonsummary
     queries.
 
     Hold the query results for all files associated with an observation.
@@ -80,12 +80,15 @@ class GeminiObsMetadata(object):
     Use the 'reset_index' method to have the 'get' method look up the
     results associated with a particular file_id.
     """
+    # a dictionary of all the jsonsummary results
+    # key = file_id
+    # value = respective JSON
+    _lookup = None
 
     def __init__(self):
-        # a dictionary of all the jsonsummary results
-        # key = file_id
-        # value = respective JSON
-        self.lookup = {}
+        if JSONLookup._lookup is None:
+            JSONLookup._lookup = {}
+
         # pointer to which dictionary entry is of current lookup interest
         self.current = None
 
@@ -96,23 +99,26 @@ class GeminiObsMetadata(object):
             for entry in metadata:
                 temp_file_id = GemName.remove_extensions(entry.get('filename'))
                 if temp_file_id is not None and file_id == temp_file_id:
-                    self.lookup[file_id] = entry
+                    JSONLookup._lookup[file_id] = entry
                     break
         else:
-            self.lookup[file_id] = metadata
+            JSONLookup._lookup[file_id] = metadata
         self.current = file_id
 
     def contains(self, file_id):
-        return file_id in self.lookup
+        return file_id in JSONLookup._lookup
+
+    def flush(self):
+        JSONLookup._lookup = {}
 
     def get(self, look_for):
-        temp = self.lookup.get(self.current)
+        temp = JSONLookup._lookup.get(self.current)
         result = None
         if temp is not None:
             result = temp.get(look_for)
         return result
 
     def reset_index(self, file_id):
-        if file_id not in self.lookup:
+        if file_id not in JSONLookup._lookup:
             raise mc.CadcException(f'ObsMetadata: Mystery file id {file_id}')
         self.current = file_id
