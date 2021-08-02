@@ -68,8 +68,15 @@
 #
 
 import logging
+import re
 
 from caom2pipe import astro_composable as ac
+from caom2pipe import manage_composable as mc
+
+from gem2caom2.util import Inst
+
+
+__all__ = ['get_filter_metadata']
 
 
 def filter_metadata(instrument, filters, session):
@@ -147,16 +154,16 @@ def filter_metadata(instrument, filters, session):
                 width_min = wl_width
 
         if filter_name_found:
-            fm = FilterMetadata(instrument)
+            local_fm = FilterMetadata(instrument)
             # SVO filter units are angstroms, Gemini CAOM2 spectral wcs is
             # microns
-            fm.central_wl = wl_eff / 1.0e4
-            fm.bandpass = wl_width / 1.0e4
+            local_fm.central_wl = wl_eff / 1.0e4
+            local_fm.bandpass = wl_width / 1.0e4
             logging.info(
-                f'Filter(s): {filter_names}  MD: {fm.central_wl}, '
-                f'{fm.bandpass}'
+                f'Filter(s): {filter_names}  MD: {local_fm.central_wl}, '
+                f'{local_fm.bandpass}'
             )
-            return fm
+            return local_fm
         else:
             return None
     except Exception as e:
@@ -258,3 +265,224 @@ class FilterMetadata(object):
     def adjust_resolving_power(self):
         # the formula for direct imaging data
         self.resolving_power = self.central_wl / self.bandpass
+
+
+def get_filter_metadata(
+    instrument, filter_name, telescope, svo_query_session
+):
+    """A way to lazily initialize all the filter metadata reads from SVO."""
+    global fm
+    repaired_inst = _repair_instrument_name_for_svo(instrument, telescope)
+    repaired_filters = _repair_filter_name_for_svo(instrument, filter_name)
+    if repaired_filters is None:
+        # nothing to look up, try something else
+        return None
+    if repaired_inst in fm and repaired_filters in fm[repaired_inst]:
+        result = fm[repaired_inst][repaired_filters]
+        if result is not None:
+            result.adjust_resolving_power()
+    else:
+        result = filter_metadata(
+            repaired_inst, repaired_filters, svo_query_session
+        )
+        if repaired_inst in fm:
+            temp = fm[repaired_inst]
+            temp[repaired_filters] = result
+        else:
+            fm[repaired_inst] = {repaired_filters: result}
+    return result
+
+
+def _repair_instrument_name_for_svo(instrument, telescope=None):
+    """
+    Instrument names from JSON/headers are not necessarily the same
+    as the instrument names used by the SVO Filter service. Correlate
+    the two here.
+    :param instrument the Gemini version
+    :return instrument the SVO version
+    """
+    result = instrument.value
+    if instrument is Inst.HRWFS:
+        if telescope is None:
+            raise mc.CadcException(
+                f'{instrument}: No observatory information.'
+            )
+        else:
+            if 'Gemini-South' == telescope:
+                result = 'AcqCam-S'
+            else:
+                result = 'AcqCam-N'
+    elif instrument is Inst.F2:
+        result = 'Flamingos2'
+    elif instrument is Inst.FLAMINGOS:
+        result = 'Flamingos'
+    return result
+
+
+def _repair_filter_name_for_svo(instrument, filter_names):
+    """
+    Filter names from JSON/headers are not necessarily the same
+    as the filter names used by the SVO Filter service. Correlate
+    the two here.
+
+    DB - 02-04-19 - strip the bar code from the filter names
+
+    :param instrument what repairs to apply
+    :param filter_names the Gemini version, which may include multiple names
+        separated by '+'
+    :return filter_name the SVO version
+    """
+    # Alopeke/ZORRO == FOX in Hawaiian and Spanish
+    FILTER_REPAIR_FOX = {
+        'Red-832': 'EO_832',
+        'Blue-u': 'u_sdss',
+        'Blue-466': 'EO_466',
+        'Blue-g': 'g_sdss',
+        'Blue-562': 'EO_562',
+        'Blue-r': 'r_sdss',
+        'Blue-Halpha': 'Halpha',
+        'Red-716': 'EO_716',
+        'Red-i': 'i_sdss',
+        'Red-z': 'z_sdss',
+    }
+    FILTER_REPAIR_NICI = {
+        'CH4-H4S': 'ED451',
+        'CH4-H4L': 'ED449',
+        'CH4-H1S': 'ED286',
+        'CH4-H1Sp': 'ED379',
+        '': 'ED299',
+        'CH4-H1L': 'ED381',
+        'CH4-H1L_2': 'ED283',
+    }
+    # note the lookup repair values are not what comes from the files,
+    # they're what's left after the re.sub calls have completed
+    # DB 06-05-19
+    # The NIRI filter should map to SVO’s NIRI.CO2-0bh-G0225. bh = band-head.
+    FILTER_REPAIR_NIRI = {
+        'H2v=2-1s1-G0220': 'H2S1v2-1-G0220',
+        'H2v=2-1S1-G0220w': 'H2S1v2-1-G0220w',
+        'H2v=2-1S1-G0220': 'H2S1v2-1-G0220',
+        'H2v=1-0s1-G0216': 'H2S1v1-0-G0216',
+        'H2v=1-0S1-G0216': 'H2S1v1-0-G0216',
+        'H2Oice_G0230': 'H2Oice-G0230w',
+        'Brgamma-G0218': 'BrG-G0218',
+        'Bra-G0238': 'BrAlpha-G0238',
+        'Bracontt-G0237': 'BrAlphaCont-G0237',
+        'CH4ice227-G0243': 'CH4ice2275-G0243',
+        'COv=2-0bh-G0225': 'CO2-0bh-G0225',
+        'hydrocarb-G0231': 'hydrocarbon-G0231',
+        'H2Oice204-G0242': 'H2Oice2045-G0242',
+        'Jcont121-G0232': 'Jcont1207-G0232',
+        'H2v=2-1s1_G0220': 'H2S1v2-1-G0220',
+    }
+    # DB 23-04-19
+    # The Qs-18.3um is likely intended to be the same as Qa since 18.3 is the
+    # central wavelength of that filter.
+    FILTER_REPAIR_TRECS = {
+        'K': 'k',
+        'L': 'l',
+        'M': 'm',
+        'N': 'n',
+        'Nprime': 'nprime',
+        'Qw': 'Qwide',
+        'Qs': 'Qa',
+        'NeII_ref2': 'NeII_ref',
+        'SIV-10.5um': 'SIV',
+    }
+    FILTER_REPAIR_MICHELLE = {
+        'I79B10': 'Si1',
+        'I88B10': 'Si2',
+        'I97B10': 'Si3',
+        'I103B10': 'Si4',
+        'I105B53': 'N',
+        'I112B21': 'Np',
+        'I116B9': 'Si5',
+        'I125B9': 'Si6',
+        'I185B9': 'Qa',
+        'I209B42': 'Q',
+    }
+    # DB 02-04-19
+    # The GSAOI filter CO2360 should map to SVO filter GSAOI.CO
+    # DB 04-24-19
+    # H2(1-0) filter maps to SVO H2_1-0
+    # DB 04-30-19
+    # Kcntshrt and HeI-2p2s should map to Kshort_cont and HeI2p2s.
+    # PaG for GS-CAL20180731-5-017 = SVO’s HIPaGamma
+    # DB 02-05-19
+    # BrG is Brackett Gamma again, so in SVO it is GSAOI.HIBrGamma.
+    # I think H2(2-1) must be GSAOI.H2_2-1_S1.  That observation shows
+    # up when you search the Gemini archive for that particular
+    # observation and set the filter to “H2 2-1 (S1)“.
+    # DB 06-05-19
+    # PaB = HIPaBeta.
+    FILTER_REPAIR_GSAOI = {
+        'BrG': 'HIBrGamma',
+        'CO2360': 'CO',
+        'HeI1083': 'HeI',
+        'HeI-2p2s': 'HeI2p2s',
+        'H2(1-0)': 'H2_1-0',
+        'H2(2-1)': 'H2_2-1_S1',
+        'Kcntlong': 'Klong_cont',
+        'Kcntshrt': 'Kshort_cont',
+        'PaB': 'HIPaBeta',
+        'PaG': 'HIPaGamma',
+    }
+
+    result = []
+    for filter_name in filter_names.split('+'):
+        temp = filter_name
+        if instrument is Inst.NIRI:
+            temp = re.sub(r'con', 'cont', temp)
+            temp = re.sub(r'_', '-', temp)
+            temp = re.sub('\\(', '', temp)
+            temp = re.sub('\\)', '', temp)
+            if temp in FILTER_REPAIR_NIRI:
+                temp = FILTER_REPAIR_NIRI[temp]
+        elif instrument is Inst.NICI:
+            if temp in FILTER_REPAIR_NICI:
+                temp = FILTER_REPAIR_NICI[temp]
+            else:
+                logging.info(f'{instrument} filter {temp} not at SVO.')
+                temp = None
+        elif instrument is Inst.TRECS:
+            temp = filter_name.split('-')
+            if len(temp) > 0:
+                temp = temp[0]
+            if temp in FILTER_REPAIR_TRECS:
+                temp = FILTER_REPAIR_TRECS[temp]
+        elif instrument is Inst.MICHELLE:
+            temp = filter_name.split('-')
+            if len(temp) > 0:
+                temp = temp[0]
+            if temp in FILTER_REPAIR_MICHELLE:
+                temp = FILTER_REPAIR_MICHELLE[temp]
+        elif instrument is Inst.HRWFS:
+            # “ND” in the filter name means ‘neutral density’.  Ignore any
+            # of these as they have no impact on the transmitted wavelengths
+            # - I think #159 was the only one delivered according to
+            # http://www.gemini.edu/sciops/telescope/acqcam/acqFilterList.html.
+            # Acqcam/hrwfs was used mainly to look for rapid variability in
+            # bright, stellar objects that were really too bright for an 8'
+            # telescope and would have saturated the detector without an ND
+            # filter.
+            if temp.startswith('ND'):
+                continue
+            temp = temp[0]
+        elif instrument is Inst.GSAOI:
+            if temp in FILTER_REPAIR_GSAOI:
+                temp = FILTER_REPAIR_GSAOI[temp]
+        elif instrument in [Inst.ALOPEKE, Inst.ZORRO]:
+            temp = FILTER_REPAIR_FOX.get(temp)
+        elif instrument is Inst.F2:
+            if temp == 'J-lo':
+                temp = 'Jlow'
+        if temp is not None:
+            result.append(temp)
+    if len(result) > 0:
+        return '+'.join(i for i in result)
+    else:
+        return None
+
+
+# lazy initialization for filter metadata from SVO - treat as a singleton
+fm = {}

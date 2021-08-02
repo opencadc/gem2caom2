@@ -84,26 +84,6 @@ from gem2caom2.obs_metadata import json_lookup
 
 import gem_mocks
 
-test_subjects = {
-    'H2v=2-1S1_G0220': [Inst.NIRI, 'H2S1v2-1-G0220'],
-    'Kprime_G0206': [Inst.NIRI, 'Kprime-G0206'],
-    'H2Oice204_G0242': [Inst.NIRI, 'H2Oice2045-G0242'],
-    'Jcon(121)_G0232': [Inst.NIRI, 'Jcont1207-G0232'],
-    'Bra_G0238': [Inst.NIRI, 'BrAlpha-G0238'],
-    'Bracont_G0237': [Inst.NIRI, 'BrAlphaCont-G0237'],
-    'Brgamma_G0218': [Inst.NIRI, 'BrG-G0218'],
-    'Jcon1065_G0239': [Inst.NIRI, 'Jcont1065-G0239'],
-    'hydrocarb_G0231': [Inst.NIRI, 'hydrocarbon-G0231'],
-}
-
-
-def test_repair_filter_name():
-    for ii in test_subjects:
-        test_result = ext_md._repair_filter_name_for_svo(
-            test_subjects[ii][0], ii
-        )
-        assert test_result == test_subjects[ii][1], 'wrong value'
-
 
 @pytest.mark.skip('')
 @patch('gem2caom2.external_metadata.get_obs_metadata')
@@ -179,23 +159,6 @@ def test_get_obs_metadata_not_at_gemini(tap_client_mock, session_mock):
         mc.CadcException, match=f'Could not find JSON record *'
     ):
         test_result = ext_md.get_obs_metadata('test_file_id')
-
-
-@patch('caom2pipe.astro_composable.get_vo_table_session')
-def test_get_filter_metadata(get_vo_mock):
-    try:
-        ext_md.get_gofr()
-        get_vo_mock.side_effect = gem_mocks.mock_get_votable
-        test_result = ext_md.get_filter_metadata(Inst.NIRI, 'filters')
-        assert get_vo_mock.call_count == 2, 'wrong number of calls'
-        assert test_result is None, 'do not expect a result'
-        # do the same thing again, check that the result has been cached
-        test_result = ext_md.get_filter_metadata(Inst.NIRI, 'filters')
-        assert get_vo_mock.call_count == 2, 'wrong number of calls'
-        assert test_result is None, 'do not expect a result this time either'
-    finally:
-        # undo the initialization
-        ext_md.set_ofr(None)
 
 
 @patch('caom2utils.cadc_client_wrapper.get_local_file_headers', autospec=True)
