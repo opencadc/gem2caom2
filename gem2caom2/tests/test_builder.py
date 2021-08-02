@@ -81,15 +81,17 @@ import gem_mocks
 
 
 @patch('gem2caom2.external_metadata.CadcTapClient')
-@patch('gem2caom2.external_metadata.get_obs_metadata')
-def test_builder(obs_metadata_mock, tap_client_mock):
-    obs_metadata_mock.side_effect = gem_mocks.mock_get_obs_metadata
+@patch('gem2caom2.builder.defining_metadata_finder')
+def test_builder(dmf_mock, tap_client_mock):
+    # the init_global sequence depends on the tap_client_mock
+    dmf_mock.get.side_effect = gem_mocks.mock_get_dm
 
     test_config = mc.Config()
     test_config.working_directory = '/test_files'
     test_config.proxy_fqn = os.path.join(
         gem_mocks.TEST_DATA_DIR, 'test_proxy.pem'
     )
+    em.defining_metadata_finder = None
     em.init_global(config=test_config)
     test_subject = builder.GemObsIDBuilder(test_config)
 

@@ -623,6 +623,47 @@ def repair_data_label(file_name, data_label):
     not have a ‘red’ plane.  The json document contains ‘filename’ if
     that’s helpful at all.  The ‘red’ files do not exist for all ‘raw’
     files.
+
+    ALOPEKE/ZORRO::
+
+    DB 31-08-20
+    DATALAB can NOT be used for the CAOM2 Observation ID since it appears that
+    the DATALAB value is identical for all files obtained for a single
+    program. e.g. if the program ID is GN-2020A-DD-115 then the DATALAB value
+    is always GN-2020A-DD-115-0-0.
+
+    Instead, use the root of the filename as the observation ID.  e.g.
+    N20200819A0003r.fits and N20200819A0003b.fits are two files generated from
+    a single observation (r = red channel, b = blue channel).  Use
+    N20200819A0003 as the observation ID with two planes given by the two
+    colours of data.
+
+    DB 01-09-20
+    Gemini has kludged the headers so that every observation for a single
+    program has the same DATALAB in the header.  This is what we usually use
+    for the observation ID.  Each single ‘observation’ actually produces two
+    files (not a single MEF file) for the red and blue channels so to me it
+    would make the most sense to group these two files as a single observation
+    with two artifacts given by uri’s pointing to the two files.  And this is
+    a single plane, correct?
+
+    PD 01-09-20
+    What is the meaning of red and blue channels? different energy bands?
+
+    DB 02-09-20
+    Yes.  there’s a dichroic that directs light shortward of 675nm to one
+    detector (through one of several possible filters) and light longward of
+    675nm to a second detector (through another filter).   But instead of
+    generating a single MEF file they generate two files, e.g.
+    N20191219A0004b.fits and N20191219A0004r.fits.
+
+    PD 02-09-20
+    This seems very much like MACHO... if those two files are images in the
+    normal sense then it could make sense to create separate planes with
+    dataProductType = image that end up with the correct (distinct) energy
+    metadata. It is OK for an observation to create two sibling products and
+    two planes probably captures the goal of this instrument/observing mode
+    more directly.
     """
     # if the data label is missing, the file name, including
     # extensions, is treated as the data label, so get rid of .fits
@@ -711,6 +752,10 @@ def repair_data_label(file_name, data_label):
         for ii in suffix:
             if f'-{ii.upper()}' not in repaired:
                 repaired = f'{repaired}-{ii.upper()}'
+    elif file_id.endswith('r') or file_id.endswith('b'):
+        # Alopeke/Zorro files, data_label is the file_id minus the
+        # channel indicator
+        repaired = file_id[:-1]
     else:
         repaired = file_id if repaired is None else repaired
     logging.debug(

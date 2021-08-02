@@ -3,7 +3,7 @@
 # ******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
 # *************  CENTRE CANADIEN DE DONNÉES ASTRONOMIQUES  **************
 #
-#  (c) 2019.                            (c) 2019.
+#  (c) 2021.                            (c) 2021.
 #  Government of Canada                 Gouvernement du Canada
 #  National Research Council            Conseil national de recherches
 #  Ottawa, Canada, K1A 0R6              Ottawa, Canada, K1A 0R6
@@ -62,65 +62,42 @@
 #  <http://www.gnu.org/licenses/>.      pas le cas, consultez :
 #                                       <http://www.gnu.org/licenses/>.
 #
-#  $Revision: 4 $
+#  : 4 $
 #
 # ***********************************************************************
 #
 
-from caom2pipe import manage_composable as mc
-from gem2caom2.gem_name import GemName
+from enum import Enum
 
-__all__ = ['json_lookup']
-
-
-class JSONLookup(object):
-    """Treat as a singleton class to hold access to output from multiple
-    jsonsummary queries.
-
-    Hold the query results for all files associated with an observation.
-    Use the 'add' method to add a single jsonsummary query result.
-    Use the 'reset_index' method to have the 'get' method look up the
-    results associated with a particular file_id.
-    """
-
-    def __init__(self):
-        # a dictionary of all the jsonsummary results
-        # key = file_id
-        # value = respective JSON
-        self._lookup = {}
-        # pointer to which dictionary entry is of current lookup interest
-        self.current = None
-
-    def add(self, metadata, file_id):
-        # the json summary results are a list, keep the entry in the list
-        # which has the information for a particular file_id
-        if isinstance(metadata, list):
-            for entry in metadata:
-                temp_file_id = GemName.remove_extensions(entry.get('filename'))
-                if temp_file_id is not None and file_id == temp_file_id:
-                    self._lookup[file_id] = entry
-                    break
-        else:
-            self._lookup[file_id] = metadata
-        self.current = file_id
-
-    def contains(self, file_id):
-        return file_id in self._lookup.keys()
-
-    def flush(self):
-        self._lookup = {}
-
-    def get(self, look_for):
-        temp = self._lookup.get(self.current)
-        result = None
-        if temp is not None:
-            result = temp.get(look_for)
-        return result
-
-    def reset_index(self, file_id):
-        if file_id not in self._lookup:
-            raise mc.CadcException(f'ObsMetadata: Mystery file id {file_id}')
-        self.current = file_id
+COLLECTION = 'GEMINI'
+# originates at gemini scheme
+SCHEME = 'gemini'
+# originates at CADC storage scheme
+V_SCHEME = 'cadc'
 
 
-json_lookup = JSONLookup()
+class Inst(Enum):
+
+    ALOPEKE = 'Alopeke'
+    BHROS = 'bHROS'
+    CIRPASS = 'CIRPASS'
+    F2 = 'F2'
+    FLAMINGOS = 'FLAMINGOS'
+    GMOS = 'GMOS'
+    GMOSN = 'GMOS-N'
+    GMOSS = 'GMOS-S'
+    GNIRS = 'GNIRS'
+    GPI = 'GPI'
+    GRACES = 'GRACES'
+    GSAOI = 'GSAOI'
+    HOKUPAA = 'Hokupaa+QUIRC'
+    HRWFS = 'hrwfs'
+    MICHELLE = 'michelle'
+    NICI = 'NICI'
+    NIFS = 'NIFS'
+    NIRI = 'NIRI'
+    OSCIR = 'OSCIR'
+    PHOENIX = 'PHOENIX'
+    TEXES = 'TEXES'
+    TRECS = 'TReCS'
+    ZORRO = 'Zorro'

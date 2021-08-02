@@ -108,7 +108,7 @@ import gem2caom2.obs_file_relationship as ofr
 from gem2caom2.gem_name import GemName
 from gem2caom2.builder import get_instrument, GemObsIDBuilder
 from gem2caom2 import instruments, builder
-from gem2caom2.util import Inst, COLLECTION
+from gem2caom2.util import Inst, COLLECTION, SCHEME
 
 
 __all__ = ['gem_main_app', 'to_caom2', 'update', 'APPLICATION']
@@ -816,10 +816,12 @@ def _remove_processing_detritus(values, obs_id):
 
 
 def _repair_provenance_value(value, obs_id):
-    logging.debug(f'Being _repair_provenance_value for {obs_id}.')
+    logging.debug(f'Being _repair_provenance_value of {value} for {obs_id}.')
     prov_file_id = value
     try:
-        prov_obs_id = em.get_gofr().get_obs_id(prov_file_id)
+        uri = mc.build_uri(COLLECTION, prov_file_id, SCHEME)
+        temp = em.defining_metadata_finder.get(uri)
+        prov_obs_id = temp.data_label
     except mc.CadcException as e:
         # the file id probably does not exist at Gemini, ignore, because
         # it's provenance

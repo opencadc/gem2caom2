@@ -72,6 +72,7 @@ import os
 import re
 
 from bs4 import BeautifulSoup
+from dataclasses import dataclass
 
 from cadctap import CadcTapClient
 from caom2utils import cadc_client_wrapper
@@ -82,11 +83,12 @@ from gem2caom2 import obs_metadata as gom
 from gem2caom2.obs_file_relationship import GemObsFileRelationship
 from gem2caom2.obs_file_relationship import repair_data_label
 from gem2caom2 import gem_name
-from gem2caom2.util import Inst
+from gem2caom2.util import Inst, COLLECTION
 
 
 __all__ = [
-    'CachingObsFileRelationship',
+    # 'CachingObsFileRelationship',
+    'defining_metadata_finder',
     'get_gofr',
     'get_filter_metadata',
     'get_obs_id_from_cadc',
@@ -94,6 +96,7 @@ __all__ = [
     'get_obs_metadata',
     'get_pi_metadata',
     'init_global',
+    'repair_instrument',
     'set_ofr',
 ]
 
@@ -112,6 +115,8 @@ pm = {}
 gofr = None
 # value repair cache
 value_repair = mc.ValueRepairCache()
+# gofr replacement
+defining_metadata_finder = None
 
 
 # globals are BAD, but if this existed in a class instance, that
@@ -121,6 +126,9 @@ def get_gofr(config=None):
     global gofr
     if gofr is None:
         gofr = CachingObsFileRelationship(config)
+    global defining_metadata_finder
+    if defining_metadata_finder is None:
+        defining_metadata_finder = DefiningMetadataFinder(config)
     return gofr
 
 
@@ -133,40 +141,13 @@ def set_ofr(value):
 
 def init_global(config):
     global om
-    om = gom.JSONLookup()
+    om = gom.json_lookup
     get_gofr(config)
     global gofr
     if gofr.tap_client is None and config.is_connected:
         subject = clc.define_subject(config)
         tap_client = CadcTapClient(subject=subject, resource_id=config.tap_id)
         gofr.tap_client = tap_client
-#
-#
-# class Inst(Enum):
-#
-#     ALOPEKE = 'Alopeke'
-#     BHROS = 'bHROS'
-#     CIRPASS = 'CIRPASS'
-#     F2 = 'F2'
-#     FLAMINGOS = 'FLAMINGOS'
-#     GMOS = 'GMOS'
-#     GMOSN = 'GMOS-N'
-#     GMOSS = 'GMOS-S'
-#     GNIRS = 'GNIRS'
-#     GPI = 'GPI'
-#     GRACES = 'GRACES'
-#     GSAOI = 'GSAOI'
-#     HOKUPAA = 'Hokupaa+QUIRC'
-#     HRWFS = 'hrwfs'
-#     MICHELLE = 'michelle'
-#     NICI = 'NICI'
-#     NIFS = 'NIFS'
-#     NIRI = 'NIRI'
-#     OSCIR = 'OSCIR'
-#     PHOENIX = 'PHOENIX'
-#     TEXES = 'TEXES'
-#     TRECS = 'TReCS'
-#     ZORRO = 'Zorro'
 
 
 def get_obs_metadata(file_id):
@@ -523,60 +504,6 @@ class CachingObsFileRelationship(GemObsFileRelationship):
     def tap_client(self, value):
         self._tap_client = value
 
-    def get_obs_id(self, file_id):
-        self._logger.debug(f'Entering get_obs_id for {file_id}.')
-        result = super(CachingObsFileRelationship, self).get_obs_id(file_id)
-        if result is None:
-            if self._use_local_files:
-                result = self._get_obs_id_from_headers(file_id)
-                if result is None:
-                    self._logger.warning(
-                        f'Could not obtain an Observation ID for {file_id} '
-                        f'on disk.'
-                    )
-            if self._is_connected and result is None:
-                result = self._get_obs_id_from_cadc(file_id)
-                if result is None:
-                    result = self._get_obs_id_from_gemini(file_id)
-        return result
-
-    def _get_obs_id_from_cadc(self, file_id):
-        return get_obs_id_from_cadc(
-            file_id, self._tap_client, self._collection, self._update_cache
-        )
-
-    def _get_obs_id_from_headers(self, file_id):
-        return get_obs_id_from_headers(file_id, self._update_cache)
-
-    def _get_obs_id_from_gemini(self, file_id):
-        # using the global om structure to look up and store
-        # metadata will modify the internal index of the class - maintain
-        # that index here with a save/restore
-        self._logger.debug(f'Begin _get_obs_id_from_gemini for {file_id}')
-        global om
-        current_file_id = om.current
-        get_obs_metadata(file_id)
-        obs_id = om.get('data_label')
-        ut_datetime_str = om.get('lastmod')
-        obs_id = self._update_cache(file_id, obs_id, ut_datetime_str)
-        if current_file_id is not None:
-            om.reset_index(current_file_id)
-        self._logger.debug(f'End _get_obs_id_from_gemini {obs_id}.')
-        return obs_id
-
-    def _update_cache(self, file_id, obs_id, dt_str):
-        dt_s = mc.make_seconds(dt_str)
-        # name_list:
-        # key is file_id,
-        # value is array
-        #
-        # array contents are:
-        # 0 - data label / observation ID
-        # 1 - timestamp
-        self.name_list[file_id].append([obs_id, dt_s])
-        repaired_obs_id = repair_data_label(file_id, obs_id)
-        return repaired_obs_id
-
 
 def get_obs_id_from_cadc(
     file_id, tap_client, collection='GEMINI', update_cache=None
@@ -588,7 +515,7 @@ def get_obs_id_from_cadc(
     FROM caom2.Observation AS O
     JOIN caom2.Plane AS P on P.obsID = O.obsID
     JOIN caom2.Artifact AS A on A.planeID = P.planeID
-    WHERE A.uri LIKE '%{file_name}' 
+    WHERE A.uri LIKE '%{file_name}'
     AND O.collection = '{collection}'
     """
     table = clc.query_tap_client(query_string, tap_client)
@@ -622,3 +549,152 @@ def get_obs_id_from_headers(file_id, update_cache=None):
                 break
     logging.debug(f'End get_obs_id_from_headers {result}')
     return result
+
+
+@dataclass
+class DefiningMetadata:
+    """The metadata that is required to know 'what to do next' for
+    ingesting a file.
+
+    The instrument changes the rules by which the observation ID is set, and
+    thus changes the cardinality handling. Historical Note: It is the need
+    for the value of the instrument going forward that makes the large file
+    containing file names, data labels, checksums, dates, no longer useful
+    for ingestion, and so, the use of this file (/app/data/from_paul.txt)
+    was removed from the pipeline.
+    """
+    instrument: Inst
+    data_label: str
+
+
+class DefiningMetadataFinder:
+    """
+    A class to handle the hierarchy of querying for metadata, with
+    the goal of the least amount of load on archive.gemini.edu.
+
+    The logic implemented in get:
+
+      Looking for provenance | Connected | Use Local
+    0          F                   F           F
+    1          F                   F           T
+    2          F                   T           F
+    3          F                   T           T
+    4          T                   F           F
+    5          T                   F           T
+    6          T                   T           F
+    7          T                   T           T
+
+    If Connected == F, may only check local (cases 0, 1, 4, 5).
+    If Use Local == T, check local (3, 7)
+    If Use Local == F, check cadc first, then check gemini (2, 6)
+
+    If Use Local == T, it does no harm to also check cadc, then gemini for
+    metadata, because the likelihood is the metadata search will not go
+    beyond this point in the execution. This behaviour covers the Looking
+    for provenance T/F case.
+    """
+
+    def __init__(self, config):
+        self._use_local_files = config.use_local_files
+        self._connected = mc.TaskType.SCRAPE not in config.task_types
+        self._json_lookup = gom.json_lookup
+        self._logger = logging.getLogger(self.__class__.__name__)
+
+    def _check_caom2(self, uri):
+        self._logger.debug(f'Begin _check_caom2 for {uri}')
+        query_string = f"""
+        SELECT O.observationID, O.instrument_name
+        FROM caom2.Observation AS O
+        JOIN caom2.Plane AS P on P.obsID = O.obsID
+        JOIN caom2.Artifact AS A on A.planeID = P.planeID
+        WHERE A.uri = '{uri}' 
+        AND O.collection = '{COLLECTION}'
+        """
+        table = clc.query_tap_client(query_string, gofr.tap_client)
+        result = None
+        if len(table) == 1:
+            result = DefiningMetadata(
+                Inst(table[0]['instrument_name']), table[0]['observationID'],
+            )
+        self._logger.debug('End _check_caom2')
+        return result
+
+    def _check_local(self, f_name):
+        self._logger.debug(f'Begin _check_local for {f_name}')
+        file_id = gem_name.GemName.remove_extensions(f_name)
+        try_these = [
+            f'{os.getcwd()}/{file_id}.fits',
+            f'{os.getcwd()}/{file_id}.fits.header',
+            f'{os.getcwd()}/{file_id}.fits.bz2',
+            f'{os.getcwd()}/{file_id}.fits.gz',
+        ]
+        result = None
+        for f_name in try_these:
+            if os.path.exists(f_name):
+                headers = cadc_client_wrapper.get_local_file_headers(f_name)
+                temp = headers[0].get('DATALAB').upper()
+                if temp is not None:
+                    result = DefiningMetadata(
+                        repair_instrument(headers[0].get('INSTRUME')),
+                        headers[0].get('DATALAB')
+                    )
+                    break
+        self._logger.debug('End _check_local')
+        return result
+
+    def _check_remote(self, f_name):
+        self._logger.debug(f'Begin _check_remote for {f_name}')
+        # using the global om structure to look up and store
+        # metadata will modify the internal index of the class - maintain
+        # that index here with a save/restore
+        looking_for_file_id = gem_name.GemName.remove_extensions(f_name)
+        # first check the cache
+        current_file_id = self._json_lookup.current
+        if self._json_lookup.contains(looking_for_file_id):
+            self._json_lookup.reset_index(looking_for_file_id)
+        else:
+            # this is a remote call to archive.gemini.edu, which updates
+            # the json_lookup cache of metadata.
+            get_obs_metadata(looking_for_file_id)
+        result = None
+        if self._json_lookup.contains(looking_for_file_id):
+            result = DefiningMetadata(
+                Inst(self._json_lookup.get('instrument')),
+                self._json_lookup.get('data_label'),
+            )
+        if current_file_id is not None:
+            self._json_lookup.reset_index(current_file_id)
+        self._logger.debug('End _check_remote')
+        return result
+
+    def get(self, uri):
+        """
+
+        :param uri: Artifact URI at CADC
+        :return: DefiningMetadata instance
+        """
+        ignore_scheme, ignore_collection, f_name = mc.decompose_uri(uri)
+        if self._connected:
+            result = None
+            if self._use_local_files:
+                result = self._check_local(f_name)
+            if result is None:
+                result = self._check_caom2(uri)
+            if result is None:
+                result = self._check_remote(f_name)
+        else:
+            result = self._check_local(f_name)
+        if result is not None:
+            repaired_data_label = repair_data_label(f_name, result.data_label)
+            result.data_label = repaired_data_label
+        return result
+
+
+def repair_instrument(in_name):
+    if in_name == 'ALOPEKE':
+        # because the value in JSON is a different case than the value in
+        # the FITS header
+        in_name = 'Alopeke'
+    if in_name == 'ZORRO':
+        in_name = 'Zorro'
+    return Inst(in_name)

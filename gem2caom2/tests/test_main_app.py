@@ -75,7 +75,8 @@ from shutil import copyfile
 
 import gem2caom2.external_metadata as em
 
-from gem2caom2 import main_app, gem_name, builder
+from gem2caom2 import main_app, builder
+from gem2caom2.util import Inst
 from caom2pipe import manage_composable as mc
 
 from unittest.mock import patch, Mock
@@ -90,28 +91,28 @@ def pytest_generate_tests(metafunc):
 
         file_list = []
         for ii in [
-            em.Inst.GMOS,
-            em.Inst.NIRI,
-            em.Inst.GPI,
-            em.Inst.F2,
-            em.Inst.GSAOI,
-            em.Inst.NICI,
-            em.Inst.TRECS,
-            em.Inst.MICHELLE,
-            em.Inst.GRACES,
-            em.Inst.NIFS,
-            em.Inst.GNIRS,
-            em.Inst.PHOENIX,
-            em.Inst.FLAMINGOS,
-            em.Inst.HRWFS,
-            em.Inst.HOKUPAA,
-            em.Inst.OSCIR,
-            em.Inst.BHROS,
-            em.Inst.CIRPASS,
-            em.Inst.TEXES,
+            Inst.GMOS,
+            Inst.NIRI,
+            Inst.GPI,
+            Inst.F2,
+            Inst.GSAOI,
+            Inst.NICI,
+            Inst.TRECS,
+            Inst.MICHELLE,
+            Inst.GRACES,
+            Inst.NIFS,
+            Inst.GNIRS,
+            Inst.PHOENIX,
+            Inst.FLAMINGOS,
+            Inst.HRWFS,
+            Inst.HOKUPAA,
+            Inst.OSCIR,
+            Inst.BHROS,
+            Inst.CIRPASS,
+            Inst.TEXES,
             'processed',
-            em.Inst.ALOPEKE,
-            em.Inst.ZORRO,
+            Inst.ALOPEKE,
+            Inst.ZORRO,
         ]:
             walk_dir = _get_inst_name(ii)
             for root, dirs, files in os.walk(
@@ -124,6 +125,7 @@ def pytest_generate_tests(metafunc):
         metafunc.parametrize('test_name', file_list)
 
 
+@patch('gem2caom2.builder.defining_metadata_finder')
 @patch('caom2utils.cadc_client_wrapper.StorageClientWrapper')
 @patch('caom2utils.fits2caom2.Client')
 @patch('caom2pipe.astro_composable.get_vo_table_session')
@@ -139,6 +141,7 @@ def test_main_app(
     svofps_mock,
     cadc_client_mock,
     get_file_info_mock,
+    dmf_mock,
     test_name,
 ):
     # client_mock present because of global in external_metadata
@@ -150,6 +153,7 @@ def test_main_app(
     get_file_info_mock.return_value.info.side_effect = (
         gem_mocks.mock_get_file_info
     )
+    dmf_mock.get.side_effect = gem_mocks.mock_get_dm
 
     getcwd_orig = os.getcwd
     os.getcwd = Mock(
@@ -270,6 +274,6 @@ def _get_actual_file_name(dirname, product_id):
 
 def _get_inst_name(inst):
     walk_dir = inst
-    if inst != 'processed' and isinstance(inst, em.Inst):
+    if inst != 'processed' and isinstance(inst, Inst):
         walk_dir = inst.value
     return walk_dir

@@ -78,8 +78,9 @@ import gem_mocks
 
 
 @patch('caom2pipe.client_composable.query_tap_client')
-@patch('gem2caom2.external_metadata.get_obs_metadata')
-def test_missing_provenance(get_obs_mock, cadc_get_obs_mock):
+@patch('gem2caom2.external_metadata.get_pi_metadata')
+@patch('gem2caom2.external_metadata.DefiningMetadataFinder')
+def test_missing_provenance(get_mock, pi_mock, cadc_get_obs_mock):
     test_config = mc.Config()
     test_config.get_executors()
 
@@ -90,7 +91,8 @@ def test_missing_provenance(get_obs_mock, cadc_get_obs_mock):
         raise mc.CadcException('No JSON record')
 
     cadc_get_obs_mock.side_effect = _return_not_found
-    get_obs_mock.side_effect = gem_mocks.mock_get_obs_metadata
+    pi_mock.side_effect = gem_mocks.mock_get_pi_metadata
+    get_mock.return_value.get.side_effect = gem_mocks.mock_get_dm
 
     test_f_name = 'gS20171114S0185_bias.fits.header'
     test_obs_id = 'GS-CAL20171114-2-086-G-BIAS'

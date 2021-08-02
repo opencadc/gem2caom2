@@ -71,11 +71,15 @@ import os
 import pytest
 import shutil
 
+from astropy.io import fits
+from astropy.table import Table
+
 from mock import patch, Mock
 
 from caom2pipe import manage_composable as mc
 from gem2caom2 import external_metadata as ext_md
 from gem2caom2.util import Inst
+from gem2caom2.obs_metadata import json_lookup
 
 
 import gem_mocks
@@ -101,6 +105,7 @@ def test_repair_filter_name():
         assert test_result == test_subjects[ii][1], 'wrong value'
 
 
+@pytest.mark.skip('')
 @patch('gem2caom2.external_metadata.get_obs_metadata')
 @patch('caom2pipe.client_composable.query_tap_client')
 def test_caching_relationship(tap_mock, get_obs_mock):
@@ -150,6 +155,7 @@ def test_caching_relationship(tap_mock, get_obs_mock):
         os.getcwd = getcwd_orig
 
 
+@pytest.mark.skip('')
 def test_caching_relationship_unconnected():
     test_config = mc.Config()
     test_config.use_local_files = True
@@ -190,3 +196,86 @@ def test_get_filter_metadata(get_vo_mock):
     finally:
         # undo the initialization
         ext_md.set_ofr(None)
+
+
+@patch('caom2utils.cadc_client_wrapper.get_local_file_headers', autospec=True)
+@patch('caom2pipe.client_composable.query_tap_client', autospec=True)
+@patch('gem2caom2.external_metadata.get_obs_metadata', autospec=True)
+def test_dm_finder(get_obs_mock, caom2_mock, local_mock):
+    import logging
+    test_file_id = 'rN20123456S9876'
+    test_uri = f'gemini:GEMINI/{test_file_id}.fits'
+    repaired_data_label = 'GN-2012A-B-012-345-6'
+    test_data_label = f'{repaired_data_label}-R'
+    json_lookup.flush()
+
+    def _get_obs_md_mock(ignore):
+        logging.error(f'should be in remote')
+        md = [
+            {
+                'data_label': test_data_label,
+                'filename': f'{test_file_id}.fits',
+                'lastmod': '2020-02-25T20:36:31.230',
+                'instrument': 'GMOS',
+            },
+        ]
+        json_lookup.add(md, test_file_id)
+    get_obs_mock.side_effect = _get_obs_md_mock
+
+    def _caom2_mock(ignore1, ignore2):
+        return Table.read(
+            f'observationID,instrument_name\n'
+            f'{test_data_label},'
+            f'GMOS\n'.split('\n'),
+            format='csv',
+        )
+    caom2_mock.side_effect = _caom2_mock
+
+    def _local_mock(ignore):
+        hdr = fits.Header()
+        hdr['DATALAB'] = test_data_label
+        hdr['INSTRUME'] = 'GMOS'
+        return [hdr]
+    local_mock.side_effect = _local_mock
+    os_path_exists_orig = os.path.exists
+    os.path.exists = Mock(return_value=True)
+
+    test_config = mc.Config()
+    test_config.data_sources = [gem_mocks.TEST_DATA_DIR]
+
+    try:
+        ext_md.get_gofr()
+        for test_use_local in [True, False]:
+            for test_connected in [True, False]:
+                test_config.use_local_files = test_use_local
+                if test_connected:
+                    test_config.task_types = [mc.TaskType.VISIT]
+                else:
+                    test_config.task_types = [mc.TaskType.SCRAPE]
+
+                test_subject = ext_md.DefiningMetadataFinder(test_config)
+                assert test_subject is not None, (
+                    f'ctor does not work:: '
+                    f'local {test_use_local}, '
+                    f'connected {test_connected}'
+                )
+                test_result = test_subject.get(test_uri)
+                assert test_result is not None, (
+                    f'expect a result '
+                    f'local {test_use_local}, '
+                    f'connected {test_connected}'
+                )
+                assert test_result.instrument is Inst.GMOS, (
+                    f'instrument should be GMOS '
+                    f'local {test_use_local}, '
+                    f'connected {test_connected}'
+                )
+                assert test_result.data_label == repaired_data_label, (
+                    f'data_label should be {repaired_data_label} '
+                    f'local {test_use_local}, '
+                    f'connected {test_connected}'
+                )
+    finally:
+        # undo the initialization
+        ext_md.set_ofr(None)
+        os.path.exists = os_path_exists_orig

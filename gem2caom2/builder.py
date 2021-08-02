@@ -77,7 +77,9 @@ from caom2pipe import manage_composable as mc
 from caom2pipe import name_builder_composable as nbc
 from gem2caom2 import gem_name, external_metadata, instruments
 from gem2caom2 import obs_file_relationship
-from gem2caom2.util import Inst
+from gem2caom2.util import Inst, COLLECTION, SCHEME
+from gem2caom2.external_metadata import defining_metadata_finder
+from gem2caom2.external_metadata import repair_instrument
 
 
 __all__ = ['GemObsIDBuilder', 'get_instrument']
@@ -91,79 +93,36 @@ class GemObsIDBuilder(nbc.StorageNameBuilder):
     def __init__(self, config):
         super(GemObsIDBuilder, self).__init__()
         self._config = config
-        self._instrument = None
-        self._obs_id = None
         self._logger = logging.getLogger(__name__)
-
-    def _read_instrument_locally(self, entry):
-        self._logger.debug(
-            f'Use a local file to read instrument from the headers for '
-            f'{entry}.'
-        )
-        headers = cadc_client_wrapper.get_local_headers_from_fits(
-            f'{self._config.working_directory}/{entry}'
-        )
-        self._instrument = Inst(headers[0].get('INSTRUME'))
-        file_id = gem_name.GemName.remove_extensions(path.basename(entry))
-        if self._instrument in [
-            Inst.ALOPEKE,
-            Inst.ZORRO,
-        ]:
-            self._obs_id = file_id
-        else:
-            self._obs_id = headers[0].get('DATALAB')
-        repaired_obs_id = obs_file_relationship.repair_data_label(
-            file_id, self._obs_id
-        )
-        self._obs_id = repaired_obs_id
-
-    def _read_instrument_remotely(self, entry):
-        # TODO ask CADC first - does this code already exist somewhere?
-        self._logger.debug('Read instrument from archive.gemini.edu.')
-        file_id = gem_name.GemName.remove_extensions(entry)
-        external_metadata.get_obs_metadata(file_id)
-        self._instrument = get_instrument()
-        if self._instrument in [
-            Inst.ALOPEKE,
-            Inst.ZORRO,
-        ]:
-            self._obs_id = file_id
-        else:
-            self._obs_id = external_metadata.om.get('data_label')
-        repaired_obs_id = obs_file_relationship.repair_data_label(
-            file_id, self._obs_id
-        )
-        self._obs_id = repaired_obs_id
 
     def build(self, entry):
         """
-        :param entry: a Gemini file name or observation ID, depending on
-            the configuration
+        :param entry: a Gemini file name
         :return: an instance of StorageName for use in execute_composable.
         """
         self._logger.debug(f'Build a StorageName instance for {entry}.')
         try:
+            uri = mc.build_uri(COLLECTION, entry, SCHEME)
+            metadata = defining_metadata_finder.get(uri)
             if (
                 mc.TaskType.SCRAPE in self._config.task_types
                 or self._config.use_local_files
             ):
-                self._read_instrument_locally(entry)
                 result = gem_name.GemName(
                     file_name=entry,
-                    instrument=self._instrument,
+                    instrument=metadata.instrument,
                     entry=entry,
-                    obs_id=self._obs_id,
+                    obs_id=metadata.data_label,
                 )
                 result.source_names = [path.join(
                     self._config.working_directory, result.file_name
                 )]
             elif '.fits' in entry or '.jpg' in entry:
-                self._read_instrument_remotely(entry)
                 result = gem_name.GemName(
                     file_name=entry,
-                    instrument=self._instrument,
+                    instrument=metadata.instrument,
                     entry=entry,
-                    obs_id=self._obs_id,
+                    obs_id=metadata.data_label,
                 )
                 result.source_names = [result.file_name]
             else:
@@ -187,12 +146,7 @@ current_instrument = None
 
 def get_instrument():
     inst = external_metadata.om.get('instrument')
-    if inst == 'ALOPEKE':
-        # because the value in JSON is a different case than the value in
-        # the FITS header
-        inst = 'Alopeke'
-    if inst == 'ZORRO':
-        inst = 'Zorro'
+    inst = repair_instrument(inst)
     global current_instrument
     current_instrument = instruments.instrument_factory(
         Inst(inst)

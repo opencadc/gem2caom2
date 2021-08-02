@@ -206,8 +206,8 @@ class GemName(mc.StorageName):
     def __str__(self):
         return (
             f'\n'
-            f'     obs_id:{self._obs_id}\n'
-            f'    file_id:{self._file_id}\n'
+            f'      obs_id:{self._obs_id}\n'
+            f'     file_id:{self._file_id}\n'
             f'   file_name:{self._file_name}\n'
             f'    file_uri:{self.file_uri}\n'
             f'   thumb_uri:{self.thumb_uri}\n'

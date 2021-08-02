@@ -537,9 +537,6 @@ class InstrumentType:
         self._get_obs_type(header)
         result = self._obs_type
         self._get_obs_class(header)
-        self._logger.error(
-            f'obs_type {self._obs_type} obs_class {self._obs_class}'
-        )
         if (
             self._obs_class is not None and
             (self._obs_class == 'acq' or self._obs_class == 'acqCal')
