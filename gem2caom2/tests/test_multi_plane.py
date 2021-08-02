@@ -123,9 +123,10 @@ def pytest_generate_tests(metafunc):
     metafunc.parametrize('test_name', obs_id_list)
 
 
+@patch('gem2caom2.program_metadata.get_pi_metadata')
 @patch('gem2caom2.external_metadata.get_obs_metadata')
 @patch('gem2caom2.external_metadata.CadcTapClient')
-def test_multi_plane(tap_mock, gemini_client_mock, test_name):
+def test_multi_plane(tap_mock, gemini_client_mock, gemini_pi_mock, test_name):
     gemini_client_mock.side_effect = gem_mocks.mock_get_obs_metadata
     getcwd_orig = os.getcwd
     os.getcwd = Mock(return_value=gem_mocks.TEST_DATA_DIR)
@@ -146,8 +147,6 @@ def test_multi_plane(tap_mock, gemini_client_mock, test_name):
         with patch(
             'caom2utils.cadc_client_wrapper.StorageClientWrapper'
         ) as data_client_mock, patch(
-            'gem2caom2.external_metadata.get_pi_metadata'
-        ) as gemini_pi_mock, patch(
             'caom2pipe.astro_composable.get_vo_table_session'
         ) as svofps_mock:
 

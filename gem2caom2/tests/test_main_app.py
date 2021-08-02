@@ -129,7 +129,7 @@ def pytest_generate_tests(metafunc):
 @patch('caom2utils.cadc_client_wrapper.StorageClientWrapper')
 @patch('caom2utils.fits2caom2.Client')
 @patch('caom2pipe.astro_composable.get_vo_table_session')
-@patch('gem2caom2.external_metadata.get_pi_metadata')
+@patch('gem2caom2.program_metadata.get_pi_metadata')
 @patch('gem2caom2.external_metadata.get_obs_metadata')
 @patch('caom2pipe.client_composable.query_tap_client')
 @patch('gem2caom2.external_metadata.CadcTapClient')

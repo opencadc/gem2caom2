@@ -107,7 +107,7 @@ import gem2caom2.external_metadata as em
 import gem2caom2.obs_file_relationship as ofr
 from gem2caom2.gem_name import GemName
 from gem2caom2.builder import get_instrument, GemObsIDBuilder
-from gem2caom2 import instruments, builder
+from gem2caom2 import instruments, builder, program_metadata
 from gem2caom2.util import Inst, COLLECTION, SCHEME
 
 
@@ -665,7 +665,9 @@ def update(observation, **kwargs):
                     )
                     artifact.parts.pop(part)
 
-            program = em.get_pi_metadata(observation.proposal.id)
+            program = program_metadata.get_pi_metadata(
+                observation.proposal.id
+            )
             if program is not None:
                 observation.proposal.pi_name = program['pi_name']
                 observation.proposal.title = program['title']

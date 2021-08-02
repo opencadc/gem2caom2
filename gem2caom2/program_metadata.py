@@ -67,56 +67,60 @@
 # ***********************************************************************
 #
 
-import sys
+import logging
+
+from bs4 import BeautifulSoup
 
 from caom2pipe import manage_composable as mc
-from gem2caom2 import main_app, GemName, external_metadata
-from gem2caom2.util import Inst, COLLECTION
-
-from mock import patch, Mock
-import gem_mocks
 
 
-@patch('caom2pipe.client_composable.query_tap_client')
-@patch('gem2caom2.program_metadata.get_pi_metadata')
-@patch('gem2caom2.external_metadata.DefiningMetadataFinder')
-def test_missing_provenance(get_mock, pi_mock, cadc_get_obs_mock):
-    test_config = mc.Config()
-    test_config.get_executors()
+__all__ = ['get_pi_metadata']
 
-    external_metadata.set_ofr(None)
-    external_metadata.init_global(test_config)
 
-    def _return_not_found(ignore_1, ignore_2):
-        raise mc.CadcException('No JSON record')
+def get_pi_metadata(program_id):
+    global pm
+    if program_id in pm:
+        metadata = pm[program_id]
+    else:
+        # for TaskType.SCRAPE
+        if gemini_session is None:
+            metadata = None
+            logging.warning(f'No external access. No PI metadata.')
+        else:
+            program_url = (
+                f'https://archive.gemini.edu/programinfo/{program_id}'
+            )
+            # Open the URL and fetch the JSON document for the observation
+            response = None
+            try:
+                response = mc.query_endpoint_session(
+                    program_url, gemini_session
+                )
+                xml_metadata = response.text
+            finally:
+                if response:
+                    response.close()
+            metadata = None
+            soup = BeautifulSoup(xml_metadata, 'lxml')
+            tds = soup.find_all('td')
+            if len(tds) > 0:
+                # sometimes the program id points to an html page with an
+                # empty table, see e.g. N20200210S0077_bias
+                title = None
+                if len(tds[1].contents) > 0:
+                    title = tds[1].contents[0].replace('\n', ' ')
+                pi_name = None
+                if len(tds[3].contents) > 0:
+                    pi_name = tds[3].contents[0]
+                metadata = {
+                    'title': title,
+                    'pi_name': pi_name,
+                }
+                pm[program_id] = metadata
+        logging.debug('End get_pi_metadata')
+    return metadata
 
-    cadc_get_obs_mock.side_effect = _return_not_found
-    pi_mock.side_effect = gem_mocks.mock_get_pi_metadata
-    get_mock.return_value.get.side_effect = gem_mocks.mock_get_dm
 
-    test_f_name = 'gS20171114S0185_bias.fits.header'
-    test_obs_id = 'GS-CAL20171114-2-086-G-BIAS'
-    test_storage_name = GemName(
-        obs_id=test_obs_id,
-        file_name=test_f_name,
-        instrument=Inst.GMOSS,
-    )
-    test_fqn = f'{gem_mocks.TEST_DATA_DIR}/broken_files/{test_f_name}'
-    actual_fqn = (
-        f'{gem_mocks.TEST_DATA_DIR}/broken_files/{test_obs_id}.actual.xml'
-    )
-    sys.argv = (
-        f'{main_app.APPLICATION} --quiet --no_validate '
-        f'--local {test_fqn} '
-        f'--plugin {gem_mocks.PLUGIN} --module {gem_mocks.PLUGIN} '
-        f'--observation {COLLECTION} {test_obs_id} --out {actual_fqn} '
-        f'--lineage {test_storage_name.lineage} '
-        f'--resource-id ivo://cadc.nrc.ca/uvic/minoc '
-    ).split()
-    main_app.to_caom2()
-    expected_fqn = (
-        f'{gem_mocks.TEST_DATA_DIR}/broken_files/{test_obs_id}.expected.xml'
-    )
-    compare_result = mc.compare_observations(actual_fqn, expected_fqn)
-    if compare_result is not None:
-        assert False, compare_result
+gemini_session = mc.get_endpoint_session()
+# lazy initialization for program metadata from Gemini
+pm = {}

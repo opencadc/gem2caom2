@@ -70,7 +70,6 @@
 import logging
 import os
 
-from bs4 import BeautifulSoup
 from dataclasses import dataclass
 
 from cadctap import CadcTapClient
@@ -91,7 +90,6 @@ __all__ = [
     'get_obs_id_from_cadc',
     'get_obs_id_from_headers',
     'get_obs_metadata',
-    'get_pi_metadata',
     'init_global',
     'repair_instrument',
     'set_ofr',
@@ -104,8 +102,6 @@ GEMINI_METADATA_URL = (
 
 # lazy initialization for jsonsummary metadata from Gemini
 om = None
-# lazy initialization for program metadata from Gemini
-pm = {}
 # lazy initialization for the Gemini listing of files
 gofr = None
 # value repair cache
@@ -180,50 +176,6 @@ def get_obs_metadata(file_id):
                 )
             om.add(metadata, file_id)
     logging.debug(f'End get_obs_metadata for {file_id}')
-
-
-def get_pi_metadata(program_id):
-    global pm
-    if program_id in pm:
-        metadata = pm[program_id]
-    else:
-        # for TaskType.SCRAPE
-        if gofr.query_session is None:
-            metadata = None
-            logging.warning(f'No external access. No PI metadata.')
-        else:
-            program_url = (
-                f'https://archive.gemini.edu/programinfo/{program_id}'
-            )
-            # Open the URL and fetch the JSON document for the observation
-            response = None
-            try:
-                response = mc.query_endpoint_session(
-                    program_url, gofr.query_session
-                )
-                xml_metadata = response.text
-            finally:
-                if response:
-                    response.close()
-            metadata = None
-            soup = BeautifulSoup(xml_metadata, 'lxml')
-            tds = soup.find_all('td')
-            if len(tds) > 0:
-                # sometimes the program id points to an html page with an
-                # empty table, see e.g. N20200210S0077_bias
-                title = None
-                if len(tds[1].contents) > 0:
-                    title = tds[1].contents[0].replace('\n', ' ')
-                pi_name = None
-                if len(tds[3].contents) > 0:
-                    pi_name = tds[3].contents[0]
-                metadata = {
-                    'title': title,
-                    'pi_name': pi_name,
-                }
-                pm[program_id] = metadata
-        logging.debug('End get_obs_metadata')
-    return metadata
 
 
 class CachingObsFileRelationship(GemObsFileRelationship):

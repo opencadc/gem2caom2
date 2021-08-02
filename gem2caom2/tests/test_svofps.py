@@ -67,56 +67,46 @@
 # ***********************************************************************
 #
 
-import sys
-
-from caom2pipe import manage_composable as mc
-from gem2caom2 import main_app, GemName, external_metadata
-from gem2caom2.util import Inst, COLLECTION
+from gem2caom2.util import Inst
+from gem2caom2 import svofps
 
 from mock import patch, Mock
 import gem_mocks
 
 
-@patch('caom2pipe.client_composable.query_tap_client')
-@patch('gem2caom2.program_metadata.get_pi_metadata')
-@patch('gem2caom2.external_metadata.DefiningMetadataFinder')
-def test_missing_provenance(get_mock, pi_mock, cadc_get_obs_mock):
-    test_config = mc.Config()
-    test_config.get_executors()
+test_subjects = {
+    'H2v=2-1S1_G0220': [Inst.NIRI, 'H2S1v2-1-G0220'],
+    'Kprime_G0206': [Inst.NIRI, 'Kprime-G0206'],
+    'H2Oice204_G0242': [Inst.NIRI, 'H2Oice2045-G0242'],
+    'Jcon(121)_G0232': [Inst.NIRI, 'Jcont1207-G0232'],
+    'Bra_G0238': [Inst.NIRI, 'BrAlpha-G0238'],
+    'Bracont_G0237': [Inst.NIRI, 'BrAlphaCont-G0237'],
+    'Brgamma_G0218': [Inst.NIRI, 'BrG-G0218'],
+    'Jcon1065_G0239': [Inst.NIRI, 'Jcont1065-G0239'],
+    'hydrocarb_G0231': [Inst.NIRI, 'hydrocarbon-G0231'],
+}
 
-    external_metadata.set_ofr(None)
-    external_metadata.init_global(test_config)
 
-    def _return_not_found(ignore_1, ignore_2):
-        raise mc.CadcException('No JSON record')
+def test_repair_filter_name():
+    for ii in test_subjects:
+        test_result = svofps._repair_filter_name_for_svo(
+            test_subjects[ii][0], ii
+        )
+        assert test_result == test_subjects[ii][1], 'wrong value'
 
-    cadc_get_obs_mock.side_effect = _return_not_found
-    pi_mock.side_effect = gem_mocks.mock_get_pi_metadata
-    get_mock.return_value.get.side_effect = gem_mocks.mock_get_dm
 
-    test_f_name = 'gS20171114S0185_bias.fits.header'
-    test_obs_id = 'GS-CAL20171114-2-086-G-BIAS'
-    test_storage_name = GemName(
-        obs_id=test_obs_id,
-        file_name=test_f_name,
-        instrument=Inst.GMOSS,
+@patch('caom2pipe.astro_composable.get_vo_table_session')
+def test_get_filter_metadata(get_vo_mock):
+    svo_session_mock = Mock()
+    get_vo_mock.side_effect = gem_mocks.mock_get_votable
+    test_result = svofps.get_filter_metadata(
+        Inst.NIRI, 'filters', 'telescope_name', svo_session_mock
     )
-    test_fqn = f'{gem_mocks.TEST_DATA_DIR}/broken_files/{test_f_name}'
-    actual_fqn = (
-        f'{gem_mocks.TEST_DATA_DIR}/broken_files/{test_obs_id}.actual.xml'
+    assert get_vo_mock.call_count == 2, 'wrong number of calls'
+    assert test_result is None, 'do not expect a result'
+    # do the same thing again, check that the result has been cached
+    test_result = svofps.get_filter_metadata(
+        Inst.NIRI, 'filters', 'telescope_name', svo_session_mock
     )
-    sys.argv = (
-        f'{main_app.APPLICATION} --quiet --no_validate '
-        f'--local {test_fqn} '
-        f'--plugin {gem_mocks.PLUGIN} --module {gem_mocks.PLUGIN} '
-        f'--observation {COLLECTION} {test_obs_id} --out {actual_fqn} '
-        f'--lineage {test_storage_name.lineage} '
-        f'--resource-id ivo://cadc.nrc.ca/uvic/minoc '
-    ).split()
-    main_app.to_caom2()
-    expected_fqn = (
-        f'{gem_mocks.TEST_DATA_DIR}/broken_files/{test_obs_id}.expected.xml'
-    )
-    compare_result = mc.compare_observations(actual_fqn, expected_fqn)
-    if compare_result is not None:
-        assert False, compare_result
+    assert get_vo_mock.call_count == 2, 'wrong number of calls'
+    assert test_result is None, 'do not expect a result this time either'
