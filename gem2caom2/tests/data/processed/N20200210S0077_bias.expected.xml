@@ -55,7 +55,7 @@
           <caom2:planeURI>caom:GEMINI/test_data_label/N20200221S0429</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/test_data_label/N20200210S0080</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/test_data_label/N20200214S1425</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/test_data_label/N20200210S0077</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GN-CAL20200210-22-076/N20200210S0077</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/test_data_label/N20200222S0730</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/test_data_label/N20200217S0698</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/test_data_label/N20200223S0386</caom2:planeURI>
@@ -472,6 +472,7 @@
     </caom2:plane>
   </caom2:planes>
   <caom2:members>
+    <caom2:observationURI>caom:GEMINI/GN-CAL20200210-22-076</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/test_data_label</caom2:observationURI>
   </caom2:members>
 </caom2:Observation>

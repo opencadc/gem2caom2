@@ -125,23 +125,23 @@ def pytest_generate_tests(metafunc):
         metafunc.parametrize('test_name', file_list)
 
 
+@patch('cadcutils.net.ws.WsCapabilities.get_access_url')
 @patch('gem2caom2.builder.defining_metadata_finder')
 @patch('caom2utils.cadc_client_wrapper.StorageClientWrapper')
 @patch('caom2utils.fits2caom2.Client')
 @patch('caom2pipe.astro_composable.get_vo_table_session')
 @patch('gem2caom2.program_metadata.get_pi_metadata')
 @patch('gem2caom2.external_metadata.get_obs_metadata')
-@patch('caom2pipe.client_composable.query_tap_client')
 @patch('gem2caom2.external_metadata.CadcTapClient')
 def test_main_app(
     client_mock,
-    tap_mock,
     gemini_client_mock,
     gemini_pi_mock,
     svofps_mock,
     cadc_client_mock,
     get_file_info_mock,
     dmf_mock,
+    cap_mock,
     test_name,
 ):
     # client_mock present because of global in external_metadata
@@ -149,11 +149,11 @@ def test_main_app(
     gemini_client_mock.side_effect = gem_mocks.mock_get_obs_metadata
     gemini_pi_mock.side_effect = gem_mocks.mock_get_pi_metadata
     svofps_mock.side_effect = gem_mocks.mock_get_votable
-    tap_mock.side_effect = gem_mocks.mock_query_tap
     get_file_info_mock.return_value.info.side_effect = (
         gem_mocks.mock_get_file_info
     )
     dmf_mock.get.side_effect = gem_mocks.mock_get_dm
+    cap_mock.return_value = 'https://localhost'
 
     getcwd_orig = os.getcwd
     os.getcwd = Mock(

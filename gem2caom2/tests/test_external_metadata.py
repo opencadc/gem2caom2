@@ -147,6 +147,7 @@ def test_caching_relationship_unconnected():
     assert test_result == 'GN-2006A-Q-90-1-001-MRG-ADD', 'wrong result'
 
 
+@pytest.mark.skip('')
 @patch('requests.Session')
 @patch('gem2caom2.external_metadata.CadcTapClient')
 def test_get_obs_metadata_not_at_gemini(tap_client_mock, session_mock):
@@ -161,11 +162,12 @@ def test_get_obs_metadata_not_at_gemini(tap_client_mock, session_mock):
         test_result = ext_md.get_obs_metadata('test_file_id')
 
 
+@patch('cadcutils.net.ws.WsCapabilities.get_access_url')
 @patch('caom2utils.cadc_client_wrapper.get_local_file_headers', autospec=True)
 @patch('caom2pipe.client_composable.query_tap_client', autospec=True)
 @patch('gem2caom2.external_metadata.get_obs_metadata', autospec=True)
-def test_dm_finder(get_obs_mock, caom2_mock, local_mock):
-    import logging
+def test_dm_finder(get_obs_mock, caom2_mock, local_mock, cap_mock):
+    cap_mock.return_value = 'https://localhost'
     test_file_id = 'rN20123456S9876'
     test_uri = f'gemini:GEMINI/{test_file_id}.fits'
     repaired_data_label = 'GN-2012A-B-012-345-6'
@@ -173,7 +175,6 @@ def test_dm_finder(get_obs_mock, caom2_mock, local_mock):
     json_lookup.flush()
 
     def _get_obs_md_mock(ignore):
-        logging.error(f'should be in remote')
         md = [
             {
                 'data_label': test_data_label,
@@ -205,9 +206,12 @@ def test_dm_finder(get_obs_mock, caom2_mock, local_mock):
 
     test_config = mc.Config()
     test_config.data_sources = [gem_mocks.TEST_DATA_DIR]
+    test_config.proxy_fqn = os.path.join(
+        gem_mocks.TEST_DATA_DIR, 'cadcproxy.pem'
+    )
+    test_config.tap_id = 'ivo://cadc.nrc.ca/test'
 
     try:
-        ext_md.get_gofr()
         for test_use_local in [True, False]:
             for test_connected in [True, False]:
                 test_config.use_local_files = test_use_local
@@ -239,6 +243,4 @@ def test_dm_finder(get_obs_mock, caom2_mock, local_mock):
                     f'connected {test_connected}'
                 )
     finally:
-        # undo the initialization
-        ext_md.set_ofr(None)
         os.path.exists = os_path_exists_orig

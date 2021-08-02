@@ -106,7 +106,7 @@ from caom2pipe import astro_composable as ac
 import gem2caom2.external_metadata as em
 import gem2caom2.obs_file_relationship as ofr
 from gem2caom2.gem_name import GemName
-from gem2caom2.builder import get_instrument, GemObsIDBuilder
+from gem2caom2.builder import GemObsIDBuilder
 from gem2caom2 import instruments, builder, program_metadata
 from gem2caom2.util import Inst, COLLECTION, SCHEME
 
@@ -117,19 +117,19 @@ APPLICATION = 'gem2caom2'
 
 
 def get_time_delta(header):
-    return builder.current_instrument.get_time_delta(header)
+    return em.current_instrument.get_time_delta(header)
 
 
 def get_calibration_level(uri):
-    return builder.current_instrument.get_calibration_level(uri)
+    return em.current_instrument.get_calibration_level(uri)
 
 
 def get_art_product_type(header):
-    return builder.current_instrument.get_art_product_type(header)
+    return em.current_instrument.get_art_product_type(header)
 
 
 def get_data_product_type(header):
-    return builder.current_instrument.get_data_product_type(header)
+    return em.current_instrument.get_data_product_type(header)
 
 
 def get_data_release(header):
@@ -150,11 +150,11 @@ def get_data_release(header):
 
 
 def get_dec(header):
-    return builder.current_instrument.get_dec(header)
+    return em.current_instrument.get_dec(header)
 
 
 def get_exposure(header):
-    return builder.current_instrument.get_exposure(header)
+    return em.current_instrument.get_exposure(header)
 
 
 def get_meta_release(parameters):
@@ -194,11 +194,11 @@ def get_meta_release(parameters):
 
 
 def get_obs_intent(header):
-    return builder.current_instrument.get_obs_intent(header)
+    return em.current_instrument.get_obs_intent(header)
 
 
 def get_obs_type(header):
-    return builder.current_instrument.get_obs_type(header)
+    return em.current_instrument.get_obs_type(header)
 
 
 def get_proposal_id(header):
@@ -292,7 +292,7 @@ def _get_provenance_breakout(parameters, fn):
 
 
 def get_ra(header):
-    return builder.current_instrument.get_ra(header)
+    return em.current_instrument.get_ra(header)
 
 
 def get_target_moving(header):
@@ -315,11 +315,11 @@ def get_target_moving(header):
 
 
 def get_target_type(uri):
-    return builder.current_instrument.get_target_type()
+    return em.current_instrument.get_target_type()
 
 
 def get_time_function_val(header):
-    return builder.current_instrument.get_time_function_val(header)
+    return em.current_instrument.get_time_function_val(header)
 
 
 def _get_data_label():
@@ -342,7 +342,7 @@ def accumulate_fits_bp(bp, file_id, uri):
     bp.set('Observation.proposal.id', 'get_proposal_id(header)')
 
     bp.clear('Observation.algorithm.name')
-    instrument = get_instrument()
+    instrument = em.get_instrument(uri)
     if instrument in [Inst.GMOSN, Inst.GMOSS, Inst.GMOS]:
         bp.set(
             'Observation.instrument.keywords', 'get_provenance_keywords(uri)'

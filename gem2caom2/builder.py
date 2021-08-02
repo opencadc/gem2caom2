@@ -72,17 +72,14 @@ import traceback
 
 from os import path
 
-from caom2utils import cadc_client_wrapper
 from caom2pipe import manage_composable as mc
 from caom2pipe import name_builder_composable as nbc
-from gem2caom2 import gem_name, external_metadata, instruments
-from gem2caom2 import obs_file_relationship
-from gem2caom2.util import Inst, COLLECTION, SCHEME
+from gem2caom2 import gem_name
+from gem2caom2.util import COLLECTION, SCHEME
 from gem2caom2.external_metadata import defining_metadata_finder
-from gem2caom2.external_metadata import repair_instrument
 
 
-__all__ = ['GemObsIDBuilder', 'get_instrument']
+__all__ = ['GemObsIDBuilder']
 
 
 class GemObsIDBuilder(nbc.StorageNameBuilder):
@@ -136,19 +133,3 @@ class GemObsIDBuilder(nbc.StorageNameBuilder):
             self._logger.error(e)
             self._logger.debug(traceback.format_exc())
             raise mc.CadcException(e)
-
-
-# a globally accessible pointer to the latest instance of InstrumentType,
-# placed here so that it survives the importlib.import_module call from
-# fits2caom2
-current_instrument = None
-
-
-def get_instrument():
-    inst = external_metadata.om.get('instrument')
-    inst = repair_instrument(inst)
-    global current_instrument
-    current_instrument = instruments.instrument_factory(
-        Inst(inst)
-    )
-    return Inst(inst)

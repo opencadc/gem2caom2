@@ -154,6 +154,7 @@ TAP_QUERY_LOOKUP = {
     'N20060130S0150': 'GN-2006A-Q-90-1-002',
     'N20060130S0151': 'GN-2006A-Q-90-1-003',
     'N20200210S0077_bias': 'GN-CAL20200210-22-076-BIAS',
+    'N20200210S0077': 'GN-CAL20200210-22-076',
     'S20050825S0143': 'GS-2005B-SV-301-16-005',
     'S20141226S0204': 'GS-CAL20141226-7-027',
     'S20141226S0206': 'GS-CAL20141226-7-029',
@@ -1149,7 +1150,7 @@ def mock_get_dm(uri):
     file_id = GemName.remove_extensions(f_name)
     mock_get_obs_metadata(file_id)
     return em.DefiningMetadata(
-        json_lookup.get('instrument'),
+        Inst(em.repair_instrument(json_lookup.get('instrument'))),
         repair_data_label(file_id, json_lookup.get('data_label')),
     )
 

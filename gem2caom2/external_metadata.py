@@ -79,14 +79,16 @@ from caom2pipe import manage_composable as mc
 from gem2caom2 import obs_metadata as gom
 from gem2caom2.obs_file_relationship import GemObsFileRelationship
 from gem2caom2.obs_file_relationship import repair_data_label
-from gem2caom2 import gem_name
+from gem2caom2 import gem_name, instruments
 from gem2caom2.util import Inst, COLLECTION
 
 
 __all__ = [
     # 'CachingObsFileRelationship',
+    'current_instrument',
     'defining_metadata_finder',
     'get_gofr',
+    'get_instrument',
     'get_obs_id_from_cadc',
     'get_obs_id_from_headers',
     'get_obs_metadata',
@@ -108,6 +110,8 @@ gofr = None
 value_repair = mc.ValueRepairCache()
 # gofr replacement
 defining_metadata_finder = None
+#
+gemini_session = mc.get_endpoint_session()
 
 
 # globals are BAD, but if this existed in a class instance, that
@@ -134,11 +138,6 @@ def init_global(config):
     global om
     om = gom.json_lookup
     get_gofr(config)
-    global gofr
-    if gofr.tap_client is None and config.is_connected:
-        subject = clc.define_subject(config)
-        tap_client = CadcTapClient(subject=subject, resource_id=config.tap_id)
-        gofr.tap_client = tap_client
 
 
 def get_obs_metadata(file_id):
@@ -163,7 +162,7 @@ def get_obs_metadata(file_id):
             response = None
             try:
                 response = mc.query_endpoint_session(
-                    gemini_url, gofr.query_session
+                    gemini_url, gemini_session
                 )
                 metadata = response.json()
             finally:
@@ -327,6 +326,10 @@ class DefiningMetadataFinder:
         self._use_local_files = config.use_local_files
         self._connected = mc.TaskType.SCRAPE not in config.task_types
         self._json_lookup = gom.json_lookup
+        subject = clc.define_subject(config)
+        self._tap_client = CadcTapClient(
+            subject=subject, resource_id=config.tap_id
+        )
         self._logger = logging.getLogger(self.__class__.__name__)
 
     def _check_caom2(self, uri):
@@ -339,7 +342,7 @@ class DefiningMetadataFinder:
         WHERE A.uri = '{uri}' 
         AND O.collection = '{COLLECTION}'
         """
-        table = clc.query_tap_client(query_string, gofr.tap_client)
+        table = clc.query_tap_client(query_string, self._tap_client)
         result = None
         if len(table) == 1:
             result = DefiningMetadata(
@@ -375,7 +378,8 @@ class DefiningMetadataFinder:
         self._logger.debug(f'Begin _check_remote for {f_name}')
         # using the global om structure to look up and store
         # metadata will modify the internal index of the class - maintain
-        # that index here with a save/restore
+        # that index here with a save/restore, as the lookup can occur for
+        # provenance metadata
         looking_for_file_id = gem_name.GemName.remove_extensions(f_name)
         # first check the cache
         current_file_id = self._json_lookup.current
@@ -388,7 +392,7 @@ class DefiningMetadataFinder:
         result = None
         if self._json_lookup.contains(looking_for_file_id):
             result = DefiningMetadata(
-                Inst(self._json_lookup.get('instrument')),
+                Inst(repair_instrument(self._json_lookup.get('instrument'))),
                 self._json_lookup.get('data_label'),
             )
         if current_file_id is not None:
@@ -427,3 +431,16 @@ def repair_instrument(in_name):
     if in_name == 'ZORRO':
         in_name = 'Zorro'
     return Inst(in_name)
+
+
+# a globally accessible pointer to the latest instance of InstrumentType,
+# placed here so that it survives the importlib.import_module call from
+# fits2caom2
+current_instrument = None
+
+
+def get_instrument(uri):
+    dm = defining_metadata_finder.get(uri)
+    global current_instrument
+    current_instrument = instruments.instrument_factory(dm.instrument)
+    return dm.instrument

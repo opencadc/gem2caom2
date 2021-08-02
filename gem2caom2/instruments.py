@@ -454,7 +454,7 @@ class InstrumentType:
                 self._headers[0], ['FILTER'], FILTER_VALUES_TO_IGNORE)
             filter_name = result
         self._logger.info(
-            f'Filter names are {filter_name} in {self._data_label}'
+            f'Filter names are "{filter_name}" in {self._data_label}'
         )
         self.filter_name = filter_name
 
@@ -4227,4 +4227,7 @@ def instrument_factory(name):
         Inst.TEXES: Texes,
         Inst.TRECS: Trecs,
     }
-    return lookup.get(name)(name)
+    if name in lookup:
+        return lookup.get(name)(name)
+    else:
+        raise mc.CadcException(f'Mystery name {name}.')

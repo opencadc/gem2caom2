@@ -77,22 +77,29 @@ from mock import patch, Mock
 import gem_mocks
 
 
-@patch('caom2pipe.client_composable.query_tap_client')
+@patch('caom2utils.cadc_client_wrapper.StorageClientWrapper')
+@patch('gem2caom2.external_metadata.get_obs_metadata')
+@patch('cadcutils.net.ws.WsCapabilities.get_access_url')
 @patch('gem2caom2.program_metadata.get_pi_metadata')
 @patch('gem2caom2.external_metadata.DefiningMetadataFinder')
-def test_missing_provenance(get_mock, pi_mock, cadc_get_obs_mock):
+def test_missing_provenance(
+    get_mock,
+    pi_mock,
+    cap_mock,
+    get_obs_mock,
+    client_mock,
+):
     test_config = mc.Config()
     test_config.get_executors()
 
     external_metadata.set_ofr(None)
     external_metadata.init_global(test_config)
 
-    def _return_not_found(ignore_1, ignore_2):
-        raise mc.CadcException('No JSON record')
-
-    cadc_get_obs_mock.side_effect = _return_not_found
+    cap_mock.return_value = 'https://localhost'
     pi_mock.side_effect = gem_mocks.mock_get_pi_metadata
     get_mock.return_value.get.side_effect = gem_mocks.mock_get_dm
+    get_obs_mock.side_effect = gem_mocks.mock_get_obs_metadata
+    client_mock.return_value.info.side_effect = gem_mocks.mock_get_file_info
 
     test_f_name = 'gS20171114S0185_bias.fits.header'
     test_obs_id = 'GS-CAL20171114-2-086-G-BIAS'
@@ -111,7 +118,7 @@ def test_missing_provenance(get_mock, pi_mock, cadc_get_obs_mock):
         f'--plugin {gem_mocks.PLUGIN} --module {gem_mocks.PLUGIN} '
         f'--observation {COLLECTION} {test_obs_id} --out {actual_fqn} '
         f'--lineage {test_storage_name.lineage} '
-        f'--resource-id ivo://cadc.nrc.ca/uvic/minoc '
+        f'--resource-id ivo://cadc.nrc.ca/test '
     ).split()
     main_app.to_caom2()
     expected_fqn = (
