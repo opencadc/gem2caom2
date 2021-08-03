@@ -109,7 +109,6 @@ defining_metadata_finder = None
 def get_gofr(config):
     global defining_metadata_finder
     if defining_metadata_finder is None:
-        logging.error(DefiningMetadataFinder)
         defining_metadata_finder = DefiningMetadataFinder(config)
 
 

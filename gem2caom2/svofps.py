@@ -274,6 +274,10 @@ def get_filter_metadata(
     global fm
     repaired_inst = _repair_instrument_name_for_svo(instrument, telescope)
     repaired_filters = _repair_filter_name_for_svo(instrument, filter_name)
+    logging.debug(
+        f'Find filter information for filter {repaired_inst} on instrument '
+        f'{repaired_inst}'
+    )
     if repaired_filters is None:
         # nothing to look up, try something else
         return None
