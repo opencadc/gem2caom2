@@ -299,8 +299,21 @@ def repair_instrument(in_name):
         # because the value in JSON is a different case than the value in
         # the FITS header
         in_name = 'Alopeke'
-    if in_name == 'ZORRO':
+    elif in_name == 'ZORRO':
         in_name = 'Zorro'
+    elif in_name == 'oscir':
+        # for these observations:
+        # GN-2001A-C-16-3-016
+        # GN-2001A-C-2-14-015
+        # GN-2001A-C-2-2-002
+        # GN-2001A-C-2-3-003
+        # GN-2001A-C-2-4-004
+        # GN-2001A-C-2-5-005
+        # GN-2001A-C-2-6-006
+        # GN-2001A-C-2-7-007
+        # GN-2001A-C-2-8-009
+        # GN-2001A-C-2-9-010
+        in_name = 'OSCIR'
     return Inst(in_name)
 
 

@@ -477,16 +477,16 @@ class InstrumentType:
         result = ObservationIntentType.CALIBRATION
         self._get_data_label(header)
         self._get_obs_class(header)
-        self._logger.error(
+        self._logger.debug(
             f'observation_class is {self._obs_class} for {self._data_label}'
         )
         if self._obs_class is None:
             self._get_obs_type(header)
-            self._logger.error(
+            self._logger.debug(
                 f'observation_type is {self._obs_type} for {self._data_label}'
             )
             if self._obs_type is None:
-                self._logger.error(f'data_label is {self._data_label}')
+                self._logger.debug(f'data_label is {self._data_label}')
                 if (
                         self._data_label is None or (
                             self._data_label is not None and
@@ -495,7 +495,7 @@ class InstrumentType:
                         and header is not None
                 ):
                     object_value = header.get('OBJECT')
-                    self._logger.error(
+                    self._logger.debug(
                         f'object_value is {object_value} for '
                         f'{self._data_label}'
                     )
@@ -1395,7 +1395,7 @@ class Fox(InstrumentType):
         """General chunk-level Energy WCS construction."""
         self._logger.debug(f'Begin update_energy {self._name}')
         if self.data_product_type is DataProductType.IMAGE:
-            logging.error(
+            logging.debug(
                 f'{self._name} Spectral WCS {self.data_product_type} mode for '
                 f'{self.obs_id}.'
             )

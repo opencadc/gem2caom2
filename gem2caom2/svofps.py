@@ -272,7 +272,7 @@ def get_filter_metadata(
     instrument, filter_name, telescope
 ):
     """A way to lazily initialize all the filter metadata reads from SVO."""
-    logging.error(
+    logging.debug(
         f'Begin get_filter_metadata with instrument {instrument} filter name '
         f'{filter_name} telescope {telescope}'
     )

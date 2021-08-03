@@ -158,6 +158,10 @@ def get_exposure(header):
     return em.current_instrument.get_exposure(header)
 
 
+def get_instrument_name(uri):
+    return em.repair_instrument(json_lookup.get('instrument')).value
+
+
 def get_meta_release(parameters):
     """
     Determine the metadata release date (Observation and Plane-level).
@@ -343,6 +347,7 @@ def accumulate_fits_bp(bp, file_id, uri):
     bp.set('Observation.proposal.id', 'get_proposal_id(header)')
 
     bp.clear('Observation.algorithm.name')
+    bp.set('Observation.instrument.name', 'get_instrument_name(uri)')
     instrument = em.get_instrument(uri)
     if instrument in [Inst.GMOSN, Inst.GMOSS, Inst.GMOS]:
         bp.set(
@@ -494,19 +499,6 @@ def update(observation, **kwargs):
         )
         return observation
 
-    if observation.instrument.name == 'oscir':
-        # for these observations:
-        # GN-2001A-C-16-3-016
-        # GN-2001A-C-2-14-015
-        # GN-2001A-C-2-2-002
-        # GN-2001A-C-2-3-003
-        # GN-2001A-C-2-4-004
-        # GN-2001A-C-2-5-005
-        # GN-2001A-C-2-6-006
-        # GN-2001A-C-2-7-007
-        # GN-2001A-C-2-8-009
-        # GN-2001A-C-2-9-010
-        observation.instrument = Instrument(name='OSCIR')
     instrument = Inst(observation.instrument.name)
 
     # processed files
