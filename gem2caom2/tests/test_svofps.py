@@ -70,7 +70,7 @@
 from gem2caom2.util import Inst
 from gem2caom2 import svofps
 
-from mock import patch, Mock
+from mock import patch, Mock, ANY
 import gem_mocks
 
 
@@ -97,16 +97,20 @@ def test_repair_filter_name():
 
 @patch('caom2pipe.astro_composable.get_vo_table_session')
 def test_get_filter_metadata(get_vo_mock):
-    svo_session_mock = Mock()
     get_vo_mock.side_effect = gem_mocks.mock_get_votable
     test_result = svofps.get_filter_metadata(
-        Inst.NIRI, 'filters', 'telescope_name', svo_session_mock
+        Inst.NIRI, 'filters', 'telescope_name'
     )
     assert get_vo_mock.call_count == 2, 'wrong number of calls'
+    get_vo_mock.assert_called_with(
+        'http://svo2.cab.inta-csic.es/svo/theory/fps3/fps.php?ID=Gemini/'
+        'NIRI.filtersw&VERB=0',
+        ANY,
+    ), 'wrong call args'
     assert test_result is None, 'do not expect a result'
     # do the same thing again, check that the result has been cached
     test_result = svofps.get_filter_metadata(
-        Inst.NIRI, 'filters', 'telescope_name', svo_session_mock
+        Inst.NIRI, 'filters', 'telescope_name'
     )
     assert get_vo_mock.call_count == 2, 'wrong number of calls'
     assert test_result is None, 'do not expect a result this time either'

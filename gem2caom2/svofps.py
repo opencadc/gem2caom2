@@ -79,7 +79,7 @@ from gem2caom2.util import Inst
 __all__ = ['get_filter_metadata']
 
 
-def filter_metadata(instrument, filters, session):
+def filter_metadata(instrument, filters):
     """
     For the given instrument and filters, go to the SVO Filter Profile Service
 
@@ -89,7 +89,6 @@ def filter_metadata(instrument, filters, session):
 
     :param instrument: The instrument name.
     :param filters: The filter name.
-    :param session: Session
     :return: FilterMetadata instance, or None, if there's no SVO information
         for the filter.
     """
@@ -120,13 +119,15 @@ def filter_metadata(instrument, filters, session):
             # only for 'w'arm filters.  First check for filter without 'w'
             # appended to the ID (which I assume means bandpass is for cold
             # filter), then search for 'w' if nothing is found...
-            votable, error_message = ac.get_vo_table_session(url, session)
+            votable, error_message = ac.get_vo_table_session(url, svo_session)
             if not votable:
                 if instrument == 'Flamingos':
                     url = f"{ac.SVO_URL}KPNO/{filter_id}w&VERB=0"
                 else:
                     url = f"{ac.SVO_URL}Gemini/{filter_id}w&VERB=0"
-                votable, error_message = ac.get_vo_table_session(url, session)
+                votable, error_message = ac.get_vo_table_session(
+                    url, svo_session
+                )
             if not votable:
                 logging.error(
                     f'Unable to download SVO filter data from {url} because '
@@ -268,15 +269,19 @@ class FilterMetadata(object):
 
 
 def get_filter_metadata(
-    instrument, filter_name, telescope, svo_query_session
+    instrument, filter_name, telescope
 ):
     """A way to lazily initialize all the filter metadata reads from SVO."""
+    logging.error(
+        f'Begin get_filter_metadata with instrument {instrument} filter name '
+        f'{filter_name} telescope {telescope}'
+    )
     global fm
     repaired_inst = _repair_instrument_name_for_svo(instrument, telescope)
     repaired_filters = _repair_filter_name_for_svo(instrument, filter_name)
     logging.debug(
         f'Find filter information for filter {repaired_inst} on instrument '
-        f'{repaired_inst}'
+        f'{repaired_inst} {svo_session}'
     )
     if repaired_filters is None:
         # nothing to look up, try something else
@@ -286,9 +291,7 @@ def get_filter_metadata(
         if result is not None:
             result.adjust_resolving_power()
     else:
-        result = filter_metadata(
-            repaired_inst, repaired_filters, svo_query_session
-        )
+        result = filter_metadata(repaired_inst, repaired_filters)
         if repaired_inst in fm:
             temp = fm[repaired_inst]
             temp[repaired_filters] = result
@@ -490,3 +493,4 @@ def _repair_filter_name_for_svo(instrument, filter_names):
 
 # lazy initialization for filter metadata from SVO - treat as a singleton
 fm = {}
+svo_session = mc.get_endpoint_session()

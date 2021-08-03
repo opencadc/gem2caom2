@@ -242,14 +242,6 @@ class InstrumentType:
     def obs_id(self, value):
         self._obs_id = value
 
-    @property
-    def svo_session(self):
-        return self._svo_session
-
-    @svo_session.setter
-    def svo_session(self, value):
-        self._svo_session = value
-
     def _get_data_label(self, header):
         self._data_label = json_lookup.get('data_label')
         if self._data_label is None and header is not None:
@@ -1036,10 +1028,9 @@ class F2(InstrumentType):
             reset_energy = True
         else:
             filter_md = svofps.get_filter_metadata(
-                Inst.F2,
+                self._name,
                 self.filter_name,
                 json_lookup.get('telescope'),
-                self.svo_session,
             )
             if self.data_product_type == DataProductType.IMAGE:
                 self._logger.debug(
@@ -1296,10 +1287,9 @@ class Flamingos(InstrumentType):
             self.fm.bandpass = lookup[self.filter_name][1]
         else:
             self.fm = svofps.get_filter_metadata(
-                Inst.FLAMINGOS,
+                self._name,
                 self.filter_name,
                 json_lookup.get('telescope'),
-                self.svo_session,
             )
             if self.fm is None:
                 raise mc.CadcException(
@@ -1405,7 +1395,7 @@ class Fox(InstrumentType):
         """General chunk-level Energy WCS construction."""
         self._logger.debug(f'Begin update_energy {self._name}')
         if self.data_product_type is DataProductType.IMAGE:
-            logging.debug(
+            logging.error(
                 f'{self._name} Spectral WCS {self.data_product_type} mode for '
                 f'{self.obs_id}.'
             )
@@ -1413,7 +1403,6 @@ class Fox(InstrumentType):
                 self._name,
                 self.filter_name,
                 json_lookup.get('telescope'),
-                self.svo_session,
             )
             if self.fm is None:
                 raise mc.CadcException(
@@ -1569,7 +1558,6 @@ class Gmos(InstrumentType):
                 self._name,
                 self.filter_name,
                 json_lookup.get('telescope'),
-                self.svo_session,
             )
 
         if 'empty' in self.filter_name:
@@ -2226,7 +2214,6 @@ class Gpi(InstrumentType):
             self._name,
             self.filter_name,
             json_lookup.get('telescope'),
-            self.svo_session,
         )
         if self.data_product_type == DataProductType.IMAGE:
             self._logger.debug(f'SpectralWCS imaging mode for {self.obs_id}.')
@@ -2465,7 +2452,6 @@ class Gsaoi(InstrumentType):
                 self._name,
                 self.filter_name,
                 json_lookup.get('telescope'),
-                self.svo_session,
             )
             if self.fm is None:
                 raise mc.CadcException(
@@ -2706,10 +2692,9 @@ class Hrwfs(InstrumentType):
                 self.filter_name = ''
             else:
                 self.fm = svofps.get_filter_metadata(
-                    Inst.HRWFS,
+                    self._name,
                     self.filter_name,
                     json_lookup.get('telescope'),
-                    self.svo_session,
                 )
                 temp = []
                 for ii in self.filter_name.split('+'):
@@ -2843,10 +2828,9 @@ class Michelle(InstrumentType):
         }
 
         self.fm = svofps.get_filter_metadata(
-            Inst.MICHELLE,
+            self._name,
             self.filter_name,
             json_lookup.get('telescope'),
-            self.svo_session,
         )
         if self.fm is None:  # means filter_name not found
             # DB 09-04-19 - Use 100 microns for the initial max for michelle.
@@ -2951,10 +2935,9 @@ class Nici(InstrumentType):
         self.filter_name = self.filter_name.split('_G')[0]
         self.filter_name = self.filter_name.replace('[FeII]', 'FeII')
         self.fm = svofps.get_filter_metadata(
-            Inst.NICI,
+            self._name,
             self.filter_name,
             json_lookup.get('telescope'),
-            self.svo_session,
         )
         if self.data_product_type == DataProductType.IMAGE:
             self._logger.debug(
@@ -3132,10 +3115,9 @@ class Nifs(InstrumentType):
         }
 
         self.fm = svofps.get_filter_metadata(
-            Inst.NIFS,
+            self._name,
             self.filter_name,
             json_lookup.get('telescope'),
-            self.svo_session,
         )
 
         if self.data_product_type == DataProductType.SPECTRUM:
@@ -3408,7 +3390,6 @@ class Niri(InstrumentType):
                 self._name,
                 self.filter_name,
                 json_lookup.get('telescope'),
-                self.svo_session,
             )
             if filter_md is None:
                 raise mc.CadcException(
@@ -4132,10 +4113,9 @@ class Trecs(InstrumentType):
                 self.fm.set_resolving_power(w_max, w_min)
             else:
                 self.fm = svofps.get_filter_metadata(
-                    Inst.TRECS,
+                    self._name,
                     self.filter_name,
                     json_lookup.get('telescope'),
-                    self.svo_session,
                 )
             if self.fm is None:
                 raise mc.CadcException(
