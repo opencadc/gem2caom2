@@ -78,7 +78,8 @@ from caom2utils import fits2caom2
 from caom2pipe import astro_composable as ac
 from caom2pipe import caom_composable as cc
 from caom2pipe import manage_composable as mc
-from gem2caom2 import external_metadata, svofps
+from gem2caom2 import svofps
+from gem2caom2.obs_metadata import json_lookup
 from gem2caom2.util import Inst
 
 
@@ -252,7 +253,7 @@ class InstrumentType:
         self._svo_session = value
 
     def _get_data_label(self, header):
-        self._data_label = external_metadata.om.get('data_label')
+        self._data_label = json_lookup.get('data_label')
         if self._data_label is None and header is not None:
             self._data_label = header.get('DATALAB')
 
@@ -260,7 +261,7 @@ class InstrumentType:
         """Common location to lookup OBSCLASS from the FITS headers, and if
         it's not present, to lookup observation_class from JSON summary
         metadata."""
-        self._obs_class = external_metadata.om.get('observation_class')
+        self._obs_class = json_lookup.get('observation_class')
         if self._obs_class is None and header is not None:
             self._obs_class = header.get('OBSCLASS')
 
@@ -268,7 +269,7 @@ class InstrumentType:
         """Common location to lookup OBSTYPE from the FITS headers, and if
         it's not present, to lookup observation_type from JSON summary
         metadata."""
-        self._obs_type = external_metadata.om.get('observation_type')
+        self._obs_type = json_lookup.get('observation_type')
         if self._obs_type is None:
             self._obs_type = header.get('OBSTYPE')
 
@@ -367,7 +368,7 @@ class InstrumentType:
 
     def get_calibration_level(self, uri):
         result = CalibrationLevel.RAW_STANDARD
-        reduction = external_metadata.om.get('reduction')
+        reduction = json_lookup.get('reduction')
         if (
             reduction is not None and (
                 'PROCESSED' in reduction or 'PREPARED' in reduction
@@ -392,12 +393,12 @@ class InstrumentType:
         :param header:  The FITS header for the current extension.
         :return: The Plane DataProductType, or None if not found.
         """
-        mode = external_metadata.om.get('mode')
+        mode = json_lookup.get('mode')
         self._get_obs_type(header)
         if mode is None:
             raise mc.CadcException(
                 f'No mode information found for '
-                f'{external_metadata.om.get("filename")}'
+                f'{json_lookup.get("filename")}'
             )
         elif (mode == 'imaging') or (
                 self._obs_type is not None and self._obs_type == 'MASK'
@@ -415,7 +416,7 @@ class InstrumentType:
         :param header:  The FITS header for the current extension.
         :return: declination, or None if not found.
         """
-        return external_metadata.om.get('dec')
+        return json_lookup.get('dec')
 
     def get_exposure(self, header):
         """
@@ -428,7 +429,7 @@ class InstrumentType:
         :param header:  The FITS header for the current extension (unused).
         :return: The exposure time, or None if not found.
         """
-        return external_metadata.om.get('exposure_time')
+        return json_lookup.get('exposure_time')
 
     def get_filter_name(self):
         """
@@ -436,7 +437,7 @@ class InstrumentType:
 
         :return: The filter names, or None if none found.
         """
-        filter_name = external_metadata.om.get('filter_name')
+        filter_name = json_lookup.get('filter_name')
 
         # DB 24-04-19
         # ND = neutral density and so any ND* filter can be ignored as it
@@ -561,14 +562,14 @@ class InstrumentType:
         :param header:  The FITS header for the current extension.
         :return: ra, or None if not found.
         """
-        return external_metadata.om.get('ra')
+        return json_lookup.get('ra')
 
     def get_target_type(self):
         """
         Calculate the Target TargetType
         """
         result = TargetType.FIELD
-        spectroscopy = external_metadata.om.get('spectroscopy')
+        spectroscopy = json_lookup.get('spectroscopy')
         if spectroscopy:
             result = TargetType.OBJECT
         return result
@@ -592,7 +593,7 @@ class InstrumentType:
         :param header:  The FITS header for the current extension (not used).
         :return: The Time WCS value from JSON Summary Metadata.
         """
-        time_string = external_metadata.om.get('ut_datetime')
+        time_string = json_lookup.get('ut_datetime')
         return ac.get_datetime(time_string)
 
     def make_axes_consistent(self):
@@ -654,7 +655,7 @@ class InstrumentType:
 
     def reset_energy(self, observation_type):
         result = False
-        om_filter_name = external_metadata.om.get('filter_name')
+        om_filter_name = json_lookup.get('filter_name')
         if (
             observation_type in ['BIAS', 'DARK']
             or (
@@ -693,7 +694,7 @@ class InstrumentType:
         the chunk level.
         """
         result = False
-        types = external_metadata.om.get('types')
+        types = json_lookup.get('types')
         ra = self.get_ra(headers[0])
         if (
             ('AZEL_TARGET' in types and ra is None) or
@@ -795,7 +796,7 @@ class Bhros(InstrumentType):
                 f'{self._name}: SpectralWCS spectroscopy for {self.obs_id}.'
             )
             self.fm = svofps.FilterMetadata()
-            self.fm.central_wl = external_metadata.om.get('central_wavelength')
+            self.fm.central_wl = json_lookup.get('central_wavelength')
             self.fm.adjust_bandpass(0.2)
             self.fm.resolving_power = 150000.0
             ccd_sum = self._headers[0].get('CCDSUM')
@@ -996,7 +997,7 @@ class F2(InstrumentType):
         # DB 03-06-21
         # check the 'types' JSON value
         result = super(F2, self).get_obs_type(header)
-        types = external_metadata.om.get('types')
+        types = json_lookup.get('types')
         if 'DARK' in types:
             result = 'DARK'
         return result
@@ -1030,7 +1031,7 @@ class F2(InstrumentType):
         # exposure apparently.
 
         reset_energy = False
-        object_value = external_metadata.om.get('object')
+        object_value = json_lookup.get('object')
         if 'COVER CLOSED' in object_value or 'Undefined' in self.filter_name:
             # DB 30-04-19
             # Flamingos ‘Undefined’ filter:  no spectral WCS
@@ -1039,7 +1040,7 @@ class F2(InstrumentType):
             filter_md = svofps.get_filter_metadata(
                 Inst.F2,
                 self.filter_name,
-                external_metadata.om.get('telescope'),
+                json_lookup.get('telescope'),
                 self.svo_session,
             )
             if self.data_product_type == DataProductType.IMAGE:
@@ -1052,7 +1053,7 @@ class F2(InstrumentType):
                     f'SpectralWCS: F2 LS|Spectroscopy mode for {self.obs_id}.'
                 )
                 fp_mask = self._headers[0].get('MASKNAME')
-                mode = external_metadata.om.get('mode')
+                mode = json_lookup.get('mode')
                 slit_width = None
                 if mode == 'LS':
                     slit_width = fp_mask[0]
@@ -1109,7 +1110,7 @@ class F2(InstrumentType):
                 and self.chunk.time.axis is not None
                 and self.chunk.time.axis.function is not None
         ):
-            exposure = mc.to_float(external_metadata.om.get('exposure_time'))
+            exposure = mc.to_float(json_lookup.get('exposure_time'))
             self.chunk.time.axis.function.delta = mc.convert_to_days(exposure)
             logging.info(f'Updated time delta for {self.obs_id}')
         self._logger.debug(f'End update_time {self.obs_id}')
@@ -1127,7 +1128,7 @@ class Flamingos(InstrumentType):
         # science. cal_values should have those obs_type values in it as well.
         # So if ‘CAL’ is not in the data_label and obs_type is not in
         # cal_values then it’s science.
-        object_value = external_metadata.om.get('object')
+        object_value = json_lookup.get('object')
         for ii in ['Dark', 'DARK', 'Arc', 'flat', 'Flat', 'Acq', 'acq']:
             if ii in object_value:
                 return ProductType.CALIBRATION
@@ -1162,7 +1163,7 @@ class Flamingos(InstrumentType):
         if decker is None:
             raise mc.CadcException(
                 f'No mode information found for '
-                f'{external_metadata.om.get("filename")}'
+                f'{json_lookup.get("filename")}'
             )
         else:
             if decker == 'imaging':
@@ -1221,7 +1222,7 @@ class Flamingos(InstrumentType):
         else:
             raise mc.CadcException(
                 f'No mode information found for '
-                f'{external_metadata.om.get("filename")}'
+                f'{json_lookup.get("filename")}'
             )
         if obs_type is None:
             # DB - Also, since I’ve found FLAMINGOS spectra if OBJECT keyword
@@ -1232,7 +1233,7 @@ class Flamingos(InstrumentType):
             # could in principal look at the OBJECT keyword value or json
             # value: if it contains ‘flat’ as a substring (any case) then set
             # observation type to ‘flat’.  Ditto for ‘dark’
-            object_value = external_metadata.om.get('object')
+            object_value = json_lookup.get('object')
             if object_value is None:
                 object_value = header.get('OBJECT')
             object_value = object_value.lower()
@@ -1299,7 +1300,7 @@ class Flamingos(InstrumentType):
             self.fm = svofps.get_filter_metadata(
                 Inst.FLAMINGOS,
                 self.filter_name,
-                external_metadata.om.get('telescope'),
+                json_lookup.get('telescope'),
                 self.svo_session,
             )
             if self.fm is None:
@@ -1413,7 +1414,7 @@ class Fox(InstrumentType):
             self.fm = svofps.get_filter_metadata(
                 self._name,
                 self.filter_name,
-                external_metadata.om.get('telescope'),
+                json_lookup.get('telescope'),
                 self.svo_session,
             )
             if self.fm is None:
@@ -1569,7 +1570,7 @@ class Gmos(InstrumentType):
             filter_md = svofps.get_filter_metadata(
                 self._name,
                 self.filter_name,
-                external_metadata.om.get('telescope'),
+                json_lookup.get('telescope'),
                 self.svo_session,
             )
 
@@ -1613,7 +1614,7 @@ class Gmos(InstrumentType):
                     f'{filter_md.central_wl} for {self.obs_id}'
                 )
                 return
-            disperser = external_metadata.om.get('disperser')
+            disperser = json_lookup.get('disperser')
             # 'unknown' in disperser test obs is GN-2004B-Q-30-15-002
             # 'OLDMIRROR' in disperser test obs is GN-CAL20020329-2-025
             # 'No Value' in disperser test obs is GN-2013B-SV-152-120-001
@@ -1692,7 +1693,7 @@ class Gnirs(InstrumentType):
         # if disperser for GNIRS = MIRROR
         # then it’s an image, otherwise a spectrum.
         result = DataProductType.SPECTRUM
-        if external_metadata.om.get('disperser') == 'MIRROR':
+        if json_lookup.get('disperser') == 'MIRROR':
             result = DataProductType.IMAGE
         return result
 
@@ -1923,7 +1924,7 @@ class Gnirs(InstrumentType):
                 self._logger.info(
                     f'SpectralWCS Spectroscopy mode for {self.obs_id}.'
                 )
-                disperser = external_metadata.om.get('disperser')
+                disperser = json_lookup.get('disperser')
                 if disperser is None:
                     self._logger.info(
                         f'No disperser. No energy for {self.obs_id}'
@@ -1956,7 +1957,7 @@ class Gnirs(InstrumentType):
                                 f'Mystery grating {grating} for {self.obs_id}'
                             )
 
-                        camera = external_metadata.om.get('camera')
+                        camera = json_lookup.get('camera')
                         if camera == 'Moving':
                             # DB 21-08-19
                             # No energy for the ‘moving’ camera
@@ -1966,7 +1967,7 @@ class Gnirs(InstrumentType):
                             )
                             reset_energy = True
                         else:
-                            focal_plane_mask = external_metadata.om.get(
+                            focal_plane_mask = json_lookup.get(
                                 'focal_plane_mask'
                             )
                             if (
@@ -2049,7 +2050,7 @@ class Gnirs(InstrumentType):
                                         lookup_index = 3
                                     elif camera.startswith('Short'):
                                         date_time = ac.get_datetime(
-                                            external_metadata.om.get(
+                                            json_lookup.get(
                                                 'ut_datetime'
                                             )
                                         )
@@ -2177,11 +2178,11 @@ class Gpi(InstrumentType):
         return self.get_cd11(header)
 
     def get_data_product_type(self, header):
-        mode = external_metadata.om.get('mode')
+        mode = json_lookup.get('mode')
         if mode is None:
             raise mc.CadcException(
                 f'No mode information found for '
-                f'{external_metadata.om.get("filename")}'
+                f'{json_lookup.get("filename")}'
             )
         # DB - 22-02-19 FOR GPI only:  To determine if the data type
         # is an ‘image’ or ‘spectrum’:
@@ -2194,7 +2195,7 @@ class Gpi(InstrumentType):
         else:
             raise mc.CadcException(
                 f'Mystery GPI mode {mode} for '
-                f'{external_metadata.om.get("filename")}'
+                f'{json_lookup.get("filename")}'
             )
         return result
 
@@ -2226,7 +2227,7 @@ class Gpi(InstrumentType):
         filter_md = svofps.get_filter_metadata(
             self._name,
             self.filter_name,
-            external_metadata.om.get('telescope'),
+            json_lookup.get('telescope'),
             self.svo_session,
         )
         if self.data_product_type == DataProductType.IMAGE:
@@ -2363,8 +2364,8 @@ class Graces(InstrumentType):
         # DB 30-04-19
         # Ignore spatial WCS for any GRACES arcs without RA/Dec values.
 
-        ra = external_metadata.om.get('ra')
-        dec = external_metadata.om.get('dec')
+        ra = json_lookup.get('ra')
+        dec = json_lookup.get('dec')
         if (
             (ra is None and dec is None) or
             observation_type in ['BIAS', 'FLAT', 'ARC']
@@ -2390,9 +2391,9 @@ class Graces(InstrumentType):
                 f'{self.obs_id}.'
             )
             self.fm = svofps.FilterMetadata()
-            self.fm.central_wl = external_metadata.om.get('central_wavelength')
+            self.fm.central_wl = json_lookup.get('central_wavelength')
             self.fm.set_bandpass(1.0, 0.4)
-            ccd_sum = external_metadata.om.get('detector_binning')
+            ccd_sum = json_lookup.get('detector_binning')
             self.fm.resolving_power = 67500.0
             if ccd_sum is not None:
                 temp = float(ccd_sum.split('x')[1])
@@ -2465,7 +2466,7 @@ class Gsaoi(InstrumentType):
             self.fm = svofps.get_filter_metadata(
                 self._name,
                 self.filter_name,
-                external_metadata.om.get('telescope'),
+                json_lookup.get('telescope'),
                 self.svo_session,
             )
             if self.fm is None:
@@ -2709,7 +2710,7 @@ class Hrwfs(InstrumentType):
                 self.fm = svofps.get_filter_metadata(
                     Inst.HRWFS,
                     self.filter_name,
-                    external_metadata.om.get('telescope'),
+                    json_lookup.get('telescope'),
                     self.svo_session,
                 )
                 temp = []
@@ -2846,7 +2847,7 @@ class Michelle(InstrumentType):
         self.fm = svofps.get_filter_metadata(
             Inst.MICHELLE,
             self.filter_name,
-            external_metadata.om.get('telescope'),
+            json_lookup.get('telescope'),
             self.svo_session,
         )
         if self.fm is None:  # means filter_name not found
@@ -2858,8 +2859,8 @@ class Michelle(InstrumentType):
         if self.data_product_type == DataProductType.SPECTRUM:
             self._logger.debug(f'Spectral WCS spectrum for {self.obs_id}.')
             if self.data_product_type == DataProductType.SPECTRUM:
-                disperser = external_metadata.om.get('disperser')
-                focal_plane_mask = external_metadata.om.get('focal_plane_mask')
+                disperser = json_lookup.get('disperser')
+                focal_plane_mask = json_lookup.get('focal_plane_mask')
                 slit_width = float(focal_plane_mask.split('_')[0])
                 if disperser not in lookup:
                     raise mc.CadcException(
@@ -2881,7 +2882,7 @@ class Michelle(InstrumentType):
 
         # use the json value for bandpass_name value - it's representative of
         # multiple filters
-        self.filter_name = external_metadata.om.get('filter_name')
+        self.filter_name = json_lookup.get('filter_name')
         self.build_chunk_energy()
         self._logger.debug('End _update_chunk_energy_michelle')
 
@@ -2954,7 +2955,7 @@ class Nici(InstrumentType):
         self.fm = svofps.get_filter_metadata(
             Inst.NICI,
             self.filter_name,
-            external_metadata.om.get('telescope'),
+            json_lookup.get('telescope'),
             self.svo_session,
         )
         if self.data_product_type == DataProductType.IMAGE:
@@ -2968,7 +2969,7 @@ class Nici(InstrumentType):
                 self.fm.set_central_wl(w_max, w_min)
                 self.fm.set_resolving_power(w_max, w_min)
 
-            temp = external_metadata.om.get('filter_name')
+            temp = json_lookup.get('filter_name')
             # NICI has two different bandpass names (most of the time) in
             # its two chunks.  Pat says in this case nothing will be put in
             # the bandpass name for the plane.  Add code to combine the two
@@ -3027,8 +3028,8 @@ class Nifs(InstrumentType):
         # get the values from JSON directly, because the
         # function uses header values, which are set to
         # unlikely defaults
-        ra = external_metadata.om.get('ra')
-        dec = external_metadata.om.get('dec')
+        ra = json_lookup.get('ra')
+        dec = json_lookup.get('dec')
         if ra is None and dec is None:
             result = True
         elif (
@@ -3135,13 +3136,13 @@ class Nifs(InstrumentType):
         self.fm = svofps.get_filter_metadata(
             Inst.NIFS,
             self.filter_name,
-            external_metadata.om.get('telescope'),
+            json_lookup.get('telescope'),
             self.svo_session,
         )
 
         if self.data_product_type == DataProductType.SPECTRUM:
             self._logger.debug(f'spectroscopy for {self.obs_id}.')
-            grating = external_metadata.om.get('disperser')
+            grating = json_lookup.get('disperser')
             if grating in nifs_lookup:
                 if self.filter_name in nifs_lookup[grating]:
                     self.fm = svofps.FilterMetadata('NIFS')
@@ -3149,7 +3150,7 @@ class Nifs(InstrumentType):
                         nifs_lookup[grating][self.filter_name][2],
                         nifs_lookup[grating][self.filter_name][1],
                     )
-                    self.fm.central_wl = external_metadata.om.get(
+                    self.fm.central_wl = json_lookup.get(
                         'central_wavelength'
                     )
                     self.fm.resolving_power = nifs_lookup[grating][self.filter_name][3]
@@ -3408,7 +3409,7 @@ class Niri(InstrumentType):
             filter_md = svofps.get_filter_metadata(
                 self._name,
                 self.filter_name,
-                external_metadata.om.get('telescope'),
+                json_lookup.get('telescope'),
                 self.svo_session,
             )
             if filter_md is None:
@@ -3417,7 +3418,7 @@ class Niri(InstrumentType):
                     f'{self.obs_id}'
                 )
 
-        self.filter_name = external_metadata.om.get('filter_name')
+        self.filter_name = json_lookup.get('filter_name')
         if self.data_product_type == DataProductType.IMAGE:
             self._logger.debug(f'SpectralWCS imaging for {self.obs_id}.')
             self.fm = filter_md
@@ -3429,7 +3430,7 @@ class Niri(InstrumentType):
             self.fm.bandpass = filter_md.bandpass
             # add the 'split' call because NIRI: Mystery disperser value
             # Mgrism_G5206 for GN-2007B-Q-75-61-003
-            disperser = external_metadata.om.get('disperser').split('_')[0]
+            disperser = json_lookup.get('disperser').split('_')[0]
             if disperser in [
                 'Jgrism',
                 'Jgrismf32',
@@ -3441,7 +3442,7 @@ class Niri(InstrumentType):
                 'Mgrism',
             ]:
                 bandpass_name = disperser[0]
-                f_ratio = external_metadata.om.get('focal_plane_mask')
+                f_ratio = json_lookup.get('focal_plane_mask')
                 self._logger.debug(
                     f'Bandpass name is {bandpass_name} f_ratio is '
                     f'{f_ratio} for {self.obs_id}'
@@ -3554,7 +3555,7 @@ class Oscir(InstrumentType):
     def get_exposure(self, header):
         # DB - 20-02-19 - json ‘exposure_time’ is in minutes, so multiply
         # by 60.0.
-        return external_metadata.om.get('exposure_time') * 60.0
+        return json_lookup.get('exposure_time') * 60.0
 
     def get_ra(self, header):
         ra, dec_ignore = InstrumentType.get_sky_coord(
@@ -3732,7 +3733,7 @@ class Phoenix(InstrumentType):
         # DARK exposures.
 
         result = 'OBJECT'
-        object_value = external_metadata.om.get('object').lower()
+        object_value = json_lookup.get('object').lower()
         view_pos = header.get('VIEW_POS')
         if 'flat' in object_value:
             result = 'FLAT'
@@ -3776,8 +3777,8 @@ class Phoenix(InstrumentType):
         # names…)  PHOENIX returned as a visitor instrument in May 2016
         # after about 5 years away.
 
-        ra = external_metadata.om.get('ra')
-        dec = external_metadata.om.get('dec')
+        ra = json_lookup.get('ra')
+        dec = json_lookup.get('dec')
         if ra is None and dec is None:
             result = True
         elif (
@@ -4135,7 +4136,7 @@ class Trecs(InstrumentType):
                 self.fm = svofps.get_filter_metadata(
                     Inst.TRECS,
                     self.filter_name,
-                    external_metadata.om.get('telescope'),
+                    json_lookup.get('telescope'),
                     self.svo_session,
                 )
             if self.fm is None:
@@ -4147,7 +4148,7 @@ class Trecs(InstrumentType):
                 self._logger.debug(f'imaging mode for {self.obs_id}.')
             elif self.data_product_type == DataProductType.SPECTRUM:
                 self._logger.debug(f'LS|Spectroscopy mode for {self.obs_id}.')
-                disperser = external_metadata.om.get('disperser')
+                disperser = json_lookup.get('disperser')
                 if disperser is not None:
                     if disperser == 'LowRes-20':
                         self.fm.resolving_power = 80.0

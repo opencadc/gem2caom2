@@ -1139,7 +1139,7 @@ def mock_get_obs_metadata(file_id):
                     'instrument': 'GMOS-S',
                 },
             ]
-        em.om.add(y, file_id)
+        json_lookup.add(y, file_id)
     except Exception as e:
         logging.error(e)
         tb = traceback.format_exc()

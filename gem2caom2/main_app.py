@@ -108,6 +108,7 @@ import gem2caom2.obs_file_relationship as ofr
 from gem2caom2.gem_name import GemName
 from gem2caom2.builder import GemObsIDBuilder
 from gem2caom2 import instruments, program_metadata
+from gem2caom2.obs_metadata import json_lookup
 from gem2caom2.util import Inst, COLLECTION, SCHEME
 
 
@@ -142,7 +143,7 @@ def get_data_release(header):
     # every instrument has a 'release' keyword in the JSON summary
     # not every instrument (Michelle) has a RELEASE keyword in
     # the appropriate headers
-    result = em.om.get('release')
+    result = json_lookup.get('release')
     if result is not None and result.startswith('0001'):
         # because obs id GN-2008A-Q-39-69-015
         result = result.replace('0001', '2001')
@@ -174,22 +175,22 @@ def get_meta_release(parameters):
     # during blueprint evaluation, which is why reset is
     # called here
     file_id = ofr.remove_extensions(mc.CaomName(uri).file_name)
-    em.om.reset_index(file_id)
+    json_lookup.reset_index(file_id)
 
     header = parameters.get('header')
     if header is None:
         # GenericParser, so no headers retrieved from archive.gemini.edu,
         # probably a 403 being returned by the site, assume proprietary
-        meta_release = em.om.get('release')
+        meta_release = json_lookup.get('release')
     else:
         # DB 21-08-19
         # If PROP_MD is T, use JSON ‘release’ value for metadata release date.
         # If no PROP_MD present or value is F use the JSON ut_datetime value.
         prop_md = header.get('PROP_MD')
         if prop_md is None or prop_md is False or prop_md == 'F':
-            meta_release = em.om.get('ut_datetime')
+            meta_release = json_lookup.get('ut_datetime')
         else:
-            meta_release = em.om.get('release')
+            meta_release = json_lookup.get('release')
     return meta_release
 
 
@@ -208,7 +209,7 @@ def get_proposal_id(header):
     :param header:  The FITS header for the current extension.
     :return: The proposal id from Gemini JSON metadata, or None if not found.
     """
-    return em.om.get('program_id')
+    return json_lookup.get('program_id')
 
 
 def get_provenance_keywords(uri):
@@ -229,7 +230,7 @@ def get_provenance_keywords(uri):
     :param uri:
     :return:
     """
-    return em.om.get('mode')
+    return json_lookup.get('mode')
 
 
 def get_provenance_last_executed(parameters):
@@ -307,7 +308,7 @@ def get_target_moving(header):
     :param header:  The FITS header for the current extension.
     :return: The Target TargetType, or None if not found.
     """
-    types = em.om.get('types')
+    types = json_lookup.get('types')
     if 'NON_SIDEREAL' in types:
         return True
     else:
@@ -323,7 +324,7 @@ def get_time_function_val(header):
 
 
 def _get_data_label():
-    return em.om.get('data_label')
+    return json_lookup.get('data_label')
 
 
 def accumulate_fits_bp(bp, file_id, uri):
@@ -347,7 +348,7 @@ def accumulate_fits_bp(bp, file_id, uri):
         bp.set(
             'Observation.instrument.keywords', 'get_provenance_keywords(uri)'
         )
-    telescope = em.om.get('telescope')
+    telescope = json_lookup.get('telescope')
     if telescope is not None:
         if 'North' in telescope:
             x, y, z = ac.get_location(19.823806, -155.46906, 4213.0)
@@ -401,8 +402,8 @@ def accumulate_fits_bp(bp, file_id, uri):
 
     bp.set('Artifact.metaProducer', meta_producer)
     bp.set('Artifact.productType', 'get_art_product_type(header)')
-    bp.set('Artifact.contentChecksum', f'md5:{em.om.get("data_md5")}')
-    bp.set('Artifact.contentLength', em.om.get('data_size'))
+    bp.set('Artifact.contentChecksum', f'md5:{json_lookup.get("data_md5")}')
+    bp.set('Artifact.contentLength', json_lookup.get('data_size'))
     bp.set('Artifact.contentType', 'application/fits')
     # always see the metadata, see the data only when it's public
     bp.set('Artifact.releaseType', 'data')
@@ -410,7 +411,7 @@ def accumulate_fits_bp(bp, file_id, uri):
 
     if instrument is Inst.CIRPASS:
         bp.set_default('Observation.telescope.name', 'Gemini-South')
-    mode = em.om.get('mode')
+    mode = json_lookup.get('mode')
     if not (
         instrument
         in [
@@ -556,7 +557,7 @@ def update(observation, **kwargs):
                 file_id = ofr.remove_extensions(
                     mc.CaomName(caom_name.uri).file_name
                 )
-                em.om.reset_index(file_id)
+                json_lookup.reset_index(file_id)
                 processed = ofr.is_processed(caom_name.file_name)
                 if instrument in [
                     Inst.MICHELLE,
@@ -616,7 +617,7 @@ def update(observation, **kwargs):
                             x.update_energy()
 
                         # position WCS
-                        mode = em.om.get('mode')
+                        mode = json_lookup.get('mode')
                         x.mode = mode
                         if x.reset_position(headers, observation.type):
                             logging.debug(
@@ -711,10 +712,10 @@ def _update_position_from_zeroth_header(artifact, headers, instrument, obs_id):
     primary_header['NAXIS2'] = headers[-1].get('NAXIS2')
 
     primary_chunk = Chunk()
-    types = em.om.get('types')
+    types = json_lookup.get('types')
     ra = get_ra(headers[0])
-    ra_json = em.om.get('ra')
-    dec_json = em.om.get('dec')
+    ra_json = json_lookup.get('ra')
+    dec_json = json_lookup.get('dec')
     if ('AZEL_TARGET' in types and ra is None) or (
         instrument is Inst.GNIRS and ra_json is None and dec_json is None
     ):

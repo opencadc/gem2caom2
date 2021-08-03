@@ -98,8 +98,6 @@ GEMINI_METADATA_URL = (
     'https://archive.gemini.edu/jsonsummary/canonical/filepre='
 )
 
-# lazy initialization for jsonsummary metadata from Gemini
-om = None
 # value repair cache
 value_repair = mc.ValueRepairCache()
 # treat like a singleton
@@ -118,8 +116,6 @@ def get_gofr(config):
 
 
 def init_global(config):
-    global om
-    om = gom.json_lookup
     get_gofr(config)
 
 
