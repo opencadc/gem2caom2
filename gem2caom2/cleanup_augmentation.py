@@ -72,7 +72,7 @@ import logging
 from caom2 import Observation
 from caom2pipe import caom_composable as cc
 from caom2pipe import manage_composable as mc
-from gem2caom2 import obs_file_relationship, gem_name
+from gem2caom2 import obs_file_relationship
 
 
 def visit(observation, **kwargs):
@@ -95,7 +95,7 @@ def visit(observation, **kwargs):
         if len(all_artifact_keys) != len(set_artifact_keys_lower):
             for entry in set_artifact_keys_lower:
                 ignore_scheme, ignore_path, file_name = mc.decompose_uri(entry)
-                file_id = gem_name.GemName.remove_extensions(file_name)
+                file_id = obs_file_relationship.remove_extensions(file_name)
                 # it's the suffix that has the different case, so use it
                 # to figure out which artifacts shouldn't exist
                 suffixes = obs_file_relationship.get_suffix(

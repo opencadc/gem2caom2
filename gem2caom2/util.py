@@ -101,3 +101,4 @@ class Inst(Enum):
     TEXES = 'TEXES'
     TRECS = 'TReCS'
     ZORRO = 'Zorro'
+    UNKNOWN = None

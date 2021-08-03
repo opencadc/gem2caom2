@@ -68,7 +68,7 @@
 #
 
 from caom2pipe import manage_composable as mc
-from gem2caom2.gem_name import GemName
+from gem2caom2.obs_file_relationship import remove_extensions
 
 __all__ = ['json_lookup']
 
@@ -96,7 +96,7 @@ class JSONLookup(object):
         # which has the information for a particular file_id
         if isinstance(metadata, list):
             for entry in metadata:
-                temp_file_id = GemName.remove_extensions(entry.get('filename'))
+                temp_file_id = remove_extensions(entry.get('filename'))
                 if temp_file_id is not None and file_id == temp_file_id:
                     self._lookup[file_id] = entry
                     break

@@ -225,277 +225,11 @@ combined with the unprocessed observations (again, except for 'composite')
 whereas the -G versions show up as distinct observations.
 """
 
-import collections
 import logging
 import re
 
-from datetime import datetime
-from datetime import timedelta
 
-from caom2pipe import manage_composable as mc
-
-from gem2caom2 import gem_name
-
-
-__all__ = ['GemObsFileRelationship', 'FILE_NAME', 'repair_data_label']
-
-FILE_NAME = '/app/data/from_paul.txt'
-
-
-class GemObsFileRelationship(object):
-    """A class to hold and access the content of the observation ID/file id
-    information that is provided to CADC from Gemini, while also adhering to
-    the file-to-observation guidance laid out in the module comment.
-
-    It's made into a class, because the information is useful from both
-    the gem2caom2 repo, for identifying provenance relationships, and from
-    the gemHarvester2Caom2, for supporting list_observations queries.
-    """
-
-    def __init__(self):
-
-        # id_list structure: a dict, keys are Gemini observation IDs, values
-        # are a set of associated file names. This structure supports the
-        # get_observation query.
-
-        self.id_list = collections.defaultdict(list)
-
-        # time_list structure: a dict, keys are last modified time,
-        # values are a set of observation IDs as specified from Gemini
-        # with that last modified time. This structure supports the
-        # time-bounded queries of the Harvester.
-
-        self.time_list = {}
-
-        # name_list structure: a dict, keys are file ids, values are Gemini
-        # observation IDs. This structure supports queries by gem2caom2
-        # for determining provenance information for planes and
-        # observations.
-
-        self.name_list = collections.defaultdict(list)
-
-        self.logger = logging.getLogger(__name__)
-        self._initialize_content(FILE_NAME)
-
-    def _initialize_content(self, fqn):
-        """Initialize the internal data structures that represents the
-        query list from the Gemini Science Archive.
-        """
-        result = self._read_file(fqn)
-        # result row structure:
-        # 0 = data label
-        # 1 = timestamp
-        # 2 = file name
-        temp_content = {}
-        logging.info('Progress - file read ....')
-        for ii in result:
-            # re-organize to be able to answer list_observations queries
-            ol_key = mc.make_seconds(ii[1])
-            if ol_key in temp_content:
-                if ii[0] not in temp_content[ol_key]:
-                    temp_content[ol_key].append(ii[0])
-            else:
-                temp_content[ol_key] = [ii[0]]
-            # re-organize to be able to answer get_observation queries
-            self.id_list[ii[0]].append(ii[2])
-            file_id = gem_name.GemName.remove_extensions(ii[2])
-            self.name_list[file_id].append([ii[0], ol_key])
-
-        # this structure means an observation ID occurs more than once with
-        # different last modified times
-        self.time_list = collections.OrderedDict(
-            sorted(temp_content.items(), key=lambda t: t[0])
-        )
-        self.logger.info('Observation list initialized in memory.')
-
-    def _read_file(self, fqn):
-        """Read the .txt file from Gemini, and make it prettier ...
-        where prettier means stripping whitespace, query output text, and
-        making an ISO 8601 timestamp from something that looks like this:
-        ' 2018-12-17 18:19:27.334144+00 '
-
-        or this:
-        ' 2018-12-17 18:19:27+00 '
-
-        :return a list of lists, where the inner list consists of an
-            observation ID, a last modified date/time, and a file name.
-
-        File structure indexes:
-        0 == data label
-        1 == file name
-        3 == last modified date/time
-        """
-        results = []
-        try:
-            with open(fqn) as f:
-                for row in f:
-                    temp = row.split('|')
-                    if len(temp) > 1 and 'data_label' not in row:
-                        time_string = temp[3].strip().replace(' ', 'T')
-                        if '/' in temp[0]:
-                            if 'MBIAS' in temp[0]:
-                                temp[0] = temp[0].replace('BIAS/MBIAS/', '')
-                            elif 'PETRO' in temp[0]:
-                                temp[0] = temp[0].replace(
-                                    '-/NET/PETROHUE/DATAFLOW/', ''
-                                )
-                            elif '12CD' in temp[0] or 'EXPORT/HOME' in temp[0]:
-                                temp[0] = temp[0].split('/', 1)[0]
-                            else:
-                                logging.warning(
-                                    f'Mystery data label {temp[0]}'
-                                )
-                        elif '?' in temp[0]:
-                            if 'GS-2002A-DD-1-?' in temp[0]:
-                                temp[0] = temp[0].replace('?', '11')
-                            else:
-                                logging.warning(
-                                    f'Mystery data label {temp[0]}'
-                                )
-                        elif '"' in temp[0]:
-                            temp[0] = temp[0].replace('"', '')
-                        if len(temp[0].strip()) > 1:
-                            results.append(
-                                [temp[0].strip(), time_string, temp[1].strip()]
-                            )
-                        else:
-                            # no data label in the file, so use the file name
-                            results.append(
-                                [temp[1].strip(), time_string, temp[1].strip()]
-                            )
-
-        except Exception as e:
-            self.logger.error(f'Could not read from csv file {fqn}')
-            raise mc.CadcException(e)
-        return results
-
-    def subset(self, start=None, end=None, maxrec=None):
-        if start is not None and end is not None:
-            temp = self._subset(start.timestamp(), end.timestamp())
-        elif start is not None:
-            temp = self._subset(start.timestamp(), datetime.now().timestamp())
-        elif end is not None:
-            temp = self._subset(0, end.timestamp())
-        else:
-            temp = self._subset(0, datetime.now().timestamp())
-        if maxrec is not None:
-            temp = temp[:maxrec]
-        return temp
-
-    def _subset(self, start_s, end_s):
-        """Get only part of the observation list, limited by timestamps."""
-        self.logger.debug(
-            f'Timestamp endpoints are between {start_s} and {end_s}.'
-        )
-        temp = []
-        for ii in self.time_list:
-            if start_s <= ii <= end_s:
-                for jj in self.time_list[ii]:
-                    dt = datetime.fromtimestamp(ii).isoformat(
-                        timespec="milliseconds"
-                    )
-                    temp.append(f'{gem_name.COLLECTION} {jj} {dt}')
-            if ii > end_s:
-                break
-        return temp
-
-    def get_file_names(self, obs_id):
-        """Given an obs id, return the list of file names that make up
-        the observation."""
-        if obs_id in self.id_list:
-            temp_str = ''.join(self.id_list[obs_id])
-            if re.search(r'_BIAS|_FLAT', temp_str) is not None:
-                # all of this is to handle the approximately 5000 cases where
-                # the same data label refers to different file names, where
-                # the difference is in the case of the file name only
-                temp_set = set([ii.upper() for ii in self.id_list[obs_id]])
-                if len(temp_set) != len(self.id_list[obs_id]):
-                    temp_list = []
-                    for f_name in self.id_list[obs_id]:
-                        x = self._check_duplicate(f_name.replace('.fits', ''))
-                        temp_list.append(f'{x}.fits')
-                    return list(set(temp_list))
-            else:
-                return self.id_list[obs_id]
-        else:
-            return None
-
-    def get_obs_id(self, file_id):
-        checked = self._check_duplicate(file_id)
-        if checked in self.name_list:
-            # structure of the entry is ['obs id', timestamp], so return
-            # only the obs_id of the first entry
-            return self.name_list[checked][0][0]
-        else:
-            return None
-
-    def get_timestamp(self, file_id):
-        checked = self._check_duplicate(file_id)
-        if checked in self.name_list:
-            temp = self.name_list[checked]
-            return temp[0][1]
-        else:
-            return timedelta()
-
-    def get_max_timestamp(self):
-        return list(self.time_list.keys())[-1]
-
-    def repair_data_label(self, file_id):
-        """For processed files, try to provide a consistent naming pattern,
-        because data labels aren't unique within Gemini, although the files
-        they refer to are, and can be in different CAOM Observations.
-
-        Take the prefixes and suffixes on the files, that indicate the type of
-        processing, and append them in upper case, to the data label, for
-        uniqueness.
-
-        DB - 07-03-19
-        TEXES Spectroscopy
-
-        Some special code will be needed for datalabels/planes.  There are no
-        datalabels in the FITS header.  json metadata (limited) must be
-        obtained with URL like
-        https://archive.gemini.edu/jsonsummary/canonical/filepre=TX20170321_flt.2507.fits.
-        Use TX20170321_flt.2507 as datalabel.  But NOTE:  *raw.2507.fits and
-        *red.2507.fits are two planes of the same observation. I’d suggest we
-        use ‘*raw*’ as the datalabel and ‘*red*’ or ‘*raw*’ as the appropriate
-        product ID’s for the science observations.  The ‘flt’ observations do
-        not have a ‘red’ plane.  The json document contains ‘filename’ if
-        that’s helpful at all.  The ‘red’ files do not exist for all ‘raw’
-        files.
-        """
-        if file_id in self.name_list:
-            repaired = self.name_list[file_id][0][0]
-            # if the data label is missing, the file name, including
-            # extensions, is treated as the data label, so get rid of .fits
-            repaired = gem_name.GemName.remove_extensions(repaired)
-            repaired = repair_data_label(file_id, repaired)
-        else:
-            logging.warning(
-                f'File name {file_id} not found in the Gemini list.'
-            )
-            repaired = file_id
-        return repaired
-
-    def _check_duplicate(self, file_id):
-        """There are data labels in the Gemini-supplied file, where the
-        only difference in the related file name is the case of the 'bias'
-        or 'flat' text. So look for that as well, when checking for
-        membership.
-
-        There are approximately 5500 entries of this duplicate sort - too
-        many to fix manually, but also too many to ignore.
-        """
-        if re.search(r'_BIAS|_FLAT', file_id) is not None:
-            duplicate_check = re.sub(
-                '_FLAT',
-                '_flat',
-                re.sub('_BIAS', '_bias', file_id),
-            )
-            if duplicate_check in self.name_list:
-                logging.warning(f'Replacing {file_id} with {duplicate_check}')
-                file_id = duplicate_check
-        return file_id
+__all__ = ['repair_data_label', 'remove_extensions']
 
 
 def get_prefix(file_id):
@@ -575,7 +309,7 @@ def is_processed(file_name):
     """Try to determine if a Gemini file is processed, based on naming
     patterns."""
     result = True
-    file_id = gem_name.GemName.remove_extensions(file_name)
+    file_id = remove_extensions(file_name)
     # ALOPEKE file id ends with 'r' or 'b', so avoid checking that letter
     if file_id.startswith(('S', 'N', 'GN', 'GS', 'c', 'abu')):
         if file_id.endswith(
@@ -671,7 +405,7 @@ def repair_data_label(file_name, data_label):
         f'Begin repair_data_label with file {file_name} and data label '
         f'{data_label}.'
     )
-    file_id = gem_name.GemName.remove_extensions(file_name)
+    file_id = remove_extensions(file_name)
     repaired = data_label if data_label else ''
     if is_processed(file_id) or file_id.startswith('TX2'):
         if not file_id.startswith('TX2'):
@@ -763,3 +497,16 @@ def repair_data_label(file_name, data_label):
         f'{repaired}.'
     )
     return repaired
+
+
+def remove_extensions(name):
+    """How to get the file_id from a file_name."""
+    # Note the .gz extension is on some TRECS files, not that it is
+    # an accepted GEMINI extension
+    return (
+        name.replace('.fits', '')
+            .replace('.bz2', '')
+            .replace('.header', '')
+            .replace('.jpg', '')
+            .replace('.gz', '')
+    )

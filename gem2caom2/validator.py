@@ -86,11 +86,14 @@ class GeminiValidator(mc.Validator):
             scheme=SCHEME,
             preview_suffix='_th.jpg',
         )
-        self._gofr = external_metadata.get_gofr()
+        config = mc.Config()
+        config.get_executors()
+        external_metadata.init_global(config)
+        self._gofr = external_metadata.get_gofr(config)
         self._max_date = datetime.fromtimestamp(
             self._gofr.get_max_timestamp()
         ).date()
-        logging.error(f'max date is {self._max_date}')
+        logging.info(f'max date is {self._max_date}')
         self._rejected = mc.Rejected(self._config.rejected_fqn)
         self._logger = logging.getLogger(__name__)
 

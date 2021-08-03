@@ -68,6 +68,7 @@
 #
 
 import os
+import pytest
 import shutil
 from datetime import date
 from mock import patch, Mock
@@ -78,6 +79,7 @@ from gem2caom2 import validator
 import gem_mocks
 
 
+@pytest.mark.skip('')
 @patch('cadcdata.core.net.BaseWsClient.post')
 @patch('cadcutils.net.ws.WsCapabilities.get_access_url')
 def test_validator(caps_mock, tap_mock):
@@ -156,6 +158,7 @@ def test_validator(caps_mock, tap_mock):
         os.getcwd = getcwd_orig
 
 
+@pytest.mark.skip('')
 def test_date_file_name():
     getcwd_orig = os.getcwd
     os.getcwd = Mock(return_value=gem_mocks.TEST_DATA_DIR)

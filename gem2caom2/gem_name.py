@@ -73,6 +73,7 @@ from caom2pipe import manage_composable as mc
 
 from gem2caom2 import external_metadata as em
 from gem2caom2.util import Inst, COLLECTION, SCHEME, V_SCHEME
+from gem2caom2.obs_file_relationship import remove_extensions
 
 
 __all__ = ['GemName']
@@ -150,12 +151,14 @@ class GemName(mc.StorageName):
         self,
         file_name=None,
         obs_id=None,
-        instrument=None,
         entry=None,
     ):
-        if instrument in [Inst.ALOPEKE, Inst.ZORRO]:
+        self._v_scheme = V_SCHEME
+        self._v_collection = COLLECTION
+        file_id = remove_extensions(file_name)
+        if file_id[-1] in ['b', 'r']:
             self._file_name = file_name
-            self._file_id = GemName.remove_extensions(self._file_name)
+            self._file_id = remove_extensions(self._file_name)
             self._obs_id = self._file_id[:-1]
             self._product_id = self._file_id
             super(GemName, self).__init__(
@@ -175,7 +178,7 @@ class GemName(mc.StorageName):
             self._file_name = None
             self._file_id = None
             if file_name is not None:
-                self._file_id = GemName.get_file_id(file_name)
+                self._file_id = remove_extensions(file_name)
                 self.file_name = file_name
             if obs_id is not None:
                 self._obs_id = obs_id
@@ -188,9 +191,9 @@ class GemName(mc.StorageName):
                 entry=entry,
             )
             if self._obs_id is None:
-                temp = em.get_gofr().get_obs_id(self._file_id)
+                temp = em.defining_metadata_finder.get(self.file_uri)
                 if temp is not None:
-                    self._obs_id = GemName.remove_extensions(temp)
+                    self._obs_id = remove_extensions(temp.data_label)
             if (
                 self._fname_on_disk is None
                 and self._file_name is None
@@ -198,8 +201,6 @@ class GemName(mc.StorageName):
             ):
                 raise mc.CadcException('Require a name.')
             self._product_id = self._file_id
-        self._v_scheme = V_SCHEME
-        self._v_collection = COLLECTION
         self._logger = logging.getLogger(__name__)
         self._logger.debug(self)
 
@@ -293,27 +294,14 @@ class GemName(mc.StorageName):
     def is_valid(self):
         return True
 
-    @staticmethod
-    def get_file_id(file_name):
-        return GemName.remove_extensions(file_name)
+    # @staticmethod
+    # def get_file_id(file_name):
+    #     return remove_extensions(file_name)
 
     @staticmethod
     def get_file_name_from(file_id):
         # makes the assumption that stored data is un-compressed
         return f'{file_id}.fits'
-
-    @staticmethod
-    def remove_extensions(name):
-        """How to get the file_id from a file_name."""
-        # Note the .gz extension is on some TRECS files, not that it is
-        # an accepted GEMINI extension
-        return (
-            name.replace('.fits', '')
-            .replace('.bz2', '')
-            .replace('.header', '')
-            .replace('.jpg', '')
-            .replace('.gz', '')
-        )
 
     @staticmethod
     def is_preview(entry):

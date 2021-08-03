@@ -69,12 +69,10 @@
 import json
 import logging
 import os
-import pytest
 import shutil
 import sys
 
 from datetime import datetime
-from shutil import copyfile
 from unittest.mock import patch, Mock
 import gem_mocks
 
@@ -91,14 +89,6 @@ PROGRESS_FILE = f'{gem_mocks.TEST_DATA_DIR}/logs/progress.txt'
 PUBLIC_TEST_JSON = (
     f'{gem_mocks.TEST_DATA_DIR}/json/GN-2019B-ENG-1-160-008.json'
 )
-
-
-@pytest.fixture(scope='session', autouse=True)
-def write_gemini_data_file():
-    copyfile(
-        os.path.join(gem_mocks.TEST_DATA_DIR, 'from_paul.txt'),
-        '/app/data/from_paul.txt',
-    )
 
 
 @patch('cadcutils.net.ws.WsCapabilities.get_access_url')

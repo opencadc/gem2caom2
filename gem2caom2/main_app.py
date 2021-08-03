@@ -107,7 +107,7 @@ import gem2caom2.external_metadata as em
 import gem2caom2.obs_file_relationship as ofr
 from gem2caom2.gem_name import GemName
 from gem2caom2.builder import GemObsIDBuilder
-from gem2caom2 import instruments, builder, program_metadata
+from gem2caom2 import instruments, program_metadata
 from gem2caom2.util import Inst, COLLECTION, SCHEME
 
 
@@ -173,7 +173,7 @@ def get_meta_release(parameters):
     # combination - this location happens to be the first function called
     # during blueprint evaluation, which is why reset is
     # called here
-    file_id = GemName.remove_extensions(mc.CaomName(uri).file_name)
+    file_id = ofr.remove_extensions(mc.CaomName(uri).file_name)
     em.om.reset_index(file_id)
 
     header = parameters.get('header')
@@ -553,7 +553,7 @@ def update(observation, **kwargs):
                     continue
 
                 caom_name = mc.CaomName(artifact.uri)
-                file_id = GemName.remove_extensions(
+                file_id = ofr.remove_extensions(
                     mc.CaomName(caom_name.uri).file_name
                 )
                 em.om.reset_index(file_id)
@@ -853,7 +853,7 @@ def _build_blueprints(uris):
     for uri in uris:
         blueprint = ObsBlueprint(module=module)
         if not GemName.is_preview(uri):
-            file_id = GemName.remove_extensions(mc.CaomName(uri).file_name)
+            file_id = ofr.remove_extensions(mc.CaomName(uri).file_name)
             accumulate_fits_bp(blueprint, file_id, uri)
         blueprints[uri] = blueprint
     return blueprints

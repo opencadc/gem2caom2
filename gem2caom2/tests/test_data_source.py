@@ -70,14 +70,14 @@
 from datetime import datetime
 from mock import patch
 from gem2caom2 import data_source
-from gem2caom2.obs_metadata import JSONLookup
+from gem2caom2.obs_metadata import json_lookup
 import gem_mocks
 
 
 @patch('caom2pipe.manage_composable.query_endpoint')
 def test_incremental_source(query_mock):
     # clean up the singleton cache content as initial conditions
-    JSONLookup().flush()
+    json_lookup.flush()
 
     # https://archive.gemini.edu/jsonsummary/canonical/entrytimedaterange=
     # 2021-01-01T20:03:00.000000%202021-01-01T22:13:00.000000/

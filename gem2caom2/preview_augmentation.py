@@ -110,7 +110,6 @@ def visit(observation, **kwargs):
             continue
         count += _do_prev(
             observation.observation_id,
-            observation.instrument.name,
             working_dir,
             plane,
             cadc_client,
@@ -123,7 +122,7 @@ def visit(observation, **kwargs):
 
 
 def _do_prev(
-    obs_id, instrument_name, working_dir, plane, cadc_client, observable
+    obs_id, working_dir, plane, cadc_client, observable
 ):
     """Retrieve the preview file, so that a thumbnail can be made,
     store the preview if necessary, and the thumbnail, to ad.
@@ -131,13 +130,9 @@ def _do_prev(
     """
     count = 0
     # file name construction is very very ugly here, and completely wrong
-    # which is why theres' the tricksy file_name set to None right
+    # which is why there's the tricksy file_name set to None right
     # after construction
-    gem_name = GemName(
-        file_name=f'{plane.product_id}.fits',
-        obs_id=obs_id,
-        instrument=instrument_name,
-    )
+    gem_name = GemName(file_name=f'{plane.product_id}.fits', obs_id=obs_id)
     gem_name.file_name = None
     logging.debug(gem_name)
 

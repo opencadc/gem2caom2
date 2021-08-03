@@ -92,7 +92,6 @@ def test_missing_provenance(
     test_config = mc.Config()
     test_config.get_executors()
 
-    external_metadata.set_ofr(None)
     external_metadata.init_global(test_config)
 
     cap_mock.return_value = 'https://localhost'
@@ -103,11 +102,7 @@ def test_missing_provenance(
 
     test_f_name = 'gS20171114S0185_bias.fits.header'
     test_obs_id = 'GS-CAL20171114-2-086-G-BIAS'
-    test_storage_name = GemName(
-        obs_id=test_obs_id,
-        file_name=test_f_name,
-        instrument=Inst.GMOSS,
-    )
+    test_storage_name = GemName(obs_id=test_obs_id, file_name=test_f_name)
     test_fqn = f'{gem_mocks.TEST_DATA_DIR}/broken_files/{test_f_name}'
     actual_fqn = (
         f'{gem_mocks.TEST_DATA_DIR}/broken_files/{test_obs_id}.actual.xml'

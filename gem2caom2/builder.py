@@ -107,7 +107,6 @@ class GemObsIDBuilder(nbc.StorageNameBuilder):
             ):
                 result = gem_name.GemName(
                     file_name=entry,
-                    instrument=metadata.instrument,
                     entry=entry,
                     obs_id=metadata.data_label,
                 )
@@ -117,7 +116,6 @@ class GemObsIDBuilder(nbc.StorageNameBuilder):
             elif '.fits' in entry or '.jpg' in entry:
                 result = gem_name.GemName(
                     file_name=entry,
-                    instrument=metadata.instrument,
                     entry=entry,
                     obs_id=metadata.data_label,
                 )

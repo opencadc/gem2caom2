@@ -71,8 +71,6 @@ import sys
 
 import pytest
 
-from shutil import copyfile
-
 import gem2caom2.external_metadata as em
 
 from gem2caom2 import main_app, builder
@@ -165,17 +163,7 @@ def test_main_app(
         test_config.get_executors()
         test_config.features.supports_latest_client = True
 
-        em.set_ofr(None)
         em.init_global(test_config)
-        test_data_size = os.stat(
-            os.path.join(gem_mocks.TEST_DATA_DIR, 'from_paul.txt')
-        )
-        app_size = os.stat('/app/data/from_paul.txt')
-        if test_data_size.st_size != app_size.st_size:
-            copyfile(
-                os.path.join(gem_mocks.TEST_DATA_DIR, 'from_paul.txt'),
-                '/app/data/from_paul.txt',
-            )
         basename = os.path.basename(test_name)
         dirname = os.path.dirname(test_name)
         file_id = _get_file_id(basename)

@@ -77,24 +77,20 @@ from caom2utils import cadc_client_wrapper
 from caom2pipe import client_composable as clc
 from caom2pipe import manage_composable as mc
 from gem2caom2 import obs_metadata as gom
-from gem2caom2.obs_file_relationship import GemObsFileRelationship
 from gem2caom2.obs_file_relationship import repair_data_label
-from gem2caom2 import gem_name, instruments
+from gem2caom2.obs_file_relationship import remove_extensions
+from gem2caom2 import instruments
 from gem2caom2.util import Inst, COLLECTION
 
 
 __all__ = [
-    # 'CachingObsFileRelationship',
     'current_instrument',
     'defining_metadata_finder',
     'get_gofr',
     'get_instrument',
-    'get_obs_id_from_cadc',
-    'get_obs_id_from_headers',
     'get_obs_metadata',
     'init_global',
     'repair_instrument',
-    'set_ofr',
 ]
 
 
@@ -104,11 +100,9 @@ GEMINI_METADATA_URL = (
 
 # lazy initialization for jsonsummary metadata from Gemini
 om = None
-# lazy initialization for the Gemini listing of files
-gofr = None
 # value repair cache
 value_repair = mc.ValueRepairCache()
-# gofr replacement
+# treat like a singleton
 defining_metadata_finder = None
 #
 gemini_session = mc.get_endpoint_session()
@@ -117,21 +111,10 @@ gemini_session = mc.get_endpoint_session()
 # globals are BAD, but if this existed in a class instance, that
 # class instance would need to be visible in main_app.py, which is not
 # something that fits2caom2 handles right now
-def get_gofr(config=None):
-    global gofr
-    if gofr is None:
-        gofr = CachingObsFileRelationship(config)
+def get_gofr(config):
     global defining_metadata_finder
     if defining_metadata_finder is None:
         defining_metadata_finder = DefiningMetadataFinder(config)
-    return gofr
-
-
-def set_ofr(value):
-    # replace the lookup functionality of the file listing from Gemini,
-    # with the query results from archive.gemini.edu
-    global gofr
-    gofr = value
 
 
 def init_global(config):
@@ -153,7 +136,7 @@ def get_obs_metadata(file_id):
         om.reset_index(file_id)
     else:
         # for TaskType.SCRAPE
-        if gofr.query_session is None:
+        if gemini_session is None:
             logging.warning(f'No external access. No observation metadata.')
         else:
             gemini_url = f'{GEMINI_METADATA_URL}{file_id}'
@@ -175,108 +158,6 @@ def get_obs_metadata(file_id):
                 )
             om.add(metadata, file_id)
     logging.debug(f'End get_obs_metadata for {file_id}')
-
-
-class CachingObsFileRelationship(GemObsFileRelationship):
-    """
-    The locations in which the relationship between an observationID (data
-    label) and a file name can be determined are:
-        'connected' order, no files on disk (i.e. not doing TaskType.SCRAPE):
-        1 - the specifically constructed file from Paul, which is time-limited
-        2 - CAOM entries
-        3 - archive.gemini.edu entries
-
-        'connected' order, files on disk (i.e. not doing TaskType.SCRAPE):
-        1 - the specifically constructed file from Paul, which is time-limited
-            (since it's already in memory, it should be faster to access)
-        2 - file on disk
-        3 - CAOM entries
-        4 - archive.gemini.edu entries
-
-        'unconnected order':
-        1 - Paul's file
-        2 - file on disk
-
-    This class queries each of these locations in the declared order, and
-    then if the answer comes from either 2 or 3, adds to the cache of the
-    file.
-    """
-
-    def __init__(self, config=None):
-        super(CachingObsFileRelationship, self).__init__()
-        self._use_local_files = False
-        self._is_connected = True
-        self._collection = 'GEMINI'
-        if config is not None:
-            self._use_local_files = config.use_local_files
-            self._is_connected = config.is_connected
-            self._collection = config.collection
-        # use accessor methods for _tap_client, because of how this class
-        # will eventually be used - as a global, accessible by all and
-        # everywhere, and initialized before there's a config
-        self._tap_client = None
-        self._session = None
-        if self._is_connected:
-            self._session = mc.get_endpoint_session()
-        self._logger = logging.getLogger(__name__)
-
-    @property
-    def query_session(self):
-        return self._session
-
-    @property
-    def tap_client(self):
-        return self._tap_client
-
-    @tap_client.setter
-    def tap_client(self, value):
-        self._tap_client = value
-
-
-def get_obs_id_from_cadc(
-    file_id, tap_client, collection='GEMINI', update_cache=None
-):
-    logging.debug(f'Begin get_obs_id_from_cadc for {file_id}')
-    file_name = gem_name.GemName.get_file_name_from(file_id)
-    query_string = f"""
-    SELECT O.observationID, A.lastModified
-    FROM caom2.Observation AS O
-    JOIN caom2.Plane AS P on P.obsID = O.obsID
-    JOIN caom2.Artifact AS A on A.planeID = P.planeID
-    WHERE A.uri LIKE '%{file_name}'
-    AND O.collection = '{collection}'
-    """
-    table = clc.query_tap_client(query_string, tap_client)
-    result = None
-    if len(table) == 1:
-        result = table[0]['observationID']
-        ut_datetime_str = table[0]['lastModified']
-        if update_cache is not None:
-            update_cache(file_id, result, ut_datetime_str)
-    logging.debug(f'End get_obs_id_from_cadc {result}')
-    return result
-
-
-def get_obs_id_from_headers(file_id, update_cache=None):
-    logging.debug(f'Begin get_obs_id_from_headers for {file_id}')
-    temp = gem_name.GemName.remove_extensions(file_id)
-    try_these = [
-        f'{os.getcwd()}/{temp}.fits',
-        f'{os.getcwd()}/{temp}.fits.header',
-        f'{os.getcwd()}/{temp}.fits.bz2',
-        f'{os.getcwd()}/{temp}.fits.gz',
-    ]
-    result = None
-    for f_name in try_these:
-        if os.path.exists(f_name):
-            headers = cadc_client_wrapper.get_local_file_headers(f_name)
-            result = headers[0].get('DATALAB').upper()
-            if result is not None:
-                if update_cache is not None:
-                    update_cache(file_id, result, headers[0].get('DATE'))
-                break
-    logging.debug(f'End get_obs_id_from_headers {result}')
-    return result
 
 
 @dataclass
@@ -353,7 +234,7 @@ class DefiningMetadataFinder:
 
     def _check_local(self, f_name):
         self._logger.debug(f'Begin _check_local for {f_name}')
-        file_id = gem_name.GemName.remove_extensions(f_name)
+        file_id = remove_extensions(f_name)
         try_these = [
             f'{os.getcwd()}/{file_id}.fits',
             f'{os.getcwd()}/{file_id}.fits.header',
@@ -380,7 +261,7 @@ class DefiningMetadataFinder:
         # metadata will modify the internal index of the class - maintain
         # that index here with a save/restore, as the lookup can occur for
         # provenance metadata
-        looking_for_file_id = gem_name.GemName.remove_extensions(f_name)
+        looking_for_file_id = remove_extensions(f_name)
         # first check the cache
         current_file_id = self._json_lookup.current
         if self._json_lookup.contains(looking_for_file_id):
