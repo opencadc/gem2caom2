@@ -153,8 +153,6 @@ RADIUS_LOOKUP = {
 # CTYPE1 = RA---TAN
 # CTYPE2 = DEC--TAN
 
-current_instrument = None
-
 
 class InstrumentType:
     def __init__(self, name):

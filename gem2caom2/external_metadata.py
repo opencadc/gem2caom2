@@ -308,10 +308,15 @@ def repair_instrument(in_name):
 # placed here so that it survives the importlib.import_module call from
 # fits2caom2
 current_instrument = None
+svo_session = None
 
 
 def get_instrument(uri):
     dm = defining_metadata_finder.get(uri)
     global current_instrument
     current_instrument = instruments.instrument_factory(dm.instrument)
+    global svo_session
+    if svo_session is None:
+        svo_session = mc.get_endpoint_session()
+    current_instrument.svo_session = svo_session
     return dm.instrument
