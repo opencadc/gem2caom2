@@ -80,11 +80,9 @@ from gem2caom2 import external_metadata as em
 import gem_mocks
 
 
-@patch('gem2caom2.external_metadata.CadcTapClient')
-@patch('gem2caom2.builder.defining_metadata_finder')
-def test_builder(dmf_mock, tap_client_mock):
-    # the init_global sequence depends on the tap_client_mock
-    dmf_mock.get.side_effect = gem_mocks.mock_get_dm
+@patch('gem2caom2.external_metadata.DefiningMetadataFinder')
+def test_builder(dmf_mock):
+    dmf_mock.return_value.get.side_effect = gem_mocks.mock_get_dm
 
     test_config = mc.Config()
     test_config.working_directory = '/test_files'

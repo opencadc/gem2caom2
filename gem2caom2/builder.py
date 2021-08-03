@@ -76,7 +76,7 @@ from caom2pipe import manage_composable as mc
 from caom2pipe import name_builder_composable as nbc
 from gem2caom2 import gem_name
 from gem2caom2.util import COLLECTION, SCHEME
-from gem2caom2.external_metadata import defining_metadata_finder
+from gem2caom2 import external_metadata as em
 
 
 __all__ = ['GemObsIDBuilder']
@@ -100,7 +100,7 @@ class GemObsIDBuilder(nbc.StorageNameBuilder):
         self._logger.debug(f'Build a StorageName instance for {entry}.')
         try:
             uri = mc.build_uri(COLLECTION, entry, SCHEME)
-            metadata = defining_metadata_finder.get(uri)
+            metadata = em.defining_metadata_finder.get(uri)
             if (
                 mc.TaskType.SCRAPE in self._config.task_types
                 or self._config.use_local_files

@@ -331,7 +331,7 @@ def accumulate_fits_bp(bp, file_id, uri):
     """Configure the telescope-specific ObsBlueprint at the CAOM model
     Observation level."""
     logging.debug(f'Begin accumulate_fits_bp for {file_id}.')
-    em.get_obs_metadata(file_id)
+    em.defining_metadata_finder.get_obs_metadata(file_id)
 
     meta_producer = mc.get_version(APPLICATION)
     bp.set('Observation.type', 'get_obs_type(header)')

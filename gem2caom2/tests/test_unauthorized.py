@@ -79,16 +79,12 @@ import gem_mocks
 
 @patch('cadcutils.net.ws.WsCapabilities.get_access_url')
 @patch('caom2utils.fits2caom2.get_external_headers')
-@patch('gem2caom2.external_metadata.get_obs_metadata')
 @patch('gem2caom2.external_metadata.DefiningMetadataFinder')
-def test_unauthorized(
-    get_obs_mock, o2_mock, get_external_mock, cap_mock
-):
+def test_unauthorized(get_obs_mock, get_external_mock, cap_mock):
     # test case is unauthorized to retrieve metadata from
     # archive.gemini.edu
     cap_mock.return_value = 'https://localhost'
     get_obs_mock.return_value.get.side_effect = gem_mocks.mock_get_dm
-    o2_mock.side_effect = gem_mocks.mock_get_obs_metadata
     get_external_mock.return_value = None
 
     test_config = mc.Config()

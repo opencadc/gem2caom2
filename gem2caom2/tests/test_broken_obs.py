@@ -71,14 +71,13 @@ import sys
 
 from caom2pipe import manage_composable as mc
 from gem2caom2 import main_app, GemName, external_metadata
-from gem2caom2.util import Inst, COLLECTION
+from gem2caom2.util import COLLECTION
 
 from mock import patch, Mock
 import gem_mocks
 
 
 @patch('caom2utils.cadc_client_wrapper.StorageClientWrapper')
-@patch('gem2caom2.external_metadata.get_obs_metadata')
 @patch('cadcutils.net.ws.WsCapabilities.get_access_url')
 @patch('gem2caom2.program_metadata.get_pi_metadata')
 @patch('gem2caom2.external_metadata.DefiningMetadataFinder')
@@ -86,7 +85,6 @@ def test_missing_provenance(
     get_mock,
     pi_mock,
     cap_mock,
-    get_obs_mock,
     client_mock,
 ):
     test_config = mc.Config()
@@ -97,7 +95,6 @@ def test_missing_provenance(
     cap_mock.return_value = 'https://localhost'
     pi_mock.side_effect = gem_mocks.mock_get_pi_metadata
     get_mock.return_value.get.side_effect = gem_mocks.mock_get_dm
-    get_obs_mock.side_effect = gem_mocks.mock_get_obs_metadata
     client_mock.return_value.info.side_effect = gem_mocks.mock_get_file_info
 
     test_f_name = 'gS20171114S0185_bias.fits.header'

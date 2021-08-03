@@ -88,7 +88,6 @@ __all__ = [
     'defining_metadata_finder',
     'get_gofr',
     'get_instrument',
-    'get_obs_metadata',
     'init_global',
     'repair_instrument',
 ]
@@ -102,8 +101,6 @@ GEMINI_METADATA_URL = (
 value_repair = mc.ValueRepairCache()
 # treat like a singleton
 defining_metadata_finder = None
-#
-gemini_session = mc.get_endpoint_session()
 
 
 # globals are BAD, but if this existed in a class instance, that
@@ -112,48 +109,12 @@ gemini_session = mc.get_endpoint_session()
 def get_gofr(config):
     global defining_metadata_finder
     if defining_metadata_finder is None:
+        logging.error(DefiningMetadataFinder)
         defining_metadata_finder = DefiningMetadataFinder(config)
 
 
 def init_global(config):
     get_gofr(config)
-
-
-def get_obs_metadata(file_id):
-    """
-    Download the Gemini observation metadata for the given obs_id.
-
-    :param file_id: The file ID
-    :return: Dictionary of observation metadata.
-    """
-    logging.debug(f'Begin get_obs_metadata for {file_id}')
-    global om
-    if om.contains(file_id):
-        om.reset_index(file_id)
-    else:
-        # for TaskType.SCRAPE
-        if gemini_session is None:
-            logging.warning(f'No external access. No observation metadata.')
-        else:
-            gemini_url = f'{GEMINI_METADATA_URL}{file_id}'
-
-            # Open the URL and fetch the JSON document for the observation
-            response = None
-            try:
-                response = mc.query_endpoint_session(
-                    gemini_url, gemini_session
-                )
-                metadata = response.json()
-            finally:
-                if response is not None:
-                    response.close()
-            if len(metadata) == 0:
-                raise mc.CadcException(
-                    f'Could not find JSON record for {file_id} at '
-                    f'archive.gemini.edu.'
-                )
-            om.add(metadata, file_id)
-    logging.debug(f'End get_obs_metadata for {file_id}')
 
 
 @dataclass
@@ -207,6 +168,7 @@ class DefiningMetadataFinder:
         self._tap_client = CadcTapClient(
             subject=subject, resource_id=config.tap_id
         )
+        self._gemini_session = mc.get_endpoint_session()
         self._logger = logging.getLogger(self.__class__.__name__)
 
     def _check_caom2(self, uri):
@@ -260,12 +222,9 @@ class DefiningMetadataFinder:
         looking_for_file_id = remove_extensions(f_name)
         # first check the cache
         current_file_id = self._json_lookup.current
-        if self._json_lookup.contains(looking_for_file_id):
-            self._json_lookup.reset_index(looking_for_file_id)
-        else:
-            # this is a remote call to archive.gemini.edu, which updates
-            # the json_lookup cache of metadata.
-            get_obs_metadata(looking_for_file_id)
+        # this is a remote call to archive.gemini.edu, which updates
+        # the json_lookup cache of metadata.
+        self.get_obs_metadata(looking_for_file_id)
         result = None
         if self._json_lookup.contains(looking_for_file_id):
             result = DefiningMetadata(
@@ -276,6 +235,42 @@ class DefiningMetadataFinder:
             self._json_lookup.reset_index(current_file_id)
         self._logger.debug('End _check_remote')
         return result
+
+    def get_obs_metadata(self, file_id):
+        """
+        Download the Gemini observation metadata for the given obs_id.
+
+        :param file_id: The file ID
+        :return: Dictionary of observation metadata.
+        """
+        self._logger.debug(f'Begin get_obs_metadata for {file_id}')
+        # for TaskType.SCRAPE
+        if self._json_lookup.contains(file_id):
+            self._json_lookup.reset_index(file_id)
+        else:
+            if self._gemini_session is None:
+                self._logger.warning(
+                    f'No external access. No observation metadata.'
+                )
+            else:
+                gemini_url = f'{GEMINI_METADATA_URL}{file_id}'
+                # Open the URL and fetch the JSON document for the observation
+                response = None
+                try:
+                    response = mc.query_endpoint_session(
+                        gemini_url, self._gemini_session
+                    )
+                    metadata = response.json()
+                finally:
+                    if response is not None:
+                        response.close()
+                if len(metadata) == 0:
+                    raise mc.CadcException(
+                        f'Could not find JSON record for {file_id} at '
+                        f'archive.gemini.edu.'
+                    )
+                self._json_lookup.add(metadata, file_id)
+        self._logger.debug(f'End get_obs_metadata for {file_id}')
 
     def get(self, uri):
         """

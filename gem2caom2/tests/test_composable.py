@@ -92,12 +92,11 @@ PUBLIC_TEST_JSON = (
 
 
 @patch('cadcutils.net.ws.WsCapabilities.get_access_url')
-@patch('gem2caom2.builder.defining_metadata_finder')
+@patch('gem2caom2.external_metadata.DefiningMetadataFinder')
 @patch('caom2pipe.execute_composable.OrganizeExecutes.do_one')
-@patch('gem2caom2.external_metadata.CadcTapClient')
-def test_run(client_mock, run_mock, dmf_mock, cap_mock):
+def test_run(run_mock, dmf_mock, cap_mock):
     cap_mock.return_value = 'https://localhost'
-    dmf_mock.get.side_effect = gem_mocks.mock_get_dm
+    dmf_mock.return_value.get.side_effect = gem_mocks.mock_get_dm
     test_obs_id = 'GS-CAL20141226-7-029'
     test_f_id = 'S20141226S0206'
     test_f_name = f'{test_f_id}.fits'
@@ -129,12 +128,11 @@ def test_run(client_mock, run_mock, dmf_mock, cap_mock):
 
 
 @patch('cadcutils.net.ws.WsCapabilities.get_access_url')
-@patch('gem2caom2.builder.defining_metadata_finder')
+@patch('gem2caom2.external_metadata.DefiningMetadataFinder')
 @patch('caom2pipe.execute_composable.OrganizeExecutes.do_one')
-@patch('gem2caom2.external_metadata.CadcTapClient')
-def test_run_errors(client_mock, run_mock, dmf_mock, cap_mock):
+def test_run_errors(run_mock, dmf_mock, cap_mock):
     cap_mock.return_value = 'https://localhost'
-    dmf_mock.get.side_effect = gem_mocks.mock_get_dm
+    dmf_mock.return_value.get.side_effect = gem_mocks.mock_get_dm
     test_obs_id = 'GS-CAL20141226-7-029'
     test_f_id = 'S20141226S0206'
     test_f_name = f'{test_f_id}.fits'
@@ -164,16 +162,15 @@ def test_run_errors(client_mock, run_mock, dmf_mock, cap_mock):
 
 
 @patch('cadcutils.net.ws.WsCapabilities.get_access_url')
-@patch('gem2caom2.builder.defining_metadata_finder')
+@patch('gem2caom2.external_metadata.DefiningMetadataFinder')
 @patch('caom2pipe.execute_composable.OrganizeExecutes.do_one')
 @patch('caom2pipe.manage_composable.query_endpoint')
 @patch('caom2pipe.client_composable.query_tap_client')
-@patch('gem2caom2.external_metadata.CadcTapClient')
 def test_run_incremental_rc(
-    client_mock, tap_mock, query_mock, run_mock, dmf_mock, cap_mock
+    tap_mock, query_mock, run_mock, dmf_mock, cap_mock
 ):
     cap_mock.return_value = 'https://localhost'
-    dmf_mock.get.side_effect = gem_mocks.mock_get_dm
+    dmf_mock.return_value.get.side_effect = gem_mocks.mock_get_dm
     query_mock.side_effect = gem_mocks.mock_query_endpoint_2
     tap_mock.side_effect = gem_mocks.mock_query_tap
 
@@ -212,19 +209,23 @@ def test_run_incremental_rc(
 
 
 @patch('cadcutils.net.ws.WsCapabilities.get_access_url')
-@patch('gem2caom2.builder.defining_metadata_finder')
+@patch('gem2caom2.external_metadata.DefiningMetadataFinder')
 @patch('gem2caom2.to_caom2')
 @patch('caom2pipe.client_composable.CAOM2RepoClient')
 @patch('caom2pipe.client_composable.StorageClientWrapper')
 @patch('caom2pipe.manage_composable.read_obs_from_file')
 @patch('caom2pipe.manage_composable.query_endpoint')
-@patch('gem2caom2.external_metadata.CadcTapClient')
 def test_run_by_incremental2(
-    client_mock, query_mock, read_mock, data_client_mock, repo_mock, exec_mock,
-    dmf_mock, cap_mock,
+    query_mock,
+    read_mock,
+    data_client_mock,
+    repo_mock,
+    exec_mock,
+    dmf_mock,
+    cap_mock,
 ):
     cap_mock.return_value = 'https://localhost'
-    dmf_mock.get.side_effect = gem_mocks.mock_get_dm
+    dmf_mock.return_value.get.side_effect = gem_mocks.mock_get_dm
     data_client_mock.return_value.info.side_effect = (
         gem_mocks.mock_get_file_info
     )
@@ -342,14 +343,15 @@ def test_run_by_incremental2(
     assert query_mock.called, 'query mock not called'
 
 
-@patch('gem2caom2.builder.defining_metadata_finder')
+@patch('gem2caom2.external_metadata.DefiningMetadataFinder')
 @patch('cadcutils.net.ws.WsCapabilities.get_access_url')
 @patch('caom2pipe.execute_composable.OrganizeExecutes.do_one')
 @patch('caom2pipe.client_composable.query_tap_client')
-@patch('gem2caom2.external_metadata.CadcTapClient')
 @patch('caom2pipe.data_source_composable.CadcTapClient')
-def test_run_by_public(ds_mock, client_mock, tap_mock, exec_mock, cap_mock, dmf_mock):
-    dmf_mock.get.side_effect = gem_mocks.mock_get_dm
+def test_run_by_public(
+    ds_mock, tap_mock, exec_mock, cap_mock, dmf_mock
+):
+    dmf_mock.return_value.get.side_effect = gem_mocks.mock_get_dm
     cap_mock.return_value = 'https://localhost'
     exec_mock.side_effect = Mock(return_value=0)
     tap_mock.side_effect = gem_mocks.mock_query_tap
@@ -401,21 +403,16 @@ def test_run_by_public(ds_mock, client_mock, tap_mock, exec_mock, cap_mock, dmf_
 
 
 @patch('cadcutils.net.ws.WsCapabilities.get_access_url')
-@patch('gem2caom2.builder.defining_metadata_finder')
+@patch('gem2caom2.external_metadata.DefiningMetadataFinder')
 @patch('caom2pipe.execute_composable.OrganizeExecutes.do_one')
 @patch('caom2pipe.manage_composable.query_endpoint')
-@patch('gem2caom2.external_metadata.get_obs_metadata')
 @patch('caom2pipe.client_composable.query_tap_client')
-@patch('gem2caom2.external_metadata.CadcTapClient')
 @patch('caom2pipe.data_source_composable.CadcTapClient')
 def test_run_by_public2(
-    ds_mock, client_mock, tap_mock, get_obs_mock, query_mock, run_mock,
-    dmf_mock,
-    cap_mock,
+    ds_mock, tap_mock, query_mock, run_mock, dmf_mock, cap_mock
 ):
     cap_mock.return_value = 'https://localhost'
-    dmf_mock.get.side_effect = gem_mocks.mock_get_dm
-    get_obs_mock.side_effect = gem_mocks.mock_get_obs_metadata
+    dmf_mock.return_value.get.side_effect = gem_mocks.mock_get_dm
     query_mock.side_effect = gem_mocks.mock_query_endpoint_2
     tap_mock.side_effect = gem_mocks.mock_query_tap
 

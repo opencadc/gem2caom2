@@ -124,10 +124,9 @@ def pytest_generate_tests(metafunc):
 
 
 @patch('gem2caom2.program_metadata.get_pi_metadata')
-@patch('gem2caom2.external_metadata.get_obs_metadata')
-@patch('gem2caom2.external_metadata.CadcTapClient')
-def test_multi_plane(tap_mock, gemini_client_mock, gemini_pi_mock, test_name):
-    gemini_client_mock.side_effect = gem_mocks.mock_get_obs_metadata
+@patch('gem2caom2.external_metadata.DefiningMetadataFinder')
+def test_multi_plane(gemini_client_mock, gemini_pi_mock, test_name):
+    gemini_client_mock.return_value.get.side_effect = gem_mocks.mock_get_dm
     getcwd_orig = os.getcwd
     os.getcwd = Mock(return_value=gem_mocks.TEST_DATA_DIR)
     try:
