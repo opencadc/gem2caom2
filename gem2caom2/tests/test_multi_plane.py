@@ -113,6 +113,7 @@ LOOKUP = {
     'S20190912Z0264': ['S20190912Z0264b', 'S20190912Z0264r'],
     'GS-2003B-Q-23-17-001': ['S20050916S0159', 'rS20050916S0159'],
     'GS-2013B-Q-75-187-001': ['S20130922S0130', 'S20130922S0130_arc'],
+    'GS-2020B-Q-211-52-1119': ['SDCH_20201119_0052', 'SDCK_20201119_0052'],
 }
 
 
@@ -182,6 +183,21 @@ def _get_lineage(obs_id):
     result = ''
     if obs_id == 'GN-2020A-Q-132-0-0':
         product_id = LOOKUP[obs_id][0][:-1]
+        x = mc.get_lineage(
+            gem_name.COLLECTION,
+            product_id,
+            f'{LOOKUP[obs_id][0]}.fits',
+            gem_name.SCHEME,
+        )
+        y = mc.get_lineage(
+            gem_name.COLLECTION,
+            product_id,
+            f'{LOOKUP[obs_id][1]}.fits',
+            gem_name.SCHEME,
+        )
+        result = f'{x} {y}'
+    elif obs_id == 'GS-2020B-Q-211-52-1119':
+        product_id = 'SDC_20201119_0052'
         x = mc.get_lineage(
             gem_name.COLLECTION,
             product_id,

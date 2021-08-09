@@ -200,7 +200,15 @@ class GemName(mc.StorageName):
                 and self._obs_id is None
             ):
                 raise mc.CadcException('Require a name.')
-            self._product_id = self._file_id
+            if file_id.startswith('SDC'):
+                # DB 20-07-21
+                #  each pair of H/K files will be one observation with one
+                #  plane with two artifacts.
+                self._product_id = file_id.replace('SDCH', 'SDC').replace(
+                    'SDCK', 'SDC'
+                )
+            else:
+                self._product_id = self._file_id
         self._logger = logging.getLogger(__name__)
         self._logger.debug(self)
 
@@ -280,10 +288,6 @@ class GemName(mc.StorageName):
     @property
     def product_id(self):
         return self._product_id
-
-    @property
-    def product_id(self):
-        return self._file_id
 
     @property
     def thumb_uri(self):

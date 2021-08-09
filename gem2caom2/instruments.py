@@ -129,6 +129,7 @@ FILTER_VALUES_TO_IGNORE = ['open', 'invalid', 'pupil', 'clear', 'nd']
 # HOKUPAA - http://www.gemini.edu/sciops/instruments/uhaos/uhaosIndex.html
 # NIFS - DB - 04-03-19 - hard-code 3" FOV
 # TEXES - DB - 07-03-19 - cd11=cd22 = 5.0/3600.0
+# IGRINS - DB - 21-07-21 - hard-code 5" FOV
 RADIUS_LOOKUP = {
     Inst.GPI: 2.8 / 3600.0,  # units are arcseconds
     Inst.GRACES: 1.2 / 3600.0,
@@ -138,6 +139,7 @@ RADIUS_LOOKUP = {
     Inst.BHROS: 0.9 / 3600.0,
     Inst.NIFS: 3.0 / 3600.0,
     Inst.TEXES: 5.0 / 3600.0,
+    Inst.IGRINS: 5.0 / 3600.0,
 }
 # DB - 18-02-19 - for hard-coded field of views use:
 # CRVAL1  = RA value from json or header (degrees
@@ -2709,6 +2711,98 @@ class Hrwfs(InstrumentType):
         self._logger.debug('End _update_chunk_energy_hrwfs')
 
 
+class Igrins(InstrumentType):
+    """
+    DB 21-07-21
+    IGRINS metadata:
+    - modify DATALAB values to give (hopefully) unique observation IDs my
+    - use an observation ID of GS-2020B-Q-315-23-1104 instead of
+    GS-2020B-Q-315-23-0 for file SDCH_20201104_0023.fits, by grabbing the
+    MMDD from the file name (1104 in this case) and replacing the trailing
+    -0 with -MMDD.
+
+    Spatial WCS:
+    - use JSON RA/Dec values for crval1 and crval2.  Same for both artifacts
+    - hardcode a 5" x 5" field of view.   The spectrograph slit is
+      0.34" x 5" but rotation on sky can’t be determined so best to use
+      5" x 5"  square.  Same as we did for DAO 1.2m data.
+    - CD11 = CD22 = 5.0/3600.0 and CD12=CD21=0.0
+    - single ‘pixel’, so naxis1=naxis2=1
+    - crpix1 = crpix2 = 1.0
+
+    Temporal WCS:
+    - standard things from JSON should be fine
+
+    Energy WCS:
+    - resolving power is fixed at 45,000 for both artifacts
+    - JSON filter_name or wavelength_band will tell you if it’s an H- or
+      K-band artifact, or the H/K in the file name.
+    - H-band artifact
+      - wavelength is between 1.47 and 1.83 microns
+    - K-band artifact
+      - wavelength is between 1.93 and 2.5 microns
+   """
+    def __init__(self, name):
+        super(Igrins, self).__init__(name)
+
+    def update_energy(self):
+        self._logger.debug('Begin update_energy')
+        # 0 minimum wavelength in microns
+        # 1 max wavelength in microns
+        lookup = {
+            'H': [1.47, 1.83],
+            'K': [1.93, 2.5]
+        }
+        filter_name = json_lookup.get('filter_name')
+        if filter_name in lookup.keys():
+            self.fm = svofps.FilterMetadata()
+            self.fm.set_bandpass(
+                lookup.get(filter_name)[1], lookup.get(filter_name)[0]
+            )
+            self.fm.set_central_wl(
+                lookup.get(filter_name)[1], lookup.get(filter_name)[0]
+            )
+            self.fm.resolving_power = 45000.0
+        else:
+            raise mc.CadcException(
+                f'Mystery filter {filter_name} for {self.obs_id}'
+            )
+        logging.error(self.fm)
+        self.build_chunk_energy()
+        self._logger.debug('End update_energy')
+
+    def update_position(self):
+        self._logger.debug('Begin update_position')
+        header = self._headers[0]
+        header['CTYPE1'] = 'RA---TAN'
+        header['CTYPE2'] = 'DEC--TAN'
+        header['CUNIT1'] = 'deg'
+        header['CUNIT2'] = 'deg'
+        header['CRVAL1'] = self.get_ra(header)
+        header['CRVAL2'] = self.get_dec(header)
+        header['CDELT1'] = RADIUS_LOOKUP[self._name]
+        header['CDELT2'] = RADIUS_LOOKUP[self._name]
+        header['CROTA1'] = 0.0
+        header['NAXIS1'] = 1
+        header['NAXIS2'] = 1
+        header['CRPIX1'] = 1.0
+        header['CRPIX2'] = 1.0
+        header['CD1_1'] = RADIUS_LOOKUP[self._name]
+        header['CD1_2'] = 0.0
+        header['CD2_1'] = 0.0
+        header['CD2_2'] = RADIUS_LOOKUP[self._name]
+
+        wcs_parser = fits2caom2.WcsParser(
+            header, self.obs_id, self._extension
+        )
+        if self.chunk is None:
+            self.chunk = Chunk()
+        wcs_parser.augment_position(self.chunk)
+        self.chunk.position_axis_1 = 1
+        self.chunk.position_axis_2 = 2
+        self._logger.debug('End update_position')
+
+
 class Michelle(InstrumentType):
     def __init__(self, name):
         super(Michelle, self).__init__(name)
@@ -4197,6 +4291,7 @@ def instrument_factory(name):
         Inst.GSAOI: Gsaoi,
         Inst.HOKUPAA: Hokupaa,
         Inst.HRWFS: Hrwfs,
+        Inst.IGRINS: Igrins,
         Inst.MICHELLE: Michelle,
         Inst.NICI: Nici,
         Inst.NIFS: Nifs,

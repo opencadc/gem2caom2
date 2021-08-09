@@ -398,6 +398,13 @@ def repair_data_label(file_name, data_label):
     metadata. It is OK for an observation to create two sibling products and
     two planes probably captures the goal of this instrument/observing mode
     more directly.
+
+    DB 21-07-21
+    IGRINS modify DATALAB values to give (hopefully) unique observation IDs
+    - use an observation ID of GS-2020B-Q-315-23-1104 instead of
+    GS-2020B-Q-315-23-0 for file SDCH_20201104_0023.fits, by grabbing the
+    MMDD from the file name (1104 in this case) and replacing the trailing
+    -0 with -MMDD.
     """
     # if the data label is missing, the file name, including
     # extensions, is treated as the data label, so get rid of .fits
@@ -490,6 +497,11 @@ def repair_data_label(file_name, data_label):
         # Alopeke/Zorro files, data_label is the file_id minus the
         # channel indicator
         repaired = file_id[:-1]
+    elif file_id.startswith('SDC'):
+        # IGRINS
+        file_id_bits = file_id.split('_')
+        data_label_good_bits = data_label.rsplit('-0', 1)
+        repaired = f'{data_label_good_bits[0]}-{file_id_bits[1][4:]}'
     else:
         repaired = file_id if repaired is None else repaired
     logging.debug(

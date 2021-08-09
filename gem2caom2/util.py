@@ -92,6 +92,7 @@ class Inst(Enum):
     GSAOI = 'GSAOI'
     HOKUPAA = 'Hokupaa+QUIRC'
     HRWFS = 'hrwfs'
+    IGRINS = 'IGRINS'
     MICHELLE = 'michelle'
     NICI = 'NICI'
     NIFS = 'NIFS'

@@ -111,6 +111,7 @@ def pytest_generate_tests(metafunc):
             'processed',
             Inst.ALOPEKE,
             Inst.ZORRO,
+            Inst.IGRINS,
         ]:
             walk_dir = _get_inst_name(ii)
             for root, dirs, files in os.walk(
@@ -129,9 +130,7 @@ def pytest_generate_tests(metafunc):
 @patch('caom2utils.fits2caom2.Client')
 @patch('caom2pipe.astro_composable.get_vo_table_session')
 @patch('gem2caom2.program_metadata.get_pi_metadata')
-@patch('gem2caom2.external_metadata.CadcTapClient')
 def test_main_app(
-    client_mock,
     gemini_pi_mock,
     svofps_mock,
     cadc_client_mock,
