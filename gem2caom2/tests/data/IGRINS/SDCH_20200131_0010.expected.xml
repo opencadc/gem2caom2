@@ -14,10 +14,13 @@
   </caom2:proposal>
   <caom2:target>
     <caom2:name>Zenith</caom2:name>
-    <caom2:type>field</caom2:type>
+    <caom2:type>object</caom2:type>
   </caom2:target>
   <caom2:telescope>
     <caom2:name>Gemini South</caom2:name>
+    <caom2:geoLocationX>1820184.055747326</caom2:geoLocationX>
+    <caom2:geoLocationY>-5208320.066618682</caom2:geoLocationY>
+    <caom2:geoLocationZ>-3194829.197152751</caom2:geoLocationZ>
   </caom2:telescope>
   <caom2:instrument>
     <caom2:name>IGRINS</caom2:name>

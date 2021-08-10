@@ -2745,6 +2745,9 @@ class Igrins(InstrumentType):
     def __init__(self, name):
         super(Igrins, self).__init__(name)
 
+    def get_target_type(self):
+        return TargetType.OBJECT
+
     def update_energy(self):
         self._logger.debug('Begin update_energy')
         # 0 minimum wavelength in microns
@@ -2767,7 +2770,6 @@ class Igrins(InstrumentType):
             raise mc.CadcException(
                 f'Mystery filter {filter_name} for {self.obs_id}'
             )
-        logging.error(self.fm)
         self.build_chunk_energy()
         self._logger.debug('End update_energy')
 

@@ -354,8 +354,8 @@ def accumulate_fits_bp(bp, file_id, uri):
             'Observation.instrument.keywords', 'get_provenance_keywords(uri)'
         )
     telescope = json_lookup.get('telescope')
-    if telescope is not None:
-        if 'North' in telescope:
+    if telescope is not None or instrument is Inst.IGRINS:
+        if telescope is not None and 'North' in telescope:
             x, y, z = ac.get_location(19.823806, -155.46906, 4213.0)
         else:
             x, y, z = ac.get_location(-30.240750, -70.736693, 2722.0)
