@@ -198,8 +198,12 @@ def _get_lineage(obs_id):
             gem_name.SCHEME,
         )
         result = f'{x} {y}'
-    elif obs_id == 'GS-2020B-Q-211-52-1119':
-        product_id = 'SDC_20201119_0052'
+    elif obs_id in [
+        'GS-2020B-Q-211-52-1119',
+        'GS-CAL20200202-23-0201',
+        'GS-CAL20201123-20-1122',
+    ]:
+        product_id = LOOKUP[obs_id][0].replace('H', '')
         x = mc.get_lineage(
             gem_name.COLLECTION,
             product_id,
