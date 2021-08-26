@@ -77,7 +77,7 @@ from mock import patch, Mock
 import gem_mocks
 
 
-@patch('caom2utils.cadc_client_wrapper.StorageClientWrapper')
+@patch('caom2utils.data_util.StorageClientWrapper')
 @patch('cadcutils.net.ws.WsCapabilities.get_access_url')
 @patch('gem2caom2.program_metadata.get_pi_metadata')
 @patch('gem2caom2.external_metadata.DefiningMetadataFinder')

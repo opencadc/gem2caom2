@@ -84,7 +84,7 @@ import gem_mocks
 
 
 @patch('cadcutils.net.ws.WsCapabilities.get_access_url')
-@patch('caom2utils.cadc_client_wrapper.get_local_file_headers', autospec=True)
+@patch('caom2utils.data_util.get_local_file_headers', autospec=True)
 @patch('caom2pipe.client_composable.query_tap_client', autospec=True)
 @patch('gem2caom2.external_metadata.DefiningMetadataFinder', autospec=True)
 def test_dm_finder(get_obs_mock, caom2_mock, local_mock, cap_mock):

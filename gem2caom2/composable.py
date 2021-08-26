@@ -99,15 +99,17 @@ def _run():
     external_metadata.init_global(config=config)
     name_builder = builder.GemObsIDBuilder(config)
     if config.use_local_files:
-        source = dsc.ListDirDataSource(config, chooser=None)
+        source = dsc.ListDirSeparateDataSource(config)
+        meta_visitors = [preview_augmentation, cleanup_augmentation]
     else:
         source = dsc.TodoFileDataSource(config)
+        meta_visitors = META_VISITORS
     return rc.run_by_todo(
         config,
         name_builder,
         chooser=None,
         command_name=main_app.APPLICATION,
-        meta_visitors=META_VISITORS,
+        meta_visitors=meta_visitors,
         source=source,
     )
 
@@ -210,7 +212,7 @@ def run_by_public():
         sys.exit(-1)
 
 
-def _run_by_incremental():
+def _run_state():
     """Run incremental processing for observations that are posted on the site
     archive.gemini.edu. TODO in the future this will depend on the incremental
     query endpoint.
@@ -248,9 +250,9 @@ def _run_by_incremental():
     return result
 
 
-def run_by_incremental():
+def run_state():
     try:
-        result = _run_by_incremental()
+        result = _run_state()
         sys.exit(result)
     except Exception as e:
         logging.error(e)

@@ -94,28 +94,30 @@ class GemObsIDBuilder(nbc.StorageNameBuilder):
 
     def build(self, entry):
         """
-        :param entry: a Gemini file name
+        :param entry: str a Gemini file name, or a fully-qualified file
+            name on disk.
         :return: an instance of StorageName for use in execute_composable.
         """
         self._logger.debug(f'Build a StorageName instance for {entry}.')
         try:
-            uri = mc.build_uri(COLLECTION, entry, SCHEME)
+            f_name = entry
+            if entry != path.basename(entry):
+                f_name = path.basename(entry)
+            uri = mc.build_uri(COLLECTION, f_name, SCHEME)
             metadata = em.defining_metadata_finder.get(uri)
             if (
                 mc.TaskType.SCRAPE in self._config.task_types
                 or self._config.use_local_files
             ):
                 result = gem_name.GemName(
-                    file_name=entry,
+                    file_name=f_name,
                     entry=entry,
                     obs_id=metadata.data_label,
                 )
-                result.source_names = [path.join(
-                    self._config.working_directory, result.file_name
-                )]
+                result.source_names = [entry]
             elif '.fits' in entry or '.jpg' in entry:
                 result = gem_name.GemName(
-                    file_name=entry,
+                    file_name=f_name,
                     entry=entry,
                     obs_id=metadata.data_label,
                 )

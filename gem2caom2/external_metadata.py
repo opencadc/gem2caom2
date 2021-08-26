@@ -73,7 +73,7 @@ import os
 from dataclasses import dataclass
 
 from cadctap import CadcTapClient
-from caom2utils import cadc_client_wrapper
+from caom2utils import data_util
 from caom2pipe import client_composable as clc
 from caom2pipe import manage_composable as mc
 from gem2caom2 import obs_metadata as gom
@@ -201,7 +201,7 @@ class DefiningMetadataFinder:
         result = None
         for f_name in try_these:
             if os.path.exists(f_name):
-                headers = cadc_client_wrapper.get_local_file_headers(f_name)
+                headers = data_util.get_local_file_headers(f_name)
                 temp = headers[0].get('DATALAB').upper()
                 if temp is not None:
                     result = DefiningMetadata(

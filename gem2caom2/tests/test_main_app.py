@@ -126,7 +126,7 @@ def pytest_generate_tests(metafunc):
 
 @patch('cadcutils.net.ws.WsCapabilities.get_access_url')
 @patch('gem2caom2.external_metadata.DefiningMetadataFinder')
-@patch('caom2utils.cadc_client_wrapper.StorageClientWrapper')
+@patch('caom2utils.data_util.StorageClientWrapper')
 @patch('caom2utils.fits2caom2.Client')
 @patch('caom2pipe.astro_composable.get_vo_table_session')
 @patch('gem2caom2.program_metadata.get_pi_metadata')

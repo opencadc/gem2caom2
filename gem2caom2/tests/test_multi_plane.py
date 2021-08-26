@@ -147,7 +147,7 @@ def test_multi_plane(gemini_client_mock, gemini_pi_mock, test_name):
         plugin = gem_mocks.PLUGIN
 
         with patch(
-            'caom2utils.cadc_client_wrapper.StorageClientWrapper'
+            'caom2utils.data_util.StorageClientWrapper'
         ) as data_client_mock, patch(
             'caom2pipe.astro_composable.get_vo_table_session'
         ) as svofps_mock:

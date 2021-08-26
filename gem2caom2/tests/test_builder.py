@@ -117,3 +117,32 @@ def test_builder(dmf_mock):
     test_entry = 'GN-DATA-LABEL'
     with pytest.raises(mc.CadcException):
         ignore = test_subject.build(test_entry)
+
+
+@patch('gem2caom2.external_metadata.DefiningMetadataFinder')
+def test_builder_local(dmf_mock):
+    try:
+        em.defining_metadata_finder = None
+        test_config = mc.Config()
+        test_config.data_sources = ['/test_files']
+        test_config.use_local_files = True
+        test_entry = '/test_files/S20191214S0301.fits'
+        test_config.task_types = [mc.TaskType.INGEST]
+        em.init_global(config=test_config)
+        test_subject = builder.GemObsIDBuilder(test_config)
+        test_result = test_subject.build(test_entry)
+        assert test_result is not None, 'expect a result'
+        assert (
+            test_result.file_uri == 'gemini:GEMINI/S20191214S0301.fits'
+        ), 'file'
+        assert (
+            test_result.prev_uri == 'gemini:GEMINI/S20191214S0301.jpg'
+        ), 'prev'
+        assert (
+            test_result.thumb_uri == 'cadc:GEMINI/S20191214S0301_th.jpg'
+        ), 'thumb'
+        assert (
+            test_result.source_names[0] == '/test_files/S20191214S0301.fits'
+        ), 'wrong source_names'
+    finally:
+        em.defining_metadata_finder = None

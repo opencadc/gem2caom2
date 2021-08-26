@@ -183,7 +183,7 @@ def test_run_incremental_rc(
     getcwd_orig = os.getcwd
     os.getcwd = Mock(return_value=gem_mocks.TEST_DATA_DIR)
     try:
-        composable._run_by_incremental()
+        composable._run_state()
         assert run_mock.called, 'run_mock should have been called'
         args, kwargs = run_mock.call_args
         test_storage = args[0]
@@ -329,7 +329,7 @@ def test_run_by_incremental2(
     os.getcwd = Mock(return_value=f'{gem_mocks.TEST_DATA_DIR}/edu_query')
     try:
         # execution
-        test_result = composable._run_by_incremental()
+        test_result = composable._run_state()
         assert test_result == 0, 'wrong result'
     finally:
         os.getcwd = getcwd_orig
