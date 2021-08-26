@@ -74,26 +74,19 @@ import traceback
 
 from datetime import datetime
 
+from caom2pipe import data_source_composable as dsc
 from caom2pipe import manage_composable as mc
-from caom2pipe import name_builder_composable as nbc
 from caom2pipe import run_composable as rc
 from gem2caom2 import main_app, preview_augmentation, external_metadata
-from gem2caom2 import pull_augmentation, gem_name, data_source, builder
-from gem2caom2 import pull_v_augmentation, preview_v_augmentation
+from gem2caom2 import pull_augmentation, data_source, builder
 from gem2caom2 import cleanup_augmentation
 
 DATA_VISITORS = []
-
-
-def _define_meta_visitors(config):
-    meta_visitors = [
-        preview_augmentation, pull_augmentation, cleanup_augmentation
+META_VISITORS = [
+        preview_augmentation,
+        pull_augmentation,
+        cleanup_augmentation,
     ]
-    if config.features.supports_latest_client:
-        meta_visitors = [
-            preview_v_augmentation, pull_v_augmentation, cleanup_augmentation
-        ]
-    return meta_visitors
 
 
 def _run():
@@ -105,10 +98,20 @@ def _run():
     config.get_executors()
     external_metadata.init_global(config=config)
     name_builder = builder.GemObsIDBuilder(config)
-    meta_visitors = _define_meta_visitors(config)
-    return rc.run_by_todo(config, name_builder, chooser=None,
-                          command_name=main_app.APPLICATION,
-                          meta_visitors=meta_visitors)
+    if config.use_local_files:
+        source = dsc.ListDirSeparateDataSource(config)
+        meta_visitors = [preview_augmentation, cleanup_augmentation]
+    else:
+        source = dsc.TodoFileDataSource(config)
+        meta_visitors = META_VISITORS
+    return rc.run_by_todo(
+        config,
+        name_builder,
+        chooser=None,
+        command_name=main_app.APPLICATION,
+        meta_visitors=meta_visitors,
+        source=source,
+    )
 
 
 def run():
@@ -140,13 +143,17 @@ def _run_single():
         config.proxy = sys.argv[2]
     config.stream = 'default'
     if config.features.use_file_names:
-        storage_name = gem_name.GemName(file_name=sys.argv[1])
+        storage_name = builder.GemObsIDBuilder(config).build(sys.argv[1])
     else:
         raise mc.CadcException('No code to handle running GEM by obs id.')
     external_metadata.init_global(config=config)
-    meta_visitors = _define_meta_visitors(config)
-    return rc.run_single(config, storage_name, main_app.APPLICATION,
-                         meta_visitors, DATA_VISITORS)
+    return rc.run_single(
+        config,
+        storage_name,
+        main_app.APPLICATION,
+        META_VISITORS,
+        DATA_VISITORS,
+    )
 
 
 def run_single():
@@ -179,16 +186,19 @@ def _run_by_public():
     config = mc.Config()
     config.get_executors()
     external_metadata.init_global(config=config)
-    name_builder = nbc.FileNameBuilder(gem_name.GemName)
+    name_builder = builder.GemObsIDBuilder(config)
     incremental_source = data_source.PublicIncremental(config)
-    meta_visitors = _define_meta_visitors(config)
-    return rc.run_by_state(config=config, name_builder=name_builder,
-                           command_name=main_app.APPLICATION,
-                           bookmark_name=data_source.GEM_BOOKMARK,
-                           meta_visitors=meta_visitors,
-                           data_visitors=DATA_VISITORS,
-                           end_time=None, source=incremental_source,
-                           chooser=None)
+    return rc.run_by_state(
+        config=config,
+        name_builder=name_builder,
+        command_name=main_app.APPLICATION,
+        bookmark_name=data_source.GEM_BOOKMARK,
+        meta_visitors=META_VISITORS,
+        data_visitors=DATA_VISITORS,
+        end_time=None,
+        source=incremental_source,
+        chooser=None,
+    )
 
 
 def run_by_public():
@@ -202,7 +212,7 @@ def run_by_public():
         sys.exit(-1)
 
 
-def _run_by_incremental():
+def _run_state():
     """Run incremental processing for observations that are posted on the site
     archive.gemini.edu. TODO in the future this will depend on the incremental
     query endpoint.
@@ -219,15 +229,14 @@ def _run_by_incremental():
     end_timestamp_dt = mc.make_time_tz(end_timestamp_s)
     logging.info(f'{main_app.APPLICATION} will end at {end_timestamp_s}')
     external_metadata.init_global(config=config)
-    name_builder = nbc.FileNameBuilder(gem_name.GemName)
+    name_builder = builder.GemObsIDBuilder(config)
     incremental_source = data_source.IncrementalSource()
-    meta_visitors = _define_meta_visitors(config)
     result = rc.run_by_state(
         config=config,
         name_builder=name_builder,
         command_name=main_app.APPLICATION,
         bookmark_name=data_source.GEM_BOOKMARK,
-        meta_visitors=meta_visitors,
+        meta_visitors=META_VISITORS,
         data_visitors=DATA_VISITORS,
         end_time=end_timestamp_dt,
         source=incremental_source,
@@ -241,9 +250,9 @@ def _run_by_incremental():
     return result
 
 
-def run_by_incremental():
+def run_state():
     try:
-        result = _run_by_incremental()
+        result = _run_state()
         sys.exit(result)
     except Exception as e:
         logging.error(e)

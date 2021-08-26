@@ -1,3 +1,4 @@
+<?xml version='1.0' encoding='UTF-8'?>
 <caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="63948640-b04e-488a-806d-14bcb4b33f71" caom2:lastModified="2017-06-27T21:31:54.122" caom2:maxLastModified="2019-08-27T21:37:26.519" caom2:metaChecksum="md5:318497410db865c7c4b757c57631c01c" caom2:accMetaChecksum="md5:903325d8d79ecd0efe53e4b72b7f1cc8" caom2:metaProducer="gem2caom2/0.8.1">
   <caom2:collection>GEMINI</caom2:collection>
   <caom2:observationID>GS-2001B-Q-31-9-9004</caom2:observationID>
@@ -37,7 +38,7 @@
       </caom2:provenance>
       <caom2:artifacts>
         <caom2:artifact caom2:id="01227d95-e1c7-475b-b244-40a9b959acbf" caom2:lastModified="2019-08-27T21:37:26.519" caom2:maxLastModified="2019-08-27T21:37:26.519" caom2:metaChecksum="md5:26e78bad98f9a33108759f2b44d2a60a" caom2:accMetaChecksum="md5:ece1d7ef034d87654ccd79d3a808b9b3" caom2:metaProducer="gem2caom2/0.8.1">
-          <caom2:uri>gemini:GEM/01DEC05_004.fits</caom2:uri>
+          <caom2:uri>gemini:GEMINI/01DEC05_004.fits</caom2:uri>
           <caom2:productType>science</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>

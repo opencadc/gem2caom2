@@ -40,7 +40,7 @@
       </caom2:provenance>
       <caom2:artifacts>
         <caom2:artifact caom2:id="532e418d-d2ce-41c5-8bae-f1a5e19ee532" caom2:metaProducer="gem2caom2/0.8.1">
-          <caom2:uri>gemini:GEM/S20201023Z0001b.fits</caom2:uri>
+          <caom2:uri>gemini:GEMINI/S20201023Z0001b.fits</caom2:uri>
           <caom2:productType>science</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>

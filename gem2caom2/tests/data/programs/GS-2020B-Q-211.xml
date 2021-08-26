@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+
+<title>Detail for Program: GS-2020B-Q-211</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-2020B-Q-211</h1>
+
+<table>
+ <tr><td>Title:<td>Insights to Heavy Element Nucleosynthesis at Low Metallicity from Magellanic Cloud Planetary Nebular</tr>
+ <tr><td>PI:<td>Nicholas Sterling</tr>
+ <tr><td>Co-I(s):<td> Harriet Dinerstein,  Kyle Kaplan,  Jorge Garcia-Rojas,  Amanda Karakas,  Andres Yague,  Maria Lugaro</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+We propose to use IGRINS on Gemini-S to observe four planetary nebulae (PNe) in each of the Large and Small Magellanic Clouds.  These observations will provide an opportunity to directly measure enrichments of neutron(n)-capture elements by the s-process in low-metallicity PNe with different progenitor masses.  We will use the empirical abundances to test predictions of three different AGB evolutionary codes, providing constraints to key uncertainties including convection and mass-loss in a metal-poor regime that is not well-studied.  Our abundance determinations will also uniquely test whether the i-process, with neutron densities intermediate to the s- and r-processes, operated in PN progenitors as has been suggested for post-AGB stars in these galaxies.  Compensatory time observations with IGRINS on Gemini through U. Texas show that transitions of multiple n-capture elements can be detected in PNe with similar brightness to our targets, including weak lines of Rb and Te, demonstrating the feasibility of our scientific aims. 
+</div>
+
+
+
+</body>
+</html>

@@ -68,115 +68,101 @@
 #
 
 import os
-import pytest
-import shutil
+
+from astropy.io import fits
+from astropy.table import Table
 
 from mock import patch, Mock
 
 from caom2pipe import manage_composable as mc
 from gem2caom2 import external_metadata as ext_md
+from gem2caom2.util import Inst
+from gem2caom2.obs_metadata import json_lookup
+
 
 import gem_mocks
 
-test_subjects = {
-    'H2v=2-1S1_G0220': [ext_md.Inst.NIRI, 'H2S1v2-1-G0220'],
-    'Kprime_G0206': [ext_md.Inst.NIRI, 'Kprime-G0206'],
-    'H2Oice204_G0242': [ext_md.Inst.NIRI, 'H2Oice2045-G0242'],
-    'Jcon(121)_G0232': [ext_md.Inst.NIRI, 'Jcont1207-G0232'],
-    'Bra_G0238': [ext_md.Inst.NIRI, 'BrAlpha-G0238'],
-    'Bracont_G0237': [ext_md.Inst.NIRI, 'BrAlphaCont-G0237'],
-    'Brgamma_G0218': [ext_md.Inst.NIRI, 'BrG-G0218'],
-    'Jcon1065_G0239': [ext_md.Inst.NIRI, 'Jcont1065-G0239'],
-    'hydrocarb_G0231': [ext_md.Inst.NIRI, 'hydrocarbon-G0231'],
-}
 
+@patch('cadcutils.net.ws.WsCapabilities.get_access_url')
+@patch('caom2utils.data_util.get_local_file_headers', autospec=True)
+@patch('caom2pipe.client_composable.query_tap_client', autospec=True)
+@patch('gem2caom2.external_metadata.DefiningMetadataFinder', autospec=True)
+def test_dm_finder(get_obs_mock, caom2_mock, local_mock, cap_mock):
+    cap_mock.return_value = 'https://localhost'
+    test_file_id = 'rN20123456S9876'
+    test_uri = f'gemini:GEMINI/{test_file_id}.fits'
+    repaired_data_label = 'GN-2012A-B-012-345-6'
+    test_data_label = f'{repaired_data_label}-R'
+    json_lookup.flush()
 
-def test_repair_filter_name():
-    for ii in test_subjects:
-        test_result = ext_md._repair_filter_name_for_svo(test_subjects[ii][0],
-                                                         ii)
-        assert test_result == test_subjects[ii][1], 'wrong value'
+    def _get_obs_md_mock(ignore):
+        md = [
+            {
+                'data_label': test_data_label,
+                'filename': f'{test_file_id}.fits',
+                'lastmod': '2020-02-25T20:36:31.230',
+                'instrument': 'GMOS',
+            },
+        ]
+        json_lookup.add(md, test_file_id)
+        return ext_md.DefiningMetadata(Inst.GMOS, repaired_data_label)
+    get_obs_mock.return_value.get.side_effect = _get_obs_md_mock
 
+    def _caom2_mock(ignore1, ignore2):
+        return Table.read(
+            f'observationID,instrument_name\n'
+            f'{test_data_label},'
+            f'GMOS\n'.split('\n'),
+            format='csv',
+        )
+    caom2_mock.side_effect = _caom2_mock
 
-@patch('gem2caom2.external_metadata.get_obs_metadata')
-@patch('caom2pipe.manage_composable.query_tap_client')
-def test_caching_relationship(tap_mock, get_obs_mock):
-    shutil.copyfile(f'{gem_mocks.TEST_DATA_DIR}/from_paul.txt',
-                    '/app/data/from_paul.txt')
-    getcwd_orig = os.getcwd
-    os.getcwd = Mock(return_value=gem_mocks.TEST_DATA_DIR)
-    try:
-        test_config = mc.Config()
-        test_config.get_executors()
-        ext_md.init_global(config=test_config)
-        initial_length = 525
-        tap_mock.side_effect = gem_mocks._query_mock_none
-        get_obs_mock.side_effect = gem_mocks.mock_get_obs_metadata
-        test_subject = ext_md.CachingObsFileRelationship()
-        test_subject.tap_client = Mock()
-        # test an entry that's not in the file, not at CADC, is at
-        # archive.gemini.edu
-        assert len(test_subject.name_list) == initial_length, \
-            'bad initial length'
-        test_result = test_subject.get_obs_id('N20200210S0077')
-        assert test_result is not None, 'expect a gemini result'
-        assert test_result == 'GN-CAL20200210-22-076', 'wrong gemini result'
-        assert len(test_subject.name_list) == initial_length + 1, \
-            'bad updated length from Gemini'
+    def _local_mock(ignore):
+        hdr = fits.Header()
+        hdr['DATALAB'] = test_data_label
+        hdr['INSTRUME'] = 'GMOS'
+        return [hdr]
+    local_mock.side_effect = _local_mock
+    os_path_exists_orig = os.path.exists
+    os.path.exists = Mock(return_value=True)
 
-        # entry is not in file, but is at CADC
-        tap_mock.side_effect = gem_mocks.mock_query_tap
-        test_result = test_subject.get_obs_id('x')
-        assert test_result is not None, 'expect a cadc result'
-        assert test_result == 'test_data_label', 'wrong cadc result'
-        assert len(test_subject.name_list) == initial_length + 2, \
-            'bad updated length from cadc'
-
-        # entry is in file
-        test_result = test_subject.get_obs_id('N20170616S0540')
-        assert test_result is not None, 'expect a file result'
-        assert test_result == 'GN-CAL20170616-11-022', 'wrong file result'
-        assert len(test_subject.name_list) == initial_length + 2, \
-            'bad updated length from file'
-    finally:
-        os.getcwd = getcwd_orig
-
-
-def test_caching_relationship_unconnected():
     test_config = mc.Config()
-    test_config.use_local_files = True
-    test_config.task_types = [mc.TaskType.SCRAPE]
-    test_subject = ext_md.CachingObsFileRelationship(test_config)
-    # test an entry that's a file header on disk
-    test_result = test_subject.get_obs_id('get_obs_id_from_file_on_disk')
-    assert test_result is not None, 'expected result'
-    assert test_result == 'GN-2006A-Q-90-1-001-MRG-ADD', 'wrong result'
+    test_config.data_sources = [gem_mocks.TEST_DATA_DIR]
+    test_config.proxy_fqn = os.path.join(
+        gem_mocks.TEST_DATA_DIR, 'cadcproxy.pem'
+    )
+    test_config.tap_id = 'ivo://cadc.nrc.ca/test'
 
-
-@patch('requests.Session')
-@patch('gem2caom2.external_metadata.CadcTapClient')
-def test_get_obs_metadata_not_at_gemini(tap_client_mock, session_mock):
-    session_mock.get.side_effect = gem_mocks.mock_session_get_not_found
-    test_config = mc.Config()
-    test_config.working_directory = gem_mocks.TEST_DATA_DIR
-    test_config.proxy_file_name = 'test_proxy.pem'
-    ext_md.init_global(config=test_config)
-    with pytest.raises(mc.CadcException, match=f'Could not find JSON record *'):
-        test_result = ext_md.get_obs_metadata('test_file_id')
-
-
-@patch('caom2pipe.astro_composable.get_vo_table_session')
-def test_get_filter_metadata(get_vo_mock):
     try:
-        ext_md.get_gofr()
-        get_vo_mock.side_effect = gem_mocks.mock_get_votable
-        test_result = ext_md.get_filter_metadata(ext_md.Inst.NIRI, 'filters')
-        assert get_vo_mock.call_count == 2, 'wrong number of calls'
-        assert test_result is None, 'do not expect a result'
-        # do the same thing again, check that the result has been cached
-        test_result = ext_md.get_filter_metadata(ext_md.Inst.NIRI, 'filters')
-        assert get_vo_mock.call_count == 2, 'wrong number of calls'
-        assert test_result is None, 'do not expect a result this time either'
+        for test_use_local in [True, False]:
+            for test_connected in [True, False]:
+                test_config.use_local_files = test_use_local
+                if test_connected:
+                    test_config.task_types = [mc.TaskType.VISIT]
+                else:
+                    test_config.task_types = [mc.TaskType.SCRAPE]
+
+                test_subject = ext_md.DefiningMetadataFinder(test_config)
+                assert test_subject is not None, (
+                    f'ctor does not work:: '
+                    f'local {test_use_local}, '
+                    f'connected {test_connected}'
+                )
+                test_result = test_subject.get(test_uri)
+                assert test_result is not None, (
+                    f'expect a result '
+                    f'local {test_use_local}, '
+                    f'connected {test_connected}'
+                )
+                assert test_result.instrument is Inst.GMOS, (
+                    f'instrument should be GMOS '
+                    f'local {test_use_local}, '
+                    f'connected {test_connected}'
+                )
+                assert test_result.data_label == repaired_data_label, (
+                    f'data_label should be {repaired_data_label} '
+                    f'local {test_use_local}, '
+                    f'connected {test_connected}'
+                )
     finally:
-        # undo the initialization
-        ext_md.set_ofr(None)
+        os.path.exists = os_path_exists_orig

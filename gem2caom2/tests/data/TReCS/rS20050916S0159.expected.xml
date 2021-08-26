@@ -41,7 +41,7 @@
       </caom2:provenance>
       <caom2:artifacts>
         <caom2:artifact caom2:id="0261c202-bc1e-4803-8635-c915f43c6187" caom2:lastModified="2019-11-06T12:10:50.080" caom2:maxLastModified="2019-11-06T12:10:50.080" caom2:metaChecksum="md5:e6365907f08921fe4cbbccb5afe59634" caom2:accMetaChecksum="md5:48d7cec7949ab151251116fe8d028364" caom2:metaProducer="gem2caom2/0.8.1">
-          <caom2:uri>gemini:GEM/rS20050916S0159.fits</caom2:uri>
+          <caom2:uri>gemini:GEMINI/rS20050916S0159.fits</caom2:uri>
           <caom2:productType>science</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>

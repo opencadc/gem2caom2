@@ -36,17 +36,14 @@ cache_file_name: cache.yml
 interval: 1440
 rejected_directory: /usr/src/app/gem2caom2/gem2caom2/tests/data/rejected
 rejected_file_name: rejected.yml
+storage_inventory_resource_id: ivo://cadc.nrc.ca/test
 # how to control the work that gets done
 # possible values are:
 # - scrape - read the headers, write out the xml - kind of a test mode
 # - store - calls cadc-data to put a file from local storage (use_local_files must be set to True)
 # - ingest - read the headers, write the xml to the endpoint found by resource_id
 # - modify - create a footprint and previews for an existing CAOM model record
-# - pull - put a file retrieved from a URL
 task_types:
   - visit
 features:
-  supports_latest_caom: False
   supports_multiple_files: False
-  use_file_names: True
-  use_urls: False

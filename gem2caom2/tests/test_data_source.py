@@ -70,11 +70,15 @@
 from datetime import datetime
 from mock import patch
 from gem2caom2 import data_source
+from gem2caom2.obs_metadata import json_lookup
 import gem_mocks
 
 
 @patch('caom2pipe.manage_composable.query_endpoint')
 def test_incremental_source(query_mock):
+    # clean up the singleton cache content as initial conditions
+    json_lookup.flush()
+
     # https://archive.gemini.edu/jsonsummary/canonical/entrytimedaterange=
     # 2021-01-01T20:03:00.000000%202021-01-01T22:13:00.000000/
     # ?orderby=entrytime
@@ -82,14 +86,18 @@ def test_incremental_source(query_mock):
     query_mock.side_effect = gem_mocks.mock_query_endpoint_2
 
     test_subject = data_source.IncrementalSource()
+    assert len(test_subject._json_cache._lookup) == 0, 'initial conditions'
     assert test_subject is not None, 'expect construction success'
-    prev_exec_time = datetime(year=2021, month=1, day=1,
-                              hour=20, minute=3, second=0).timestamp()
-    exec_time = datetime(year=2021, month=1, day=1,
-                         hour=22, minute=13, second=0).timestamp()
+    prev_exec_time = datetime(
+        year=2021, month=1, day=1, hour=20, minute=3, second=0
+    ).timestamp()
+    exec_time = datetime(
+        year=2021, month=1, day=1, hour=22, minute=13, second=0
+    ).timestamp()
     test_result = test_subject.get_time_box_work(prev_exec_time, exec_time)
     assert test_result is not None, 'expect a result'
     assert len(test_result) == 2, 'wrong number of results'
+    assert len(test_subject._json_cache._lookup) == 2, 'caching failed'
     test_entry = test_result.popleft()
     assert test_entry.entry_name == 'N20210101S0043.fits', 'wrong first file'
     assert test_entry.entry_ts == 1609535565.237183, 'wrong first timestamp'
@@ -98,10 +106,13 @@ def test_incremental_source(query_mock):
     assert test_entry.entry_ts == 1609535567.250666, 'wrong 2nd timestamp'
 
     # get nothing
-    prev_exec_time = datetime(year=2019, month=1, day=1,
-                              hour=20, minute=3, second=0).timestamp()
-    exec_time = datetime(year=2019, month=2, day=1,
-                         hour=22, minute=13, second=0).timestamp()
+    prev_exec_time = datetime(
+        year=2019, month=1, day=1, hour=20, minute=3, second=0
+    ).timestamp()
+    exec_time = datetime(
+        year=2019, month=2, day=1, hour=22, minute=13, second=0
+    ).timestamp()
     test_result = test_subject.get_time_box_work(prev_exec_time, exec_time)
     assert test_result is not None, 'expect a result'
     assert len(test_result) == 0, 'wrong number of empty result list'
+    assert len(test_subject._json_cache._lookup) == 0, 'flushing failed'

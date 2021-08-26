@@ -3,7 +3,7 @@
 # ******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
 # *************  CENTRE CANADIEN DE DONNÉES ASTRONOMIQUES  **************
 #
-#  (c) 2020.                            (c) 2020.
+#  (c) 2021.                            (c) 2021.
 #  Government of Canada                 Gouvernement du Canada
 #  National Research Council            Conseil national de recherches
 #  Ottawa, Canada, K1A 0R6              Ottawa, Canada, K1A 0R6
@@ -62,63 +62,44 @@
 #  <http://www.gnu.org/licenses/>.      pas le cas, consultez :
 #                                       <http://www.gnu.org/licenses/>.
 #
-#  $Revision: 4 $
+#  : 4 $
 #
 # ***********************************************************************
 #
 
-import logging
+from enum import Enum
 
-from datetime import datetime
-
-from caom2 import Observation
-from caom2pipe import manage_composable as mc
-
-from gem2caom2 import gem_name
-
-FILE_URL = 'https://archive.gemini.edu/file'
+COLLECTION = 'GEMINI'
+# originates at gemini scheme
+SCHEME = 'gemini'
+# originates at CADC storage scheme
+V_SCHEME = 'cadc'
 
 
-def visit(observation, **kwargs):
-    """
-    If the observation says the data release date is past, attempt to
-    retrieve the fits file if it is not already at CADC.
-    """
-    mc.check_param(observation, Observation)
-    working_dir = kwargs.get('working_directory', './')
-    cadc_client = kwargs.get('cadc_client')
-    if cadc_client is None:
-        logging.warning('Need a cadc_client to update. Stopping pull visitor.')
-        return
-    observable = kwargs.get('observable')
-    if observable is None:
-        raise mc.CadcException('Visitor needs a observable parameter.')
+class Inst(Enum):
 
-    count = 0
-    if observable.rejected.is_bad_metadata(observation.observation_id):
-        logging.info(f'Stopping visit for {observation.observation_id} '
-                     f'because of bad metadata.')
-    else:
-        for plane in observation.planes.values():
-            if (plane.data_release is None or
-                    plane.data_release > datetime.utcnow()):
-                logging.info(f'Plane {plane.product_id} is proprietary. No '
-                             f'file access.')
-                continue
-
-            for artifact in plane.artifacts.values():
-                if gem_name.GemName.is_preview(artifact.uri):
-                    continue
-                try:
-                    f_name = mc.CaomName(artifact.uri).file_name
-                    file_url = '{}/{}'.format(FILE_URL, f_name)
-                    mc.look_pull_and_put_v(artifact.uri, f_name, working_dir,
-                                           file_url, cadc_client,
-                                           artifact.content_checksum.checksum,
-                                           observable.metrics)
-                except Exception as e:
-                    if not (observable.rejected.check_and_record(
-                            str(e), observation.observation_id)):
-                        raise e
-    logging.info(f'Completed pull visitor for {observation.observation_id}.')
-    return {'observation': count}
+    ALOPEKE = 'Alopeke'
+    BHROS = 'bHROS'
+    CIRPASS = 'CIRPASS'
+    F2 = 'F2'
+    FLAMINGOS = 'FLAMINGOS'
+    GMOS = 'GMOS'
+    GMOSN = 'GMOS-N'
+    GMOSS = 'GMOS-S'
+    GNIRS = 'GNIRS'
+    GPI = 'GPI'
+    GRACES = 'GRACES'
+    GSAOI = 'GSAOI'
+    HOKUPAA = 'Hokupaa+QUIRC'
+    HRWFS = 'hrwfs'
+    IGRINS = 'IGRINS'
+    MICHELLE = 'michelle'
+    NICI = 'NICI'
+    NIFS = 'NIFS'
+    NIRI = 'NIRI'
+    OSCIR = 'OSCIR'
+    PHOENIX = 'PHOENIX'
+    TEXES = 'TEXES'
+    TRECS = 'TReCS'
+    ZORRO = 'Zorro'
+    UNKNOWN = None

@@ -41,7 +41,7 @@
       </caom2:provenance>
       <caom2:artifacts>
         <caom2:artifact caom2:id="9840bad3-5c14-46f1-992a-d8ea128123d4" caom2:metaProducer="gem2caom2/0.8.1">
-          <caom2:uri>gemini:GEM/S20060412S0056.fits</caom2:uri>
+          <caom2:uri>gemini:GEMINI/S20060412S0056.fits</caom2:uri>
           <caom2:productType>science</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>
@@ -1150,7 +1150,7 @@
       </caom2:provenance>
       <caom2:artifacts>
         <caom2:artifact caom2:id="4404d796-4663-417b-886b-e7b064861fc3" caom2:metaProducer="gem2caom2/0.8.1">
-          <caom2:uri>gemini:GEM/rS20060412S0056.fits</caom2:uri>
+          <caom2:uri>gemini:GEMINI/rS20060412S0056.fits</caom2:uri>
           <caom2:productType>science</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>

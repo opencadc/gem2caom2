@@ -40,14 +40,14 @@
         <caom2:producer>NOAO-IRAF FITS Image Kernel July 2003</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/filepre=S20131007S0067_fringe.fits</caom2:reference>
         <caom2:inputs>
-          <caom2:planeURI>caom:GEMINI/GS-2013B-Q-69-59-005/S20131007S0068</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/GS-2013B-Q-69-59-006/S20131007S0069</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GS-2013B-Q-69-59-005/S20131007S0068</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/GS-2013B-Q-69-59-004/S20131007S0067</caom2:planeURI>
         </caom2:inputs>
       </caom2:provenance>
       <caom2:artifacts>
         <caom2:artifact caom2:id="00000000-0000-0000-bd9c-f35041b88b8d" caom2:metaProducer="gem2caom2/0.8.1">
-          <caom2:uri>gemini:GEM/S20131007S0067_fringe.fits</caom2:uri>
+          <caom2:uri>gemini:GEMINI/S20131007S0067_fringe.fits</caom2:uri>
           <caom2:productType>calibration</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>
@@ -331,7 +331,7 @@
           </caom2:parts>
         </caom2:artifact>
         <caom2:artifact caom2:id="00000000-0000-0000-a536-10d2c9cf1e70" caom2:metaProducer="gem2caom2/0.8.1">
-          <caom2:uri>gemini:GEM/S20131007S0067_fringe.jpg</caom2:uri>
+          <caom2:uri>gemini:GEMINI/S20131007S0067_fringe.jpg</caom2:uri>
           <caom2:productType>preview</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>image/jpeg</caom2:contentType>

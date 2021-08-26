@@ -74,9 +74,10 @@ from datetime import datetime
 
 import matplotlib.image as image
 
+from cadcutils import exceptions
 from caom2 import Observation, ProductType, ReleaseType
 from caom2pipe import manage_composable as mc
-from gem2caom2.gem_name import GemName, ARCHIVE
+from gem2caom2.gem_name import GemName
 
 __all__ = ['visit']
 
@@ -92,9 +93,6 @@ def visit(observation, **kwargs):
     cadc_client = kwargs.get('cadc_client')
     if cadc_client is None:
         logging.warning('Need a cadc_client to update preview records.')
-    stream = kwargs.get('stream')
-    if stream is None:
-        raise mc.CadcException('Visitor needs a stream parameter.')
     observable = kwargs.get('observable')
     if observable is None:
         raise mc.CadcException('Visitor needs a observable parameter.')
@@ -102,12 +100,12 @@ def visit(observation, **kwargs):
     count = 0
     for plane in observation.planes.values():
         if (
-            plane.data_release is None or
-                plane.data_release > datetime.utcnow()
+            plane.data_release is None
+            or plane.data_release > datetime.utcnow()
         ):
             logging.info(
-                f'Plane {plane.product_id} is proprietary. No preview '
-                f'access or thumbnail creation.'
+                f'Plane {plane.product_id} is proprietary. No '
+                f'preview access or thumbnail creation.'
             )
             continue
         count += _do_prev(
@@ -115,7 +113,6 @@ def visit(observation, **kwargs):
             working_dir,
             plane,
             cadc_client,
-            stream,
             observable,
         )
     logging.info(
@@ -124,56 +121,47 @@ def visit(observation, **kwargs):
     return {'artifacts': count}
 
 
-def _check_for_delete(file_name, uri, observable, plane):
-    """If the preview file doesn't exist, but the artifact that represents it
-    does, remove that artifact from the Observation instance."""
-    result = 0
-    if (
-        observable.rejected.is_no_preview(file_name) and
-            uri in plane.artifacts.keys()
-    ):
-        logging.warning(f'Removing artifact for non-existent preview {uri}')
-        plane.artifacts.pop(uri)
-        result = 1
-    return result
-
-
-def _do_prev(obs_id, working_dir, plane, cadc_client, stream, observable):
+def _do_prev(
+    obs_id, working_dir, plane, cadc_client, observable
+):
     """Retrieve the preview file, so that a thumbnail can be made,
     store the preview if necessary, and the thumbnail, to ad.
     Then augment the CAOM observation with the two additional artifacts.
     """
     count = 0
-    gem_name = GemName(obs_id=obs_id, file_id=plane.product_id)
-    preview = gem_name.prev
-    if observable.rejected.is_no_preview(preview):
+    # file name construction is very very ugly here, and completely wrong
+    # which is why there's the tricksy file_name set to None right
+    # after construction
+    gem_name = GemName(file_name=f'{plane.product_id}.fits', obs_id=obs_id)
+    gem_name.file_name = None
+    logging.debug(gem_name)
+
+    if observable.rejected.is_no_preview(gem_name.prev):
         logging.info(
-            f'Stopping visit because no preview exists for {preview} in '
-            f'observation {obs_id}.'
+            f'Stopping visit because no preview exists for {gem_name.prev} '
+            f'in observation {obs_id}.'
         )
-        observable.rejected.record(mc.Rejected.NO_PREVIEW, preview)
+        observable.rejected.record(mc.Rejected.NO_PREVIEW, gem_name.prev)
         count += _check_for_delete(
-            preview, gem_name.prev_uri, observable, plane
+            gem_name.prev, gem_name.prev_uri, observable, plane
         )
     else:
-        preview_fqn = os.path.join(working_dir, preview)
+        preview_fqn = os.path.join(working_dir, gem_name.prev)
         thumb = gem_name.thumb
         thumb_fqn = os.path.join(working_dir, thumb)
         new_retrieval = False
 
-        # Get the file - try disk first, then CADC, then Gemini.
+        # get the file - try disk first, then CADC, then Gemini
         # Only try to retrieve from Gemini if the eventual purpose is
-        # storage, though
+        # storage (i.e. cadc_client is not None), though
         if not os.access(preview_fqn, 0) and cadc_client is not None:
             try:
-                mc.data_get(
-                    cadc_client,
-                    working_dir,
-                    preview,
-                    ARCHIVE,
-                    observable.metrics,
+                logging.debug(f'Check CADC for {gem_name.prev_uri}.')
+                cadc_client.get(working_dir, gem_name.prev_uri)
+            except exceptions.UnexpectedException:
+                logging.debug(
+                    f'Retrieve {gem_name.prev} from archive.gemini.edu.'
                 )
-            except mc.CadcException:
                 new_retrieval = _retrieve_from_gemini(
                     gem_name,
                     observable,
@@ -183,8 +171,6 @@ def _do_prev(obs_id, working_dir, plane, cadc_client, stream, observable):
 
         if os.path.exists(preview_fqn):
             # in case TaskType == SCRAPE + MODIFY
-            # always generate the thumbnails, but only store it if it's a
-            # new retrieval from archive.gemini.edu
             try:
                 fp = open(preview_fqn, 'r')
             except PermissionError as e:
@@ -225,37 +211,31 @@ def _do_prev(obs_id, working_dir, plane, cadc_client, stream, observable):
             _augment(
                 plane, gem_name.prev_uri, preview_fqn, ProductType.PREVIEW
             )
+            if cadc_client is not None and new_retrieval:
+                cadc_client.put(working_dir, gem_name.prev_uri)
             count = 1
 
-            if cadc_client is not None and new_retrieval:
-                # if the thumbnail could be generated from the preview,
-                # the preview is probably not corrupted
-                mc.data_put(
-                    cadc_client,
-                    working_dir,
-                    gem_name.prev,
-                    ARCHIVE,
-                    stream,
-                    MIME_TYPE,
-                    mime_encoding=None,
-                    metrics=observable.metrics,
-                )
             _augment(
                 plane, gem_name.thumb_uri, thumb_fqn, ProductType.THUMBNAIL
             )
             if cadc_client is not None and new_retrieval:
-                mc.data_put(
-                    cadc_client,
-                    working_dir,
-                    thumb,
-                    ARCHIVE,
-                    stream,
-                    MIME_TYPE,
-                    mime_encoding=None,
-                    metrics=observable.metrics,
-                )
+                cadc_client.put(working_dir, gem_name.thumb_uri)
             count += 1
     return count
+
+
+def _check_for_delete(file_name, uri, observable, plane):
+    """If the preview file doesn't exist, but the artifact that represents it
+    does, remove that artifact from the Observation instance."""
+    result = 0
+    if (
+            observable.rejected.is_no_preview(file_name) and
+            uri in plane.artifacts.keys()
+    ):
+        logging.warning(f'Removing artifact for non-existent preview {uri}')
+        plane.artifacts.pop(uri)
+        result = 1
+    return result
 
 
 def _augment(plane, uri, fqn, product_type):

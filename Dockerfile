@@ -22,8 +22,6 @@ WORKDIR /usr/src/app
 
 RUN mkdir /app && mkdir /app/data
 
-ADD https://www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/files/vault/cadcsw/2019-07-03_from_paul.txt /app/data/from_paul.txt
-
 ARG OPENCADC_BRANCH=master
 ARG OPENCADC_REPO=opencadc
 ARG PIPE_BRANCH=master

@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="00000000-0000-0000-0123-01246e4c9700">
+<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="00000000-0000-0000-0123-01246e4c9700">
   <caom2:collection>GEMINI</caom2:collection>
   <caom2:observationID>GN-2007B-C-6-5-005</caom2:observationID>
   <caom2:metaRelease>2007-10-21T00:00:00.000</caom2:metaRelease>
@@ -44,7 +44,7 @@
       </caom2:provenance>
       <caom2:artifacts>
         <caom2:artifact caom2:id="00000000-0000-0000-8d64-104b87b6db41">
-          <caom2:uri>gemini:GEM/TX20071021_RAW.2037.fits</caom2:uri>
+          <caom2:uri>gemini:GEMINI/TX20071021_RAW.2037.fits</caom2:uri>
           <caom2:productType>science</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>

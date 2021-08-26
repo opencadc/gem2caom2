@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # ***********************************************************************
 # ******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
 # *************  CENTRE CANADIEN DE DONNÉES ASTRONOMIQUES  **************
@@ -67,21 +66,18 @@
 # ***********************************************************************
 #
 
-import logging
 import os
 import sys
 
 import pytest
 
-from shutil import copyfile
-from caom2 import get_differences
-
 import gem2caom2.external_metadata as em
 
-from gem2caom2 import main_app, gem_name, builder
+from gem2caom2 import main_app, builder
+from gem2caom2.util import Inst
 from caom2pipe import manage_composable as mc
 
-from mock import patch, Mock
+from unittest.mock import patch, Mock
 import gem_mocks
 
 
@@ -92,16 +88,35 @@ def pytest_generate_tests(metafunc):
     if os.path.exists(gem_mocks.TEST_DATA_DIR):
 
         file_list = []
-        for ii in [em.Inst.GMOS, em.Inst.NIRI, em.Inst.GPI, em.Inst.F2,
-                   em.Inst.GSAOI, em.Inst.NICI, em.Inst.TRECS,
-                   em.Inst.MICHELLE, em.Inst.GRACES, em.Inst.NIFS,
-                   em.Inst.GNIRS, em.Inst.PHOENIX, em.Inst.FLAMINGOS,
-                   em.Inst.HRWFS, em.Inst.HOKUPAA, em.Inst.OSCIR,
-                   em.Inst.BHROS, em.Inst.CIRPASS, em.Inst.TEXES, 'processed',
-                   em.Inst.ALOPEKE, em.Inst.ZORRO]:
+        for ii in [
+            Inst.GMOS,
+            Inst.NIRI,
+            Inst.GPI,
+            Inst.F2,
+            Inst.GSAOI,
+            Inst.NICI,
+            Inst.TRECS,
+            Inst.MICHELLE,
+            Inst.GRACES,
+            Inst.NIFS,
+            Inst.GNIRS,
+            Inst.PHOENIX,
+            Inst.FLAMINGOS,
+            Inst.HRWFS,
+            Inst.HOKUPAA,
+            Inst.OSCIR,
+            Inst.BHROS,
+            Inst.CIRPASS,
+            Inst.TEXES,
+            'processed',
+            Inst.ALOPEKE,
+            Inst.ZORRO,
+            Inst.IGRINS,
+        ]:
             walk_dir = _get_inst_name(ii)
             for root, dirs, files in os.walk(
-                    '{}/{}'.format(gem_mocks.TEST_DATA_DIR, walk_dir)):
+                f'{gem_mocks.TEST_DATA_DIR}/{walk_dir}'
+            ):
                 for file in files:
                     if file.endswith(".header"):
                         file_list.append(os.path.join(root, file))
@@ -109,125 +124,49 @@ def pytest_generate_tests(metafunc):
         metafunc.parametrize('test_name', file_list)
 
 
-@patch('gem2caom2.external_metadata.get_obs_metadata')
-@patch('caom2pipe.manage_composable.query_tap_client')
-@patch('gem2caom2.external_metadata.CadcTapClient')
-def test_main_app(client_mock, tap_mock, gemini_client_mock, test_name):
-    # client_mock present because of global in external_metadata
-    getcwd_orig = os.getcwd
-    os.getcwd = Mock(return_value=gem_mocks.TEST_DATA_DIR)
-
-    tap_mock.side_effect = gem_mocks.mock_query_tap
-    gemini_client_mock.side_effect = gem_mocks.mock_get_obs_metadata
-
-    try:
-        test_config = mc.Config()
-        test_config.get_executors()
-
-        em.set_ofr(None)
-        em.init_global(test_config)
-        test_data_size = os.stat(
-            os.path.join(gem_mocks.TEST_DATA_DIR, 'from_paul.txt'))
-        app_size = os.stat('/app/data/from_paul.txt')
-        if test_data_size.st_size != app_size.st_size:
-            copyfile(os.path.join(gem_mocks.TEST_DATA_DIR, 'from_paul.txt'),
-                     '/app/data/from_paul.txt')
-        basename = os.path.basename(test_name)
-        dirname = os.path.dirname(test_name)
-        file_id = _get_file_id(basename)
-        obs_id = _get_obs_id(file_id)
-        product_id = file_id
-        lineage = _get_lineage(dirname, basename, test_config)
-        input_file = '{}.in.xml'.format(product_id)
-        actual_fqn = _get_actual_file_name(dirname, product_id)
-
-        local = _get_local(test_name)
-        plugin = gem_mocks.PLUGIN
-
-        with patch('caom2utils.fits2caom2.CadcDataClient') as data_client_mock, \
-                patch('gem2caom2.external_metadata.get_pi_metadata') as \
-                gemini_pi_mock, \
-                patch('caom2pipe.astro_composable.get_vo_table_session') as \
-                        svofps_mock:
-
-            data_client_mock.return_value.get_file_info.side_effect = \
-                gem_mocks.mock_get_file_info
-            gemini_pi_mock.side_effect = gem_mocks.mock_get_pi_metadata
-            svofps_mock.side_effect = gem_mocks.mock_get_votable
-
-            if os.path.exists(actual_fqn):
-                os.remove(actual_fqn)
-
-            if os.path.exists(os.path.join(dirname, input_file)):
-                sys.argv = \
-                    ('{} --quiet --no_validate --local {} '
-                     '--plugin {} --module {} --in {}/{} --out {} --lineage {}'.
-                     format(main_app.APPLICATION, local, plugin, plugin, dirname,
-                            input_file, actual_fqn, lineage)).split()
-            else:
-                sys.argv = \
-                    ('{} --quiet --no_validate --local {} '
-                     '--plugin {} --module {} --observation {} {} --out {} '
-                     '--lineage {}'.
-                     format(main_app.APPLICATION, local, plugin, plugin,
-                            main_app.COLLECTION, obs_id, actual_fqn,
-                            lineage)).split()
-            print(sys.argv)
-            main_app.to_caom2()
-            expected_fqn = _get_expected_file_name(dirname, product_id)
-
-            compare_result = _new_si_compare_differences(
-                actual_fqn, expected_fqn, test_config)
-            if compare_result is not None:
-                raise AssertionError(compare_result)
-            # assert False  # cause I want to see logging messages
-    finally:
-        os.getcwd = getcwd_orig
-
-
-@patch('caom2utils.fits2caom2.CadcDataClient')
+@patch('cadcutils.net.ws.WsCapabilities.get_access_url')
+@patch('gem2caom2.external_metadata.DefiningMetadataFinder')
+@patch('caom2utils.data_util.StorageClientWrapper')
 @patch('caom2utils.fits2caom2.Client')
 @patch('caom2pipe.astro_composable.get_vo_table_session')
-@patch('gem2caom2.external_metadata.get_pi_metadata')
-@patch('gem2caom2.external_metadata.get_obs_metadata')
-@patch('caom2pipe.manage_composable.query_tap_client')
-@patch('gem2caom2.external_metadata.CadcTapClient')
-def test_main_app_v(client_mock, tap_mock, gemini_client_mock, gemini_pi_mock,
-                    svofps_mock, cadc_client_mock, get_file_info_mock,
-                    test_name):
+@patch('gem2caom2.program_metadata.get_pi_metadata')
+def test_main_app(
+    gemini_pi_mock,
+    svofps_mock,
+    cadc_client_mock,
+    get_file_info_mock,
+    dmf_mock,
+    cap_mock,
+    test_name,
+):
     # client_mock present because of global in external_metadata
     cadc_client_mock.get_node.side_effect = gem_mocks.mock_get_node
-    gemini_client_mock.side_effect = gem_mocks.mock_get_obs_metadata
     gemini_pi_mock.side_effect = gem_mocks.mock_get_pi_metadata
     svofps_mock.side_effect = gem_mocks.mock_get_votable
-    tap_mock.side_effect = gem_mocks.mock_query_tap
-    get_file_info_mock.return_value.get_file_info.side_effect = \
+    get_file_info_mock.return_value.info.side_effect = (
         gem_mocks.mock_get_file_info
+    )
+    dmf_mock.return_value.get.side_effect = gem_mocks.mock_get_dm
+    cap_mock.return_value = 'https://localhost'
 
     getcwd_orig = os.getcwd
-    os.getcwd = Mock(return_value=os.path.join(gem_mocks.TEST_DATA_DIR,
-                                               'si_config'))
+    os.getcwd = Mock(
+        return_value=os.path.join(gem_mocks.TEST_DATA_DIR, 'si_config'),
+    )
 
     try:
         test_config = mc.Config()
         test_config.get_executors()
         test_config.features.supports_latest_client = True
 
-        em.set_ofr(None)
         em.init_global(test_config)
-        test_data_size = os.stat(
-            os.path.join(gem_mocks.TEST_DATA_DIR, 'from_paul.txt'))
-        app_size = os.stat('/app/data/from_paul.txt')
-        if test_data_size.st_size != app_size.st_size:
-            copyfile(os.path.join(gem_mocks.TEST_DATA_DIR, 'from_paul.txt'),
-                     '/app/data/from_paul.txt')
         basename = os.path.basename(test_name)
         dirname = os.path.dirname(test_name)
         file_id = _get_file_id(basename)
         obs_id = _get_obs_id(file_id)
         product_id = file_id
         lineage = _get_lineage(dirname, basename, test_config)
-        input_file = '{}.in.xml'.format(product_id)
+        input_file = f'{product_id}.in.xml'
         actual_fqn = _get_actual_file_name(dirname, product_id)
         local = _get_local(test_name)
         plugin = gem_mocks.PLUGIN
@@ -236,25 +175,29 @@ def test_main_app_v(client_mock, tap_mock, gemini_client_mock, gemini_pi_mock,
             os.remove(actual_fqn)
 
         if os.path.exists(os.path.join(dirname, input_file)):
-            sys.argv = \
-                ('{} --quiet --no_validate --local {} '
-                 '--plugin {} --module {} --in {}/{} --out {} --lineage {}'.
-                 format(main_app.APPLICATION, local, plugin, plugin, dirname,
-                        input_file, actual_fqn, lineage)).split()
+            sys.argv = (
+                f'{main_app.APPLICATION} --quiet --no_validate --local '
+                f'{local} --plugin {plugin} --module {plugin} '
+                f'--in {dirname}/{input_file} --out {actual_fqn} '
+                f'--lineage {lineage} '
+                f'--resource-id '
+                f'{test_config.storage_inventory_resource_id}'
+            ).split()
         else:
-            sys.argv = \
-                ('{} --quiet --no_validate --local {} '
-                 '--plugin {} --module {} --observation {} {} --out {} '
-                 '--lineage {}'.
-                 format(main_app.APPLICATION, local, plugin, plugin,
-                        main_app.COLLECTION, obs_id, actual_fqn,
-                        lineage)).split()
+            sys.argv = (
+                f'{main_app.APPLICATION} --quiet --no_validate --local '
+                f'{local} --plugin {plugin} --module {plugin} '
+                f'--observation {main_app.COLLECTION} {obs_id} '
+                f'--out {actual_fqn} --lineage {lineage} '
+                f'--resource-id '
+                f'{test_config.storage_inventory_resource_id}'
+            ).split()
         print(sys.argv)
         main_app.to_caom2()
         expected_fqn = _get_expected_file_name(dirname, product_id)
 
-        compare_result = _new_si_compare_differences(
-            actual_fqn, expected_fqn, test_config)
+        compare_result = mc.compare_observations(actual_fqn, expected_fqn)
+
         if compare_result is not None:
             raise AssertionError(compare_result)
         # assert False  # cause I want to see logging messages
@@ -279,7 +222,7 @@ def _get_local(test_name):
     jpg = test_name.replace('.fits.header', '.jpg')
     header_name = test_name
     if os.path.exists(jpg):
-        return '{} {}'.format(jpg, header_name)
+        return f'{jpg} {header_name}'
     else:
         return header_name
 
@@ -306,84 +249,15 @@ def _get_lineage(dirname, basename, config):
 
 
 def _get_expected_file_name(dirname, product_id):
-    return '{}/{}.expected.xml'.format(dirname, product_id)
+    return f'{dirname}/{product_id}.expected.xml'
 
 
 def _get_actual_file_name(dirname, product_id):
-    return '{}/{}.actual.xml'.format(dirname, product_id)
+    return f'{dirname}/{product_id}.actual.xml'
 
 
 def _get_inst_name(inst):
     walk_dir = inst
-    if inst != 'processed' and isinstance(inst, em.Inst):
+    if inst != 'processed' and isinstance(inst, Inst):
         walk_dir = inst.value
     return walk_dir
-
-
-def _new_si_compare_differences(actual_fqn, expected_fqn, config):
-    if config.features.supports_latest_client:
-        return _do_botched_compare(actual_fqn, expected_fqn)
-    else:
-        return mc.compare_observations(actual_fqn, expected_fqn)
-
-
-def _do_botched_compare(actual_fqn, expected_fqn):
-    """Compare artifacts for .fits files only. Rationalize the keys so
-    that the schema change from GEM to GEMINI is irrelevant."""
-    actual = mc.read_obs_from_file(actual_fqn)
-    expected = mc.read_obs_from_file(expected_fqn)
-    result = _compare_keys(
-        expected.planes.keys(), actual.planes.keys(), 'plane')
-    if result is None:
-        for plane in actual.planes.values():
-            e_plane = expected.planes[plane.product_id]
-            expected_a_keys = _rationalize_keys(e_plane.artifacts.keys())
-            actual_a_keys = _rationalize_keys(plane.artifacts.keys())
-            result = _compare_keys(
-                expected_a_keys, actual_a_keys, f'artifact.{plane.product_id}')
-            if result is None:
-                for artifact in plane.artifacts.values():
-                    if 'gemini:GEM/' in artifact.uri:
-                        # ignore the artifacts that are named with the
-                        # 'old' URIs
-                        continue
-                    expected_id = artifact.uri.replace('GEMINI/', 'GEM/')
-                    expected_artifact = e_plane.artifacts[expected_id]
-                    expected_artifact.uri = artifact.uri
-                    if expected_id in e_plane.artifacts.keys():
-                        temp = get_differences(
-                            artifact, expected_artifact, 'Artifact')
-                        if temp is not None:
-                            if result is None:
-                                result = temp
-                            else:
-                                result = f'{result}\n{temp}'
-                    else:
-                        temp = f'Artifact {expected_id} in actual ' \
-                                 f'but not expected.'
-                        if result is None:
-                            result = temp
-                        else:
-                            result = f'{result}\n{temp}'
-    else:
-        result = f'Got {len(actual.planes)} planes. Expected ' \
-                 f'{len(expected.planes)} planes.'
-    return result
-
-
-def _rationalize_keys(in_keys):
-    return list(set([ii.replace('GEM/', 'GEMINI/') for ii in
-                     in_keys if '.fits' in ii]))
-
-
-def _compare_keys(expected_keys, actual_keys, key_type):
-    result = ''
-    expected_missing = mc.find_missing(expected_keys, actual_keys)
-    actual_missing = mc.find_missing(actual_keys, expected_keys)
-    for entry in [expected_missing, actual_missing]:
-        if len(entry) > 0:
-            result = f'{result}\n' \
-                     f'Expected:: missing {len(entry)} {key_type}.'
-    if len(result) == 0:
-        result = None
-    return result

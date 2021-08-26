@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="00000000-0000-0000-85ae-2e6614965256" caom2:lastModified="2018-10-07T23:48:30.739" caom2:maxLastModified="2018-10-07T23:48:30.739" caom2:metaChecksum="md5:66dd494ce0772106a6be850b8c333651" caom2:accMetaChecksum="md5:1ba56a4c2a4f4c683873b157b84b3d6a">
+<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="00000000-0000-0000-85ae-2e6614965256" caom2:lastModified="2018-10-07T23:48:30.739" caom2:maxLastModified="2018-10-07T23:48:30.739" caom2:metaChecksum="md5:66dd494ce0772106a6be850b8c333651" caom2:accMetaChecksum="md5:1ba56a4c2a4f4c683873b157b84b3d6a">
   <caom2:collection>GEMINI</caom2:collection>
   <caom2:observationID>GN-2002A-C-4-2-001</caom2:observationID>
   <caom2:metaRelease>2003-10-05T00:00:00.000</caom2:metaRelease>
@@ -41,7 +41,7 @@
       <caom2:polarization/>
       <caom2:artifacts>
         <caom2:artifact caom2:id="00000000-0000-0000-beda-ddf47dde433a" caom2:lastModified="2018-10-07T23:48:30.739" caom2:maxLastModified="2018-10-07T23:48:30.739" caom2:metaChecksum="md5:cb42492a6ece4f872689381363a4fcfe" caom2:accMetaChecksum="md5:7d0d5423d0877939cf139965dd6e758b">
-          <caom2:uri>gemini:GEM/N20020405S0044.fits</caom2:uri>
+          <caom2:uri>gemini:GEMINI/N20020405S0044.fits</caom2:uri>
           <caom2:productType>science</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>
@@ -50,7 +50,7 @@
           <caom2:parts/>
         </caom2:artifact>
         <caom2:artifact caom2:id="00000000-0000-0000-9842-edede39610c5" caom2:lastModified="2018-10-07T23:48:30.739" caom2:maxLastModified="2018-10-07T23:48:30.739" caom2:metaChecksum="md5:7ee7c648aeaf88ea3f11effa2c70014f" caom2:accMetaChecksum="md5:ead213cdc7005ff473f2b55131f605fa">
-          <caom2:uri>gemini:GEM/N20020405S0044.jpg</caom2:uri>
+          <caom2:uri>gemini:GEMINI/N20020405S0044.jpg</caom2:uri>
           <caom2:productType>preview</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>image/jpeg</caom2:contentType>

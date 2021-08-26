@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="00000000-0000-0000-8ff8-82f995b71d8c">
+  <caom2:collection>GEMINI</caom2:collection>
+  <caom2:observationID>GS-CAL20200131-10-0131</caom2:observationID>
+  <caom2:metaRelease>2020-01-31T19:18:42.477</caom2:metaRelease>
+  <caom2:algorithm>
+    <caom2:name>exposure</caom2:name>
+  </caom2:algorithm>
+  <caom2:type>DARK</caom2:type>
+  <caom2:intent>calibration</caom2:intent>
+  <caom2:proposal>
+    <caom2:id>GS-CAL20200131</caom2:id>
+    <caom2:title>GS-CAL20200131</caom2:title>
+  </caom2:proposal>
+  <caom2:target>
+    <caom2:name>Zenith</caom2:name>
+    <caom2:type>object</caom2:type>
+  </caom2:target>
+  <caom2:telescope>
+    <caom2:name>Gemini South</caom2:name>
+    <caom2:geoLocationX>1820184.055747326</caom2:geoLocationX>
+    <caom2:geoLocationY>-5208320.066618682</caom2:geoLocationY>
+    <caom2:geoLocationZ>-3194829.197152751</caom2:geoLocationZ>
+  </caom2:telescope>
+  <caom2:instrument>
+    <caom2:name>IGRINS</caom2:name>
+  </caom2:instrument>
+  <caom2:planes>
+    <caom2:plane caom2:id="1d848cf6-2a04-4723-9510-e5783dc8e4b5" caom2:metaProducer="gem2caom2/0.8.5">
+      <caom2:productID>SDC_20200131_0010</caom2:productID>
+      <caom2:metaRelease>2020-01-31T19:18:42.477</caom2:metaRelease>
+      <caom2:dataRelease>2021-01-30T00:00:00.000</caom2:dataRelease>
+      <caom2:dataProductType>image</caom2:dataProductType>
+      <caom2:calibrationLevel>1</caom2:calibrationLevel>
+      <caom2:provenance>
+        <caom2:name>Gemini Observatory Data</caom2:name>
+        <caom2:project>Gemini Archive</caom2:project>
+        <caom2:producer>Gemini Observatory</caom2:producer>
+        <caom2:reference>http://archive.gemini.edu/searchform/GS-CAL20200131-10-0</caom2:reference>
+      </caom2:provenance>
+      <caom2:artifacts>
+        <caom2:artifact caom2:id="8965e887-5020-4bdf-963e-12117c8a9f27" caom2:metaProducer="gem2caom2/0.8.5">
+          <caom2:uri>gemini:GEMINI/SDCH_20200131_0010.fits</caom2:uri>
+          <caom2:productType>calibration</caom2:productType>
+          <caom2:releaseType>data</caom2:releaseType>
+          <caom2:contentType>application/fits</caom2:contentType>
+          <caom2:contentLength>16790400</caom2:contentLength>
+          <caom2:contentChecksum>md5:a879a1482ebaf7f5743992685deb80e7</caom2:contentChecksum>
+          <caom2:parts>
+            <caom2:part caom2:id="9c58383e-e4bf-4dde-b0bd-83bf90f36572">
+              <caom2:name>0</caom2:name>
+              <caom2:chunks/>
+            </caom2:part>
+            <caom2:part caom2:id="66f9e8c2-cdc0-4bc1-83cc-1e2425bcadc2">
+              <caom2:name>1</caom2:name>
+              <caom2:chunks>
+                <caom2:chunk caom2:id="b01f7bb2-2383-428d-a336-ceddedd5a378" caom2:metaProducer="gem2caom2/0.8.5">
+                  <caom2:time>
+                    <caom2:axis>
+                      <caom2:axis>
+                        <caom2:ctype>TIME</caom2:ctype>
+                        <caom2:cunit>d</caom2:cunit>
+                      </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
+                      <caom2:function>
+                        <caom2:naxis>1</caom2:naxis>
+                        <caom2:delta>0.00011574074074074</caom2:delta>
+                        <caom2:refCoord>
+                          <caom2:pix>0.5</caom2:pix>
+                          <caom2:val>58879.80465829861</caom2:val>
+                        </caom2:refCoord>
+                      </caom2:function>
+                    </caom2:axis>
+                    <caom2:timesys>UTC</caom2:timesys>
+                    <caom2:exposure>10.0</caom2:exposure>
+                    <caom2:resolution>10.0</caom2:resolution>
+                  </caom2:time>
+                </caom2:chunk>
+              </caom2:chunks>
+            </caom2:part>
+          </caom2:parts>
+        </caom2:artifact>
+      </caom2:artifacts>
+    </caom2:plane>
+  </caom2:planes>
+</caom2:Observation>

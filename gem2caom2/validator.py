@@ -73,7 +73,8 @@ import traceback
 from datetime import datetime
 
 from caom2pipe import manage_composable as mc
-from gem2caom2 import main_app, external_metadata, gem_name
+from gem2caom2 import external_metadata
+from gem2caom2.util import COLLECTION, SCHEME
 
 __all__ = ['GeminiValidator']
 
@@ -81,12 +82,18 @@ __all__ = ['GeminiValidator']
 class GeminiValidator(mc.Validator):
     def __init__(self):
         super(GeminiValidator, self).__init__(
-            source_name=main_app.COLLECTION, scheme=gem_name.SCHEME,
-            preview_suffix='_th.jpg')
-        self._gofr = external_metadata.get_gofr()
+            source_name=COLLECTION,
+            scheme=SCHEME,
+            preview_suffix='_th.jpg',
+        )
+        config = mc.Config()
+        config.get_executors()
+        external_metadata.init_global(config)
+        self._gofr = external_metadata.get_gofr(config)
         self._max_date = datetime.fromtimestamp(
-            self._gofr.get_max_timestamp()).date()
-        logging.error(f'max date is {self._max_date}')
+            self._gofr.get_max_timestamp()
+        ).date()
+        logging.info(f'max date is {self._max_date}')
         self._rejected = mc.Rejected(self._config.rejected_fqn)
         self._logger = logging.getLogger(__name__)
 
@@ -146,16 +153,19 @@ class GeminiValidator(mc.Validator):
             else:
                 logging.warning(
                     f'Pretty sure this is an unexpected file name format '
-                    f'{file_name}')
+                    f'{file_name}'
+                )
 
             candidate = candidate[index:]
             if candidate.count('G') == 1:
                 splitter = 'G'
             result = datetime.strptime(
-                candidate.split(splitter)[0], pattern).date()
+                candidate.split(splitter)[0], pattern
+            ).date()
         except ValueError as ex:
             self._logger.error(
-                f'Do not understand date format in file name {file_name}')
+                f'Do not understand date format in file name {file_name}'
+            )
             result = None
 
         return result
@@ -182,20 +192,24 @@ class GeminiValidator(mc.Validator):
         remove = self._get_date_remove_set(self._source, 'source')
         self._source = list(set(self._source).difference(remove))
         remove = self._get_date_remove_set(
-            self._destination_meta, 'destination meta')
-        self._destination_meta = \
-            list(set(self._destination_meta).difference(remove))
+            self._destination_meta, 'destination meta'
+        )
+        self._destination_meta = list(
+            set(self._destination_meta).difference(remove)
+        )
         remove = self._get_date_remove_set(
-            self._destination_data, 'destination data')
-        self._destination_data = \
-            list(set(self._destination_data).difference(remove))
+            self._destination_data, 'destination data'
+        )
+        self._destination_data = list(
+            set(self._destination_data).difference(remove)
+        )
 
     def read_from_source(self):
         result = {}
         file_ids = self._gofr.name_list.keys()
-        # begin with the assumption there's a preview file for every fits file,
-        # but do not add entries for preview files that have been identified
-        # as unavailable for some reason from archive.gemini.edu
+        # begin with the assumption there's a preview file for every fits
+        # file, but do not add entries for preview files that have been
+        # identified as unavailable for some reason from archive.gemini.edu
         #
         # ignore fits files that have been rejected because of bad
         # metadata
@@ -229,6 +243,7 @@ def validate():
 
 if __name__ == '__main__':
     import sys
+
     try:
         logger = logging.getLogger()
         logger.setLevel(logging.DEBUG)

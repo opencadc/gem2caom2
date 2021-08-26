@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+
+<title>Detail for Program: GN-2007B-Q-75</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GN-2007B-Q-75</h1>
+
+<table>
+ <tr><td>Title:<td>Active Star Formation in Infrared Dark Clouds</tr>
+ <tr><td>PI:<td>Eric Tollestrup</tr>
+ <tr><td>Co-I(s):<td> James Jackson,  Jill Rathborne,  Ed Chambers,  Ronak Shah,  Robert Simon</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+\Abstract{
+Infrared Dark Clouds (IRDCs), a new class of molecular cloud
+identified as deep mid-IR extinction features, are probably the
+precursors to stellar clusters. Recent 1.2 mm continuum survey of
+IRDCs reveals that they contain many compact cores with typical masses
+of 100\,\Msun\, and sizes $\leq$ 0.5 pc.  \Spitzer\, 3--8\,\um\,
+and 24\,\um\, images reveal $\sim$ 1/3 of these cores are sites of
+active star formation.  The bright unresolved 24\,\um\, continuum
+sources detected by \Spitzer\, directly indicate embedded
+protostars. In addition, the active cores contain extended
+3--8\,\um\ emission, with an enhancement at 4.5\,\um\ that might
+arise from shocked H$_{2}$.  Molecular line emission towards the cores
+show broad linewidths of HCN (4--3) and CS (3--2) and strong SiO
+(2--1) emission, also indicative of star formation. The active cores'
+large mm/submm/IR bolometric luminosities of $&gt;$10,000\,\Lsun\,
+indicate that either a single high-mass protostar or a number of
+lower-mass protostars are present within each core.  We
+therefore request Gemini-N/Michelle time to determine the small-scale
+structure of the bright 24\,\um\, sources in order to distinguish
+between single and multiple protostars and Gemini-N/NIRI time to
+investigate the enhanced 4.5\,\um\, emission of these cores.
+}
+
+</div>
+
+
+
+</body>
+</html>

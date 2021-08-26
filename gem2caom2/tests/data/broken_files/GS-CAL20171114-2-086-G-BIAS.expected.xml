@@ -42,16 +42,16 @@
         <caom2:producer>NOAO-IRAF FITS Image Kernel July 2003</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/filepre=gS20171114S0185_bias.fits</caom2:reference>
         <caom2:inputs>
-          <caom2:planeURI>caom:GEMINI/not_found/S20171114S0187</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/not_found/S20171114S0186</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/not_found/S20171114S0188</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/not_found/S20171114S0185</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/not_found/S20171114S0189</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/S20171114S0188</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/S20171114S0187</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/S20171114S0185</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/S20171114S0189</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/test_data_label/S20171114S0186</caom2:planeURI>
         </caom2:inputs>
       </caom2:provenance>
       <caom2:artifacts>
         <caom2:artifact caom2:id="dac9641a-f22a-41ac-b933-07a79a61f53a" caom2:metaProducer="gem2caom2/0.8.5">
-          <caom2:uri>gemini:GEM/gS20171114S0185_bias.fits</caom2:uri>
+          <caom2:uri>gemini:GEMINI/gS20171114S0185_bias.fits</caom2:uri>
           <caom2:productType>calibration</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>
@@ -428,6 +428,6 @@
     </caom2:plane>
   </caom2:planes>
   <caom2:members>
-    <caom2:observationURI>caom:GEMINI/not_found</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/test_data_label</caom2:observationURI>
   </caom2:members>
 </caom2:Observation>
