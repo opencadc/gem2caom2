@@ -170,7 +170,7 @@ class DefiningMetadataFinder:
         self._gemini_session = mc.get_endpoint_session()
         self._logger = logging.getLogger(self.__class__.__name__)
 
-    def _check_caom2(self, uri):
+    def _check_caom2(self, uri, collection=COLLECTION):
         self._logger.debug(f'Begin _check_caom2 for {uri}')
         query_string = f"""
         SELECT O.observationID, O.instrument_name
@@ -178,7 +178,7 @@ class DefiningMetadataFinder:
         JOIN caom2.Plane AS P on P.obsID = O.obsID
         JOIN caom2.Artifact AS A on A.planeID = P.planeID
         WHERE A.uri = '{uri}' 
-        AND O.collection = '{COLLECTION}'
+        AND O.collection = '{collection}'
         """
         table = clc.query_tap_client(query_string, self._tap_client)
         result = None
