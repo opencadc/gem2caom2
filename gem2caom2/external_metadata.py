@@ -168,6 +168,7 @@ class DefiningMetadataFinder:
             subject=subject, resource_id=config.tap_id
         )
         self._gemini_session = mc.get_endpoint_session()
+        self._data_sources = config.data_sources
         self._logger = logging.getLogger(self.__class__.__name__)
 
     def _check_caom2(self, uri, collection=COLLECTION):
@@ -193,22 +194,24 @@ class DefiningMetadataFinder:
         self._logger.debug(f'Begin _check_local for {f_name}')
         file_id = remove_extensions(f_name)
         try_these = [
-            f'{os.getcwd()}/{file_id}.fits',
-            f'{os.getcwd()}/{file_id}.fits.header',
-            f'{os.getcwd()}/{file_id}.fits.bz2',
-            f'{os.getcwd()}/{file_id}.fits.gz',
+            f'{file_id}.fits',
+            f'{file_id}.fits.header',
+            f'{file_id}.fits.bz2',
+            f'{file_id}.fits.gz',
         ]
         result = None
-        for f_name in try_these:
-            if os.path.exists(f_name):
-                headers = data_util.get_local_file_headers(f_name)
-                temp = headers[0].get('DATALAB').upper()
-                if temp is not None:
-                    result = DefiningMetadata(
-                        repair_instrument(headers[0].get('INSTRUME')),
-                        headers[0].get('DATALAB')
-                    )
-                    break
+        for data_source in self._data_sources:
+            for f_name in try_these:
+                fqn = os.path.join(data_source, f_name)
+                if os.path.exists(fqn):
+                    headers = data_util.get_local_file_headers(fqn)
+                    temp = headers[0].get('DATALAB').upper()
+                    if temp is not None:
+                        result = DefiningMetadata(
+                            repair_instrument(headers[0].get('INSTRUME')),
+                            headers[0].get('DATALAB')
+                        )
+                        break
         self._logger.debug('End _check_local')
         return result
 

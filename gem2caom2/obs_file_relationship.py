@@ -473,11 +473,20 @@ def repair_data_label(file_name, data_label):
                     )
                 )
             )
-            or ('arc' in suffix or 'ARC' in suffix)
             or ('r' == prefix or 'R' == prefix)
         ):
             prefix = ''
             suffix = []
+        elif 'arc' in suffix or 'ARC' in suffix:
+            # DB 12-01-22
+            # Looking at GEMINIPROC (sc2) vs. GEMINICADC (ams) metadata.
+            # I’m not sure that the Observation ID for the arc products are
+            # captured correctly in ams .  e.g. for observation
+            # GN-2006B-C-4-29-015* the product, wrgnN20070626S0205_arc ,
+            # has the same observation ID as one of the members in ams  but
+            # has observation ID of GN-2006B-C-4-29-015-ARC in sc2.  I think
+            # the sc2 value is correct since there are multiple members.
+            prefix = ''
 
         if (
             prefix == ''
