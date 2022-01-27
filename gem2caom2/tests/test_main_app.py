@@ -66,16 +66,23 @@
 # ***********************************************************************
 #
 
+import logging
 import os
 import sys
+
+from tempfile import TemporaryDirectory
 
 import pytest
 
 import gem2caom2.external_metadata as em
 
-from gem2caom2 import main_app, builder
+from cadcdata import FileInfo
+from caom2.diff import get_differences
+from gem2caom2 import main_app, builder, fits2caom2_augmentation
 from gem2caom2.util import Inst
+from caom2pipe import astro_composable as ac
 from caom2pipe import manage_composable as mc
+from caom2pipe import reader_composable as rdc
 
 from unittest.mock import patch, Mock
 import gem_mocks
@@ -124,6 +131,7 @@ def pytest_generate_tests(metafunc):
         metafunc.parametrize('test_name', file_list)
 
 
+@pytest.mark.skip('')
 @patch('cadcutils.net.ws.WsCapabilities.get_access_url')
 @patch('gem2caom2.external_metadata.DefiningMetadataFinder')
 @patch('caom2utils.data_util.StorageClientWrapper')
@@ -203,6 +211,67 @@ def test_main_app(
         # assert False  # cause I want to see logging messages
     finally:
         os.getcwd = getcwd_orig
+
+
+@patch('gem2caom2.program_metadata.get_pi_metadata')
+@patch('cadcutils.net.ws.WsCapabilities.get_access_url')
+@patch('gemProc2caom2.builder.CadcTapClient')
+@patch('gem2caom2.external_metadata.CadcTapClient')
+def test_visitor(
+    em_tap_client_mock,
+    builder_tap_client_mock,
+    access_url,
+    get_pi_mock,
+    test_name,
+):
+
+    access_url.return_value = 'https://localhost:8080'
+    get_pi_mock.side_effect = gem_mocks.mock_get_pi_metadata
+
+    with TemporaryDirectory() as tmp_dir_name:
+        test_config = mc.Config()
+        test_config.task_types = [mc.TaskType.SCRAPE]
+        test_config.use_local_files = True
+        # when I remember how to figure this out
+        test_config.data_sources = [os.path.dirname(test_name)]
+        test_config.working_directory = tmp_dir_name
+        test_config.proxy_fqn = f'{tmp_dir_name}/test_proxy.pem'
+
+        with open(test_config.proxy_fqn, 'w') as f:
+            f.write('test content')
+
+        em.get_gofr(test_config)
+        test_builder = builder.GemObsIDBuilder(test_config)
+        storage_name = test_builder.build(test_name)
+        file_info = FileInfo(
+            id=storage_name.file_uri, file_type='application/fits'
+        )
+        headers = ac.make_headers_from_file(test_name)
+        metadata_reader = rdc.FileMetadataReader()
+        metadata_reader._headers = {storage_name.file_uri: headers}
+        metadata_reader._file_info = {storage_name.file_uri: file_info}
+        kwargs = {
+            'storage_name': storage_name,
+            'metadata_reader': metadata_reader,
+        }
+        logging.getLogger('caom2utils.fits2caom2').setLevel(logging.INFO)
+        observation = None
+        observation = fits2caom2_augmentation.visit(observation, **kwargs)
+
+        expected_fqn = (
+            f'{os.path.dirname(test_name)}/{storage_name.file_id}.expected.xml'
+        )
+        expected = mc.read_obs_from_file(expected_fqn)
+        compare_result = get_differences(expected, observation)
+        if compare_result is not None:
+            actual_fqn = expected_fqn.replace('expected', 'actual')
+            mc.write_obs_to_file(observation, actual_fqn)
+            compare_text = '\n'.join([r for r in compare_result])
+            msg = (
+                f'Differences found in observation {expected.observation_id}\n'
+                f'{compare_text}'
+            )
+            raise AssertionError(msg)
 
 
 def _get_obs_id(file_id):
