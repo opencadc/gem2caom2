@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="efe445b9-f9a7-4faa-8a90-0a5abaf5608f" caom2:metaProducer="gem2caom2/0.8.1">
   <caom2:collection>GEMINI</caom2:collection>
-  <caom2:observationID>GS-CAL20201023-0-0</caom2:observationID>
-  <caom2:metaRelease>2020-10-22T23:13:20.035</caom2:metaRelease>
+  <caom2:observationID>S20201023Z0001</caom2:observationID>
+  <caom2:metaRelease>2020-10-22T23:13:20.035200</caom2:metaRelease>
   <caom2:algorithm>
     <caom2:name>exposure</caom2:name>
   </caom2:algorithm>
@@ -28,7 +28,7 @@
   <caom2:planes>
     <caom2:plane caom2:id="f692a252-2d32-4837-a051-1cd5baba4bf1" caom2:metaProducer="gem2caom2/0.8.1">
       <caom2:productID>S20201023Z0001b</caom2:productID>
-      <caom2:metaRelease>2020-10-22T23:13:20.035</caom2:metaRelease>
+      <caom2:metaRelease>2020-10-22T23:13:20.035200</caom2:metaRelease>
       <caom2:dataRelease>2020-10-22T00:00:00.000</caom2:dataRelease>
       <caom2:dataProductType>image</caom2:dataProductType>
       <caom2:calibrationLevel>1</caom2:calibrationLevel>
@@ -44,7 +44,6 @@
           <caom2:productType>science</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>
-          <caom2:contentLength>2108160</caom2:contentLength>
           <caom2:contentChecksum>md5:e44e5f33a798f73ffa0c93961da6b70a</caom2:contentChecksum>
           <caom2:parts>
             <caom2:part caom2:id="d5434409-5ce2-496e-b3aa-4d745b25be36">

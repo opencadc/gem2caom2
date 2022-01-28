@@ -157,7 +157,7 @@ class GemName(mc.StorageName):
         self._v_collection = COLLECTION
         file_id = remove_extensions(file_name)
         if file_id[-1] in ['b', 'r']:
-            self._file_name = file_name
+            self._file_name = file_name.replace('.header', '')
             self._file_id = remove_extensions(self._file_name)
             self._obs_id = self._file_id[:-1]
             self._product_id = self._file_id

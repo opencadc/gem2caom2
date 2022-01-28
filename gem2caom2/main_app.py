@@ -89,16 +89,13 @@ Because of this, make the GemName a class that, standing on it's own,
 can retrieve the observation ID value from the headers for a file.
 
 """
-import importlib
+
 import logging
-import os
-import sys
 import traceback
 
 from caom2 import Observation, CalibrationLevel, Chunk
-from caom2 import Instrument, TypedList, DerivedObservation
-from caom2utils import ObsBlueprint, get_gen_proc_arg_parser, gen_proc
-from caom2utils import WcsParser
+from caom2 import TypedList, DerivedObservation
+from caom2utils import WcsParser, update_artifact_meta
 from caom2pipe import manage_composable as mc
 from caom2pipe import caom_composable as cc
 from caom2pipe import astro_composable as ac
@@ -106,7 +103,6 @@ from caom2pipe import astro_composable as ac
 import gem2caom2.external_metadata as em
 import gem2caom2.obs_file_relationship as ofr
 from gem2caom2.gem_name import GemName
-from gem2caom2.builder import GemObsIDBuilder
 from gem2caom2 import instruments, program_metadata
 from gem2caom2.obs_metadata import json_lookup
 from gem2caom2.util import Inst, COLLECTION, SCHEME
@@ -503,6 +499,7 @@ class GeminiMapping(cc.TelescopeMapping):
                     if GemName.is_preview(artifact.uri):
                         continue
 
+                    update_artifact_meta(artifact, file_info)
                     caom_name = mc.CaomName(artifact.uri)
                     file_id = ofr.remove_extensions(
                         mc.CaomName(caom_name.uri).file_name

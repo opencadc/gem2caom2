@@ -415,6 +415,8 @@ def repair_data_label(file_name, data_label):
     file_id = remove_extensions(file_name)
     repaired = data_label if data_label else ''
     if is_processed(file_id) or file_id.startswith('TX2'):
+        if file_id.startswith('TX2') and repaired == '':
+            repaired = file_id
         if not file_id.startswith('TX2'):
             repaired = repaired.split('_')[0]
 

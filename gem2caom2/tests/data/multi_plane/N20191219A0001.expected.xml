@@ -45,7 +45,6 @@
           <caom2:productType>science</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>
-          <caom2:contentLength>131094720</caom2:contentLength>
           <caom2:contentChecksum>md5:ab7a9ad50229f615ddbf58dcbdea96ae</caom2:contentChecksum>
           <caom2:parts>
             <caom2:part caom2:id="368ebdc0-53aa-416e-aba9-6081e9d7e144" caom2:lastModified="2020-09-02T21:52:25.209" caom2:maxLastModified="2020-09-03T00:01:30.245" caom2:metaChecksum="md5:5658a8e7a000a7e8e72a06c15a96a98b" caom2:accMetaChecksum="md5:3ae1661e1ecf750a964a6d7cd01be950">
@@ -158,7 +157,6 @@
           <caom2:productType>science</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>
-          <caom2:contentLength>131094720</caom2:contentLength>
           <caom2:contentChecksum>md5:124c4edd88ad4f235b3544c565384c02</caom2:contentChecksum>
           <caom2:parts>
             <caom2:part caom2:id="d72c4b2a-20c2-42bc-b2e2-58c56682153f" caom2:lastModified="2020-09-02T21:52:21.236" caom2:maxLastModified="2020-09-03T00:01:26.629" caom2:metaChecksum="md5:14e9d36e13b95b21f6c67e9b28dc35b0" caom2:accMetaChecksum="md5:75cd98c5d14243f614e1e118f2a28a3b">

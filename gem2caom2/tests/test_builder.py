@@ -93,25 +93,27 @@ def test_builder(dmf_mock):
     em.init_global(config=test_config)
     test_subject = builder.GemObsIDBuilder(test_config)
 
-    test_entry = 'S20050825S0143.fits'
-    for task_type in [mc.TaskType.INGEST, mc.TaskType.SCRAPE]:
-        test_config.task_types = [task_type]
-        test_result = test_subject.build(test_entry)
-        assert (
-            test_result is not None
-        ), f'expect a result'
-        assert (
-            test_result.file_uri
-            == f'{SCHEME}:{COLLECTION}/{test_entry}'
-        ), 'wrong file uri'
-        assert (
-            test_result.prev_uri
-            == f'{SCHEME}:{COLLECTION}/{test_result.prev}'
-        ), 'wrong preview uri'
-        assert (
-            test_result.thumb_uri
-            == f'{V_SCHEME}:{COLLECTION}/{test_result.thumb}'
-        ), 'wrong thumb uri'
+    test_entries = ['S20050825S0143.fits', 'TX20131117_raw.3002.fits']
+    for test_entry in test_entries:
+        for task_type in [mc.TaskType.INGEST, mc.TaskType.SCRAPE]:
+            test_config.task_types = [task_type]
+            test_result = test_subject.build(test_entry)
+            assert (
+                test_result is not None
+            ), f'expect a result'
+            assert (
+                test_result.file_uri
+                == f'{SCHEME}:{COLLECTION}/{test_entry}'
+            ), 'wrong file uri'
+            assert (
+                test_result.prev_uri
+                == f'{SCHEME}:{COLLECTION}/{test_result.prev}'
+            ), 'wrong preview uri'
+            assert (
+                test_result.thumb_uri
+                == f'{V_SCHEME}:{COLLECTION}/{test_result.thumb}'
+            ), 'wrong thumb uri'
+            assert test_result.obs_id is not None, f'expect an obs id'
 
     test_config.task_types = [mc.TaskType.INGEST]
     test_entry = 'GN-DATA-LABEL'

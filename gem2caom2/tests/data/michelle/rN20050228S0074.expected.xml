@@ -221,7 +221,6 @@
           <caom2:productType>science</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>
-          <caom2:contentLength>3715200</caom2:contentLength>
           <caom2:contentChecksum>md5:0caccda8736f809089a085720f4ac682</caom2:contentChecksum>
           <caom2:parts>
             <caom2:part caom2:id="96bf582a-6305-4985-ab7d-419f3a1d7202" caom2:lastModified="2019-08-13T22:19:15.040" caom2:maxLastModified="2019-08-13T22:19:15.040" caom2:metaChecksum="md5:bf99d093371195435993e9708d1245c9" caom2:accMetaChecksum="md5:1fb4a2f14d3215e37066ea2e948d3071">
@@ -711,7 +710,6 @@
           <caom2:productType>calibration</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>
-          <caom2:contentLength>639360</caom2:contentLength>
           <caom2:contentChecksum>md5:564c1d2ff0d07812e88f09b5d477a6fe</caom2:contentChecksum>
           <caom2:parts>
             <caom2:part caom2:id="489ce5cb-8ee7-4a46-87a3-57b3fe220bb9" caom2:lastModified="2019-08-13T22:19:15.040" caom2:maxLastModified="2019-08-13T22:19:15.040" caom2:metaChecksum="md5:fac9b5bbc44f7719043f2e2b3b625fba" caom2:accMetaChecksum="md5:41bd861582e878a4c8f90f20b1a8ae41">
