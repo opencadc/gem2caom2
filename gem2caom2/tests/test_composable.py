@@ -116,10 +116,6 @@ def test_run(run_mock, dmf_mock, cap_mock):
         assert test_storage.fname_on_disk == test_f_name, 'wrong fname on disk'
         assert test_storage.url is None, 'wrong url'
         assert (
-            test_storage.lineage ==
-            f'{test_f_id}/{SCHEME}:{COLLECTION}/{test_f_name}'
-        ), 'wrong lineage'
-        assert (
             test_storage.external_urls
             == f'https://archive.gemini.edu/fullheader/{test_f_name}'
         ), 'wrong external urls'
@@ -149,10 +145,6 @@ def test_run_errors(run_mock, dmf_mock, cap_mock):
         assert test_storage.file_name == test_f_name, 'wrong file name'
         assert test_storage.fname_on_disk == test_f_name, 'wrong fname on disk'
         assert test_storage.url is None, 'wrong url'
-        assert (
-            test_storage.lineage ==
-            f'{test_f_id}/{SCHEME}:{COLLECTION}/{test_f_id}.fits'
-        ), 'wrong lineage'
         assert (
             test_storage.external_urls
             == f'https://archive.gemini.edu/fullheader/{test_f_id}.fits'
@@ -197,10 +189,6 @@ def test_run_incremental_rc(
         ), 'wrong fname on disk'
         assert test_storage.url is None, 'wrong url'
         assert (
-            test_storage.lineage ==
-            f'{test_fid}/{SCHEME}:{COLLECTION}/{test_fid}.fits'
-        ), 'wrong lineage'
-        assert (
             test_storage.external_urls
             == f'https://archive.gemini.edu/fullheader/{test_fid}.fits'
         ), 'wrong external urls'
@@ -210,7 +198,7 @@ def test_run_incremental_rc(
 
 @patch('cadcutils.net.ws.WsCapabilities.get_access_url')
 @patch('gem2caom2.external_metadata.DefiningMetadataFinder')
-@patch('gem2caom2.to_caom2')
+@patch('caom2pipe.execute_composable.OrganizeExecutes.do_one')
 @patch('caom2pipe.client_composable.CAOM2RepoClient')
 @patch('caom2pipe.client_composable.StorageClientWrapper')
 @patch('caom2pipe.manage_composable.read_obs_from_file')
@@ -320,7 +308,7 @@ def test_run_by_incremental2(
     query_result.json = _query_mock
     query_mock.return_value = query_result
 
-    exec_mock.side_effect = _check_sys_argv_params
+    exec_mock.return_value = 0
 
     _write_cert()
     prior_s = datetime.utcnow().timestamp() - 60
@@ -334,8 +322,8 @@ def test_run_by_incremental2(
     finally:
         os.getcwd = getcwd_orig
 
-    assert repo_mock.return_value.create.called, 'create not called'
-    assert repo_mock.return_value.read.called, 'read not called'
+    # assert repo_mock.return_value.create.called, 'create not called'
+    # assert repo_mock.return_value.read.called, 'read not called'
     assert exec_mock.called, 'exec mock not called'
     assert not (
         data_client_mock.return_value.info.called
@@ -392,10 +380,6 @@ def test_run_by_public(
     ), 'wrong fname on disk'
     assert test_storage.url is None, 'wrong url'
     assert (
-        test_storage.lineage ==
-        f'{test_f_id}/{SCHEME}:{COLLECTION}/{test_f_id}.fits'
-    ), 'wrong lineage'
-    assert (
         test_storage.external_urls
         == f'https://archive.gemini.edu/fullheader/{test_f_id}.fits'
     ), 'wrong external urls'
@@ -434,12 +418,6 @@ def test_run_by_public2(
             test_storage.fname_on_disk == 'N20191101S0007.fits'
         ), 'wrong fname on disk'
         assert test_storage.url is None, 'wrong url'
-        # there are six files returned by the mock, and they each have the
-        # same data label, so they all end up in this lineage
-        assert (
-            test_storage.lineage
-            == f'N20191101S0007/{SCHEME}:{COLLECTION}/N20191101S0007.fits'
-        ), 'wrong lineage'
         assert (
             test_storage.external_urls
             == 'https://archive.gemini.edu/fullheader/N20191101S0007.fits'

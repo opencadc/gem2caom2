@@ -79,14 +79,15 @@ from caom2pipe import manage_composable as mc
 from caom2pipe import run_composable as rc
 from gem2caom2 import main_app, preview_augmentation, external_metadata
 from gem2caom2 import pull_augmentation, data_source, builder
-from gem2caom2 import cleanup_augmentation
+from gem2caom2 import cleanup_augmentation, fits2caom2_augmentation
 
 DATA_VISITORS = []
 META_VISITORS = [
-        preview_augmentation,
-        pull_augmentation,
-        cleanup_augmentation,
-    ]
+    fits2caom2_augmentation,
+    preview_augmentation,
+    pull_augmentation,
+    cleanup_augmentation,
+]
 
 
 def _run():
@@ -100,7 +101,11 @@ def _run():
     name_builder = builder.GemObsIDBuilder(config)
     if config.use_local_files:
         source = dsc.ListDirSeparateDataSource(config)
-        meta_visitors = [preview_augmentation, cleanup_augmentation]
+        meta_visitors = [
+            fits2caom2_augmentation,
+            preview_augmentation,
+            cleanup_augmentation,
+        ]
     else:
         source = dsc.TodoFileDataSource(config)
         meta_visitors = META_VISITORS
@@ -108,7 +113,6 @@ def _run():
         config,
         name_builder,
         chooser=None,
-        command_name=main_app.APPLICATION,
         meta_visitors=meta_visitors,
         source=source,
     )
@@ -191,7 +195,6 @@ def _run_by_public():
     return rc.run_by_state(
         config=config,
         name_builder=name_builder,
-        command_name=main_app.APPLICATION,
         bookmark_name=data_source.GEM_BOOKMARK,
         meta_visitors=META_VISITORS,
         data_visitors=DATA_VISITORS,
@@ -234,7 +237,6 @@ def _run_state():
     result = rc.run_by_state(
         config=config,
         name_builder=name_builder,
-        command_name=main_app.APPLICATION,
         bookmark_name=data_source.GEM_BOOKMARK,
         meta_visitors=META_VISITORS,
         data_visitors=DATA_VISITORS,

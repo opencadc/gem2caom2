@@ -2,7 +2,7 @@
 <caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="da074aae-57d7-4b2e-8928-5c370815dab2" caom2:lastModified="2020-09-02T23:51:53.978" caom2:maxLastModified="2020-09-03T00:01:30.245" caom2:metaChecksum="md5:6c671ab56d7571e507a1153e3e305a6f" caom2:accMetaChecksum="md5:d751959d695cd34ab6f99b80ac40f225" caom2:metaProducer="gem2caom2/0.8.1">
   <caom2:collection>GEMINI</caom2:collection>
   <caom2:observationID>N20191219A0001</caom2:observationID>
-  <caom2:metaRelease>2019-12-19T16:02:30.019</caom2:metaRelease>
+  <caom2:metaRelease>2019-12-19T16:02:30.019200</caom2:metaRelease>
   <caom2:algorithm>
     <caom2:name>exposure</caom2:name>
   </caom2:algorithm>
@@ -29,7 +29,7 @@
   <caom2:planes>
     <caom2:plane caom2:id="ba675f37-1f78-4590-b734-5b5f25daa648" caom2:lastModified="2020-09-03T00:01:30.245" caom2:maxLastModified="2020-09-03T00:01:30.245" caom2:metaChecksum="md5:ba8ab1547b8ec2bb5e15f94dac07725a" caom2:accMetaChecksum="md5:930643354ec1dc95fa883b8cec0f1c12" caom2:metaProducer="gem2caom2/0.8.1">
       <caom2:productID>N20191219A0001b</caom2:productID>
-      <caom2:metaRelease>2019-12-19T16:02:30.019</caom2:metaRelease>
+      <caom2:metaRelease>2019-12-19T16:02:30.019200</caom2:metaRelease>
       <caom2:dataRelease>2020-12-18T00:00:00.000</caom2:dataRelease>
       <caom2:dataProductType>image</caom2:dataProductType>
       <caom2:calibrationLevel>1</caom2:calibrationLevel>
@@ -141,7 +141,7 @@
     </caom2:plane>
     <caom2:plane caom2:id="54422d1e-2cb7-4a45-a54c-8ab92a6123f7" caom2:lastModified="2020-09-03T00:01:26.629" caom2:maxLastModified="2020-09-03T00:01:26.629" caom2:metaChecksum="md5:9f709fcce0573346405612a0a18bb0ed" caom2:accMetaChecksum="md5:8fffd76b9515082f3a36f077771a02b3" caom2:metaProducer="gem2caom2/0.8.1">
       <caom2:productID>N20191219A0001r</caom2:productID>
-      <caom2:metaRelease>2019-12-19T16:02:30.019</caom2:metaRelease>
+      <caom2:metaRelease>2019-12-19T16:02:30.019200</caom2:metaRelease>
       <caom2:dataRelease>2020-12-18T00:00:00.000</caom2:dataRelease>
       <caom2:dataProductType>image</caom2:dataProductType>
       <caom2:calibrationLevel>1</caom2:calibrationLevel>

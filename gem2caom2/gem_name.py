@@ -260,24 +260,6 @@ class GemName(mc.StorageName):
         self._file_id = value
 
     @property
-    def lineage(self):
-        if '_th.jpg' in self._file_name:
-            # thumbnail
-            return mc.get_lineage(
-                self._v_collection,
-                self.product_id,
-                self._file_name,
-                self._v_scheme,
-            )
-        else:
-            return mc.get_lineage(
-                self._v_collection,
-                self.product_id,
-                self._file_name,
-                SCHEME,
-            )
-
-    @property
     def external_urls(self):
         return f'{HEADER_URL}{self._file_id}.fits'
 

@@ -67,55 +67,85 @@
 # ***********************************************************************
 #
 
-import sys
+import logging
 
+from tempfile import TemporaryDirectory
+from cadcdata import FileInfo
+from caom2.diff import get_differences
+from caom2pipe import astro_composable as ac
 from caom2pipe import manage_composable as mc
-from gem2caom2 import main_app, GemName, external_metadata
-from gem2caom2.util import COLLECTION
+from caom2pipe import reader_composable as rdc
+from gem2caom2 import GemName, external_metadata, fits2caom2_augmentation
 
 from mock import patch, Mock
 import gem_mocks
 
 
-@patch('caom2utils.data_util.StorageClientWrapper')
-@patch('cadcutils.net.ws.WsCapabilities.get_access_url')
-@patch('gem2caom2.program_metadata.get_pi_metadata')
+@patch('caom2pipe.astro_composable.get_vo_table_session')
 @patch('gem2caom2.external_metadata.DefiningMetadataFinder')
-def test_missing_provenance(
-    get_mock,
-    pi_mock,
-    cap_mock,
-    client_mock,
+@patch('gem2caom2.program_metadata.get_pi_metadata')
+@patch('cadcutils.net.ws.WsCapabilities.get_access_url')
+@patch('gemProc2caom2.builder.CadcTapClient')
+@patch('gem2caom2.external_metadata.CadcTapClient')
+def test_visitor(
+    em_tap_client_mock,
+    builder_tap_client_mock,
+    access_url,
+    get_pi_mock,
+    dmf_mock,
+    svofps_mock,
 ):
-    test_config = mc.Config()
-    test_config.get_executors()
+    access_url.return_value = 'https://localhost:8080'
+    get_pi_mock.side_effect = gem_mocks.mock_get_pi_metadata
+    dmf_mock.return_value.get.side_effect = gem_mocks.mock_get_dm
+    svofps_mock.side_effect = gem_mocks.mock_get_votable
 
-    external_metadata.init_global(test_config)
+    with TemporaryDirectory() as tmp_dir_name:
 
-    cap_mock.return_value = 'https://localhost'
-    pi_mock.side_effect = gem_mocks.mock_get_pi_metadata
-    get_mock.return_value.get.side_effect = gem_mocks.mock_get_dm
-    client_mock.return_value.info.side_effect = gem_mocks.mock_get_file_info
+        test_f_name = 'gS20171114S0185_bias.fits.header'
+        test_obs_id = 'GS-CAL20171114-2-086-G-BIAS'
+        storage_name = GemName(obs_id=test_obs_id, file_name=test_f_name)
+        test_fqn = f'{gem_mocks.TEST_DATA_DIR}/broken_files/{test_f_name}'
+        storage_name.source_names = [test_fqn]
 
-    test_f_name = 'gS20171114S0185_bias.fits.header'
-    test_obs_id = 'GS-CAL20171114-2-086-G-BIAS'
-    test_storage_name = GemName(obs_id=test_obs_id, file_name=test_f_name)
-    test_fqn = f'{gem_mocks.TEST_DATA_DIR}/broken_files/{test_f_name}'
-    actual_fqn = (
-        f'{gem_mocks.TEST_DATA_DIR}/broken_files/{test_obs_id}.actual.xml'
-    )
-    sys.argv = (
-        f'{main_app.APPLICATION} --quiet --no_validate '
-        f'--local {test_fqn} '
-        f'--plugin {gem_mocks.PLUGIN} --module {gem_mocks.PLUGIN} '
-        f'--observation {COLLECTION} {test_obs_id} --out {actual_fqn} '
-        f'--lineage {test_storage_name.lineage} '
-        f'--resource-id ivo://cadc.nrc.ca/test '
-    ).split()
-    main_app.to_caom2()
-    expected_fqn = (
-        f'{gem_mocks.TEST_DATA_DIR}/broken_files/{test_obs_id}.expected.xml'
-    )
-    compare_result = mc.compare_observations(actual_fqn, expected_fqn)
-    if compare_result is not None:
-        assert False, compare_result
+        test_config = mc.Config()
+        test_config.task_types = [mc.TaskType.SCRAPE]
+        test_config.use_local_files = True
+        test_config.data_sources = [f'{gem_mocks.TEST_DATA_DIR}/broken_files']
+        test_config.working_directory = tmp_dir_name
+        test_config.proxy_fqn = f'{tmp_dir_name}/test_proxy.pem'
+
+        with open(test_config.proxy_fqn, 'w') as f:
+            f.write('test content')
+
+        external_metadata.get_gofr(test_config)
+        observation = None
+        expected_fqn = (
+            f'{gem_mocks.TEST_DATA_DIR}/broken_files/{test_obs_id}.expected.xml'
+        )
+        file_info = FileInfo(
+            id=storage_name.file_uri, file_type='application/fits'
+        )
+        headers = ac.make_headers_from_file(test_fqn)
+        metadata_reader = rdc.FileMetadataReader()
+        metadata_reader._headers = {storage_name.file_uri: headers}
+        metadata_reader._file_info = {storage_name.file_uri: file_info}
+        kwargs = {
+            'storage_name': storage_name,
+            'metadata_reader': metadata_reader,
+        }
+        logging.getLogger('caom2utils.fits2caom2').setLevel(logging.INFO)
+        logging.getLogger('root').setLevel(logging.INFO)
+        observation = fits2caom2_augmentation.visit(observation, **kwargs)
+
+        expected = mc.read_obs_from_file(expected_fqn)
+        compare_result = get_differences(expected, observation)
+        if compare_result is not None:
+            actual_fqn = expected_fqn.replace('expected', 'actual')
+            mc.write_obs_to_file(observation, actual_fqn)
+            compare_text = '\n'.join([r for r in compare_result])
+            msg = (
+                f'Differences found in observation {expected.observation_id}\n'
+                f'{compare_text}. Check {actual_fqn}'
+            )
+            raise AssertionError(msg)

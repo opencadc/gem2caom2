@@ -67,12 +67,19 @@
 #
 
 import json
+import logging
 import os
 import pytest
 import sys
 
+from tempfile import TemporaryDirectory
+from caom2.diff import get_differences
+from cadcdata import FileInfo
+from caom2pipe import astro_composable as ac
 from caom2pipe import manage_composable as mc
-from gem2caom2 import main_app, gem_name, external_metadata
+from caom2pipe import reader_composable as rdc
+from gem2caom2 import main_app, gem_name, external_metadata, builder
+from gem2caom2 import fits2caom2_augmentation
 
 from unittest.mock import patch, Mock
 
@@ -126,125 +133,77 @@ def pytest_generate_tests(metafunc):
     metafunc.parametrize('test_name', obs_id_list)
 
 
-@patch('gem2caom2.program_metadata.get_pi_metadata')
+@patch('caom2pipe.astro_composable.get_vo_table_session')
 @patch('gem2caom2.external_metadata.DefiningMetadataFinder')
-def test_multi_plane(gemini_client_mock, gemini_pi_mock, test_name):
-    gemini_client_mock.return_value.get.side_effect = gem_mocks.mock_get_dm
-    getcwd_orig = os.getcwd
-    os.getcwd = Mock(return_value=gem_mocks.TEST_DATA_DIR)
-    try:
+@patch('gem2caom2.program_metadata.get_pi_metadata')
+@patch('cadcutils.net.ws.WsCapabilities.get_access_url')
+@patch('gemProc2caom2.builder.CadcTapClient')
+@patch('gem2caom2.external_metadata.CadcTapClient')
+def test_visitor(
+    em_tap_client_mock,
+    builder_tap_client_mock,
+    access_url,
+    get_pi_mock,
+    dmf_mock,
+    svofps_mock,
+    test_name,
+):
+    access_url.return_value = 'https://localhost:8080'
+    get_pi_mock.side_effect = gem_mocks.mock_get_pi_metadata
+    dmf_mock.return_value.get.side_effect = gem_mocks.mock_get_dm
+    svofps_mock.side_effect = gem_mocks.mock_get_votable
+
+    with TemporaryDirectory() as tmp_dir_name:
         test_config = mc.Config()
-        test_config.get_executors()
-        external_metadata.init_global(test_config)
-        obs_id = test_name
-        lineage = _get_lineage(obs_id)
-        input_file = f'{gem_mocks.TEST_DATA_DIR}/{DIR_NAME}/{obs_id}.in.xml'
-        actual_fqn = (
-            f'{gem_mocks.TEST_DATA_DIR}/{DIR_NAME}/{obs_id}.actual.xml'
+        test_config.task_types = [mc.TaskType.SCRAPE]
+        test_config.use_local_files = True
+        test_config.data_sources = [os.path.dirname(test_name)]
+        test_config.working_directory = tmp_dir_name
+        test_config.proxy_fqn = f'{tmp_dir_name}/test_proxy.pem'
+
+        with open(test_config.proxy_fqn, 'w') as f:
+            f.write('test content')
+
+        external_metadata.get_gofr(test_config)
+        observation = None
+        expected_fqn = (
+            f'{gem_mocks.TEST_DATA_DIR}/multi_plane/'
+            f'{test_name}.expected.xml'
         )
-
-        local = _get_local(test_name)
-        plugin = gem_mocks.PLUGIN
-
-        with patch(
-            'caom2utils.data_util.StorageClientWrapper'
-        ) as data_client_mock, patch(
-            'caom2pipe.astro_composable.get_vo_table_session'
-        ) as svofps_mock:
-
-            data_client_mock.return_value.cadcinfo.side_effect = (
-                gem_mocks.mock_get_file_info
+        in_fqn = expected_fqn.replace('.expected.', '.in.')
+        if os.path.exists(in_fqn):
+            observation = mc.read_obs_from_file(in_fqn)
+        for f_name in LOOKUP[test_name]:
+            source_name = (
+                f'{gem_mocks.TEST_DATA_DIR}/multi_plane/{f_name}.fits.header'
             )
-            gemini_pi_mock.side_effect = gem_mocks.mock_get_pi_metadata
-            svofps_mock.side_effect = gem_mocks.mock_get_votable
-
-            if os.path.exists(actual_fqn):
-                os.remove(actual_fqn)
-
-            sys.argv = (
-                f'{main_app.APPLICATION} --quiet --no_validate --local '
-                f'{local} --plugin {plugin} --module {plugin} '
-                f'--in {input_file} --out {actual_fqn} '
-                f'--lineage {lineage}'
-            ).split()
-            print(sys.argv)
-            main_app.to_caom2()
-            expected_fqn = (
-                f'{gem_mocks.TEST_DATA_DIR}/{DIR_NAME}/{obs_id}.expected.xml'
+            test_builder = builder.GemObsIDBuilder(test_config)
+            storage_name = test_builder.build(source_name)
+            storage_name.source_names = [source_name]
+            file_info = FileInfo(
+                id=storage_name.file_uri, file_type='application/fits'
             )
+            headers = ac.make_headers_from_file(source_name)
+            metadata_reader = rdc.FileMetadataReader()
+            metadata_reader._headers = {storage_name.file_uri: headers}
+            metadata_reader._file_info = {storage_name.file_uri: file_info}
+            kwargs = {
+                'storage_name': storage_name,
+                'metadata_reader': metadata_reader,
+            }
+            logging.getLogger('caom2utils.fits2caom2').setLevel(logging.INFO)
+            logging.getLogger('TEXES').setLevel(logging.INFO)
+            logging.getLogger('root').setLevel(logging.INFO)
+            observation = fits2caom2_augmentation.visit(observation, **kwargs)
 
-            compare_result = mc.compare_observations(actual_fqn, expected_fqn)
-            if compare_result is not None:
-                raise AssertionError(compare_result)
-            # assert False  # cause I want to see logging messages
-    finally:
-        os.getcwd = getcwd_orig
-
-
-def _get_lineage(obs_id):
-    result = ''
-    if obs_id == 'GN-2020A-Q-132-0-0':
-        product_id = LOOKUP[obs_id][0][:-1]
-        x = mc.get_lineage(
-            gem_name.COLLECTION,
-            product_id,
-            f'{LOOKUP[obs_id][0]}.fits',
-            gem_name.SCHEME,
-        )
-        y = mc.get_lineage(
-            gem_name.COLLECTION,
-            product_id,
-            f'{LOOKUP[obs_id][1]}.fits',
-            gem_name.SCHEME,
-        )
-        result = f'{x} {y}'
-    elif obs_id in [
-        'GS-2020B-Q-211-52-1119',
-        'GS-CAL20200202-23-0201',
-        'GS-CAL20201123-20-1122',
-    ]:
-        product_id = LOOKUP[obs_id][0].replace('H', '')
-        x = mc.get_lineage(
-            gem_name.COLLECTION,
-            product_id,
-            f'{LOOKUP[obs_id][0]}.fits',
-            gem_name.SCHEME,
-        )
-        y = mc.get_lineage(
-            gem_name.COLLECTION,
-            product_id,
-            f'{LOOKUP[obs_id][1]}.fits',
-            gem_name.SCHEME,
-        )
-        result = f'{x} {y}'
-    else:
-        for ii in LOOKUP[obs_id]:
-            fits = mc.get_lineage(
-                gem_name.COLLECTION, ii, f'{ii}.fits', gem_name.SCHEME
+        expected = mc.read_obs_from_file(expected_fqn)
+        compare_result = get_differences(expected, observation)
+        if compare_result is not None:
+            actual_fqn = expected_fqn.replace('expected', 'actual')
+            mc.write_obs_to_file(observation, actual_fqn)
+            compare_text = '\n'.join([r for r in compare_result])
+            msg = (
+                f'Differences found in observation {expected.observation_id}\n'
+                f'{compare_text}. Check {actual_fqn}'
             )
-            result = f'{result} {fits}'
-    return result
-
-
-def _get_local(obs_id):
-    result = ''
-    for ii in LOOKUP[obs_id]:
-        result = (
-            f'{result} {gem_mocks.TEST_DATA_DIR}/{DIR_NAME}/{ii}.fits.header'
-        )
-    return result
-
-
-def _request_mock(url, timeout=-1):
-    result = gem_mocks.Object()
-    f_id = url.split('=')[1]
-    f_name = f'{gem_mocks.TEST_DATA_DIR}/json/{f_id}.json'
-
-    def x():
-        with open(f_name) as f:
-            # y = json.loads(f.read())
-            y = f.read()
-        return json.loads(y)
-
-    result.json = x
-    return result
+            raise AssertionError(msg)

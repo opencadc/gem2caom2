@@ -122,10 +122,6 @@ def test_storage_name(tap_mock, cap_mock):
         test_sn.external_urls
         == 'https://archive.gemini.edu/fullheader/N20200810A0490r.fits'
     )
-    assert (
-        test_sn.lineage
-        == f'{test_sn.obs_id}r/{SCHEME}:{COLLECTION}/{test_sn.file_id}.fits'
-    ), 'wrong lineage'
 
     test_sn = GemName(file_name='SDCH_20200131_0010.fits')
     assert test_sn.obs_id == 'GS-CAL20200131-10-0131', 'wrong obs id'
@@ -135,7 +131,3 @@ def test_storage_name(tap_mock, cap_mock):
             test_sn.external_urls
             == 'https://archive.gemini.edu/fullheader/SDCH_20200131_0010.fits'
     )
-    assert (
-        test_sn.lineage
-        == f'SDC_20200131_0010/{SCHEME}:{COLLECTION}/SDCH_20200131_0010.fits'
-    ), 'wrong lineage'
