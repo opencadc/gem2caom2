@@ -80,6 +80,7 @@ from hashlib import md5
 
 from cadcdata import FileInfo
 from caom2.diff import get_differences
+from caom2pipe import astro_composable as ac
 from caom2pipe import manage_composable as mc
 
 import gem2caom2.external_metadata as em
@@ -1144,6 +1145,7 @@ def mock_get_obs_metadata(file_id):
                 },
             ]
         json_lookup.add(y, file_id)
+        return y
     except Exception as e:
         logging.error(e)
         tb = traceback.format_exc()
@@ -1366,3 +1368,9 @@ def mock_get_node(uri, **kwargs):
         'MD5': '1234',
     }
     return node
+
+
+def _mock_headers(file_id):
+    instrument = LOOKUP.get(file_id)[1]
+    test_fqn = f'{TEST_DATA_DIR}/{instrument}/{file_id}.fits.header'
+    return ac.make_headers_from_file(test_fqn)

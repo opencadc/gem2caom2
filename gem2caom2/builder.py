@@ -87,10 +87,13 @@ class GemObsIDBuilder(nbc.StorageNameBuilder):
     To be able to build a StorageName instance with an observation ID.
     """
 
-    def __init__(self, config):
+    def __init__(self, config, metadata_reader, metadata):
         super(GemObsIDBuilder, self).__init__()
         self._config = config
-        self._logger = logging.getLogger(__name__)
+        self._metadata_reader = metadata_reader
+        self._metadata = metadata
+        self._metadata.reader = self._metadata_reader
+        self._logger = logging.getLogger(self.__class__.__name__)
 
     def build(self, entry):
         """
@@ -103,8 +106,8 @@ class GemObsIDBuilder(nbc.StorageNameBuilder):
             f_name = entry
             if entry != path.basename(entry):
                 f_name = path.basename(entry)
-            uri = mc.build_uri(COLLECTION, f_name, SCHEME)
-            metadata = em.defining_metadata_finder.get(uri)
+            # uri = mc.build_uri(COLLECTION, f_name, SCHEME)
+            # metadata = em.defining_metadata_finder.get(uri)
             if (
                 mc.TaskType.SCRAPE in self._config.task_types
                 or self._config.use_local_files
@@ -112,21 +115,29 @@ class GemObsIDBuilder(nbc.StorageNameBuilder):
                 result = gem_name.GemName(
                     file_name=f_name,
                     entry=entry,
-                    obs_id=metadata.data_label,
                 )
                 result.source_names = [entry]
             elif '.fits' in entry or '.jpg' in entry:
                 result = gem_name.GemName(
                     file_name=f_name,
                     entry=entry,
-                    obs_id=metadata.data_label,
                 )
-                result.source_names = [result.file_name]
+                result.source_names = [result.file_id]
             else:
                 raise mc.CadcException(
                     'The need has not been encountered in the real world '
                     'yet.'
                 )
+            self._metadata_reader.set(result)
+            result.obs_id = self._metadata.data_label
+            # result.obs_id = self._metadata_reader.headers.get('DATALAB')
+            # if (
+            #     result.obs_id is None
+            #     and hasattr(self._metadata_reader, 'json_metadata')
+            # ):
+            #     result.obs_id = self._metadata_reader.json_metadata.get(
+            #         'data_label'
+            #     )
             self._logger.debug('Done build.')
             return result
         except Exception as e:

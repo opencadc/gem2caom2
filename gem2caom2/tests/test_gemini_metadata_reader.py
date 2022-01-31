@@ -3,7 +3,7 @@
 # ******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
 # *************  CENTRE CANADIEN DE DONNÉES ASTRONOMIQUES  **************
 #
-#  (c) 2020.                            (c) 2020.
+#  (c) 2022.                            (c) 2022.
 #  Government of Canada                 Gouvernement du Canada
 #  National Research Council            Conseil national de recherches
 #  Ottawa, Canada, K1A 0R6              Ottawa, Canada, K1A 0R6
@@ -67,98 +67,26 @@
 # ***********************************************************************
 #
 
-import os
-import pytest
-
+from gem2caom2 import gemini_reader, gem_name
 from mock import Mock, patch
-
-from caom2pipe import manage_composable as mc
-from gem2caom2 import SCHEME, V_SCHEME, COLLECTION
-from gem2caom2 import builder, gemini_reader
-from gem2caom2 import external_metadata as em
 
 import gem_mocks
 
 
-# @patch('gem2caom2.external_metadata.DefiningMetadataFinder')
 @patch('gem2caom2.gemini_reader.GeminiMetadataReader._retrieve_headers')
 @patch('gem2caom2.gemini_reader.GeminiMetadataReader._retrieve_json')
-def test_builder(file_info_mock, header_mock):
-    # dmf_mock.return_value.get.side_effect = gem_mocks.mock_get_dm
-    file_info_mock.side_effect = gem_mocks.mock_get_obs_metadata
-
-    test_config = mc.Config()
-    test_config.working_directory = '/test_files'
-    test_config.proxy_fqn = os.path.join(
-        gem_mocks.TEST_DATA_DIR, 'test_proxy.pem'
-    )
-    # em.defining_metadata_finder = None
-    # em.init_global(config=test_config)
+def test_set(retrieve_json_mock, retrieve_headers_mock):
+    retrieve_json_mock.side_effect = gem_mocks.mock_get_obs_metadata
+    test_f_name = 'N20030104S0065.fits'
+    test_obs_id = 'GN-CAL20030104-14-001'
+    # test_fqn = f'{gem_mocks.TEST_DATA_DIR}/GMOS/{test_f_name}.header'
+    retrieve_headers_mock.side_effect = gem_mocks._mock_headers
     session_mock = Mock()
-    test_reader = gemini_reader.GeminiMetadataReader(session_mock)
-    test_metadata = gemini_reader.GeminiMetadata(test_reader)
-    test_subject = builder.GemObsIDBuilder(
-        test_config, test_reader, test_metadata
+    test_storage_name = gem_name.GemName(
+        obs_id=test_obs_id, file_name=test_f_name
     )
-
-    test_entries = ['S20050825S0143.fits', 'TX20131117_raw.3002.fits']
-    for test_entry in test_entries:
-        for task_type in [mc.TaskType.INGEST, mc.TaskType.SCRAPE]:
-            test_config.task_types = [task_type]
-            test_result = test_subject.build(test_entry)
-            assert (
-                test_result is not None
-            ), f'expect a result'
-            assert (
-                test_result.file_uri
-                == f'{SCHEME}:{COLLECTION}/{test_entry}'
-            ), 'wrong file uri'
-            assert (
-                test_result.prev_uri
-                == f'{SCHEME}:{COLLECTION}/{test_result.prev}'
-            ), 'wrong preview uri'
-            assert (
-                test_result.thumb_uri
-                == f'{V_SCHEME}:{COLLECTION}/{test_result.thumb}'
-            ), 'wrong thumb uri'
-            assert test_result.obs_id is not None, f'expect an obs id'
-
-    test_config.task_types = [mc.TaskType.INGEST]
-    test_entry = 'GN-DATA-LABEL'
-    with pytest.raises(mc.CadcException):
-        ignore = test_subject.build(test_entry)
-
-
-# @patch('gem2caom2.external_metadata.DefiningMetadataFinder')
-@patch('caom2pipe.reader_composable.FileMetadataReader._retrieve_headers')
-@patch('caom2pipe.reader_composable.FileMetadataReader._retrieve_file_info')
-def test_builder_local(file_info_mock, header_mock):
-    file_info_mock.side_effect = gem_mocks.mock_get_obs_metadata
-    test_reader = gemini_reader.GeminiMetadataReader(None)
-    test_metadata = gemini_reader.GeminiMetadata(test_reader)
-
-    try:
-        # em.defining_metadata_finder = None
-        test_config = mc.Config()
-        test_config.data_sources = ['/test_files']
-        test_config.use_local_files = True
-        test_entry = '/test_files/S20191214S0301.fits'
-        test_config.task_types = [mc.TaskType.INGEST]
-        # em.init_global(config=test_config)
-        test_subject = builder.GemObsIDBuilder(test_config)
-        test_result = test_subject.build(test_entry)
-        assert test_result is not None, 'expect a result'
-        assert (
-            test_result.file_uri == 'gemini:GEMINI/S20191214S0301.fits'
-        ), 'file'
-        assert (
-            test_result.prev_uri == 'gemini:GEMINI/S20191214S0301.jpg'
-        ), 'prev'
-        assert (
-            test_result.thumb_uri == 'cadc:GEMINI/S20191214S0301_th.jpg'
-        ), 'thumb'
-        assert (
-            test_result.source_names[0] == '/test_files/S20191214S0301.fits'
-        ), 'wrong source_names'
-    finally:
-        em.defining_metadata_finder = None
+    test_subject = gemini_reader.GeminiMetadataReader(session_mock)
+    test_subject.set(test_storage_name)
+    assert len(test_subject._json_metadata) == 1, 'json entries'
+    assert len(test_subject._headers) == 1, 'header entries'
+    assert len(test_subject._file_info) == 1, 'file info entries'
