@@ -79,7 +79,6 @@ def test_set(retrieve_json_mock, retrieve_headers_mock):
     retrieve_json_mock.side_effect = gem_mocks.mock_get_obs_metadata
     test_f_name = 'N20030104S0065.fits'
     test_obs_id = 'GN-CAL20030104-14-001'
-    # test_fqn = f'{gem_mocks.TEST_DATA_DIR}/GMOS/{test_f_name}.header'
     retrieve_headers_mock.side_effect = gem_mocks._mock_headers
     session_mock = Mock()
     test_storage_name = gem_name.GemName(

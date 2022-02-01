@@ -91,14 +91,22 @@ PUBLIC_TEST_JSON = (
 )
 
 
+@patch('caom2pipe.client_composable.ClientCollection.data_client')
 @patch('cadcutils.net.ws.WsCapabilities.get_access_url')
-@patch('gem2caom2.external_metadata.DefiningMetadataFinder')
+# @patch('gem2caom2.external_metadata.DefiningMetadataFinder')
 @patch('caom2pipe.execute_composable.OrganizeExecutes.do_one')
-def test_run(run_mock, dmf_mock, cap_mock):
+# def test_run(run_mock, dmf_mock, cap_mock):
+def test_run(run_mock, cap_mock, data_client_mock):
     cap_mock.return_value = 'https://localhost'
-    dmf_mock.return_value.get.side_effect = gem_mocks.mock_get_dm
-    test_obs_id = 'GS-CAL20141226-7-029'
-    test_f_id = 'S20141226S0206'
+    # dmf_mock.return_value.get.side_effect = gem_mocks.mock_get_dm
+    data_client_mock.return_value.get_head.side_effect = gem_mocks._mock_headers
+    data_client_mock.return_value.info.side_effect = (
+        gem_mocks.mock_get_file_info
+    )
+    test_obs_id = 'GS-2006B-Q-47-76-003'
+    test_f_id = 'S20070130S0048'
+    # test_obs_id = 'GS-CAL20141226-7-029'
+    # test_f_id = 'S20141226S0206'
     test_f_name = f'{test_f_id}.fits'
     _write_todo(test_f_name)
 
@@ -111,6 +119,7 @@ def test_run(run_mock, dmf_mock, cap_mock):
         args, kwargs = run_mock.call_args
         test_storage = args[0]
         assert isinstance(test_storage, gem_name.GemName), type(test_storage)
+        logging.error(test_storage)
         assert test_storage.obs_id == test_obs_id, 'wrong obs id'
         assert test_storage.file_name == test_f_name, 'wrong file name'
         assert test_storage.fname_on_disk == test_f_name, 'wrong fname on disk'

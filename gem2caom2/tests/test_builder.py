@@ -73,6 +73,7 @@ import pytest
 from mock import Mock, patch
 
 from caom2pipe import manage_composable as mc
+from caom2pipe import reader_composable as rdc
 from gem2caom2 import SCHEME, V_SCHEME, COLLECTION
 from gem2caom2 import builder, gemini_reader
 from gem2caom2 import external_metadata as em
@@ -80,11 +81,9 @@ from gem2caom2 import external_metadata as em
 import gem_mocks
 
 
-# @patch('gem2caom2.external_metadata.DefiningMetadataFinder')
 @patch('gem2caom2.gemini_reader.GeminiMetadataReader._retrieve_headers')
 @patch('gem2caom2.gemini_reader.GeminiMetadataReader._retrieve_json')
 def test_builder(file_info_mock, header_mock):
-    # dmf_mock.return_value.get.side_effect = gem_mocks.mock_get_dm
     file_info_mock.side_effect = gem_mocks.mock_get_obs_metadata
 
     test_config = mc.Config()
@@ -92,11 +91,9 @@ def test_builder(file_info_mock, header_mock):
     test_config.proxy_fqn = os.path.join(
         gem_mocks.TEST_DATA_DIR, 'test_proxy.pem'
     )
-    # em.defining_metadata_finder = None
-    # em.init_global(config=test_config)
     session_mock = Mock()
     test_reader = gemini_reader.GeminiMetadataReader(session_mock)
-    test_metadata = gemini_reader.GeminiMetadata(test_reader)
+    test_metadata = gemini_reader.GeminiMetadataLookup(test_reader)
     test_subject = builder.GemObsIDBuilder(
         test_config, test_reader, test_metadata
     )
@@ -129,23 +126,22 @@ def test_builder(file_info_mock, header_mock):
         ignore = test_subject.build(test_entry)
 
 
-# @patch('gem2caom2.external_metadata.DefiningMetadataFinder')
 @patch('caom2pipe.reader_composable.FileMetadataReader._retrieve_headers')
 @patch('caom2pipe.reader_composable.FileMetadataReader._retrieve_file_info')
 def test_builder_local(file_info_mock, header_mock):
     file_info_mock.side_effect = gem_mocks.mock_get_obs_metadata
-    test_reader = gemini_reader.GeminiMetadataReader(None)
-    test_metadata = gemini_reader.GeminiMetadata(test_reader)
+    test_reader = rdc.FileMetadataReader()
+    test_metadata = gemini_reader.GeminiMetadataLookup(test_reader)
 
     try:
-        # em.defining_metadata_finder = None
         test_config = mc.Config()
         test_config.data_sources = ['/test_files']
         test_config.use_local_files = True
         test_entry = '/test_files/S20191214S0301.fits'
         test_config.task_types = [mc.TaskType.INGEST]
-        # em.init_global(config=test_config)
-        test_subject = builder.GemObsIDBuilder(test_config)
+        test_subject = builder.GemObsIDBuilder(
+            test_config, test_reader, test_metadata
+        )
         test_result = test_subject.build(test_entry)
         assert test_result is not None, 'expect a result'
         assert (

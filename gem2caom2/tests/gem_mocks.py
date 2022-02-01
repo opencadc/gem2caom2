@@ -1110,6 +1110,9 @@ def mock_get_pi_metadata(program_id):
 
 
 def mock_get_file_info(file_id):
+    if isinstance(file_id, GemName):
+        # the case if StorageClientReader is being mocked
+        file_id = file_id.source_names[0]
     if '_prev' in file_id:
         return FileInfo(
             size=10290,
@@ -1371,6 +1374,14 @@ def mock_get_node(uri, **kwargs):
 
 
 def _mock_headers(file_id):
-    instrument = LOOKUP.get(file_id)[1]
-    test_fqn = f'{TEST_DATA_DIR}/{instrument}/{file_id}.fits.header'
+    if isinstance(file_id, GemName):
+        # the case if StorageClientReader is being mocked
+        file_id = file_id.source_names[0]
+    if '/' in file_id:
+        # the case if FileMetadataReader is being mocked
+        test_fqn = file_id
+    else:
+        # the case if GeminiMetadataReader is being mocked
+        instrument = LOOKUP.get(file_id)[1]
+        test_fqn = f'{TEST_DATA_DIR}/{instrument.value}/{file_id}.fits.header'
     return ac.make_headers_from_file(test_fqn)

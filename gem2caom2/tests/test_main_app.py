@@ -77,7 +77,7 @@ import gem2caom2.external_metadata as em
 
 from cadcdata import FileInfo
 from caom2.diff import get_differences
-from gem2caom2 import builder, fits2caom2_augmentation
+from gem2caom2 import builder, fits2caom2_augmentation, gemini_reader
 from gem2caom2.util import Inst
 from caom2pipe import astro_composable as ac
 from caom2pipe import manage_composable as mc
@@ -130,6 +130,7 @@ def pytest_generate_tests(metafunc):
         metafunc.parametrize('test_name', file_list)
 
 
+@patch('caom2pipe.reader_composable.FileMetadataReader._retrieve_headers')
 @patch('caom2pipe.astro_composable.get_vo_table_session')
 @patch('gem2caom2.external_metadata.DefiningMetadataFinder')
 @patch('gem2caom2.program_metadata.get_pi_metadata')
@@ -143,6 +144,7 @@ def test_visitor(
     get_pi_mock,
     dmf_mock,
     svofps_mock,
+    retrieve_headers_mock,
     test_name,
 ):
 
@@ -150,6 +152,7 @@ def test_visitor(
     get_pi_mock.side_effect = gem_mocks.mock_get_pi_metadata
     dmf_mock.return_value.get.side_effect = gem_mocks.mock_get_dm
     svofps_mock.side_effect = gem_mocks.mock_get_votable
+    retrieve_headers_mock.side_effect = gem_mocks._mock_headers
 
     with TemporaryDirectory() as tmp_dir_name:
         test_config = mc.Config()
@@ -163,7 +166,11 @@ def test_visitor(
             f.write('test content')
 
         em.get_gofr(test_config)
-        test_builder = builder.GemObsIDBuilder(test_config)
+        test_reader = rdc.FileMetadataReader()
+        test_metadata = gemini_reader.GeminiMetadataLookup(test_reader)
+        test_builder = builder.GemObsIDBuilder(
+            test_config, test_reader, test_metadata
+        )
         storage_name = test_builder.build(test_name)
         file_info = FileInfo(
             id=storage_name.file_uri, file_type='application/fits'

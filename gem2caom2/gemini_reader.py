@@ -73,10 +73,11 @@ from cadcdata import FileInfo
 from caom2utils import data_util
 from caom2pipe import manage_composable as mc
 from caom2pipe import reader_composable as rdc
+from gem2caom2 import obs_file_relationship
 
 
 __all__ = [
-    'GeminiMetadata',
+    'GeminiMetadataLookup',
     'GeminiMetadataReader',
     'GEMINI_METADATA_URL',
     'HEADER_URL',
@@ -133,9 +134,7 @@ class GeminiMetadataReader(rdc.MetadataReader):
         # Open the URL and fetch the JSON document for the observation
         response = None
         try:
-            response = mc.query_endpoint_session(
-                gemini_url, self._gemini_session
-            )
+            response = mc.query_endpoint_session(gemini_url, self._session)
             metadata = response.json()
         finally:
             if response is not None:
@@ -183,18 +182,24 @@ class GeminiMetadataReader(rdc.MetadataReader):
                         break
 
 
-class GeminiMetadata:
+class GeminiMetadataLookup:
 
     def __init__(self, metadata_reader):
         self._reader = metadata_reader
 
-    @property
-    def data_label(self):
-        result = None
+    def data_label(self, uri):
+        temp = None
         if hasattr(self._reader, 'json_metadata'):
-            result = self._reader.json_metadata.get('data_label')
-        if result is None:
-            result = self._reader.headers.get('DATALAB')
+            temp = self._reader.json_metadata.get(uri).get('data_label')
+        if temp is None:
+            temp = self._reader.headers.get(uri)[0].get('DATALAB')
+            if temp is None:
+                temp = self._reader.headers.get(uri)[1].get('DATALAB')
+        result = None
+        if temp is not None:
+            result = obs_file_relationship.repair_data_label(
+                uri.split('/')[-1], temp
+            )
         return result
 
     @property

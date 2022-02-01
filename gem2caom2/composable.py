@@ -74,12 +74,15 @@ import traceback
 
 from datetime import datetime
 
+from caom2pipe import client_composable as clc
 from caom2pipe import data_source_composable as dsc
 from caom2pipe import manage_composable as mc
+from caom2pipe import reader_composable as rdc
 from caom2pipe import run_composable as rc
 from gem2caom2 import main_app, preview_augmentation, external_metadata
 from gem2caom2 import pull_augmentation, data_source, builder
 from gem2caom2 import cleanup_augmentation, fits2caom2_augmentation
+from gem2caom2 import gemini_reader
 
 DATA_VISITORS = []
 META_VISITORS = [
@@ -97,24 +100,33 @@ def _run():
     """
     config = mc.Config()
     config.get_executors()
-    external_metadata.init_global(config=config)
-    name_builder = builder.GemObsIDBuilder(config)
-    if config.use_local_files:
+    # external_metadata.init_global(config=config)
+    clients = None
+    if config.use_local_files or mc.TaskType.SCRAPE in config.task_types:
         source = dsc.ListDirSeparateDataSource(config)
         meta_visitors = [
             fits2caom2_augmentation,
             preview_augmentation,
             cleanup_augmentation,
         ]
+        metadata_reader = rdc.FileMetadataReader()
     else:
         source = dsc.TodoFileDataSource(config)
         meta_visitors = META_VISITORS
+        clients = clc.ClientCollection(config)
+        metadata_reader = rdc.StorageClientReader(clients.data_client)
+    reader_lookup = gemini_reader.GeminiMetadataLookup(metadata_reader)
+    name_builder = builder.GemObsIDBuilder(
+        config, metadata_reader, reader_lookup
+    )
     return rc.run_by_todo(
         config,
         name_builder,
         chooser=None,
         meta_visitors=meta_visitors,
         source=source,
+        metadata_reader=metadata_reader,
+        clients=clients,
     )
 
 

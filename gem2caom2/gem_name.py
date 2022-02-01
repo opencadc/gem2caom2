@@ -211,7 +211,7 @@ class GemName(mc.StorageName):
                 self._product_id = self._file_id
         self._source_names = [self._file_id]
         self._destination_uris = [self.file_uri]
-        self._logger.debug(self)
+        # self._logger.debug(self)
 
     # def __str__(self):
     #     return (

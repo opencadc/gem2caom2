@@ -75,8 +75,6 @@ from os import path
 from caom2pipe import manage_composable as mc
 from caom2pipe import name_builder_composable as nbc
 from gem2caom2 import gem_name
-from gem2caom2.util import COLLECTION, SCHEME
-from gem2caom2 import external_metadata as em
 
 
 __all__ = ['GemObsIDBuilder']
@@ -106,18 +104,18 @@ class GemObsIDBuilder(nbc.StorageNameBuilder):
             f_name = entry
             if entry != path.basename(entry):
                 f_name = path.basename(entry)
-            # uri = mc.build_uri(COLLECTION, f_name, SCHEME)
-            # metadata = em.defining_metadata_finder.get(uri)
             if (
                 mc.TaskType.SCRAPE in self._config.task_types
                 or self._config.use_local_files
             ):
+                self._logger.debug(f'Using entry for source.')
                 result = gem_name.GemName(
                     file_name=f_name,
                     entry=entry,
                 )
                 result.source_names = [entry]
             elif '.fits' in entry or '.jpg' in entry:
+                self._logger.debug('Using file_id for source.')
                 result = gem_name.GemName(
                     file_name=f_name,
                     entry=entry,
@@ -128,16 +126,11 @@ class GemObsIDBuilder(nbc.StorageNameBuilder):
                     'The need has not been encountered in the real world '
                     'yet.'
                 )
+            self._logger.debug(result)
             self._metadata_reader.set(result)
-            result.obs_id = self._metadata.data_label
-            # result.obs_id = self._metadata_reader.headers.get('DATALAB')
-            # if (
-            #     result.obs_id is None
-            #     and hasattr(self._metadata_reader, 'json_metadata')
-            # ):
-            #     result.obs_id = self._metadata_reader.json_metadata.get(
-            #         'data_label'
-            #     )
+            # StorageName instance is only partially constructed at this
+            # point
+            result.obs_id = self._metadata.data_label(result.file_uri)
             self._logger.debug('Done build.')
             return result
         except Exception as e:

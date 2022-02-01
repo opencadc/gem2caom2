@@ -66,11 +66,9 @@
 # ***********************************************************************
 #
 
-import json
 import logging
 import os
 import pytest
-import sys
 
 from tempfile import TemporaryDirectory
 from caom2.diff import get_differences
@@ -78,7 +76,7 @@ from cadcdata import FileInfo
 from caom2pipe import astro_composable as ac
 from caom2pipe import manage_composable as mc
 from caom2pipe import reader_composable as rdc
-from gem2caom2 import main_app, gem_name, external_metadata, builder
+from gem2caom2 import external_metadata, builder, gemini_reader
 from gem2caom2 import fits2caom2_augmentation
 
 from unittest.mock import patch, Mock
@@ -133,6 +131,7 @@ def pytest_generate_tests(metafunc):
     metafunc.parametrize('test_name', obs_id_list)
 
 
+@patch('caom2pipe.reader_composable.FileMetadataReader._retrieve_headers')
 @patch('caom2pipe.astro_composable.get_vo_table_session')
 @patch('gem2caom2.external_metadata.DefiningMetadataFinder')
 @patch('gem2caom2.program_metadata.get_pi_metadata')
@@ -146,12 +145,14 @@ def test_visitor(
     get_pi_mock,
     dmf_mock,
     svofps_mock,
+    retrieve_headers_mock,
     test_name,
 ):
     access_url.return_value = 'https://localhost:8080'
     get_pi_mock.side_effect = gem_mocks.mock_get_pi_metadata
     dmf_mock.return_value.get.side_effect = gem_mocks.mock_get_dm
     svofps_mock.side_effect = gem_mocks.mock_get_votable
+    retrieve_headers_mock.side_effect = gem_mocks._mock_headers
 
     with TemporaryDirectory() as tmp_dir_name:
         test_config = mc.Config()
@@ -177,14 +178,17 @@ def test_visitor(
             source_name = (
                 f'{gem_mocks.TEST_DATA_DIR}/multi_plane/{f_name}.fits.header'
             )
-            test_builder = builder.GemObsIDBuilder(test_config)
+            metadata_reader = rdc.FileMetadataReader()
+            test_metadata = gemini_reader.GeminiMetadataLookup(metadata_reader)
+            test_builder = builder.GemObsIDBuilder(
+                test_config, metadata_reader, test_metadata
+            )
             storage_name = test_builder.build(source_name)
             storage_name.source_names = [source_name]
             file_info = FileInfo(
                 id=storage_name.file_uri, file_type='application/fits'
             )
             headers = ac.make_headers_from_file(source_name)
-            metadata_reader = rdc.FileMetadataReader()
             metadata_reader._headers = {storage_name.file_uri: headers}
             metadata_reader._file_info = {storage_name.file_uri: file_info}
             kwargs = {
