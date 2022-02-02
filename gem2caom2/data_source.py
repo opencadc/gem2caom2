@@ -93,12 +93,14 @@ class IncrementalSource(dsc.DataSource):
     created.
     """
 
-    def __init__(self):
+    def __init__(self, session, metadata_reader):
         super(IncrementalSource, self).__init__(config=None)
         self._max_records_encountered = False
         self._encounter_start = None
         self._encounter_end = None
-        self._json_cache = json_lookup
+        # self._json_cache = json_lookup
+        self._session = session
+        self._metadata_reader = metadata_reader
         self._logger = logging.getLogger(__name__)
 
     def get_time_box_work(self, prev_exec_time, exec_time):
@@ -130,7 +132,7 @@ class IncrementalSource(dsc.DataSource):
         entries = deque()
         response = None
         try:
-            response = mc.query_endpoint(url)
+            response = mc.query_endpoint_session(url, self._session)
             if response is None:
                 logging.warning(f'Could not query {url}.')
             else:

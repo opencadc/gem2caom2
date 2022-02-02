@@ -243,9 +243,16 @@ def _run_state():
     )
     end_timestamp_dt = mc.make_time_tz(end_timestamp_s)
     logging.info(f'{main_app.APPLICATION} will end at {end_timestamp_s}')
-    external_metadata.init_global(config=config)
-    name_builder = builder.GemObsIDBuilder(config)
-    incremental_source = data_source.IncrementalSource()
+    # external_metadata.init_global(config=config)
+    session = mc.get_endpoint_session()
+    metadata_reader = gemini_reader.GeminiMetadataReader(session)
+    reader_lookup = gemini_reader.GeminiMetadataLookup(metadata_reader)
+    name_builder = builder.GemObsIDBuilder(
+        config, metadata_reader, reader_lookup
+    )
+    incremental_source = data_source.IncrementalSource(
+        session, metadata_reader
+    )
     result = rc.run_by_state(
         config=config,
         name_builder=name_builder,
@@ -255,6 +262,7 @@ def _run_state():
         end_time=end_timestamp_dt,
         source=incremental_source,
         chooser=None,
+        metadata_reader=metadata_reader,
     )
     if incremental_source.max_records_encountered:
         logging.warning('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
