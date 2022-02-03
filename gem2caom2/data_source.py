@@ -93,14 +93,13 @@ class IncrementalSource(dsc.DataSource):
     created.
     """
 
-    def __init__(self, session, metadata_reader):
+    def __init__(self, session):
         super(IncrementalSource, self).__init__(config=None)
         self._max_records_encountered = False
         self._encounter_start = None
         self._encounter_end = None
-        # self._json_cache = json_lookup
+        self._json_cache = json_lookup
         self._session = session
-        self._metadata_reader = metadata_reader
         self._logger = logging.getLogger(__name__)
 
     def get_time_box_work(self, prev_exec_time, exec_time):
@@ -180,8 +179,9 @@ class PublicIncremental(dsc.QueryTimeBoxDataSource):
     """Implements the identification of the work to be done, by querying
     the local TAP service for files that have recently gone public."""
 
-    def __init__(self, config):
+    def __init__(self, config, query_client):
         super(PublicIncremental, self).__init__(config)
+        self._query_client = query_client
         self._logger = logging.getLogger(__name__)
 
     def get_time_box_work(self, prev_exec_time, exec_time):
@@ -218,7 +218,7 @@ class PublicIncremental(dsc.QueryTimeBoxDataSource):
             f"ORDER BY O.maxLastModified ASC "
             ""
         )
-        result = clc.query_tap_client(query, self._client)
+        result = clc.query_tap_client(query, self._query_client)
         # results look like:
         # gemini:GEM/N20191202S0125.fits, ISO 8601
 

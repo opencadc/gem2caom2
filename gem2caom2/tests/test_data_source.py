@@ -68,13 +68,13 @@
 #
 
 from datetime import datetime
-from mock import patch
+from mock import Mock, patch
 from gem2caom2 import data_source
 from gem2caom2.obs_metadata import json_lookup
 import gem_mocks
 
 
-@patch('caom2pipe.manage_composable.query_endpoint')
+@patch('caom2pipe.manage_composable.query_endpoint_session')
 def test_incremental_source(query_mock):
     # clean up the singleton cache content as initial conditions
     json_lookup.flush()
@@ -85,7 +85,7 @@ def test_incremental_source(query_mock):
     # get results
     query_mock.side_effect = gem_mocks.mock_query_endpoint_2
 
-    test_subject = data_source.IncrementalSource()
+    test_subject = data_source.IncrementalSource(Mock())
     assert len(test_subject._json_cache._lookup) == 0, 'initial conditions'
     assert test_subject is not None, 'expect construction success'
     prev_exec_time = datetime(

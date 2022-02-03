@@ -203,24 +203,25 @@ def test_run_incremental_rc(
         os.getcwd = getcwd_orig
 
 
+@patch('gem2caom2.gemini_reader.GeminiMetadataReader._retrieve_headers')
+@patch('gem2caom2.gemini_reader.GeminiMetadataReader._retrieve_json')
 @patch('cadcutils.net.ws.WsCapabilities.get_access_url')
-@patch('gem2caom2.external_metadata.DefiningMetadataFinder')
 @patch('caom2pipe.execute_composable.OrganizeExecutes.do_one')
 @patch('caom2pipe.client_composable.CAOM2RepoClient')
 @patch('caom2pipe.client_composable.StorageClientWrapper')
 @patch('caom2pipe.manage_composable.read_obs_from_file')
-@patch('caom2pipe.manage_composable.query_endpoint')
+@patch('caom2pipe.manage_composable.query_endpoint_session')
 def test_run_by_incremental2(
     query_mock,
     read_mock,
     data_client_mock,
     repo_mock,
     exec_mock,
-    dmf_mock,
     cap_mock,
+    json_mock,
+    header_mock,
 ):
     cap_mock.return_value = 'https://localhost'
-    dmf_mock.return_value.get.side_effect = gem_mocks.mock_get_dm
     data_client_mock.return_value.info.side_effect = (
         gem_mocks.mock_get_file_info
     )
@@ -229,6 +230,8 @@ def test_run_by_incremental2(
     repo_mock.return_value.create.side_effect = gem_mocks.mock_repo_create
     repo_mock.return_value.read.side_effect = gem_mocks.mock_repo_read
     repo_mock.return_value.update.side_effect = gem_mocks.mock_repo_update
+    json_mock.side_effect = gem_mocks.mock_get_obs_metadata
+    header_mock.side_effect = gem_mocks._mock_headers
 
     def _read_mock(ignore_fqn):
         return SimpleObservation(
@@ -338,18 +341,20 @@ def test_run_by_incremental2(
     assert query_mock.called, 'query mock not called'
 
 
-@patch('gem2caom2.external_metadata.DefiningMetadataFinder')
+@patch('gem2caom2.gemini_reader.GeminiMetadataReader._retrieve_headers')
+@patch('gem2caom2.gemini_reader.GeminiMetadataReader._retrieve_json')
 @patch('cadcutils.net.ws.WsCapabilities.get_access_url')
 @patch('caom2pipe.execute_composable.OrganizeExecutes.do_one')
 @patch('caom2pipe.client_composable.query_tap_client')
-@patch('caom2pipe.data_source_composable.CadcTapClient')
+@patch('caom2pipe.client_composable.CadcTapClient')
 def test_run_by_public(
-    ds_mock, tap_mock, exec_mock, cap_mock, dmf_mock
+    ds_mock, tap_mock, exec_mock, cap_mock, json_mock, header_mock
 ):
-    dmf_mock.return_value.get.side_effect = gem_mocks.mock_get_dm
     cap_mock.return_value = 'https://localhost'
     exec_mock.side_effect = Mock(return_value=0)
     tap_mock.side_effect = gem_mocks.mock_query_tap
+    json_mock.side_effect = gem_mocks.mock_get_obs_metadata
+    header_mock.side_effect = gem_mocks._mock_headers
     expected_fqn = (
         f'{gem_mocks.TEST_DATA_DIR}/logs/'
         f'{gem_mocks.TEST_BUILDER_OBS_ID}.expected.xml'
@@ -393,19 +398,21 @@ def test_run_by_public(
     assert tap_mock.called, 'tap mock not called'
 
 
+@patch('gem2caom2.gemini_reader.GeminiMetadataReader._retrieve_headers')
+@patch('gem2caom2.gemini_reader.GeminiMetadataReader._retrieve_json')
 @patch('cadcutils.net.ws.WsCapabilities.get_access_url')
-@patch('gem2caom2.external_metadata.DefiningMetadataFinder')
 @patch('caom2pipe.execute_composable.OrganizeExecutes.do_one')
-@patch('caom2pipe.manage_composable.query_endpoint')
+@patch('caom2pipe.manage_composable.query_endpoint_session')
 @patch('caom2pipe.client_composable.query_tap_client')
-@patch('caom2pipe.data_source_composable.CadcTapClient')
+@patch('caom2pipe.client_composable.CadcTapClient')
 def test_run_by_public2(
-    ds_mock, tap_mock, query_mock, run_mock, dmf_mock, cap_mock
+    ds_mock, tap_mock, query_mock, run_mock, cap_mock, json_mock, header_mock
 ):
     cap_mock.return_value = 'https://localhost'
-    dmf_mock.return_value.get.side_effect = gem_mocks.mock_get_dm
     query_mock.side_effect = gem_mocks.mock_query_endpoint_2
     tap_mock.side_effect = gem_mocks.mock_query_tap
+    json_mock.side_effect = gem_mocks.mock_get_obs_metadata
+    header_mock.side_effect = gem_mocks._mock_headers
 
     _write_state(prior_timestamp='2020-03-06 03:22:10.787835')
     getcwd_orig = os.getcwd

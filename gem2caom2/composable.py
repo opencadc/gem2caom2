@@ -100,7 +100,6 @@ def _run():
     """
     config = mc.Config()
     config.get_executors()
-    # external_metadata.init_global(config=config)
     clients = None
     if config.use_local_files or mc.TaskType.SCRAPE in config.task_types:
         source = dsc.ListDirSeparateDataSource(config)
@@ -202,8 +201,17 @@ def _run_by_public():
     config = mc.Config()
     config.get_executors()
     external_metadata.init_global(config=config)
-    name_builder = builder.GemObsIDBuilder(config)
-    incremental_source = data_source.PublicIncremental(config)
+    session = mc.get_endpoint_session()
+    metadata_reader = gemini_reader.GeminiMetadataReader(session)
+    reader_lookup = gemini_reader.GeminiMetadataLookup(metadata_reader)
+    reader_lookup.reader = metadata_reader
+    name_builder = builder.GemObsIDBuilder(
+        config, metadata_reader, reader_lookup
+    )
+    clients = clc.ClientCollection(config)
+    incremental_source = data_source.PublicIncremental(
+        config, clients.query_client
+    )
     return rc.run_by_state(
         config=config,
         name_builder=name_builder,
@@ -243,16 +251,14 @@ def _run_state():
     )
     end_timestamp_dt = mc.make_time_tz(end_timestamp_s)
     logging.info(f'{main_app.APPLICATION} will end at {end_timestamp_s}')
-    # external_metadata.init_global(config=config)
     session = mc.get_endpoint_session()
     metadata_reader = gemini_reader.GeminiMetadataReader(session)
     reader_lookup = gemini_reader.GeminiMetadataLookup(metadata_reader)
+    reader_lookup.reader = metadata_reader
     name_builder = builder.GemObsIDBuilder(
         config, metadata_reader, reader_lookup
     )
-    incremental_source = data_source.IncrementalSource(
-        session, metadata_reader
-    )
+    incremental_source = data_source.IncrementalSource(session)
     result = rc.run_by_state(
         config=config,
         name_builder=name_builder,

@@ -83,7 +83,7 @@ from caom2pipe import astro_composable as ac
 from caom2pipe import manage_composable as mc
 from caom2pipe import reader_composable as rdc
 
-from unittest.mock import patch
+from unittest.mock import patch, Mock
 import gem_mocks
 
 
@@ -132,7 +132,6 @@ def pytest_generate_tests(metafunc):
 
 @patch('caom2pipe.reader_composable.FileMetadataReader._retrieve_headers')
 @patch('caom2pipe.astro_composable.get_vo_table_session')
-@patch('gem2caom2.external_metadata.DefiningMetadataFinder')
 @patch('gem2caom2.program_metadata.get_pi_metadata')
 @patch('cadcutils.net.ws.WsCapabilities.get_access_url')
 @patch('gemProc2caom2.builder.CadcTapClient')
@@ -142,17 +141,15 @@ def test_visitor(
     builder_tap_client_mock,
     access_url,
     get_pi_mock,
-    dmf_mock,
     svofps_mock,
-    retrieve_headers_mock,
+    headers_mock,
     test_name,
 ):
 
     access_url.return_value = 'https://localhost:8080'
     get_pi_mock.side_effect = gem_mocks.mock_get_pi_metadata
-    dmf_mock.return_value.get.side_effect = gem_mocks.mock_get_dm
     svofps_mock.side_effect = gem_mocks.mock_get_votable
-    retrieve_headers_mock.side_effect = gem_mocks._mock_headers
+    headers_mock.side_effect = gem_mocks._mock_headers
 
     with TemporaryDirectory() as tmp_dir_name:
         test_config = mc.Config()
@@ -166,24 +163,27 @@ def test_visitor(
             f.write('test content')
 
         em.get_gofr(test_config)
-        test_reader = rdc.FileMetadataReader()
-        test_metadata = gemini_reader.GeminiMetadataLookup(test_reader)
+        metadata_reader = gemini_reader.GeminiFileMetadataReader(Mock())
+        headers = ac.make_headers_from_file(test_name)
+        test_file_id = mc.StorageName.remove_extensions(
+            os.path.basename(test_name)
+        )
+        test_uri = f'gemini:GEMINI/{test_file_id}.fits'
+        file_info = FileInfo(id=test_uri, file_type='application/fits')
+        json_metadata = gem_mocks.mock_get_obs_metadata(test_file_id)
+        metadata_reader._headers = {test_uri: headers}
+        metadata_reader._file_info = {test_uri: file_info}
+        metadata_reader._json_metadata = {test_uri: json_metadata}
+        test_metadata = gemini_reader.GeminiMetadataLookup(metadata_reader)
         test_builder = builder.GemObsIDBuilder(
-            test_config, test_reader, test_metadata
+            test_config, metadata_reader, test_metadata
         )
         storage_name = test_builder.build(test_name)
-        file_info = FileInfo(
-            id=storage_name.file_uri, file_type='application/fits'
-        )
-        headers = ac.make_headers_from_file(test_name)
-        metadata_reader = rdc.FileMetadataReader()
-        metadata_reader._headers = {storage_name.file_uri: headers}
-        metadata_reader._file_info = {storage_name.file_uri: file_info}
         kwargs = {
             'storage_name': storage_name,
             'metadata_reader': metadata_reader,
         }
-        logging.getLogger('caom2utils.fits2caom2').setLevel(logging.INFO)
+        # logging.getLogger('caom2utils.fits2caom2').setLevel(logging.INFO)
         logging.getLogger('root').setLevel(logging.INFO)
         observation = None
         expected_fqn = (

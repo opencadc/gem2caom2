@@ -1374,14 +1374,27 @@ def mock_get_node(uri, **kwargs):
 
 
 def _mock_headers(file_id):
+    logging.error(f'am I here? {file_id}')
+    test_fqn = None
     if isinstance(file_id, GemName):
         # the case if StorageClientReader is being mocked
         file_id = file_id.source_names[0]
-    if '/' in file_id:
+        logging.error('isinstance')
+    if '/' in file_id and ':' not in file_id:
         # the case if FileMetadataReader is being mocked
         test_fqn = file_id
+        logging.error('path')
     else:
+        if ':' in file_id:
+            # StorageClientReader being mocked
+            file_id = mc.StorageName.remove_extensions(file_id.split('/')[-1])
         # the case if GeminiMetadataReader is being mocked
-        instrument = LOOKUP.get(file_id)[1]
-        test_fqn = f'{TEST_DATA_DIR}/{instrument.value}/{file_id}.fits.header'
-    return ac.make_headers_from_file(test_fqn)
+        if file_id in LOOKUP:
+            instrument = LOOKUP.get(file_id)[1]
+            test_fqn = (
+                f'{TEST_DATA_DIR}/{instrument.value}/{file_id}.fits.header'
+            )
+    result = []
+    if test_fqn is not None:
+        result = ac.make_headers_from_file(test_fqn)
+    return result

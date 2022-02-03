@@ -160,7 +160,7 @@ class GeminiMetadataReader(rdc.MetadataReader):
         corresponding FileInfo record from that metadata."""
         for index, entry in enumerate(storage_name.destination_uris):
             if entry not in self._json_metadata.keys():
-                self._logger.debug(f'Retrieve FileInfo for {entry}')
+                self._logger.debug(f'Retrieve JSON Metadata for {entry}')
                 temp = self._retrieve_json(storage_name.source_names[index])
                 # the JSON that comes back is for multiple files, so find the
                 # correct one
@@ -182,15 +182,72 @@ class GeminiMetadataReader(rdc.MetadataReader):
                         break
 
 
+class GeminiFileMetadataReader(rdc.FileMetadataReader):
+
+    def __init__(self, http_session):
+        super().__init__()
+        self._json_metadata = {}
+        self._session = http_session
+
+    @property
+    def json_metadata(self):
+        return self._json_metadata
+
+    def _retrieve_json(self, source_name):
+        # source name is a file id, because that's the only part that's
+        # required to be unique for a retrieval from archive.gemini.edu
+        #
+        self._logger.debug(f'Begin _retrieve_json for {source_name}')
+        gemini_url = f'{GEMINI_METADATA_URL}{source_name}'
+        # Open the URL and fetch the JSON document for the observation
+        response = None
+        try:
+            response = mc.query_endpoint_session(gemini_url, self._session)
+            metadata = response.json()
+        finally:
+            if response is not None:
+                response.close()
+        if len(metadata) == 0:
+            raise mc.CadcException(
+                f'Could not find JSON record for {source_name} at '
+                f'{gemini_url}.'
+            )
+        self._logger.debug(f'End _retrieve_json')
+        return metadata
+
+    def reset(self):
+        super().reset()
+        self._json_metadata = {}
+
+    def set(self, storage_name):
+        self.set_json_metadata(storage_name)
+        super().set(storage_name)
+
+    def set_json_metadata(self, storage_name):
+        """Retrieves Gemini JSON metadata to memory. Extracts a
+        corresponding FileInfo record from that metadata."""
+        for index, entry in enumerate(storage_name.destination_uris):
+            if entry not in self._json_metadata.keys():
+                self._logger.error(f'Retrieve JSON Metadata for {entry} '
+                                   f'{self._retrieve_json}')
+                temp = self._retrieve_json(storage_name.source_names[index])
+                # the JSON that comes back is for multiple files, so find the
+                # correct one
+                for jj in temp:
+                    # choose this key, and the comparison, because the lhs is
+                    # a file id
+                    if storage_name.source_names[index] in jj.get('filename'):
+                        self._json_metadata[entry] = jj
+                        break
+
+
 class GeminiMetadataLookup:
 
     def __init__(self, metadata_reader):
         self._reader = metadata_reader
 
     def data_label(self, uri):
-        temp = None
-        if hasattr(self._reader, 'json_metadata'):
-            temp = self._reader.json_metadata.get(uri).get('data_label')
+        temp = self._y(uri, 'data_label')
         if temp is None:
             temp = self._reader.headers.get(uri)[0].get('DATALAB')
             if temp is None:
@@ -201,6 +258,85 @@ class GeminiMetadataLookup:
                 uri.split('/')[-1], temp
             )
         return result
+
+    def dec(self, uri):
+        return self._y(uri, 'dec')
+
+    def disperser(self, uri):
+        return self._y(uri, 'disperser')
+
+    def exposure_time(self, uri):
+        return self._y(uri, 'exposure_time')
+
+    def instrument(self, uri):
+        temp = self._reader.headers.get(uri)[0].get('INSTRUME')
+        if temp is None:
+            temp = self._reader.headers.get(uri)[1].get('INSTRUME')
+            if temp is None:
+                temp = self._y(uri, 'instrument')
+        result = None
+        if temp is not None:
+            result = em.repair_instrument(temp)
+        return result
+
+    def mode(self, uri):
+        return self._y(uri, 'mode')
+
+    def observation_class(self, uri):
+        result = self._y(uri, 'observation_class')
+        if result is None:
+            result = self._z(uri, 'OBSCLASS')
+        return result
+
+    def observation_type(self, uri):
+        result = self._y(uri, 'observation_type')
+        if result is None:
+            result = self._z(uri, 'OBSTYPE')
+        return result
+
+    def program_id(self, uri):
+        return self._y(uri, 'program_id')
+
+    def ra(self, uri):
+        return self._y(uri, 'ra')
+
+    def reduction(self, uri):
+        return self._y(uri, 'reduction')
+
+    def release(self, uri):
+        return self._y(uri, 'release')
+
+    def spectroscopy(self, uri):
+        return self._y(uri, 'spectroscopy')
+
+    def telescope(self, uri):
+        return self._y(uri, 'telescope')
+
+    def types(self, uri):
+        return self._y(uri, 'types')
+
+    def ut_datetime(self, uri):
+        return self._y(uri, 'ut_datetime')
+
+    def _y(self, uri, lookup_key):
+        temp = None
+        f_name = uri.split('/')[-1]
+        x = self._reader.json_metadata.get(uri)
+        for ii in x:
+            y = ii.get('name')
+            import logging
+            if y == f_name:
+                logging.error(f'name {y} {f_name} {lookup_key}')
+                temp = ii.get(lookup_key)
+        import logging
+        logging.error(f'f_name {f_name} temp {temp}')
+        return temp
+
+    def _z(self, uri, lookup_key):
+        temp = self._reader.headers.get(uri)[0].get(lookup_key)
+        if temp is None:
+            temp = self._reader.headers.get(uri)[1].get(lookup_key)
+        return temp
 
     @property
     def reader(self):
