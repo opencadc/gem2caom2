@@ -479,7 +479,7 @@ class GeminiMapping(cc.TelescopeMapping):
         bp.set('Observation.proposal.id', 'get_proposal_id()')
 
         bp.clear('Observation.algorithm.name')
-        bp.set('Observation.instrument.name', 'get_instrument_name()')
+        bp.set('Observation.instrument.name', self._instrument.value)
         # instrument = em.get_instrument(self._storage_name.file_uri)
         logging.error(self._metadata_reader.json_metadata)
         telescope = self._lookup.telescope(self._storage_name.file_uri)
@@ -605,15 +605,13 @@ class GeminiMapping(cc.TelescopeMapping):
         self._logger.debug('Begin update.')
         mc.check_param(observation, Observation)
 
-        instrument = Inst(observation.instrument.name)
-
         # processed files
         if cc.is_composite(self._headers) and not isinstance(
             observation, DerivedObservation
         ):
-            observation = self._update_composite(observation, instrument)
+            observation = self._update_composite(observation)
 
-        if instrument in [Inst.MICHELLE, Inst.GNIRS]:
+        if self._instrument in [Inst.MICHELLE, Inst.GNIRS]:
             # DB 16-04-19
             # The more important issue with this and other files is that they
             # contain no image extensions.  The file is downloadable from
@@ -629,7 +627,7 @@ class GeminiMapping(cc.TelescopeMapping):
 
             if len(self._headers) == 1:
                 self._logger.warning(
-                    f'{instrument}: no image data for '
+                    f'{self._instrument}: no image data for '
                     f'{observation.observation_id}. Cannot build an '
                     f'observation.'
                 )
@@ -659,7 +657,7 @@ class GeminiMapping(cc.TelescopeMapping):
         #     self._storage_name.file_uri
         # ).reset_index(file_id)
                     processed = ofr.is_processed(caom_name.file_name)
-                    if instrument in [
+                    if self._instrument in [
                         Inst.MICHELLE,
                         Inst.TRECS,
                         Inst.GNIRS,
@@ -675,13 +673,13 @@ class GeminiMapping(cc.TelescopeMapping):
                         # DB - 01-18-19 - GNIRS has no WCS info in extension;
                         # use primary header
                         self._update_position_from_zeroth_header(
-                            artifact, instrument, observation.observation_id
+                            artifact, observation.observation_id,
                         )
 
                     delete_these_parts = []
                     for part in artifact.parts:
 
-                        if part == '2' and instrument is Inst.GPI:
+                        if part == '2' and self._instrument is Inst.GPI:
                             # GPI data sets have two extensions. First is
                             # science image (with WCS), second is data quality
                             # for each pixel (no WCS).
@@ -701,7 +699,7 @@ class GeminiMapping(cc.TelescopeMapping):
                                 continue
 
                             # energy WCS
-                            x = instruments.instrument_factory(instrument)
+                            x = instruments.instrument_factory(self._instrument)
                             x.headers = self._headers
                             x.extension = int(part)
                             x.get_filter_name()
@@ -749,11 +747,11 @@ class GeminiMapping(cc.TelescopeMapping):
                     if (
                         processed
                         or isinstance(observation, DerivedObservation)
-                        or instrument is Inst.TEXES
+                        or self._instrument is Inst.TEXES
                     ) and 'jpg' not in caom_name.file_name:
                         # not the preview artifact
                         if plane.provenance is not None:
-                            if instrument is not Inst.GRACES:
+                            if self._instrument is not Inst.GRACES:
                                 plane.provenance.reference = (
                                     f'http://archive.gemini.edu/searchform/'
                                     f'filepre={caom_name.file_name}'
@@ -779,7 +777,7 @@ class GeminiMapping(cc.TelescopeMapping):
         except Exception as e:
             self._logger.error(
                 f'Error {e} for {observation.observation_id} instrument '
-                f'{instrument}'
+                f'{self._instrument}'
             )
             tb = traceback.format_exc()
             self._logger.debug(tb)
@@ -798,7 +796,7 @@ class GeminiMapping(cc.TelescopeMapping):
                 'ad:GEM/', 'cadc:GEMINI/'
             )
 
-    def _update_position_from_zeroth_header(self, artifact, instrument, obs_id):
+    def _update_position_from_zeroth_header(self, artifact, obs_id):
         """Make the 0th header spatial WCS the WCS for all the
         chunks."""
         primary_header = self._headers[0]
@@ -814,7 +812,8 @@ class GeminiMapping(cc.TelescopeMapping):
         ra_json = self.get_ra(0)
         dec_json = self._lookup.dec(self._storage_name.file_uri)
         if ('AZEL_TARGET' in types and ra is None) or (
-            instrument is Inst.GNIRS and ra_json is None and dec_json is None
+            self._instrument is Inst.GNIRS and ra_json is None and
+            dec_json is None
         ):
             # DB - 02-04-19 - Az-El coordinate frame likely means the telescope
             # was parked or at least not tracking so spatial information is
@@ -828,7 +827,9 @@ class GeminiMapping(cc.TelescopeMapping):
             # DB 24-04-19
             # Ignore spatial WCS if RA/Dec are not available for GNIRS.
 
-            self._logger.info(f'{instrument}: Spatial WCS is None for {obs_id}')
+            self._logger.info(
+                f'{self._instrument}: Spatial WCS is None for {obs_id}'
+            )
         else:
             wcs_parser = WcsParser(primary_header, obs_id, 0)
             wcs_parser.augment_position(primary_chunk)
@@ -842,9 +843,9 @@ class GeminiMapping(cc.TelescopeMapping):
                     chunk.position_axis_1 = 1
                     chunk.position_axis_2 = 2
 
-    def _update_composite(self, obs, instrument):
+    def _update_composite(self, obs):
         result = None
-        if instrument is Inst.TRECS:
+        if self._instrument is Inst.TRECS:
             if self._storage_name.product_id is not None and (
                 self._storage_name.product_id.startswith('rS')
                 or self._storage_name.product_id.startswith('rN')
@@ -1280,8 +1281,8 @@ class Texes(GeminiMapping):
 
 
 def mapping_factory(storage_name, headers, metadata_reader):
-    lookup = GeminiMetadataLookup(metadata_reader)
-    inst = lookup.instrument(storage_name.file_uri)
+    metadata_lookup = GeminiMetadataLookup(metadata_reader)
+    inst = metadata_lookup.instrument(storage_name.file_uri)
     # if inst is Inst.TEXES:
     #     return Texes(storage_name, headers)
     # elif inst is Inst.IGRINS:
@@ -1326,6 +1327,6 @@ def mapping_factory(storage_name, headers, metadata_reader):
         Inst.TRECS: GeminiMapping,
     }
     if inst in lookup:
-        return lookup.get(inst)(storage_name, headers, lookup, inst)
+        return lookup.get(inst)(storage_name, headers, metadata_lookup, inst)
     else:
         raise mc.CadcException(f'Mystery name {inst}.')

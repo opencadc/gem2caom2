@@ -73,7 +73,7 @@ from cadcdata import FileInfo
 from caom2utils import data_util
 from caom2pipe import manage_composable as mc
 from caom2pipe import reader_composable as rdc
-from gem2caom2 import obs_file_relationship
+from gem2caom2 import obs_file_relationship, external_metadata
 
 
 __all__ = [
@@ -276,7 +276,7 @@ class GeminiMetadataLookup:
                 temp = self._y(uri, 'instrument')
         result = None
         if temp is not None:
-            result = em.repair_instrument(temp)
+            result = external_metadata.repair_instrument(temp)
         return result
 
     def mode(self, uri):
