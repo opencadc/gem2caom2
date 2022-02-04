@@ -288,6 +288,9 @@ class GeminiMetadataLookup:
     def mode(self, uri):
         return self._y(uri, 'mode')
 
+    def object(self, uri):
+        return self._y(uri, 'object')
+
     def observation_class(self, uri):
         result = self._y(uri, 'observation_class')
         if result is None:
