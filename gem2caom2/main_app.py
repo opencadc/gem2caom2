@@ -97,7 +97,8 @@ import traceback
 
 from caom2 import Observation, CalibrationLevel, Chunk, ProductType
 from caom2 import TypedList, DerivedObservation, DataProductType
-from caom2 import ObservationIntentType, TargetType
+from caom2 import ObservationIntentType, TargetType, CoordAxis1D, Axis
+from caom2 import SpectralWCS, RefCoord, CoordRange1D
 from caom2utils import WcsParser, update_artifact_meta
 from caom2pipe import manage_composable as mc
 from caom2pipe import caom_composable as cc
@@ -140,6 +141,14 @@ CAL_VALUES = [
 ]
 
 
+# DB - 04-02-19 - strip out anything with 'pupil' as it doesn't affect
+# energy transmission
+#
+# DB 24-04-19
+# Other instruments occasionally have ND filters in the beam.
+FILTER_VALUES_TO_IGNORE = ['open', 'invalid', 'pupil', 'clear', 'nd']
+
+
 class GeminiMapping(cc.TelescopeMapping):
 
     def __init__(self, storage_name, headers, lookup, instrument):
@@ -147,6 +156,25 @@ class GeminiMapping(cc.TelescopeMapping):
         self._metadata_reader = lookup.reader
         self._instrument = instrument
         self._lookup = lookup
+        self.fm = None
+
+    @staticmethod
+    def _search_through_keys(header, search_keys, values_to_ignore):
+        result = []
+        for key in header.keys():
+            for lookup in search_keys:
+                if lookup in key:
+                    value = header.get(key).lower()
+                    ignore = False
+                    for ii in values_to_ignore:
+                        if ii.startswith(value) or value.startswith(ii):
+                            ignore = True
+                            break
+                    if ignore:
+                        continue
+                    else:
+                        result.append(header.get(key).strip())
+        return '+'.join(result)
 
     def get_time_delta(self, ext):
         exptime = self.get_exposure(ext)
@@ -241,11 +269,6 @@ class GeminiMapping(cc.TelescopeMapping):
         """
         return self._lookup.exposure_time(self._storage_name.file_uri)
 
-    # def get_instrument_name(self, ext):
-    #     return em.repair_instrument(
-    #         self._lookup.instrument(self._storage_name.file_uri)
-    #     ).value
-
     def get_meta_release(self, ext):
         """
         Determine the metadata release date (Observation and Plane-level).
@@ -272,32 +295,32 @@ class GeminiMapping(cc.TelescopeMapping):
 
     def get_obs_intent(self, ext):
         result = ObservationIntentType.CALIBRATION
-        self._get_data_label()
-        self._get_obs_class(ext)
+        data_label = self._lookup.data_label(self._storage_name.file_uri)
+        obs_class = self._lookup.observation_class(self._storage_name.file_uri)
         self._logger.debug(
-            f'observation_class is {self._obs_class} for {self._data_label}'
+            f'observation_class is {obs_class} for {data_label}'
         )
-        if self._obs_class is None:
+        if obs_class is None:
             obs_type = self._lookup.observation_type(
                 self._storage_name.file_uri
             )
 
             self._logger.debug(
-                f'observation_type is {self._obs_type} for {self._data_label}'
+                f'observation_type is {obs_type} for {data_label}'
             )
             if obs_type is None:
-                self._logger.debug(f'data_label is {self._data_label}')
+                self._logger.debug(f'data_label is {data_label}')
                 if (
-                    self._data_label is None or (
-                        self._data_label is not None and
-                        '-CAL' not in self._data_label
+                    data_label is None or (
+                        data_label is not None and
+                        '-CAL' not in data_label
                     )
                     and self._headers[ext] is not None
                 ):
                     object_value = self._headers[ext].get('OBJECT')
                     self._logger.debug(
                         f'object_value is {object_value} for '
-                        f'{self._data_label}'
+                        f'{data_label}'
                     )
                     if object_value is not None:
                         if object_value in CAL_VALUES:
@@ -314,7 +337,7 @@ class GeminiMapping(cc.TelescopeMapping):
                             if not cal_value_found:
                                 result = ObservationIntentType.SCIENCE
                 else:
-                    if '-CAL' in self._data_label:
+                    if '-CAL' in data_label:
                         result = ObservationIntentType.CALIBRATION
                     else:
                         result = ObservationIntentType.SCIENCE
@@ -323,7 +346,7 @@ class GeminiMapping(cc.TelescopeMapping):
                     result = ObservationIntentType.CALIBRATION
                 else:
                     result = ObservationIntentType.SCIENCE
-        elif 'science' in self._obs_class:
+        elif 'science' in obs_class:
             result = ObservationIntentType.SCIENCE
         return result
 
@@ -425,11 +448,8 @@ class GeminiMapping(cc.TelescopeMapping):
         Non-sidereal tracking -> setting moving target to "True"
 
         DB, 01-08-19
-        Many calibration observations are acquired with the telescope parked and
-        hence not tracking at sidereal rate.
-
-        :param header:  The FITS header for the current extension.
-        :return: The Target TargetType, or None if not found.
+        Many calibration observations are acquired with the telescope parked
+        and hence not tracking at sidereal rate.
         """
         types = self._lookup.types(self._storage_name.file_uri)
         if 'NON_SIDEREAL' in types:
@@ -437,7 +457,7 @@ class GeminiMapping(cc.TelescopeMapping):
         else:
             return None
 
-    def get_target_type(self):
+    def get_target_type(self, ext):
         """
         Calculate the Target TargetType
         """
@@ -456,9 +476,6 @@ class GeminiMapping(cc.TelescopeMapping):
         """
         time_string = self._lookup.ut_datetime(self._storage_name.file_uri)
         return ac.get_datetime(time_string)
-
-    def _get_data_label(self):
-        return self._lookup.data_label(self._storage_name.file_uri)
 
     def accumulate_blueprint(self, bp, application=None):
         """Configure the telescope-specific ObsBlueprint at the CAOM model
@@ -481,7 +498,7 @@ class GeminiMapping(cc.TelescopeMapping):
         bp.clear('Observation.algorithm.name')
         bp.set('Observation.instrument.name', self._instrument.value)
         # instrument = em.get_instrument(self._storage_name.file_uri)
-        logging.error(self._metadata_reader.json_metadata)
+        # logging.error(self._metadata_reader.json_metadata)
         telescope = self._lookup.telescope(self._storage_name.file_uri)
         logging.error('after')
         if telescope is not None:
@@ -509,24 +526,6 @@ class GeminiMapping(cc.TelescopeMapping):
             'Plane.provenance.reference',
             f'http://archive.gemini.edu/searchform/{data_label}',
         )
-
-        # if instrument is Inst.GRACES:
-        #     bp.set(
-        #         'Plane.provenance.lastExecuted',
-        #         'get_provenance_last_executed(parameters)',
-        #     )
-        #     bp.set(
-        #         'Plane.provenance.producer',
-        #         'get_provenance_producer(parameters)',
-        #     )
-        #     bp.set(
-        #         'Plane.provenance.reference',
-        #         'get_provenance_reference(parameters)',
-        #     )
-        #     bp.set(
-        #         'Plane.provenance.version',
-        #         'get_provenance_version(parameters)',
-        #     )
 
         bp.set('Artifact.productType', 'get_art_product_type()')
         # bp.set('Artifact.contentChecksum', f'md5:{json_lookup.get("data_md5")}')
@@ -604,6 +603,8 @@ class GeminiMapping(cc.TelescopeMapping):
         :param **kwargs Everything else."""
         self._logger.debug('Begin update.')
         mc.check_param(observation, Observation)
+        if self._instrument in [Inst.GMOS, Inst.GMOSN, Inst.GMOSS]:
+            return self.update_no_x(observation, file_info)
 
         # processed files
         if cc.is_composite(self._headers) and not isinstance(
@@ -649,14 +650,7 @@ class GeminiMapping(cc.TelescopeMapping):
                         continue
 
                     update_artifact_meta(artifact, file_info)
-                    caom_name = mc.CaomName(artifact.uri)
-                    file_id = ofr.remove_extensions(
-                        mc.CaomName(caom_name.uri).file_name
-                    )
-        #             self._metadata_reader.json_metadata.get(
-        #     self._storage_name.file_uri
-        # ).reset_index(file_id)
-                    processed = ofr.is_processed(caom_name.file_name)
+                    processed = ofr.is_processed(self._storage_name.file_name)
                     if self._instrument in [
                         Inst.MICHELLE,
                         Inst.TRECS,
@@ -709,25 +703,42 @@ class GeminiMapping(cc.TelescopeMapping):
                             else:
                                 x.data_product_type = plane.data_product_type
                                 x.obs_id = observation.observation_id
-                                x.update_energy()
+                                if self._instrument in [Inst.GMOS, Inst.GMOSN,
+                                                        Inst.GMOSS]:
+                                    self.update_energy(
+                                        c,
+                                        plane.data_product_type,
+                                        observation.observation_id,
+                                    )
+                                else:
+                                    x.update_energy()
 
                             # position WCS
                             mode = self._lookup.mode(
                                 self._storage_name.file_uri
                             )
                             x.mode = mode
-                            if x.reset_position(self._headers, observation.type):
-                                self._logger.debug(
-                                    f'Setting Spatial WCS to None for '
-                                    f'{observation.observation_id}'
-                                )
-                                cc.reset_position(c)
+                            if self._instrument in [Inst.GMOS, Inst.GMOSN,
+                                                    Inst.GMOSS]:
+                                if self._reset_position(observation.type):
+                                    cc.reset_position(c)
+                                else:
+                                    self._update_position(c)
                             else:
-                                x.update_position()
+                                if x.reset_position(self._headers, observation.type):
+                                    self._logger.debug(
+                                        f'Setting Spatial WCS to None for '
+                                        f'{observation.observation_id}'
+                                    )
+                                    cc.reset_position(c)
+                                else:
+                                    x.update_position()
 
-                            # time WCS
-                            x.update_time()
-                            x.make_axes_consistent()
+                            if self._instrument not in [Inst.GMOS, Inst.GMOSN,
+                                                        Inst.GMOSS]:
+                                # time WCS
+                                x.update_time()
+                                x.make_axes_consistent()
 
                     if isinstance(observation, DerivedObservation):
                         values = cc.find_keywords_in_headers(
@@ -748,13 +759,13 @@ class GeminiMapping(cc.TelescopeMapping):
                         processed
                         or isinstance(observation, DerivedObservation)
                         or self._instrument is Inst.TEXES
-                    ) and 'jpg' not in caom_name.file_name:
+                    ) and 'jpg' not in self._storage_name.file_name:
                         # not the preview artifact
                         if plane.provenance is not None:
                             if self._instrument is not Inst.GRACES:
                                 plane.provenance.reference = (
                                     f'http://archive.gemini.edu/searchform/'
-                                    f'filepre={caom_name.file_name}'
+                                    f'filepre={self._storage_name.file_name}'
                                 )
 
                     for part in delete_these_parts:
@@ -785,6 +796,353 @@ class GeminiMapping(cc.TelescopeMapping):
         self._logger.debug('Done update.')
         return observation
 
+    def update_no_x(self, observation, file_info, caom_repo_client=None):
+        self._logger.error('Begin update.!!!!!!!!!!!!!!!!!!!!!!!!')
+        mc.check_param(observation, Observation)
+
+        # processed files
+        if cc.is_composite(self._headers) and not isinstance(
+            observation, DerivedObservation
+        ):
+            observation = self._update_composite(observation)
+
+        if self._instrument in [Inst.MICHELLE, Inst.GNIRS]:
+            # DB 16-04-19
+            # The more important issue with this and other files is that they
+            # contain no image extensions.  The file is downloadable from
+            # the Gemini archive but their only content is the primary
+            # header.   There is no pixel data.  Test for the existence of a
+            # FITS extension and skip processing of a michelle file if
+            # there isn’t one
+
+            # DB 18-04-19
+            #
+            # For the last GNIRS file (NAXIS=0)  skip the file if it doesn’t
+            # have an extension.
+
+            if len(self._headers) == 1:
+                self._logger.warning(
+                    f'{self._instrument}: no image data for '
+                    f'{observation.observation_id}. Cannot build an '
+                    f'observation.'
+                )
+                return None
+
+        config = mc.Config()
+        config.get_executors()
+        try:
+            for plane in observation.planes.values():
+                if (
+                    self._storage_name.product_id is not None
+                    and self._storage_name.product_id != plane.product_id
+                ):
+                    continue
+
+                for artifact in plane.artifacts.values():
+                    self._should_artifact_be_renamed(artifact)
+                    if GemName.is_preview(artifact.uri):
+                        continue
+
+                    update_artifact_meta(artifact, file_info)
+                    processed = ofr.is_processed(self._storage_name.file_name)
+                    if self._instrument in [
+                        Inst.MICHELLE,
+                        Inst.TRECS,
+                        Inst.GNIRS,
+                    ]:
+                        # Michelle is a retired visitor instrument.
+                        # Spatial WCS info is in primary header. There
+                        # are a variable number of FITS extensions
+                        # defined by primary keyword NUMEXT; assume the
+                        # same spatial WCS for each for now - it differs
+                        # only slightly because of telescope 'chopping'
+                        # and 'nodding' used in acquisition. DB - 01-18-19
+                        #
+                        # DB - 01-18-19 - GNIRS has no WCS info in extension;
+                        # use primary header
+                        self._update_position_from_zeroth_header(
+                            artifact, observation.observation_id,
+                        )
+
+                    delete_these_parts = []
+                    for part in artifact.parts:
+
+                        if part == '2' and self._instrument is Inst.GPI:
+                            # GPI data sets have two extensions. First is
+                            # science image (with WCS), second is data quality
+                            # for each pixel (no WCS).
+                            self._logger.info(
+                                f'GPI: Setting chunks to None for part {part} '
+                                f'for {observation.observation_id}'
+                            )
+                            artifact.parts[part].chunks = TypedList(
+                                Chunk,
+                            )
+                            continue
+                        for c in artifact.parts[part].chunks:
+                            # example is CIRPASS/2003jun30_3385.fits - older
+                            # versions of the file had more headers
+                            if int(part) >= len(self._headers):
+                                delete_these_parts.append(part)
+                                continue
+
+                            # energy WCS
+                            if self._reset_energy(observation.type):
+                                cc.reset_energy(c)
+                            else:
+                                self.update_energy(
+                                    c,
+                                    plane.data_product_type,
+                                    observation.observation_id,
+                                )
+                            # position WCS
+                            if self._reset_position(observation.type):
+                                cc.reset_position(c)
+                            else:
+                                self._update_position(c)
+
+                            # time WCS
+                            self._update_time(c)
+
+                            self._make_axes_consistent(c)
+
+                    if isinstance(observation, DerivedObservation):
+                        values = cc.find_keywords_in_headers(
+                            self._headers[1:], ['IMCMB']
+                        )
+                        repaired_values = _remove_processing_detritus(
+                            values, observation.observation_id
+                        )
+                        cc.update_plane_provenance_from_values(
+                            plane,
+                            _repair_provenance_value,
+                            repaired_values,
+                            COLLECTION,
+                            observation.observation_id,
+                        )
+
+                    if (
+                        processed
+                        or isinstance(observation, DerivedObservation)
+                        or self._instrument is Inst.TEXES
+                    ) and 'jpg' not in self._storage_name.file_name:
+                        # not the preview artifact
+                        if plane.provenance is not None:
+                            if self._instrument is not Inst.GRACES:
+                                plane.provenance.reference = (
+                                    f'http://archive.gemini.edu/searchform/'
+                                    f'filepre={self._storage_name.file_name}'
+                                )
+
+                    for part in delete_these_parts:
+                        self._logger.warning(
+                            f'Delete part {part} from artifact {artifact.uri}'
+                        )
+                        artifact.parts.pop(part)
+
+                program = program_metadata.get_pi_metadata(
+                    observation.proposal.id
+                )
+                if program is not None:
+                    observation.proposal.pi_name = program['pi_name']
+                    observation.proposal.title = program['title']
+
+            if isinstance(observation, DerivedObservation):
+                cc.update_observation_members(observation)
+
+            em.value_repair.repair(observation)
+        except Exception as e:
+            self._logger.error(
+                f'Error {e} for {observation.observation_id} instrument '
+                f'{self._instrument}'
+            )
+            tb = traceback.format_exc()
+            self._logger.debug(tb)
+            raise mc.CadcException(e)
+        self._logger.debug('Done update.')
+        return observation
+
+    def _build_chunk_energy(self, chunk, filter_name):
+        # If n_axis=1 (as I guess it will be for all but processes GRACES
+        # spectra now?) that means crpix=0.5 and the corresponding crval would
+        # central_wl - bandpass/2.0 (i.e. the minimum wavelength).   It is fine
+        # if you instead change crpix to 1.0.   I guess since the ‘range’ of
+        # one pixel is 0.5 to 1.5.
+
+        axis = CoordAxis1D(axis=Axis(ctype='WAVE', cunit='um'))
+        ref_coord1 = RefCoord(0.5, self.fm.central_wl - self.fm.bandpass / 2.0)
+        ref_coord2 = RefCoord(1.5, self.fm.central_wl + self.fm.bandpass / 2.0)
+        axis.range = CoordRange1D(ref_coord1, ref_coord2)
+
+        # DB - 14-02-19 value looks clearer (as two filters) with a space on
+        # both sides of the ‘+’.
+        bandpass_name = (
+            None if (
+                filter_name is None or len(filter_name) == 0
+            ) else filter_name.replace('+', ' + ')
+        )
+
+        if bandpass_name is not None and 'empty' in bandpass_name:
+            # DB 02-12-19 - But some files have filters open1-6 and empty_01.
+            # So likely less confusing to remove ‘empty*’ completely.
+            #
+            # Remove the 'empty' string here, now that min/max wavelength
+            # calculations have been completed.
+            bandpass_name = bandpass_name.replace('empty', '')
+            if len(bandpass_name) == 0:
+                bandpass_name = None
+            elif '+' in bandpass_name:
+                bandpass_name = bandpass_name.replace('+', '').strip()
+
+        if math.isclose(self.fm.central_wl, 0.0):
+            energy = SpectralWCS(
+                axis=CoordAxis1D(axis=Axis(ctype='WAVE', cunit='um')),
+                specsys='TOPOCENT',
+                ssyssrc=None,
+                ssysobs=None,
+                bandpass_name=bandpass_name,
+            )
+        else:
+            energy = SpectralWCS(
+                axis=axis,
+                specsys='TOPOCENT',
+                ssyssrc='TOPOCENT',
+                ssysobs='TOPOCENT',
+                bandpass_name=bandpass_name,
+                resolving_power=self.fm.resolving_power,
+            )
+        chunk.energy = energy
+        # no chunk energy is derived from FITS file axis metadata, so no
+        # cutouts to support
+        chunk.energy_axis = None
+
+    def _get_data_label(self):
+        return self._lookup.data_label(self._storage_name.file_uri)
+
+    def _get_filter_name(self):
+        """
+        Create the filter names for use by update_energy methods.
+
+        :return: The filter names, or None if none found.
+        """
+        filter_name = self._lookup.filter_name(self._storage_name.file_uri)
+
+        # DB 24-04-19
+        # ND = neutral density and so any ND* filter can be ignored as it
+        # shouldn’t affect transmission band.  Likely observing a bright
+        # Other instruments occasionally have ND filters in the beam.
+        if filter_name is not None:
+            filter_name = filter_name.replace('&', '+')
+            temp = filter_name.split('+')
+            for fn in temp:
+                if fn.startswith('ND'):
+                    filter_name = filter_name.replace(fn, '')
+            filter_name = filter_name.strip('+')
+        if filter_name is None or len(filter_name.strip()) == 0:
+            result = GeminiMapping._search_through_keys(
+                self._headers[0], ['FILTER'], FILTER_VALUES_TO_IGNORE
+            )
+            filter_name = result
+        self._logger.info(
+            f'Filter names are "{filter_name}" in {self._storage_name.obs_id}'
+        )
+        return filter_name
+
+    def _make_axes_consistent(self, chunk):
+        # DB 04-17-21
+        # BIASes and DARKs for all instruments should ignore spatial and
+        # spectral wcs - clean up associated axes
+        #
+        # also fix a very specific edge case where cal files have useless WCS
+        # information for the purposes of CAOM2.4 axis checks, and the
+        # corresponding cutouts. No spatial wcs means invalid chunk.naxis
+        # value, so set that to None, which then invalidates the
+        # chunk.time_axis value DB 06-01-21 - no calibration file cutouts to
+        # support, so removing this axis information is not removing
+        # downstream functionality
+        if (
+            chunk.naxis == 3
+            and chunk.position is None
+            and chunk.time is not None
+        ):
+            if chunk.time.axis.function.naxis == 1:
+                chunk.naxis = None
+                chunk.time_axis = None
+            else:
+                chunk.naxis = 1
+                chunk.time_axis = 1
+
+        if (
+            (chunk.naxis is not None and chunk.naxis <= 2) and not
+            # the following exempts the Fox use case
+            (chunk.naxis == 1 and chunk.time_axis == 1)
+        ):
+            if chunk.position_axis_1 is None:
+                chunk.naxis = None
+            chunk.time_axis = None
+
+    def _reset_energy(self, observation_type):
+        result = False
+        om_filter_name = self._lookup.filter_name(self._storage_name.file_uri)
+        if (
+            observation_type in ['BIAS', 'DARK']
+            or (
+                self._instrument in [
+                    Inst.GMOS,
+                    Inst.GMOSN,
+                    Inst.GMOSS,
+                ]
+                and observation_type in ['BIAS', 'MASK']
+            )
+            or (
+                om_filter_name is not None and
+                ('blank' in om_filter_name or 'Blank' in om_filter_name)
+            )
+            or (
+                ('unknown' in om_filter_name or om_filter_name == '')
+            )
+        ):
+            self._logger.info(
+                f'No chunk energy for {self._storage_name.obs_id} obs type '
+                f'{observation_type} filter name {om_filter_name}'
+            )
+            # 'unknown' in filter_name test obs is GN-2004B-Q-30-15-002
+            # DB 23-04-19 - GN-2004B-Q-30-15-002: no energy
+            # GMOS GS-2005A-Q-26-12-001.  Lots of missing metadata, including
+            # release date so no energy (filter_name == '')
+            # DB 04-17-21
+            # BIASes and DARKs for all instruments should ignore spectral wcs
+            result = True
+        return result
+
+    def _reset_position(self, observation_type):
+        """
+        Return True if there should be no spatial WCS information created at
+        the chunk level.
+        """
+        result = False
+        types = self._lookup.types(self._storage_name.file_uri)
+        ra = self.get_ra(0)
+        if (
+            ('AZEL_TARGET' in types and ra is None) or
+            observation_type in ['BIAS', 'DARK']
+        ):
+            # DB - 02-04-19 - Az-El coordinate frame likely means the
+            # telescope was parked or at least not tracking so spatial
+            # information is irrelevant.
+
+            # DB - 09-04-19 - AZEL_TARGET should likely be checked for all
+            # datasets, and means the spatial WCS should be ignored. since
+            # this generally means the telescope is not tracking and so
+            # spatial WCS info isn’t relevant since the position is changing
+            # with time.
+
+            # DB 04-17-21
+            # BIASes and DARKs for all instruments should ignore spatial wcs
+
+            result = True
+        return result
+
     def _should_artifact_be_renamed(self, artifact):
         if artifact.uri.startswith('gemini'):
             if artifact.uri.startswith('gemini:GEM/'):
@@ -795,6 +1153,31 @@ class GeminiMapping(cc.TelescopeMapping):
             artifact.uri = artifact.uri.replace(
                 'ad:GEM/', 'cadc:GEMINI/'
             )
+
+    def _update_composite(self, obs):
+        result = None
+        if self._instrument is Inst.TRECS:
+            if self._storage_name.product_id is not None and (
+                self._storage_name.product_id.startswith('rS')
+                or self._storage_name.product_id.startswith('rN')
+            ):
+                # DB 02-06-20
+                # processed TReCS files in Gemini's archive are derived by
+                # combining the NNODSETS x NSAVSETS contained within a single
+                # unprocessed image into a simpler image array.
+                #
+                # SGo - this means ignoring the IMCMB keywords that are an
+                # artifact of that, which is how Composite construction is
+                # otherwise determined.
+                result = obs
+        else:
+            result = cc.change_to_composite(obs)
+            self._logger.info(f'{obs.observation_id} is a Derived Observation.')
+        return result
+
+    def _update_position(self, chunk):
+        # the default is to do nothing, so not a NotImplemented exception
+        pass
 
     def _update_position_from_zeroth_header(self, artifact, obs_id):
         """Make the 0th header spatial WCS the WCS for all the
@@ -843,26 +1226,9 @@ class GeminiMapping(cc.TelescopeMapping):
                     chunk.position_axis_1 = 1
                     chunk.position_axis_2 = 2
 
-    def _update_composite(self, obs):
-        result = None
-        if self._instrument is Inst.TRECS:
-            if self._storage_name.product_id is not None and (
-                self._storage_name.product_id.startswith('rS')
-                or self._storage_name.product_id.startswith('rN')
-            ):
-                # DB 02-06-20
-                # processed TReCS files in Gemini's archive are derived by
-                # combining the NNODSETS x NSAVSETS contained within a single
-                # unprocessed image into a simpler image array.
-                #
-                # SGo - this means ignoring the IMCMB keywords that are an
-                # artifact of that, which is how Composite construction is
-                # otherwise determined.
-                result = obs
-        else:
-            result = cc.change_to_composite(obs)
-            self._logger.info(f'{obs.observation_id} is a Derived Observation.')
-        return result
+    def _update_time(self, chunk):
+        # the default is to do nothing
+        pass
 
 
 def _remove_processing_detritus(values, obs_id):
@@ -995,6 +1361,7 @@ class Gmos(GeminiMapping):
             'Observation.instrument.keywords',
             'get_provenance_keywords(uri)',
         )
+        bp.configure_position_axes((1, 2))
 
     def get_exposure(self, ext):
         if self.get_obs_type(ext) == 'MASK':
@@ -1011,7 +1378,7 @@ class Gmos(GeminiMapping):
             exptime = super(Gmos, self).get_time_delta(ext)
         return exptime
 
-    def reset_position(self, headers, observation_type):
+    def _reset_position(self, observation_type):
         # DB - 04-03-19
         # Another type of GMOS-N/S dataset to archive.
         # Mask images.   json observation_type = “MASK”.
@@ -1021,12 +1388,12 @@ class Gmos(GeminiMapping):
         # instrument, obstype, datatype (spectrum) and
         # product type (AUXILIARY) set.
         return (
-            super(Gmos, self).reset_position(headers, observation_type) or
+            super()._reset_position(observation_type) or
             observation_type == 'MASK'
         )
 
-    def update_energy(self):
-        self._logger.debug('Begin _update_chunk_energy_gmos')
+    def update_energy(self, chunk, data_product_type, obs_id):
+        self._logger.debug('Begin _update_chunk_energy')
 
         GMOS_RESOLVING_POWER = {
             'B1200': 3744.0,
@@ -1042,12 +1409,13 @@ class Gmos(GeminiMapping):
         #
         # The Hartmann ‘filter’ is actually a mask that blocks off half of the
         # light path to the detector but is ‘open’ on the other half.  So same
-        # ‘bandpass’ as ‘open’ or ‘empty’.    It’s used when focusing the camera.
+        # ‘bandpass’ as ‘open’ or ‘empty’.    It’s used when focusing the
+        # camera.
         #
-        # Blocking filters are only used when doing multi-object spectroscopy.  By
-        # reducing the wavelength coverage they are able to add a second row of
-        # slits to the mask since the spectra then don’t cover the entire width of
-        # the detector in the dispersion direction.
+        # Blocking filters are only used when doing multi-object
+        # spectroscopy.  By reducing the wavelength coverage they are able to
+        # add a second row of slits to the mask since the spectra then don’t
+        # cover the entire width of the detector in the dispersion direction.
 
         # 0 = min
         # 1 = max
@@ -1095,25 +1463,26 @@ class Gmos(GeminiMapping):
 
         reset_energy = False
 
+        filter_name = self._get_filter_name()
         filter_md = None
         if (
-            'open' not in self.filter_name
-            and 'No_Value' not in self.filter_name
-            and 'empty' not in self.filter_name
+            'open' not in filter_name
+            and 'No_Value' not in filter_name
+            and 'empty' not in filter_name
         ):
             filter_md = svofps.get_filter_metadata(
-                self._name,
-                self.filter_name,
+                self._instrument,
+                filter_name,
                 self._lookup.telescope(self._storage_name.file_uri),
             )
 
-        if 'empty' in self.filter_name:
+        if 'empty' in filter_name:
             # set to 'empty' string here, so can still use lookup logic
-            self.filter_name = re.sub('empty_\\d*', 'empty', self.filter_name)
+            filter_name = re.sub('empty_\\d*', 'empty', filter_name)
 
         w_max = 10.0
         w_min = 0.0
-        for ii in self.filter_name.split('+'):
+        for ii in filter_name.split('+'):
             if ii in lookup:
                 wl_max = lookup[ii][1]
                 wl_min = lookup[ii][0]
@@ -1137,14 +1506,12 @@ class Gmos(GeminiMapping):
         filter_md.set_central_wl(w_max, w_min)
         filter_md.set_resolving_power(w_max, w_min)
 
-        if self.data_product_type == DataProductType.SPECTRUM:
-            logging.debug(
-                f'{self._name}: SpectralWCS spectroscopy for {self.obs_id}.'
-            )
+        if data_product_type == DataProductType.SPECTRUM:
+            self._logger.debug(f'SpectralWCS spectroscopy for {obs_id}.')
             if math.isclose(filter_md.central_wl, 0.0):
-                logging.info(
-                    f'{self._name}: no spectral wcs, central wavelength is '
-                    f'{filter_md.central_wl} for {self.obs_id}'
+                self._logger.info(
+                    f'no spectral wcs, central wavelength is '
+                    f'{filter_md.central_wl} for {obs_id}'
                 )
                 return
             disperser = self._lookup.disperser(self._storage_name.file_uri)
@@ -1167,11 +1534,9 @@ class Gmos(GeminiMapping):
                 # flags this one as unusual.
                 #
                 # DB 13-05-19
-                # “No Value” for filter?  Yes, no energy WCS.  Lots of other bogus
-                # values in header as well.
-                logging.warning(
-                    f'{self._name}: disperser is {disperser}, no energy.'
-                )
+                # “No Value” for filter?  Yes, no energy WCS.  Lots of other
+                # bogus values in header as well.
+                self._logger.warning(f'disperser is {disperser}, no energy.')
                 reset_energy = True
             else:
                 self.fm = svofps.FilterMetadata()
@@ -1189,32 +1554,30 @@ class Gmos(GeminiMapping):
                     # one, GS-CAL20030130-1-001, has the B600 grating.
                     # DB 13-05-19
                     # GS-2013A-Q-91-194-003 S20130517S0092
-                    # Yes, disperser value should be B600.  Typo using +- instead
-                    # of the usual underscore when someone entered the info in a
-                    # config file perhaps?
+                    # Yes, disperser value should be B600.  Typo using +-
+                    # instead of the usual underscore when someone entered the
+                    # info in a config file perhaps?
                     disperser = 'B600'
                 if disperser in GMOS_RESOLVING_POWER:
                     self.fm.resolving_power = GMOS_RESOLVING_POWER[disperser]
                 else:
                     raise mc.CadcException(
-                        f'{self._name}: mystery disperser {disperser} for '
-                        f'{self.obs_id}'
+                        f'{self._instrument}: mystery disperser {disperser} '
+                        f'for {obs_id}'
                     )
-        elif self.data_product_type == DataProductType.IMAGE:
-            self._logger.debug(
-                f'{self._name}: SpectralWCS imaging for {self.obs_id}.'
-            )
+        elif data_product_type == DataProductType.IMAGE:
+            self._logger.debug(f'SpectralWCS imaging for {obs_id}.')
             self.fm = filter_md
         else:
             raise mc.CadcException(
-                f'{self._name}: mystery data product type '
-                f'{self.data_product_type} for {self.obs_id}'
+                f'{self._instrument}: mystery data product type '
+                f'{data_product_type} for {obs_id}'
             )
         if reset_energy:
-            cc.reset_energy(self.chunk)
+            cc.reset_energy(chunk)
         else:
-            self.build_chunk_energy()
-        self._logger.debug('End _update_chunk_energy_gmos')
+            self._build_chunk_energy(chunk, filter_name)
+        self._logger.debug('End _update_chunk_energy')
 
 
 class Graces(GeminiMapping):
