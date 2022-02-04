@@ -268,6 +268,12 @@ class GeminiMetadataLookup:
     def exposure_time(self, uri):
         return self._y(uri, 'exposure_time')
 
+    def filter_name(self, uri):
+        return self._y(uri, 'filter_name')
+
+    def focal_plane_mask(self, uri):
+        return self._y(uri, 'focal_plane_mask')
+
     def instrument(self, uri):
         temp = self._reader.headers.get(uri)[0].get('INSTRUME')
         if temp is None:
@@ -326,7 +332,7 @@ class GeminiMetadataLookup:
             y = ii.get('name')
             import logging
             if y == f_name:
-                logging.error(f'name {y} {f_name} {lookup_key}')
+                # logging.error(f'name {y} {f_name} {lookup_key}')
                 temp = ii.get(lookup_key)
         import logging
         logging.error(f'f_name {f_name} temp {temp}')

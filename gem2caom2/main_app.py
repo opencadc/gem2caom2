@@ -148,6 +148,29 @@ CAL_VALUES = [
 # Other instruments occasionally have ND filters in the beam.
 FILTER_VALUES_TO_IGNORE = ['open', 'invalid', 'pupil', 'clear', 'nd']
 
+# GPI radius == 2.8 arcseconds, according to Christian Marois via DB 02-07-19
+# DB - 18-02-19 - Replace “5.0” for “2.8" for GPI field of view.
+# NOTE:  To be more accurate for GRACES this size could be reduced
+# from 5" to 1.2" since that’s the size of the fibre.
+# OSCIR - http://www.gemini.edu/sciops/instruments/oscir/oscirIndex.html
+# bHROS - DB - 20-02-19 - bHROS ‘bounding box’ is only 0.9".
+#                         A very small fibre.
+# HOKUPAA - http://www.gemini.edu/sciops/instruments/uhaos/uhaosIndex.html
+# NIFS - DB - 04-03-19 - hard-code 3" FOV
+# TEXES - DB - 07-03-19 - cd11=cd22 = 5.0/3600.0
+# IGRINS - DB - 21-07-21 - hard-code 5" FOV
+RADIUS_LOOKUP = {
+    Inst.GPI: 2.8 / 3600.0,  # units are arcseconds
+    Inst.GRACES: 1.2 / 3600.0,
+    Inst.PHOENIX: 5.0 / 3600.0,
+    Inst.OSCIR: 0.0890 / 3600.0,
+    Inst.HOKUPAA: 4.0 / 3600.0,
+    Inst.BHROS: 0.9 / 3600.0,
+    Inst.NIFS: 3.0 / 3600.0,
+    Inst.TEXES: 5.0 / 3600.0,
+    Inst.IGRINS: 5.0 / 3600.0,
+}
+
 
 class GeminiMapping(cc.TelescopeMapping):
 
@@ -603,7 +626,7 @@ class GeminiMapping(cc.TelescopeMapping):
         :param **kwargs Everything else."""
         self._logger.debug('Begin update.')
         mc.check_param(observation, Observation)
-        if self._instrument in [Inst.GMOS, Inst.GMOSN, Inst.GMOSS]:
+        if self._instrument in [Inst.GMOS, Inst.GMOSN, Inst.GMOSS, Inst.NIRI]:
             return self.update_no_x(observation, file_info)
 
         # processed files
@@ -666,9 +689,7 @@ class GeminiMapping(cc.TelescopeMapping):
                         #
                         # DB - 01-18-19 - GNIRS has no WCS info in extension;
                         # use primary header
-                        self._update_position_from_zeroth_header(
-                            artifact, observation.observation_id,
-                        )
+                        self._update_position_from_zeroth_header(artifact)
 
                     delete_these_parts = []
                     for part in artifact.parts:
@@ -860,9 +881,7 @@ class GeminiMapping(cc.TelescopeMapping):
                         #
                         # DB - 01-18-19 - GNIRS has no WCS info in extension;
                         # use primary header
-                        self._update_position_from_zeroth_header(
-                            artifact, observation.observation_id,
-                        )
+                        self._update_position_from_zeroth_header(artifact)
 
                     delete_these_parts = []
                     for part in artifact.parts:
@@ -890,16 +909,12 @@ class GeminiMapping(cc.TelescopeMapping):
                             if self._reset_energy(observation.type):
                                 cc.reset_energy(c)
                             else:
-                                self.update_energy(
-                                    c,
-                                    plane.data_product_type,
-                                    observation.observation_id,
-                                )
+                                self._update_energy(c, plane.data_product_type)
                             # position WCS
                             if self._reset_position(observation.type):
                                 cc.reset_position(c)
                             else:
-                                self._update_position(c)
+                                self._update_position(part, c, int(part))
 
                             # time WCS
                             self._update_time(c)
@@ -1175,11 +1190,11 @@ class GeminiMapping(cc.TelescopeMapping):
             self._logger.info(f'{obs.observation_id} is a Derived Observation.')
         return result
 
-    def _update_position(self, chunk):
+    def _update_position(self, part, chunk, extension):
         # the default is to do nothing, so not a NotImplemented exception
         pass
 
-    def _update_position_from_zeroth_header(self, artifact, obs_id):
+    def _update_position_from_zeroth_header(self, artifact):
         """Make the 0th header spatial WCS the WCS for all the
         chunks."""
         primary_header = self._headers[0]
@@ -1211,10 +1226,10 @@ class GeminiMapping(cc.TelescopeMapping):
             # Ignore spatial WCS if RA/Dec are not available for GNIRS.
 
             self._logger.info(
-                f'{self._instrument}: Spatial WCS is None for {obs_id}'
+                f'Spatial WCS is None for {self._storage_name.obs_id}'
             )
         else:
-            wcs_parser = WcsParser(primary_header, obs_id, 0)
+            wcs_parser = WcsParser(primary_header, self._storage_name.obs_id, 0)
             wcs_parser.augment_position(primary_chunk)
 
         for part in artifact.parts:
@@ -1304,8 +1319,8 @@ def _repair_provenance_value(value, obs_id):
 
 class Cirpass(GeminiMapping):
 
-    def __init__(self, storage_name, headers):
-        super().__init__(storage_name, headers)
+    def __init__(self, storage_name, headers, lookup, instrument):
+        super().__init__(storage_name, headers, lookup, instrument)
 
     def accumulate_blueprint(self, bp, application=None):
         super().accumulate_blueprint(bp)
@@ -1314,8 +1329,8 @@ class Cirpass(GeminiMapping):
 
 class Flamingos(GeminiMapping):
 
-    def __init__(self, storage_name, headers):
-        super().__init__(storage_name, headers)
+    def __init__(self, storage_name, headers, lookup, instrument):
+        super().__init__(storage_name, headers, lookup, instrument)
 
     def accumulate_blueprint(self, bp, application=None):
         super().accumulate_blueprint(bp)
@@ -1333,8 +1348,8 @@ class Flamingos(GeminiMapping):
 
 class Fox(GeminiMapping):
 
-    def __init__(self, storage_name, headers):
-        super().__init__(storage_name, headers)
+    def __init__(self, storage_name, headers, lookup, instrument):
+        super().__init__(storage_name, headers, lookup, instrument)
 
     def accumulate_blueprint(self, bp, application=None):
         """Configure the telescope-specific ObsBlueprint at the CAOM model
@@ -1392,8 +1407,8 @@ class Gmos(GeminiMapping):
             observation_type == 'MASK'
         )
 
-    def update_energy(self, chunk, data_product_type, obs_id):
-        self._logger.debug('Begin _update_chunk_energy')
+    def _update_energy(self, chunk, data_product_type):
+        self._logger.debug('Begin _update_energy')
 
         GMOS_RESOLVING_POWER = {
             'B1200': 3744.0,
@@ -1507,11 +1522,13 @@ class Gmos(GeminiMapping):
         filter_md.set_resolving_power(w_max, w_min)
 
         if data_product_type == DataProductType.SPECTRUM:
-            self._logger.debug(f'SpectralWCS spectroscopy for {obs_id}.')
+            self._logger.debug(
+                f'SpectralWCS spectroscopy for {self._storage_name.obs_id}.'
+            )
             if math.isclose(filter_md.central_wl, 0.0):
                 self._logger.info(
                     f'no spectral wcs, central wavelength is '
-                    f'{filter_md.central_wl} for {obs_id}'
+                    f'{filter_md.central_wl} for {self._storage_name.obs_id}'
                 )
                 return
             disperser = self._lookup.disperser(self._storage_name.file_uri)
@@ -1562,22 +1579,24 @@ class Gmos(GeminiMapping):
                     self.fm.resolving_power = GMOS_RESOLVING_POWER[disperser]
                 else:
                     raise mc.CadcException(
-                        f'{self._instrument}: mystery disperser {disperser} '
-                        f'for {obs_id}'
+                        f'mystery disperser {disperser} '
+                        f'for {self._storage_name.obs_id}'
                     )
         elif data_product_type == DataProductType.IMAGE:
-            self._logger.debug(f'SpectralWCS imaging for {obs_id}.')
+            self._logger.debug(
+                f'SpectralWCS imaging for {self._storage_name.obs_id}.'
+            )
             self.fm = filter_md
         else:
             raise mc.CadcException(
-                f'{self._instrument}: mystery data product type '
-                f'{data_product_type} for {obs_id}'
+                f'mystery data product type {data_product_type} for '
+                f'{self._storage_name.obs_id}'
             )
         if reset_energy:
             cc.reset_energy(chunk)
         else:
             self._build_chunk_energy(chunk, filter_name)
-        self._logger.debug('End _update_chunk_energy')
+        self._logger.debug('End _update_energy')
 
 
 class Graces(GeminiMapping):
@@ -1610,10 +1629,188 @@ class Graces(GeminiMapping):
             bp.configure_position_axes((1, 2))
 
 
+class Gpi(GeminiMapping):
+
+    def __init__(self, storage_name, headers, lookup, instrument):
+        super().__init__(storage_name, headers, lookup, instrument)
+
+    def accumulate_blueprint(self, bp, application=None):
+        super().accumulate_blueprint(bp)
+        bp.configure_position_axes((1, 2))
+
+    def get_cd11(self, ext):
+        return RADIUS_LOOKUP[self._name] / self._headers[ext].get('NAXIS1')
+
+    def get_cd22(self, ext):
+        return self.get_cd11(ext)
+
+    def get_data_product_type(self, ext):
+        mode = self._lookup.mode(self._storage_name.file_uri)
+        if mode is None:
+            raise mc.CadcException(
+                f'No mode information found for {self._storage_name.file_name}'
+            )
+        # DB - 22-02-19 FOR GPI only:  To determine if the data type
+        # is an ‘image’ or ‘spectrum’:
+        #     json ‘mode’ = IFP then ‘image’
+        #     json ‘mode’ = IFS then ‘spectrum’
+        if mode in ['IFP', 'imaging']:
+            result = DataProductType.IMAGE
+        elif mode == 'IFS':
+            result = DataProductType.SPECTRUM
+        else:
+            raise mc.CadcException(
+                f'{self._instrument} Mystery mode {mode} for '
+                f'{self._storage_name.file_name}'
+            )
+        return result
+
+    def _update_energy(self, chunk, data_product_type):
+        self._logger.debug('Begin _update_energy')
+
+        # DB - 22-02-19
+        # For imaging energy WCS, use standard imaging algorithm. i.e central
+        # wavelength, bandpass from SVO filter, and
+        # resolution = central_wavelength/bandpass
+        #
+        # For energy WCS:
+        #
+        # naxis = extension header NAXIS2 value
+        #
+        # Need to hard-code the resolution from values in top table on this
+        # page:
+        # https://www.gemini.edu/sciops/instruments/gpi/observing-modes-metamodes.
+        # Use mean of column 4 range.  e.g. for H filter use 46.5
+        # units are microns
+        gpi_lookup = {
+            'Y': (36 + 34) / 2.0,
+            'J': (39 + 35) / 2.0,
+            'H': (49 + 44) / 2.0,
+            'K1': (70 + 62) / 2.0,
+            'K2': (83 + 75) / 2.0,
+        }
+
+        filter_name = self._get_filter_name()
+        filter_md = svofps.get_filter_metadata(
+            self._instrument,
+            filter_name,
+            self._lookup.telescope(self._storage_name.file_uri),
+        )
+        if data_product_type == DataProductType.IMAGE:
+            self._logger.debug(
+                f'SpectralWCS imaging mode for {self._storage_name.obs_id}.'
+            )
+            self.fm = filter_md
+        elif data_product_type == DataProductType.SPECTRUM:
+            self._logger.debug(
+                f'SpectralWCS Spectroscopy mode for '
+                f'{self._storage_name.obs_id}.'
+            )
+            self.fm = svofps.FilterMetadata()
+            self.fm.central_wl = filter_md.central_wl
+            self.fm.bandpass = filter_md.bandpass
+            if filter_name in gpi_lookup:
+                self.fm.resolving_power = gpi_lookup[filter_name]
+            else:
+                raise mc.CadcException(
+                    f'GPI: Mystery filter name {filter_name} for '
+                    f'resolving power {self._storage_name.obs_id}'
+                )
+        else:
+            raise mc.CadcException(
+                f'GPI: Do not understand DataProductType '
+                f'{data_product_type} for {self._storage_name.obs_id}'
+            )
+
+        self._build_chunk_energy(chunk, filter_name)
+        self._logger.debug('End _update_energy')
+
+    def _update_position(self, part, chunk, extension):
+        self._logger.debug('Begin _update_position')
+
+        # DB - 18-02-19 - for hard-coded field of views use:
+        # CRVAL1  = RA value from json or header (degrees
+        # CRVAL2  = Dec value from json or header (degrees)
+        # CDELT1  = 5.0/3600.0 (Plate scale along axis1 in degrees/pixel
+        #           for 5" size)
+        # CDELT2  = 5.0/3600.0
+        # CROTA1  = 0.0 / Rotation in degrees
+        # NAXIS1 = 1
+        # NAXIS2 = 1
+        # CRPIX1 = 1.0
+        # CRPIX2 = 1.0
+        # CTYPE1 = RA---TAN
+        # CTYPE2 = DEC--TAN
+        #
+        # DB - 22-02-19 - GPI
+        # WCS info is garbage in header, so for spatial WCS (for both image and
+        # spectrum):
+        #
+        # crval1 = json ra value
+        # crval2 = json dec value
+        # naxis1 = extension header NAXIS1 value
+        # naxis2 = extension header NAXIS2 value
+        # crpix1 = naxis1/2.0
+        # crpix2 = naxis2/2.0
+        #
+        # FOV is 2.8" x 2.8" on each side or 2.8/3600.0 degrees
+        # cd1_1 = 2.8/(3600.0 * naxis1)
+        # cd2_2 = 2.8/(3600.0 * naxis2)
+        # cd1_2 = cd2_1 = 0.0 since we don’t know rotation value
+
+        header = self._headers[1]
+        header['CTYPE1'] = 'RA---TAN'
+        header['CTYPE2'] = 'DEC--TAN'
+        header['CUNIT1'] = 'deg'
+        header['CUNIT2'] = 'deg'
+        header['CRVAL1'] = self.get_ra(extension)
+        header['CRVAL2'] = self.get_dec(extension)
+        header['CRPIX1'] = self.get_crpix1(extension)
+        header['CRPIX2'] = self.get_crpix2(extension)
+        header['CD1_1'] = self.get_cd11(extension)
+        header['CD1_2'] = 0.0
+        header['CD2_1'] = 0.0
+        header['CD2_2'] = self.get_cd22(extension)
+
+        wcs_parser = WcsParser(header, self._storage_name.obs_id, extension)
+        if chunk is None:
+            chunk = Chunk()
+            part.chunks.append(chunk)
+        wcs_parser.augment_position(chunk)
+        chunk.position_axis_1 = 1
+        chunk.position_axis_2 = 2
+        chunk.position.coordsys = header.get('RADESYS')
+        if self._extension == 1:
+            # equinox information only available from
+            # 0th header
+            equinox = self._headers[0].get('TRKEQUIN')
+            if (
+                equinox is not None
+                and 1800.0 <= equinox <= 2500.0
+            ):
+                chunk.position.equinox = equinox
+            else:
+                # DB 07-06-21
+                # No spatial WCS in these cases.
+                cc.reset_position(chunk)
+        self._logger.debug('End update_position')
+
+    def get_crpix1(self, ext, keyword='NAXIS1'):
+        naxis1 = self._headers[ext].get(keyword)
+        if naxis1 is None:
+            result = None
+        else:
+            result = naxis1 / 2.0
+        return result
+
+    def get_crpix2(self, ext):
+        return self.get_crpix1(ext, 'NAXIS2')
+
+
 class Igrins(GeminiMapping):
 
-    def __init__(self, storage_name, headers):
-        super().__init__(storage_name, headers)
+    def __init__(self, storage_name, headers, lookup, instrument):
+        super().__init__(storage_name, headers, lookup, instrument)
 
     def accumulate_blueprint(self, bp, application=None):
         """Configure the telescope-specific ObsBlueprint at the CAOM model
@@ -1631,10 +1828,295 @@ class Igrins(GeminiMapping):
         bp.set('Observation.telescope.geoLocationZ', z)
 
 
+class Niri(GeminiMapping):
+
+    def __init__(self, storage_name, headers, lookup, instrument):
+        super().__init__(storage_name, headers, lookup, instrument)
+
+    def accumulate_blueprint(self, bp, application=None):
+        super().accumulate_blueprint(bp)
+        bp.configure_position_axes((1, 2))
+
+    def _get_filter_name(self):
+        # NIRI - prefer header keywords
+        return GeminiMapping._search_through_keys(
+            self._headers[0], ['FILTER'], FILTER_VALUES_TO_IGNORE,
+        )
+
+    def _reset_energy(self, observation_type):
+        filter_name = self._get_filter_name()
+        return (
+            super()._reset_energy(observation_type) or (
+                filter_name is not None and (
+                    filter_name == '' or 'INVALID' in filter_name
+                )
+            )
+        )
+
+    def _update_energy(self, chunk, data_product_type):
+        self._logger.debug('Begin _update_energy')
+        reset_energy = False
+
+        # values from
+        # https://www.gemini.edu/sciops/instruments/niri/spectroscopy/grisms
+        # units are? page is in microns
+
+        # DB 21-05-19
+        # For lack of info on the slit for these odd observations use the
+        # same resolution for the 4-pixel slit:  i.e. add “‘f6-cam’: 610.0”
+        # for the J grism lookup (of which there may only be two cases)
+        # and “‘f6-cam’: 780.0" for the K grism.  I don’t see any similar
+        # types of observations for other grisms that are not ‘blank’
+        # observations and so don’t have energy WCS.
+
+        # DB 22-08-19
+        # Guesstimate from changes in values for L filter/grism centered and
+        # blue combinations.
+        # M: 1100 for f6-2pixBl, 860 for f6-4pixBl and 490 for f6-6pixBl.
+        # Skip energy for INVALID f-ratio.
+
+        NIRI_RESOLVING_POWER = {
+            'J': {
+                'f6-2pix': 770.0,
+                'f6-4pix': 610.0,
+                'f6-cam': 610.0,
+                'f6-6pix': 460.0,
+                'f6-2pixBl': 770.0,
+                'f6-4pixBl': 650.0,
+                'f6-6pixBl': 480.0,
+                'f32-4pix': 1000.0,
+                'f32-6pix': 620.0,  # f32-7pix
+                'f32-9pix': 450.0,  # f32-10pix
+            },
+            'H': {
+                'f6-2pix': 1650.0,
+                'f6-4pix': 825.0,
+                'f6-6pix': 520.0,
+                'f6-2pixBl': 1650.0,
+                'f6-4pixBl': 940.0,
+                'f6-6pixBl': 550.0,
+                'f32-4pix': 880.0,
+                'f32-6pix': 630.0,  # f32-7pix
+                'f32-9pix': 500.0,  # f32-10pix
+            },
+            'L': {
+                'f6-2pix': 1100.0,
+                'f6-4pix': 690.0,
+                'f6-6pix': 460.0,
+                'f6-2pixBl': 1100.0,
+                'f6-4pixBl': 770.0,
+                'f6-6pixBl': 490.0,
+            },
+            'M': {
+                'f6-2pix': 1100.0,
+                'f6-4pix': 770.0,
+                'f6-6pix': 460.0,
+                'f6-2pixBl': 1100.0,
+                'f6-4pixBl': 860.0,
+                'f6-6pixBl': 490.0,
+            },
+            'K': {
+                'f6-2pix': 1300.0,
+                'f6-4pix': 780.0,
+                'f6-cam': 780.0,
+                'f6-6pix': 520.0,
+                'f6-2pixBl': 1300.0,
+                'f6-4pixBl': 780.0,
+                'f6-6pixBl': 520.0,
+                'f32-4pix': 1280.0,
+                'f32-6pix': 775.0,  # f32-7pix
+                'f32-9pix': 570.0,  # f32-10pix
+            },
+        }
+
+        # NIRI.Hgrismf32-G5228
+
+        # No energy information is determined for darks.  The
+        # latter are sometimes only identified by a 'blank' filter.  e.g.
+        # NIRI 'flats' are sometimes obtained with the filter wheel blocked
+        # off.
+
+        # The focal_plane_mask has values like f6-2pixBl (2-pixel wide blue
+        # slit used with f/6 camera) or f32-6pix (6-pixel wide slit [centered]
+        # with f/32 camera).   So f#-#pix with or without ‘Bl’.   But there
+        # seems to be some inconsistency in the above web page and actual
+        # slits.  I don’t think there are 7- or 10-pixel slits used with the
+        # f32 camera.  The Gemini archive pull-down menu only gives f32-6pix
+        # and f32-9pix choices.  Assume these refer to the 7 and 10 pixel
+        # slits in the web page. Use the ‘disperser’ value to lookup the
+        # ‘Estimated Resolving Power’ for the slit in the beam given by the
+        # focal_plane_mask value.
+
+        # https://www.gemini.edu/sciops/instruments/niri/spectroscopy/blocking-filters
+
+        # DB - 08-09-19 - NIRI data with ‘pinhole’:  ignore energy WCS for
+        # these for any spectroscopic observations.  They are used for image
+        # quality tests and instrument alignment.  For imaging observations
+        # these shouldn’t impact anything (I hope).  e.g. does this one work?
+        # GN-2005A-DD-12-12-017
+
+        # DB - 15-04-19
+        # For r_ratio:
+        # https://www.gemini.edu/sciops/instruments/niri/spectroscopy/grisms,
+        # parenthetically states “w. either slits” for the f/6 K section.  So
+        # duplicate lines 1268-1270 of main_app.py with “Bl” appended after
+        # ‘pix’.
+
+        filter_name = self._get_filter_name()
+        if 'Jcon(112)_G0235' in filter_name:
+            # DB - 01-04-19 The G0235 filter is listed as ‘damaged’ on the
+            # Gemini NIRI filters web site:
+            # https://www.gemini.edu/sciops/instruments/niri/imaging/filters.
+            # Not enough info is given there for SVO to add this filter to
+            # their system.  Hardcode a central wavelength of 1.1232 microns
+            # and a FWHM of 0.0092 microns
+            filter_md = svofps.FilterMetadata('NIRI')
+            filter_md.central_wl = 1.1232
+            filter_md.bandpass = 0.0092
+        elif 'Msort' in filter_name or 'Mgrism' in filter_name:
+            # DB - 15-04-19
+            # The NIRI blocking filter page,
+            # https://www.gemini.edu/sciops/instruments/niri/spectroscopy/blocking-
+            # filters, gives no transmission data for this filter for the SVO
+            # to use.  Will need to hard-code it to central wavelength of
+            # (4.4+6)/2 and width of 6-4.4 microns.
+
+            filter_md = svofps.FilterMetadata('NIRI')
+            filter_md.set_central_wl(6.0, 4.4)
+            filter_md.set_bandpass(6.0, 4.4)
+        else:
+            filter_md = svofps.get_filter_metadata(
+                self._instrument,
+                filter_name,
+                self._lookup.telescope(self._storage_name.file_uri),
+            )
+            if filter_md is None:
+                raise mc.CadcException(
+                    f'{self._instrument}: mystery filter {filter_name} for '
+                    f'{self._storage_name.obs_id}'
+                )
+
+        filter_name = self._lookup.filter_name(self._storage_name.file_uri)
+        if data_product_type == DataProductType.IMAGE:
+            self._logger.debug(
+                f'SpectralWCS imaging for {self._storage_name.obs_id}.'
+            )
+            self.fm = filter_md
+            self.fm.adjust_resolving_power()
+        elif data_product_type == DataProductType.SPECTRUM:
+            self._logger.debug(
+                f'SpectralWCS spectroscopy for {self._storage_name.obs_id}.'
+            )
+            self.fm = svofps.FilterMetadata('NIRI')
+            self.fm.central_wl = filter_md.central_wl
+            self.fm.bandpass = filter_md.bandpass
+            # add the 'split' call because NIRI: Mystery disperser value
+            # Mgrism_G5206 for GN-2007B-Q-75-61-003
+            disperser = self._lookup.disperser(
+                self._storage_name.file_uri
+            ).split('_')[0]
+            if disperser in [
+                'Jgrism',
+                'Jgrismf32',
+                'Hgrism',
+                'Hgrismf32',
+                'Kgrism',
+                'Kgrismf32',
+                'Lgrism',
+                'Mgrism',
+            ]:
+                bandpass_name = disperser[0]
+                f_ratio = self._lookup.focal_plane_mask(
+                    self._storage_name.file_uri
+                )
+                self._logger.debug(
+                    f'Bandpass name is {bandpass_name} f_ratio is '
+                    f'{f_ratio} for {self._storage_name.obs_id}'
+                )
+                if (
+                    bandpass_name in NIRI_RESOLVING_POWER
+                    and f_ratio in NIRI_RESOLVING_POWER[bandpass_name]
+                ):
+                    self.fm.resolving_power = NIRI_RESOLVING_POWER[bandpass_name][
+                        f_ratio
+                    ]
+                elif 'pinhole' in f_ratio:
+                    self._logger.info(
+                        f'Pinhole. Setting energy to None for '
+                        f'{self._storage_name.obs_id}'
+                    )
+                    reset_energy = True
+                elif f_ratio == 'INVALID':
+                    self._logger.info(
+                        f'INVALID f_ratio. Setting energy to None for '
+                        f'{self._storage_name.obs_id}'
+                    )
+                    reset_energy = True
+                else:
+                    raise mc.CadcException(
+                        f'{self._instrument} Mystery bandpass name '
+                        f'{bandpass_name} or f_ratio {f_ratio} for '
+                        f'{self._storage_name.obs_id}.'
+                    )
+            else:
+                raise mc.CadcException(
+                    f'{self._instrument} Mystery disperser value {disperser} '
+                    f'for {self._storage_name.obs_id}'
+                )
+        else:
+            raise mc.CadcException(
+                f'{self._instrument}: Do not understand mode '
+                f'{data_product_type} for {self._storage_name.obs_id}'
+            )
+
+        if reset_energy:
+            cc.reset_energy(chunk)
+        else:
+            self._build_chunk_energy(chunk, filter_name)
+        self._logger.debug('End _update_energy')
+
+    def _update_position(self, part, chunk, extension):
+        self._logger.info(
+            f'Begin update_position for {self._storage_name.obs_id}'
+        )
+        # DB 07-06-21
+        # The extension CD values that are very, very close to 0 cause the
+        # problems with Spatial WCS:
+        # ERROR: spherepoly_from_array: a line segment overlaps or polygon too
+        #        large
+        # Try to use the primary values if this error occurs - there's an extra
+        # '5' in the exponent
+        if len(self._headers) > 1:
+            pdu = self._headers[0]
+            hdu0 = self._headers[1]
+            pdu_cd1_1 = pdu.get('CD1_1')
+            hdu0_cd1_1 = hdu0.get('CD1_1')
+            if not math.isclose(pdu_cd1_1, hdu0_cd1_1) and math.isclose(
+                pdu_cd1_1 * 1e-50, hdu0_cd1_1
+            ):
+                pdu['NAXIS1'] = hdu0.get('NAXIS1')
+                pdu['NAXIS2'] = hdu0.get('NAXIS2')
+                wcs_parser = WcsParser(
+                    pdu, self._storage_name.obs_id, extension
+                )
+                if chunk is None:
+                    chunk = Chunk()
+                    part.chunks.append(chunk)
+                wcs_parser.augment_position(chunk)
+                if chunk.position is not None:
+                    chunk.position_axis_1 = 1
+                    chunk.position_axis_2 = 2
+                    chunk.position.coordsys = pdu.get('FRAME')
+                    chunk.position.equinox = mc.to_float(
+                        pdu.get('EQUINOX')
+                    )
+        self._logger.info('End update_position')
+
+
 class Texes(GeminiMapping):
 
-    def __init__(self, storage_name, headers):
-        super().__init__(storage_name, headers)
+    def __init__(self, storage_name, headers, lookup, instrument):
+        super().__init__(storage_name, headers, lookup, instrument)
 
     def accumulate_blueprint(self, bp, application=None):
         """Configure the telescope-specific ObsBlueprint at the CAOM model
@@ -1674,7 +2156,7 @@ def mapping_factory(storage_name, headers, metadata_reader):
         Inst.GMOSS: Gmos,
         Inst.GMOSN: Gmos,
         Inst.GNIRS: GeminiMapping,
-        Inst.GPI: GeminiMapping,
+        Inst.GPI: Gpi,
         Inst.GRACES: Graces,
         Inst.GSAOI: GeminiMapping,
         Inst.HOKUPAA: GeminiMapping,
@@ -1683,7 +2165,7 @@ def mapping_factory(storage_name, headers, metadata_reader):
         Inst.MICHELLE: GeminiMapping,
         Inst.NICI: GeminiMapping,
         Inst.NIFS: GeminiMapping,
-        Inst.NIRI: GeminiMapping,
+        Inst.NIRI: Niri,
         Inst.OSCIR: GeminiMapping,
         Inst.PHOENIX: GeminiMapping,
         Inst.TEXES: Texes,
