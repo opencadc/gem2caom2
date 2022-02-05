@@ -246,21 +246,27 @@ class GeminiMetadataLookup:
     def __init__(self, metadata_reader):
         self._reader = metadata_reader
 
+    def camera(self, uri):
+        return self._y(uri, 'camera')
+
+    def central_wavelength(self, uri):
+        return self._y(uri, 'central_wavelength')
+
     def data_label(self, uri):
         temp = self._y(uri, 'data_label')
         if temp is None:
             temp = self._reader.headers.get(uri)[0].get('DATALAB')
             if temp is None:
                 temp = self._reader.headers.get(uri)[1].get('DATALAB')
-        result = None
-        if temp is not None:
-            result = obs_file_relationship.repair_data_label(
-                uri.split('/')[-1], temp
-            )
-        return result
+        return obs_file_relationship.repair_data_label(
+            uri.split('/')[-1], temp
+        )
 
     def dec(self, uri):
         return self._y(uri, 'dec')
+
+    def detector_binning(self, uri):
+        return self._y(uri, 'detector_binning')
 
     def disperser(self, uri):
         return self._y(uri, 'disperser')
