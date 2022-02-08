@@ -70,7 +70,6 @@ import json
 import logging
 import os
 import shutil
-import sys
 
 from datetime import datetime
 from unittest.mock import patch, Mock
@@ -79,7 +78,6 @@ import gem_mocks
 from caom2 import SimpleObservation, Algorithm
 from caom2pipe import manage_composable as mc
 from gem2caom2 import composable, gem_name
-from gem2caom2.util import COLLECTION, SCHEME
 
 
 STATE_FILE = f'{gem_mocks.TEST_DATA_DIR}/state.yml'
@@ -91,13 +89,15 @@ PUBLIC_TEST_JSON = (
 )
 
 
+@patch('gem2caom2.gemini_metadata.retrieve_json')
 @patch('caom2pipe.client_composable.ClientCollection.data_client')
 @patch('cadcutils.net.ws.WsCapabilities.get_access_url')
 @patch('caom2pipe.execute_composable.OrganizeExecutes.do_one')
-def test_run(run_mock, cap_mock, data_client_mock):
+def test_run(run_mock, cap_mock, data_client_mock, json_mock):
     cap_mock.return_value = 'https://localhost'
     data_client_mock.get_head.side_effect = gem_mocks._mock_headers
     data_client_mock.info.side_effect = gem_mocks.mock_get_file_info
+    json_mock.side_effect = gem_mocks.mock_retrieve_json
     test_obs_id = 'GS-2006B-Q-47-76-003'
     test_f_id = 'S20070130S0048'
     test_f_name = f'{test_f_id}.fits'
@@ -125,13 +125,15 @@ def test_run(run_mock, cap_mock, data_client_mock):
         os.getcwd = getcwd_orig
 
 
+@patch('gem2caom2.gemini_metadata.retrieve_json')
 @patch('caom2pipe.client_composable.ClientCollection.data_client')
 @patch('cadcutils.net.ws.WsCapabilities.get_access_url')
 @patch('caom2pipe.execute_composable.OrganizeExecutes.do_one')
-def test_run_errors(run_mock, cap_mock, data_client_mock):
+def test_run_errors(run_mock, cap_mock, data_client_mock, json_mock):
     cap_mock.return_value = 'https://localhost'
     data_client_mock.get_head.side_effect = gem_mocks._mock_headers
     data_client_mock.info.side_effect = gem_mocks.mock_get_file_info
+    json_mock.side_effect = gem_mocks.mock_retrieve_json
     test_obs_id = 'GS-CAL20141226-7-029'
     test_f_id = 'S20141226S0206'
     test_f_name = f'{test_f_id}.fits'
@@ -205,7 +207,7 @@ def test_run_incremental_rc(
 
 
 @patch('gem2caom2.gemini_metadata.GeminiMetadataReader._retrieve_headers')
-@patch('gem2caom2.gemini_metadata.GeminiMetadataReader._retrieve_json')
+@patch('gem2caom2.gemini_metadata.retrieve_json')
 @patch('cadcutils.net.ws.WsCapabilities.get_access_url')
 @patch('caom2pipe.execute_composable.OrganizeExecutes.do_one')
 @patch('caom2pipe.client_composable.CAOM2RepoClient')
@@ -231,7 +233,7 @@ def test_run_by_incremental2(
     repo_mock.return_value.create.side_effect = gem_mocks.mock_repo_create
     repo_mock.return_value.read.side_effect = gem_mocks.mock_repo_read
     repo_mock.return_value.update.side_effect = gem_mocks.mock_repo_update
-    json_mock.side_effect = gem_mocks.mock_get_obs_metadata
+    json_mock.side_effect = gem_mocks.mock_retrieve_json
     header_mock.side_effect = gem_mocks._mock_headers
 
     def _read_mock(ignore_fqn):
@@ -344,7 +346,7 @@ def test_run_by_incremental2(
 
 @patch('caom2pipe.client_composable.ClientCollection.data_client')
 @patch('gem2caom2.gemini_metadata.GeminiMetadataReader._retrieve_headers')
-@patch('gem2caom2.gemini_metadata.GeminiMetadataReader._retrieve_json')
+@patch('gem2caom2.gemini_metadata.retrieve_json')
 @patch('cadcutils.net.ws.WsCapabilities.get_access_url')
 @patch('caom2pipe.execute_composable.OrganizeExecutes.do_one')
 @patch('caom2pipe.client_composable.query_tap_client')
@@ -355,7 +357,7 @@ def test_run_by_public(
     cap_mock.return_value = 'https://localhost'
     exec_mock.side_effect = Mock(return_value=0)
     tap_mock.side_effect = gem_mocks.mock_query_tap
-    json_mock.side_effect = gem_mocks.mock_get_obs_metadata
+    json_mock.side_effect = gem_mocks.mock_retrieve_json
     header_mock.side_effect = gem_mocks._mock_headers
     expected_fqn = (
         f'{gem_mocks.TEST_DATA_DIR}/logs/'

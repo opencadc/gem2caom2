@@ -85,7 +85,7 @@ from caom2.diff import get_differences
 from caom2pipe import astro_composable as ac
 from caom2pipe import manage_composable as mc
 
-from gem2caom2 import composable, obs_file_relationship, builder
+from gem2caom2 import composable, obs_file_relationship, builder, svofps
 from gem2caom2 import gemini_metadata, fits2caom2_augmentation
 from gem2caom2.gem_name import GemName
 from gem2caom2.util import Inst
@@ -1398,9 +1398,14 @@ def _mock_headers(file_id):
             test_fqn = (
                 f'{TEST_DATA_DIR}/{instrument.value}/{file_id}.fits.header'
             )
-    result = []
-    if test_fqn is not None:
-        result = ac.make_headers_from_file(test_fqn)
+    if 'S20210518S0022' in file_id:
+        # mocking the test case where unauthorized to retrieve metadata from
+        # archive.gemini.edu - no headers, no file
+        result = None
+    else:
+        result = []
+        if test_fqn is not None:
+            result = ac.make_headers_from_file(test_fqn)
     return result
 
 
@@ -1442,8 +1447,9 @@ def _run_test_common(
             os.unlink(actual_fqn)
 
         for entry in test_set:
+            filter_cache = svofps.FilterMetadataCache(svofps_mock)
             metadata_reader = gemini_metadata.GeminiFileMetadataReader(
-                Mock(), pf_mock
+                Mock(), pf_mock, filter_cache
             )
             test_metadata = gemini_metadata.GeminiMetadataLookup(
                 metadata_reader

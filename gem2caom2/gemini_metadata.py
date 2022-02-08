@@ -108,10 +108,6 @@ GEMINI_METADATA_URL = (
 HEADER_URL = 'https://archive.gemini.edu/fullheader/'
 
 
-# value repair cache
-value_repair = mc.ValueRepairCache()
-
-
 class AbstractGeminiMetadataReader(rdc.MetadataReader):
 
     @property
@@ -121,6 +117,10 @@ class AbstractGeminiMetadataReader(rdc.MetadataReader):
     @property
     def provenance_finder(self):
         return self._provenance_finder
+
+    @property
+    def filter_cache(self):
+        return self._filter_cache
 
     def _retrieve_json(self, source_name):
         return retrieve_json(source_name, self._logger, self._session)
@@ -170,11 +170,12 @@ class AbstractGeminiMetadataReader(rdc.MetadataReader):
 
 class GeminiMetadataReader(AbstractGeminiMetadataReader):
 
-    def __init__(self, http_session, provenance_finder):
+    def __init__(self, http_session, provenance_finder, filter_cache):
         super().__init__()
         self._json_metadata = {}
         self._session = http_session
         self._provenance_finder = provenance_finder
+        self._filter_cache = filter_cache
 
     def _retrieve_file_info(self, source_name):
         pass
@@ -219,22 +220,26 @@ class GeminiFileMetadataReader(
     AbstractGeminiMetadataReader, rdc.FileMetadataReader
 ):
 
-    def __init__(self, http_session, provenance_finder):
+    def __init__(self, http_session, provenance_finder, filter_cache):
         super().__init__()
         self._json_metadata = {}
         self._session = http_session
         self._provenance_finder = provenance_finder
+        self._filter_cache = filter_cache
 
 
 class GeminiStorageClientReader(
     AbstractGeminiMetadataReader, rdc.StorageClientReader
 ):
 
-    def __init__(self, data_client, http_session, provenance_finder):
+    def __init__(
+        self, data_client, http_session, provenance_finder, filter_cache
+    ):
         super().__init__(data_client)
         self._json_metadata = {}
         self._session = http_session
         self._provenance_finder = provenance_finder
+        self._filter_cache = filter_cache
 
 
 class GeminiMetadataLookup:

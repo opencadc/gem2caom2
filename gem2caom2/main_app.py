@@ -108,7 +108,7 @@ from caom2pipe import astro_composable as ac
 import gem2caom2.obs_file_relationship as ofr
 from gem2caom2.gem_name import GemName
 from gem2caom2 import program_metadata, svofps
-from gem2caom2.gemini_metadata import GeminiMetadataLookup, value_repair
+from gem2caom2.gemini_metadata import GeminiMetadataLookup
 from gem2caom2.util import Inst, COLLECTION, SCHEME
 
 
@@ -172,13 +172,39 @@ RADIUS_LOOKUP = {
 }
 
 
+class GeminiValueRepair(mc.ValueRepairCache):
+
+    VALUE_REPAIR = {
+        'observation.type': {
+            'dark': 'DARK',
+            'Dark': 'DARK',
+            'object': 'OBJECT',
+            'flat': 'FLAT',
+            'Flat': 'FLAT',
+        },
+        'chunk.position.axis.axis1.ctype': {
+            'RA--TAN': 'RA---TAN',
+        },
+    }
+
+    def __init__(self):
+        self._value_repair = GeminiValueRepair.VALUE_REPAIR
+        self._key = None
+        self._values = None
+        self._logger = logging.getLogger(self.__class__.__name__)
+
+
 class GeminiMapping(cc.TelescopeMapping):
+
+    # value repair cache
+    value_repair = GeminiValueRepair()
 
     def __init__(self, storage_name, headers, lookup, instrument):
         super().__init__(storage_name, headers)
         self._metadata_reader = lookup.reader
         self._instrument = instrument
         self._lookup = lookup
+        self._filter_cache = self._metadata_reader.filter_cache
         self.fm = None
 
     def get_art_content_checksum(self, ext):
@@ -255,7 +281,8 @@ class GeminiMapping(cc.TelescopeMapping):
 
         if mode is None:
             raise mc.CadcException(
-                f'No mode information found for {self._storage_name.file_name}'
+                f'{self._instrument}: No mode information found for '
+                f'{self._storage_name.file_name}'
             )
         elif (mode == 'imaging') or (
             obs_type is not None and obs_type == 'MASK'
@@ -592,6 +619,10 @@ class GeminiMapping(cc.TelescopeMapping):
 
     def update(self, observation, file_info, caom_repo_client=None):
 
+        if self._headers is None:
+            # proprietary header metadata at archive.gemini.edu, so do nothing
+            return observation
+
         # processed files
         if cc.is_composite(self._headers) and not isinstance(
             observation, DerivedObservation
@@ -741,12 +772,9 @@ class GeminiMapping(cc.TelescopeMapping):
             if isinstance(observation, DerivedObservation):
                 cc.update_observation_members(observation)
 
-            value_repair.repair(observation)
+            GeminiMapping.value_repair.repair(observation)
         except Exception as e:
-            self._logger.error(
-                f'Error {e} for {observation.observation_id} instrument '
-                f'{self._instrument}'
-            )
+            self._logger.error(f'Error {e} for {observation.observation_id}')
             tb = traceback.format_exc()
             self._logger.error(tb)
             raise mc.CadcException(e)
@@ -1439,7 +1467,7 @@ class F2(GeminiMapping):
             # Flamingos ‘Undefined’ filter:  no spectral WCS
             reset_energy = True
         else:
-            filter_md = svofps.get_filter_metadata(
+            filter_md = self._filter_cache.get_filter_metadata(
                 self._instrument,
                 filter_name,
                 self._lookup.telescope(self._storage_name.file_uri),
@@ -1584,7 +1612,8 @@ class Flamingos(GeminiMapping):
         data_type = DataProductType.SPECTRUM
         if decker is None:
             raise mc.CadcException(
-                f'No mode information found for {self._storage_name.file_name}'
+                f'{self._instrument}: No mode information found for '
+                f'{self._storage_name.file_name}'
             )
         else:
             if decker == 'imaging':
@@ -1642,7 +1671,8 @@ class Flamingos(GeminiMapping):
                         obs_type = 'DARK'
         else:
             raise mc.CadcException(
-                f'No mode information found for {self._storage_name.file_name}'
+                f'{self._instrument}: No mode information found for '
+                f'{self._storage_name.file_name}'
             )
         if obs_type is None:
             # DB - Also, since I’ve found FLAMINGOS spectra if OBJECT keyword
@@ -1715,7 +1745,7 @@ class Flamingos(GeminiMapping):
             self.fm.central_wl = lookup[filter_name][0]
             self.fm.bandpass = lookup[filter_name][1]
         else:
-            self.fm = svofps.get_filter_metadata(
+            self.fm = self._filter_cache.get_filter_metadata(
                 self._instrument,
                 filter_name,
                 self._lookup.telescope(self._storage_name.file_uri),
@@ -1852,7 +1882,7 @@ class Fox(GeminiMapping):
                 f'Spectral WCS {data_product_type} mode for '
                 f'{self._storage_name.obs_id}.'
             )
-            self.fm = svofps.get_filter_metadata(
+            self.fm = self._filter_cache.get_filter_metadata(
                 self._instrument,
                 filter_name,
                 self._lookup.telescope(self._storage_name.file_uri),
@@ -1869,17 +1899,6 @@ class Fox(GeminiMapping):
                 f'{self._storage_name.obs_id}'
             )
         self._logger.debug(f'End _update_energy')
-
-    def _update_position(self, part, chunk, ext):
-        self._logger.debug(f'Begin _update_position')
-        if (
-            chunk is not None
-            and chunk.position is not None
-            and chunk.position.axis is not None
-            and chunk.position.axis.axis1.ctype == 'RA--TAN'
-        ):
-            chunk.position.axis.axis1.ctype = 'RA---TAN'
-        self._logger.debug('End _update_position.')
 
     def _update_time(self, chunk):
         """
@@ -2015,7 +2034,7 @@ class Gmos(GeminiMapping):
             and 'No_Value' not in filter_name
             and 'empty' not in filter_name
         ):
-            filter_md = svofps.get_filter_metadata(
+            filter_md = self._filter_cache.get_filter_metadata(
                 self._instrument,
                 filter_name,
                 self._lookup.telescope(self._storage_name.file_uri),
@@ -2109,7 +2128,7 @@ class Gmos(GeminiMapping):
                     self.fm.resolving_power = GMOS_RESOLVING_POWER[disperser]
                 else:
                     raise mc.CadcException(
-                        f'mystery disperser {disperser} '
+                        f'{self._instrument}: mystery disperser {disperser} '
                         f'for {self._storage_name.obs_id}'
                     )
         elif data_product_type == DataProductType.IMAGE:
@@ -2119,8 +2138,8 @@ class Gmos(GeminiMapping):
             self.fm = filter_md
         else:
             raise mc.CadcException(
-                f'mystery data product type {data_product_type} for '
-                f'{self._storage_name.obs_id}'
+                f'{self._instrument}: mystery data product type '
+                f'{data_product_type} for {self._storage_name.obs_id}'
             )
         if reset_energy:
             cc.reset_energy(chunk)
@@ -2705,7 +2724,7 @@ class Gpi(GeminiMapping):
             'K2': (83 + 75) / 2.0,
         }
 
-        filter_md = svofps.get_filter_metadata(
+        filter_md = self._filter_cache.get_filter_metadata(
             self._instrument,
             filter_name,
             self._lookup.telescope(self._storage_name.file_uri),
@@ -2727,12 +2746,12 @@ class Gpi(GeminiMapping):
                 self.fm.resolving_power = gpi_lookup[filter_name]
             else:
                 raise mc.CadcException(
-                    f'GPI: Mystery filter name {filter_name} for '
-                    f'resolving power {self._storage_name.obs_id}'
+                    f'{self._instrument}:  Mystery filter name {filter_name} '
+                    f'for resolving power {self._storage_name.obs_id}'
                 )
         else:
             raise mc.CadcException(
-                f'GPI: Do not understand DataProductType '
+                f'{self._instrument}:  Do not understand DataProductType '
                 f'{data_product_type} for {self._storage_name.obs_id}'
             )
 
@@ -2958,7 +2977,7 @@ class Gsaoi(GeminiMapping):
                 f'Spectral WCS {data_product_type} mode for '
                 f'{self._storage_name.obs_id}.'
             )
-            self.fm = svofps.get_filter_metadata(
+            self.fm = self._filter_cache.get_filter_metadata(
                 self._instrument,
                 filter_name,
                 self._lookup.telescope(self._storage_name.file_uri),
@@ -3232,7 +3251,7 @@ class Hrwfs(GeminiMapping):
                 # bandpassName likely best to set to NULL
                 filter_name = ''
             else:
-                self.fm = svofps.get_filter_metadata(
+                self.fm = self._filter_cache.get_filter_metadata(
                     self._instrument,
                     filter_name,
                     self._lookup.telescope(self._storage_name.file_uri),
@@ -3460,7 +3479,7 @@ class Michelle(GeminiMapping):
             'NBlock': [(14 + 6.8) / 2, 6.8, 14.0],
         }
 
-        self.fm = svofps.get_filter_metadata(
+        self.fm = self._filter_cache.get_filter_metadata(
             self._instrument,
             filter_name,
             self._lookup.telescope(self._storage_name.file_uri),
@@ -3481,8 +3500,8 @@ class Michelle(GeminiMapping):
                 slit_width = float(focal_plane_mask.split('_')[0])
                 if disperser not in lookup:
                     raise mc.CadcException(
-                        f'{self._instrument}: Mystery disperser {disperser} for '
-                        f'{self._storage_name.obs_id}'
+                        f'{self._instrument}: Mystery disperser {disperser} '
+                        f'for {self._storage_name.obs_id}'
                     )
                 self.fm.resolving_power = (
                     lookup[disperser][0] * lookup[disperser][1] / slit_width
@@ -3572,7 +3591,7 @@ class Nici(GeminiMapping):
         }
         filter_name = filter_name.split('_G')[0]
         filter_name = filter_name.replace('[FeII]', 'FeII')
-        self.fm = svofps.get_filter_metadata(
+        self.fm = self._filter_cache.get_filter_metadata(
             self._instrument,
             filter_name,
             self._lookup.telescope(self._storage_name.file_uri),
@@ -3759,7 +3778,7 @@ class Nifs(GeminiMapping):
             },
         }
 
-        self.fm = svofps.get_filter_metadata(
+        self.fm = self._filter_cache.get_filter_metadata(
             self._instrument,
             filter_name,
             self._lookup.telescope(self._storage_name.file_uri),
@@ -4033,7 +4052,7 @@ class Niri(GeminiMapping):
             filter_md.set_central_wl(6.0, 4.4)
             filter_md.set_bandpass(6.0, 4.4)
         else:
-            filter_md = svofps.get_filter_metadata(
+            filter_md = self._filter_cache.get_filter_metadata(
                 self._instrument,
                 filter_name,
                 self._lookup.telescope(self._storage_name.file_uri),
@@ -4803,7 +4822,7 @@ class Trecs(GeminiMapping):
                 self.fm.set_central_wl(w_max, w_min)
                 self.fm.set_resolving_power(w_max, w_min)
             else:
-                self.fm = svofps.get_filter_metadata(
+                self.fm = self._filter_cache.get_filter_metadata(
                     self._instrument,
                     filter_name,
                     self._lookup.telescope(self._storage_name.file_uri),

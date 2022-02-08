@@ -89,8 +89,7 @@ def test_builder(file_info_mock, header_mock):
     test_config.proxy_fqn = os.path.join(
         gem_mocks.TEST_DATA_DIR, 'test_proxy.pem'
     )
-    session_mock = Mock()
-    test_reader = gemini_metadata.GeminiMetadataReader(session_mock, Mock())
+    test_reader = gemini_metadata.GeminiMetadataReader(Mock(), Mock(), Mock())
     test_metadata = gemini_metadata.GeminiMetadataLookup(test_reader)
     test_subject = builder.GemObsIDBuilder(
         test_config, test_reader, test_metadata
@@ -129,7 +128,9 @@ def test_builder(file_info_mock, header_mock):
 @patch('caom2pipe.reader_composable.FileMetadataReader._retrieve_file_info')
 def test_builder_local(file_info_mock, header_mock, json_mock):
     json_mock.side_effect = gem_mocks.mock_retrieve_json
-    test_reader = gemini_metadata.GeminiFileMetadataReader(Mock(), Mock())
+    test_reader = gemini_metadata.GeminiFileMetadataReader(
+        Mock(), Mock(), Mock()
+    )
     test_metadata = gemini_metadata.GeminiMetadataLookup(test_reader)
     test_config = mc.Config()
     test_config.data_sources = ['/test_files']
@@ -167,7 +168,9 @@ def test_different_obs_id_cases(json_mock, headers_mock, file_info_mock):
         'N20200810A0490r.fits': 'N20200810A0490',
         'SDCH_20200131_0010.fits': 'GS-CAL20200131-10-0131',
     }
-    test_reader = gemini_metadata.GeminiFileMetadataReader(Mock(), Mock())
+    test_reader = gemini_metadata.GeminiFileMetadataReader(
+        Mock(), Mock(), Mock()
+    )
     test_metadata = gemini_metadata.GeminiMetadataLookup(test_reader)
     test_config = mc.Config()
     test_subject = builder.GemObsIDBuilder(

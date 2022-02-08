@@ -91,7 +91,7 @@ setup(name=PACKAGENAME,
       python_requires='>=3.9',
       packages=find_packages(),
       package_data={PACKAGENAME: ['data/*']},
-      data_files=[('.config', ['config/config.yml', 'config/cache.yml'])],
+      data_files=[('.config', ['config/config.yml'])],
       classifiers=[
         'Natural Language :: English',
         'License :: OSI Approved :: GNU Affero General Public License v3',

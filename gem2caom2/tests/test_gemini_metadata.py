@@ -91,7 +91,7 @@ def test_set(retrieve_json_mock, retrieve_headers_mock):
     test_storage_name = gem_name.GemName(
         obs_id=test_obs_id, file_name=test_f_name
     )
-    test_subject = gemini_metadata.GeminiMetadataReader(Mock(), Mock())
+    test_subject = gemini_metadata.GeminiMetadataReader(Mock(), Mock(), Mock())
     test_subject.set(test_storage_name)
     assert len(test_subject._json_metadata) == 1, 'json entries'
     assert len(test_subject._headers) == 1, 'header entries'

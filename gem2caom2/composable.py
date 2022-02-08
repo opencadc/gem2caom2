@@ -80,7 +80,7 @@ from caom2pipe import run_composable as rc
 from gem2caom2 import main_app, preview_augmentation
 from gem2caom2 import pull_augmentation, data_source, builder
 from gem2caom2 import cleanup_augmentation, fits2caom2_augmentation
-from gem2caom2 import gemini_metadata
+from gem2caom2 import gemini_metadata, svofps
 
 DATA_VISITORS = []
 META_VISITORS = [
@@ -100,9 +100,11 @@ def _common_init():
     provenance_finder = gemini_metadata.ProvenanceFinder(
         config, clients.query_client, gemini_session
     )
+    svofps_session = mc.get_endpoint_session()
+    filter_cache = svofps.FilterMetadataCache(svofps_session)
     if config.use_local_files or mc.TaskType.SCRAPE in config.task_types:
         metadata_reader = gemini_metadata.GeminiFileMetadataReader(
-            gemini_session, provenance_finder
+            gemini_session, provenance_finder, filter_cache
         )
         meta_visitors = [
             fits2caom2_augmentation,
@@ -111,11 +113,14 @@ def _common_init():
         ]
     elif [mc.TaskType.VISIT] == config.task_types:
         metadata_reader = gemini_metadata.GeminiStorageClientReader(
-            clients.data_client, gemini_session, provenance_finder
+            clients.data_client,
+            gemini_session,
+            provenance_finder,
+            filter_cache,
         )
     else:
         metadata_reader = gemini_metadata.GeminiMetadataReader(
-            gemini_session, provenance_finder
+            gemini_session, provenance_finder, filter_cache
         )
     reader_lookup = gemini_metadata.GeminiMetadataLookup(metadata_reader)
     reader_lookup.reader = metadata_reader
