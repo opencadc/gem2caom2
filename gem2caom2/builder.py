@@ -126,7 +126,6 @@ class GemObsIDBuilder(nbc.StorageNameBuilder):
                     'The need has not been encountered in the real world '
                     'yet.'
                 )
-            self._logger.debug(result)
             self._metadata_reader.set(result)
             # StorageName instance is only partially constructed at this
             # point

@@ -40,16 +40,16 @@
         <caom2:producer>NOAO-IRAF FITS Image Kernel July 2003</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/filepre=N20150804S0348_dark.fits</caom2:reference>
         <caom2:inputs>
-          <caom2:planeURI>caom:GEMINI/GN-2015B-Q-53-138-069/N20150804S0356</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/GN-2015B-Q-53-138-066/N20150804S0353</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/GN-2015B-Q-53-138-068/N20150804S0355</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/GN-2015B-Q-53-138-062/N20150804S0349</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GN-2015B-Q-53-138-067/N20150804S0354</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/GN-2015B-Q-53-138-063/N20150804S0350</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/GN-2015B-Q-53-138-064/N20150804S0351</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GN-2015B-Q-53-138-065/N20150804S0352</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GN-2015B-Q-53-138-068/N20150804S0355</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GN-2015B-Q-53-138-069/N20150804S0356</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GN-2015B-Q-53-138-062/N20150804S0349</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GN-2015B-Q-53-138-066/N20150804S0353</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/GN-2015B-Q-53-138-061/N20150804S0348</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/GN-2015B-Q-53-138-070/N20150804S0357</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/GN-2015B-Q-53-138-067/N20150804S0354</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/GN-2015B-Q-53-138-065/N20150804S0352</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GN-2015B-Q-53-138-064/N20150804S0351</caom2:planeURI>
         </caom2:inputs>
       </caom2:provenance>
       <caom2:artifacts>
@@ -58,6 +58,7 @@
           <caom2:productType>calibration</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>
+          <caom2:contentLength>9489600</caom2:contentLength>
           <caom2:contentChecksum>md5:12c6f4722f7d6c888631f902354284e1</caom2:contentChecksum>
           <caom2:parts>
             <caom2:part caom2:id="00000000-0000-0000-ba50-eb99ec537698">
@@ -169,15 +170,15 @@
     </caom2:plane>
   </caom2:planes>
   <caom2:members>
+    <caom2:observationURI>caom:GEMINI/GN-2015B-Q-53-138-065</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GN-2015B-Q-53-138-067</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GN-2015B-Q-53-138-061</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GN-2015B-Q-53-138-069</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GN-2015B-Q-53-138-063</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GN-2015B-Q-53-138-070</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GN-2015B-Q-53-138-064</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GN-2015B-Q-53-138-066</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GN-2015B-Q-53-138-062</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GN-2015B-Q-53-138-068</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GN-2015B-Q-53-138-070</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GN-2015B-Q-53-138-061</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GN-2015B-Q-53-138-067</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GN-2015B-Q-53-138-064</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GN-2015B-Q-53-138-069</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GN-2015B-Q-53-138-065</caom2:observationURI>
   </caom2:members>
 </caom2:Observation>

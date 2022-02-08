@@ -33,7 +33,7 @@ archive: GEM
 collection: GEMINI
 state_file_name: state.yml
 cache_file_name: cache.yml
-interval: 1440
+interval: 14400
 rejected_directory: /usr/src/app/gem2caom2/gem2caom2/tests/data/rejected
 rejected_file_name: rejected.yml
 storage_inventory_resource_id: ivo://cadc.nrc.ca/test

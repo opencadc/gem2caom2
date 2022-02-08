@@ -42,9 +42,9 @@
         <caom2:producer>NOAO-IRAF FITS Image Kernel July 2003</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/filepre=mrgN20060130S0149_add.fits</caom2:reference>
         <caom2:inputs>
-          <caom2:planeURI>caom:GEMINI/GN-2006A-Q-90-1-003/N20060130S0151</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/GN-2006A-Q-90-1-001/N20060130S0149</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/GN-2006A-Q-90-1-002/N20060130S0150</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GN-2006A-Q-90-1-003/N20060130S0151</caom2:planeURI>
         </caom2:inputs>
       </caom2:provenance>
       <caom2:artifacts>
@@ -53,6 +53,7 @@
           <caom2:productType>science</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>
+          <caom2:contentLength>28667520</caom2:contentLength>
           <caom2:contentChecksum>md5:f2c9f83ed2487244234e3791336f2449</caom2:contentChecksum>
           <caom2:parts>
             <caom2:part caom2:id="c6ba77ac-e573-4ddf-80ef-1805ffba45f7" caom2:lastModified="2019-12-03T21:20:49.426" caom2:maxLastModified="2019-12-03T21:20:49.426" caom2:metaChecksum="md5:9b87beeed7ff67e63c377030bb1b8d47" caom2:accMetaChecksum="md5:92de2217c66d708eaf115b1515f8c310">
@@ -154,8 +155,8 @@
     </caom2:plane>
   </caom2:planes>
   <caom2:members>
-    <caom2:observationURI>caom:GEMINI/GN-2006A-Q-90-1-001</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GN-2006A-Q-90-1-003</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GN-2006A-Q-90-1-001</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GN-2006A-Q-90-1-002</caom2:observationURI>
   </caom2:members>
 </caom2:Observation>

@@ -66,17 +66,10 @@
 # ***********************************************************************
 #
 
-import logging
 import os
 import pytest
 
-from tempfile import TemporaryDirectory
-from caom2.diff import get_differences
-from caom2pipe import manage_composable as mc
-from gem2caom2 import builder, gemini_metadata
-from gem2caom2 import fits2caom2_augmentation
-
-from unittest.mock import patch, Mock
+from unittest.mock import patch
 
 import gem_mocks
 
@@ -134,9 +127,7 @@ def pytest_generate_tests(metafunc):
 @patch('caom2pipe.astro_composable.get_vo_table_session')
 @patch('gem2caom2.gemini_metadata.ProvenanceFinder')
 @patch('gem2caom2.program_metadata.get_pi_metadata')
-@patch('cadcutils.net.ws.WsCapabilities.get_access_url')
 def test_visitor(
-    access_url,
     get_pi_mock,
     pf_mock,
     svofps_mock,
@@ -145,65 +136,23 @@ def test_visitor(
     file_type_mock,
     test_name,
 ):
-    access_url.return_value = 'https://localhost:8080'
-    get_pi_mock.side_effect = gem_mocks.mock_get_pi_metadata
-    pf_mock.get.side_effect = gem_mocks.mock_get_data_label
-    svofps_mock.side_effect = gem_mocks.mock_get_votable
-    retrieve_headers_mock.side_effect = gem_mocks._mock_headers
-    json_mock.side_effect = gem_mocks.mock_get_obs_metadata
-    file_type_mock.return_value = 'application/fits'
-
-    with TemporaryDirectory() as tmp_dir_name:
-        test_config = mc.Config()
-        test_config.task_types = [mc.TaskType.SCRAPE]
-        test_config.use_local_files = True
-        test_config.data_sources = [os.path.dirname(test_name)]
-        test_config.working_directory = tmp_dir_name
-        test_config.proxy_fqn = f'{tmp_dir_name}/test_proxy.pem'
-
-        with open(test_config.proxy_fqn, 'w') as f:
-            f.write('test content')
-
-        observation = None
-        expected_fqn = (
-            f'{gem_mocks.TEST_DATA_DIR}/multi_plane/'
-            f'{test_name}.expected.xml'
+    expected_fqn = (
+                f'{gem_mocks.TEST_DATA_DIR}/multi_plane/'
+                f'{test_name}.expected.xml'
+            )
+    test_set = []
+    for f_name in LOOKUP[test_name]:
+        test_set.append(
+            f'{gem_mocks.TEST_DATA_DIR}/multi_plane/{f_name}.fits.header'
         )
-        in_fqn = expected_fqn.replace('.expected.', '.in.')
-        if os.path.exists(in_fqn):
-            observation = mc.read_obs_from_file(in_fqn)
-        for f_name in LOOKUP[test_name]:
-            source_name = (
-                f'{gem_mocks.TEST_DATA_DIR}/multi_plane/{f_name}.fits.header'
-            )
-            metadata_reader = gemini_metadata.GeminiFileMetadataReader(
-                Mock(), pf_mock
-            )
-            test_metadata = gemini_metadata.GeminiMetadataLookup(
-                metadata_reader
-            )
-            test_builder = builder.GemObsIDBuilder(
-                test_config, metadata_reader, test_metadata
-            )
-            storage_name = test_builder.build(source_name)
-            storage_name.source_names = [source_name]
-            kwargs = {
-                'storage_name': storage_name,
-                'metadata_reader': metadata_reader,
-            }
-            logging.getLogger('caom2utils.fits2caom2').setLevel(logging.INFO)
-            logging.getLogger('Texes').setLevel(logging.INFO)
-            logging.getLogger('root').setLevel(logging.INFO)
-            observation = fits2caom2_augmentation.visit(observation, **kwargs)
-
-        expected = mc.read_obs_from_file(expected_fqn)
-        compare_result = get_differences(expected, observation)
-        if compare_result is not None:
-            actual_fqn = expected_fqn.replace('expected', 'actual')
-            mc.write_obs_to_file(observation, actual_fqn)
-            compare_text = '\n'.join([r for r in compare_result])
-            msg = (
-                f'Differences found in observation {expected.observation_id}\n'
-                f'{compare_text}. Check {actual_fqn}'
-            )
-            raise AssertionError(msg)
+    gem_mocks._run_test_common(
+        data_sources=[os.path.dirname(test_name)],
+        get_pi_mock=get_pi_mock,
+        svofps_mock=svofps_mock,
+        headers_mock=retrieve_headers_mock,
+        pf_mock=pf_mock,
+        json_mock=json_mock,
+        file_type_mock=file_type_mock,
+        test_set=test_set,
+        expected_fqn=expected_fqn,
+    )

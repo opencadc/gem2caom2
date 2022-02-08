@@ -48,7 +48,7 @@
           <caom2:productType>calibration</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>
-          <caom2:contentLength>31808</caom2:contentLength>
+          <caom2:contentLength>16018560</caom2:contentLength>
           <caom2:contentChecksum>md5:dd6d21abd4203895a917e689dc17be43</caom2:contentChecksum>
           <caom2:parts>
             <caom2:part caom2:id="2c064d2f-1866-4b77-ba5f-4d3bf122f0f2" caom2:lastModified="2019-08-13T18:42:11.522" caom2:maxLastModified="2019-08-13T18:42:11.522" caom2:metaChecksum="md5:906593df3e391ee46d5aa870a26c72e2" caom2:accMetaChecksum="md5:74b5d4eb7afd389bc3fea4c89cfb3fc0">
@@ -167,7 +167,7 @@
           <caom2:productType>calibration</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>
-          <caom2:contentLength>22946</caom2:contentLength>
+          <caom2:contentLength>3280320</caom2:contentLength>
           <caom2:contentChecksum>md5:05c1a090e1c55879272201ba0f6a5c2a</caom2:contentChecksum>
           <caom2:parts>
             <caom2:part caom2:id="39557e24-a7c0-4b52-8912-03e4b1d6b86a" caom2:lastModified="2019-08-13T18:42:11.522" caom2:maxLastModified="2019-08-13T18:42:11.522" caom2:metaChecksum="md5:f1fb7e6b582d51f0b45a4eecb7c7886d" caom2:accMetaChecksum="md5:2f39b8f4c8cf22a924e6ad78ed8bb968">

@@ -99,7 +99,8 @@ from caom2 import CalibrationLevel, Chunk, ProductType
 from caom2 import TypedList, DerivedObservation, DataProductType
 from caom2 import ObservationIntentType, TargetType, CoordAxis1D, Axis
 from caom2 import SpectralWCS, RefCoord, CoordRange1D
-from caom2utils import WcsParser, update_artifact_meta
+from caom2utils import WcsParser
+from caom2utils.data_util import get_file_type
 from caom2pipe import manage_composable as mc
 from caom2pipe import caom_composable as cc
 from caom2pipe import astro_composable as ac
@@ -179,6 +180,15 @@ class GeminiMapping(cc.TelescopeMapping):
         self._instrument = instrument
         self._lookup = lookup
         self.fm = None
+
+    def get_art_content_checksum(self, ext):
+        return f'md5:{self._lookup.file_md5(self._storage_name.file_uri)}'
+
+    def get_art_content_length(self, ext):
+        return self._lookup.data_size(self._storage_name.file_uri)
+
+    def get_art_content_type(self, ext):
+        return get_file_type(self._storage_name.file_name)
 
     def get_calibration_level(self, ext):
         result = CalibrationLevel.RAW_STANDARD
@@ -552,45 +562,12 @@ class GeminiMapping(cc.TelescopeMapping):
         )
 
         bp.set('Artifact.productType', 'get_art_product_type()')
-        # bp.set('Artifact.contentChecksum', f'md5:{self._lookup.ra(self._storage_name.file_uri).get("data_md5")}')
-        # bp.set('Artifact.contentLength', self._lookup.ra(self._storage_name.file_uri).get('data_size'))
-        # bp.set('Artifact.contentType', 'application/fits')
+        bp.set('Artifact.contentChecksum', 'get_art_content_checksum()')
+        bp.set('Artifact.contentLength', 'get_art_content_length()')
+        bp.set('Artifact.contentType', 'get_art_content_type()')
         # always see the metadata, see the data only when it's public
         bp.set('Artifact.releaseType', 'data')
         bp.set('Artifact.uri', self._storage_name.file_uri)
-
-        # # if instrument is Inst.CIRPASS:
-        # #     bp.set_default('Observation.telescope.name', 'Gemini-South')
-        # mode = self._lookup.ra(self._storage_name.file_uri).get('mode')
-        # if not (
-        #     instrument
-        #     in [
-        #         Inst.GPI,
-        #         Inst.PHOENIX,
-        #         Inst.HOKUPAA,
-        #         Inst.OSCIR,
-        #         Inst.BHROS,
-        #         Inst.TRECS,
-        #     ]
-        #     or (
-        #         instrument is Inst.GRACES
-        #         and mode is not None
-        #         and mode != 'imaging'
-        #     )
-        # ):
-        #     bp.configure_position_axes((1, 2))
-
-        # if instrument is Inst.FLAMINGOS:
-        #     # DB 27-05-19
-        #     # Flamingos, you actually want to use the EQUINOX value, not the
-        #     # EPOCH.   And I think EQUINOX header value is usually 2000.0, even
-        #     # for the example GS-CAL20020620-15-0462 02jun20.0462 with
-        #     # RA_TEL = “UNAVAILABLE”.  For Gemini the assumption is that the
-        #     # RA/Dec values in the headers are always based on the position of
-        #     # the equinox given at the time specified by the EQUINOX keyword
-        #     # value.
-        #     bp.clear('Chunk.position.equinox')
-        #     bp.add_fits_attribute('Chunk.position.equinox', 'EQUINOX')
 
         bp.configure_time_axis(3)
 
@@ -599,17 +576,11 @@ class GeminiMapping(cc.TelescopeMapping):
         # in the primary is through a function. JB
         bp.set('Chunk.time.resolution', 'get_exposure()')
         bp.set('Chunk.time.exposure', 'get_exposure()')
-
         bp.set('Chunk.time.axis.axis.ctype', 'TIME')
         bp.set('Chunk.time.axis.axis.cunit', 'd')
         bp.set('Chunk.time.axis.error.syser', '1e-07')
         bp.set('Chunk.time.axis.error.rnder', '1e-07')
         bp.set('Chunk.time.axis.function.naxis', '1')
-        # if instrument in [Inst.ALOPEKE, Inst.ZORRO]:
-        #     bp.clear('Chunk.time.axis.function.naxis')
-        #     bp.add_fits_attribute('Chunk.time.axis.function.naxis', 'NAXIS3')
-        #     bp.set_default('Chunk.time.axis.function.naxis', 1)
-
         bp.set('Chunk.time.axis.function.delta', 'get_time_delta()')
         bp.set('Chunk.time.axis.function.refCoord.pix', '0.5')
         bp.set(
@@ -663,7 +634,6 @@ class GeminiMapping(cc.TelescopeMapping):
                     self._should_artifact_be_renamed(artifact)
                     if self._storage_name.file_uri != artifact.uri:
                         continue
-                    update_artifact_meta(artifact, file_info)
                     if GemName.is_preview(artifact.uri):
                         continue
                     processed = ofr.is_processed(self._storage_name.file_name)
@@ -936,7 +906,6 @@ class GeminiMapping(cc.TelescopeMapping):
             # file metadata, it would be _most_ efficient to do this from CADC
             # so need to re-use this code somehow :(
             prov_obs_id = self._metadata_reader.provenance_finder.get(uri)
-            logging.error(prov_obs_id)
         except mc.CadcException as e:
             # the file id probably does not exist at on disk, at CADC, or at
             # Gemini, ignore, because it's provenance
@@ -1167,29 +1136,6 @@ def _remove_processing_detritus(values, obs_id):
 
     logging.debug('End _remove_processing_detritus')
     return list(set(result))
-
-
-def _repair_provenance_value(value, obs_id):
-    logging.debug(f'Being _repair_provenance_value of {value} for {obs_id}.')
-    prov_file_id = value
-    try:
-        uri = mc.build_uri(COLLECTION, prov_file_id, SCHEME)
-        # TODO - what to do about the data label search here? there's no
-        # file metadata, it would be _most_ efficient to do this from CADC
-        # so need to re-use this code somehow :(
-        temp = provenance_finder.get(uri)
-        prov_obs_id = temp.data_label
-    except mc.CadcException as e:
-        # the file id probably does not exist at Gemini, ignore, because
-        # it's provenance
-        logging.warning(f'Failed to find {prov_file_id} at archive.gemini.edu')
-        # DB 01-06-21 - use not found for the DATALAB/observationID value
-        # so it's easy to find in the database and let Gemini know.
-        prov_obs_id = 'not_found'
-    logging.debug(
-        f'End _repair_provenance_value. {prov_obs_id} {prov_file_id}'
-    )
-    return prov_obs_id, prov_file_id
 
 
 class Bhros(GeminiMapping):
@@ -1902,7 +1848,7 @@ class Fox(GeminiMapping):
         """General chunk-level Energy WCS construction."""
         self._logger.debug(f'Begin _update_energy')
         if data_product_type is DataProductType.IMAGE:
-            logging.debug(
+            self._logger.debug(
                 f'Spectral WCS {data_product_type} mode for '
                 f'{self._storage_name.obs_id}.'
             )
@@ -3008,7 +2954,7 @@ class Gsaoi(GeminiMapping):
         """
         self._logger.debug(f'Begin _update_energy')
         if data_product_type is DataProductType.IMAGE:
-            logging.debug(
+            self._logger.debug(
                 f'Spectral WCS {data_product_type} mode for '
                 f'{self._storage_name.obs_id}.'
             )
@@ -4379,7 +4325,7 @@ class Oscir(GeminiMapping):
 
         chunk.position.coordsys = header.get('FRAMEPA')
         chunk.position.equinox = mc.to_float(header.get('EQUINOX'))
-        logging.debug('End _update_position')
+        self._logger.debug('End _update_position')
 
 
 class Phoenix(GeminiMapping):

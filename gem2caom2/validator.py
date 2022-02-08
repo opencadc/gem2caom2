@@ -73,7 +73,7 @@ import traceback
 from datetime import datetime
 
 from caom2pipe import manage_composable as mc
-from gem2caom2 import external_metadata
+from gem2caom2 import gemini_metadata
 from gem2caom2.util import COLLECTION, SCHEME
 
 __all__ = ['GeminiValidator']
@@ -88,11 +88,12 @@ class GeminiValidator(mc.Validator):
         )
         config = mc.Config()
         config.get_executors()
-        external_metadata.init_global(config)
-        self._gofr = external_metadata.get_gofr(config)
-        self._max_date = datetime.fromtimestamp(
-            self._gofr.get_max_timestamp()
-        ).date()
+        # TODO
+        # external_metadata.init_global(config)
+        # self._gofr = external_metadata.get_gofr(config)
+        # self._max_date = datetime.fromtimestamp(
+        #     self._gofr.get_max_timestamp()
+        # ).date()
         logging.info(f'max date is {self._max_date}')
         self._rejected = mc.Rejected(self._config.rejected_fqn)
         self._logger = logging.getLogger(__name__)

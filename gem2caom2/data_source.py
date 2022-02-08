@@ -92,12 +92,12 @@ class IncrementalSource(dsc.DataSource):
     created.
     """
 
-    def __init__(self, reader, session):
+    def __init__(self, reader):
         super(IncrementalSource, self).__init__(config=None)
         self._max_records_encountered = False
         self._encounter_start = None
         self._encounter_end = None
-        self._session = session
+        self._session = reader._session
         self._metadata_reader = reader
         self._logger = logging.getLogger(__name__)
 
@@ -151,10 +151,13 @@ class IncrementalSource(dsc.DataSource):
                                 )
                             )
                             uri = mc.build_uri(COLLECTION, file_name, SCHEME)
+                            # all the other cases where add_json_record is
+                            # called, there's a list as input, so conform to
+                            # that typing here
                             self._metadata_reader.add_json_record(
-                                uri, entry
+                                uri, [entry]
                             )
-                            self._metadata_read.add_file_info_record(uri)
+                            self._metadata_reader.add_file_info_record(uri)
         finally:
             if response is not None:
                 response.close()

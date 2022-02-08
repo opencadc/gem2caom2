@@ -40,11 +40,11 @@
         <caom2:producer>NOAO-IRAF FITS Image Kernel July 2003</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/filepre=S20140124S0039_dark.fits</caom2:reference>
         <caom2:inputs>
-          <caom2:planeURI>caom:GEMINI/GS-2013B-Q-16-277-021/S20140124S0041</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/GS-2013B-Q-16-277-022/S20140124S0042</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/GS-2013B-Q-16-277-019/S20140124S0039</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/GS-2013B-Q-16-277-024/S20140124S0044</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/GS-2013B-Q-16-277-020/S20140124S0040</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GS-2013B-Q-16-277-024/S20140124S0044</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GS-2013B-Q-16-277-021/S20140124S0041</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/GS-2013B-Q-16-277-023/S20140124S0043</caom2:planeURI>
         </caom2:inputs>
       </caom2:provenance>
@@ -54,6 +54,7 @@
           <caom2:productType>calibration</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>
+          <caom2:contentLength>37808640</caom2:contentLength>
           <caom2:contentChecksum>md5:6ab0ded809c022ddcbd8f17d1edb8d0d</caom2:contentChecksum>
           <caom2:parts>
             <caom2:part caom2:id="00000000-0000-0000-bca0-abaf7ca6797f">
@@ -165,11 +166,11 @@
     </caom2:plane>
   </caom2:planes>
   <caom2:members>
-    <caom2:observationURI>caom:GEMINI/GS-2013B-Q-16-277-020</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GS-2013B-Q-16-277-024</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GS-2013B-Q-16-277-021</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GS-2013B-Q-16-277-023</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GS-2013B-Q-16-277-020</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GS-2013B-Q-16-277-019</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GS-2013B-Q-16-277-022</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GS-2013B-Q-16-277-021</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GS-2013B-Q-16-277-024</caom2:observationURI>
   </caom2:members>
 </caom2:Observation>

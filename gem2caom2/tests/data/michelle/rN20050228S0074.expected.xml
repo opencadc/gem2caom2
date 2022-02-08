@@ -212,7 +212,6 @@
           <caom2:productType>thumbnail</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>image/jpeg</caom2:contentType>
-          <caom2:contentLength>8252</caom2:contentLength>
           <caom2:contentChecksum>md5:116fa8d7cd9548505f5902cb4abe6f8b</caom2:contentChecksum>
           <caom2:parts/>
         </caom2:artifact>
@@ -594,7 +593,6 @@
           <caom2:productType>preview</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>image/jpeg</caom2:contentType>
-          <caom2:contentLength>57309</caom2:contentLength>
           <caom2:contentChecksum>md5:6a0bdde386f1f553e274a3f4fa2e1921</caom2:contentChecksum>
           <caom2:parts/>
         </caom2:artifact>

@@ -40,16 +40,16 @@
         <caom2:producer>NOAO-IRAF FITS Image Kernel July 2003</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/filepre=N20130404S0512_flat.fits</caom2:reference>
         <caom2:inputs>
-          <caom2:planeURI>caom:GEMINI/GN-2013A-Q-63-54-055/N20130404S0516</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/GN-2013A-Q-63-54-058/N20130404S0519</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/GN-2013A-Q-63-54-057/N20130404S0518</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/GN-2013A-Q-63-54-060/N20130404S0521</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GN-2013A-Q-63-54-055/N20130404S0516</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GN-2013A-Q-63-54-052/N20130404S0513</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/GN-2013A-Q-63-54-059/N20130404S0520</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GN-2013A-Q-63-54-053/N20130404S0514</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/GN-2013A-Q-63-54-056/N20130404S0517</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/GN-2013A-Q-63-54-054/N20130404S0515</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/GN-2013A-Q-63-54-052/N20130404S0513</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/GN-2013A-Q-63-54-051/N20130404S0512</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/GN-2013A-Q-63-54-053/N20130404S0514</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GN-2013A-Q-63-54-057/N20130404S0518</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GN-2013A-Q-63-54-058/N20130404S0519</caom2:planeURI>
         </caom2:inputs>
       </caom2:provenance>
       <caom2:artifacts>
@@ -58,6 +58,7 @@
           <caom2:productType>calibration</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>
+          <caom2:contentLength>12628800</caom2:contentLength>
           <caom2:contentChecksum>md5:1e36e4130acd9e30287fc58f0bf9ce91</caom2:contentChecksum>
           <caom2:parts>
             <caom2:part caom2:id="00000000-0000-0000-8738-d20584dbb2f4">
@@ -238,15 +239,15 @@
     </caom2:plane>
   </caom2:planes>
   <caom2:members>
-    <caom2:observationURI>caom:GEMINI/GN-2013A-Q-63-54-058</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GN-2013A-Q-63-54-055</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GN-2013A-Q-63-54-056</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GN-2013A-Q-63-54-059</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GN-2013A-Q-63-54-054</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GN-2013A-Q-63-54-058</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GN-2013A-Q-63-54-052</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GN-2013A-Q-63-54-057</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GN-2013A-Q-63-54-054</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GN-2013A-Q-63-54-051</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GN-2013A-Q-63-54-053</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GN-2013A-Q-63-54-059</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GN-2013A-Q-63-54-060</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GN-2013A-Q-63-54-053</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GN-2013A-Q-63-54-057</caom2:observationURI>
   </caom2:members>
 </caom2:Observation>

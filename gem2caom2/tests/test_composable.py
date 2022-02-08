@@ -125,8 +125,6 @@ def test_run(run_mock, cap_mock, data_client_mock):
         os.getcwd = getcwd_orig
 
 
-import pytest
-@pytest.mark.skip('')
 @patch('caom2pipe.client_composable.ClientCollection.data_client')
 @patch('cadcutils.net.ws.WsCapabilities.get_access_url')
 @patch('caom2pipe.execute_composable.OrganizeExecutes.do_one')
@@ -150,27 +148,30 @@ def test_run_errors(run_mock, cap_mock, data_client_mock):
         assert test_storage.file_name == test_f_name, 'wrong file name'
         assert test_storage.fname_on_disk == test_f_name, 'wrong fname on disk'
         assert test_storage.url is None, 'wrong url'
-        assert (
-            test_storage.external_urls
-            == f'https://archive.gemini.edu/fullheader/{test_f_id}.fits'
-        ), 'wrong external urls'
     finally:
         os.getcwd = getcwd_orig
 
 
-@patch('gem2caom2.gemini_reader.GeminiMetadataReader._retrieve_headers')
-@patch('gem2caom2.gemini_reader.GeminiMetadataReader._retrieve_json')
+@patch('caom2pipe.client_composable.ClientCollection.data_client')
+@patch('gem2caom2.gemini_metadata.GeminiMetadataReader._retrieve_headers')
+@patch('gem2caom2.gemini_metadata.retrieve_json')
 @patch('cadcutils.net.ws.WsCapabilities.get_access_url')
 @patch('caom2pipe.execute_composable.OrganizeExecutes.do_one')
 @patch('caom2pipe.manage_composable.query_endpoint_session')
 @patch('caom2pipe.client_composable.query_tap_client')
 def test_run_incremental_rc(
-    tap_mock, query_mock, run_mock, cap_mock, json_mock, header_mock
+    tap_mock,
+    query_mock,
+    run_mock,
+    cap_mock,
+    json_mock,
+    header_mock,
+    data_client_mock,
 ):
     cap_mock.return_value = 'https://localhost'
     query_mock.side_effect = gem_mocks.mock_query_endpoint_2
     tap_mock.side_effect = gem_mocks.mock_query_tap
-    json_mock.side_effect = gem_mocks.mock_get_obs_metadata
+    json_mock.side_effect = gem_mocks.mock_retrieve_json
     header_mock.side_effect = gem_mocks._mock_headers
 
     _write_state(
@@ -187,7 +188,7 @@ def test_run_incremental_rc(
         args, kwargs = run_mock.call_args
         test_storage = args[0]
         assert isinstance(test_storage, gem_name.GemName), type(test_storage)
-        assert test_storage.obs_id == 'test_data_label', 'wrong obs id'
+        assert test_storage.obs_id == 'GN-2020B-LP-16-353-005', 'wrong obs id'
         test_fid = 'N20210101S0042'
         assert test_storage.file_name == f'{test_fid}.fits', 'wrong file_name'
         assert test_storage.file_id == f'{test_fid}', 'wrong file_id'
@@ -203,8 +204,8 @@ def test_run_incremental_rc(
         os.getcwd = getcwd_orig
 
 
-@patch('gem2caom2.gemini_reader.GeminiMetadataReader._retrieve_headers')
-@patch('gem2caom2.gemini_reader.GeminiMetadataReader._retrieve_json')
+@patch('gem2caom2.gemini_metadata.GeminiMetadataReader._retrieve_headers')
+@patch('gem2caom2.gemini_metadata.GeminiMetadataReader._retrieve_json')
 @patch('cadcutils.net.ws.WsCapabilities.get_access_url')
 @patch('caom2pipe.execute_composable.OrganizeExecutes.do_one')
 @patch('caom2pipe.client_composable.CAOM2RepoClient')
@@ -341,14 +342,15 @@ def test_run_by_incremental2(
     assert query_mock.called, 'query mock not called'
 
 
-@patch('gem2caom2.gemini_reader.GeminiMetadataReader._retrieve_headers')
-@patch('gem2caom2.gemini_reader.GeminiMetadataReader._retrieve_json')
+@patch('caom2pipe.client_composable.ClientCollection.data_client')
+@patch('gem2caom2.gemini_metadata.GeminiMetadataReader._retrieve_headers')
+@patch('gem2caom2.gemini_metadata.GeminiMetadataReader._retrieve_json')
 @patch('cadcutils.net.ws.WsCapabilities.get_access_url')
 @patch('caom2pipe.execute_composable.OrganizeExecutes.do_one')
 @patch('caom2pipe.client_composable.query_tap_client')
 @patch('caom2pipe.client_composable.CadcTapClient')
 def test_run_by_public(
-    ds_mock, tap_mock, exec_mock, cap_mock, json_mock, header_mock
+    ds_mock, tap_mock, exec_mock, cap_mock, json_mock, header_mock, client_mock
 ):
     cap_mock.return_value = 'https://localhost'
     exec_mock.side_effect = Mock(return_value=0)
@@ -398,20 +400,28 @@ def test_run_by_public(
     assert tap_mock.called, 'tap mock not called'
 
 
-@patch('gem2caom2.gemini_reader.GeminiMetadataReader._retrieve_headers')
-@patch('gem2caom2.gemini_reader.GeminiMetadataReader._retrieve_json')
+@patch('caom2pipe.client_composable.ClientCollection.data_client')
+@patch('gem2caom2.gemini_metadata.GeminiMetadataReader._retrieve_headers')
+@patch('gem2caom2.gemini_metadata.retrieve_json')
 @patch('cadcutils.net.ws.WsCapabilities.get_access_url')
 @patch('caom2pipe.execute_composable.OrganizeExecutes.do_one')
 @patch('caom2pipe.manage_composable.query_endpoint_session')
 @patch('caom2pipe.client_composable.query_tap_client')
 @patch('caom2pipe.client_composable.CadcTapClient')
 def test_run_by_public2(
-    ds_mock, tap_mock, query_mock, run_mock, cap_mock, json_mock, header_mock
+    ds_mock,
+    tap_mock,
+    query_mock,
+    run_mock,
+    cap_mock,
+    json_mock,
+    header_mock,
+    data_client_mock,
 ):
     cap_mock.return_value = 'https://localhost'
     query_mock.side_effect = gem_mocks.mock_query_endpoint_2
     tap_mock.side_effect = gem_mocks.mock_query_tap
-    json_mock.side_effect = gem_mocks.mock_get_obs_metadata
+    json_mock.side_effect = gem_mocks.mock_retrieve_json
     header_mock.side_effect = gem_mocks._mock_headers
 
     _write_state(prior_timestamp='2020-03-06 03:22:10.787835')
@@ -440,27 +450,6 @@ def test_run_by_public2(
         assert False, e
     finally:
         os.getcwd = getcwd_orig
-
-
-def _check_sys_argv_params():
-    py_version = f'{sys.version_info.major}.{sys.version_info.minor}'
-    plugin = (
-        f'/usr/local/lib/python{py_version}/site-packages/gem2caom2/'
-        f'gem2caom2.py'
-    )
-    temp = ' '.join(ii for ii in sys.argv)
-    assert temp == (
-        f'gem2caom2 --quiet --cert '
-        f'{gem_mocks.TEST_DATA_DIR}/cadcproxy.pem --observation '
-        f'GEMINI GS-2002A-Q-8-4-0180 --out '
-        f'{gem_mocks.TEST_DATA_DIR}/logs/'
-        f'GS-2002A-Q-8-4-0180.xml --external_url '
-        f'https://archive.gemini.edu/fullheader/'
-        f'2002feb11_0180.fits --plugin {plugin} --module '
-        f'{plugin} --lineage '
-        f'2002feb11_0180/{SCHEME}:{COLLECTION}/2002feb11_0180.fits '
-        f'--resource-id ivo://cadc.nrc.ca/test'
-    ), f'exec mock wrong parameters {temp}'
 
 
 def _write_todo(test_id):

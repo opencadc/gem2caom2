@@ -66,21 +66,14 @@
 # ***********************************************************************
 #
 
-import logging
 import os
-
-from tempfile import TemporaryDirectory
 
 import pytest
 
-from cadcdata import FileInfo
-from caom2.diff import get_differences
-from gem2caom2 import builder, fits2caom2_augmentation, gemini_metadata
 from gem2caom2.util import Inst
-from caom2pipe import astro_composable as ac
-from caom2pipe import manage_composable as mc
+from gem2caom2 import obs_file_relationship
 
-from unittest.mock import patch, Mock
+from unittest.mock import patch
 import gem_mocks
 
 
@@ -127,134 +120,40 @@ def pytest_generate_tests(metafunc):
         metafunc.parametrize('test_name', file_list)
 
 
+@patch('caom2utils.data_util.get_file_type')
+@patch('gem2caom2.gemini_metadata.AbstractGeminiMetadataReader._retrieve_json')
 @patch('caom2pipe.reader_composable.FileMetadataReader._retrieve_headers')
 @patch('caom2pipe.astro_composable.get_vo_table_session')
 @patch('gem2caom2.program_metadata.get_pi_metadata')
-@patch('cadcutils.net.ws.WsCapabilities.get_access_url')
 @patch('gem2caom2.gemini_metadata.ProvenanceFinder')
 def test_visitor(
     pf_mock,
-    access_url,
     get_pi_mock,
     svofps_mock,
     headers_mock,
+    json_mock,
+    file_type_mock,
     test_name,
 ):
 
-    access_url.return_value = 'https://localhost:8080'
-    get_pi_mock.side_effect = gem_mocks.mock_get_pi_metadata
-    svofps_mock.side_effect = gem_mocks.mock_get_votable
-    headers_mock.side_effect = gem_mocks._mock_headers
-    pf_mock.get.side_effect = gem_mocks.mock_get_data_label
+    test_file_id = obs_file_relationship.remove_extensions(
+        os.path.basename(test_name)
+    )
+    expected_fqn = f'{os.path.dirname(test_name)}/{test_file_id}.expected.xml'
 
-    with TemporaryDirectory() as tmp_dir_name:
-        test_config = mc.Config()
-        test_config.task_types = [mc.TaskType.SCRAPE]
-        test_config.use_local_files = True
-        test_config.data_sources = [os.path.dirname(test_name)]
-        test_config.working_directory = tmp_dir_name
-        test_config.proxy_fqn = f'{tmp_dir_name}/test_proxy.pem'
-
-        with open(test_config.proxy_fqn, 'w') as f:
-            f.write('test content')
-
-        metadata_reader = gemini_metadata.GeminiFileMetadataReader(
-            Mock(), pf_mock
-        )
-        headers = ac.make_headers_from_file(test_name)
-        test_file_id = mc.StorageName.remove_extensions(
-            os.path.basename(test_name)
-        )
-        test_uri = f'gemini:GEMINI/{test_file_id}.fits'
-        file_info = FileInfo(id=test_uri, file_type='application/fits')
-        json_metadata = gem_mocks.mock_get_obs_metadata(test_file_id)
-        metadata_reader._headers = {test_uri: headers}
-        metadata_reader._file_info = {test_uri: file_info}
-        metadata_reader._json_metadata = {test_uri: json_metadata}
-        test_metadata = gemini_metadata.GeminiMetadataLookup(metadata_reader)
-        test_builder = builder.GemObsIDBuilder(
-            test_config, metadata_reader, test_metadata
-        )
-        storage_name = test_builder.build(test_name)
-        kwargs = {
-            'storage_name': storage_name,
-            'metadata_reader': metadata_reader,
-        }
-        # logging.getLogger('caom2utils.fits2caom2').setLevel(logging.INFO)
-        logging.getLogger('root').setLevel(logging.INFO)
-        observation = None
-        expected_fqn = (
-            f'{os.path.dirname(test_name)}/{storage_name.file_id}.expected.xml'
-        )
-        in_fqn = expected_fqn.replace('.expected.', '.in.')
-        if os.path.exists(in_fqn):
-            observation = mc.read_obs_from_file(in_fqn)
-        observation = fits2caom2_augmentation.visit(observation, **kwargs)
-
-        expected = mc.read_obs_from_file(expected_fqn)
-        compare_result = get_differences(expected, observation)
-        if compare_result is not None:
-            actual_fqn = expected_fqn.replace('expected', 'actual')
-            mc.write_obs_to_file(observation, actual_fqn)
-            compare_text = '\n'.join([r for r in compare_result])
-            msg = (
-                f'Differences found in observation {expected.observation_id}\n'
-                f'{compare_text}. Check {actual_fqn}'
-            )
-            raise AssertionError(msg)
+    gem_mocks._run_test_common(
+        data_sources=[os.path.dirname(test_name)],
+        get_pi_mock=get_pi_mock,
+        svofps_mock=svofps_mock,
+        headers_mock=headers_mock,
+        pf_mock=pf_mock,
+        json_mock=json_mock,
+        file_type_mock=file_type_mock,
+        test_set=[test_name],
+        expected_fqn=expected_fqn,
+    )
 
 
-# def _get_obs_id(file_id):
-#     return gem_mocks.LOOKUP[file_id][0]
-
-
-# def _get_instr(file_id):
-#     temp = gem_mocks.LOOKUP[file_id][1]
-#     return _get_inst_name(temp)
-
-
-# def _get_program_id(file_id):
-#     return gem_mocks.LOOKUP[file_id][2]
-
-
-# def _get_local(test_name):
-#     jpg = test_name.replace('.fits.header', '.jpg')
-#     header_name = test_name
-#     if os.path.exists(jpg):
-#         return f'{jpg} {header_name}'
-#     else:
-#         return header_name
-
-
-# def _get_file_id(basename):
-#     if basename.endswith('jpg'):
-#         return basename.split('.jpg')[0]
-#     else:
-#         return basename.split('.fits')[0]
-
-
-# def _get_lineage(dirname, basename, config):
-#     jpg_file = basename.replace('.fits.header', '.jpg')
-#     name_builder = builder.GemObsIDBuilder(config)
-#     storage_name = name_builder.build(basename.replace('.header', ''))
-#     if os.path.exists(os.path.join(dirname, jpg_file)):
-#         jpg_storage_name = name_builder.build(jpg_file)
-#         jpg = jpg_storage_name.lineage
-#         fits = storage_name.lineage.replace('.header', '')
-#         result = f'{jpg} {fits}'
-#     else:
-#         result = storage_name.lineage.replace('.header', '')
-#     return result
-
-
-# def _get_expected_file_name(dirname, product_id):
-#     return f'{dirname}/{product_id}.expected.xml'
-
-
-# def _get_actual_file_name(dirname, product_id):
-#     return f'{dirname}/{product_id}.actual.xml'
-#
-#
 def _get_inst_name(inst):
     walk_dir = inst
     if inst != 'processed' and isinstance(inst, Inst):

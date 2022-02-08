@@ -44,6 +44,7 @@
           <caom2:productType>calibration</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>
+          <caom2:contentLength>21000960</caom2:contentLength>
           <caom2:contentChecksum>md5:c9cb6076cea63fd1b0b9c7fd2db114e6</caom2:contentChecksum>
           <caom2:parts>
             <caom2:part caom2:id="00000000-0000-0000-81f3-b1c27631af2e">

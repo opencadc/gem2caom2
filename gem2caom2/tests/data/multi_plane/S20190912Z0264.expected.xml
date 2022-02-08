@@ -45,7 +45,7 @@
           <caom2:productType>calibration</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>
-          <caom2:contentLength>7761</caom2:contentLength>
+          <caom2:contentLength>131094720</caom2:contentLength>
           <caom2:contentChecksum>md5:56685678eee2b3acda8986adbe0f88e8</caom2:contentChecksum>
           <caom2:parts>
             <caom2:part caom2:id="881afc72-9fe4-4ca4-8a40-a74aecf3e14a">
@@ -157,7 +157,7 @@
           <caom2:productType>calibration</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>
-          <caom2:contentLength>7761</caom2:contentLength>
+          <caom2:contentLength>131094720</caom2:contentLength>
           <caom2:contentChecksum>md5:f7249563691e31dec16bd3c76f2acc31</caom2:contentChecksum>
           <caom2:parts>
             <caom2:part caom2:id="44d2302e-0f20-49df-905f-de71aba40245">

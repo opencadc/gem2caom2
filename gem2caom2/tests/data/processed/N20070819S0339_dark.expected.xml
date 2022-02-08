@@ -42,9 +42,9 @@
         <caom2:inputs>
           <caom2:planeURI>caom:GEMINI/GN-2007B-Q-107-150-010/N20070819S0345</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/GN-2007B-Q-107-150-007/N20070819S0342</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/GN-2007B-Q-107-150-009/N20070819S0344</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/GN-2007B-Q-107-150-005/N20070819S0340</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/GN-2007B-Q-107-150-008/N20070819S0343</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GN-2007B-Q-107-150-005/N20070819S0340</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GN-2007B-Q-107-150-009/N20070819S0344</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/GN-2007B-Q-107-150-006/N20070819S0341</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/GN-2007B-Q-107-150-004/N20070819S0339</caom2:planeURI>
         </caom2:inputs>
@@ -55,6 +55,7 @@
           <caom2:productType>calibration</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>
+          <caom2:contentLength>702720</caom2:contentLength>
           <caom2:contentChecksum>md5:421ce8c41c12f433d4465f7ebdbcaa96</caom2:contentChecksum>
           <caom2:parts>
             <caom2:part caom2:id="00000000-0000-0000-82f2-da59ae804614">
@@ -165,12 +166,12 @@
     </caom2:plane>
   </caom2:planes>
   <caom2:members>
-    <caom2:observationURI>caom:GEMINI/GN-2007B-Q-107-150-009</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GN-2007B-Q-107-150-010</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GN-2007B-Q-107-150-004</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GN-2007B-Q-107-150-007</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GN-2007B-Q-107-150-006</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GN-2007B-Q-107-150-008</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GN-2007B-Q-107-150-006</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GN-2007B-Q-107-150-005</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GN-2007B-Q-107-150-009</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GN-2007B-Q-107-150-004</caom2:observationURI>
   </caom2:members>
 </caom2:Observation>

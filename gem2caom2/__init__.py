@@ -3,7 +3,8 @@ from .cleanup_augmentation import *  # noqa
 from .composable import *  # noqa
 from .gem_name import *  # noqa
 from .util import *  # noqa
-from .external_metadata import *  # noqa
+from .gemini_metadata import *  # noqa
 from .obs_file_relationship import *  # noqa
+from .fits2caom2_augmentation import *  # noqa
 from .preview_augmentation import *  # noqa
 from .pull_augmentation import *  # noqa

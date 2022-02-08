@@ -1,4 +1,5 @@
-<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:CompositeObservation" caom2:id="fd35fd53-44e8-407f-a3f8-d4024cf64c09" caom2:lastModified="2020-02-25T20:36:31.230" caom2:maxLastModified="2020-02-25T20:36:31.230" caom2:metaChecksum="md5:42912255bdcc0dc5a0c03004e0dd67b0" caom2:accMetaChecksum="md5:1343b1e635bbc4fe433112aa93d62fe6">
+<?xml version='1.0' encoding='UTF-8'?>
+<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:DerivedObservation" caom2:id="fd35fd53-44e8-407f-a3f8-d4024cf64c09" caom2:lastModified="2020-02-25T20:36:31.230" caom2:maxLastModified="2020-02-25T20:36:31.230" caom2:metaChecksum="md5:42912255bdcc0dc5a0c03004e0dd67b0" caom2:accMetaChecksum="md5:1343b1e635bbc4fe433112aa93d62fe6">
   <caom2:collection>GEMINI</caom2:collection>
   <caom2:observationID>GN-CAL20200210-22-076-BIAS</caom2:observationID>
   <caom2:metaRelease>2020-02-10T10:32:21.000</caom2:metaRelease>
@@ -46,6 +47,7 @@
           <caom2:productType>calibration</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>
+          <caom2:contentLength>6514560</caom2:contentLength>
           <caom2:contentChecksum>md5:d8a57b4b4f9afd71987ee90734f30f09</caom2:contentChecksum>
           <caom2:parts>
             <caom2:part caom2:id="83905c1d-c383-4a47-9ad7-4e76cf3501ec" caom2:lastModified="2020-02-25T20:36:31.230" caom2:maxLastModified="2020-02-25T20:36:31.230" caom2:metaChecksum="md5:53fb1cc4be36db4876c88011497295d2" caom2:accMetaChecksum="md5:eb73fbed9f7addc5cddc274356f6a41e">

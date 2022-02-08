@@ -67,85 +67,39 @@
 # ***********************************************************************
 #
 
-import logging
-
-from tempfile import TemporaryDirectory
-from cadcdata import FileInfo
-from caom2.diff import get_differences
-from caom2pipe import astro_composable as ac
-from caom2pipe import manage_composable as mc
-from gem2caom2 import GemName, gemini_metadata, fits2caom2_augmentation
-
 from mock import patch, Mock
 import gem_mocks
 
 
+@patch('caom2utils.data_util.get_file_type')
+@patch('gem2caom2.gemini_metadata.AbstractGeminiMetadataReader._retrieve_json')
+@patch('caom2pipe.reader_composable.FileMetadataReader._retrieve_headers')
 @patch('caom2pipe.astro_composable.get_vo_table_session')
-@patch('gem2caom2.gemini_metadata.ProvenanceFinder')
 @patch('gem2caom2.program_metadata.get_pi_metadata')
-@patch('cadcutils.net.ws.WsCapabilities.get_access_url')
-@patch('gemProc2caom2.builder.CadcTapClient')
+@patch('gem2caom2.gemini_metadata.ProvenanceFinder')
 def test_visitor(
-    builder_tap_client_mock,
-    access_url,
-    get_pi_mock,
     pf_mock,
+    get_pi_mock,
     svofps_mock,
+    headers_mock,
+    json_mock,
+    file_type_mock,
 ):
-    access_url.return_value = 'https://localhost:8080'
-    get_pi_mock.side_effect = gem_mocks.mock_get_pi_metadata
-    pf_mock.get.side_effect = gem_mocks.mock_get_data_label
-    svofps_mock.side_effect = gem_mocks.mock_get_votable
+    test_f_name = 'gS20171114S0185_bias.fits.header'
+    test_obs_id = 'GS-CAL20171114-2-086-G-BIAS'
+    test_fqn = f'{gem_mocks.TEST_DATA_DIR}/broken_files/{test_f_name}'
+    expected_fqn = (
+        f'{gem_mocks.TEST_DATA_DIR}/broken_files/{test_obs_id}.expected.xml'
+    )
 
-    with TemporaryDirectory() as tmp_dir_name:
-
-        test_f_name = 'gS20171114S0185_bias.fits.header'
-        test_obs_id = 'GS-CAL20171114-2-086-G-BIAS'
-        storage_name = GemName(obs_id=test_obs_id, file_name=test_f_name)
-        test_fqn = f'{gem_mocks.TEST_DATA_DIR}/broken_files/{test_f_name}'
-        storage_name.source_names = [test_fqn]
-
-        test_config = mc.Config()
-        test_config.task_types = [mc.TaskType.SCRAPE]
-        test_config.use_local_files = True
-        test_config.data_sources = [f'{gem_mocks.TEST_DATA_DIR}/broken_files']
-        test_config.working_directory = tmp_dir_name
-        test_config.proxy_fqn = f'{tmp_dir_name}/test_proxy.pem'
-
-        with open(test_config.proxy_fqn, 'w') as f:
-            f.write('test content')
-
-        observation = None
-        expected_fqn = (
-            f'{gem_mocks.TEST_DATA_DIR}/broken_files/{test_obs_id}.expected.xml'
-        )
-        file_info = FileInfo(
-            id=storage_name.file_uri, file_type='application/fits'
-        )
-        headers = ac.make_headers_from_file(test_fqn)
-        json = gem_mocks.mock_get_obs_metadata(storage_name.file_id)
-        metadata_reader = gemini_metadata.GeminiFileMetadataReader(
-            Mock(), pf_mock
-        )
-        metadata_reader._headers = {storage_name.file_uri: headers}
-        metadata_reader._file_info = {storage_name.file_uri: file_info}
-        metadata_reader._json_metadata = {storage_name.file_uri: json}
-        kwargs = {
-            'storage_name': storage_name,
-            'metadata_reader': metadata_reader,
-        }
-        logging.getLogger('caom2utils.fits2caom2').setLevel(logging.INFO)
-        logging.getLogger('root').setLevel(logging.INFO)
-        observation = fits2caom2_augmentation.visit(observation, **kwargs)
-
-        expected = mc.read_obs_from_file(expected_fqn)
-        compare_result = get_differences(expected, observation)
-        if compare_result is not None:
-            actual_fqn = expected_fqn.replace('expected', 'actual')
-            mc.write_obs_to_file(observation, actual_fqn)
-            compare_text = '\n'.join([r for r in compare_result])
-            msg = (
-                f'Differences found in observation {expected.observation_id}\n'
-                f'{compare_text}. Check {actual_fqn}'
-            )
-            raise AssertionError(msg)
+    gem_mocks._run_test_common(
+        data_sources=[f'{gem_mocks.TEST_DATA_DIR}/broken_files'],
+        get_pi_mock=get_pi_mock,
+        svofps_mock=svofps_mock,
+        headers_mock=headers_mock,
+        pf_mock=pf_mock,
+        json_mock=json_mock,
+        file_type_mock=file_type_mock,
+        test_set=[test_fqn],
+        expected_fqn=expected_fqn,
+    )

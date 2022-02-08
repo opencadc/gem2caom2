@@ -76,7 +76,6 @@ from mock import patch, Mock
 
 from caom2pipe import manage_composable as mc
 from gem2caom2 import gemini_metadata, gem_name
-from gem2caom2.util import Inst
 
 
 import gem_mocks
@@ -89,11 +88,10 @@ def test_set(retrieve_json_mock, retrieve_headers_mock):
     test_f_name = 'N20030104S0065.fits'
     test_obs_id = 'GN-CAL20030104-14-001'
     retrieve_headers_mock.side_effect = gem_mocks._mock_headers
-    session_mock = Mock()
     test_storage_name = gem_name.GemName(
         obs_id=test_obs_id, file_name=test_f_name
     )
-    test_subject = gemini_metadata.GeminiMetadataReader(session_mock)
+    test_subject = gemini_metadata.GeminiMetadataReader(Mock(), Mock())
     test_subject.set(test_storage_name)
     assert len(test_subject._json_metadata) == 1, 'json entries'
     assert len(test_subject._headers) == 1, 'header entries'

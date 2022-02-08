@@ -134,7 +134,7 @@ class AbstractGeminiMetadataReader(rdc.MetadataReader):
                 size=record.get('data_size'),
                 name=record.get('filename'),
                 md5sum=record.get('file_md5'),
-                lastmod=record.get('lastmod'),
+                lastmod=mc.make_time_tz(record.get('lastmod')),
                 file_type=data_util.get_file_type(record.get('filename')),
                 encoding=data_util.get_file_encoding(record.get('filename')),
             )
@@ -258,6 +258,9 @@ class GeminiMetadataLookup:
             uri.split('/')[-1], temp
         )
 
+    def data_size(self, uri):
+        return self._search_json(uri, 'data_size')
+
     def dec(self, uri):
         return self._search_json(uri, 'dec')
 
@@ -269,6 +272,9 @@ class GeminiMetadataLookup:
 
     def exposure_time(self, uri):
         return self._search_json(uri, 'exposure_time')
+
+    def file_md5(self, uri):
+        return self._search_json(uri, 'file_md5')
 
     def filter_name(self, uri):
         return self._search_json(uri, 'filter_name')
