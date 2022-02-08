@@ -75,8 +75,7 @@ from datetime import datetime, timezone
 from caom2pipe import client_composable as clc
 from caom2pipe import data_source_composable as dsc
 from caom2pipe import manage_composable as mc
-from gem2caom2.obs_metadata import json_lookup
-from gem2caom2.obs_file_relationship import remove_extensions
+from gem2caom2.util import COLLECTION, SCHEME
 
 
 __all__ = ['GEM_BOOKMARK', 'IncrementalSource', 'PublicIncremental']
@@ -93,13 +92,13 @@ class IncrementalSource(dsc.DataSource):
     created.
     """
 
-    def __init__(self, session):
+    def __init__(self, reader, session):
         super(IncrementalSource, self).__init__(config=None)
         self._max_records_encountered = False
         self._encounter_start = None
         self._encounter_end = None
-        self._json_cache = json_lookup
         self._session = session
+        self._metadata_reader = reader
         self._logger = logging.getLogger(__name__)
 
     def get_time_box_work(self, prev_exec_time, exec_time):
@@ -113,7 +112,6 @@ class IncrementalSource(dsc.DataSource):
         self._logger.debug(
             f'Begin get_time_box_work from {prev_exec_time} to {exec_time}.'
         )
-        self._json_cache.flush()
         # datetime format 2019-12-01T00:00:00.000000
         prev_dt_str = mc.make_time_tz(prev_exec_time).strftime(
             mc.ISO_8601_FORMAT
@@ -152,9 +150,11 @@ class IncrementalSource(dsc.DataSource):
                                     file_name, entrytime.timestamp()
                                 )
                             )
-                            self._json_cache.add(
-                                entry, remove_extensions(file_name)
+                            uri = mc.build_uri(COLLECTION, file_name, SCHEME)
+                            self._metadata_reader.add_json_record(
+                                uri, entry
                             )
+                            self._metadata_read.add_file_info_record(uri)
         finally:
             if response is not None:
                 response.close()

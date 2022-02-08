@@ -83,11 +83,8 @@ from caom2.diff import get_differences
 from caom2pipe import astro_composable as ac
 from caom2pipe import manage_composable as mc
 
-import gem2caom2.external_metadata as em
-from gem2caom2 import composable
+from gem2caom2 import composable, obs_file_relationship
 from gem2caom2.gem_name import GemName
-from gem2caom2.obs_file_relationship import repair_data_label
-from gem2caom2.obs_metadata import json_lookup
 from gem2caom2.util import Inst
 
 
@@ -1130,6 +1127,7 @@ def mock_get_file_info(file_id):
 
 
 def mock_get_obs_metadata(file_id):
+    file_id = obs_file_relationship.remove_extensions(file_id.split('/')[-1])
     try:
         fname = f'{TEST_DATA_DIR}/json/{file_id}.json'
         if os.path.exists(fname):
@@ -1143,11 +1141,11 @@ def mock_get_obs_metadata(file_id):
                         file_id, 'test_data_label'
                     ),
                     'filename': f'{file_id}.fits.bz2',
+                    'name': f'{file_id}.fits.bz2',
                     'lastmod': '2020-02-25T20:36:31.230',
                     'instrument': 'GMOS-S',
                 },
             ]
-        json_lookup.add(y, file_id)
         return y
     except Exception as e:
         logging.error(e)
@@ -1155,14 +1153,17 @@ def mock_get_obs_metadata(file_id):
         logging.error(tb)
 
 
-def mock_get_dm(uri):
+def mock_get_data_label(uri):
     ignore_scheme, ignore_collection, f_name = mc.decompose_uri(uri)
     file_id = GemName.remove_extensions(f_name)
-    mock_get_obs_metadata(file_id)
-    return em.DefiningMetadata(
-        Inst(em.repair_instrument(json_lookup.get('instrument'))),
-        repair_data_label(file_id, json_lookup.get('data_label')),
-    )
+    temp = mock_get_obs_metadata(file_id)
+    result = None
+    for ii in temp:
+        y = obs_file_relationship.remove_extensions(ii.get('filename'))
+        if y == file_id:
+            result = ii.get('data_label')
+            break
+    return result
 
 
 class Object:
@@ -1374,7 +1375,6 @@ def mock_get_node(uri, **kwargs):
 
 
 def _mock_headers(file_id):
-    logging.error(f'am I here? {file_id}')
     test_fqn = None
     if isinstance(file_id, GemName):
         # the case if StorageClientReader is being mocked

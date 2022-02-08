@@ -73,15 +73,12 @@ from tempfile import TemporaryDirectory
 
 import pytest
 
-import gem2caom2.external_metadata as em
-
 from cadcdata import FileInfo
 from caom2.diff import get_differences
-from gem2caom2 import builder, fits2caom2_augmentation, gemini_reader
+from gem2caom2 import builder, fits2caom2_augmentation, gemini_metadata
 from gem2caom2.util import Inst
 from caom2pipe import astro_composable as ac
 from caom2pipe import manage_composable as mc
-from caom2pipe import reader_composable as rdc
 
 from unittest.mock import patch, Mock
 import gem_mocks
@@ -134,11 +131,9 @@ def pytest_generate_tests(metafunc):
 @patch('caom2pipe.astro_composable.get_vo_table_session')
 @patch('gem2caom2.program_metadata.get_pi_metadata')
 @patch('cadcutils.net.ws.WsCapabilities.get_access_url')
-@patch('gemProc2caom2.builder.CadcTapClient')
-@patch('gem2caom2.external_metadata.CadcTapClient')
+@patch('gem2caom2.gemini_metadata.ProvenanceFinder')
 def test_visitor(
-    em_tap_client_mock,
-    builder_tap_client_mock,
+    pf_mock,
     access_url,
     get_pi_mock,
     svofps_mock,
@@ -150,6 +145,7 @@ def test_visitor(
     get_pi_mock.side_effect = gem_mocks.mock_get_pi_metadata
     svofps_mock.side_effect = gem_mocks.mock_get_votable
     headers_mock.side_effect = gem_mocks._mock_headers
+    pf_mock.get.side_effect = gem_mocks.mock_get_data_label
 
     with TemporaryDirectory() as tmp_dir_name:
         test_config = mc.Config()
@@ -162,8 +158,9 @@ def test_visitor(
         with open(test_config.proxy_fqn, 'w') as f:
             f.write('test content')
 
-        em.get_gofr(test_config)
-        metadata_reader = gemini_reader.GeminiFileMetadataReader(Mock())
+        metadata_reader = gemini_metadata.GeminiFileMetadataReader(
+            Mock(), pf_mock
+        )
         headers = ac.make_headers_from_file(test_name)
         test_file_id = mc.StorageName.remove_extensions(
             os.path.basename(test_name)
@@ -174,7 +171,7 @@ def test_visitor(
         metadata_reader._headers = {test_uri: headers}
         metadata_reader._file_info = {test_uri: file_info}
         metadata_reader._json_metadata = {test_uri: json_metadata}
-        test_metadata = gemini_reader.GeminiMetadataLookup(metadata_reader)
+        test_metadata = gemini_metadata.GeminiMetadataLookup(metadata_reader)
         test_builder = builder.GemObsIDBuilder(
             test_config, metadata_reader, test_metadata
         )

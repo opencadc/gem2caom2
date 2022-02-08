@@ -79,10 +79,10 @@ from caom2pipe import data_source_composable as dsc
 from caom2pipe import manage_composable as mc
 from caom2pipe import reader_composable as rdc
 from caom2pipe import run_composable as rc
-from gem2caom2 import main_app, preview_augmentation, external_metadata
+from gem2caom2 import main_app, preview_augmentation
 from gem2caom2 import pull_augmentation, data_source, builder
 from gem2caom2 import cleanup_augmentation, fits2caom2_augmentation
-from gem2caom2 import gemini_reader
+from gem2caom2 import gemini_metadata
 
 DATA_VISITORS = []
 META_VISITORS = [
@@ -114,7 +114,7 @@ def _run():
         meta_visitors = META_VISITORS
         clients = clc.ClientCollection(config)
         metadata_reader = rdc.StorageClientReader(clients.data_client)
-    reader_lookup = gemini_reader.GeminiMetadataLookup(metadata_reader)
+    reader_lookup = gemini_metadata.GeminiMetadataLookup(metadata_reader)
     name_builder = builder.GemObsIDBuilder(
         config, metadata_reader, reader_lookup
     )
@@ -161,7 +161,6 @@ def _run_single():
         storage_name = builder.GemObsIDBuilder(config).build(sys.argv[1])
     else:
         raise mc.CadcException('No code to handle running GEM by obs id.')
-    external_metadata.init_global(config=config)
     return rc.run_single(
         config,
         storage_name,
@@ -200,10 +199,9 @@ def _run_by_public():
     """
     config = mc.Config()
     config.get_executors()
-    external_metadata.init_global(config=config)
     session = mc.get_endpoint_session()
-    metadata_reader = gemini_reader.GeminiMetadataReader(session)
-    reader_lookup = gemini_reader.GeminiMetadataLookup(metadata_reader)
+    metadata_reader = gemini_metadata.GeminiMetadataReader(session)
+    reader_lookup = gemini_metadata.GeminiMetadataLookup(metadata_reader)
     reader_lookup.reader = metadata_reader
     name_builder = builder.GemObsIDBuilder(
         config, metadata_reader, reader_lookup
@@ -252,8 +250,8 @@ def _run_state():
     end_timestamp_dt = mc.make_time_tz(end_timestamp_s)
     logging.info(f'{main_app.APPLICATION} will end at {end_timestamp_s}')
     session = mc.get_endpoint_session()
-    metadata_reader = gemini_reader.GeminiMetadataReader(session)
-    reader_lookup = gemini_reader.GeminiMetadataLookup(metadata_reader)
+    metadata_reader = gemini_metadata.GeminiMetadataReader(session)
+    reader_lookup = gemini_metadata.GeminiMetadataLookup(metadata_reader)
     reader_lookup.reader = metadata_reader
     name_builder = builder.GemObsIDBuilder(
         config, metadata_reader, reader_lookup

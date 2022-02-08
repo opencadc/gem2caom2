@@ -45,6 +45,7 @@
           <caom2:productType>science</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>
+          <caom2:contentLength>7761</caom2:contentLength>
           <caom2:contentChecksum>md5:601c29a81410ef985e8f8a0e90f57052</caom2:contentChecksum>
           <caom2:parts>
             <caom2:part caom2:id="30f09c81-276a-4103-a1ab-f839cbad513b">
@@ -157,6 +158,7 @@
           <caom2:productType>science</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>
+          <caom2:contentLength>7761</caom2:contentLength>
           <caom2:contentChecksum>md5:4f0a662fe78a4e1c844371fcac90dfef</caom2:contentChecksum>
           <caom2:parts>
             <caom2:part caom2:id="31f8ccdb-d6e4-46ab-a434-ed913982035e">

@@ -75,8 +75,7 @@ from mock import Mock, patch
 from caom2pipe import manage_composable as mc
 from caom2pipe import reader_composable as rdc
 from gem2caom2 import SCHEME, V_SCHEME, COLLECTION
-from gem2caom2 import builder, gemini_reader
-from gem2caom2 import external_metadata as em
+from gem2caom2 import builder, gemini_metadata
 
 import gem_mocks
 

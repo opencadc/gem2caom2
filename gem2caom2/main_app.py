@@ -95,7 +95,7 @@ import math
 import re
 import traceback
 
-from caom2 import Observation, CalibrationLevel, Chunk, ProductType
+from caom2 import CalibrationLevel, Chunk, ProductType
 from caom2 import TypedList, DerivedObservation, DataProductType
 from caom2 import ObservationIntentType, TargetType, CoordAxis1D, Axis
 from caom2 import SpectralWCS, RefCoord, CoordRange1D
@@ -104,11 +104,10 @@ from caom2pipe import manage_composable as mc
 from caom2pipe import caom_composable as cc
 from caom2pipe import astro_composable as ac
 
-import gem2caom2.external_metadata as em
 import gem2caom2.obs_file_relationship as ofr
 from gem2caom2.gem_name import GemName
 from gem2caom2 import program_metadata, svofps
-from gem2caom2.gemini_reader import GeminiMetadataLookup
+from gem2caom2.gemini_metadata import GeminiMetadataLookup, value_repair
 from gem2caom2.util import Inst, COLLECTION, SCHEME
 
 
@@ -180,12 +179,6 @@ class GeminiMapping(cc.TelescopeMapping):
         self._instrument = instrument
         self._lookup = lookup
         self.fm = None
-
-    def get_time_delta(self, ext):
-        exptime = self.get_exposure(ext)
-        if exptime is None:
-            return None
-        return mc.to_float(exptime) / (24.0 * 3600.0)
 
     def get_calibration_level(self, ext):
         result = CalibrationLevel.RAW_STANDARD
@@ -398,8 +391,6 @@ class GeminiMapping(cc.TelescopeMapping):
         Spectroscopy), MOS (Multi Object Spectroscopy) or IFS (Integral Field
         Spectroscopy)". There is likely no reason to change these values but
         simply use them for the value of Instrument.keywords.
-        :param uri:
-        :return:
         """
         return self._lookup.mode(self._storage_name.file_uri)
 
@@ -415,7 +406,7 @@ class GeminiMapping(cc.TelescopeMapping):
         return self._get_provenance_breakout(ext, breakout)
 
     def get_provenance_producer(self, ext):
-        cal_level = self.get_calibration_level(self._storage_name.file_uri)
+        cal_level = self.get_calibration_level(ext)
         if cal_level in [
             CalibrationLevel.CALIBRATED,
             CalibrationLevel.PRODUCT,
@@ -442,7 +433,7 @@ class GeminiMapping(cc.TelescopeMapping):
 
     def _get_provenance_breakout(self, ext, fn):
         result = None
-        cal_level = self.get_calibration_level()
+        cal_level = self.get_calibration_level(ext)
         if cal_level in [
             CalibrationLevel.CALIBRATED,
             CalibrationLevel.PRODUCT,
@@ -504,12 +495,15 @@ class GeminiMapping(cc.TelescopeMapping):
             result = TargetType.OBJECT
         return result
 
-    def get_time_function_val(self, header):
+    def get_time_delta(self, ext):
+        exptime = self.get_exposure(ext)
+        if exptime is None:
+            return None
+        return mc.to_float(exptime) / (24.0 * 3600.0)
+
+    def get_time_function_val(self, ext):
         """
         Calculate the Chunk Time WCS function value, in 'mjd'.
-
-        :param header:  The FITS header for the current extension (not used).
-        :return: The Time WCS value from JSON Summary Metadata.
         """
         time_string = self._lookup.ut_datetime(self._storage_name.file_uri)
         return ac.get_datetime(time_string)
@@ -521,10 +515,6 @@ class GeminiMapping(cc.TelescopeMapping):
         self._logger.debug(
             f'Begin accumulate_fits_bp for {self._storage_name.file_id}.'
         )
-        em.defining_metadata_finder.get_obs_metadata(
-            self._storage_name.file_id
-        )
-
         bp.set('Observation.type', 'get_obs_type()')
         bp.set('Observation.intent', 'get_obs_intent()')
         bp.set('Observation.metaRelease', 'get_meta_release()')
@@ -534,10 +524,7 @@ class GeminiMapping(cc.TelescopeMapping):
 
         bp.clear('Observation.algorithm.name')
         bp.set('Observation.instrument.name', self._instrument.value)
-        # instrument = em.get_instrument(self._storage_name.file_uri)
-        # logging.error(self._metadata_reader.json_metadata)
         telescope = self._lookup.telescope(self._storage_name.file_uri)
-        logging.error('after')
         if telescope is not None:
             if telescope is not None and 'North' in telescope:
                 x, y, z = ac.get_location(19.823806, -155.46906, 4213.0)
@@ -674,10 +661,11 @@ class GeminiMapping(cc.TelescopeMapping):
 
                 for artifact in plane.artifacts.values():
                     self._should_artifact_be_renamed(artifact)
+                    if self._storage_name.file_uri != artifact.uri:
+                        continue
+                    update_artifact_meta(artifact, file_info)
                     if GemName.is_preview(artifact.uri):
                         continue
-
-                    update_artifact_meta(artifact, file_info)
                     processed = ofr.is_processed(self._storage_name.file_name)
                     if self._instrument in [
                         Inst.MICHELLE,
@@ -720,10 +708,6 @@ class GeminiMapping(cc.TelescopeMapping):
 
                             # energy WCS
                             filter_name = self._get_filter_name(int(part))
-                            self._logger.debug(
-                                f'Found filter "{filter_name}" for '
-                                f'{self._storage_name.obs_id}.'
-                            )
                             if self._reset_energy(
                                 observation.type, filter_name
                             ):
@@ -752,7 +736,7 @@ class GeminiMapping(cc.TelescopeMapping):
                         )
                         cc.update_plane_provenance_from_values(
                             plane,
-                            _repair_provenance_value,
+                            self._repair_provenance_value,
                             repaired_values,
                             COLLECTION,
                             observation.observation_id,
@@ -787,14 +771,14 @@ class GeminiMapping(cc.TelescopeMapping):
             if isinstance(observation, DerivedObservation):
                 cc.update_observation_members(observation)
 
-            em.value_repair.repair(observation)
+            value_repair.repair(observation)
         except Exception as e:
             self._logger.error(
                 f'Error {e} for {observation.observation_id} instrument '
                 f'{self._instrument}'
             )
             tb = traceback.format_exc()
-            self._logger.debug(tb)
+            self._logger.error(tb)
             raise mc.CadcException(e)
         self._logger.debug('Done update.')
         return observation
@@ -878,8 +862,7 @@ class GeminiMapping(cc.TelescopeMapping):
         if filter_name is None or len(filter_name.strip()) == 0:
             result = self._search_through_keys(ext, ['FILTER'])
             filter_name = result
-            logging.error(f'hello {result}')
-        self._logger.info(
+        self._logger.debug(
             f'Filter names are "{filter_name}" in {self._storage_name.obs_id}'
         )
         return filter_name
@@ -941,6 +924,30 @@ class GeminiMapping(cc.TelescopeMapping):
             if wl_min > w_min:
                 w_min = wl_min
         return w_max, w_min
+
+    def _repair_provenance_value(self, value, obs_id):
+        self._logger.debug(
+            f'Being _repair_provenance_value of {value} for {obs_id}.'
+        )
+        prov_file_id = value
+        try:
+            uri = mc.build_uri(COLLECTION, prov_file_id, SCHEME)
+            # TODO - what to do about the data label search here? there's no
+            # file metadata, it would be _most_ efficient to do this from CADC
+            # so need to re-use this code somehow :(
+            prov_obs_id = self._metadata_reader.provenance_finder.get(uri)
+            logging.error(prov_obs_id)
+        except mc.CadcException as e:
+            # the file id probably does not exist at on disk, at CADC, or at
+            # Gemini, ignore, because it's provenance
+            self._logger.warning(f'Failed to find {prov_file_id}')
+            # DB 01-06-21 - use not found for the DATALAB/observationID value
+            # so it's easy to find in the database and let Gemini know.
+            prov_obs_id = 'not_found'
+        self._logger.debug(
+            f'End _repair_provenance_value. {prov_obs_id} {prov_file_id}'
+        )
+        return prov_obs_id, prov_file_id
 
     def _reset_energy(self, observation_type, filter_name):
         result = False
@@ -1170,7 +1177,7 @@ def _repair_provenance_value(value, obs_id):
         # TODO - what to do about the data label search here? there's no
         # file metadata, it would be _most_ efficient to do this from CADC
         # so need to re-use this code somehow :(
-        temp = em.defining_metadata_finder.get(uri)
+        temp = provenance_finder.get(uri)
         prov_obs_id = temp.data_label
     except mc.CadcException as e:
         # the file id probably does not exist at Gemini, ignore, because
@@ -1816,15 +1823,22 @@ class Flamingos(GeminiMapping):
                     and c_delt2 is not None
                     and c_rota1 is not None
                 ):
-                    chunk.position.axis.function.cd11 = c_delt1 * math.cos(c_rota1)
+                    chunk.position.axis.function.cd11 = c_delt1 * math.cos(
+                        c_rota1
+                    )
                     chunk.position.axis.function.cd12 = -c_delt2 * math.sin(
                         c_rota1
                     )
-                    chunk.position.axis.function.cd21 = c_delt1 * math.sin(c_rota1)
-                    chunk.position.axis.function.cd22 = c_delt2 * math.cos(c_rota1)
+                    chunk.position.axis.function.cd21 = c_delt1 * math.sin(
+                        c_rota1
+                    )
+                    chunk.position.axis.function.cd22 = c_delt2 * math.cos(
+                        c_rota1
+                    )
                 else:
                     self._logger.info(
-                        f'Missing spatial wcs inputs for {self._storage_name.obs_id}'
+                        f'Missing spatial wcs inputs for '
+                        f'{self._storage_name.obs_id}'
                     )
                     chunk.position.axis.function.cd11 = None
                     chunk.position.axis.function.cd12 = None
@@ -1842,7 +1856,9 @@ class Flamingos(GeminiMapping):
                 )
                 cc.reset_position(chunk)
         else:
-            self._logger.info(f'Missing spatial wcs for {self._storage_name.obs_id}')
+            self._logger.info(
+                f'Missing spatial wcs for {self._storage_name.obs_id}'
+            )
 
 
 class Fox(GeminiMapping):
@@ -1951,7 +1967,7 @@ class Gmos(GeminiMapping):
         if self.get_obs_type(ext) == 'MASK':
             result = 0.0
         else:
-            result = super(Gmos, self).get_exposure(ext)
+            result = super().get_exposure(ext)
         return result
 
     def get_time_delta(self, ext):
@@ -1959,7 +1975,7 @@ class Gmos(GeminiMapping):
             # DB - 05-03-19 - delta hardcoded to 0
             exptime = 0.0
         else:
-            exptime = super(Gmos, self).get_time_delta(ext)
+            exptime = super().get_time_delta(ext)
         return exptime
 
     def _reset_position(self, observation_type):
@@ -3340,7 +3356,7 @@ class Igrins(GeminiMapping):
                 f'{self._instrument}: Mystery filter {filter_name} for '
                 f'{self._storage_name.obs_id}'
             )
-        self.build_chunk_energy(chunk, filter_name)
+        self._build_chunk_energy(chunk, filter_name)
         self._logger.debug('End _update_energy')
 
     def _update_position(self, part, chunk, ext):
@@ -3370,9 +3386,9 @@ class Igrins(GeminiMapping):
         if chunk is None:
             chunk = Chunk()
             part.chunks.append(chunk)
-        wcs_parser.augment_position(self.chunk)
-        self.chunk.position_axis_1 = 1
-        self.chunk.position_axis_2 = 2
+        wcs_parser.augment_position(chunk)
+        chunk.position_axis_1 = 1
+        chunk.position_axis_2 = 2
         self._logger.debug('End _update_position')
 
 
@@ -4605,7 +4621,7 @@ class Phoenix(GeminiMapping):
         self._logger.debug('End update_energy')
 
     def _update_position(self, part, chunk, ext):
-        self._logger.debug('Begin update_position')
+        self._logger.debug('Begin _update_position')
         header = self._headers[ext]
         header['CTYPE1'] = 'RA---TAN'
         header['CTYPE2'] = 'DEC--TAN'
@@ -4635,7 +4651,7 @@ class Phoenix(GeminiMapping):
         wcs_parser.augment_position(chunk)
         chunk.position_axis_1 = 1
         chunk.position_axis_2 = 2
-        self._logger.debug('End update_position')
+        self._logger.debug('End _update_position')
 
 
 class Texes(GeminiMapping):

@@ -72,7 +72,6 @@ from mock import patch
 import gem_mocks
 from caom2pipe import manage_composable as mc
 from gem2caom2 import GemName, SCHEME, COLLECTION
-from gem2caom2 import external_metadata as em
 
 
 def test_is_valid():

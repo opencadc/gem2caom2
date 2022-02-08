@@ -70,7 +70,6 @@
 from datetime import datetime
 from mock import Mock, patch
 from gem2caom2 import data_source
-from gem2caom2.obs_metadata import json_lookup
 import gem_mocks
 
 

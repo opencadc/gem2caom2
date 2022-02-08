@@ -72,11 +72,8 @@ import pytest
 
 from tempfile import TemporaryDirectory
 from caom2.diff import get_differences
-from cadcdata import FileInfo
-from caom2pipe import astro_composable as ac
 from caom2pipe import manage_composable as mc
-from caom2pipe import reader_composable as rdc
-from gem2caom2 import external_metadata, builder, gemini_reader
+from gem2caom2 import builder, gemini_metadata
 from gem2caom2 import fits2caom2_augmentation
 
 from unittest.mock import patch, Mock
@@ -131,28 +128,30 @@ def pytest_generate_tests(metafunc):
     metafunc.parametrize('test_name', obs_id_list)
 
 
+@patch('caom2utils.data_util.get_file_type')
+@patch('gem2caom2.gemini_metadata.AbstractGeminiMetadataReader._retrieve_json')
 @patch('caom2pipe.reader_composable.FileMetadataReader._retrieve_headers')
 @patch('caom2pipe.astro_composable.get_vo_table_session')
-@patch('gem2caom2.external_metadata.DefiningMetadataFinder')
+@patch('gem2caom2.gemini_metadata.ProvenanceFinder')
 @patch('gem2caom2.program_metadata.get_pi_metadata')
 @patch('cadcutils.net.ws.WsCapabilities.get_access_url')
-@patch('gemProc2caom2.builder.CadcTapClient')
-@patch('gem2caom2.external_metadata.CadcTapClient')
 def test_visitor(
-    em_tap_client_mock,
-    builder_tap_client_mock,
     access_url,
     get_pi_mock,
-    dmf_mock,
+    pf_mock,
     svofps_mock,
     retrieve_headers_mock,
+    json_mock,
+    file_type_mock,
     test_name,
 ):
     access_url.return_value = 'https://localhost:8080'
     get_pi_mock.side_effect = gem_mocks.mock_get_pi_metadata
-    dmf_mock.return_value.get.side_effect = gem_mocks.mock_get_dm
+    pf_mock.get.side_effect = gem_mocks.mock_get_data_label
     svofps_mock.side_effect = gem_mocks.mock_get_votable
     retrieve_headers_mock.side_effect = gem_mocks._mock_headers
+    json_mock.side_effect = gem_mocks.mock_get_obs_metadata
+    file_type_mock.return_value = 'application/fits'
 
     with TemporaryDirectory() as tmp_dir_name:
         test_config = mc.Config()
@@ -165,7 +164,6 @@ def test_visitor(
         with open(test_config.proxy_fqn, 'w') as f:
             f.write('test content')
 
-        external_metadata.get_gofr(test_config)
         observation = None
         expected_fqn = (
             f'{gem_mocks.TEST_DATA_DIR}/multi_plane/'
@@ -178,25 +176,23 @@ def test_visitor(
             source_name = (
                 f'{gem_mocks.TEST_DATA_DIR}/multi_plane/{f_name}.fits.header'
             )
-            metadata_reader = rdc.FileMetadataReader()
-            test_metadata = gemini_reader.GeminiMetadataLookup(metadata_reader)
+            metadata_reader = gemini_metadata.GeminiFileMetadataReader(
+                Mock(), pf_mock
+            )
+            test_metadata = gemini_metadata.GeminiMetadataLookup(
+                metadata_reader
+            )
             test_builder = builder.GemObsIDBuilder(
                 test_config, metadata_reader, test_metadata
             )
             storage_name = test_builder.build(source_name)
             storage_name.source_names = [source_name]
-            file_info = FileInfo(
-                id=storage_name.file_uri, file_type='application/fits'
-            )
-            headers = ac.make_headers_from_file(source_name)
-            metadata_reader._headers = {storage_name.file_uri: headers}
-            metadata_reader._file_info = {storage_name.file_uri: file_info}
             kwargs = {
                 'storage_name': storage_name,
                 'metadata_reader': metadata_reader,
             }
             logging.getLogger('caom2utils.fits2caom2').setLevel(logging.INFO)
-            logging.getLogger('TEXES').setLevel(logging.INFO)
+            logging.getLogger('Texes').setLevel(logging.INFO)
             logging.getLogger('root').setLevel(logging.INFO)
             observation = fits2caom2_augmentation.visit(observation, **kwargs)
 

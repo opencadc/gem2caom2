@@ -76,7 +76,7 @@ from caom2.diff import get_differences
 from caom2pipe import astro_composable as ac
 from caom2pipe import manage_composable as mc
 from caom2pipe import reader_composable as rdc
-from gem2caom2 import external_metadata, gem_name, main_app
+from gem2caom2 import gem_name, main_app
 from gem2caom2 import fits2caom2_augmentation
 
 from mock import patch
@@ -88,7 +88,7 @@ import pytest
 @pytest.mark.skip('')
 @patch('cadcutils.net.ws.WsCapabilities.get_access_url')
 @patch('caom2utils.fits2caom2.get_external_headers')
-@patch('gem2caom2.external_metadata.DefiningMetadataFinder')
+@patch('gem2caom2.gemini_metadata.ProvenanceFinder')
 def test_unauthorized(get_obs_mock, get_external_mock, cap_mock):
     # test case is unauthorized to retrieve metadata from
     # archive.gemini.edu
@@ -100,7 +100,6 @@ def test_unauthorized(get_obs_mock, get_external_mock, cap_mock):
     test_config.get_executors()
     test_config.collection = gem_name.COLLECTION
     test_config.proxy_fqn = f'{gem_mocks.TEST_DATA_DIR}/cadcproxy.pem'
-    external_metadata.init_global(test_config)
 
     test_f_name = 'S20210518S0022.fits'
     test_obs_id = 'GS-2021A-Q-777-1-001'
@@ -130,11 +129,11 @@ def test_unauthorized(get_obs_mock, get_external_mock, cap_mock):
 @pytest.mark.skip('')
 @patch('caom2utils.fits2caom2.get_external_headers')
 @patch('caom2pipe.astro_composable.get_vo_table_session')
-@patch('gem2caom2.external_metadata.DefiningMetadataFinder')
+@patch('gem2caom2.gemini_metadata.ProvenanceFinder')
 @patch('gem2caom2.program_metadata.get_pi_metadata')
 @patch('cadcutils.net.ws.WsCapabilities.get_access_url')
 @patch('gemProc2caom2.builder.CadcTapClient')
-@patch('gem2caom2.external_metadata.CadcTapClient')
+@patch('gem2caom2.gemini_metadata.CadcTapClient')
 def test_visitor(
     em_tap_client_mock,
     builder_tap_client_mock,
@@ -171,7 +170,6 @@ def test_visitor(
         with open(test_config.proxy_fqn, 'w') as f:
             f.write('test content')
 
-        external_metadata.get_gofr(test_config)
         observation = None
         expected_fqn = (
             f'{gem_mocks.TEST_DATA_DIR}/GMOS/{storage_name.product_id}'
