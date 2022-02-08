@@ -23,8 +23,4 @@ if [[ ! -e ${PWD}/state.yml ]]; then
   fi
 fi
 
-if [[ ! -e ${PWD}/cache.yml ]]; then
-  cp /usr/local/.config/cache.yml ${PWD}
-fi
-
 exec "${@}"
