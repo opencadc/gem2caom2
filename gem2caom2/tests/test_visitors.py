@@ -130,13 +130,12 @@ def test_preview_augment_known_no_preview():
             cadc_client_mock.return_value.data_get.return_value = (
                 mc.CadcException('test')
             )
-            result = preview_augmentation.visit(obs, **kwargs)
+            obs = preview_augmentation.visit(obs, **kwargs)
             assert not http_mock.called, 'http mock should not be called'
             assert not ad_put_mock.called, 'ad put mock should not be called'
             assert not art_mock.called, 'art mock should not be called'
             assert not exec_mock.called, 'exec mock should not be called'
-            assert result is not None, 'expect a result'
-            assert result['artifacts'] == 0, 'no artifacts should be updated'
+            assert obs is not None, 'expect a result'
             assert (
                 len(obs.planes[TEST_PRODUCT_ID].artifacts) == 1
             ), 'no new artifacts'
@@ -185,10 +184,8 @@ def test_preview_augment_unknown_no_preview():
         cadc_client_mock.get.side_effect = exceptions.UnexpectedException(
             'test'
         )
-        result = preview_augmentation.visit(obs, **kwargs)
-        assert result is not None, 'expect result'
-        # 0 because the preview artifact doesn't already exist
-        assert result['artifacts'] == 0, 'wrong result'
+        obs = preview_augmentation.visit(obs, **kwargs)
+        assert obs is not None, 'expect result'
         test_url = f'{preview_augmentation.PREVIEW_URL}{TEST_PRODUCT_ID}.fits'
         test_prev = f'{TEST_DATA_DIR}/{TEST_PRODUCT_ID}.jpg'
         http_mock.assert_called_with(test_url, test_prev), 'mock not called'
@@ -218,7 +215,7 @@ def test_pull_augmentation(http_mock):
         'observable': test_observable,
     }
 
-    result = pull_augmentation.visit(obs, **kwargs)
+    obs = pull_augmentation.visit(obs, **kwargs)
     test_url = f'{pull_augmentation.FILE_URL}/{TEST_PRODUCT_ID}.fits'
     test_prev = f'{TEST_DATA_DIR}/{TEST_PRODUCT_ID}.fits'
     http_mock.assert_called_with(test_url, test_prev), 'mock not called'
@@ -226,8 +223,7 @@ def test_pull_augmentation(http_mock):
     cadc_client_mock.put.assert_called_with(
         TEST_DATA_DIR, 'gemini:GEMINI/GN2001BQ013-04.fits'
     ), 'wrong put args'
-    assert result is not None, 'expect a result'
-    assert result['observation'] == 1, 'updated metadata: change artifact uri'
+    assert obs is not None, 'expect a result'
     assert len(obs.planes[TEST_PRODUCT_ID].artifacts) == 1, 'no new artifacts'
     try:
         ignore = obs.planes[TEST_PRODUCT_ID].artifacts[test_uri]
@@ -262,9 +258,8 @@ def test_preview_augment_delete_preview():
         'stream': 'stream',
         'observable': test_observable,
     }
-    result = preview_augmentation.visit(obs, **kwargs)
-    assert result is not None, 'expect a result'
-    assert result['artifacts'] == 1, 'wrong result'
+    obs = preview_augmentation.visit(obs, **kwargs)
+    assert obs is not None, 'expect a result'
     assert len(obs.planes[test_product_id].artifacts) == 1, 'post condition'
 
 
@@ -297,7 +292,7 @@ def test_preview_augment(http_mock):
             'test'
         )
         http_mock.side_effect = _get_mock
-        result = preview_augmentation.visit(obs, **kwargs)
+        obs = preview_augmentation.visit(obs, **kwargs)
         test_url = (
             f'{preview_augmentation.PREVIEW_URL}' f'{TEST_PRODUCT_ID}.fits'
         )
@@ -307,8 +302,7 @@ def test_preview_augment(http_mock):
         cadc_client_mock.put.assert_called_with(
             '/test_files', 'cadc:GEMINI/GN2001BQ013-04_th.jpg',
         ), 'wrong put arguments'
-        assert result is not None, 'expect a result'
-        assert result['artifacts'] == 2, 'artifacts should be added'
+        assert obs is not None, 'expect a result'
         assert (
             len(obs.planes[TEST_PRODUCT_ID].artifacts) == 3
         ), 'two new artifacts'
@@ -366,15 +360,14 @@ def test_preview_augment_failure(http_mock):
             'test'
         )
         http_mock.side_effect = _failure_mock
-        result = preview_augmentation.visit(obs, **kwargs)
+        obs = preview_augmentation.visit(obs, **kwargs)
         test_url = (
             f'{preview_augmentation.PREVIEW_URL}' f'{TEST_PRODUCT_ID}.fits'
         )
         assert http_mock.called, 'http mock should be called'
         http_mock.assert_called_with(test_url, test_prev), 'mock not called'
         assert not cadc_client_mock.put.called, 'put mock should not be called'
-        assert result is not None, 'expect a result'
-        assert result['artifacts'] == 0, 'artifacts should not be added'
+        assert obs is not None, 'expect a result'
         assert (
                 len(obs.planes[TEST_PRODUCT_ID].artifacts) == 1
         ), 'same as the pre-condition'
@@ -395,10 +388,8 @@ def test_preview_augment_failure(http_mock):
         assert http_mock.call_count == 1, 'wrong number of calls'
         # now try again to generate the preview, and ensure that the
         # rejected tracking is working
-        result = preview_augmentation.visit(obs, **kwargs)
-        assert result is not None, 'expect a result the second time'
-        assert http_mock.call_count == 1, 'wrong number of calls'
-        assert result['artifacts'] == 0, 'artifacts not added second time'
+        obs = preview_augmentation.visit(obs, **kwargs)
+        assert obs is not None, 'expect a result the second time'
         assert http_mock.call_count == 1, 'never even tried to retrieve it'
     finally:
         if os.path.exists(test_prev):
@@ -415,12 +406,8 @@ def test_cleanup():
     assert (
         test_artifact_id in initial_all_artifact_keys
     ), 'wrong initial conditions'
-    test_result = cleanup_augmentation.visit(obs, **test_kwargs)
-    assert test_result is not None, 'expect a result'
-    assert test_result.get('artifacts') is not None, 'expect artifact count'
-    assert test_result.get('artifacts') == 3, 'wrong artifact count'
-    assert test_result.get('planes') is not None, 'expect plane count'
-    assert test_result.get('planes') == 1, 'wrong plane count'
+    obs = cleanup_augmentation.visit(obs, **test_kwargs)
+    assert obs is not None, 'expect a result'
     post_all_artifact_keys = cc.get_all_artifact_keys(obs)
     assert (
         test_artifact_id not in post_all_artifact_keys
@@ -428,8 +415,7 @@ def test_cleanup():
 
     # test that cleaning up a clean observation won't break that
     # observation
-    test_result = cleanup_augmentation.visit(obs, **test_kwargs)
-    _check_cleanup_zero_results(test_result)
+    obs = cleanup_augmentation.visit(obs, **test_kwargs)
 
     # test that cleanup doesn't occur where it shouldn't
     test_no_cleanup_file = (
@@ -438,32 +424,20 @@ def test_cleanup():
     no_cleanup_obs = mc.read_obs_from_file(test_no_cleanup_file)
     all_artifact_keys = cc.get_all_artifact_keys(no_cleanup_obs)
     assert len(all_artifact_keys) == 6, 'wrong no cleanup initial conditions'
-    test_no_cleanup_result = cleanup_augmentation.visit(
-        no_cleanup_obs, **test_kwargs
-    )
+    no_cleanup_obs = cleanup_augmentation.visit(no_cleanup_obs, **test_kwargs)
     all_artifact_keys = cc.get_all_artifact_keys(no_cleanup_obs)
     assert (
         len(all_artifact_keys) == 6
     ), 'wrong no cleanup post conditions, should not be different'
-    _check_cleanup_zero_results(test_no_cleanup_result)
 
     # test a FOX observation, because it's odd to begin with
     test_fox_file = f'{TEST_DATA_DIR}/cleanup_fox_aug_start.xml'
     fox_obs = mc.read_obs_from_file(test_fox_file)
     all_artifact_keys = cc.get_all_artifact_keys(fox_obs)
     initial_fox_length = len(all_artifact_keys)
-    test_fox_result = cleanup_augmentation.visit(fox_obs, **test_kwargs)
+    fox_obs = cleanup_augmentation.visit(fox_obs, **test_kwargs)
     post_fox_length = len(cc.get_all_artifact_keys(fox_obs))
     assert initial_fox_length == post_fox_length, 'wrong fox post conditions'
-    _check_cleanup_zero_results(test_fox_result)
-
-
-def _check_cleanup_zero_results(test_result):
-    assert test_result is not None, 'expect a result'
-    assert test_result.get('artifacts') is not None, 'expect artifact count'
-    assert test_result.get('artifacts') == 0, 'wrong artifact count'
-    assert test_result.get('planes') is not None, 'expect plane count'
-    assert test_result.get('planes') == 0, 'wrong plane count'
 
 
 def _get_mock(url_ignore, fqn_ignore):

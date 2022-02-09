@@ -20,8 +20,6 @@ RUN pip install bs4 \
 
 WORKDIR /usr/src/app
 
-RUN mkdir /app && mkdir /app/data
-
 ARG OPENCADC_BRANCH=master
 ARG OPENCADC_REPO=opencadc
 ARG PIPE_BRANCH=master

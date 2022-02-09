@@ -159,4 +159,5 @@ def visit(observation, **kwargs):
                     ):
                         raise e
     logging.info(f'Completed pull visitor for {observation.observation_id}.')
-    return {'observation': count}
+    result = {'observation': count}
+    return observation
