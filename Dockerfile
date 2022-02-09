@@ -29,4 +29,8 @@ RUN pip install git+https://github.com/${OPENCADC_REPO}/caom2pipe@${OPENCADC_BRA
 
 RUN pip install git+https://github.com/${PIPE_REPO}/gem2caom2@${PIPE_BRANCH}#egg=gem2caom2
 
+RUN useradd --create-home --shell /bin/bash cadcops
+RUN chown -R cadcops:cadcops /usr/src/app
+USER cadcops
+
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
