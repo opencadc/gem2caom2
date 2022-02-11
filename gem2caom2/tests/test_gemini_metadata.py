@@ -3,7 +3,7 @@
 # ******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
 # *************  CENTRE CANADIEN DE DONNÉES ASTRONOMIQUES  **************
 #
-#  (c) 2019.                            (c) 2019.
+#  (c) 2022.                            (c) 2022.
 #  Government of Canada                 Gouvernement du Canada
 #  National Research Council            Conseil national de recherches
 #  Ottawa, Canada, K1A 0R6              Ottawa, Canada, K1A 0R6
@@ -62,65 +62,115 @@
 #  <http://www.gnu.org/licenses/>.      pas le cas, consultez :
 #                                       <http://www.gnu.org/licenses/>.
 #
-#  $Revision: 4 $
+#  : 4 $
 #
 # ***********************************************************************
 #
 
+import os
+
+from astropy.io import fits
+from astropy.table import Table
+
+from mock import patch, Mock
+
 from caom2pipe import manage_composable as mc
-from gem2caom2.obs_file_relationship import remove_extensions
-
-__all__ = ['json_lookup']
+from gem2caom2 import gemini_metadata, gem_name
 
 
-class JSONLookup(object):
-    """Treat as a singleton class to hold access to output from multiple
-    jsonsummary queries.
-
-    Hold the query results for all files associated with an observation.
-    Use the 'add' method to add a single jsonsummary query result.
-    Use the 'reset_index' method to have the 'get' method look up the
-    results associated with a particular file_id.
-    """
-
-    def __init__(self):
-        # a dictionary of all the jsonsummary results
-        # key = file_id
-        # value = respective JSON
-        self._lookup = {}
-        # pointer to which dictionary entry is of current lookup interest
-        self.current = None
-
-    def add(self, metadata, file_id):
-        # the json summary results are a list, keep the entry in the list
-        # which has the information for a particular file_id
-        if isinstance(metadata, list):
-            for entry in metadata:
-                temp_file_id = remove_extensions(entry.get('filename'))
-                if temp_file_id is not None and file_id == temp_file_id:
-                    self._lookup[file_id] = entry
-                    break
-        else:
-            self._lookup[file_id] = metadata
-        self.current = file_id
-
-    def contains(self, file_id):
-        return file_id in self._lookup.keys()
-
-    def flush(self):
-        self._lookup = {}
-
-    def get(self, look_for):
-        temp = self._lookup.get(self.current)
-        result = None
-        if temp is not None:
-            result = temp.get(look_for)
-        return result
-
-    def reset_index(self, file_id):
-        if file_id not in self._lookup:
-            raise mc.CadcException(f'ObsMetadata: Mystery file id {file_id}')
-        self.current = file_id
+import gem_mocks
 
 
-json_lookup = JSONLookup()
+@patch('gem2caom2.gemini_metadata.GeminiMetadataReader._retrieve_headers')
+@patch('gem2caom2.gemini_metadata.GeminiMetadataReader._retrieve_json')
+def test_set(retrieve_json_mock, retrieve_headers_mock):
+    retrieve_json_mock.side_effect = gem_mocks.mock_get_obs_metadata
+    test_f_name = 'N20030104S0065.fits'
+    test_obs_id = 'GN-CAL20030104-14-001'
+    retrieve_headers_mock.side_effect = gem_mocks._mock_headers
+    test_storage_name = gem_name.GemName(
+        obs_id=test_obs_id, file_name=test_f_name
+    )
+    test_subject = gemini_metadata.GeminiMetadataReader(Mock(), Mock(), Mock())
+    test_subject.set(test_storage_name)
+    assert len(test_subject._json_metadata) == 1, 'json entries'
+    assert len(test_subject._headers) == 1, 'header entries'
+    assert len(test_subject._file_info) == 1, 'file info entries'
+
+
+@patch('caom2utils.data_util.get_local_file_headers', autospec=True)
+@patch('caom2pipe.client_composable.query_tap_client', autospec=True)
+@patch('gem2caom2.gemini_metadata.ProvenanceFinder', autospec=True)
+def test_provenance_finder(get_obs_mock, caom2_mock, local_mock):
+    test_file_id = 'rN20123456S9876'
+    test_uri = f'gemini:GEMINI/{test_file_id}.fits'
+    repaired_data_label = 'GN-2012A-B-012-345-6'
+    test_data_label = f'{repaired_data_label}-R'
+
+    def _get_obs_md_mock(ignore):
+        md = [
+            {
+                'data_label': test_data_label,
+                'filename': f'{test_file_id}.fits',
+                'lastmod': '2020-02-25T20:36:31.230',
+                'instrument': 'GMOS',
+            },
+        ]
+        return repaired_data_label
+    get_obs_mock.return_value.get.side_effect = _get_obs_md_mock
+
+    def _caom2_mock(ignore1, ignore2):
+        return Table.read(
+            f'observationID,instrument_name\n'
+            f'{test_data_label},'
+            f'GMOS\n'.split('\n'),
+            format='csv',
+        )
+    caom2_mock.side_effect = _caom2_mock
+
+    def _local_mock(ignore):
+        hdr = fits.Header()
+        hdr['DATALAB'] = test_data_label
+        hdr['INSTRUME'] = 'GMOS'
+        return [hdr]
+    local_mock.side_effect = _local_mock
+    os_path_exists_orig = os.path.exists
+    os.path.exists = Mock(return_value=True)
+
+    test_config = mc.Config()
+    test_config.data_sources = [gem_mocks.TEST_DATA_DIR]
+    test_config.proxy_fqn = os.path.join(
+        gem_mocks.TEST_DATA_DIR, 'cadcproxy.pem'
+    )
+    test_config.tap_id = 'ivo://cadc.nrc.ca/test'
+
+    try:
+        for test_use_local in [True, False]:
+            for test_connected in [True, False]:
+                test_config.use_local_files = test_use_local
+                if test_connected:
+                    test_config.task_types = [mc.TaskType.VISIT]
+                else:
+                    test_config.task_types = [mc.TaskType.SCRAPE]
+
+                test_subject = gemini_metadata.ProvenanceFinder(
+                    test_config, Mock(), Mock()
+                )
+                assert test_subject is not None, (
+                    f'ctor does not work:: '
+                    f'local {test_use_local}, '
+                    f'connected {test_connected}'
+                )
+                test_result = test_subject.get(test_uri)
+                assert test_result is not None, (
+                    f'expect a result '
+                    f'local {test_use_local}, '
+                    f'connected {test_connected}'
+                )
+                assert test_result == repaired_data_label, (
+                    f'data_label should be {repaired_data_label} '
+                    f'local {test_use_local}, '
+                    f'connected {test_connected}'
+                )
+    finally:
+        os.path.exists = os_path_exists_orig

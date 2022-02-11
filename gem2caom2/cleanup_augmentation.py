@@ -128,7 +128,8 @@ def visit(observation, **kwargs):
         f'Completed cleanup for {observation.observation_id}. Removed '
         f'{artifact_count} artifacts and {plane_count} planes.'
     )
-    return {
+    result = {
         'artifacts': artifact_count,
         'planes': plane_count,
     }
+    return observation

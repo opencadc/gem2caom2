@@ -40,16 +40,16 @@
         <caom2:producer>NOAO-IRAF FITS Image Kernel July 2003</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/filepre=gS20181219S0216_flat.fits</caom2:reference>
         <caom2:inputs>
-          <caom2:planeURI>caom:GEMINI/GS-CAL20181219-4-016/S20181219S0220</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/GS-CAL20181219-4-018/S20181219S0222</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/GS-CAL20181219-4-021/S20181219S0225</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/GS-CAL20181219-4-015/S20181219S0219</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/GS-CAL20181219-4-019/S20181219S0223</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/GS-CAL20181219-4-012/S20181219S0216</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/GS-CAL20181219-4-017/S20181219S0221</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/GS-CAL20181219-4-020/S20181219S0224</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GS-CAL20181219-4-012/S20181219S0216</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GS-CAL20181219-4-015/S20181219S0219</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/GS-CAL20181219-4-013/S20181219S0217</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GS-CAL20181219-4-021/S20181219S0225</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GS-CAL20181219-4-020/S20181219S0224</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/GS-CAL20181219-4-014/S20181219S0218</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GS-CAL20181219-4-018/S20181219S0222</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GS-CAL20181219-4-016/S20181219S0220</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GS-CAL20181219-4-019/S20181219S0223</caom2:planeURI>
         </caom2:inputs>
       </caom2:provenance>
       <caom2:artifacts>
@@ -1152,14 +1152,14 @@
   </caom2:planes>
   <caom2:members>
     <caom2:observationURI>caom:GEMINI/GS-CAL20181219-4-018</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GS-CAL20181219-4-013</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GS-CAL20181219-4-015</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GS-CAL20181219-4-016</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GS-CAL20181219-4-015</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GS-CAL20181219-4-012</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GS-CAL20181219-4-020</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GS-CAL20181219-4-021</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GS-CAL20181219-4-019</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GS-CAL20181219-4-021</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GS-CAL20181219-4-020</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GS-CAL20181219-4-014</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GS-CAL20181219-4-013</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GS-CAL20181219-4-017</caom2:observationURI>
   </caom2:members>
 </caom2:Observation>

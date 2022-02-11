@@ -42,8 +42,8 @@
         <caom2:producer>NOAO-IRAF FITS Image Kernel July 2003</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/filepre=mfrgS20041117S0073_add.fits</caom2:reference>
         <caom2:inputs>
-          <caom2:planeURI>caom:GEMINI/GS-2004B-Q-42-1-002/S20041117S0074</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/GS-2004B-Q-42-1-001/S20041117S0073</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GS-2004B-Q-42-1-002/S20041117S0074</caom2:planeURI>
         </caom2:inputs>
       </caom2:provenance>
       <caom2:artifacts>

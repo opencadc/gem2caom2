@@ -1021,7 +1021,6 @@
           <caom2:productType>preview</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>image/jpeg</caom2:contentType>
-          <caom2:contentLength>38006</caom2:contentLength>
           <caom2:contentChecksum>md5:467ab3962f9e1c4baaf51c1fe1ce3a2a</caom2:contentChecksum>
           <caom2:parts/>
         </caom2:artifact>

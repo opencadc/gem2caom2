@@ -88,16 +88,17 @@ setup(name=PACKAGENAME,
       use_2to3=False,
       setup_requires=['pytest-runner'],
       entry_points=entry_points,
-      python_requires='>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, <4',
+      python_requires='>=3.9',
       packages=find_packages(),
-      package_data={PACKAGENAME: ['data/*', 'tests/data/*', '*/data/*', '*/tests/data/*']},
+      package_data={PACKAGENAME: ['data/*']},
+      data_files=[('.config', ['config/config_with_ingest.yml', 'config/config_with_visit.yml'])],
       classifiers=[
         'Natural Language :: English',
         'License :: OSI Approved :: GNU Affero General Public License v3',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 3.6'
+        'Programming Language :: Python :: 3.9'
       ],
       cmdclass={
           'coverage': PyTest,
-      }
-      )
+      },
+)

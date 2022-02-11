@@ -67,17 +67,13 @@
 #
 
 import os
-import sys
 
 import pytest
 
-import gem2caom2.external_metadata as em
-
-from gem2caom2 import main_app, builder
 from gem2caom2.util import Inst
-from caom2pipe import manage_composable as mc
+from gem2caom2 import obs_file_relationship
 
-from unittest.mock import patch, Mock
+from unittest.mock import patch
 import gem_mocks
 
 
@@ -124,136 +120,38 @@ def pytest_generate_tests(metafunc):
         metafunc.parametrize('test_name', file_list)
 
 
-@patch('cadcutils.net.ws.WsCapabilities.get_access_url')
-@patch('gem2caom2.external_metadata.DefiningMetadataFinder')
-@patch('caom2utils.data_util.StorageClientWrapper')
-@patch('caom2utils.fits2caom2.Client')
+@patch('caom2utils.data_util.get_file_type')
+@patch('gem2caom2.gemini_metadata.AbstractGeminiMetadataReader._retrieve_json')
+@patch('caom2pipe.reader_composable.FileMetadataReader._retrieve_headers')
 @patch('caom2pipe.astro_composable.get_vo_table_session')
 @patch('gem2caom2.program_metadata.get_pi_metadata')
-def test_main_app(
-    gemini_pi_mock,
+@patch('gem2caom2.gemini_metadata.ProvenanceFinder')
+def test_visitor(
+    pf_mock,
+    get_pi_mock,
     svofps_mock,
-    cadc_client_mock,
-    get_file_info_mock,
-    dmf_mock,
-    cap_mock,
+    headers_mock,
+    json_mock,
+    file_type_mock,
     test_name,
 ):
-    # client_mock present because of global in external_metadata
-    cadc_client_mock.get_node.side_effect = gem_mocks.mock_get_node
-    gemini_pi_mock.side_effect = gem_mocks.mock_get_pi_metadata
-    svofps_mock.side_effect = gem_mocks.mock_get_votable
-    get_file_info_mock.return_value.info.side_effect = (
-        gem_mocks.mock_get_file_info
+
+    test_file_id = obs_file_relationship.remove_extensions(
+        os.path.basename(test_name)
     )
-    dmf_mock.return_value.get.side_effect = gem_mocks.mock_get_dm
-    cap_mock.return_value = 'https://localhost'
+    expected_fqn = f'{os.path.dirname(test_name)}/{test_file_id}.expected.xml'
 
-    getcwd_orig = os.getcwd
-    os.getcwd = Mock(
-        return_value=os.path.join(gem_mocks.TEST_DATA_DIR, 'si_config'),
+    gem_mocks._run_test_common(
+        data_sources=[os.path.dirname(test_name)],
+        get_pi_mock=get_pi_mock,
+        svofps_mock=svofps_mock,
+        headers_mock=headers_mock,
+        pf_mock=pf_mock,
+        json_mock=json_mock,
+        file_type_mock=file_type_mock,
+        test_set=[test_name],
+        expected_fqn=expected_fqn,
     )
-
-    try:
-        test_config = mc.Config()
-        test_config.get_executors()
-        test_config.features.supports_latest_client = True
-
-        em.init_global(test_config)
-        basename = os.path.basename(test_name)
-        dirname = os.path.dirname(test_name)
-        file_id = _get_file_id(basename)
-        obs_id = _get_obs_id(file_id)
-        product_id = file_id
-        lineage = _get_lineage(dirname, basename, test_config)
-        input_file = f'{product_id}.in.xml'
-        actual_fqn = _get_actual_file_name(dirname, product_id)
-        local = _get_local(test_name)
-        plugin = gem_mocks.PLUGIN
-
-        if os.path.exists(actual_fqn):
-            os.remove(actual_fqn)
-
-        if os.path.exists(os.path.join(dirname, input_file)):
-            sys.argv = (
-                f'{main_app.APPLICATION} --quiet --no_validate --local '
-                f'{local} --plugin {plugin} --module {plugin} '
-                f'--in {dirname}/{input_file} --out {actual_fqn} '
-                f'--lineage {lineage} '
-                f'--resource-id '
-                f'{test_config.storage_inventory_resource_id}'
-            ).split()
-        else:
-            sys.argv = (
-                f'{main_app.APPLICATION} --quiet --no_validate --local '
-                f'{local} --plugin {plugin} --module {plugin} '
-                f'--observation {main_app.COLLECTION} {obs_id} '
-                f'--out {actual_fqn} --lineage {lineage} '
-                f'--resource-id '
-                f'{test_config.storage_inventory_resource_id}'
-            ).split()
-        print(sys.argv)
-        main_app.to_caom2()
-        expected_fqn = _get_expected_file_name(dirname, product_id)
-
-        compare_result = mc.compare_observations(actual_fqn, expected_fqn)
-
-        if compare_result is not None:
-            raise AssertionError(compare_result)
-        # assert False  # cause I want to see logging messages
-    finally:
-        os.getcwd = getcwd_orig
-
-
-def _get_obs_id(file_id):
-    return gem_mocks.LOOKUP[file_id][0]
-
-
-def _get_instr(file_id):
-    temp = gem_mocks.LOOKUP[file_id][1]
-    return _get_inst_name(temp)
-
-
-def _get_program_id(file_id):
-    return gem_mocks.LOOKUP[file_id][2]
-
-
-def _get_local(test_name):
-    jpg = test_name.replace('.fits.header', '.jpg')
-    header_name = test_name
-    if os.path.exists(jpg):
-        return f'{jpg} {header_name}'
-    else:
-        return header_name
-
-
-def _get_file_id(basename):
-    if basename.endswith('jpg'):
-        return basename.split('.jpg')[0]
-    else:
-        return basename.split('.fits')[0]
-
-
-def _get_lineage(dirname, basename, config):
-    jpg_file = basename.replace('.fits.header', '.jpg')
-    name_builder = builder.GemObsIDBuilder(config)
-    storage_name = name_builder.build(basename.replace('.header', ''))
-    if os.path.exists(os.path.join(dirname, jpg_file)):
-        jpg_storage_name = name_builder.build(jpg_file)
-        jpg = jpg_storage_name.lineage
-        fits = storage_name.lineage.replace('.header', '')
-        result = f'{jpg} {fits}'
-    else:
-        result = storage_name.lineage.replace('.header', '')
-    return result
-
-
-def _get_expected_file_name(dirname, product_id):
-    return f'{dirname}/{product_id}.expected.xml'
-
-
-def _get_actual_file_name(dirname, product_id):
-    return f'{dirname}/{product_id}.actual.xml'
 
 
 def _get_inst_name(inst):

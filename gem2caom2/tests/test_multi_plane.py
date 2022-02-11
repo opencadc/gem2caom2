@@ -66,15 +66,10 @@
 # ***********************************************************************
 #
 
-import json
 import os
 import pytest
-import sys
 
-from caom2pipe import manage_composable as mc
-from gem2caom2 import main_app, gem_name, external_metadata
-
-from unittest.mock import patch, Mock
+from unittest.mock import patch
 
 import gem_mocks
 
@@ -126,125 +121,38 @@ def pytest_generate_tests(metafunc):
     metafunc.parametrize('test_name', obs_id_list)
 
 
+@patch('caom2utils.data_util.get_file_type')
+@patch('gem2caom2.gemini_metadata.AbstractGeminiMetadataReader._retrieve_json')
+@patch('caom2pipe.reader_composable.FileMetadataReader._retrieve_headers')
+@patch('caom2pipe.astro_composable.get_vo_table_session')
+@patch('gem2caom2.gemini_metadata.ProvenanceFinder')
 @patch('gem2caom2.program_metadata.get_pi_metadata')
-@patch('gem2caom2.external_metadata.DefiningMetadataFinder')
-def test_multi_plane(gemini_client_mock, gemini_pi_mock, test_name):
-    gemini_client_mock.return_value.get.side_effect = gem_mocks.mock_get_dm
-    getcwd_orig = os.getcwd
-    os.getcwd = Mock(return_value=gem_mocks.TEST_DATA_DIR)
-    try:
-        test_config = mc.Config()
-        test_config.get_executors()
-        external_metadata.init_global(test_config)
-        obs_id = test_name
-        lineage = _get_lineage(obs_id)
-        input_file = f'{gem_mocks.TEST_DATA_DIR}/{DIR_NAME}/{obs_id}.in.xml'
-        actual_fqn = (
-            f'{gem_mocks.TEST_DATA_DIR}/{DIR_NAME}/{obs_id}.actual.xml'
-        )
-
-        local = _get_local(test_name)
-        plugin = gem_mocks.PLUGIN
-
-        with patch(
-            'caom2utils.data_util.StorageClientWrapper'
-        ) as data_client_mock, patch(
-            'caom2pipe.astro_composable.get_vo_table_session'
-        ) as svofps_mock:
-
-            data_client_mock.return_value.cadcinfo.side_effect = (
-                gem_mocks.mock_get_file_info
+def test_visitor(
+    get_pi_mock,
+    pf_mock,
+    svofps_mock,
+    retrieve_headers_mock,
+    json_mock,
+    file_type_mock,
+    test_name,
+):
+    expected_fqn = (
+                f'{gem_mocks.TEST_DATA_DIR}/multi_plane/'
+                f'{test_name}.expected.xml'
             )
-            gemini_pi_mock.side_effect = gem_mocks.mock_get_pi_metadata
-            svofps_mock.side_effect = gem_mocks.mock_get_votable
-
-            if os.path.exists(actual_fqn):
-                os.remove(actual_fqn)
-
-            sys.argv = (
-                f'{main_app.APPLICATION} --quiet --no_validate --local '
-                f'{local} --plugin {plugin} --module {plugin} '
-                f'--in {input_file} --out {actual_fqn} '
-                f'--lineage {lineage}'
-            ).split()
-            print(sys.argv)
-            main_app.to_caom2()
-            expected_fqn = (
-                f'{gem_mocks.TEST_DATA_DIR}/{DIR_NAME}/{obs_id}.expected.xml'
-            )
-
-            compare_result = mc.compare_observations(actual_fqn, expected_fqn)
-            if compare_result is not None:
-                raise AssertionError(compare_result)
-            # assert False  # cause I want to see logging messages
-    finally:
-        os.getcwd = getcwd_orig
-
-
-def _get_lineage(obs_id):
-    result = ''
-    if obs_id == 'GN-2020A-Q-132-0-0':
-        product_id = LOOKUP[obs_id][0][:-1]
-        x = mc.get_lineage(
-            gem_name.COLLECTION,
-            product_id,
-            f'{LOOKUP[obs_id][0]}.fits',
-            gem_name.SCHEME,
+    test_set = []
+    for f_name in LOOKUP[test_name]:
+        test_set.append(
+            f'{gem_mocks.TEST_DATA_DIR}/multi_plane/{f_name}.fits.header'
         )
-        y = mc.get_lineage(
-            gem_name.COLLECTION,
-            product_id,
-            f'{LOOKUP[obs_id][1]}.fits',
-            gem_name.SCHEME,
-        )
-        result = f'{x} {y}'
-    elif obs_id in [
-        'GS-2020B-Q-211-52-1119',
-        'GS-CAL20200202-23-0201',
-        'GS-CAL20201123-20-1122',
-    ]:
-        product_id = LOOKUP[obs_id][0].replace('H', '')
-        x = mc.get_lineage(
-            gem_name.COLLECTION,
-            product_id,
-            f'{LOOKUP[obs_id][0]}.fits',
-            gem_name.SCHEME,
-        )
-        y = mc.get_lineage(
-            gem_name.COLLECTION,
-            product_id,
-            f'{LOOKUP[obs_id][1]}.fits',
-            gem_name.SCHEME,
-        )
-        result = f'{x} {y}'
-    else:
-        for ii in LOOKUP[obs_id]:
-            fits = mc.get_lineage(
-                gem_name.COLLECTION, ii, f'{ii}.fits', gem_name.SCHEME
-            )
-            result = f'{result} {fits}'
-    return result
-
-
-def _get_local(obs_id):
-    result = ''
-    for ii in LOOKUP[obs_id]:
-        result = (
-            f'{result} {gem_mocks.TEST_DATA_DIR}/{DIR_NAME}/{ii}.fits.header'
-        )
-    return result
-
-
-def _request_mock(url, timeout=-1):
-    result = gem_mocks.Object()
-    f_id = url.split('=')[1]
-    f_name = f'{gem_mocks.TEST_DATA_DIR}/json/{f_id}.json'
-
-    def x():
-        with open(f_name) as f:
-            # y = json.loads(f.read())
-            y = f.read()
-        return json.loads(y)
-
-    result.json = x
-    return result
+    gem_mocks._run_test_common(
+        data_sources=[os.path.dirname(test_name)],
+        get_pi_mock=get_pi_mock,
+        svofps_mock=svofps_mock,
+        headers_mock=retrieve_headers_mock,
+        pf_mock=pf_mock,
+        json_mock=json_mock,
+        file_type_mock=file_type_mock,
+        test_set=test_set,
+        expected_fqn=expected_fqn,
+    )

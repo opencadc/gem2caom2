@@ -77,16 +77,17 @@ from bs4 import BeautifulSoup
 from collections import OrderedDict
 from datetime import datetime
 from hashlib import md5
+from mock import Mock
+from tempfile import TemporaryDirectory
 
 from cadcdata import FileInfo
 from caom2.diff import get_differences
+from caom2pipe import astro_composable as ac
 from caom2pipe import manage_composable as mc
 
-import gem2caom2.external_metadata as em
-from gem2caom2 import composable
+from gem2caom2 import composable, obs_file_relationship, builder, svofps
+from gem2caom2 import gemini_metadata, fits2caom2_augmentation
 from gem2caom2.gem_name import GemName
-from gem2caom2.obs_file_relationship import repair_data_label
-from gem2caom2.obs_metadata import json_lookup
 from gem2caom2.util import Inst
 
 
@@ -1109,6 +1110,9 @@ def mock_get_pi_metadata(program_id):
 
 
 def mock_get_file_info(file_id):
+    if isinstance(file_id, GemName):
+        # the case if StorageClientReader is being mocked
+        file_id = file_id.source_names[0]
     if '_prev' in file_id:
         return FileInfo(
             size=10290,
@@ -1125,7 +1129,12 @@ def mock_get_file_info(file_id):
         )
 
 
+def mock_retrieve_json(source_name, ign1, ign2):
+    return mock_get_obs_metadata(source_name)
+
+
 def mock_get_obs_metadata(file_id):
+    file_id = obs_file_relationship.remove_extensions(file_id.split('/')[-1])
     try:
         fname = f'{TEST_DATA_DIR}/json/{file_id}.json'
         if os.path.exists(fname):
@@ -1139,25 +1148,29 @@ def mock_get_obs_metadata(file_id):
                         file_id, 'test_data_label'
                     ),
                     'filename': f'{file_id}.fits.bz2',
+                    'name': f'{file_id}.fits.bz2',
                     'lastmod': '2020-02-25T20:36:31.230',
                     'instrument': 'GMOS-S',
                 },
             ]
-        json_lookup.add(y, file_id)
+        return y
     except Exception as e:
         logging.error(e)
         tb = traceback.format_exc()
         logging.error(tb)
 
 
-def mock_get_dm(uri):
+def mock_get_data_label(uri):
     ignore_scheme, ignore_collection, f_name = mc.decompose_uri(uri)
     file_id = GemName.remove_extensions(f_name)
-    mock_get_obs_metadata(file_id)
-    return em.DefiningMetadata(
-        Inst(em.repair_instrument(json_lookup.get('instrument'))),
-        repair_data_label(file_id, json_lookup.get('data_label')),
-    )
+    temp = mock_get_obs_metadata(file_id)
+    result = None
+    for ii in temp:
+        y = obs_file_relationship.remove_extensions(ii.get('filename'))
+        if y == file_id:
+            result = ii.get('data_label')
+            break
+    return result
 
 
 class Object:
@@ -1350,7 +1363,6 @@ def mock_query_tap(query_string, mock_tap_client):
             .replace('.fits', '')
             .strip()
         )
-        logging.error(f'tap query file id {file_id}')
         result = TAP_QUERY_LOOKUP.get(file_id, 'test_data_label')
         return Table.read(
             f'observationID,instrument_name\n'
@@ -1366,3 +1378,103 @@ def mock_get_node(uri, **kwargs):
         'MD5': '1234',
     }
     return node
+
+
+def _mock_headers(file_id):
+    test_fqn = None
+    if isinstance(file_id, GemName):
+        # the case if StorageClientReader is being mocked
+        file_id = file_id.source_names[0]
+    if '/' in file_id and ':' not in file_id:
+        # the case if FileMetadataReader is being mocked
+        test_fqn = file_id
+    else:
+        if ':' in file_id:
+            # StorageClientReader being mocked
+            file_id = mc.StorageName.remove_extensions(file_id.split('/')[-1])
+        # the case if GeminiMetadataReader is being mocked
+        if file_id in LOOKUP:
+            instrument = LOOKUP.get(file_id)[1]
+            test_fqn = (
+                f'{TEST_DATA_DIR}/{instrument.value}/{file_id}.fits.header'
+            )
+    if 'S20210518S0022' in file_id:
+        # mocking the test case where unauthorized to retrieve metadata from
+        # archive.gemini.edu - no headers, no file
+        result = None
+    else:
+        result = []
+        if test_fqn is not None:
+            result = ac.make_headers_from_file(test_fqn)
+    return result
+
+
+def _run_test_common(
+    data_sources,
+    get_pi_mock,
+    svofps_mock,
+    headers_mock,
+    pf_mock,
+    json_mock,
+    file_type_mock,
+    test_set,
+    expected_fqn,
+):
+    get_pi_mock.side_effect = mock_get_pi_metadata
+    svofps_mock.side_effect = mock_get_votable
+    headers_mock.side_effect = _mock_headers
+    pf_mock.get.side_effect = mock_get_data_label
+    json_mock.side_effect = mock_get_obs_metadata
+    file_type_mock.return_value = 'application/fits'
+
+    with TemporaryDirectory() as tmp_dir_name:
+        test_config = mc.Config()
+        test_config.task_types = [mc.TaskType.SCRAPE]
+        test_config.use_local_files = True
+        test_config.data_sources = data_sources
+        test_config.working_directory = tmp_dir_name
+        test_config.proxy_fqn = f'{tmp_dir_name}/test_proxy.pem'
+
+        with open(test_config.proxy_fqn, 'w') as f:
+            f.write('test content')
+
+        observation = None
+        in_fqn = expected_fqn.replace('.expected.', '.in.')
+        if os.path.exists(in_fqn):
+            observation = mc.read_obs_from_file(in_fqn)
+        actual_fqn = expected_fqn.replace('expected', 'actual')
+        if os.path.exists(actual_fqn):
+            os.unlink(actual_fqn)
+
+        for entry in test_set:
+            filter_cache = svofps.FilterMetadataCache(svofps_mock)
+            metadata_reader = gemini_metadata.GeminiFileMetadataReader(
+                Mock(), pf_mock, filter_cache
+            )
+            test_metadata = gemini_metadata.GeminiMetadataLookup(
+                metadata_reader
+            )
+            test_builder = builder.GemObsIDBuilder(
+                test_config, metadata_reader, test_metadata
+            )
+            storage_name = test_builder.build(entry)
+            kwargs = {
+                'storage_name': storage_name,
+                'metadata_reader': metadata_reader,
+            }
+            logging.getLogger('caom2utils.fits2caom2').setLevel(logging.INFO)
+            logging.getLogger('ValueRepairCache').setLevel(logging.INFO)
+            logging.getLogger('root').setLevel(logging.INFO)
+            # logging.getLogger('Gmos').setLevel(logging.INFO)
+            observation = fits2caom2_augmentation.visit(observation, **kwargs)
+
+        expected = mc.read_obs_from_file(expected_fqn)
+        compare_result = get_differences(expected, observation)
+        if compare_result is not None:
+            mc.write_obs_to_file(observation, actual_fqn)
+            compare_text = '\n'.join([r for r in compare_result])
+            msg = (
+                f'Differences found in observation {expected.observation_id}\n'
+                f'{compare_text}. Check {actual_fqn}'
+            )
+            raise AssertionError(msg)

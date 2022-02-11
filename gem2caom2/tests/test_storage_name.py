@@ -72,7 +72,6 @@ from mock import patch
 import gem_mocks
 from caom2pipe import manage_composable as mc
 from gem2caom2 import GemName, SCHEME, COLLECTION
-from gem2caom2 import external_metadata as em
 
 
 def test_is_valid():
@@ -89,7 +88,6 @@ def test_storage_name(tap_mock, cap_mock):
     test_config = mc.Config()
     test_config.proxy_fqn = path.join(gem_mocks.TEST_DATA_DIR, 'cadcproxy.pem')
     test_config.tap_id = 'ivo://cadc.nrc.ca/test'
-    em.init_global(test_config)
     mock_obs_id = 'GN-2013B-Q-28-150-002'
     test_sn = GemName(file_name='N20131203S0006i.fits.bz2', obs_id=mock_obs_id)
     assert test_sn.file_uri == f'{SCHEME}:{COLLECTION}/N20131203S0006i.fits'
@@ -105,37 +103,3 @@ def test_storage_name(tap_mock, cap_mock):
     assert test_sn.prev == 'S20060920S0137.jpg'
     assert test_sn.thumb == 'S20060920S0137_th.jpg'
     assert test_sn.compressed_file_name is None
-
-    test_sn = GemName(file_name='N20100104S0208.fits.header')
-    assert test_sn.obs_id == 'GN-2009B-Q-121-15-001', 'wrong obs id'
-    assert test_sn.file_uri == f'{SCHEME}:{COLLECTION}/N20100104S0208.fits'
-    assert (
-        test_sn.external_urls
-        == 'https://archive.gemini.edu/fullheader/N20100104S0208.fits'
-    )
-
-    test_sn = GemName(file_name='N20200810A0490r.fits')
-    assert test_sn.obs_id == 'N20200810A0490', 'wrong obs id'
-    assert test_sn.product_id == 'N20200810A0490r', 'wrong product id'
-    assert test_sn.file_uri == f'{SCHEME}:{COLLECTION}/N20200810A0490r.fits'
-    assert (
-        test_sn.external_urls
-        == 'https://archive.gemini.edu/fullheader/N20200810A0490r.fits'
-    )
-    assert (
-        test_sn.lineage
-        == f'{test_sn.obs_id}r/{SCHEME}:{COLLECTION}/{test_sn.file_id}.fits'
-    ), 'wrong lineage'
-
-    test_sn = GemName(file_name='SDCH_20200131_0010.fits')
-    assert test_sn.obs_id == 'GS-CAL20200131-10-0131', 'wrong obs id'
-    assert test_sn.product_id == 'SDC_20200131_0010', 'wrong product id'
-    assert test_sn.file_uri == f'{SCHEME}:{COLLECTION}/SDCH_20200131_0010.fits'
-    assert (
-            test_sn.external_urls
-            == 'https://archive.gemini.edu/fullheader/SDCH_20200131_0010.fits'
-    )
-    assert (
-        test_sn.lineage
-        == f'SDC_20200131_0010/{SCHEME}:{COLLECTION}/SDCH_20200131_0010.fits'
-    ), 'wrong lineage'

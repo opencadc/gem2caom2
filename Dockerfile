@@ -20,8 +20,6 @@ RUN pip install bs4 \
 
 WORKDIR /usr/src/app
 
-RUN mkdir /app && mkdir /app/data
-
 ARG OPENCADC_BRANCH=master
 ARG OPENCADC_REPO=opencadc
 ARG PIPE_BRANCH=master
@@ -30,5 +28,9 @@ ARG PIPE_REPO=opencadc
 RUN pip install git+https://github.com/${OPENCADC_REPO}/caom2pipe@${OPENCADC_BRANCH}#egg=caom2pipe
 
 RUN pip install git+https://github.com/${PIPE_REPO}/gem2caom2@${PIPE_BRANCH}#egg=gem2caom2
+
+RUN useradd --create-home --shell /bin/bash cadcops
+RUN chown -R cadcops:cadcops /usr/src/app
+USER cadcops
 
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]

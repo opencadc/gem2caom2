@@ -69,24 +69,65 @@
 
 import logging
 import sys
-import tempfile
 import traceback
 
 from datetime import datetime
 
+from caom2pipe import client_composable as clc
 from caom2pipe import data_source_composable as dsc
 from caom2pipe import manage_composable as mc
 from caom2pipe import run_composable as rc
-from gem2caom2 import main_app, preview_augmentation, external_metadata
+from gem2caom2 import main_app, preview_augmentation
 from gem2caom2 import pull_augmentation, data_source, builder
-from gem2caom2 import cleanup_augmentation
+from gem2caom2 import cleanup_augmentation, fits2caom2_augmentation
+from gem2caom2 import gemini_metadata, svofps
 
 DATA_VISITORS = []
 META_VISITORS = [
-        preview_augmentation,
-        pull_augmentation,
-        cleanup_augmentation,
-    ]
+    fits2caom2_augmentation,
+    preview_augmentation,
+    pull_augmentation,
+    cleanup_augmentation,
+]
+
+
+def _common_init():
+    config = mc.Config()
+    config.get_executors()
+    clients = clc.ClientCollection(config)
+    meta_visitors = META_VISITORS
+    gemini_session = mc.get_endpoint_session()
+    provenance_finder = gemini_metadata.ProvenanceFinder(
+        config, clients.query_client, gemini_session
+    )
+    svofps_session = mc.get_endpoint_session()
+    filter_cache = svofps.FilterMetadataCache(svofps_session)
+    if config.use_local_files or mc.TaskType.SCRAPE in config.task_types:
+        metadata_reader = gemini_metadata.GeminiFileMetadataReader(
+            gemini_session, provenance_finder, filter_cache
+        )
+        meta_visitors = [
+            fits2caom2_augmentation,
+            preview_augmentation,
+            cleanup_augmentation,
+        ]
+    elif [mc.TaskType.VISIT] == config.task_types:
+        metadata_reader = gemini_metadata.GeminiStorageClientReader(
+            clients.data_client,
+            gemini_session,
+            provenance_finder,
+            filter_cache,
+        )
+    else:
+        metadata_reader = gemini_metadata.GeminiMetadataReader(
+            gemini_session, provenance_finder, filter_cache
+        )
+    reader_lookup = gemini_metadata.GeminiMetadataLookup(metadata_reader)
+    reader_lookup.reader = metadata_reader
+    name_builder = builder.GemObsIDBuilder(
+        config, metadata_reader, reader_lookup
+    )
+    return clients, config, metadata_reader, meta_visitors, name_builder
 
 
 def _run():
@@ -94,23 +135,20 @@ def _run():
     Uses a todo file with file names, even though Gemini provides
     information about existing data referenced by observation ID.
     """
-    config = mc.Config()
-    config.get_executors()
-    external_metadata.init_global(config=config)
-    name_builder = builder.GemObsIDBuilder(config)
-    if config.use_local_files:
+    clients, config, metadata_reader, meta_visitors, name_builder = (
+        _common_init()
+    )
+    if config.use_local_files or mc.TaskType.SCRAPE in config.task_types:
         source = dsc.ListDirSeparateDataSource(config)
-        meta_visitors = [preview_augmentation, cleanup_augmentation]
     else:
         source = dsc.TodoFileDataSource(config)
-        meta_visitors = META_VISITORS
     return rc.run_by_todo(
-        config,
-        name_builder,
-        chooser=None,
-        command_name=main_app.APPLICATION,
+        config=config,
+        name_builder=name_builder,
         meta_visitors=meta_visitors,
         source=source,
+        metadata_reader=metadata_reader,
+        clients=clients,
     )
 
 
@@ -118,52 +156,6 @@ def run():
     """Wraps _run in exception handling, with sys.exit calls."""
     try:
         result = _run()
-        sys.exit(result)
-    except Exception as e:
-        logging.error(e)
-        tb = traceback.format_exc()
-        logging.debug(tb)
-        sys.exit(-1)
-
-
-def _run_single():
-    """
-    Run the processing for a single entry.
-    :return 0 if successful, -1 if there's any sort of failure. Return status
-        is used by airflow for task instance management and reporting.
-    """
-    config = mc.Config()
-    config.get_executors()
-    config.resource_id = 'ivo://cadc.nrc.ca/sc2repo'
-    if config.features.run_in_airflow:
-        temp = tempfile.NamedTemporaryFile()
-        mc.write_to_file(temp.name, sys.argv[2])
-        config.proxy = temp.name
-    else:
-        config.proxy = sys.argv[2]
-    config.stream = 'default'
-    if config.features.use_file_names:
-        storage_name = builder.GemObsIDBuilder(config).build(sys.argv[1])
-    else:
-        raise mc.CadcException('No code to handle running GEM by obs id.')
-    external_metadata.init_global(config=config)
-    return rc.run_single(
-        config,
-        storage_name,
-        main_app.APPLICATION,
-        META_VISITORS,
-        DATA_VISITORS,
-    )
-
-
-def run_single():
-    """
-    Run the processing for a single entry.
-    :return 0 if successful, -1 if there's any sort of failure. Return status
-        is used by airflow for task instance management and reporting.
-    """
-    try:
-        result = _run_single()
         sys.exit(result)
     except Exception as e:
         logging.error(e)
@@ -183,21 +175,22 @@ def _run_by_public():
     :return 0 if successful, -1 if there's any sort of failure. Return status
         is used by airflow for task instance management and reporting.
     """
-    config = mc.Config()
-    config.get_executors()
-    external_metadata.init_global(config=config)
-    name_builder = builder.GemObsIDBuilder(config)
-    incremental_source = data_source.PublicIncremental(config)
+    clients, config, metadata_reader, meta_visitors, name_builder = (
+        _common_init()
+    )
+    incremental_source = data_source.PublicIncremental(
+        config, clients.query_client
+    )
     return rc.run_by_state(
         config=config,
         name_builder=name_builder,
-        command_name=main_app.APPLICATION,
         bookmark_name=data_source.GEM_BOOKMARK,
-        meta_visitors=META_VISITORS,
+        meta_visitors=meta_visitors,
         data_visitors=DATA_VISITORS,
         end_time=None,
         source=incremental_source,
-        chooser=None,
+        clients=clients,
+        metadata_reader=metadata_reader,
     )
 
 
@@ -220,27 +213,26 @@ def _run_state():
     :return 0 if successful, -1 if there's any sort of failure. Return status
         is used by airflow for task instance management and reporting.
     """
-    config = mc.Config()
-    config.get_executors()
+    clients, config, metadata_reader, meta_visitors, name_builder = (
+        _common_init()
+    )
     state = mc.State(config.state_fqn)
     end_timestamp_s = state.bookmarks.get(data_source.GEM_BOOKMARK).get(
         'end_timestamp', datetime.now()
     )
     end_timestamp_dt = mc.make_time_tz(end_timestamp_s)
     logging.info(f'{main_app.APPLICATION} will end at {end_timestamp_s}')
-    external_metadata.init_global(config=config)
-    name_builder = builder.GemObsIDBuilder(config)
-    incremental_source = data_source.IncrementalSource()
+    incremental_source = data_source.IncrementalSource(metadata_reader)
     result = rc.run_by_state(
         config=config,
         name_builder=name_builder,
-        command_name=main_app.APPLICATION,
         bookmark_name=data_source.GEM_BOOKMARK,
-        meta_visitors=META_VISITORS,
+        meta_visitors=meta_visitors,
         data_visitors=DATA_VISITORS,
         end_time=end_timestamp_dt,
         source=incremental_source,
-        chooser=None,
+        clients=clients,
+        metadata_reader=metadata_reader,
     )
     if incremental_source.max_records_encountered:
         logging.warning('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')

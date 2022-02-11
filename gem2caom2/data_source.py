@@ -75,8 +75,7 @@ from datetime import datetime, timezone
 from caom2pipe import client_composable as clc
 from caom2pipe import data_source_composable as dsc
 from caom2pipe import manage_composable as mc
-from gem2caom2.obs_metadata import json_lookup
-from gem2caom2.obs_file_relationship import remove_extensions
+from gem2caom2.util import COLLECTION, SCHEME
 
 
 __all__ = ['GEM_BOOKMARK', 'IncrementalSource', 'PublicIncremental']
@@ -93,12 +92,13 @@ class IncrementalSource(dsc.DataSource):
     created.
     """
 
-    def __init__(self):
+    def __init__(self, reader):
         super(IncrementalSource, self).__init__(config=None)
         self._max_records_encountered = False
         self._encounter_start = None
         self._encounter_end = None
-        self._json_cache = json_lookup
+        self._session = reader._session
+        self._metadata_reader = reader
         self._logger = logging.getLogger(__name__)
 
     def get_time_box_work(self, prev_exec_time, exec_time):
@@ -112,7 +112,6 @@ class IncrementalSource(dsc.DataSource):
         self._logger.debug(
             f'Begin get_time_box_work from {prev_exec_time} to {exec_time}.'
         )
-        self._json_cache.flush()
         # datetime format 2019-12-01T00:00:00.000000
         prev_dt_str = mc.make_time_tz(prev_exec_time).strftime(
             mc.ISO_8601_FORMAT
@@ -130,7 +129,7 @@ class IncrementalSource(dsc.DataSource):
         entries = deque()
         response = None
         try:
-            response = mc.query_endpoint(url)
+            response = mc.query_endpoint_session(url, self._session)
             if response is None:
                 logging.warning(f'Could not query {url}.')
             else:
@@ -151,9 +150,14 @@ class IncrementalSource(dsc.DataSource):
                                     file_name, entrytime.timestamp()
                                 )
                             )
-                            self._json_cache.add(
-                                entry, remove_extensions(file_name)
+                            uri = mc.build_uri(COLLECTION, file_name, SCHEME)
+                            # all the other cases where add_json_record is
+                            # called, there's a list as input, so conform to
+                            # that typing here
+                            self._metadata_reader.add_json_record(
+                                uri, [entry]
                             )
+                            self._metadata_reader.add_file_info_record(uri)
         finally:
             if response is not None:
                 response.close()
@@ -178,8 +182,9 @@ class PublicIncremental(dsc.QueryTimeBoxDataSource):
     """Implements the identification of the work to be done, by querying
     the local TAP service for files that have recently gone public."""
 
-    def __init__(self, config):
+    def __init__(self, config, query_client):
         super(PublicIncremental, self).__init__(config)
+        self._query_client = query_client
         self._logger = logging.getLogger(__name__)
 
     def get_time_box_work(self, prev_exec_time, exec_time):
@@ -216,7 +221,7 @@ class PublicIncremental(dsc.QueryTimeBoxDataSource):
             f"ORDER BY O.maxLastModified ASC "
             ""
         )
-        result = clc.query_tap_client(query, self._client)
+        result = clc.query_tap_client(query, self._query_client)
         # results look like:
         # gemini:GEM/N20191202S0125.fits, ISO 8601
 

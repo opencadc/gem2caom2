@@ -67,55 +67,39 @@
 # ***********************************************************************
 #
 
-import sys
-
-from caom2pipe import manage_composable as mc
-from gem2caom2 import main_app, GemName, external_metadata
-from gem2caom2.util import COLLECTION
-
 from mock import patch, Mock
 import gem_mocks
 
 
-@patch('caom2utils.data_util.StorageClientWrapper')
-@patch('cadcutils.net.ws.WsCapabilities.get_access_url')
+@patch('caom2utils.data_util.get_file_type')
+@patch('gem2caom2.gemini_metadata.AbstractGeminiMetadataReader._retrieve_json')
+@patch('caom2pipe.reader_composable.FileMetadataReader._retrieve_headers')
+@patch('caom2pipe.astro_composable.get_vo_table_session')
 @patch('gem2caom2.program_metadata.get_pi_metadata')
-@patch('gem2caom2.external_metadata.DefiningMetadataFinder')
-def test_missing_provenance(
-    get_mock,
-    pi_mock,
-    cap_mock,
-    client_mock,
+@patch('gem2caom2.gemini_metadata.ProvenanceFinder')
+def test_visitor(
+    pf_mock,
+    get_pi_mock,
+    svofps_mock,
+    headers_mock,
+    json_mock,
+    file_type_mock,
 ):
-    test_config = mc.Config()
-    test_config.get_executors()
-
-    external_metadata.init_global(test_config)
-
-    cap_mock.return_value = 'https://localhost'
-    pi_mock.side_effect = gem_mocks.mock_get_pi_metadata
-    get_mock.return_value.get.side_effect = gem_mocks.mock_get_dm
-    client_mock.return_value.info.side_effect = gem_mocks.mock_get_file_info
-
     test_f_name = 'gS20171114S0185_bias.fits.header'
     test_obs_id = 'GS-CAL20171114-2-086-G-BIAS'
-    test_storage_name = GemName(obs_id=test_obs_id, file_name=test_f_name)
     test_fqn = f'{gem_mocks.TEST_DATA_DIR}/broken_files/{test_f_name}'
-    actual_fqn = (
-        f'{gem_mocks.TEST_DATA_DIR}/broken_files/{test_obs_id}.actual.xml'
-    )
-    sys.argv = (
-        f'{main_app.APPLICATION} --quiet --no_validate '
-        f'--local {test_fqn} '
-        f'--plugin {gem_mocks.PLUGIN} --module {gem_mocks.PLUGIN} '
-        f'--observation {COLLECTION} {test_obs_id} --out {actual_fqn} '
-        f'--lineage {test_storage_name.lineage} '
-        f'--resource-id ivo://cadc.nrc.ca/test '
-    ).split()
-    main_app.to_caom2()
     expected_fqn = (
         f'{gem_mocks.TEST_DATA_DIR}/broken_files/{test_obs_id}.expected.xml'
     )
-    compare_result = mc.compare_observations(actual_fqn, expected_fqn)
-    if compare_result is not None:
-        assert False, compare_result
+
+    gem_mocks._run_test_common(
+        data_sources=[f'{gem_mocks.TEST_DATA_DIR}/broken_files'],
+        get_pi_mock=get_pi_mock,
+        svofps_mock=svofps_mock,
+        headers_mock=headers_mock,
+        pf_mock=pf_mock,
+        json_mock=json_mock,
+        file_type_mock=file_type_mock,
+        test_set=[test_fqn],
+        expected_fqn=expected_fqn,
+    )

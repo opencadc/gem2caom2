@@ -1,7 +1,0 @@
-value_repair:
-  observation.type:
-    dark: DARK
-    Dark: DARK
-    object: OBJECT
-    flat: FLAT
-    Flat: FLAT

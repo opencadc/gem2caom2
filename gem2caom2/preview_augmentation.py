@@ -118,7 +118,8 @@ def visit(observation, **kwargs):
     logging.info(
         f'Completed preview augmentation for {observation.observation_id}.'
     )
-    return {'artifacts': count}
+    result = {'artifacts': count}
+    return observation
 
 
 def _do_prev(

@@ -89,7 +89,7 @@ test_subjects = {
 
 def test_repair_filter_name():
     for ii in test_subjects:
-        test_result = svofps._repair_filter_name_for_svo(
+        test_result = svofps.FilterMetadataCache._repair_filter_name_for_svo(
             test_subjects[ii][0], ii
         )
         assert test_result == test_subjects[ii][1], 'wrong value'
@@ -98,7 +98,9 @@ def test_repair_filter_name():
 @patch('caom2pipe.astro_composable.get_vo_table_session')
 def test_get_filter_metadata(get_vo_mock):
     get_vo_mock.side_effect = gem_mocks.mock_get_votable
-    test_result = svofps.get_filter_metadata(
+    cache = Mock()
+    test_subject = svofps.FilterMetadataCache(Mock())
+    test_result = test_subject.get_filter_metadata(
         Inst.NIRI, 'filters', 'telescope_name'
     )
     assert get_vo_mock.call_count == 2, 'wrong number of calls'
@@ -109,7 +111,7 @@ def test_get_filter_metadata(get_vo_mock):
     ), 'wrong call args'
     assert test_result is None, 'do not expect a result'
     # do the same thing again, check that the result has been cached
-    test_result = svofps.get_filter_metadata(
+    test_result = test_subject.get_filter_metadata(
         Inst.NIRI, 'filters', 'telescope_name'
     )
     assert get_vo_mock.call_count == 2, 'wrong number of calls'

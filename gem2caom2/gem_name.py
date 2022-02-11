@@ -67,12 +67,9 @@
 # ***********************************************************************
 #
 
-import logging
-
 from caom2pipe import manage_composable as mc
 
-from gem2caom2 import external_metadata as em
-from gem2caom2.util import Inst, COLLECTION, SCHEME, V_SCHEME
+from gem2caom2.util import COLLECTION, SCHEME, V_SCHEME
 from gem2caom2.obs_file_relationship import remove_extensions
 
 
@@ -157,7 +154,7 @@ class GemName(mc.StorageName):
         self._v_collection = COLLECTION
         file_id = remove_extensions(file_name)
         if file_id[-1] in ['b', 'r']:
-            self._file_name = file_name
+            self._file_name = file_name.replace('.header', '')
             self._file_id = remove_extensions(self._file_name)
             self._obs_id = self._file_id[:-1]
             self._product_id = self._file_id
@@ -172,7 +169,7 @@ class GemName(mc.StorageName):
         else:
             # try to set the file name, if that information is available
 
-            # file_name is assumed to be the file name in ad
+            # file_name is assumed to be the file name in CADC storage
             # because the GEM files are stored uncompressed,
             # while the files available from Gemini are bz2.
             self._file_name = None
@@ -190,16 +187,6 @@ class GemName(mc.StorageName):
                 scheme=SCHEME,
                 entry=entry,
             )
-            if self._obs_id is None:
-                temp = em.defining_metadata_finder.get(self.file_uri)
-                if temp is not None:
-                    self._obs_id = remove_extensions(temp.data_label)
-            if (
-                self._fname_on_disk is None
-                and self._file_name is None
-                and self._obs_id is None
-            ):
-                raise mc.CadcException('Require a name.')
             if file_id.startswith('SDC'):
                 # DB 20-07-21
                 #  each pair of H/K files will be one observation with one
@@ -209,20 +196,8 @@ class GemName(mc.StorageName):
                 )
             else:
                 self._product_id = self._file_id
-        self._logger = logging.getLogger(__name__)
-        self._logger.debug(self)
-
-    def __str__(self):
-        return (
-            f'\n'
-            f'      obs_id:{self._obs_id}\n'
-            f'     file_id:{self._file_id}\n'
-            f'   file_name:{self._file_name}\n'
-            f'    file_uri:{self.file_uri}\n'
-            f'   thumb_uri:{self.thumb_uri}\n'
-            f'    prev_uri:{self.prev_uri}\n'
-            f'source_names:{self._source_names}\n'
-        )
+        self._source_names = [self._file_id]
+        self._destination_uris = [self.file_uri]
 
     @property
     def file_uri(self):
@@ -258,24 +233,6 @@ class GemName(mc.StorageName):
     @file_id.setter
     def file_id(self, value):
         self._file_id = value
-
-    @property
-    def lineage(self):
-        if '_th.jpg' in self._file_name:
-            # thumbnail
-            return mc.get_lineage(
-                self._v_collection,
-                self.product_id,
-                self._file_name,
-                self._v_scheme,
-            )
-        else:
-            return mc.get_lineage(
-                self._v_collection,
-                self.product_id,
-                self._file_name,
-                SCHEME,
-            )
 
     @property
     def external_urls(self):
