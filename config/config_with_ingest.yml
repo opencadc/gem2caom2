@@ -44,4 +44,4 @@ storage_inventory_resource_id: ivo://cadc.nrc.ca/uvic/minoc
 task_types: 
   - ingest
 features:
-  supports_multiple_files: False
+  supports_latest_client: True
