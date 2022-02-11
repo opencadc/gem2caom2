@@ -91,7 +91,11 @@ setup(name=PACKAGENAME,
       python_requires='>=3.9',
       packages=find_packages(),
       package_data={PACKAGENAME: ['data/*']},
-      data_files=[('.config', ['config/config_with_ingest.yml', 'config/config_with_visit.yml'])],
+      data_files=[('.config', [
+          'config/config_with_ingest.yml', 
+          'config/config_with_visit.yml',
+          'config/state.yml',
+      ])],
       classifiers=[
         'Natural Language :: English',
         'License :: OSI Approved :: GNU Affero General Public License v3',
