@@ -133,7 +133,7 @@ class AbstractGeminiMetadataReader(rdc.MetadataReader):
                 id=uri,
                 size=record.get('data_size'),
                 name=record.get('filename'),
-                md5sum=record.get('file_md5'),
+                md5sum=record.get('data_md5'),
                 lastmod=mc.make_time_tz(record.get('lastmod')),
                 file_type=data_util.get_file_type(record.get('filename')),
                 encoding=data_util.get_file_encoding(record.get('filename')),
