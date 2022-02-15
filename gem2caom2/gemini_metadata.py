@@ -162,10 +162,10 @@ class AbstractGeminiMetadataReader(rdc.MetadataReader):
         """Retrieves Gemini JSON metadata to memory."""
         for index, entry in enumerate(storage_name.destination_uris):
             if entry not in self._json_metadata.keys():
-                self._logger.debug(f'Retrieve JSON Metadata for {entry} '
-                                   f'{self._retrieve_json}')
+                self._logger.debug(f'Retrieve JSON Metadata for {entry}')
                 temp = self._retrieve_json(storage_name.source_names[index])
                 self.add_json_record(entry, temp)
+                self.add_file_info_record(entry)
 
 
 class GeminiMetadataReader(AbstractGeminiMetadataReader):
@@ -204,16 +204,6 @@ class GeminiMetadataReader(AbstractGeminiMetadataReader):
     def set(self, storage_name):
         self.set_json_metadata(storage_name)
         self.set_headers(storage_name)
-
-    def set_json_metadata(self, storage_name):
-        """Retrieves Gemini JSON metadata to memory. Extracts a
-        corresponding FileInfo record from that metadata."""
-        for index, entry in enumerate(storage_name.destination_uris):
-            if entry not in self._json_metadata.keys():
-                self._logger.debug(f'Retrieve JSON Metadata for {entry}')
-                temp = self._retrieve_json(storage_name.source_names[index])
-                self.add_json_record(entry, temp)
-                self.add_file_info_record(entry)
 
 
 class GeminiFileMetadataReader(

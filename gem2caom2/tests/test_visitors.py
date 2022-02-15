@@ -76,9 +76,11 @@ from mock import patch, Mock
 
 from cadcutils import exceptions
 from gem2caom2 import preview_augmentation, pull_augmentation, SCHEME
-from gem2caom2 import COLLECTION, cleanup_augmentation
+from gem2caom2 import COLLECTION, cleanup_augmentation, gemini_metadata
+from gem2caom2 import svofps, gem_name
 from caom2pipe import caom_composable as cc
 from caom2pipe import manage_composable as mc
+import gem_mocks
 
 pytest.main(args=['-s', os.path.abspath(__file__)])
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
@@ -194,8 +196,11 @@ def test_preview_augment_unknown_no_preview():
         assert not exec_mock.called, 'exec mock should not be called'
 
 
+@patch('caom2utils.data_util.get_file_type')
+@patch('gem2caom2.gemini_metadata.GeminiFileMetadataReader._retrieve_headers')
+@patch('gem2caom2.gemini_metadata.retrieve_json')
 @patch('caom2pipe.manage_composable.http_get')
-def test_pull_augmentation(http_mock):
+def test_pull_augmentation(http_mock, json_mock, header_mock, file_type_mock):
     obs = mc.read_obs_from_file(TEST_OBS_AD_URI_FILE)
     obs.planes[TEST_PRODUCT_ID].data_release = datetime.utcnow()
     original_uri = 'gemini:GEM/GN2001BQ013-04.fits'
@@ -209,10 +214,24 @@ def test_pull_augmentation(http_mock):
     test_config = mc.Config()
     test_observable = mc.Observable(test_rejected, mc.Metrics(test_config))
     cadc_client_mock = Mock()
+    json_mock.side_effect = gem_mocks.mock_retrieve_json
+    filter_cache = svofps.FilterMetadataCache(Mock())
+    test_reader = gemini_metadata.GeminiFileMetadataReader(
+        Mock(), Mock(), filter_cache
+    )
+    test_fqn = f'{gem_mocks.TEST_DATA_DIR}/GMOS/GN2001BQ013-04.fits.header'
+    test_storage_name = gem_name.GemName(
+        file_name='GN2001BQ013-04.fits', entry=test_fqn
+    )
+    header_mock.side_effect = gem_mocks._mock_headers
+    file_type_mock.return_values = 'application/fits'
+    test_reader.set(test_storage_name)
     kwargs = {
         'working_directory': TEST_DATA_DIR,
         'cadc_client': cadc_client_mock,
         'observable': test_observable,
+        'metadata_reader': test_reader,
+        'storage_name': test_storage_name,
     }
 
     obs = pull_augmentation.visit(obs, **kwargs)
