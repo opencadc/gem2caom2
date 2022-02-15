@@ -138,6 +138,7 @@ class AbstractGeminiMetadataReader(rdc.MetadataReader):
                 file_type=data_util.get_file_type(record.get('filename')),
                 encoding=data_util.get_file_encoding(record.get('filename')),
             )
+            self._logger.debug(f'Adding FileInfo for {uri}')
 
     def add_json_record(self, uri, json_record):
         if uri not in self._json_metadata.keys():
@@ -148,6 +149,7 @@ class AbstractGeminiMetadataReader(rdc.MetadataReader):
                 f_name = uri.split('/')[-1]
                 if f_name in jj.get('filename'):
                     self._json_metadata[uri] = jj
+                    self._logger.debug(f'Adding JSON metadata for {uri}')
                     break
 
     def reset(self):
