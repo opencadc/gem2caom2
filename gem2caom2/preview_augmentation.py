@@ -96,6 +96,9 @@ def visit(observation, **kwargs):
     observable = kwargs.get('observable')
     if observable is None:
         raise mc.CadcException('Visitor needs a observable parameter.')
+    storage_name = kwargs.get('storage_name')
+    if storage_name is None:
+        raise mc.CadcException('Visitor needs a storage_name parameter.')
 
     count = 0
     for plane in observation.planes.values():
@@ -108,12 +111,15 @@ def visit(observation, **kwargs):
                 f'preview access or thumbnail creation.'
             )
             continue
+        if plane.product_id != storage_name.product_id:
+            continue
         count += _do_prev(
             observation.observation_id,
             working_dir,
             plane,
             cadc_client,
             observable,
+            storage_name,
         )
     logging.info(
         f'Completed preview augmentation for {observation.observation_id}.'
@@ -123,19 +129,13 @@ def visit(observation, **kwargs):
 
 
 def _do_prev(
-    obs_id, working_dir, plane, cadc_client, observable
+    obs_id, working_dir, plane, cadc_client, observable, gem_name
 ):
     """Retrieve the preview file, so that a thumbnail can be made,
-    store the preview if necessary, and the thumbnail, to ad.
+    store the preview if necessary, and the thumbnail, to CADC storage.
     Then augment the CAOM observation with the two additional artifacts.
     """
     count = 0
-    # file name construction is very very ugly here, and completely wrong
-    # which is why there's the tricksy file_name set to None right
-    # after construction
-    gem_name = GemName(file_name=f'{plane.product_id}.fits', obs_id=obs_id)
-    gem_name.file_name = None
-    logging.debug(gem_name)
 
     if observable.rejected.is_no_preview(gem_name.prev):
         logging.info(
@@ -209,14 +209,14 @@ def _do_prev(
                 )
                 image.thumbnail(preview_fqn, thumb_fqn, scale=0.25)
 
-            _augment(
+            count += _augment(
                 plane, gem_name.prev_uri, preview_fqn, ProductType.PREVIEW
             )
             if cadc_client is not None and new_retrieval:
                 cadc_client.put(working_dir, gem_name.prev_uri)
-            count = 1
+            count += 1
 
-            _augment(
+            count += _augment(
                 plane, gem_name.thumb_uri, thumb_fqn, ProductType.THUMBNAIL
             )
             if cadc_client is not None and new_retrieval:
@@ -230,8 +230,8 @@ def _check_for_delete(file_name, uri, observable, plane):
     does, remove that artifact from the Observation instance."""
     result = 0
     if (
-            observable.rejected.is_no_preview(file_name) and
-            uri in plane.artifacts.keys()
+        observable.rejected.is_no_preview(file_name) and
+        uri in plane.artifacts.keys()
     ):
         logging.warning(f'Removing artifact for non-existent preview {uri}')
         plane.artifacts.pop(uri)
@@ -240,12 +240,25 @@ def _check_for_delete(file_name, uri, observable, plane):
 
 
 def _augment(plane, uri, fqn, product_type):
+    count = 0
     temp = None
     if uri in plane.artifacts:
         temp = plane.artifacts[uri]
     plane.artifacts[uri] = mc.get_artifact_metadata(
         fqn, product_type, ReleaseType.DATA, uri, temp
     )
+    # look for URIs that have old naming patterns, and replace them
+    ad_uri = uri.replace('cadc:GEMINI/', 'ad:GEM/')
+    if ad_uri != uri and ad_uri in plane.artifacts.keys():
+        logging.warning(f'Removing artifact {ad_uri} {uri}')
+        plane.artifacts.pop(ad_uri)
+        count += 1
+    gem_uri = uri.replace('gemini:GEMINI/', 'gemini:GEM/')
+    if gem_uri != uri and gem_uri in plane.artifacts.keys():
+        logging.warning(f'Removing artifact {gem_uri}')
+        plane.artifacts.pop(gem_uri)
+        count += 1
+    return count
 
 
 def _retrieve_from_gemini(

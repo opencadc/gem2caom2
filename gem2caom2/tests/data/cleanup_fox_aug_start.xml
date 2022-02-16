@@ -34,7 +34,7 @@
       <caom2:calibrationLevel>1</caom2:calibrationLevel>
       <caom2:artifacts>
         <caom2:artifact caom2:id="c85e645b-3bf9-48d5-ac3b-0e34fdfc51fd" caom2:lastModified="2021-02-25T19:46:15.837" caom2:maxLastModified="2021-02-25T19:46:15.837" caom2:metaChecksum="md5:29a218a450d527eb7083b00ae48532a5" caom2:accMetaChecksum="md5:44c55e50e718ea37064435720d8814bd" caom2:metaProducer="gem2caom2/0.8">
-          <caom2:uri>gemini:GEM/S20210225Z0385b.fits</caom2:uri>
+          <caom2:uri>gemini:GEMINI/S20210225Z0385b.fits</caom2:uri>
           <caom2:productType>science</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>
@@ -51,7 +51,7 @@
       <caom2:calibrationLevel>1</caom2:calibrationLevel>
       <caom2:artifacts>
         <caom2:artifact caom2:id="8fe83721-680a-4547-a3d0-9c55e248234b" caom2:lastModified="2021-02-25T19:46:17.555" caom2:maxLastModified="2021-02-25T19:46:17.555" caom2:metaChecksum="md5:70df4bb93954120ed1e70542284c436f" caom2:accMetaChecksum="md5:aaaf2af42d2d85a4205804d174868536" caom2:metaProducer="gem2caom2/0.8">
-          <caom2:uri>gemini:GEM/S20210225Z0385r.fits</caom2:uri>
+          <caom2:uri>gemini:GEMINI/S20210225Z0385r.fits</caom2:uri>
           <caom2:productType>science</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>
@@ -68,7 +68,7 @@
       <caom2:calibrationLevel>1</caom2:calibrationLevel>
       <caom2:artifacts>
         <caom2:artifact caom2:id="54736a65-23a7-403c-a4cb-85524dec3233" caom2:lastModified="2021-02-25T19:46:19.285" caom2:maxLastModified="2021-02-25T19:46:19.285" caom2:metaChecksum="md5:e63bdc05249f4168015755881ac5ed2e" caom2:accMetaChecksum="md5:db30a0fe1bcdef854cd6c578aa28f4aa" caom2:metaProducer="gem2caom2/0.8">
-          <caom2:uri>gemini:GEM/S20210225Z0386b.fits</caom2:uri>
+          <caom2:uri>gemini:GEMINI/S20210225Z0386b.fits</caom2:uri>
           <caom2:productType>science</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>
@@ -85,7 +85,7 @@
       <caom2:calibrationLevel>1</caom2:calibrationLevel>
       <caom2:artifacts>
         <caom2:artifact caom2:id="66e4ed0e-246e-4e50-84ac-4747e27afb46" caom2:lastModified="2021-02-25T19:46:21.343" caom2:maxLastModified="2021-02-25T19:46:21.343" caom2:metaChecksum="md5:9465959fbdc8d279be0a7eb3d5001d6d" caom2:accMetaChecksum="md5:5db40e9101d91c5ac5b89280d2ec2485" caom2:metaProducer="gem2caom2/0.8">
-          <caom2:uri>gemini:GEM/S20210225Z0386r.fits</caom2:uri>
+          <caom2:uri>gemini:GEMINI/S20210225Z0386r.fits</caom2:uri>
           <caom2:productType>science</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>
@@ -102,7 +102,7 @@
       <caom2:calibrationLevel>1</caom2:calibrationLevel>
       <caom2:artifacts>
         <caom2:artifact caom2:id="7fa8df8c-3ac6-4537-af62-09cfd5fbf4dc" caom2:lastModified="2021-02-25T19:46:23.206" caom2:maxLastModified="2021-02-25T19:46:23.206" caom2:metaChecksum="md5:aca7484adbbcc8bf3cc441352f64e674" caom2:accMetaChecksum="md5:505d72c8aca1dfce8a13f8e944cd73c5" caom2:metaProducer="gem2caom2/0.8">
-          <caom2:uri>gemini:GEM/S20210225Z0387b.fits</caom2:uri>
+          <caom2:uri>gemini:GEMINI/S20210225Z0387b.fits</caom2:uri>
           <caom2:productType>science</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>
@@ -119,7 +119,7 @@
       <caom2:calibrationLevel>1</caom2:calibrationLevel>
       <caom2:artifacts>
         <caom2:artifact caom2:id="e6192678-5ed9-4e05-9c60-47dce1268b5a" caom2:lastModified="2021-02-25T19:46:24.919" caom2:maxLastModified="2021-02-25T19:46:24.919" caom2:metaChecksum="md5:fc81ace8048f6de4e787c35dee75a207" caom2:accMetaChecksum="md5:76176abf54a7eb7606c5982edeecd0be" caom2:metaProducer="gem2caom2/0.8">
-          <caom2:uri>gemini:GEM/S20210225Z0387r.fits</caom2:uri>
+          <caom2:uri>gemini:GEMINI/S20210225Z0387r.fits</caom2:uri>
           <caom2:productType>science</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>
@@ -136,7 +136,7 @@
       <caom2:calibrationLevel>1</caom2:calibrationLevel>
       <caom2:artifacts>
         <caom2:artifact caom2:id="59752eaa-2ebd-44e8-acb9-499bed02e649" caom2:lastModified="2021-02-25T19:46:27.132" caom2:maxLastModified="2021-02-25T19:46:27.132" caom2:metaChecksum="md5:3f6ca993ba29dfd58a2724a824fa8f65" caom2:accMetaChecksum="md5:d560c835ea6ad1bbafc15acc37ce641f" caom2:metaProducer="gem2caom2/0.8">
-          <caom2:uri>gemini:GEM/S20210225Z0388b.fits</caom2:uri>
+          <caom2:uri>gemini:GEMINI/S20210225Z0388b.fits</caom2:uri>
           <caom2:productType>science</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>
@@ -153,7 +153,7 @@
       <caom2:calibrationLevel>1</caom2:calibrationLevel>
       <caom2:artifacts>
         <caom2:artifact caom2:id="e59e64f7-a5ee-4fec-876c-4557cdf8af8e" caom2:lastModified="2021-02-25T19:46:29.074" caom2:maxLastModified="2021-02-25T19:46:29.074" caom2:metaChecksum="md5:d7ed1581f453519b1b2b6c617c5849db" caom2:accMetaChecksum="md5:a6ff03699666e40b758f71d237dc44d6" caom2:metaProducer="gem2caom2/0.8">
-          <caom2:uri>gemini:GEM/S20210225Z0388r.fits</caom2:uri>
+          <caom2:uri>gemini:GEMINI/S20210225Z0388r.fits</caom2:uri>
           <caom2:productType>science</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>

@@ -124,7 +124,7 @@ def visit(observation, **kwargs):
             )
             plane_count += 1
 
-    logging.debug(
+    logging.info(
         f'Completed cleanup for {observation.observation_id}. Removed '
         f'{artifact_count} artifacts and {plane_count} planes.'
     )

@@ -159,6 +159,7 @@ class AbstractGeminiMetadataReader(rdc.MetadataReader):
     def set(self, storage_name):
         self.set_json_metadata(storage_name)
         super().set(storage_name)
+        self._logger.debug(f'Have metadata for {self._json_metadata.keys()}')
 
     def set_json_metadata(self, storage_name):
         """Retrieves Gemini JSON metadata to memory."""
