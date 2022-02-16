@@ -250,7 +250,7 @@ def _augment(plane, uri, fqn, product_type):
     # look for URIs that have old naming patterns, and replace them
     ad_uri = uri.replace('cadc:GEMINI/', 'ad:GEM/')
     if ad_uri != uri and ad_uri in plane.artifacts.keys():
-        logging.warning(f'Removing artifact {ad_uri} {uri}')
+        logging.warning(f'Removing artifact {ad_uri}')
         plane.artifacts.pop(ad_uri)
         count += 1
     gem_uri = uri.replace('gemini:GEMINI/', 'gemini:GEM/')
