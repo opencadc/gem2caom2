@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [[ ! -e ${PWD}/config.yml ]]; then
-  if [[ "${@}" == "gem_run_state" ]]; then
+  if [[ "${@}" == "gem_run_incremental" ]]; then
     echo "ingest"
     cp /usr/local/.config/config_with_ingest.yml ${PWD}/config.yml
   else
