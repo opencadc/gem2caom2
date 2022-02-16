@@ -215,8 +215,6 @@ def test_pull_augmentation(http_mock, json_mock, header_mock, file_type_mock):
 
     test_rejected = mc.Rejected(REJECTED_FILE)
     test_config = mc.Config()
-    import logging
-    logging.getLogger('root').setLevel(logging.DEBUG)
     test_observable = mc.Observable(test_rejected, mc.Metrics(test_config))
     cadc_client_mock = Mock()
     cadc_client_mock.return_value.info.return_value = None
