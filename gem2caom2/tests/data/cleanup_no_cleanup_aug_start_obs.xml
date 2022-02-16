@@ -43,7 +43,7 @@
       </caom2:provenance>
       <caom2:artifacts>
         <caom2:artifact caom2:id="6047af84-c229-43d8-bfd4-5bf378279227" caom2:lastModified="2021-05-15T06:41:35.186" caom2:maxLastModified="2021-05-15T06:41:35.186" caom2:metaChecksum="md5:4c50aab40c9d0b4e5dc4000f5b733a53" caom2:accMetaChecksum="md5:384d84b7a69ebe2ce8982ea6090dd83c">
-          <caom2:uri>ad:GEM/S20081205S0217_th.jpg</caom2:uri>
+          <caom2:uri>cadc:GEMINI/S20081205S0217_th.jpg</caom2:uri>
           <caom2:productType>thumbnail</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>image/jpeg</caom2:contentType>
@@ -52,7 +52,7 @@
           <caom2:parts/>
         </caom2:artifact>
         <caom2:artifact caom2:id="d6d616f1-1cdc-4e26-ae1b-da7659d0f00b" caom2:lastModified="2021-05-25T17:13:28.338" caom2:maxLastModified="2021-05-25T17:13:28.338" caom2:metaChecksum="md5:d3108d324a0d52a8c797e19a43be1d93" caom2:accMetaChecksum="md5:6e4d61df4ba3fd875f35573616a1d751" caom2:metaProducer="gem2caom2/0.8.5">
-          <caom2:uri>gemini:GEM/S20081205S0217.fits</caom2:uri>
+          <caom2:uri>gemini:GEMINI/S20081205S0217.fits</caom2:uri>
           <caom2:productType>science</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>
@@ -60,7 +60,7 @@
           <caom2:contentChecksum>md5:34fe5009072f5a2dc6fa6ed42f7406c1</caom2:contentChecksum>
         </caom2:artifact>
         <caom2:artifact caom2:id="ecec80d7-fc33-4478-85b7-f8426f6b8468" caom2:lastModified="2019-07-15T17:25:50.504" caom2:maxLastModified="2019-07-15T17:25:50.504" caom2:metaChecksum="md5:ae1e4a5bfee78bdcd4d7f2f84a27c7aa" caom2:accMetaChecksum="md5:dbf067dea6f4546f72ce045c84caf644">
-          <caom2:uri>gemini:GEM/S20081205S0217.jpg</caom2:uri>
+          <caom2:uri>gemini:GEMINI/S20081205S0217.jpg</caom2:uri>
           <caom2:productType>preview</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>image/jpeg</caom2:contentType>
@@ -78,7 +78,7 @@
       <caom2:calibrationLevel>2</caom2:calibrationLevel>
       <caom2:artifacts>
         <caom2:artifact caom2:id="a5403f40-1e99-47d2-a01f-5cb358ff93ab" caom2:lastModified="2021-05-15T06:41:35.186" caom2:maxLastModified="2021-05-15T06:41:35.186" caom2:metaChecksum="md5:61131bc0a16a37c6d22f8bc4ff6882f3" caom2:accMetaChecksum="md5:313de7424ed74bef46d002afc2d67358">
-          <caom2:uri>ad:GEM/rgS20081205S0217_th.jpg</caom2:uri>
+          <caom2:uri>cadc:GEMINI/rgS20081205S0217_th.jpg</caom2:uri>
           <caom2:productType>thumbnail</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>image/jpeg</caom2:contentType>
@@ -87,7 +87,7 @@
           <caom2:parts/>
         </caom2:artifact>
         <caom2:artifact caom2:id="01d6a705-2f2a-4422-85a9-6dfeb3142f76" caom2:lastModified="2017-06-25T10:45:07.485" caom2:maxLastModified="2019-11-08T11:29:39.958" caom2:metaChecksum="md5:9b58dff3edac28f77eb991b65966bdd1" caom2:accMetaChecksum="md5:5c4c63c7226ddeb1f8fb9439eeb08ca9">
-          <caom2:uri>gemini:GEM/rgS20081205S0217.fits</caom2:uri>
+          <caom2:uri>gemini:GEMINI/rgS20081205S0217.fits</caom2:uri>
           <caom2:productType>science</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>
@@ -95,7 +95,7 @@
           <caom2:contentChecksum>md5:894d2a38801b24367f75b02a2423e046</caom2:contentChecksum>
         </caom2:artifact>
         <caom2:artifact caom2:id="f4c49f78-5613-4e46-ba70-b0fb2eaf325d" caom2:lastModified="2019-07-15T17:25:50.504" caom2:maxLastModified="2019-07-15T17:25:50.504" caom2:metaChecksum="md5:7b9b429187c1bb7e8e4c38df85a28f9b" caom2:accMetaChecksum="md5:096619e98b66e769c394d54f7b4fb2c5">
-          <caom2:uri>gemini:GEM/rgS20081205S0217.jpg</caom2:uri>
+          <caom2:uri>gemini:GEMINI/rgS20081205S0217.jpg</caom2:uri>
           <caom2:productType>preview</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>image/jpeg</caom2:contentType>

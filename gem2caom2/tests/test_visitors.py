@@ -76,9 +76,11 @@ from mock import patch, Mock
 
 from cadcutils import exceptions
 from gem2caom2 import preview_augmentation, pull_augmentation, SCHEME
-from gem2caom2 import COLLECTION, cleanup_augmentation
+from gem2caom2 import COLLECTION, cleanup_augmentation, gemini_metadata
+from gem2caom2 import svofps, gem_name
 from caom2pipe import caom_composable as cc
 from caom2pipe import manage_composable as mc
+import gem_mocks
 
 pytest.main(args=['-s', os.path.abspath(__file__)])
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
@@ -111,13 +113,14 @@ def test_preview_augment_known_no_preview():
         test_rejected.record(mc.Rejected.NO_PREVIEW, f'{TEST_PRODUCT_ID}.jpg')
         test_config = mc.Config()
         test_observable = mc.Observable(test_rejected, mc.Metrics(test_config))
-
+        test_storage_name = gem_name.GemName(file_name=TEST_FP_FILE)
         cadc_client_mock = Mock()
         kwargs = {
             'working_directory': TEST_DATA_DIR,
             'cadc_client': cadc_client_mock,
             'stream': 'stream',
             'observable': test_observable,
+            'storage_name': test_storage_name,
         }
 
         with patch('caom2pipe.manage_composable.http_get') as http_mock, patch(
@@ -159,6 +162,7 @@ def test_preview_augment_unknown_no_preview():
     test_rejected = mc.Rejected(REJECTED_FILE)
     test_config = mc.Config()
     test_observable = mc.Observable(test_rejected, mc.Metrics(test_config))
+    test_storage_name = gem_name.GemName(file_name=f'{TEST_PRODUCT_ID}.fits')
 
     cadc_client_mock = Mock()
     kwargs = {
@@ -166,6 +170,7 @@ def test_preview_augment_unknown_no_preview():
         'cadc_client': cadc_client_mock,
         'stream': 'stream',
         'observable': test_observable,
+        'storage_name': test_storage_name,
     }
 
     with patch(
@@ -194,8 +199,11 @@ def test_preview_augment_unknown_no_preview():
         assert not exec_mock.called, 'exec mock should not be called'
 
 
+@patch('caom2utils.data_util.get_file_type')
+@patch('gem2caom2.gemini_metadata.GeminiFileMetadataReader._retrieve_headers')
+@patch('gem2caom2.gemini_metadata.retrieve_json')
 @patch('caom2pipe.manage_composable.http_get')
-def test_pull_augmentation(http_mock):
+def test_pull_augmentation(http_mock, json_mock, header_mock, file_type_mock):
     obs = mc.read_obs_from_file(TEST_OBS_AD_URI_FILE)
     obs.planes[TEST_PRODUCT_ID].data_release = datetime.utcnow()
     original_uri = 'gemini:GEM/GN2001BQ013-04.fits'
@@ -209,10 +217,25 @@ def test_pull_augmentation(http_mock):
     test_config = mc.Config()
     test_observable = mc.Observable(test_rejected, mc.Metrics(test_config))
     cadc_client_mock = Mock()
+    cadc_client_mock.return_value.info.return_value = None
+    json_mock.side_effect = gem_mocks.mock_retrieve_json
+    filter_cache = svofps.FilterMetadataCache(Mock())
+    test_reader = gemini_metadata.GeminiFileMetadataReader(
+        Mock(), Mock(), filter_cache
+    )
+    test_fqn = f'{gem_mocks.TEST_DATA_DIR}/GMOS/GN2001BQ013-04.fits.header'
+    test_storage_name = gem_name.GemName(
+        file_name='GN2001BQ013-04.fits', entry=test_fqn
+    )
+    header_mock.side_effect = gem_mocks._mock_headers
+    file_type_mock.return_values = 'application/fits'
+    test_reader.set(test_storage_name)
     kwargs = {
         'working_directory': TEST_DATA_DIR,
         'cadc_client': cadc_client_mock,
         'observable': test_observable,
+        'metadata_reader': test_reader,
+        'storage_name': test_storage_name,
     }
 
     obs = pull_augmentation.visit(obs, **kwargs)
@@ -252,11 +275,13 @@ def test_preview_augment_delete_preview():
     }
     test_config = mc.Config()
     test_observable = mc.Observable(test_rejected, mc.Metrics(test_config))
+    test_storage_name = gem_name.GemName(file_name=f'{test_product_id}.fits')
     kwargs = {
         'working_directory': TEST_DATA_DIR,
         'cadc_client': None,
         'stream': 'stream',
         'observable': test_observable,
+        'storage_name': test_storage_name,
     }
     obs = preview_augmentation.visit(obs, **kwargs)
     assert obs is not None, 'expect a result'
@@ -277,10 +302,12 @@ def test_preview_augment(http_mock):
     test_metrics = mc.Metrics(test_config)
     test_observable = mc.Observable(test_rejected, test_metrics)
     cadc_client_mock = Mock()
+    test_storage_name = gem_name.GemName(file_name=f'{TEST_PRODUCT_ID}.fits')
     kwargs = {
         'working_directory': '/test_files',
         'cadc_client': cadc_client_mock,
         'observable': test_observable,
+        'storage_name': test_storage_name,
     }
 
     test_prev = f'/test_files/{TEST_PRODUCT_ID}.jpg'
@@ -321,6 +348,26 @@ def test_preview_augment(http_mock):
             os.unlink(test_prev)
 
 
+def test_preview_cleaning():
+    test_storage_name = gem_name.GemName(file_name=f'N20190218A1651b.fits')
+    test_observable = Mock()
+    test_observable.rejected.is_no_preview.return_value = False
+    kwargs = {
+        'working_directory': '/test_files',
+        'cadc_client': Mock(),
+        'observable': test_observable,
+        'storage_name': test_storage_name,
+    }
+
+    test_dup_uris_fqn = f'{TEST_DATA_DIR}/cleanup_bad_uris_start.xml'
+    dup_uris_obs = mc.read_obs_from_file(test_dup_uris_fqn)
+    pre_dup_uris_length = len(cc.get_all_artifact_keys(dup_uris_obs))
+    assert pre_dup_uris_length == 10, 'wrong dup uris pre conditions'
+    dup_uris_obs = preview_augmentation.visit(dup_uris_obs, **kwargs)
+    post_dup_uris_length = len(cc.get_all_artifact_keys(dup_uris_obs))
+    assert post_dup_uris_length == 8, 'wrong dup uris post conditions'
+
+
 @patch('caom2pipe.manage_composable.http_get')
 def test_preview_augment_failure(http_mock):
     # mimic 'Not Found' behaviour
@@ -345,10 +392,12 @@ def test_preview_augment_failure(http_mock):
     test_metrics = mc.Metrics(test_config)
     test_observable = mc.Observable(test_rejected, test_metrics)
     cadc_client_mock = Mock()
+    test_storage_name = gem_name.GemName(file_name=f'{TEST_PRODUCT_ID}.fits')
     kwargs = {
         'working_directory': '/test_files',
         'cadc_client': cadc_client_mock,
         'observable': test_observable,
+        'storage_name': test_storage_name,
     }
 
     test_prev = f'/test_files/{TEST_PRODUCT_ID}.jpg'
@@ -400,7 +449,7 @@ def test_cleanup():
     # test that cleanup occurs where it should
     test_kwargs = {}
     test_cleanup_file = f'{TEST_DATA_DIR}/cleanup_aug_start_obs.xml'
-    test_artifact_id = 'ad:GEM/N20140811S0033_BIAS_th.jpg'
+    test_artifact_id = 'cadc:GEMINI/N20140811S0033_BIAS_th.jpg'
     obs = mc.read_obs_from_file(test_cleanup_file)
     initial_all_artifact_keys = cc.get_all_artifact_keys(obs)
     assert (

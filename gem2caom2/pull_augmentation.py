@@ -95,6 +95,12 @@ def visit(observation, **kwargs):
     observable = kwargs.get('observable')
     if observable is None:
         raise mc.CadcException('Visitor needs a observable parameter.')
+    metadata_reader = kwargs.get('metadata_reader')
+    if metadata_reader is None:
+        raise mc.CadcException('Visitor needs a metadata_reader parameter.')
+    storage_name = kwargs.get('storage_name')
+    if storage_name is None:
+        raise mc.CadcException('Visitor needs a storage_name parameter.')
 
     count = 0
     if observable.rejected.is_bad_metadata(observation.observation_id):
@@ -115,10 +121,17 @@ def visit(observation, **kwargs):
                 continue
 
             for artifact in plane.artifacts.values():
-                if gem_name.GemName.is_preview(artifact.uri):
+                # compare file names, because part of this visitor is to
+                # change the URIs
+                artifact_f_name = artifact.uri.split('/')[-1]
+                if artifact_f_name != storage_name.file_name:
+                    logging.debug(
+                        f'Leave {artifact.uri}, want {storage_name.file_uri}'
+                    )
                     continue
                 try:
                     f_name = mc.CaomName(artifact.uri).file_name
+                    logging.debug(f'Checking for {f_name}')
                     file_url = f'{FILE_URL}/{f_name}'
                     fqn = os.path.join(working_dir, f_name)
                     if artifact.uri.startswith('ad:'):
@@ -129,7 +142,7 @@ def visit(observation, **kwargs):
                             f'Modified scheme for artifact.uri {artifact.uri}'
                         )
                         count = 1
-                    if f'GEM/' in artifact.uri:
+                    if 'GEM/' in artifact.uri:
                         artifact.uri = artifact.uri.replace(
                             'GEM/', f'{gem_name.COLLECTION}/'
                         )
@@ -138,12 +151,14 @@ def visit(observation, **kwargs):
                             f'{artifact.uri}'
                         )
                         count = 1
+                    # want to compare the checksum from the JSON, and the
+                    # checksum at CADC storage - if they are not the same,
+                    # retrieve the file from archive.gemini.edu again
+                    json_md5sum = metadata_reader.file_info.get(
+                        artifact.uri
+                    ).md5sum
                     clc.look_pull_and_put(
-                        artifact.uri,
-                        fqn,
-                        file_url,
-                        cadc_client,
-                        artifact.content_checksum.checksum,
+                        artifact.uri, fqn, file_url, cadc_client, json_md5sum
                     )
                     if os.path.exists(fqn):
                         logging.info(

@@ -99,7 +99,7 @@ from caom2 import CalibrationLevel, Chunk, ProductType
 from caom2 import TypedList, DerivedObservation, DataProductType
 from caom2 import ObservationIntentType, TargetType, CoordAxis1D, Axis
 from caom2 import SpectralWCS, RefCoord, CoordRange1D
-from caom2utils import WcsParser
+from caom2utils import WcsParser, update_artifact_meta
 from caom2utils.data_util import get_file_type
 from caom2pipe import manage_composable as mc
 from caom2pipe import caom_composable as cc
@@ -667,6 +667,7 @@ class GeminiMapping(cc.TelescopeMapping):
                         continue
                     if GemName.is_preview(artifact.uri):
                         continue
+                    update_artifact_meta(artifact, file_info)
                     processed = ofr.is_processed(self._storage_name.file_name)
                     if self._instrument in [
                         Inst.MICHELLE,

@@ -37,7 +37,7 @@
       <caom2:calibrationLevel>2</caom2:calibrationLevel>
       <caom2:artifacts>
         <caom2:artifact caom2:id="f5d2d5e9-491b-41a5-ade2-a8477a0550aa" caom2:lastModified="2021-05-24T18:54:19.268" caom2:maxLastModified="2021-05-24T18:54:19.268" caom2:metaChecksum="md5:9c8d2ab397e3f82645b827a1efafa460" caom2:accMetaChecksum="md5:b58ac0ac9eda27f7565b4fe24b0b4e3a">
-          <caom2:uri>ad:GEM/N20140811S0033_BIAS_th.jpg</caom2:uri>
+          <caom2:uri>cadc:GEMINI/N20140811S0033_BIAS_th.jpg</caom2:uri>
           <caom2:productType>thumbnail</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>image/jpeg</caom2:contentType>
@@ -46,7 +46,7 @@
           <caom2:parts/>
         </caom2:artifact>
         <caom2:artifact caom2:id="ace1249a-83ed-4807-973f-a2c69bb89859" caom2:lastModified="2021-05-24T18:54:19.268" caom2:maxLastModified="2021-05-24T19:38:47.324" caom2:metaChecksum="md5:59a2e0056bba138f0be0cff02c8e6963" caom2:accMetaChecksum="md5:ebf70c389574a9261f15d8703d1df93e" caom2:metaProducer="gem2caom2/0.8.5">
-          <caom2:uri>gemini:GEM/N20140811S0033_BIAS.fits</caom2:uri>
+          <caom2:uri>gemini:GEMINI/N20140811S0033_BIAS.fits</caom2:uri>
           <caom2:productType>calibration</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>
@@ -54,7 +54,7 @@
           <caom2:contentChecksum>md5:63dd8ff94d748f8523ff968f2ee94413</caom2:contentChecksum>
         </caom2:artifact>
         <caom2:artifact caom2:id="724ee8ce-7cd3-4195-b26b-80737b86a04a" caom2:lastModified="2019-07-26T14:22:07.397" caom2:maxLastModified="2019-07-26T14:22:07.397" caom2:metaChecksum="md5:2fdbb0e95853cd1538dc723a487077cc" caom2:accMetaChecksum="md5:a3b80e7900e535613a8f192f8f3138a4">
-          <caom2:uri>gemini:GEM/N20140811S0033_BIAS.jpg</caom2:uri>
+          <caom2:uri>gemini:GEMINI/N20140811S0033_BIAS.jpg</caom2:uri>
           <caom2:productType>preview</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>image/jpeg</caom2:contentType>
@@ -72,7 +72,7 @@
       <caom2:calibrationLevel>2</caom2:calibrationLevel>
       <caom2:artifacts>
         <caom2:artifact caom2:id="2c9c0043-7933-4674-8ab4-114a3dbc841c" caom2:lastModified="2021-05-24T18:54:19.268" caom2:maxLastModified="2021-05-24T18:54:19.268" caom2:metaChecksum="md5:16600ea1dfc71a47f58ef8324796264d" caom2:accMetaChecksum="md5:f7583786a0dcabee93fc990a3a0d5582">
-          <caom2:uri>ad:GEM/N20140811S0033_bias_th.jpg</caom2:uri>
+          <caom2:uri>cadc:GEMINI/N20140811S0033_bias_th.jpg</caom2:uri>
           <caom2:productType>thumbnail</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>image/jpeg</caom2:contentType>
@@ -81,7 +81,7 @@
           <caom2:parts/>
         </caom2:artifact>
         <caom2:artifact caom2:id="7fea3eff-86fd-445f-81e9-fe650e6e7d50" caom2:lastModified="2021-05-24T18:54:19.268" caom2:maxLastModified="2021-05-24T18:54:19.268" caom2:metaChecksum="md5:13fa87a58eaf5d2ae76a87c93d1fcb16" caom2:accMetaChecksum="md5:6b37d170270019e020af2fe7bc4db359" caom2:metaProducer="gem2caom2/0.8.5">
-          <caom2:uri>gemini:GEM/N20140811S0033_bias.fits</caom2:uri>
+          <caom2:uri>gemini:GEMINI/N20140811S0033_bias.fits</caom2:uri>
           <caom2:productType>calibration</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>
@@ -89,7 +89,7 @@
           <caom2:contentChecksum>md5:63dd8ff94d748f8523ff968f2ee94413</caom2:contentChecksum>
         </caom2:artifact>
         <caom2:artifact caom2:id="eb9ef6c6-abf7-4a8d-88f8-2254394c8eca" caom2:lastModified="2019-07-26T14:22:07.397" caom2:maxLastModified="2019-07-26T14:22:07.397" caom2:metaChecksum="md5:aabcf607a7dd5964b143c99d3d2094df" caom2:accMetaChecksum="md5:d40f417e15598dddd20bba4bb63c5a94">
-          <caom2:uri>gemini:GEM/N20140811S0033_bias.jpg</caom2:uri>
+          <caom2:uri>gemini:GEMINI/N20140811S0033_bias.jpg</caom2:uri>
           <caom2:productType>preview</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>image/jpeg</caom2:contentType>
