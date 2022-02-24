@@ -1295,8 +1295,7 @@ def mock_repo_create(arg1):
     # arg1 is an Observation instance
     act_fqn = f'{TEST_DATA_DIR}/{arg1.observation_id}.actual.xml'
     ex_fqn = f'{TEST_DATA_DIR}/{arg1.observation_id}.expected.xml'
-    mc.write_obs_to_file(arg1, act_fqn)
-    result = compare(ex_fqn, act_fqn, arg1.observation_id)
+    result = compare(ex_fqn, act_fqn, arg1)
     if result is not None:
         assert False, result
 
@@ -1322,18 +1321,17 @@ def mock_repo_update(ignore1):
     return None
 
 
-def compare(ex_fqn, act_fqn, entry):
-    ex = mc.read_obs_from_file(ex_fqn)
-    act = mc.read_obs_from_file(act_fqn)
-    result = get_differences(ex, act, 'Observation')
-    if result:
-        result_str = '\n'.join([r for r in result])
+def compare(expected_fqn, actual_fqn, observation):
+    expected = mc.read_obs_from_file(expected_fqn)
+    compare_result = get_differences(expected, observation)
+    if compare_result is not None:
+        mc.write_obs_to_file(observation, actual_fqn)
+        compare_text = '\n'.join([r for r in compare_result])
         msg = (
-            f'Differences found obs id {ex.observation_id} '
-            f'file id {entry} instr {ex.instrument.name}\n{result_str}'
+            f'Differences found in observation {expected.observation_id}\n'
+            f'{compare_text}. Check {actual_fqn}'
         )
-        return msg
-    return None
+        raise AssertionError(msg)
 
 
 def _query_mock_none(ignore1, ignore2):
@@ -1467,14 +1465,4 @@ def _run_test_common(
             logging.getLogger('root').setLevel(logging.INFO)
             # logging.getLogger('Gmos').setLevel(logging.INFO)
             observation = fits2caom2_augmentation.visit(observation, **kwargs)
-
-        expected = mc.read_obs_from_file(expected_fqn)
-        compare_result = get_differences(expected, observation)
-        if compare_result is not None:
-            mc.write_obs_to_file(observation, actual_fqn)
-            compare_text = '\n'.join([r for r in compare_result])
-            msg = (
-                f'Differences found in observation {expected.observation_id}\n'
-                f'{compare_text}. Check {actual_fqn}'
-            )
-            raise AssertionError(msg)
+        compare(expected_fqn, actual_fqn, observation)

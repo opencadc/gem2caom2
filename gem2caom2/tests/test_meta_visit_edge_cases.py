@@ -67,8 +67,53 @@
 # ***********************************************************************
 #
 
-from mock import patch
+from os import unlink
+from os.path import exists
+from tempfile import TemporaryDirectory
+
+from cadcutils import exceptions
+from caom2pipe import astro_composable as ac
+from caom2pipe import manage_composable as mc
+from gem2caom2 import svofps, gemini_metadata, builder
+from gem2caom2 import fits2caom2_augmentation
+
+from mock import ANY, patch, Mock
 import gem_mocks
+
+
+@patch('caom2utils.data_util.get_file_type')
+@patch('gem2caom2.gemini_metadata.AbstractGeminiMetadataReader._retrieve_json')
+@patch('caom2pipe.reader_composable.FileMetadataReader._retrieve_headers')
+@patch('caom2pipe.astro_composable.get_vo_table_session')
+@patch('gem2caom2.program_metadata.get_pi_metadata')
+@patch('gem2caom2.gemini_metadata.ProvenanceFinder')
+def test_broken_obs(
+    pf_mock,
+    get_pi_mock,
+    svofps_mock,
+    headers_mock,
+    json_mock,
+    file_type_mock,
+):
+    # the observation is broken, test that retrieval will handle that
+    test_f_name = 'gS20171114S0185_bias.fits.header'
+    test_obs_id = 'GS-CAL20171114-2-086-G-BIAS'
+    test_fqn = f'{gem_mocks.TEST_DATA_DIR}/broken_files/{test_f_name}'
+    expected_fqn = (
+        f'{gem_mocks.TEST_DATA_DIR}/broken_files/{test_obs_id}.expected.xml'
+    )
+
+    gem_mocks._run_test_common(
+        data_sources=[f'{gem_mocks.TEST_DATA_DIR}/broken_files'],
+        get_pi_mock=get_pi_mock,
+        svofps_mock=svofps_mock,
+        headers_mock=headers_mock,
+        pf_mock=pf_mock,
+        json_mock=json_mock,
+        file_type_mock=file_type_mock,
+        test_set=[test_fqn],
+        expected_fqn=expected_fqn,
+    )
 
 
 @patch('gem2caom2.gemini_metadata.GeminiFileMetadataReader._retrieve_file_info')
@@ -78,7 +123,7 @@ import gem_mocks
 @patch('caom2pipe.astro_composable.get_vo_table_session')
 @patch('gem2caom2.program_metadata.get_pi_metadata')
 @patch('gem2caom2.gemini_metadata.ProvenanceFinder')
-def test_visitor(
+def test_unauthorized_at_gemini(
     pf_mock,
     get_pi_mock,
     svofps_mock,
@@ -108,3 +153,76 @@ def test_visitor(
         test_set=[test_fqn],
         expected_fqn=expected_fqn,
     )
+
+
+@patch('gem2caom2.gemini_metadata.retrieve_headers')
+@patch('caom2utils.data_util.get_file_type')
+@patch('gem2caom2.gemini_metadata.AbstractGeminiMetadataReader._retrieve_json')
+@patch('caom2pipe.reader_composable.StorageClientReader.set_headers')
+@patch('caom2pipe.astro_composable.get_vo_table_session')
+@patch('gem2caom2.program_metadata.get_pi_metadata')
+@patch('gem2caom2.gemini_metadata.ProvenanceFinder')
+def test_going_public(
+    pf_mock,
+    get_pi_mock,
+    svofps_mock,
+    headers_mock,
+    json_mock,
+    file_type_mock,
+    remote_headers_mock,
+):
+    # test case is the data is going public, so the file needs to be
+    # retrieved from archive.gemini.edu. The mocks are for the case
+    # where the headers are not yet available from CADC.
+
+    test_fid = 'N20150929S0013'
+    test_f_name = f'{test_fid}.fits'
+    mock_return_fqn = f'{gem_mocks.TEST_DATA_DIR}/GMOS/{test_f_name}.header'
+    remote_headers_mock.side_effect = [ac.make_headers_from_file(mock_return_fqn)]
+    expected_fqn = f'{gem_mocks.TEST_DATA_DIR}/GMOS/{test_fid}.expected.xml'
+
+    get_pi_mock.side_effect = gem_mocks.mock_get_pi_metadata
+    svofps_mock.side_effect = gem_mocks.mock_get_votable
+    headers_mock.side_effect = exceptions.NotFoundException
+    pf_mock.get.side_effect = gem_mocks.mock_get_data_label
+    json_mock.side_effect = gem_mocks.mock_get_obs_metadata
+    file_type_mock.return_value = 'application/fits'
+
+    with TemporaryDirectory() as tmp_dir_name:
+        test_config = mc.Config()
+        test_config.task_types = [mc.TaskType.SCRAPE]
+        test_config.use_local_files = True
+        test_config.data_sources = [f'{gem_mocks.TEST_DATA_DIR}/broken_files']
+        test_config.working_directory = tmp_dir_name
+        test_config.proxy_fqn = f'{tmp_dir_name}/test_proxy.pem'
+
+        with open(test_config.proxy_fqn, 'w') as f:
+            f.write('test content')
+
+        in_fqn = expected_fqn.replace('.expected.', '.in.')
+        observation = mc.read_obs_from_file(in_fqn)
+        actual_fqn = expected_fqn.replace('expected', 'actual')
+        if exists(actual_fqn):
+            unlink(actual_fqn)
+
+        filter_cache = svofps.FilterMetadataCache(svofps_mock)
+        metadata_reader = gemini_metadata.GeminiStorageClientReader(
+            Mock(), Mock(), pf_mock, filter_cache
+        )
+        test_metadata = gemini_metadata.GeminiMetadataLookup(
+            metadata_reader
+        )
+        test_builder = builder.GemObsIDBuilder(
+            test_config, metadata_reader, test_metadata
+        )
+        storage_name = test_builder.build(mock_return_fqn)
+        kwargs = {
+            'storage_name': storage_name,
+            'metadata_reader': metadata_reader,
+        }
+        ignore = fits2caom2_augmentation.visit(observation, **kwargs)
+
+        assert remote_headers_mock.called, 'expect remote header retrieval'
+        remote_headers_mock.assert_called_with(
+            'N20150929S0013.fits.header', ANY, ANY
+        ), 'wrong remote header args'

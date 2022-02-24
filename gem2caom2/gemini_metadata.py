@@ -80,6 +80,7 @@ import logging
 import requests
 from os import path
 
+from cadcutils import exceptions
 from cadcdata import FileInfo
 from caom2utils import data_util
 from caom2pipe import client_composable as clc
@@ -184,25 +185,7 @@ class GeminiMetadataReader(AbstractGeminiMetadataReader):
         pass
 
     def _retrieve_headers(self, source_name):
-        self._logger.debug(f'Begin _retrieve_headers for {source_name}')
-        header_url = f'{HEADER_URL}{source_name}.fits'
-        # Open the URL and fetch the JSON document for the observation
-        response = None
-        try:
-            response = self._session.get(header_url, timeout=20)
-            if response.status_code == requests.codes.ok:
-                headers = data_util.make_headers_from_string(response.text)
-            else:
-                headers = None
-                self._logger.warning(
-                    f'Error {response.status_code} when retrieving '
-                    f'{header_url} headers.'
-                )
-        finally:
-            if response is not None:
-                response.close()
-        self._logger.debug(f'End _retrieve_headers')
-        return headers
+        return retrieve_headers(source_name, self._logger, self._session)
 
     def set(self, storage_name):
         self.set_json_metadata(storage_name)
@@ -233,6 +216,23 @@ class GeminiStorageClientReader(
         self._session = http_session
         self._provenance_finder = provenance_finder
         self._filter_cache = filter_cache
+
+    def set_headers(self, storage_name):
+        try:
+            super().set_headers(storage_name)
+        except exceptions.NotFoundException as e:
+            # file is not at CADC, so as a second option get the headers from
+            # archive.gemini.edu
+            for entry in storage_name.source_names:
+                if '.fits' in entry:
+                    self._headers[entry] = retrieve_headers(
+                        path.basename(entry),
+                        self._logger,
+                        self._session,
+                    )
+                    self._logger.debug(f'Found {entry} at archive.gemini.edu.')
+                else:
+                    self._headers[entry] = []
 
 
 class GeminiMetadataLookup:
@@ -333,8 +333,6 @@ class GeminiMetadataLookup:
         return self._search_json(uri, 'ut_datetime')
 
     def _search_json(self, uri, lookup_key):
-        # logging.error(uri)
-        # logging.error(self._reader.json_metadata.get(uri))
         return self._reader.json_metadata.get(uri).get(lookup_key)
 
     def _search_fits(self, uri, lookup_key):
@@ -493,6 +491,22 @@ def repair_instrument(in_name):
         # GN-2001A-C-2-9-010
         in_name = 'OSCIR'
     return Inst(in_name)
+
+
+def retrieve_headers(source_name, logger, session):
+    logger.debug(f'Begin retrieve_headers for {source_name}')
+    header_url = f'{HEADER_URL}{source_name}.fits'
+    # Open the URL and fetch the JSON document for the observation
+    response = None
+    try:
+        response = session.get(header_url, timeout=20)
+        response.raise_for_status()
+        headers = data_util.make_headers_from_string(response.text)
+    finally:
+        if response is not None:
+            response.close()
+    logger.debug(f'End retrieve_headers')
+    return headers
 
 
 def retrieve_json(source_name, logger, session):
