@@ -77,7 +77,6 @@ This module is the classes and methods that do and use the retrieval.
 
 
 import logging
-import requests
 from os import path
 
 from cadcutils import exceptions
@@ -220,7 +219,7 @@ class GeminiStorageClientReader(
     def set_headers(self, storage_name):
         try:
             super().set_headers(storage_name)
-        except exceptions.NotFoundException as e:
+        except exceptions.UnexpectedException as e:
             # file is not at CADC, so as a second option get the headers from
             # archive.gemini.edu
             for entry in storage_name.source_names:

@@ -183,7 +183,7 @@ def test_going_public(
 
     get_pi_mock.side_effect = gem_mocks.mock_get_pi_metadata
     svofps_mock.side_effect = gem_mocks.mock_get_votable
-    headers_mock.side_effect = exceptions.NotFoundException
+    headers_mock.side_effect = exceptions.UnexpectedException
     pf_mock.get.side_effect = gem_mocks.mock_get_data_label
     json_mock.side_effect = gem_mocks.mock_get_obs_metadata
     file_type_mock.return_value = 'application/fits'
@@ -226,3 +226,39 @@ def test_going_public(
         remote_headers_mock.assert_called_with(
             'N20150929S0013.fits.header', ANY, ANY
         ), 'wrong remote header args'
+
+
+@patch('caom2utils.data_util.get_file_type')
+@patch('gem2caom2.gemini_metadata.AbstractGeminiMetadataReader._retrieve_json')
+@patch('caom2pipe.reader_composable.FileMetadataReader._retrieve_headers')
+@patch('caom2pipe.astro_composable.get_vo_table_session')
+@patch('gem2caom2.program_metadata.get_pi_metadata')
+@patch('gem2caom2.gemini_metadata.ProvenanceFinder')
+def test_fix_uri_duplicate_fits(
+    pf_mock,
+    get_pi_mock,
+    svofps_mock,
+    headers_mock,
+    json_mock,
+    file_type_mock,
+):
+    # the observation has an AD-style URI, the visit will change it to the
+    # SI-style URI.
+    test_f_name = 'S20210225S0023.fits.header'
+    test_obs_id = 'GS-2021A-Q-125-31-006'
+    test_fqn = f'{gem_mocks.TEST_DATA_DIR}/fix_uris/{test_f_name}'
+    expected_fqn = (
+        f'{gem_mocks.TEST_DATA_DIR}/fix_uris/{test_obs_id}.expected.xml'
+    )
+
+    gem_mocks._run_test_common(
+        data_sources=[f'{gem_mocks.TEST_DATA_DIR}/fix_uris'],
+        get_pi_mock=get_pi_mock,
+        svofps_mock=svofps_mock,
+        headers_mock=headers_mock,
+        pf_mock=pf_mock,
+        json_mock=json_mock,
+        file_type_mock=file_type_mock,
+        test_set=[test_fqn],
+        expected_fqn=expected_fqn,
+    )

@@ -68,6 +68,7 @@
 #
 
 
+import logging
 from caom2pipe import caom_composable as cc
 from gem2caom2 import main_app
 
@@ -83,4 +84,32 @@ class GeminiFits2caom2Visitor(cc.Fits2caom2Visitor):
 
 
 def visit(observation, **kwargs):
-    return GeminiFits2caom2Visitor(observation, **kwargs).visit()
+    if observation is not None:
+        for plane in observation.planes.values():
+            rename_these = []
+            for artifact in plane.artifacts.values():
+                if artifact.uri.startswith('ad:GEM/'):
+                    rename_these.append(artifact.uri)
+                if artifact.uri.startswith('gemini:GEM/'):
+                    rename_these.append(artifact.uri)
+
+            for entry in rename_these:
+                artifact = plane.artifacts.pop(entry)
+                if artifact.uri.startswith('ad:GEM/'):
+                    olduri = artifact.uri
+                    newuri = artifact.uri.replace('ad:GEM/', 'cadc:GEMINI/')
+                    artifact.uri = newuri
+                    logging.info(f'Renamed URI from {olduri} to {newuri}')
+                if artifact.uri.startswith('gemini:GEM/'):
+                    olduri = artifact.uri
+                    newuri = artifact.uri.replace(
+                        'gemini:GEM/', 'gemini:GEMINI/'
+                    )
+                    artifact.uri = newuri
+                    logging.info(f'Renamed URI from {olduri} to {newuri}')
+                plane.artifacts[artifact.uri] = artifact
+
+    observation = GeminiFits2caom2Visitor(observation, **kwargs).visit()
+    for plane in observation.planes.values():
+        logging.error(plane.artifacts.keys())
+    return observation
