@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+
+<title>Detail for Program: GS-2021A-Q-125</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-2021A-Q-125</h1>
+
+<table>
+ <tr><td>Title:<td>Determining the low-mass cutoff for star formation</tr>
+ <tr><td>PI:<td>Christopher Gelino</tr>
+ <tr><td>Co-I(s):<td> Peter Eisenhardt,  Federico Marocco,  J. Davy Kirkpatrick,  Dan Caselden,  Jacqueline Faherty,  Michael Cushing,  Aaron Meisner,  Edward Wright,  Adam Schneider</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+Discovering and characterizing late-T and Y dwarfs in the 20 pc volume around the Sun will allow us to answer some of the most basic, open questions in astronomy: With what efficiency does star formation create objects of extremely low mass? Is there a low- mass cutoff of star formation? If so, what is its value? The only data set capable of revealing statistically significant samples of these objects, and therefore answering the above questions, is the that from WISE. Funded by NASA's ADAP program, the CatWISE2020 project has combined data from all phases of the WISE mission to produce a catalog of ~1.9 billion sources with magnitude limits and proper motion measurements down to unprecedented depth and precision. Crucially, CatWISE2020 has access to the coldest, least massive members of the local sub-stellar neighborhood, a population completely undetectable by Gaia or any other existing large-area survey. Imaging with Gemini-South/FLAMINGOS2 is the cornerstone of our southern hemisphere follow-up campaign, complementing proposed and scheduled observations from Palomar and Keck in the north, by providing strong constraints on the nature of our discoveries via photometric typing and distance estimates. Gemini observations will enable more complete statistics in the coldest temperature bins of the 20-pc sample, where our science questions are most easily measured. 
+</div>
+
+
+
+</body>
+</html>

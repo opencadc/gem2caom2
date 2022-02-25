@@ -77,7 +77,6 @@ import matplotlib.image as image
 from cadcutils import exceptions
 from caom2 import Observation, ProductType, ReleaseType
 from caom2pipe import manage_composable as mc
-from gem2caom2.gem_name import GemName
 
 __all__ = ['visit']
 
@@ -247,17 +246,6 @@ def _augment(plane, uri, fqn, product_type):
     plane.artifacts[uri] = mc.get_artifact_metadata(
         fqn, product_type, ReleaseType.DATA, uri, temp
     )
-    # look for URIs that have old naming patterns, and replace them
-    ad_uri = uri.replace('cadc:GEMINI/', 'ad:GEM/')
-    if ad_uri != uri and ad_uri in plane.artifacts.keys():
-        logging.warning(f'Removing artifact {ad_uri}')
-        plane.artifacts.pop(ad_uri)
-        count += 1
-    gem_uri = uri.replace('gemini:GEMINI/', 'gemini:GEM/')
-    if gem_uri != uri and gem_uri in plane.artifacts.keys():
-        logging.warning(f'Removing artifact {gem_uri}')
-        plane.artifacts.pop(gem_uri)
-        count += 1
     return count
 
 

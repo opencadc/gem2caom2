@@ -348,26 +348,6 @@ def test_preview_augment(http_mock):
             os.unlink(test_prev)
 
 
-def test_preview_cleaning():
-    test_storage_name = gem_name.GemName(file_name=f'N20190218A1651b.fits')
-    test_observable = Mock()
-    test_observable.rejected.is_no_preview.return_value = False
-    kwargs = {
-        'working_directory': '/test_files',
-        'cadc_client': Mock(),
-        'observable': test_observable,
-        'storage_name': test_storage_name,
-    }
-
-    test_dup_uris_fqn = f'{TEST_DATA_DIR}/cleanup_bad_uris_start.xml'
-    dup_uris_obs = mc.read_obs_from_file(test_dup_uris_fqn)
-    pre_dup_uris_length = len(cc.get_all_artifact_keys(dup_uris_obs))
-    assert pre_dup_uris_length == 10, 'wrong dup uris pre conditions'
-    dup_uris_obs = preview_augmentation.visit(dup_uris_obs, **kwargs)
-    post_dup_uris_length = len(cc.get_all_artifact_keys(dup_uris_obs))
-    assert post_dup_uris_length == 8, 'wrong dup uris post conditions'
-
-
 @patch('caom2pipe.manage_composable.http_get')
 def test_preview_augment_failure(http_mock):
     # mimic 'Not Found' behaviour
