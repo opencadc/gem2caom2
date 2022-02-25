@@ -110,6 +110,4 @@ def visit(observation, **kwargs):
                 plane.artifacts[artifact.uri] = artifact
 
     observation = GeminiFits2caom2Visitor(observation, **kwargs).visit()
-    for plane in observation.planes.values():
-        logging.error(plane.artifacts.keys())
     return observation
