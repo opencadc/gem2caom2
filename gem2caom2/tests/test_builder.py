@@ -166,6 +166,7 @@ def test_different_obs_id_cases(json_mock, headers_mock, file_info_mock):
     test_cases = {
         'N20100104S0208.fits.header': 'GN-2009B-Q-121-15-001',
         'N20200810A0490r.fits': 'N20200810A0490',
+        'N20200810A0490r': 'N20200810A0490',
         'SDCH_20200131_0010.fits': 'GS-CAL20200131-10-0131',
     }
     test_reader = gemini_metadata.GeminiFileMetadataReader(
@@ -180,3 +181,4 @@ def test_different_obs_id_cases(json_mock, headers_mock, file_info_mock):
         test_result = test_subject.build(file_name)
         assert test_result is not None, 'expect a result'
         assert test_result.obs_id == obs_id, f'got {test_result.obs_id}'
+        assert file_name.split('.')[0] in test_result.source_names
