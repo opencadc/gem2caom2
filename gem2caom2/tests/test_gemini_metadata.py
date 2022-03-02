@@ -100,24 +100,11 @@ def test_set(retrieve_json_mock, retrieve_headers_mock):
 
 @patch('caom2utils.data_util.get_local_file_headers', autospec=True)
 @patch('caom2pipe.client_composable.query_tap_client', autospec=True)
-@patch('gem2caom2.gemini_metadata.ProvenanceFinder', autospec=True)
-def test_provenance_finder(get_obs_mock, caom2_mock, local_mock):
+def test_provenance_finder(caom2_mock, local_mock):
     test_file_id = 'rN20123456S9876'
     test_uri = f'gemini:GEMINI/{test_file_id}.fits'
     repaired_data_label = 'GN-2012A-B-012-345-6'
     test_data_label = f'{repaired_data_label}-R'
-
-    def _get_obs_md_mock(ignore):
-        md = [
-            {
-                'data_label': test_data_label,
-                'filename': f'{test_file_id}.fits',
-                'lastmod': '2020-02-25T20:36:31.230',
-                'instrument': 'GMOS',
-            },
-        ]
-        return repaired_data_label
-    get_obs_mock.return_value.get.side_effect = _get_obs_md_mock
 
     def _caom2_mock(ignore1, ignore2):
         return Table.read(
