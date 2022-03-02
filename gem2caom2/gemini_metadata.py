@@ -464,7 +464,7 @@ class ProvenanceFinder:
         repaired_data_label = None
         if result is not None:
             repaired_data_label = obs_file_relationship.repair_data_label(
-                f_name, result.data_label
+                f_name, result
             )
         return repaired_data_label
 
