@@ -248,9 +248,7 @@ class GeminiMetadataLookup:
     def data_label(self, uri):
         temp = self._search_json(uri, 'data_label')
         if temp is None:
-            temp = self._reader.headers.get(uri)[0].get('DATALAB')
-            if temp is None:
-                temp = self._reader.headers.get(uri)[1].get('DATALAB')
+            temp = self._search_fits(uri, 'DATALAB')
         return obs_file_relationship.repair_data_label(
             uri.split('/')[-1], temp
         )
@@ -280,7 +278,7 @@ class GeminiMetadataLookup:
         return self._search_json(uri, 'focal_plane_mask')
 
     def instrument(self, uri):
-        temp = self._search_json(uri, 'INSTRUME')
+        temp = self._search_fits(uri, 'INSTRUME')
         if temp is None:
             if temp is None:
                 temp = self._search_json(uri, 'instrument')
@@ -335,9 +333,14 @@ class GeminiMetadataLookup:
         return self._reader.json_metadata.get(uri).get(lookup_key)
 
     def _search_fits(self, uri, lookup_key):
-        temp = self._reader.headers.get(uri)[0].get(lookup_key)
-        if temp is None and len(self._reader.headers) > 1:
-            temp = self._reader.headers.get(uri)[1].get(lookup_key)
+        temp = None
+        headers = self._reader.headers.get(uri)
+        if headers is not None:
+            # if headers are None, the file is proprietary at
+            # archive.gemini.edu, and cannot be retrieved
+            temp = headers[0].get(lookup_key)
+            if temp is None and len(headers) > 1:
+                temp = headers[1].get(lookup_key)
         return temp
 
     @property
