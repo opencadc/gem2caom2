@@ -1010,6 +1010,23 @@ class GeminiMapping(cc.TelescopeMapping):
             # BIASes and DARKs for all instruments should ignore spatial wcs
 
             result = True
+
+        # DB 15-03-22
+        # ignoring spatial coordinates whenever TRKFRAME or FRAME had the
+        # value AZEL_TOPO because the telescope is parked at the zenith.
+        trkframe = self._headers[0].get('TRKFRAME')
+        frame = self._headers[0].get('FRAME')
+        if trkframe is None and frame is None and len(self._headers) > 1:
+            # just in case the 0th header is not the source of the metadata
+            trkframe = self._headers[1].get('TRKFRAME')
+            frame = self._headers[1].get('FRAME')
+
+        if (
+            (trkframe is not None and trkframe == 'AZEL_TOPO')
+            or (frame is not None and frame == 'AZEL_TOPO')
+        ):
+            result = True
+
         return result
 
     def _search_through_keys(self, ext, search_keys):
