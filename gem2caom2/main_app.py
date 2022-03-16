@@ -763,12 +763,13 @@ class GeminiMapping(cc.TelescopeMapping):
                         )
                         artifact.parts.pop(part)
 
-                program = program_metadata.get_pi_metadata(
-                    observation.proposal.id
-                )
-                if program is not None:
-                    observation.proposal.pi_name = program['pi_name']
-                    observation.proposal.title = program['title']
+                if observation.proposal is not None:
+                    program = program_metadata.get_pi_metadata(
+                        observation.proposal.id
+                    )
+                    if program is not None:
+                        observation.proposal.pi_name = program['pi_name']
+                        observation.proposal.title = program['title']
 
             if isinstance(observation, DerivedObservation):
                 cc.update_observation_members(observation)

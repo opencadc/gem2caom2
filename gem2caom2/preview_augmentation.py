@@ -150,7 +150,6 @@ def _do_prev(
         preview_fqn = os.path.join(working_dir, gem_name.prev)
         thumb = gem_name.thumb
         thumb_fqn = os.path.join(working_dir, thumb)
-        new_retrieval = False
 
         # get the file - try disk first, then CADC, then Gemini
         # Only try to retrieve from Gemini if the eventual purpose is
@@ -163,7 +162,7 @@ def _do_prev(
                 logging.debug(
                     f'Retrieve {gem_name.prev} from archive.gemini.edu.'
                 )
-                new_retrieval = _retrieve_from_gemini(
+                _retrieve_from_gemini(
                     gem_name,
                     observable,
                     plane,
@@ -201,7 +200,7 @@ def _do_prev(
                     f'matplotlib error handling {gem_name.prev}.Try to '
                     f'retrieve from {PREVIEW_URL} one more time.'
                 )
-                new_retrieval = _retrieve_from_gemini(
+                _retrieve_from_gemini(
                     gem_name,
                     observable,
                     plane,
@@ -212,14 +211,14 @@ def _do_prev(
             count += _augment(
                 plane, gem_name.prev_uri, preview_fqn, ProductType.PREVIEW
             )
-            if cadc_client is not None and new_retrieval:
+            if cadc_client is not None:
                 cadc_client.put(working_dir, gem_name.prev_uri)
             count += 1
 
             count += _augment(
                 plane, gem_name.thumb_uri, thumb_fqn, ProductType.THUMBNAIL
             )
-            if cadc_client is not None and new_retrieval:
+            if cadc_client is not None:
                 cadc_client.put(working_dir, gem_name.thumb_uri)
             count += 1
     return count
@@ -254,10 +253,8 @@ def _retrieve_from_gemini(
     gem_name, observable, plane, preview_fqn,
 ):
     preview_url = f'{PREVIEW_URL}{plane.product_id}.fits'
-    new_retrieval = False
     try:
         mc.http_get(preview_url, preview_fqn)
-        new_retrieval = True
     except Exception as e:
         if observable.rejected.check_and_record(str(e), gem_name.prev):
             _check_for_delete(
@@ -265,4 +262,3 @@ def _retrieve_from_gemini(
             )
         else:
             raise e
-    return new_retrieval
