@@ -120,10 +120,11 @@ def visit(observation, **kwargs):
             observable,
             storage_name,
         )
+    result = {'artifacts': count}
     logging.info(
         f'Completed preview augmentation for {observation.observation_id}.'
+        f'{count} artifacts modified.'
     )
-    result = {'artifacts': count}
     return observation
 
 
