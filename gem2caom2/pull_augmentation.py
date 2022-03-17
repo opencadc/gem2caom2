@@ -142,15 +142,6 @@ def visit(observation, **kwargs):
                             f'Modified scheme for artifact.uri {artifact.uri}'
                         )
                         count = 1
-                    if 'GEM/' in artifact.uri:
-                        artifact.uri = artifact.uri.replace(
-                            'GEM/', f'{gem_name.COLLECTION}/'
-                        )
-                        logging.warning(
-                            f'Modified collection for artifact.uri '
-                            f'{artifact.uri}'
-                        )
-                        count = 1
                     # want to compare the checksum from the JSON, and the
                     # checksum at CADC storage - if they are not the same,
                     # retrieve the file from archive.gemini.edu again

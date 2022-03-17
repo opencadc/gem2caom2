@@ -662,7 +662,6 @@ class GeminiMapping(cc.TelescopeMapping):
                     continue
 
                 for artifact in plane.artifacts.values():
-                    self._should_artifact_be_renamed(artifact)
                     if self._storage_name.file_uri != artifact.uri:
                         continue
                     if GemName.is_preview(artifact.uri):
@@ -1045,17 +1044,6 @@ class GeminiMapping(cc.TelescopeMapping):
                     else:
                         result.append(self._headers[ext].get(key).strip())
         return '+'.join(result)
-
-    def _should_artifact_be_renamed(self, artifact):
-        if artifact.uri.startswith('gemini'):
-            if artifact.uri.startswith('gemini:GEM/'):
-                artifact.uri = artifact.uri.replace(
-                    'gemini:GEM/', 'gemini:GEMINI/'
-                )
-        if artifact.uri.startswith('ad'):
-            artifact.uri = artifact.uri.replace(
-                'ad:GEM/', 'cadc:GEMINI/'
-            )
 
     def _update_composite(self, obs):
         result = None

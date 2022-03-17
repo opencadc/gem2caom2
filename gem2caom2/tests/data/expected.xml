@@ -41,7 +41,7 @@
       </caom2:provenance>
       <caom2:artifacts>
         <caom2:artifact caom2:id="c956f192-ae5b-4829-8c83-dfa99d2943fe">
-          <caom2:uri>gemini:GEM/S20191010S0030.fits</caom2:uri>
+          <caom2:uri>gemini:GEMINI/S20191010S0030.fits</caom2:uri>
           <caom2:productType>calibration</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>

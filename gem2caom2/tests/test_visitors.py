@@ -206,7 +206,7 @@ def test_preview_augment_unknown_no_preview():
 def test_pull_augmentation(http_mock, json_mock, header_mock, file_type_mock):
     obs = mc.read_obs_from_file(TEST_OBS_AD_URI_FILE)
     obs.planes[TEST_PRODUCT_ID].data_release = datetime.utcnow()
-    original_uri = 'gemini:GEM/GN2001BQ013-04.fits'
+    original_uri = 'gemini:GEMINI/GN2001BQ013-04.fits'
     assert len(obs.planes[TEST_PRODUCT_ID].artifacts) == 1, 'initial condition'
     assert (
         original_uri in obs.planes[TEST_PRODUCT_ID].artifacts.keys()

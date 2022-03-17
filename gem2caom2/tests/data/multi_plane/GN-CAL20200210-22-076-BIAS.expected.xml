@@ -43,7 +43,7 @@
       </caom2:provenance>
       <caom2:artifacts>
         <caom2:artifact caom2:id="fdab17dd-1ee4-4c9d-9750-e95b9048d4fd" caom2:lastModified="2020-02-25T20:36:31.230" caom2:maxLastModified="2020-02-25T20:36:31.230" caom2:metaChecksum="md5:b55a6fbdb5a93070fad30d8cb9e30687" caom2:accMetaChecksum="md5:176fac1047966e4a1d6d257a99ee35f0">
-          <caom2:uri>gemini:GEM/N20200210S0077_bias.fits</caom2:uri>
+          <caom2:uri>gemini:GEMINI/N20200210S0077_bias.fits</caom2:uri>
           <caom2:productType>calibration</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>
