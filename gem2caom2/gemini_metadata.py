@@ -109,7 +109,6 @@ HEADER_URL = 'https://archive.gemini.edu/fullheader/'
 
 
 class AbstractGeminiMetadataReader(rdc.MetadataReader):
-
     @property
     def json_metadata(self):
         return self._json_metadata
@@ -184,7 +183,6 @@ class AbstractGeminiMetadataReader(rdc.MetadataReader):
 
 
 class GeminiMetadataReader(AbstractGeminiMetadataReader):
-
     def __init__(self, http_session, provenance_finder, filter_cache):
         super().__init__()
         self._json_metadata = {}
@@ -206,7 +204,6 @@ class GeminiMetadataReader(AbstractGeminiMetadataReader):
 class GeminiFileMetadataReader(
     AbstractGeminiMetadataReader, rdc.FileMetadataReader
 ):
-
     def __init__(self, http_session, provenance_finder, filter_cache):
         super().__init__()
         self._json_metadata = {}
@@ -218,7 +215,6 @@ class GeminiFileMetadataReader(
 class GeminiStorageClientReader(
     AbstractGeminiMetadataReader, rdc.StorageClientReader
 ):
-
     def __init__(
         self, data_client, http_session, provenance_finder, filter_cache
     ):
@@ -247,7 +243,6 @@ class GeminiStorageClientReader(
 
 
 class GeminiMetadataLookup:
-
     def __init__(self, metadata_reader):
         self._reader = metadata_reader
 

@@ -325,7 +325,8 @@ def test_preview_augment(http_mock):
         http_mock.assert_called_with(test_url, test_prev), 'mock not called'
         assert cadc_client_mock.put.called, 'put mock not called'
         cadc_client_mock.put.assert_called_with(
-            '/test_files', 'cadc:GEMINI/GN2001BQ013-04_th.jpg',
+            '/test_files',
+            'cadc:GEMINI/GN2001BQ013-04_th.jpg',
         ), 'wrong put arguments'
         assert obs is not None, 'expect a result'
         assert (
@@ -396,17 +397,17 @@ def test_preview_augment_failure(http_mock):
         assert not cadc_client_mock.put.called, 'put mock should not be called'
         assert obs is not None, 'expect a result'
         assert (
-                len(obs.planes[TEST_PRODUCT_ID].artifacts) == 1
+            len(obs.planes[TEST_PRODUCT_ID].artifacts) == 1
         ), 'same as the pre-condition'
         prev_uri = mc.build_uri(COLLECTION, f'{TEST_PRODUCT_ID}.jpg', SCHEME)
         thumb_uri = mc.build_uri(
             COLLECTION, f'{TEST_PRODUCT_ID}_th.jpg', 'cadc'
         )
         assert (
-                prev_uri not in obs.planes[TEST_PRODUCT_ID].artifacts.keys()
+            prev_uri not in obs.planes[TEST_PRODUCT_ID].artifacts.keys()
         ), 'should be no preview'
         assert (
-                thumb_uri not in obs.planes[TEST_PRODUCT_ID].artifacts
+            thumb_uri not in obs.planes[TEST_PRODUCT_ID].artifacts
         ), 'should be no thumbnail'
         assert not (
             test_rejected.is_no_preview(prev_uri)

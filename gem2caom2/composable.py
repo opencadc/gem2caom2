@@ -135,9 +135,13 @@ def _run():
     Uses a todo file with file names, even though Gemini provides
     information about existing data referenced by observation ID.
     """
-    clients, config, metadata_reader, meta_visitors, name_builder = (
-        _common_init()
-    )
+    (
+        clients,
+        config,
+        metadata_reader,
+        meta_visitors,
+        name_builder,
+    ) = _common_init()
     if config.use_local_files or mc.TaskType.SCRAPE in config.task_types:
         source = dsc.ListDirSeparateDataSource(config)
     else:
@@ -175,9 +179,13 @@ def _run_by_public():
     :return 0 if successful, -1 if there's any sort of failure. Return status
         is used by airflow for task instance management and reporting.
     """
-    clients, config, metadata_reader, meta_visitors, name_builder = (
-        _common_init()
-    )
+    (
+        clients,
+        config,
+        metadata_reader,
+        meta_visitors,
+        name_builder,
+    ) = _common_init()
     incremental_source = data_source.PublicIncremental(
         config, clients.query_client
     )
@@ -213,9 +221,13 @@ def _run_state():
     :return 0 if successful, -1 if there's any sort of failure. Return status
         is used by airflow for task instance management and reporting.
     """
-    clients, config, metadata_reader, meta_visitors, name_builder = (
-        _common_init()
-    )
+    (
+        clients,
+        config,
+        metadata_reader,
+        meta_visitors,
+        name_builder,
+    ) = _common_init()
     state = mc.State(config.state_fqn)
     end_timestamp_s = state.bookmarks.get(data_source.GEM_BOOKMARK).get(
         'end_timestamp', datetime.now()

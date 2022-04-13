@@ -135,9 +135,7 @@ def visit(observation, **kwargs):
                     file_url = f'{FILE_URL}/{f_name}'
                     fqn = os.path.join(working_dir, f_name)
                     if artifact.uri.startswith('ad:'):
-                        artifact.uri = artifact.uri.replace(
-                            'ad:', 'cadc:'
-                        )
+                        artifact.uri = artifact.uri.replace('ad:', 'cadc:')
                         logging.warning(
                             f'Modified scheme for artifact.uri {artifact.uri}'
                         )

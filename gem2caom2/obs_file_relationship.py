@@ -464,19 +464,16 @@ def repair_data_label(file_name, data_label):
         #
         # SGo - this means make the data labels the same
         if (
-            (
-                ('mfrg' == prefix or 'mrg' == prefix or 'rg' == prefix)
-                and (
-                    not (
-                        'add' in suffix
-                        or 'ADD' in suffix
-                        or 'fringe' in suffix
-                        or 'FRINGE' in suffix
-                    )
+            ('mfrg' == prefix or 'mrg' == prefix or 'rg' == prefix)
+            and (
+                not (
+                    'add' in suffix
+                    or 'ADD' in suffix
+                    or 'fringe' in suffix
+                    or 'FRINGE' in suffix
                 )
             )
-            or ('r' == prefix or 'R' == prefix)
-        ):
+        ) or ('r' == prefix or 'R' == prefix):
             prefix = ''
             suffix = []
         elif 'arc' in suffix or 'ARC' in suffix:
@@ -528,8 +525,8 @@ def remove_extensions(name):
     # an accepted GEMINI extension
     return (
         name.replace('.fits', '')
-            .replace('.bz2', '')
-            .replace('.header', '')
-            .replace('.jpg', '')
-            .replace('.gz', '')
+        .replace('.bz2', '')
+        .replace('.header', '')
+        .replace('.jpg', '')
+        .replace('.gz', '')
     )

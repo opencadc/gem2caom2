@@ -112,6 +112,7 @@ def test_provenance_finder(caom2_mock, local_mock):
             f'GMOS\n'.split('\n'),
             format='csv',
         )
+
     caom2_mock.side_effect = _caom2_mock
 
     def _local_mock(ignore):
@@ -119,6 +120,7 @@ def test_provenance_finder(caom2_mock, local_mock):
         hdr['DATALAB'] = test_data_label
         hdr['INSTRUME'] = 'GMOS'
         return [hdr]
+
     local_mock.side_effect = _local_mock
     os_path_exists_orig = os.path.exists
     os.path.exists = Mock(return_value=True)

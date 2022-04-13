@@ -116,7 +116,9 @@ def test_broken_obs(
     )
 
 
-@patch('gem2caom2.gemini_metadata.GeminiFileMetadataReader._retrieve_file_info')
+@patch(
+    'gem2caom2.gemini_metadata.GeminiFileMetadataReader._retrieve_file_info'
+)
 @patch('caom2utils.data_util.get_file_type')
 @patch('gem2caom2.gemini_metadata.AbstractGeminiMetadataReader._retrieve_json')
 @patch('gem2caom2.gemini_metadata.GeminiFileMetadataReader._retrieve_headers')
@@ -178,7 +180,9 @@ def test_going_public(
     test_fid = 'N20150929S0013'
     test_f_name = f'{test_fid}.fits'
     mock_return_fqn = f'{gem_mocks.TEST_DATA_DIR}/GMOS/{test_f_name}.header'
-    remote_headers_mock.side_effect = [ac.make_headers_from_file(mock_return_fqn)]
+    remote_headers_mock.side_effect = [
+        ac.make_headers_from_file(mock_return_fqn)
+    ]
     expected_fqn = f'{gem_mocks.TEST_DATA_DIR}/GMOS/{test_fid}.expected.xml'
 
     get_pi_mock.side_effect = gem_mocks.mock_get_pi_metadata
@@ -209,9 +213,7 @@ def test_going_public(
         metadata_reader = gemini_metadata.GeminiStorageClientReader(
             Mock(), Mock(), pf_mock, filter_cache
         )
-        test_metadata = gemini_metadata.GeminiMetadataLookup(
-            metadata_reader
-        )
+        test_metadata = gemini_metadata.GeminiMetadataLookup(metadata_reader)
         test_builder = builder.GemObsIDBuilder(
             test_config, metadata_reader, test_metadata
         )

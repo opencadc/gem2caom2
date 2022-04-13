@@ -88,7 +88,9 @@ def test_storage_name(tap_mock, cap_mock):
     test_config.proxy_fqn = path.join(gem_mocks.TEST_DATA_DIR, 'cadcproxy.pem')
     test_config.tap_id = 'ivo://cadc.nrc.ca/test'
     test_sn = GemName(file_name='N20131203S0006i.fits.bz2')
-    assert test_sn.file_uri == f'{SCHEME}:{COLLECTION}/N20131203S0006i.fits.bz2'
+    assert (
+        test_sn.file_uri == f'{SCHEME}:{COLLECTION}/N20131203S0006i.fits.bz2'
+    )
     assert test_sn.file_name == 'N20131203S0006i.fits.bz2'
     assert test_sn.prev == 'N20131203S0006i.jpg'
     assert test_sn.thumb == 'N20131203S0006i_th.jpg'
