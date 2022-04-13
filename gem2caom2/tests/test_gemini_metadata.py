@@ -88,9 +88,8 @@ def test_set(retrieve_json_mock, retrieve_headers_mock):
     test_f_name = 'N20030104S0065.fits'
     test_obs_id = 'GN-CAL20030104-14-001'
     retrieve_headers_mock.side_effect = gem_mocks._mock_headers
-    test_storage_name = gem_name.GemName(
-        obs_id=test_obs_id, file_name=test_f_name
-    )
+    test_storage_name = gem_name.GemName(file_name=test_f_name)
+    test_storage_name.obs_id = test_obs_id
     test_subject = gemini_metadata.GeminiMetadataReader(Mock(), Mock(), Mock())
     test_subject.set(test_storage_name)
     assert len(test_subject._json_metadata) == 1, 'json entries'

@@ -170,6 +170,18 @@ class AbstractGeminiMetadataReader(rdc.MetadataReader):
                 self.add_json_record(entry, temp)
                 self.add_file_info_record(entry)
 
+    def __str__(self):
+        json = '\n'.join(
+            f'{key}: {value}' for key, value in self._json_metadata.items()
+        )
+        fits = '\n'.join(
+            f'{key}: {value}' for key, value in self._headers.items()
+        )
+        meta = '\n'.join(
+            f'{key}: {value}' for key, value in self._file_info.items()
+        )
+        return f'JSON\n{json}\nFITS\n{fits}\nMETA\n{meta}'
+
 
 class GeminiMetadataReader(AbstractGeminiMetadataReader):
 

@@ -75,9 +75,8 @@ from gem2caom2 import GemName, SCHEME, COLLECTION
 
 
 def test_is_valid():
-    mock_obs_id = 'GN-2013B-Q-28-150-002'
-    assert GemName(file_name='anything.fits', obs_id=mock_obs_id).is_valid()
-    assert GemName(file_name='anything.jpg', obs_id=mock_obs_id).is_valid()
+    assert GemName(file_name='anything.fits').is_valid()
+    assert GemName(file_name='anything.jpg').is_valid()
 
 
 @patch('cadcutils.net.ws.WsCapabilities.get_access_url')
@@ -88,18 +87,15 @@ def test_storage_name(tap_mock, cap_mock):
     test_config = mc.Config()
     test_config.proxy_fqn = path.join(gem_mocks.TEST_DATA_DIR, 'cadcproxy.pem')
     test_config.tap_id = 'ivo://cadc.nrc.ca/test'
-    mock_obs_id = 'GN-2013B-Q-28-150-002'
-    test_sn = GemName(file_name='N20131203S0006i.fits.bz2', obs_id=mock_obs_id)
-    assert test_sn.file_uri == f'{SCHEME}:{COLLECTION}/N20131203S0006i.fits'
-    assert test_sn.file_name == 'N20131203S0006i.fits'
+    test_sn = GemName(file_name='N20131203S0006i.fits.bz2')
+    assert test_sn.file_uri == f'{SCHEME}:{COLLECTION}/N20131203S0006i.fits.bz2'
+    assert test_sn.file_name == 'N20131203S0006i.fits.bz2'
     assert test_sn.prev == 'N20131203S0006i.jpg'
     assert test_sn.thumb == 'N20131203S0006i_th.jpg'
-    assert test_sn.compressed_file_name is None
     assert test_sn.file_id == 'N20131203S0006i'
 
-    test_sn = GemName(file_name='S20060920S0137.jpg', obs_id=mock_obs_id)
+    test_sn = GemName(file_name='S20060920S0137.jpg')
     assert test_sn.file_uri == f'{SCHEME}:{COLLECTION}/S20060920S0137.jpg'
     assert test_sn.file_name == 'S20060920S0137.jpg'
     assert test_sn.prev == 'S20060920S0137.jpg'
     assert test_sn.thumb == 'S20060920S0137_th.jpg'
-    assert test_sn.compressed_file_name is None

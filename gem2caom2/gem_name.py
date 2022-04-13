@@ -147,61 +147,17 @@ class GemName(mc.StorageName):
     def __init__(
         self,
         file_name=None,
-        obs_id=None,
-        entry=None,
     ):
         self._v_scheme = V_SCHEME
         self._v_collection = COLLECTION
-        file_id = remove_extensions(file_name)
-        if file_id[-1] in ['b', 'r']:
-            self._file_name = file_name.replace('.header', '')
-            self._file_id = remove_extensions(self._file_name)
-            self._obs_id = self._file_id[:-1]
-            self._product_id = self._file_id
-            super(GemName, self).__init__(
-                obs_id=self._obs_id,
-                collection=COLLECTION,
-                collection_pattern=GemName.GEM_NAME_PATTERN,
-                fname_on_disk=self.file_name,
-                scheme=SCHEME,
-                entry=entry,
-            )
-        else:
-            # try to set the file name, if that information is available
-
-            # file_name is assumed to be the file name in CADC storage
-            # because the GEM files are stored uncompressed,
-            # while the files available from Gemini are bz2.
-            self._file_name = None
-            self._file_id = None
-            if file_name is not None:
-                self._file_id = remove_extensions(file_name)
-                self.file_name = file_name
-            if obs_id is not None:
-                self._obs_id = obs_id
-            super(GemName, self).__init__(
-                obs_id=obs_id,
-                collection=COLLECTION,
-                collection_pattern=GemName.GEM_NAME_PATTERN,
-                fname_on_disk=self.file_name,
-                scheme=SCHEME,
-                entry=entry,
-            )
-            if file_id.startswith('SDC'):
-                # DB 20-07-21
-                #  each pair of H/K files will be one observation with one
-                #  plane with two artifacts.
-                self._product_id = file_id.replace('SDCH', 'SDC').replace(
-                    'SDCK', 'SDC'
-                )
-            else:
-                self._product_id = self._file_id
+        super().__init__(
+            file_name=file_name.replace('.header', ''),
+        )
         self._source_names = [self._file_id]
-        self._destination_uris = [self.file_uri]
 
     @property
     def file_uri(self):
-        return f'{self.scheme}:{self._v_collection}/{self._file_name}'
+        return f'{SCHEME}:{self._v_collection}/{self._file_name}'
 
     @property
     def file_name(self):
@@ -212,11 +168,7 @@ class GemName(mc.StorageName):
         if value is None:
             self._file_name = None
         else:
-            self._file_name = value.replace('.bz2', '').replace('.header', '')
-
-    @property
-    def compressed_file_name(self):
-        return None
+            self._file_name = value.replace('.header', '')
 
     @property
     def prev(self):
@@ -227,24 +179,8 @@ class GemName(mc.StorageName):
         return f'{self._file_id}_th.jpg'
 
     @property
-    def file_id(self):
-        return self._file_id
-
-    @file_id.setter
-    def file_id(self, value):
-        self._file_id = value
-
-    @property
-    def external_urls(self):
-        return f'{HEADER_URL}{self._file_id}.fits'
-
-    @property
     def prev_uri(self):
-        return f'{self.scheme}:{self._v_collection}/{self.prev}'
-
-    @property
-    def product_id(self):
-        return self._product_id
+        return f'{SCHEME}:{self._v_collection}/{self.prev}'
 
     @property
     def thumb_uri(self):
@@ -255,9 +191,29 @@ class GemName(mc.StorageName):
     def is_valid(self):
         return True
 
-    # @staticmethod
-    # def get_file_id(file_name):
-    #     return remove_extensions(file_name)
+    def set_file_id(self):
+        self._file_id = remove_extensions(self._file_name)
+
+    def set_obs_id(self):
+        if self._file_id[-1] in ['b', 'r']:
+            self._obs_id = self._file_id[:-1]
+
+    def set_product_id(self):
+        if self._file_id[-1] in ['b', 'r']:
+            self._product_id = self._file_id
+        else:
+            if self._file_id.startswith('SDC'):
+                # DB 20-07-21
+                #  each pair of H/K files will be one observation with one
+                #  plane with two artifacts.
+                self._product_id = self._file_id.replace(
+                    'SDCH', 'SDC'
+                ).replace('SDCK', 'SDC')
+            else:
+                self._product_id = self._file_id
+
+    def set_destination_uris(self):
+        self._destination_uris = [self.file_uri]
 
     @staticmethod
     def get_file_name_from(file_id):

@@ -109,17 +109,11 @@ class GemObsIDBuilder(nbc.StorageNameBuilder):
                 or self._config.use_local_files
             ):
                 self._logger.debug(f'Using entry for source.')
-                result = gem_name.GemName(
-                    file_name=f_name,
-                    entry=entry,
-                )
+                result = gem_name.GemName(file_name=f_name)
                 result.source_names = [entry]
             elif '.fits' in entry or '.jpg' in entry:
                 self._logger.debug('Using file_id for source.')
-                result = gem_name.GemName(
-                    file_name=f_name,
-                    entry=entry,
-                )
+                result = gem_name.GemName(file_name=f_name)
                 result.source_names = [result.file_id]
             elif '.' not in entry and '-' not in entry:
                 # this case exists so that retries.txt entries are
@@ -133,10 +127,7 @@ class GemObsIDBuilder(nbc.StorageNameBuilder):
                     'entry might be file_id, try a made-up name.'
                 )
                 made_up_file_name = f'{entry}.fits'
-                result = gem_name.GemName(
-                    file_name=made_up_file_name,
-                    entry=made_up_file_name,
-                )
+                result = gem_name.GemName(file_name=made_up_file_name)
                 result.source_names = [result.file_id]
             else:
                 raise mc.CadcException(

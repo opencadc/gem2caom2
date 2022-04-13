@@ -224,9 +224,7 @@ def test_pull_augmentation(http_mock, json_mock, header_mock, file_type_mock):
         Mock(), Mock(), filter_cache
     )
     test_fqn = f'{gem_mocks.TEST_DATA_DIR}/GMOS/GN2001BQ013-04.fits.header'
-    test_storage_name = gem_name.GemName(
-        file_name='GN2001BQ013-04.fits', entry=test_fqn
-    )
+    test_storage_name = gem_name.GemName(file_name='GN2001BQ013-04.fits')
     header_mock.side_effect = gem_mocks._mock_headers
     file_type_mock.return_values = 'application/fits'
     test_reader.set(test_storage_name)
