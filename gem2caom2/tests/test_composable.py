@@ -71,13 +71,16 @@ import logging
 import os
 import shutil
 
-from datetime import datetime
+from datetime import datetime, timedelta
+from tempfile import TemporaryDirectory
 from unittest.mock import patch, Mock
 import gem_mocks
 
 from caom2 import SimpleObservation, Algorithm
-from caom2pipe import manage_composable as mc
+from caom2pipe.manage_composable import Config, make_seconds, write_as_yaml
+from caom2pipe.manage_composable import TaskType
 from gem2caom2 import composable, gem_name
+from gem2caom2.data_source import GEM_BOOKMARK
 
 
 STATE_FILE = f'{gem_mocks.TEST_DATA_DIR}/state.yml'
@@ -115,12 +118,6 @@ def test_run(run_mock, cap_mock, data_client_mock, json_mock):
         logging.error(test_storage)
         assert test_storage.obs_id == test_obs_id, 'wrong obs id'
         assert test_storage.file_name == test_f_name, 'wrong file name'
-        assert test_storage.fname_on_disk == test_f_name, 'wrong fname on disk'
-        assert test_storage.url is None, 'wrong url'
-        assert (
-            test_storage.external_urls
-            == f'https://archive.gemini.edu/fullheader/{test_f_name}'
-        ), 'wrong external urls'
     finally:
         os.getcwd = getcwd_orig
 
@@ -148,8 +145,6 @@ def test_run_errors(run_mock, cap_mock, data_client_mock, json_mock):
         assert isinstance(test_storage, gem_name.GemName), type(test_storage)
         assert test_storage.obs_id == test_obs_id, 'wrong obs id'
         assert test_storage.file_name == test_f_name, 'wrong file name'
-        assert test_storage.fname_on_disk == test_f_name, 'wrong fname on disk'
-        assert test_storage.url is None, 'wrong url'
     finally:
         os.getcwd = getcwd_orig
 
@@ -194,14 +189,6 @@ def test_run_incremental_rc(
         test_fid = 'N20210101S0042'
         assert test_storage.file_name == f'{test_fid}.fits', 'wrong file_name'
         assert test_storage.file_id == f'{test_fid}', 'wrong file_id'
-        assert (
-            test_storage.fname_on_disk == f'{test_fid}.fits'
-        ), 'wrong fname on disk'
-        assert test_storage.url is None, 'wrong url'
-        assert (
-            test_storage.external_urls
-            == f'https://archive.gemini.edu/fullheader/{test_fid}.fits'
-        ), 'wrong external urls'
     finally:
         os.getcwd = getcwd_orig
 
@@ -391,14 +378,6 @@ def test_run_by_public(
     assert test_storage.obs_id == 'GN-2019B-ENG-1-160-008', 'wrong obs id'
     assert test_storage.file_name == f'{test_f_id}.fits', 'wrong file_name'
     assert test_storage.file_id == test_f_id, 'wrong file_id'
-    assert (
-        test_storage.fname_on_disk == f'{test_f_id}.fits'
-    ), 'wrong fname on disk'
-    assert test_storage.url is None, 'wrong url'
-    assert (
-        test_storage.external_urls
-        == f'https://archive.gemini.edu/fullheader/{test_f_id}.fits'
-    ), 'wrong external urls'
     assert tap_mock.called, 'tap mock not called'
 
 
@@ -440,18 +419,107 @@ def test_run_by_public2(
             test_storage.file_name == 'N20191101S0007.fits'
         ), 'wrong file_name'
         assert test_storage.file_id == 'N20191101S0007', 'wrong file_id'
-        assert (
-            test_storage.fname_on_disk == 'N20191101S0007.fits'
-        ), 'wrong fname on disk'
-        assert test_storage.url is None, 'wrong url'
-        assert (
-            test_storage.external_urls
-            == 'https://archive.gemini.edu/fullheader/N20191101S0007.fits'
-        ), 'wrong external urls'
     except Exception as e:
         assert False, e
     finally:
         os.getcwd = getcwd_orig
+
+
+@patch('caom2pipe.reader_composable.MetadataReader.reset')
+@patch('caom2pipe.manage_composable.http_get')
+@patch('gem2caom2.svofps.FilterMetadataCache.filter_metadata')
+@patch('gem2caom2.program_metadata.get_pi_metadata')
+@patch('caom2pipe.client_composable.ClientCollection.metadata_client')
+@patch('caom2pipe.client_composable.ClientCollection.data_client')
+@patch('gem2caom2.gemini_metadata.retrieve_headers')
+@patch('caom2pipe.manage_composable.query_endpoint_session')
+@patch('cadcutils.net.ws.WsCapabilities.get_access_url')
+def test_run_by_incremental_reproduce(
+    access_mock,
+    query_mock,
+    header_mock,
+    data_client_mock,
+    meta_client_mock,
+    pi_mock,
+    svo_mock,
+    http_get_mock,
+    reader_mock,
+):
+    # https://archive.gemini.edu/jsonsummary/canonical/NotFail/notengineering/
+    # entrytimedaterange=
+    # 2022-03-14T17:30:05.000006%202022-03-14T17:31:05.000006/
+    # ?orderby=entrytime
+    # get results
+    query_mock.side_effect = gem_mocks.mock_query_endpoint_reproduce
+    access_mock.return_value = 'https://localhost:2022'
+    from astropy.io.fits import Header
+
+    test_header = Header()
+    test_header['INSTRUME'] = 'GMOS-S'
+    header_mock.return_value = [test_header]
+    data_client_mock.get_head.return_value = [test_header]
+    meta_client_mock.read.return_value = None
+    pi_mock.return_value = None
+    svo_mock.return_value = None
+
+    def _repo_create_mock(observation):
+        plane_count = 0
+        artifact_count = 0
+        for plane in observation.planes.values():
+            plane_count += 1
+            for _ in plane.artifacts.values():
+                artifact_count += 1
+
+        assert plane_count == 1, 'wrong plane count'
+        assert artifact_count == 1, 'wrong artifact count'
+
+    meta_client_mock.create = _repo_create_mock
+
+    getcwd_orig = os.getcwd
+    cwd = os.getcwd()
+    with TemporaryDirectory() as tmp_dir_name:
+        os.chdir(tmp_dir_name)
+
+        test_config = Config()
+        test_config.working_directory = tmp_dir_name
+        test_config.logging_level = 'INFO'
+        test_config.proxy_file_name = 'cadcproxy.pem'
+        test_config.proxy_fqn = f'{tmp_dir_name}/cadcproxy.pem'
+        test_config.state_file_name = 'state.yml'
+        test_config.task_types = [TaskType.VISIT]
+        test_config.features.supports_latest_client = True
+        test_config.interval = 70
+        Config.write_to_file(test_config)
+
+        with open(test_config.proxy_fqn, 'w') as f:
+            f.write('test content')
+
+        test_bookmark = {
+            'bookmarks': {
+                GEM_BOOKMARK: {
+                    'last_record': datetime.now() - timedelta(hours=1),
+                },
+            },
+        }
+        write_as_yaml(test_bookmark, test_config.state_fqn)
+
+        os.getcwd = Mock(return_value=tmp_dir_name)
+
+        try:
+            # execution
+            composable._run_state()
+            assert meta_client_mock.read.called, 'should have been called'
+            assert (
+                meta_client_mock.read.call_count == 2
+            ), f'wrong call count {meta_client_mock.read.call_count}'
+            meta_client_mock.read.assert_called_with(
+                'GEMINI', 'GN-CAL20220314-18-090'
+            ), 'wrong run args'
+            reader_mock.called, 'reset called'
+            reader_mock.call_count == 1, 'reset call count'
+        finally:
+            os.getcwd = getcwd_orig
+            os.chdir(cwd)
 
 
 def _write_todo(test_id):
@@ -469,7 +537,7 @@ def _write_state(prior_timestamp=None, end_timestamp=None):
         if type(prior_timestamp) is float:
             prior_s = prior_timestamp
         else:
-            prior_s = mc.make_seconds(prior_timestamp)
+            prior_s = make_seconds(prior_timestamp)
     test_start_time = datetime.fromtimestamp(prior_s).isoformat()
     logging.error(f'test_start_time {test_start_time}')
     if end_timestamp is None:
@@ -490,12 +558,12 @@ def _write_state(prior_timestamp=None, end_timestamp=None):
                 },
             },
         }
-    mc.write_as_yaml(test_bookmark, STATE_FILE)
+    write_as_yaml(test_bookmark, STATE_FILE)
 
 
 def _write_rejected(test_obs_id):
     content = {'bad_metadata': [test_obs_id]}
-    mc.write_as_yaml(content, REJECTED_FILE)
+    write_as_yaml(content, REJECTED_FILE)
 
 
 def _write_cert():

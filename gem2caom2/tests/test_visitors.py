@@ -75,6 +75,7 @@ from datetime import datetime
 from mock import patch, Mock
 
 from cadcutils import exceptions
+from cadcdata import FileInfo
 from gem2caom2 import preview_augmentation, pull_augmentation, SCHEME
 from gem2caom2 import COLLECTION, cleanup_augmentation, gemini_metadata
 from gem2caom2 import svofps, gem_name
@@ -115,9 +116,11 @@ def test_preview_augment_known_no_preview():
         test_observable = mc.Observable(test_rejected, mc.Metrics(test_config))
         test_storage_name = gem_name.GemName(file_name=TEST_FP_FILE)
         cadc_client_mock = Mock()
+        clients_mock = Mock()
+        clients_mock.data_client = cadc_client_mock
         kwargs = {
             'working_directory': TEST_DATA_DIR,
-            'cadc_client': cadc_client_mock,
+            'clients': clients_mock,
             'stream': 'stream',
             'observable': test_observable,
             'storage_name': test_storage_name,
@@ -165,9 +168,11 @@ def test_preview_augment_unknown_no_preview():
     test_storage_name = gem_name.GemName(file_name=f'{TEST_PRODUCT_ID}.fits')
 
     cadc_client_mock = Mock()
+    clients_mock = Mock()
+    clients_mock.data_client = cadc_client_mock
     kwargs = {
         'working_directory': TEST_DATA_DIR,
-        'cadc_client': cadc_client_mock,
+        'clients': clients_mock,
         'stream': 'stream',
         'observable': test_observable,
         'storage_name': test_storage_name,
@@ -218,6 +223,8 @@ def test_pull_augmentation(http_mock, json_mock, header_mock, file_type_mock):
     test_observable = mc.Observable(test_rejected, mc.Metrics(test_config))
     cadc_client_mock = Mock()
     cadc_client_mock.return_value.info.return_value = None
+    clients_mock = Mock()
+    clients_mock.data_client = cadc_client_mock
     json_mock.side_effect = gem_mocks.mock_retrieve_json
     filter_cache = svofps.FilterMetadataCache(Mock())
     test_reader = gemini_metadata.GeminiFileMetadataReader(
@@ -230,7 +237,7 @@ def test_pull_augmentation(http_mock, json_mock, header_mock, file_type_mock):
     test_reader.set(test_storage_name)
     kwargs = {
         'working_directory': TEST_DATA_DIR,
-        'cadc_client': cadc_client_mock,
+        'clients': clients_mock,
         'observable': test_observable,
         'metadata_reader': test_reader,
         'storage_name': test_storage_name,
@@ -276,7 +283,7 @@ def test_preview_augment_delete_preview():
     test_storage_name = gem_name.GemName(file_name=f'{test_product_id}.fits')
     kwargs = {
         'working_directory': TEST_DATA_DIR,
-        'cadc_client': None,
+        'clients': None,
         'stream': 'stream',
         'observable': test_observable,
         'storage_name': test_storage_name,
@@ -300,10 +307,12 @@ def test_preview_augment(http_mock):
     test_metrics = mc.Metrics(test_config)
     test_observable = mc.Observable(test_rejected, test_metrics)
     cadc_client_mock = Mock()
+    clients_mock = Mock()
+    clients_mock.data_client = cadc_client_mock
     test_storage_name = gem_name.GemName(file_name=f'{TEST_PRODUCT_ID}.fits')
     kwargs = {
         'working_directory': '/test_files',
-        'cadc_client': cadc_client_mock,
+        'clients': clients_mock,
         'observable': test_observable,
         'storage_name': test_storage_name,
     }
@@ -371,10 +380,12 @@ def test_preview_augment_failure(http_mock):
     test_metrics = mc.Metrics(test_config)
     test_observable = mc.Observable(test_rejected, test_metrics)
     cadc_client_mock = Mock()
+    clients_mock = Mock()
+    clients_mock.data_client = cadc_client_mock
     test_storage_name = gem_name.GemName(file_name=f'{TEST_PRODUCT_ID}.fits')
     kwargs = {
         'working_directory': '/test_files',
-        'cadc_client': cadc_client_mock,
+        'clients': clients_mock,
         'observable': test_observable,
         'storage_name': test_storage_name,
     }
@@ -466,6 +477,34 @@ def test_cleanup():
     fox_obs = cleanup_augmentation.visit(fox_obs, **test_kwargs)
     post_fox_length = len(cc.get_all_artifact_keys(fox_obs))
     assert initial_fox_length == post_fox_length, 'wrong fox post conditions'
+
+
+@patch('caom2pipe.client_composable.ClientCollection')
+@patch('caom2pipe.manage_composable.http_get')
+def test_look_pull_and_put(http_mock, mock_client):
+    test_storage_name = 'cadc:GEMINI/TEST.fits'
+    mock_client.info.return_value = FileInfo(
+        id=test_storage_name,
+        size=1234,
+        md5sum='9473fdd0d880a43c21b7778d34872157',
+    )
+    f_name = 'TEST.fits'
+    url = f'https://localhost/{f_name}'
+    test_config = mc.Config()
+    test_config.observe_execution = True
+    mock_client.info.return_value = None
+    test_fqn = os.path.join(TEST_DATA_DIR, f_name)
+    pull_augmentation.look_pull_and_put(
+        test_storage_name,
+        test_fqn,
+        url,
+        mock_client,
+        'md5:01234',
+    )
+    mock_client.data_client.put.assert_called_with(
+        TEST_DATA_DIR, test_storage_name
+    ), 'mock not called'
+    http_mock.assert_called_with(url, test_fqn), 'http mock not called'
 
 
 def _get_mock(url_ignore, fqn_ignore):

@@ -89,8 +89,8 @@ def visit(observation, **kwargs):
     mc.check_param(observation, Observation)
 
     working_dir = kwargs.get('working_directory', './')
-    cadc_client = kwargs.get('cadc_client')
-    if cadc_client is None:
+    clients = kwargs.get('clients')
+    if clients is None or clients.data_client is None:
         logging.warning('Need a cadc_client to update preview records.')
     observable = kwargs.get('observable')
     if observable is None:
@@ -116,7 +116,7 @@ def visit(observation, **kwargs):
             observation.observation_id,
             working_dir,
             plane,
-            cadc_client,
+            clients,
             observable,
             storage_name,
         )
@@ -128,7 +128,7 @@ def visit(observation, **kwargs):
     return observation
 
 
-def _do_prev(obs_id, working_dir, plane, cadc_client, observable, gem_name):
+def _do_prev(obs_id, working_dir, plane, clients, observable, gem_name):
     """Retrieve the preview file, so that a thumbnail can be made,
     store the preview if necessary, and the thumbnail, to CADC storage.
     Then augment the CAOM observation with the two additional artifacts.
@@ -152,10 +152,14 @@ def _do_prev(obs_id, working_dir, plane, cadc_client, observable, gem_name):
         # get the file - try disk first, then CADC, then Gemini
         # Only try to retrieve from Gemini if the eventual purpose is
         # storage (i.e. cadc_client is not None), though
-        if not os.access(preview_fqn, 0) and cadc_client is not None:
+        if (
+            not os.access(preview_fqn, 0)
+            and clients is not None
+            and clients.data_client is not None
+        ):
             try:
                 logging.debug(f'Check CADC for {gem_name.prev_uri}.')
-                cadc_client.get(working_dir, gem_name.prev_uri)
+                clients.data_client.get(working_dir, gem_name.prev_uri)
             except exceptions.UnexpectedException:
                 logging.debug(
                     f'Retrieve {gem_name.prev} from archive.gemini.edu.'
@@ -209,15 +213,15 @@ def _do_prev(obs_id, working_dir, plane, cadc_client, observable, gem_name):
             count += _augment(
                 plane, gem_name.prev_uri, preview_fqn, ProductType.PREVIEW
             )
-            if cadc_client is not None:
-                cadc_client.put(working_dir, gem_name.prev_uri)
+            if clients is not None and clients.data_client is not None:
+                clients.data_client.put(working_dir, gem_name.prev_uri)
             count += 1
 
             count += _augment(
                 plane, gem_name.thumb_uri, thumb_fqn, ProductType.THUMBNAIL
             )
-            if cadc_client is not None:
-                cadc_client.put(working_dir, gem_name.thumb_uri)
+            if clients is not None and clients.data_client is not None:
+                clients.data_client.put(working_dir, gem_name.thumb_uri)
             count += 1
     return count
 

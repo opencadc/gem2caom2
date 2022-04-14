@@ -162,12 +162,16 @@ class AbstractGeminiMetadataReader(rdc.MetadataReader):
 
     def set_json_metadata(self, storage_name):
         """Retrieves Gemini JSON metadata to memory."""
+        self._logger.debug(
+            f'Begin set_json_metadata for {storage_name.file_name}'
+        )
         for index, entry in enumerate(storage_name.destination_uris):
             if entry not in self._json_metadata.keys():
                 self._logger.debug(f'Retrieve JSON Metadata for {entry}')
                 temp = self._retrieve_json(storage_name.source_names[index])
                 self.add_json_record(entry, temp)
                 self.add_file_info_record(entry)
+        self._logger.debug(f'End set_json_metadata')
 
     def __str__(self):
         json = '\n'.join(
@@ -197,8 +201,10 @@ class GeminiMetadataReader(AbstractGeminiMetadataReader):
         return retrieve_headers(source_name, self._logger, self._session)
 
     def set(self, storage_name):
+        self._logger.debug(f'Begin set for {storage_name.file_name}')
         self.set_json_metadata(storage_name)
         self.set_headers(storage_name)
+        self._logger.debug('End set')
 
 
 class GeminiFileMetadataReader(
@@ -225,6 +231,7 @@ class GeminiStorageClientReader(
         self._filter_cache = filter_cache
 
     def set_headers(self, storage_name):
+        self._logger.debug(f'Begin set_headers for {storage_name.file_name}')
         try:
             super().set_headers(storage_name)
         except exceptions.UnexpectedException as e:
@@ -240,6 +247,7 @@ class GeminiStorageClientReader(
                     self._logger.debug(f'Found {entry} at archive.gemini.edu.')
                 else:
                     self._headers[entry] = []
+        self._logger.debug('End set_headers')
 
 
 class GeminiMetadataLookup:

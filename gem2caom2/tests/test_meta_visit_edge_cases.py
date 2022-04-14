@@ -218,9 +218,12 @@ def test_going_public(
             test_config, metadata_reader, test_metadata
         )
         storage_name = test_builder.build(mock_return_fqn)
+        client_mock = Mock()
+        client_mock.metadata_client = headers_mock
         kwargs = {
             'storage_name': storage_name,
             'metadata_reader': metadata_reader,
+            'clients': client_mock,
         }
         ignore = fits2caom2_augmentation.visit(observation, **kwargs)
 

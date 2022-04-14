@@ -73,10 +73,7 @@ import os
 from datetime import datetime
 
 from caom2 import Observation
-from caom2pipe import client_composable as clc
 from caom2pipe import manage_composable as mc
-
-from gem2caom2 import gem_name
 
 FILE_URL = 'https://archive.gemini.edu/file'
 
@@ -88,9 +85,9 @@ def visit(observation, **kwargs):
     """
     mc.check_param(observation, Observation)
     working_dir = kwargs.get('working_directory', './')
-    cadc_client = kwargs.get('cadc_client')
-    if cadc_client is None:
-        logging.warning('Need a cadc_client to update. Stopping pull visitor.')
+    clients = kwargs.get('clients')
+    if clients is None:
+        logging.warning('Need clients to update. Stopping pull visitor.')
         return
     observable = kwargs.get('observable')
     if observable is None:
@@ -131,30 +128,26 @@ def visit(observation, **kwargs):
                     continue
                 try:
                     f_name = mc.CaomName(artifact.uri).file_name
-                    logging.debug(f'Checking for {f_name}')
-                    file_url = f'{FILE_URL}/{f_name}'
-                    fqn = os.path.join(working_dir, f_name)
-                    if artifact.uri.startswith('ad:'):
-                        artifact.uri = artifact.uri.replace('ad:', 'cadc:')
-                        logging.warning(
-                            f'Modified scheme for artifact.uri {artifact.uri}'
+                    if '.jpg' not in f_name:
+                        logging.debug(f'Checking for {f_name}')
+                        file_url = f'{FILE_URL}/{f_name}'
+                        fqn = os.path.join(working_dir, f_name)
+
+                        # want to compare the checksum from the JSON, and the
+                        # checksum at CADC storage - if they are not the same,
+                        # retrieve the file from archive.gemini.edu again
+                        json_md5sum = metadata_reader.file_info.get(
+                            artifact.uri
+                        ).md5sum
+                        look_pull_and_put(
+                            artifact.uri, fqn, file_url, clients, json_md5sum
                         )
-                        count = 1
-                    # want to compare the checksum from the JSON, and the
-                    # checksum at CADC storage - if they are not the same,
-                    # retrieve the file from archive.gemini.edu again
-                    json_md5sum = metadata_reader.file_info.get(
-                        artifact.uri
-                    ).md5sum
-                    clc.look_pull_and_put(
-                        artifact.uri, fqn, file_url, cadc_client, json_md5sum
-                    )
-                    if os.path.exists(fqn):
-                        logging.info(
-                            f'Removing local copy of {f_name} after '
-                            f'successful storage call.'
-                        )
-                        os.unlink(fqn)
+                        if os.path.exists(fqn):
+                            logging.info(
+                                f'Removing local copy of {f_name} after '
+                                f'successful storage call.'
+                            )
+                            os.unlink(fqn)
                 except Exception as e:
                     if not (
                         observable.rejected.check_and_record(
@@ -165,3 +158,35 @@ def visit(observation, **kwargs):
     logging.info(f'Completed pull visitor for {observation.observation_id}.')
     result = {'observation': count}
     return observation
+
+
+def look_pull_and_put(storage_name, fqn, url, clients, checksum):
+    """Checks to see if a file exists at CADC. If yes, stop. If no,
+    pull via https to local storage, then put to CADC storage.
+
+    :param storage_name Artifact URI as the file will appear at CADC
+    :param fqn name on disk for caching between the
+        pull and the put
+    :param url for retrieving the file externally, if it does not exist
+    :param clients GemClientCollection instance
+    :param checksum what the CAOM observation says the checksum should be -
+        just the checksum part of ChecksumURI please, or the comparison will
+        always fail.
+    """
+    cadc_meta = clients.data_client.info(storage_name)
+    if (
+        checksum is not None
+        and cadc_meta is not None
+        and cadc_meta.md5sum.replace('md5:', '') != checksum
+    ) or cadc_meta is None:
+        logging.debug(
+            f'Different checksums: Source {checksum}, CADC {cadc_meta}'
+        )
+        mc.http_get(url, fqn)
+        clients.data_client.put(os.path.dirname(fqn), storage_name)
+        logging.info(
+            f'Retrieved {os.path.basename(fqn)} for storage as '
+            f'{storage_name}'
+        )
+    else:
+        logging.info(f'{os.path.basename(fqn)} already exists at CADC.')
