@@ -156,6 +156,10 @@ class GemName(mc.StorageName):
         self._source_names = [self._file_id]
 
     @property
+    def collection(self):
+        return self._v_collection
+
+    @property
     def file_uri(self):
         return f'{SCHEME}:{self._v_collection}/{self._file_name}'
 

@@ -85,7 +85,7 @@ from caom2.diff import get_differences
 from caom2pipe import astro_composable as ac
 from caom2pipe import manage_composable as mc
 
-from gem2caom2 import composable, obs_file_relationship, builder, svofps
+from gem2caom2 import data_source, obs_file_relationship, builder, svofps
 from gem2caom2 import gemini_metadata, fits2caom2_augmentation
 from gem2caom2.gem_name import GemName
 from gem2caom2.util import Inst
@@ -1066,7 +1066,9 @@ LOOKUP = {
     ],
     'S20201023Z0001b': ['GS-CAL20201023-0-0', Inst.ZORRO, 'GS-CAL20201023'],
     'SDCH_20200131_0010': [
-        'GS-CAL20200131-10-0131', Inst.IGRINS, 'GS-CAL20200131'
+        'GS-CAL20200131-10-0131',
+        Inst.IGRINS,
+        'GS-CAL20200131',
     ],
 }
 
@@ -1255,6 +1257,19 @@ def mock_query_endpoint_2(url, timeout=-1):
     return result
 
 
+def mock_query_endpoint_reproduce(url, timeout=-1):
+    # returns response.json
+    def x():
+        fqn = f'/usr/src/app/gem2caom2/no_vcs/out.json'
+        with open(fqn) as f:
+            temp = f.read()
+        return json.loads(temp)
+
+    result = Object()
+    result.json = x
+    return result
+
+
 def mock_session_get_not_found(url):
     # returns json via response.text, depending on url
     result = Object()
@@ -1265,7 +1280,7 @@ def mock_session_get_not_found(url):
 def mock_write_state(start_time):
     test_bookmark = {
         'bookmarks': {
-            composable.GEM_BOOKMARK: {
+            data_source.GEM_BOOKMARK: {
                 'last_record': start_time,
             },
         },
@@ -1284,7 +1299,7 @@ def mock_write_state2(prior_timestamp=None):
     test_start_time = datetime.fromtimestamp(prior_s)
     test_bookmark = {
         'bookmarks': {
-            composable.GEM_BOOKMARK: {
+            data_source.GEM_BOOKMARK: {
                 'last_record': test_start_time,
             },
         },
@@ -1364,8 +1379,7 @@ def mock_query_tap(query_string, mock_tap_client):
         )
         result = TAP_QUERY_LOOKUP.get(file_id, 'test_data_label')
         return Table.read(
-            f'observationID,instrument_name\n'
-            f'{result},hrwfs\n'.split('\n'),
+            f'observationID,instrument_name\n' f'{result},hrwfs\n'.split('\n'),
             format='csv',
         )
 

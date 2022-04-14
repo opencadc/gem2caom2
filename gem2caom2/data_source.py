@@ -154,8 +154,8 @@ class IncrementalSource(dsc.DataSource):
                             # all the other cases where add_json_record is
                             # called, there's a list as input, so conform to
                             # that typing here
-                            self._metadata_reader.add_json_record(uri, [entry])
-                            self._metadata_reader.add_file_info_record(uri)
+                            # self._metadata_reader.add_json_record(uri, [entry])
+                            # self._metadata_reader.add_file_info_record(uri)
         finally:
             if response is not None:
                 response.close()

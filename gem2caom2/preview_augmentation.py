@@ -89,8 +89,8 @@ def visit(observation, **kwargs):
     mc.check_param(observation, Observation)
 
     working_dir = kwargs.get('working_directory', './')
-    cadc_client = kwargs.get('cadc_client')
-    if cadc_client is None:
+    clients = kwargs.get('clients')
+    if clients is None or clients.data_client is None:
         logging.warning('Need a cadc_client to update preview records.')
     observable = kwargs.get('observable')
     if observable is None:
@@ -116,7 +116,7 @@ def visit(observation, **kwargs):
             observation.observation_id,
             working_dir,
             plane,
-            cadc_client,
+            clients.data_client,
             observable,
             storage_name,
         )
