@@ -100,12 +100,9 @@ def test_builder(file_info_mock, header_mock):
         for task_type in [mc.TaskType.INGEST, mc.TaskType.SCRAPE]:
             test_config.task_types = [task_type]
             test_result = test_subject.build(test_entry)
+            assert test_result is not None, f'expect a result'
             assert (
-                test_result is not None
-            ), f'expect a result'
-            assert (
-                test_result.file_uri
-                == f'{SCHEME}:{COLLECTION}/{test_entry}'
+                test_result.file_uri == f'{SCHEME}:{COLLECTION}/{test_entry}'
             ), 'wrong file uri'
             assert (
                 test_result.prev_uri
@@ -142,12 +139,8 @@ def test_builder_local(file_info_mock, header_mock, json_mock):
     )
     test_result = test_subject.build(test_entry)
     assert test_result is not None, 'expect a result'
-    assert (
-        test_result.file_uri == 'gemini:GEMINI/S20191214S0301.fits'
-    ), 'file'
-    assert (
-        test_result.prev_uri == 'gemini:GEMINI/S20191214S0301.jpg'
-    ), 'prev'
+    assert test_result.file_uri == 'gemini:GEMINI/S20191214S0301.fits', 'file'
+    assert test_result.prev_uri == 'gemini:GEMINI/S20191214S0301.jpg', 'prev'
     assert (
         test_result.thumb_uri == 'cadc:GEMINI/S20191214S0301_th.jpg'
     ), 'thumb'
@@ -156,7 +149,9 @@ def test_builder_local(file_info_mock, header_mock, json_mock):
     ), 'wrong source_names'
 
 
-@patch('gem2caom2.gemini_metadata.GeminiFileMetadataReader._retrieve_file_info')
+@patch(
+    'gem2caom2.gemini_metadata.GeminiFileMetadataReader._retrieve_file_info'
+)
 @patch('gem2caom2.gemini_metadata.GeminiFileMetadataReader._retrieve_headers')
 @patch('gem2caom2.gemini_metadata.retrieve_json')
 def test_different_obs_id_cases(json_mock, headers_mock, file_info_mock):

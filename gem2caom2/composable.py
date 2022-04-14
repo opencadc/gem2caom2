@@ -73,7 +73,7 @@ import traceback
 
 from datetime import datetime
 
-from caom2pipe import client_composable as clc
+from caom2pipe.client_composable import ClientCollection
 from caom2pipe import data_source_composable as dsc
 from caom2pipe import manage_composable as mc
 from caom2pipe import run_composable as rc
@@ -91,10 +91,38 @@ META_VISITORS = [
 ]
 
 
+class GemClientCollection(ClientCollection):
+    """
+    Extend ClientCollection to have a place to hold and reference the
+    archive.gemini.edu and svo sessions.
+    """
+
+    def __init__(self, config):
+        super().__init__(config)
+        self._gemini_session = None
+        self._svo_session = None
+
+    @property
+    def gemini_session(self):
+        return self._gemini_session
+
+    @gemini_session.setter
+    def gemini_session(self, value):
+        self._gemini_session = value
+
+    @property
+    def svo_session(self):
+        return self._svo_session
+
+    @svo_session.setter
+    def svo_session(self, value):
+        self._svo_session = value
+
+
 def _common_init():
     config = mc.Config()
     config.get_executors()
-    clients = clc.ClientCollection(config)
+    clients = GemClientCollection(config)
     meta_visitors = META_VISITORS
     gemini_session = mc.get_endpoint_session()
     provenance_finder = gemini_metadata.ProvenanceFinder(
@@ -102,6 +130,8 @@ def _common_init():
     )
     svofps_session = mc.get_endpoint_session()
     filter_cache = svofps.FilterMetadataCache(svofps_session)
+    clients.gemini_session = gemini_session
+    clients.svo_session = svofps_session
     if config.use_local_files or mc.TaskType.SCRAPE in config.task_types:
         metadata_reader = gemini_metadata.GeminiFileMetadataReader(
             gemini_session, provenance_finder, filter_cache
@@ -135,9 +165,13 @@ def _run():
     Uses a todo file with file names, even though Gemini provides
     information about existing data referenced by observation ID.
     """
-    clients, config, metadata_reader, meta_visitors, name_builder = (
-        _common_init()
-    )
+    (
+        clients,
+        config,
+        metadata_reader,
+        meta_visitors,
+        name_builder,
+    ) = _common_init()
     if config.use_local_files or mc.TaskType.SCRAPE in config.task_types:
         source = dsc.ListDirSeparateDataSource(config)
     else:
@@ -175,9 +209,13 @@ def _run_by_public():
     :return 0 if successful, -1 if there's any sort of failure. Return status
         is used by airflow for task instance management and reporting.
     """
-    clients, config, metadata_reader, meta_visitors, name_builder = (
-        _common_init()
-    )
+    (
+        clients,
+        config,
+        metadata_reader,
+        meta_visitors,
+        name_builder,
+    ) = _common_init()
     incremental_source = data_source.PublicIncremental(
         config, clients.query_client
     )
@@ -213,9 +251,13 @@ def _run_state():
     :return 0 if successful, -1 if there's any sort of failure. Return status
         is used by airflow for task instance management and reporting.
     """
-    clients, config, metadata_reader, meta_visitors, name_builder = (
-        _common_init()
-    )
+    (
+        clients,
+        config,
+        metadata_reader,
+        meta_visitors,
+        name_builder,
+    ) = _common_init()
     state = mc.State(config.state_fqn)
     end_timestamp_s = state.bookmarks.get(data_source.GEM_BOOKMARK).get(
         'end_timestamp', datetime.now()

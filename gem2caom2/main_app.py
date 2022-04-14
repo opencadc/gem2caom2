@@ -219,10 +219,8 @@ class GeminiMapping(cc.TelescopeMapping):
     def get_calibration_level(self, ext):
         result = CalibrationLevel.RAW_STANDARD
         reduction = self._lookup.reduction(self._storage_name.file_uri)
-        if (
-            reduction is not None and (
-                'PROCESSED' in reduction or 'PREPARED' in reduction
-            )
+        if reduction is not None and (
+            'PROCESSED' in reduction or 'PREPARED' in reduction
         ):
             result = CalibrationLevel.CALIBRATED
         return result
@@ -259,10 +257,7 @@ class GeminiMapping(cc.TelescopeMapping):
             result = ProductType.AUXILIARY
         elif obs_class is None:
             # 'unknown' is the value of observation_class for CIRPASS
-            if (
-                obs_type is not None and
-                obs_type in ['OBJECT', 'unknown']
-            ):
+            if obs_type is not None and obs_type in ['OBJECT', 'unknown']:
                 if data_label is not None and 'CAL' in data_label:
                     result = ProductType.CALIBRATION
                 else:
@@ -340,7 +335,9 @@ class GeminiMapping(cc.TelescopeMapping):
                     self._storage_name.file_uri
                 )
             else:
-                meta_release = self._lookup.release(self._storage_name.file_uri)
+                meta_release = self._lookup.release(
+                    self._storage_name.file_uri
+                )
         return meta_release
 
     def get_obs_intent(self, ext):
@@ -361,16 +358,13 @@ class GeminiMapping(cc.TelescopeMapping):
             if obs_type is None:
                 self._logger.debug(f'data_label is {data_label}')
                 if (
-                    data_label is None or (
-                        data_label is not None and
-                        '-CAL' not in data_label
-                    )
+                    data_label is None
+                    or (data_label is not None and '-CAL' not in data_label)
                     and self._headers[ext] is not None
                 ):
                     object_value = self._headers[ext].get('OBJECT')
                     self._logger.debug(
-                        f'object_value is {object_value} for '
-                        f'{data_label}'
+                        f'object_value is {object_value} for ' f'{data_label}'
                     )
                     if object_value is not None:
                         if object_value in CAL_VALUES:
@@ -403,9 +397,8 @@ class GeminiMapping(cc.TelescopeMapping):
     def get_obs_type(self, ext):
         result = self._lookup.observation_type(self._storage_name.file_uri)
         obs_class = self._lookup.observation_class(self._storage_name.file_uri)
-        if (
-            obs_class is not None and
-            (obs_class == 'acq' or obs_class == 'acqCal')
+        if obs_class is not None and (
+            obs_class == 'acq' or obs_class == 'acqCal'
         ):
             result = 'ACQUISITION'
         return result
@@ -457,7 +450,9 @@ class GeminiMapping(cc.TelescopeMapping):
 
     def get_provenance_reference(self, ext):
         def breakout(comments):
-            return 'https://www.gemini.edu/instrumentation/graces/data-reduction'
+            return (
+                'https://www.gemini.edu/instrumentation/graces/data-reduction'
+            )
 
         return self._get_provenance_breakout(ext, breakout)
 
@@ -662,7 +657,6 @@ class GeminiMapping(cc.TelescopeMapping):
                     continue
 
                 for artifact in plane.artifacts.values():
-                    self._should_artifact_be_renamed(artifact)
                     if self._storage_name.file_uri != artifact.uri:
                         continue
                     if GemName.is_preview(artifact.uri):
@@ -798,9 +792,9 @@ class GeminiMapping(cc.TelescopeMapping):
         # DB - 14-02-19 value looks clearer (as two filters) with a space on
         # both sides of the ‘+’.
         bandpass_name = (
-            None if (
-                filter_name is None or len(filter_name) == 0
-            ) else filter_name.replace('+', ' + ')
+            None
+            if (filter_name is None or len(filter_name) == 0)
+            else filter_name.replace('+', ' + ')
         )
 
         if bandpass_name is not None and 'empty' in bandpass_name:
@@ -892,7 +886,8 @@ class GeminiMapping(cc.TelescopeMapping):
                 chunk.time_axis = 1
 
         if (
-            (chunk.naxis is not None and chunk.naxis <= 2) and not
+            (chunk.naxis is not None and chunk.naxis <= 2)
+            and not
             # the following exempts the Fox use case
             (chunk.naxis == 1 and chunk.time_axis == 1)
         ):
@@ -954,7 +949,8 @@ class GeminiMapping(cc.TelescopeMapping):
         if (
             observation_type in ['BIAS', 'DARK']
             or (
-                self._instrument in [
+                self._instrument
+                in [
                     Inst.GMOS,
                     Inst.GMOSN,
                     Inst.GMOSS,
@@ -962,12 +958,12 @@ class GeminiMapping(cc.TelescopeMapping):
                 and observation_type in ['BIAS', 'MASK']
             )
             or (
-                om_filter_name is not None and
-                ('blank' in om_filter_name or 'Blank' in om_filter_name)
+                om_filter_name is not None
+                and ('blank' in om_filter_name or 'Blank' in om_filter_name)
             )
             or (
-                filter_name is not None and
-                ('unknown' in filter_name or filter_name == '')
+                filter_name is not None
+                and ('unknown' in filter_name or filter_name == '')
             )
         ):
             self._logger.info(
@@ -992,10 +988,10 @@ class GeminiMapping(cc.TelescopeMapping):
         result = False
         types = self._lookup.types(self._storage_name.file_uri)
         ra = self.get_ra(0)
-        if (
-            ('AZEL_TARGET' in types and ra is None) or
-            observation_type in ['BIAS', 'DARK']
-        ):
+        if ('AZEL_TARGET' in types and ra is None) or observation_type in [
+            'BIAS',
+            'DARK',
+        ]:
             # DB - 02-04-19 - Az-El coordinate frame likely means the
             # telescope was parked or at least not tracking so spatial
             # information is irrelevant.
@@ -1021,9 +1017,8 @@ class GeminiMapping(cc.TelescopeMapping):
             trkframe = self._headers[1].get('TRKFRAME')
             frame = self._headers[1].get('FRAME')
 
-        if (
-            (trkframe is not None and trkframe == 'AZEL_TOPO')
-            or (frame is not None and frame == 'AZEL_TOPO')
+        if (trkframe is not None and trkframe == 'AZEL_TOPO') or (
+            frame is not None and frame == 'AZEL_TOPO'
         ):
             result = True
 
@@ -1046,17 +1041,6 @@ class GeminiMapping(cc.TelescopeMapping):
                         result.append(self._headers[ext].get(key).strip())
         return '+'.join(result)
 
-    def _should_artifact_be_renamed(self, artifact):
-        if artifact.uri.startswith('gemini'):
-            if artifact.uri.startswith('gemini:GEM/'):
-                artifact.uri = artifact.uri.replace(
-                    'gemini:GEM/', 'gemini:GEMINI/'
-                )
-        if artifact.uri.startswith('ad'):
-            artifact.uri = artifact.uri.replace(
-                'ad:GEM/', 'cadc:GEMINI/'
-            )
-
     def _update_composite(self, obs):
         result = None
         if self._instrument is Inst.TRECS:
@@ -1075,7 +1059,9 @@ class GeminiMapping(cc.TelescopeMapping):
                 result = obs
         else:
             result = cc.change_to_composite(obs)
-            self._logger.info(f'{obs.observation_id} is a Derived Observation.')
+            self._logger.info(
+                f'{obs.observation_id} is a Derived Observation.'
+            )
         return result
 
     def _update_position(self, part, chunk, extension):
@@ -1098,8 +1084,9 @@ class GeminiMapping(cc.TelescopeMapping):
         ra_json = self.get_ra(0)
         dec_json = self._lookup.dec(self._storage_name.file_uri)
         if ('AZEL_TARGET' in types and ra is None) or (
-            self._instrument is Inst.GNIRS and ra_json is None and
-            dec_json is None
+            self._instrument is Inst.GNIRS
+            and ra_json is None
+            and dec_json is None
         ):
             # DB - 02-04-19 - Az-El coordinate frame likely means the telescope
             # was parked or at least not tracking so spatial information is
@@ -1117,7 +1104,9 @@ class GeminiMapping(cc.TelescopeMapping):
                 f'Spatial WCS is None for {self._storage_name.obs_id}'
             )
         else:
-            wcs_parser = WcsParser(primary_header, self._storage_name.obs_id, 0)
+            wcs_parser = WcsParser(
+                primary_header, self._storage_name.obs_id, 0
+            )
             wcs_parser.augment_position(primary_chunk)
 
         for part in artifact.parts:
@@ -1186,7 +1175,6 @@ def _remove_processing_detritus(values, obs_id):
 
 
 class Bhros(GeminiMapping):
-
     def __init__(self, storage_name, headers, lookup, instrument):
         super().__init__(storage_name, headers, lookup, instrument)
 
@@ -1271,8 +1259,7 @@ class Bhros(GeminiMapping):
         self._headers[0]['EQUINOX'] = mc.to_float(
             self._headers[0].get('TRKEQUIN')
         )
-        wcs_parser = WcsParser(
-            self._headers[0], self._storage_name.obs_id, 0)
+        wcs_parser = WcsParser(self._headers[0], self._storage_name.obs_id, 0)
         if chunk is None:
             chunk = Chunk()
             part.chunks.append(chunk)
@@ -1284,7 +1271,6 @@ class Bhros(GeminiMapping):
 
 
 class Cirpass(GeminiMapping):
-
     def __init__(self, storage_name, headers, lookup, instrument):
         super().__init__(storage_name, headers, lookup, instrument)
 
@@ -1432,7 +1418,6 @@ class Cirpass(GeminiMapping):
 
 
 class F2(GeminiMapping):
-
     def __init__(self, storage_name, headers, lookup, instrument):
         super().__init__(storage_name, headers, lookup, instrument)
 
@@ -1571,7 +1556,6 @@ class F2(GeminiMapping):
 
 
 class Flamingos(GeminiMapping):
-
     def __init__(self, storage_name, headers, lookup, instrument):
         super().__init__(storage_name, headers, lookup, instrument)
 
@@ -1857,7 +1841,6 @@ class Flamingos(GeminiMapping):
 
 
 class Fox(GeminiMapping):
-
     def __init__(self, storage_name, headers, lookup, instrument):
         super().__init__(storage_name, headers, lookup, instrument)
 
@@ -1936,15 +1919,12 @@ class Fox(GeminiMapping):
 
 
 class Gmos(GeminiMapping):
-
     def __init__(self, storage_name, headers, lookup, instrument):
         super().__init__(storage_name, headers, lookup, instrument)
 
     def accumulate_blueprint(self, bp, application=None):
         super().accumulate_blueprint(bp)
-        bp.set(
-            'Observation.instrument.keywords', 'get_provenance_keywords()'
-        )
+        bp.set('Observation.instrument.keywords', 'get_provenance_keywords()')
         bp.configure_position_axes((1, 2))
 
     def get_exposure(self, ext):
@@ -1972,8 +1952,8 @@ class Gmos(GeminiMapping):
         # instrument, obstype, datatype (spectrum) and
         # product type (AUXILIARY) set.
         return (
-            super()._reset_position(observation_type) or
-            observation_type == 'MASK'
+            super()._reset_position(observation_type)
+            or observation_type == 'MASK'
         )
 
     def _update_energy(self, chunk, data_product_type, filter_name):
@@ -2168,7 +2148,6 @@ class Gmos(GeminiMapping):
 
 
 class Gnirs(GeminiMapping):
-
     def __init__(self, storage_name, headers, lookup, instrument):
         super().__init__(storage_name, headers, lookup, instrument)
 
@@ -2196,13 +2175,12 @@ class Gnirs(GeminiMapping):
         # 'Dark' test obs is GN-2013B-Q-93-147-036
         # DB 13-05-19
         # GNIRS “Dark” trumps the “L” filter, so no energy.
-        return (
-            super()._reset_energy(observation_type, filter_name) or (
-                filter_name is not None and (
-                    'Moving' in filter_name or
-                    'Dark' in filter_name or
-                    'DARK' in filter_name
-                )
+        return super()._reset_energy(observation_type, filter_name) or (
+            filter_name is not None
+            and (
+                'Moving' in filter_name
+                or 'Dark' in filter_name
+                or 'DARK' in filter_name
             )
         )
 
@@ -2629,9 +2607,9 @@ class Gnirs(GeminiMapping):
                 # PV+K: ‘PV’ = pupil viewer.  Shouldn’t affect transmission
                 # values (I think) so ignore when looking up lower/upper
                 # bandpasses.
-                filter_name = filter_name.replace(
-                    'PupilViewer', ''
-                ).replace('PV', '')
+                filter_name = filter_name.replace('PupilViewer', '').replace(
+                    'PV', ''
+                )
                 filter_name = filter_name.strip('+')
 
                 if (
@@ -2669,7 +2647,6 @@ class Gnirs(GeminiMapping):
 
 
 class Gpi(GeminiMapping):
-
     def __init__(self, storage_name, headers, lookup, instrument):
         super().__init__(storage_name, headers, lookup, instrument)
 
@@ -2678,8 +2655,8 @@ class Gpi(GeminiMapping):
         bp.configure_position_axes((1, 2))
 
     def get_cd11(self, ext):
-        return (
-            RADIUS_LOOKUP[self._instrument] / self._headers[ext].get('NAXIS1')
+        return RADIUS_LOOKUP[self._instrument] / self._headers[ext].get(
+            'NAXIS1'
         )
 
     def get_cd22(self, ext):
@@ -2836,10 +2813,7 @@ class Gpi(GeminiMapping):
             # equinox information only available from
             # 0th header
             equinox = self._headers[0].get('TRKEQUIN')
-            if (
-                equinox is not None
-                and 1800.0 <= equinox <= 2500.0
-            ):
+            if equinox is not None and 1800.0 <= equinox <= 2500.0:
                 chunk.position.equinox = equinox
             else:
                 # DB 07-06-21
@@ -2849,7 +2823,6 @@ class Gpi(GeminiMapping):
 
 
 class Graces(GeminiMapping):
-
     def __init__(self, storage_name, headers, lookup, instrument):
         super().__init__(storage_name, headers, lookup, instrument)
 
@@ -2860,15 +2833,9 @@ class Graces(GeminiMapping):
         bp.set(
             'Plane.provenance.lastExecuted', 'get_provenance_last_executed()'
         )
-        bp.set(
-            'Plane.provenance.producer', 'get_provenance_producer()'
-        )
-        bp.set(
-            'Plane.provenance.reference', 'get_provenance_reference()'
-        )
-        bp.set(
-            'Plane.provenance.version', 'get_provenance_version()'
-        )
+        bp.set('Plane.provenance.producer', 'get_provenance_producer()')
+        bp.set('Plane.provenance.reference', 'get_provenance_reference()')
+        bp.set('Plane.provenance.version', 'get_provenance_version()')
         mode = self._lookup.mode(self._storage_name.file_uri)
         if mode is not None and mode != 'imaging':
             bp.configure_position_axes((1, 2))
@@ -2892,10 +2859,11 @@ class Graces(GeminiMapping):
 
         ra = self._lookup.ra(self._storage_name.file_uri)
         dec = self._lookup.dec(self._storage_name.file_uri)
-        if (
-            (ra is None and dec is None) or
-            observation_type in ['BIAS', 'FLAT', 'ARC']
-        ):
+        if (ra is None and dec is None) or observation_type in [
+            'BIAS',
+            'FLAT',
+            'ARC',
+        ]:
             result = True
         return result
 
@@ -2921,7 +2889,9 @@ class Graces(GeminiMapping):
                 self._storage_name.file_uri
             )
             self.fm.set_bandpass(1.0, 0.4)
-            ccd_sum = self._lookup.detector_binning(self._storage_name.file_uri)
+            ccd_sum = self._lookup.detector_binning(
+                self._storage_name.file_uri
+            )
             self.fm.resolving_power = 67500.0
             if ccd_sum is not None:
                 temp = float(ccd_sum.split('x')[1])
@@ -2965,7 +2935,6 @@ class Graces(GeminiMapping):
 
 
 class Gsaoi(GeminiMapping):
-
     def __init__(self, storage_name, headers, lookup, instrument):
         super().__init__(storage_name, headers, lookup, instrument)
 
@@ -2978,12 +2947,9 @@ class Gsaoi(GeminiMapping):
     def _reset_energy(self, observation_type, filter_name):
         # DB 24-04-19
         # ‘Unknown+Blocked2’ filter, no spectral WCS.
-        return (
-            super()._reset_energy(observation_type, filter_name) or (
-                filter_name is not None and (
-                    'Unknown' in filter_name or 'Blocked' in filter_name
-                )
-            )
+        return super()._reset_energy(observation_type, filter_name) or (
+            filter_name is not None
+            and ('Unknown' in filter_name or 'Blocked' in filter_name)
         )
 
     def _update_energy(self, chunk, data_product_type, filter_name):
@@ -3016,7 +2982,6 @@ class Gsaoi(GeminiMapping):
 
 
 class Hokupaa(GeminiMapping):
-
     def __init__(self, storage_name, headers, lookup, instrument):
         super().__init__(storage_name, headers, lookup, instrument)
 
@@ -3070,12 +3035,9 @@ class Hokupaa(GeminiMapping):
         # DB 14-08-19
         # no energy since ‘home’ might either be an open position or a blocked
         # position.
-        return (
-            super()._reset_energy(observation_type, filter_name) or (
-                filter_name is not None and (
-                    'LowFlx' in filter_name or 'home' in filter_name
-                )
-            )
+        return super()._reset_energy(observation_type, filter_name) or (
+            filter_name is not None
+            and ('LowFlx' in filter_name or 'home' in filter_name)
         )
 
     def _reset_position(self, observation_type):
@@ -3213,9 +3175,7 @@ class Hokupaa(GeminiMapping):
         header['CD2_1'] = 0.0
         header['CD2_2'] = self.get_cd22(ext)
 
-        wcs_parser = WcsParser(
-            header, self._storage_name.obs_id, ext
-        )
+        wcs_parser = WcsParser(header, self._storage_name.obs_id, ext)
         if chunk is None:
             chunk = Chunk()
             part.chunks.append(chunk)
@@ -3226,7 +3186,6 @@ class Hokupaa(GeminiMapping):
 
 
 class Hrwfs(GeminiMapping):
-
     def __init__(self, storage_name, headers, lookup, instrument):
         super().__init__(storage_name, headers, lookup, instrument)
 
@@ -3290,7 +3249,6 @@ class Hrwfs(GeminiMapping):
 
 
 class Igrins(GeminiMapping):
-
     def __init__(self, storage_name, headers, lookup, instrument):
         super().__init__(storage_name, headers, lookup, instrument)
 
@@ -3322,10 +3280,7 @@ class Igrins(GeminiMapping):
         self._logger.debug('Begin _update_energy')
         # 0 minimum wavelength in microns
         # 1 max wavelength in microns
-        lookup = {
-            'H': [1.47, 1.83],
-            'K': [1.93, 2.5]
-        }
+        lookup = {'H': [1.47, 1.83], 'K': [1.93, 2.5]}
         if filter_name in lookup.keys():
             self.fm = svofps.FilterMetadata()
             self.fm.set_bandpass(
@@ -3364,9 +3319,7 @@ class Igrins(GeminiMapping):
         header['CD2_1'] = 0.0
         header['CD2_2'] = RADIUS_LOOKUP[self._instrument]
 
-        wcs_parser = WcsParser(
-            header, self._storage_name.obs_id, ext
-        )
+        wcs_parser = WcsParser(header, self._storage_name.obs_id, ext)
         if chunk is None:
             chunk = Chunk()
             part.chunks.append(chunk)
@@ -3377,7 +3330,6 @@ class Igrins(GeminiMapping):
 
 
 class Michelle(GeminiMapping):
-
     def __init__(self, storage_name, headers, lookup, instrument):
         super().__init__(storage_name, headers, lookup, instrument)
 
@@ -3412,13 +3364,9 @@ class Michelle(GeminiMapping):
         # DB 09-04-19 - “Blank-B” -> no energy.  It is a bias exposure
         # apparently and those shouldn't have energy WCS.
         # DB 23-04-19 - “No Value” -> no energy
-        return (
-            super()._reset_energy(observation_type, filter_name) or
-            (
-                filter_name is not None and (
-                    'Blank' in filter_name or 'No Value' in filter_name
-                )
-            )
+        return super()._reset_energy(observation_type, filter_name) or (
+            filter_name is not None
+            and ('Blank' in filter_name or 'No Value' in filter_name)
         )
 
     def _update_energy(self, chunk, data_product_type, filter_name):
@@ -3510,7 +3458,9 @@ class Michelle(GeminiMapping):
             self.fm.set_bandpass(w_max, w_min)
             self.fm.set_central_wl(w_max, w_min)
         if data_product_type == DataProductType.SPECTRUM:
-            self._logger.debug(f'Spectral WCS spectrum for {self._storage_name.obs_id}.')
+            self._logger.debug(
+                f'Spectral WCS spectrum for {self._storage_name.obs_id}.'
+            )
             if data_product_type == DataProductType.SPECTRUM:
                 disperser = self._lookup.disperser(self._storage_name.file_uri)
                 focal_plane_mask = self._lookup.focal_plane_mask(
@@ -3544,7 +3494,6 @@ class Michelle(GeminiMapping):
 
 
 class Nici(GeminiMapping):
-
     def __init__(self, storage_name, headers, lookup, instrument):
         super().__init__(storage_name, headers, lookup, instrument)
 
@@ -3563,9 +3512,8 @@ class Nici(GeminiMapping):
         # DB 04-04-19
         # If one of the NICI filters is ‘Block’ then energy WCS should be
         # ignored for that extension.
-        return (
-            super()._reset_energy(observation_type, filter_name) or
-            (filter_name is not None and 'Block' in filter_name)
+        return super()._reset_energy(observation_type, filter_name) or (
+            filter_name is not None and 'Block' in filter_name
         )
 
     def _update_energy(self, chunk, data_product_type, filter_name):
@@ -3645,7 +3593,6 @@ class Nici(GeminiMapping):
 
 
 class Nifs(GeminiMapping):
-
     def __init__(self, storage_name, headers, lookup, instrument):
         super().__init__(storage_name, headers, lookup, instrument)
 
@@ -3656,7 +3603,9 @@ class Nifs(GeminiMapping):
     def get_cd11(self, ext):
         # DB - 05-03-19 - NIFS needs a division by NAXIS1/2 for the
         # cdelta1/2 calculations.
-        return RADIUS_LOOKUP[self._instrument] / self._headers[ext].get('NAXIS1')
+        return RADIUS_LOOKUP[self._instrument] / self._headers[ext].get(
+            'NAXIS1'
+        )
 
     def get_cd22(self, ext):
         return self.get_cd11(ext)
@@ -3672,14 +3621,9 @@ class Nifs(GeminiMapping):
         # skipping the ‘invalid’ values in FILTER1/2 headers.  So energy
         # should likely be skipped.  In this case the json value is
         # INVALID&INVALID.
-        return (
-            super()._reset_energy(observation_type, filter_name) or
-            (
-                filter_name is not None and (
-                    'Blocked' in filter_name or
-                    'INVALID' in filter_name
-                )
-            )
+        return super()._reset_energy(observation_type, filter_name) or (
+            filter_name is not None
+            and ('Blocked' in filter_name or 'INVALID' in filter_name)
         )
 
     def _reset_position(self, observation_type):
@@ -3804,7 +3748,9 @@ class Nifs(GeminiMapping):
         )
 
         if data_product_type == DataProductType.SPECTRUM:
-            self._logger.debug(f'spectroscopy for {self._storage_name.obs_id}.')
+            self._logger.debug(
+                f'spectroscopy for {self._storage_name.obs_id}.'
+            )
             grating = self._lookup.disperser(self._storage_name.file_uri)
             if grating in nifs_lookup:
                 if filter_name in nifs_lookup[grating]:
@@ -3816,12 +3762,16 @@ class Nifs(GeminiMapping):
                     self.fm.central_wl = self._lookup.central_wavelength(
                         self._storage_name.file_uri
                     )
-                    self.fm.resolving_power = nifs_lookup[grating][filter_name][3]
+                    self.fm.resolving_power = nifs_lookup[grating][
+                        filter_name
+                    ][3]
                     if self.fm.central_wl is None:
                         # DB 14-04-21
                         #  if no central wavelength in json then use filter
                         #  bounds
-                        self.fm.central_wl = nifs_lookup[grating][filter_name][0]
+                        self.fm.central_wl = nifs_lookup[grating][filter_name][
+                            0
+                        ]
                         self._logger.warning(
                             f'JSON central_wavelength is None for '
                             f'{self._storage_name.obs_id}. Using '
@@ -3840,7 +3790,9 @@ class Nifs(GeminiMapping):
                 )
                 fm = None
         elif data_product_type == DataProductType.IMAGE:
-            self._logger.debug(f'NIFS: imaging for {self._storage_name.obs_id}.')
+            self._logger.debug(
+                f'NIFS: imaging for {self._storage_name.obs_id}.'
+            )
             # DB - 01-03-19
             # NIFS images should just use the standard imaging procedure
             # for resolution (central_wavelength/bandpass).
@@ -3907,9 +3859,7 @@ class Nifs(GeminiMapping):
         header['CD2_1'] = 0.0
         header['CD2_2'] = self.get_cd22(0)
 
-        wcs_parser = WcsParser(
-            header, self._storage_name.obs_id, ext
-        )
+        wcs_parser = WcsParser(header, self._storage_name.obs_id, ext)
         if chunk is None:
             chunk = Chunk()
         wcs_parser.augment_position(chunk)
@@ -3919,7 +3869,6 @@ class Nifs(GeminiMapping):
 
 
 class Niri(GeminiMapping):
-
     def __init__(self, storage_name, headers, lookup, instrument):
         super().__init__(storage_name, headers, lookup, instrument)
 
@@ -3932,12 +3881,9 @@ class Niri(GeminiMapping):
         return self._search_through_keys(0, ['FILTER'])
 
     def _reset_energy(self, observation_type, filter_name):
-        return (
-            super()._reset_energy(observation_type, filter_name) or (
-                filter_name is not None and (
-                    filter_name == '' or 'INVALID' in filter_name
-                )
-            )
+        return super()._reset_energy(observation_type, filter_name) or (
+            filter_name is not None
+            and (filter_name == '' or 'INVALID' in filter_name)
         )
 
     def _update_energy(self, chunk, data_product_type, filter_name):
@@ -4123,9 +4069,9 @@ class Niri(GeminiMapping):
                     bandpass_name in NIRI_RESOLVING_POWER
                     and f_ratio in NIRI_RESOLVING_POWER[bandpass_name]
                 ):
-                    self.fm.resolving_power = NIRI_RESOLVING_POWER[bandpass_name][
-                        f_ratio
-                    ]
+                    self.fm.resolving_power = NIRI_RESOLVING_POWER[
+                        bandpass_name
+                    ][f_ratio]
                 elif 'pinhole' in f_ratio:
                     self._logger.info(
                         f'Pinhole. Setting energy to None for '
@@ -4191,14 +4137,11 @@ class Niri(GeminiMapping):
                     chunk.position_axis_1 = 1
                     chunk.position_axis_2 = 2
                     chunk.position.coordsys = pdu.get('FRAME')
-                    chunk.position.equinox = mc.to_float(
-                        pdu.get('EQUINOX')
-                    )
+                    chunk.position.equinox = mc.to_float(pdu.get('EQUINOX'))
         self._logger.info('End _update_position')
 
 
 class Oscir(GeminiMapping):
-
     def __init__(self, storage_name, headers, lookup, instrument):
         super().__init__(storage_name, headers, lookup, instrument)
 
@@ -4367,7 +4310,6 @@ class Oscir(GeminiMapping):
 
 
 class Phoenix(GeminiMapping):
-
     def __init__(self, storage_name, headers, lookup, instrument):
         super().__init__(storage_name, headers, lookup, instrument)
 
@@ -4477,9 +4419,8 @@ class Phoenix(GeminiMapping):
     def _reset_energy(self, observation_type, filter_name):
         # DB 07-06-21
         # set energy to None
-        return (
-            super()._reset_energy(observation_type, filter_name) or
-            (filter_name is not None and 'invalid' in filter_name)
+        return super()._reset_energy(observation_type, filter_name) or (
+            filter_name is not None and 'invalid' in filter_name
         )
 
     def _reset_position(self, observation_type):
@@ -4572,7 +4513,8 @@ class Phoenix(GeminiMapping):
         )
         self.fm = svofps.FilterMetadata('Phoenix')
         if data_product_type in [
-            DataProductType.SPECTRUM, DataProductType.IMAGE
+            DataProductType.SPECTRUM,
+            DataProductType.IMAGE,
         ]:
             self._logger.debug(
                 f'DataProductType {data_product_type} for '
@@ -4639,7 +4581,6 @@ class Phoenix(GeminiMapping):
 
 
 class Texes(GeminiMapping):
-
     def __init__(self, storage_name, headers, lookup, instrument):
         super().__init__(storage_name, headers, lookup, instrument)
 
@@ -4653,8 +4594,8 @@ class Texes(GeminiMapping):
     def get_calibration_level(self, ext):
         result = CalibrationLevel.RAW_STANDARD
         if (
-            '_red' in self._storage_name.file_uri.lower() or
-            '_sum' in self._storage_name.file_uri.lower()
+            '_red' in self._storage_name.file_uri.lower()
+            or '_sum' in self._storage_name.file_uri.lower()
         ):
             result = CalibrationLevel.CALIBRATED
         return result
@@ -4763,7 +4704,6 @@ class Texes(GeminiMapping):
 
 
 class Trecs(GeminiMapping):
-
     def __init__(self, storage_name, headers, lookup, instrument):
         super().__init__(storage_name, headers, lookup, instrument)
 
@@ -4803,9 +4743,8 @@ class Trecs(GeminiMapping):
         # DB 23-04-19
         # GMOS GS-2005A-Q-26-12-001.  Lots of missing metadata, including
         # release date so no energy.  Ditto for TReCS GS-CAL20041206-6-007.
-        return (
-            super()._reset_energy(observation_type, filter_name) or
-            (filter_name is not None and filter_name == '')
+        return super()._reset_energy(observation_type, filter_name) or (
+            filter_name is not None and filter_name == ''
         )
 
     def _update_energy(self, chunk, data_product_type, filter_name):

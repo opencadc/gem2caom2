@@ -137,9 +137,8 @@ def test_visitor(
     test_name,
 ):
     expected_fqn = (
-                f'{gem_mocks.TEST_DATA_DIR}/multi_plane/'
-                f'{test_name}.expected.xml'
-            )
+        f'{gem_mocks.TEST_DATA_DIR}/multi_plane/' f'{test_name}.expected.xml'
+    )
     test_set = []
     for f_name in LOOKUP[test_name]:
         test_set.append(

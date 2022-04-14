@@ -89,8 +89,8 @@ def visit(observation, **kwargs):
     mc.check_param(observation, Observation)
 
     working_dir = kwargs.get('working_directory', './')
-    cadc_client = kwargs.get('cadc_client')
-    if cadc_client is None:
+    clients = kwargs.get('clients')
+    if clients is None or clients.data_client is None:
         logging.warning('Need a cadc_client to update preview records.')
     observable = kwargs.get('observable')
     if observable is None:
@@ -116,7 +116,7 @@ def visit(observation, **kwargs):
             observation.observation_id,
             working_dir,
             plane,
-            cadc_client,
+            clients.data_client,
             observable,
             storage_name,
         )
@@ -128,9 +128,7 @@ def visit(observation, **kwargs):
     return observation
 
 
-def _do_prev(
-    obs_id, working_dir, plane, cadc_client, observable, gem_name
-):
+def _do_prev(obs_id, working_dir, plane, cadc_client, observable, gem_name):
     """Retrieve the preview file, so that a thumbnail can be made,
     store the preview if necessary, and the thumbnail, to CADC storage.
     Then augment the CAOM observation with the two additional artifacts.
@@ -229,8 +227,8 @@ def _check_for_delete(file_name, uri, observable, plane):
     does, remove that artifact from the Observation instance."""
     result = 0
     if (
-        observable.rejected.is_no_preview(file_name) and
-        uri in plane.artifacts.keys()
+        observable.rejected.is_no_preview(file_name)
+        and uri in plane.artifacts.keys()
     ):
         logging.warning(f'Removing artifact for non-existent preview {uri}')
         plane.artifacts.pop(uri)
@@ -250,7 +248,10 @@ def _augment(plane, uri, fqn, product_type):
 
 
 def _retrieve_from_gemini(
-    gem_name, observable, plane, preview_fqn,
+    gem_name,
+    observable,
+    plane,
+    preview_fqn,
 ):
     preview_url = f'{PREVIEW_URL}{plane.product_id}.fits'
     try:

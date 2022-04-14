@@ -109,3 +109,25 @@ def test_incremental_source(query_mock):
     test_result = test_subject.get_time_box_work(prev_exec_time, exec_time)
     assert test_result is not None, 'expect a result'
     assert len(test_result) == 0, 'wrong number of empty result list'
+
+
+@patch('caom2pipe.manage_composable.query_endpoint_session')
+def test_incremental_source_reproduce(query_mock):
+    # https://archive.gemini.edu/jsonsummary/canonical/NotFail/notengineering/
+    # entrytimedaterange=
+    # 2022-03-14T17:30:05.000006%202022-03-14T17:31:05.000006/
+    # ?orderby=entrytime
+    # get results
+    query_mock.side_effect = gem_mocks.mock_query_endpoint_reproduce
+
+    test_subject = data_source.IncrementalSource(Mock())
+    assert test_subject is not None, 'expect construction success'
+    prev_exec_time = datetime(
+        year=2022, month=1, day=1, hour=20, minute=3, second=0
+    ).timestamp()
+    exec_time = datetime(
+        year=2022, month=4, day=1, hour=22, minute=13, second=0
+    ).timestamp()
+    test_result = test_subject.get_time_box_work(prev_exec_time, exec_time)
+    assert test_result is not None, 'expect a result'
+    assert len(test_result) == 2528, 'wrong number of results'

@@ -88,9 +88,8 @@ def test_set(retrieve_json_mock, retrieve_headers_mock):
     test_f_name = 'N20030104S0065.fits'
     test_obs_id = 'GN-CAL20030104-14-001'
     retrieve_headers_mock.side_effect = gem_mocks._mock_headers
-    test_storage_name = gem_name.GemName(
-        obs_id=test_obs_id, file_name=test_f_name
-    )
+    test_storage_name = gem_name.GemName(file_name=test_f_name)
+    test_storage_name.obs_id = test_obs_id
     test_subject = gemini_metadata.GeminiMetadataReader(Mock(), Mock(), Mock())
     test_subject.set(test_storage_name)
     assert len(test_subject._json_metadata) == 1, 'json entries'
@@ -113,6 +112,7 @@ def test_provenance_finder(caom2_mock, local_mock):
             f'GMOS\n'.split('\n'),
             format='csv',
         )
+
     caom2_mock.side_effect = _caom2_mock
 
     def _local_mock(ignore):
@@ -120,6 +120,7 @@ def test_provenance_finder(caom2_mock, local_mock):
         hdr['DATALAB'] = test_data_label
         hdr['INSTRUME'] = 'GMOS'
         return [hdr]
+
     local_mock.side_effect = _local_mock
     os_path_exists_orig = os.path.exists
     os.path.exists = Mock(return_value=True)
