@@ -612,7 +612,7 @@ class GeminiMapping(cc.TelescopeMapping):
 
         self._logger.debug('Done accumulate_fits_bp.')
 
-    def update(self, observation, file_info, caom_repo_client=None):
+    def update(self, observation, file_info, clients=None):
 
         if self._headers is None:
             # proprietary header metadata at archive.gemini.edu, so do nothing
