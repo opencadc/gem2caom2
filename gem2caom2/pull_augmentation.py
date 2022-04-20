@@ -128,25 +128,26 @@ def visit(observation, **kwargs):
                     continue
                 try:
                     f_name = mc.CaomName(artifact.uri).file_name
-                    logging.debug(f'Checking for {f_name}')
-                    file_url = f'{FILE_URL}/{f_name}'
-                    fqn = os.path.join(working_dir, f_name)
+                    if '.jpg' not in f_name:
+                        logging.debug(f'Checking for {f_name}')
+                        file_url = f'{FILE_URL}/{f_name}'
+                        fqn = os.path.join(working_dir, f_name)
 
-                    # want to compare the checksum from the JSON, and the
-                    # checksum at CADC storage - if they are not the same,
-                    # retrieve the file from archive.gemini.edu again
-                    json_md5sum = metadata_reader.file_info.get(
-                        artifact.uri
-                    ).md5sum
-                    look_pull_and_put(
-                        artifact.uri, fqn, file_url, clients, json_md5sum
-                    )
-                    if os.path.exists(fqn):
-                        logging.info(
-                            f'Removing local copy of {f_name} after '
-                            f'successful storage call.'
+                        # want to compare the checksum from the JSON, and the
+                        # checksum at CADC storage - if they are not the same,
+                        # retrieve the file from archive.gemini.edu again
+                        json_md5sum = metadata_reader.file_info.get(
+                            artifact.uri
+                        ).md5sum
+                        look_pull_and_put(
+                            artifact.uri, fqn, file_url, clients, json_md5sum
                         )
-                        os.unlink(fqn)
+                        if os.path.exists(fqn):
+                            logging.info(
+                                f'Removing local copy of {f_name} after '
+                                f'successful storage call.'
+                            )
+                            os.unlink(fqn)
                 except Exception as e:
                     if not (
                         observable.rejected.check_and_record(
@@ -189,5 +190,3 @@ def look_pull_and_put(storage_name, fqn, url, clients, checksum):
         )
     else:
         logging.info(f'{os.path.basename(fqn)} already exists at CADC.')
-
-

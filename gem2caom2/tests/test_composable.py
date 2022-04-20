@@ -71,6 +71,7 @@ import logging
 import os
 import shutil
 
+from astropy.io.fits import Header
 from datetime import datetime, timedelta
 from tempfile import TemporaryDirectory
 from unittest.mock import patch, Mock
@@ -80,7 +81,7 @@ from caom2 import SimpleObservation, Algorithm
 from caom2pipe.manage_composable import Config, make_seconds, write_as_yaml
 from caom2pipe.manage_composable import TaskType
 from gem2caom2 import composable, gem_name
-from gem2caom2.data_source import  GEM_BOOKMARK
+from gem2caom2.data_source import GEM_BOOKMARK
 
 
 STATE_FILE = f'{gem_mocks.TEST_DATA_DIR}/state.yml'
@@ -425,6 +426,7 @@ def test_run_by_public2(
         os.getcwd = getcwd_orig
 
 
+@patch('caom2pipe.reader_composable.MetadataReader.reset')
 @patch('caom2pipe.manage_composable.http_get')
 @patch('gem2caom2.svofps.FilterMetadataCache.filter_metadata')
 @patch('gem2caom2.program_metadata.get_pi_metadata')
@@ -442,6 +444,7 @@ def test_run_by_incremental_reproduce(
     pi_mock,
     svo_mock,
     http_get_mock,
+    reader_mock,
 ):
     # https://archive.gemini.edu/jsonsummary/canonical/NotFail/notengineering/
     # entrytimedaterange=
@@ -450,7 +453,7 @@ def test_run_by_incremental_reproduce(
     # get results
     query_mock.side_effect = gem_mocks.mock_query_endpoint_reproduce
     access_mock.return_value = 'https://localhost:2022'
-    from astropy.io.fits import Header
+
     test_header = Header()
     test_header['INSTRUME'] = 'GMOS-S'
     header_mock.return_value = [test_header]
@@ -507,9 +510,13 @@ def test_run_by_incremental_reproduce(
             composable._run_state()
             assert meta_client_mock.read.called, 'should have been called'
             assert (
-                meta_client_mock.read.call_count == 2528
+                meta_client_mock.read.call_count == 2
             ), f'wrong call count {meta_client_mock.read.call_count}'
-            meta_client_mock.read.assert_called_with(''), 'wrong run args'
+            meta_client_mock.read.assert_called_with(
+                'GEMINI', 'GN-CAL20220314-18-090'
+            ), 'wrong run args'
+            reader_mock.called, 'reset called'
+            reader_mock.call_count == 1, 'reset call count'
         finally:
             os.getcwd = getcwd_orig
             os.chdir(cwd)

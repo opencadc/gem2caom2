@@ -130,4 +130,4 @@ def test_incremental_source_reproduce(query_mock):
     ).timestamp()
     test_result = test_subject.get_time_box_work(prev_exec_time, exec_time)
     assert test_result is not None, 'expect a result'
-    assert len(test_result) == 2528, 'wrong number of results'
+    assert len(test_result) == 2, 'wrong number of results'

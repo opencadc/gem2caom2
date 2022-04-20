@@ -1260,7 +1260,9 @@ def mock_query_endpoint_2(url, timeout=-1):
 def mock_query_endpoint_reproduce(url, timeout=-1):
     # returns response.json
     def x():
-        fqn = f'/usr/src/app/gem2caom2/no_vcs/out.json'
+        fqn = (
+            f'/usr/src/app/gem2caom2/gem2caom2/tests/data/json/reproduce.json'
+        )
         with open(fqn) as f:
             temp = f.read()
         return json.loads(temp)
@@ -1471,9 +1473,12 @@ def _run_test_common(
                 test_config, metadata_reader, test_metadata
             )
             storage_name = test_builder.build(entry)
+            client_mock = Mock()
+            client_mock.metadata_client = headers_mock
             kwargs = {
                 'storage_name': storage_name,
                 'metadata_reader': metadata_reader,
+                'clients': client_mock,
             }
             logging.getLogger('caom2utils.fits2caom2').setLevel(logging.INFO)
             logging.getLogger('ValueRepairCache').setLevel(logging.INFO)
