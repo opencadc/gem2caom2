@@ -71,6 +71,7 @@ import logging
 import os
 import shutil
 
+from astropy.io.fits import Header
 from datetime import datetime, timedelta
 from tempfile import TemporaryDirectory
 from unittest.mock import patch, Mock
@@ -452,7 +453,6 @@ def test_run_by_incremental_reproduce(
     # get results
     query_mock.side_effect = gem_mocks.mock_query_endpoint_reproduce
     access_mock.return_value = 'https://localhost:2022'
-    from astropy.io.fits import Header
 
     test_header = Header()
     test_header['INSTRUME'] = 'GMOS-S'
