@@ -99,7 +99,7 @@ from caom2 import CalibrationLevel, Chunk, ProductType
 from caom2 import TypedList, DerivedObservation, DataProductType
 from caom2 import ObservationIntentType, TargetType, CoordAxis1D, Axis
 from caom2 import SpectralWCS, RefCoord, CoordRange1D
-from caom2utils import WcsParser, update_artifact_meta
+from caom2utils import FitsWcsParser, update_artifact_meta
 from caom2utils.data_util import get_file_type
 from caom2pipe import manage_composable as mc
 from caom2pipe import caom_composable as cc
@@ -575,7 +575,7 @@ class GeminiMapping(cc.TelescopeMapping):
         bp.set('Plane.provenance.name', 'Gemini Observatory Data')
         bp.set('Plane.provenance.project', 'Gemini Archive')
         # Add IMAGESWV for GRACES
-        bp.add_fits_attribute('Plane.provenance.producer', 'IMAGESWV')
+        bp.add_attribute('Plane.provenance.producer', 'IMAGESWV')
         bp.set_default('Plane.provenance.producer', 'Gemini Observatory')
         data_label = self._lookup.data_label(self._storage_name.file_uri)
         bp.set(
@@ -1104,7 +1104,7 @@ class GeminiMapping(cc.TelescopeMapping):
                 f'Spatial WCS is None for {self._storage_name.obs_id}'
             )
         else:
-            wcs_parser = WcsParser(
+            wcs_parser = FitsWcsParser(
                 primary_header, self._storage_name.obs_id, 0
             )
             wcs_parser.augment_position(primary_chunk)
@@ -1259,7 +1259,9 @@ class Bhros(GeminiMapping):
         self._headers[0]['EQUINOX'] = mc.to_float(
             self._headers[0].get('TRKEQUIN')
         )
-        wcs_parser = WcsParser(self._headers[0], self._storage_name.obs_id, 0)
+        wcs_parser = FitsWcsParser(
+            self._headers[0], self._storage_name.obs_id, 0
+        )
         if chunk is None:
             chunk = Chunk()
             part.chunks.append(chunk)
@@ -1407,7 +1409,9 @@ class Cirpass(GeminiMapping):
         self._headers[0]['CD1_2'] = 0.0
         self._headers[0]['CD2_1'] = 0.0
         self._headers[0]['CD2_2'] = self.get_cd22(0)
-        wcs_parser = WcsParser(self._headers[0], self._storage_name.obs_id, 0)
+        wcs_parser = FitsWcsParser(
+            self._headers[0], self._storage_name.obs_id, 0
+        )
         if chunk is None:
             chunk = Chunk()
             part.chunks.append(chunk)
@@ -1571,7 +1575,7 @@ class Flamingos(GeminiMapping):
         # the equinox given at the time specified by the EQUINOX keyword
         # value.
         bp.clear('Chunk.position.equinox')
-        bp.add_fits_attribute('Chunk.position.equinox', 'EQUINOX')
+        bp.add_attribute('Chunk.position.equinox', 'EQUINOX')
 
     def get_art_product_type(self, ext):
         # DB - 28-02-19
@@ -1854,7 +1858,7 @@ class Fox(GeminiMapping):
             f'{self._storage_name.file_id}.fits',
         )
         bp.clear('Chunk.time.axis.function.naxis')
-        bp.add_fits_attribute('Chunk.time.axis.function.naxis', 'NAXIS3')
+        bp.add_attribute('Chunk.time.axis.function.naxis', 'NAXIS3')
         bp.set_default('Chunk.time.axis.function.naxis', 1)
         bp.configure_position_axes((1, 2))
 
@@ -2801,7 +2805,9 @@ class Gpi(GeminiMapping):
         header['CD2_1'] = 0.0
         header['CD2_2'] = self.get_cd22(extension)
 
-        wcs_parser = WcsParser(header, self._storage_name.obs_id, extension)
+        wcs_parser = FitsWcsParser(
+            header, self._storage_name.obs_id, extension
+        )
         if chunk is None:
             chunk = Chunk()
             part.chunks.append(chunk)
@@ -2925,7 +2931,7 @@ class Graces(GeminiMapping):
             header['CD1_2'] = 0.0
             header['CD2_1'] = 0.0
             header['CD2_2'] = self.get_cd22(ext)
-            wcs_parser = WcsParser(header, self._storage_name.obs_id, ext)
+            wcs_parser = FitsWcsParser(header, self._storage_name.obs_id, ext)
             if chunk is None:
                 chunk = Chunk()
             wcs_parser.augment_position(chunk)
@@ -3175,7 +3181,7 @@ class Hokupaa(GeminiMapping):
         header['CD2_1'] = 0.0
         header['CD2_2'] = self.get_cd22(ext)
 
-        wcs_parser = WcsParser(header, self._storage_name.obs_id, ext)
+        wcs_parser = FitsWcsParser(header, self._storage_name.obs_id, ext)
         if chunk is None:
             chunk = Chunk()
             part.chunks.append(chunk)
@@ -3319,7 +3325,7 @@ class Igrins(GeminiMapping):
         header['CD2_1'] = 0.0
         header['CD2_2'] = RADIUS_LOOKUP[self._instrument]
 
-        wcs_parser = WcsParser(header, self._storage_name.obs_id, ext)
+        wcs_parser = FitsWcsParser(header, self._storage_name.obs_id, ext)
         if chunk is None:
             chunk = Chunk()
             part.chunks.append(chunk)
@@ -3859,7 +3865,7 @@ class Nifs(GeminiMapping):
         header['CD2_1'] = 0.0
         header['CD2_2'] = self.get_cd22(0)
 
-        wcs_parser = WcsParser(header, self._storage_name.obs_id, ext)
+        wcs_parser = FitsWcsParser(header, self._storage_name.obs_id, ext)
         if chunk is None:
             chunk = Chunk()
         wcs_parser.augment_position(chunk)
@@ -4126,7 +4132,7 @@ class Niri(GeminiMapping):
             ):
                 pdu['NAXIS1'] = hdu0.get('NAXIS1')
                 pdu['NAXIS2'] = hdu0.get('NAXIS2')
-                wcs_parser = WcsParser(
+                wcs_parser = FitsWcsParser(
                     pdu, self._storage_name.obs_id, extension
                 )
                 if chunk is None:
@@ -4296,7 +4302,7 @@ class Oscir(GeminiMapping):
         header['CD2_1'] = 0.0
         header['CD2_2'] = self.get_cd22(ext)
 
-        wcs_parser = WcsParser(header, self._storage_name.obs_id, ext)
+        wcs_parser = FitsWcsParser(header, self._storage_name.obs_id, ext)
         if chunk is None:
             chunk = Chunk()
             part.chunks.append(chunk)
@@ -4570,7 +4576,7 @@ class Phoenix(GeminiMapping):
         if temp is None or math.isclose(temp, 0.0):
             header['EQUINOX'] = header.get('EPOCH')
 
-        wcs_parser = WcsParser(header, self._storage_name.obs_id, ext)
+        wcs_parser = FitsWcsParser(header, self._storage_name.obs_id, ext)
         if chunk is None:
             chunk = Chunk()
             part.chunks.append(chunk)
@@ -4693,7 +4699,7 @@ class Texes(GeminiMapping):
         header['CD1_2'] = 0.0
         header['CD2_1'] = 0.0
         header['CD2_2'] = self.get_cd22(0)
-        wcs_parser = WcsParser(header, self._storage_name.obs_id, 0)
+        wcs_parser = FitsWcsParser(header, self._storage_name.obs_id, 0)
         if chunk is None:
             chunk = Chunk()
             part.chunks.append(chunk)
@@ -4824,15 +4830,15 @@ class Trecs(GeminiMapping):
                 # test is rS20060306S0090, GS-2005B-Q-10-63-003
                 if ctype1 == '0':
                     self._headers[ext]['CTYPE1'] = 'RA---TAN'
-                wcs_parser = WcsParser(
+                wcs_parser = FitsWcsParser(
                     self._headers[ext], self._storage_name.obs_id, ext
                 )
             else:
-                wcs_parser = WcsParser(
+                wcs_parser = FitsWcsParser(
                     self._headers[0], self._storage_name.obs_id, ext
                 )
         else:
-            wcs_parser = WcsParser(
+            wcs_parser = FitsWcsParser(
                 self._headers[0], self._storage_name.obs_id, ext
             )
 

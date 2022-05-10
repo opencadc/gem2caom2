@@ -1480,7 +1480,10 @@ def _run_test_common(
                 'metadata_reader': metadata_reader,
                 'clients': client_mock,
             }
-            logging.getLogger('caom2utils.fits2caom2').setLevel(logging.INFO)
+            logging.getLogger(
+                'caom2utils.caom2blueprint',
+            ).setLevel(logging.INFO)
+            logging.getLogger('GeminiFits2caom2Visitor').setLevel(logging.INFO)
             logging.getLogger('ValueRepairCache').setLevel(logging.INFO)
             logging.getLogger('root').setLevel(logging.INFO)
             # logging.getLogger('Gmos').setLevel(logging.INFO)
