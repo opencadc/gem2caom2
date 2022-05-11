@@ -115,25 +115,20 @@ class GemObsIDBuilder(nbc.StorageNameBuilder):
                 self._logger.debug('Using file_id for source.')
                 result = gem_name.GemName(file_name=f_name)
                 result.source_names = [result.file_id]
-            elif '.' not in entry and '-' not in entry:
+            elif '.fits' not in entry and '.jpg' not in entry:
                 # this case exists so that retries.txt entries are
                 # handled properly, as retries.txt use the source_names
                 # array. For GemName, source_names is a list of file_ids.
                 #
-                # dashes are almost always in a data label/observation ID,
-                # so try and avoid the case where the list of inputs might
-                # be a list of observation IDs, which isn't handled
+                # if the list of inputs is a list of data labels, this is
+                # the wrong thing to do, but there's really no data
+                # label-based processing left operationally
                 self._logger.debug(
                     'entry might be file_id, try a made-up name.'
                 )
                 made_up_file_name = f'{entry}.fits'
                 result = gem_name.GemName(file_name=made_up_file_name)
                 result.source_names = [result.file_id]
-            else:
-                raise mc.CadcException(
-                    'The need has not been encountered in the real world '
-                    'yet.'
-                )
             self._metadata_reader.set(result)
             # StorageName instance is only partially constructed at this
             # point

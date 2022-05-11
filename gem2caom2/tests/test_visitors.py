@@ -181,8 +181,7 @@ def test_preview_augment_unknown_no_preview():
     with patch(
         'caom2pipe.manage_composable.http_get',
         side_effect=mc.CadcException(
-            'Internal Server Error for url: '
-            'https://archive.gemini.edu/preview'
+            'Not Found for url: https://archive.gemini.edu/preview'
         ),
     ) as http_mock, patch(
         'caom2pipe.manage_composable.data_put'
@@ -365,10 +364,11 @@ def test_preview_augment_failure(http_mock):
 
     def _failure_mock(ignore_url, ignore_local_fqn):
         raise mc.CadcException(
-            'Could not retrieve ./N20200608A0476r.jpg from '
-            'https://archive.gemini.edu//preview/N20200608A0476r.fits. '
-            'Failed with 500 Server Error: Internal Server Error for '
-            'url: https://archive.gemini.edu/preview/N20200608A0476r.fits'
+            'Could not retrieve /usr/src/app/N20211007A0003/'
+            'N20211007A0003b.jpg from '
+            'https://archive.gemini.edu/preview/N20211007A0003b.fits. Failed '
+            'with 404 Client Error: Not Found for url: '
+            'https://archive.gemini.edu/preview/N20211007A0003b.fits'
         )
 
     obs = mc.read_obs_from_file(TEST_OBS_FILE)

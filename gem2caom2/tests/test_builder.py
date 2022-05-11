@@ -114,11 +114,6 @@ def test_builder(file_info_mock, header_mock):
             ), 'wrong thumb uri'
             assert test_result.obs_id is not None, f'expect an obs id'
 
-    test_config.task_types = [mc.TaskType.INGEST]
-    test_entry = 'GN-DATA-LABEL'
-    with pytest.raises(mc.CadcException):
-        ignore = test_subject.build(test_entry)
-
 
 @patch('gem2caom2.gemini_metadata.retrieve_json')
 @patch('caom2pipe.reader_composable.FileMetadataReader._retrieve_headers')
@@ -163,6 +158,7 @@ def test_different_obs_id_cases(json_mock, headers_mock, file_info_mock):
         'N20200810A0490r.fits': 'N20200810A0490',
         'N20200810A0490r': 'N20200810A0490',
         'SDCH_20200131_0010.fits': 'GS-CAL20200131-10-0131',
+        'GN2001BQ013-04': 'GN2001BQ013-04',
     }
     test_reader = gemini_metadata.GeminiFileMetadataReader(
         Mock(), Mock(), Mock()
