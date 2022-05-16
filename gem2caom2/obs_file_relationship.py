@@ -413,6 +413,15 @@ def repair_data_label(file_name, data_label):
         f'{data_label}.'
     )
     file_id = remove_extensions(file_name)
+    if data_label is not None and data_label.endswith('BIAS/MBIAS/G-BIAS'):
+        # from Oliver Oberdorf at Gemini, 26-05-21: "prefer lower case, as
+        # that's what we use today"
+        data_label = data_label.replace('BIAS/MBIAS/G-BIAS', 'g-bias')
+        logging.debug(
+            f'End repair_data_label with file {file_name} and data label '
+            f'{data_label}.'
+        )
+        return data_label
     repaired = data_label if data_label else ''
     if is_processed(file_id) or file_id.startswith('TX2'):
         if file_id.startswith('TX2') and repaired == '':
