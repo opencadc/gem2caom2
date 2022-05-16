@@ -568,6 +568,10 @@ def test_repair_data_label_2():
             'GS-CAL20180122-1-001',
             'GS-CAL20180122-1-001-RG-FRINGE',
         ],
+        'gS20150906S0307_bias.fits': [
+            'GS-CAL20150906-1-086-BIAS/MBIAS/G-BIAS',
+            'GS-CAL20150906-1-086-g-bias',
+        ]
     }
     for f_name in repairs.keys():
         result = obs_file_relationship.repair_data_label(
