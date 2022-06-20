@@ -625,6 +625,7 @@ class GeminiMapping(cc.TelescopeMapping):
             observation = self._update_composite(observation)
 
         if self._instrument in [Inst.MICHELLE, Inst.GNIRS]:
+            # CSD-2511
             # DB 16-04-19
             # The more important issue with this and other files is that they
             # contain no image extensions.  The file is downloadable from

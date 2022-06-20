@@ -257,7 +257,7 @@ def _retrieve_from_gemini(
     plane,
     preview_fqn,
 ):
-    preview_url = f'{PREVIEW_URL}{plane.product_id}.fits'
+    preview_url = f'{PREVIEW_URL}{gem_name.file_name}'
     try:
         mc.http_get(preview_url, preview_fqn)
     except Exception as e:
