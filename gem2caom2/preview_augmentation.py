@@ -66,11 +66,13 @@
 #
 # ***********************************************************************
 #
+
 import logging
-import os
 import traceback
 
 from datetime import datetime
+from os import access, remove
+from os.path import basename, exists, join
 
 import matplotlib.image as image
 
@@ -145,15 +147,15 @@ def _do_prev(obs_id, working_dir, plane, clients, observable, gem_name):
             gem_name.prev, gem_name.prev_uri, observable, plane
         )
     else:
-        preview_fqn = os.path.join(working_dir, gem_name.prev)
+        preview_fqn = join(working_dir, gem_name.prev)
         thumb = gem_name.thumb
-        thumb_fqn = os.path.join(working_dir, thumb)
+        thumb_fqn = join(working_dir, thumb)
 
         # get the file - try disk first, then CADC, then Gemini
         # Only try to retrieve from Gemini if the eventual purpose is
         # storage (i.e. cadc_client is not None), though
         if (
-            not os.access(preview_fqn, 0)
+            not access(preview_fqn, 0)
             and clients is not None
             and clients.data_client is not None
         ):
@@ -171,7 +173,7 @@ def _do_prev(obs_id, working_dir, plane, clients, observable, gem_name):
                     preview_fqn,
                 )
 
-        if os.path.exists(preview_fqn):
+        if exists(preview_fqn):
             # in case TaskType == SCRAPE + MODIFY
             try:
                 fp = open(preview_fqn, 'r')
@@ -182,8 +184,8 @@ def _do_prev(obs_id, working_dir, plane, clients, observable, gem_name):
                 )
 
             logging.debug(f'Generate thumbnail for file id {plane.product_id}')
-            if os.access(thumb_fqn, 0):
-                os.remove(thumb_fqn)
+            if access(thumb_fqn, 0):
+                remove(thumb_fqn)
             try:
                 image.thumbnail(preview_fqn, thumb_fqn, scale=0.25)
             except ValueError as e:
@@ -257,7 +259,8 @@ def _retrieve_from_gemini(
     plane,
     preview_fqn,
 ):
-    preview_url = f'{PREVIEW_URL}{gem_name.file_name}'
+    temp = basename(gem_name.file_name)
+    preview_url = f'{PREVIEW_URL}{temp}'
     try:
         mc.http_get(preview_url, preview_fqn)
     except Exception as e:
