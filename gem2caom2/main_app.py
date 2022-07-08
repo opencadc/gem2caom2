@@ -4128,8 +4128,17 @@ class Niri(GeminiMapping):
             hdu0 = self._headers[1]
             pdu_cd1_1 = pdu.get('CD1_1')
             hdu0_cd1_1 = hdu0.get('CD1_1')
-            if not math.isclose(pdu_cd1_1, hdu0_cd1_1) and math.isclose(
-                pdu_cd1_1 * 1e-50, hdu0_cd1_1
+            if (
+                (
+                    not math.isclose(pdu_cd1_1, hdu0_cd1_1) and math.isclose(
+                        pdu_cd1_1 * 1e-50, hdu0_cd1_1
+                    )
+                ) or
+                    (
+                        hdu0.get('CRPIX1') != 0.0
+                        and hdu0.get('CRVAL1') != 0.0
+                        and hdu0.get('CRPIX2') != 0.0
+                        and hdu0.get('CRVAL2') != 0.0)
             ):
                 pdu['NAXIS1'] = hdu0.get('NAXIS1')
                 pdu['NAXIS2'] = hdu0.get('NAXIS2')
@@ -4145,6 +4154,9 @@ class Niri(GeminiMapping):
                     chunk.position_axis_2 = 2
                     chunk.position.coordsys = pdu.get('FRAME')
                     chunk.position.equinox = mc.to_float(pdu.get('EQUINOX'))
+            else:
+                if chunk is not None and chunk.position is not None:
+                    cc.reset_position(chunk)
         self._logger.info('End _update_position')
 
 
