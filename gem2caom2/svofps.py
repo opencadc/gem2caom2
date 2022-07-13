@@ -105,17 +105,19 @@ class FilterMetadata(object):
     #
     # and crval1 is the lower wavelength.
 
-    def __init__(self, instrument=None):
+    def __init__(self, instrument=None, filter_name=None):
         self.central_wl = None
         self.bandpass = None
         self.resolving_power = None
         self.instrument = instrument
+        self._filter_name = filter_name
 
     def __str__(self):
         return (
             f'central_wl: {self._central_wl}\n'
             f'bandpass: {self._bandpass}\n'
             f'resolving_power: {self._resolving_power}'
+            f'filter_name: {self._filter_name}'
         )
 
     @property
@@ -135,6 +137,10 @@ class FilterMetadata(object):
     @bandpass.setter
     def bandpass(self, value):
         self._bandpass = value
+
+    @property
+    def filter_name(self):
+        return self._filter_name
 
     @property
     def resolving_power(self):
@@ -267,7 +273,7 @@ class FilterMetadataCache:
                     width_min = wl_width
 
             if filter_name_found:
-                local_fm = FilterMetadata(instrument)
+                local_fm = FilterMetadata(instrument, filter_names)
                 # SVO filter units are angstroms, Gemini CAOM2 spectral wcs is
                 # microns
                 local_fm.central_wl = wl_eff / 1.0e4
@@ -477,7 +483,7 @@ class FilterMetadataCache:
             elif instrument in [Inst.ALOPEKE, Inst.ZORRO]:
                 temp = FILTER_REPAIR_FOX.get(temp)
             elif instrument is Inst.F2:
-                if temp == 'J-lo':
+                if temp.startswith('J-lo'):
                     temp = 'Jlow'
             if temp is not None:
                 result.append(temp)

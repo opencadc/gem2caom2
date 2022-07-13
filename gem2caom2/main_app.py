@@ -607,7 +607,7 @@ class GeminiMapping(cc.TelescopeMapping):
         bp.set('Chunk.time.axis.function.refCoord.pix', '0.5')
         bp.set(
             'Chunk.time.axis.function.refCoord.val',
-            'get_time_function_val(header)',
+            'get_time_function_val()',
         )
 
         self._logger.debug('Done accumulate_fits_bp.')
@@ -842,18 +842,7 @@ class GeminiMapping(cc.TelescopeMapping):
         :return: The filter names, or None if none found.
         """
         filter_name = self._lookup.filter_name(self._storage_name.file_uri)
-
-        # DB 24-04-19
-        # ND = neutral density and so any ND* filter can be ignored as it
-        # shouldn’t affect transmission band.  Likely observing a bright
-        # Other instruments occasionally have ND filters in the beam.
-        if filter_name is not None:
-            filter_name = filter_name.replace('&', '+')
-            temp = filter_name.split('+')
-            for fn in temp:
-                if fn.startswith('ND'):
-                    filter_name = filter_name.replace(fn, '')
-            filter_name = filter_name.strip('+')
+        filter_name = self._scrub_filter_name(filter_name)
         if filter_name is None or len(filter_name.strip()) == 0:
             result = self._search_through_keys(ext, ['FILTER'])
             filter_name = result
@@ -1024,6 +1013,20 @@ class GeminiMapping(cc.TelescopeMapping):
             result = True
 
         return result
+
+    def _scrub_filter_name(self, filter_name):
+        # DB 24-04-19
+        # ND = neutral density and so any ND* filter can be ignored as it
+        # shouldn’t affect transmission band.  Likely observing a bright
+        # Other instruments occasionally have ND filters in the beam.
+        if filter_name is not None:
+            filter_name = filter_name.replace('&', '+')
+            temp = filter_name.split('+')
+            for fn in temp:
+                if fn.startswith('ND'):
+                    filter_name = filter_name.replace(fn, '')
+            filter_name = filter_name.strip('+')
+        return filter_name
 
     def _search_through_keys(self, ext, search_keys):
         result = []
@@ -1441,6 +1444,32 @@ class F2(GeminiMapping):
             result = 'DARK'
         return result
 
+    def _get_filter_name(self, ext):
+        """
+        Create the filter names for use by update_energy methods.
+
+        :return: The filter names, or None if none found.
+        """
+        for filter_name in [
+            self._lookup.filter_name(self._storage_name.file_uri),
+            self._search_through_keys(ext, ['FILTER']),
+            self._headers[0].get('LYOT'),
+        ]:
+            filter_name = self._scrub_filter_name(filter_name)
+            if (
+                filter_name is None
+                or len(filter_name.strip()) == 0
+                or filter_name.lower() == 'open'
+            ):
+                continue
+            else:
+                break
+
+        self._logger.debug(
+            f'Filter names are "{filter_name}" in {self._storage_name.obs_id}'
+        )
+        return filter_name
+
     def _update_energy(self, chunk, data_product_type, filter_name):
         self._logger.debug('Begin _update_energy')
         # DB - 02-05-19
@@ -1536,7 +1565,12 @@ class F2(GeminiMapping):
             )
             cc.reset_energy(chunk)
         else:
-            self._build_chunk_energy(chunk, filter_name)
+            temp = (
+                filter_name
+                if len(filter_md.filter_name) == 0
+                else '+'.join(ii for ii in filter_md.filter_name)
+            )
+            self._build_chunk_energy(chunk, temp)
         self._logger.debug('End _update_energy')
 
     def _update_time(self, chunk):

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+
+<title>Detail for Program: GS-2021A-Q-322</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-2021A-Q-322</h1>
+
+<table>
+ <tr><td>Title:<td>Photometric variability at the T/Y transition</tr>
+ <tr><td>PI:<td>Stanimir Metchev</tr>
+ <tr><td>Co-I(s):<td> Paulo Miles-Páez,  Megan Tannock</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+As a continuation of our successful Gemini J-band monitoring campaign performed in 18B-19A, we propose to photometrically monitor 12 bright T8-T9 dwarfs visible in semester 21A to search for cloud-induced brightness variations. Brown dwarfs at the T/Y transition are predicted to have clouds of sulfide, salt, or water in their visible atmospheres. However, these cold faint objects have been under-represented in variability studies, which have focussed mainly on (brighter) L/T-transition objects, where the dominant clouds are made of silicates. Detecting the signatures of the more volatile clouds expected at the ~500 K T/Y transition will bring us closer to understanding the cloud dynamics in atmospheres with temperatures closer to Earth&#x27;s. While our time request is sizeable, our program is suitable for Band 3 queue-mode execution. 
+</div>
+
+
+
+</body>
+</html>
