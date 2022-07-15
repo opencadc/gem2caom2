@@ -1446,13 +1446,21 @@ class F2(GeminiMapping):
 
     def _get_filter_name(self, ext):
         """
-        Create the filter names for use by update_energy methods.
+        Look up and manipulate into an expected pattern the filter names for
+        use by _update_energy methods.
 
         :return: The filter names, or None if none found.
         """
         for filter_name in [
             self._lookup.filter_name(self._storage_name.file_uri),
             self._search_through_keys(ext, ['FILTER']),
+            # OO/WF - 12-07-22
+            # Oliver stated that the header keyword “LYOT” is also used to
+            # confirm the filter keyword. In the case of S20220203S0019,
+            # LYOT=‘J-lo_G0801’ which is a valid filter element.
+            #
+            # In the cases of FILTER='OPEN' FILTER1='OPEN' FILTER2='OPEN', the
+            # logic is to look at LYOT
             self._headers[0].get('LYOT'),
         ]:
             filter_name = self._scrub_filter_name(filter_name)
