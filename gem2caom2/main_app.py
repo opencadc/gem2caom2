@@ -714,7 +714,9 @@ class GeminiMapping(cc.TelescopeMapping):
                                     c, plane.data_product_type, filter_name
                                 )
                             # position WCS
-                            if self._reset_position(observation.type):
+                            if self._reset_position(
+                                observation.type, artifact.product_type
+                            ):
                                 cc.reset_position(c)
                             else:
                                 self._update_position(part, c, int(part))
@@ -970,7 +972,7 @@ class GeminiMapping(cc.TelescopeMapping):
             result = True
         return result
 
-    def _reset_position(self, observation_type):
+    def _reset_position(self, observation_type, artifact_type):
         """
         Return True if there should be no spatial WCS information created at
         the chunk level.
@@ -1010,6 +1012,12 @@ class GeminiMapping(cc.TelescopeMapping):
         if (trkframe is not None and trkframe == 'AZEL_TOPO') or (
             frame is not None and frame == 'AZEL_TOPO'
         ):
+            result = True
+
+        # DB 15-07-22
+        # if FRAME is 'No Value' the telescope is not tracking, ignore
+        # Spatial WCS for calibration artifacts
+        if artifact_type == ProductType.CALIBRATION and frame == 'No Value':
             result = True
 
         return result
@@ -1069,8 +1077,30 @@ class GeminiMapping(cc.TelescopeMapping):
         return result
 
     def _update_position(self, part, chunk, extension):
-        # the default is to do nothing, so not a NotImplemented exception
-        pass
+        self._logger.debug(
+            f'Enter _update_position for {self._storage_name.file_uri}'
+        )
+        if chunk.position is not None:
+            # DB 14-07-22
+            # test if the absolute value of any CD element is > 1/3600
+            # (one arcsecond/pixel). This is much larger than any Gemini
+            # pixel would be and so the spatial WCS would likely be nonsense
+            # for any science OR calibration image.
+            fail = False
+            for keyword in ['CD1_1', 'CD1_2', 'CD2_1', 'CD2_2']:
+                temp = mc.get_keyword(self._headers, keyword)
+                if temp is not None:
+                    if abs(temp) > 1.0 / 3600.0:
+                        fail = True
+                        break
+
+            if fail:
+                self._logger.warning(
+                    f'Large CD matrix values, no Spatial WCS for '
+                    f'{self._storage_name.file_uri}'
+                )
+                cc.reset_position(chunk)
+        self._logger.debug('End _update_position')
 
     def _update_position_from_zeroth_header(self, artifact):
         """Make the 0th header spatial WCS the WCS for all the
@@ -1757,8 +1787,8 @@ class Flamingos(GeminiMapping):
         # use the MJD header value in the header as the CRVAL for time.
         return self._headers[ext].get('MJD')
 
-    def _reset_position(self, observation_type):
-        result = super()._reset_position(observation_type)
+    def _reset_position(self, observation_type, artifact_type):
+        result = super()._reset_position(observation_type, artifact_type)
         ra_tel = self._headers[0].get('RA_TEL')
         if ra_tel == 'Unavailable':
             result = True
@@ -1989,7 +2019,7 @@ class Gmos(GeminiMapping):
             exptime = super().get_time_delta(ext)
         return exptime
 
-    def _reset_position(self, observation_type):
+    def _reset_position(self, observation_type, artifact_type):
         # DB - 04-03-19
         # Another type of GMOS-N/S dataset to archive.
         # Mask images.   json observation_type = “MASK”.
@@ -1999,7 +2029,7 @@ class Gmos(GeminiMapping):
         # instrument, obstype, datatype (spectrum) and
         # product type (AUXILIARY) set.
         return (
-            super()._reset_position(observation_type)
+            super()._reset_position(observation_type, artifact_type)
             or observation_type == 'MASK'
         )
 
@@ -2892,8 +2922,8 @@ class Graces(GeminiMapping):
     def _get_filter_name(self, ext):
         return None
 
-    def _reset_position(self, observation_type):
-        result = super()._reset_position(observation_type)
+    def _reset_position(self, observation_type, artifact_type):
+        result = super()._reset_position(observation_type, artifact_type)
         # DB 23-04-19
         # Ignore spatial WCS for the GRACES dataset with EPOCH=0.0.  Not
         # important for a bias. For GMOS we skip spatial WCS for biases
@@ -3089,8 +3119,8 @@ class Hokupaa(GeminiMapping):
             and ('LowFlx' in filter_name or 'home' in filter_name)
         )
 
-    def _reset_position(self, observation_type):
-        result = super()._reset_position(observation_type)
+    def _reset_position(self, observation_type, artifact_type):
+        result = super()._reset_position(observation_type, artifact_type)
         ra = self.get_ra(0)
         if ra is None:
             result = True
@@ -3675,8 +3705,8 @@ class Nifs(GeminiMapping):
             and ('Blocked' in filter_name or 'INVALID' in filter_name)
         )
 
-    def _reset_position(self, observation_type):
-        result = super()._reset_position(observation_type)
+    def _reset_position(self, observation_type, artifact_type):
+        result = super()._reset_position(observation_type, artifact_type)
 
         # DB - 08-04-19 - json ra/dec values are null for
         # the file with things set to -9999.  Ignore
@@ -4484,8 +4514,8 @@ class Phoenix(GeminiMapping):
             filter_name is not None and 'invalid' in filter_name
         )
 
-    def _reset_position(self, observation_type):
-        result = super()._reset_position(observation_type)
+    def _reset_position(self, observation_type, artifact_type):
+        result = super()._reset_position(observation_type, artifact_type)
 
         # DB 30-04-19
         # Looks like many relatively recent PHOENIX files have no RA/Dec

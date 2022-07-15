@@ -1,0 +1,149 @@
+Filename: S20040212S0191.fits.bz2
+
+AstroData Tags: {'UNPREPARED', 'FLAT', 'GEMINI', 'SIDEREAL', 'SOUTH', 'IMAGE', 'CAL', 'GNIRS', 'RAW'}
+
+
+--- PHU ---
+SIMPLE  =                    T / file does conform to FITS standard             
+BITPIX  =                   16 / number of bits per data pixel                  
+NAXIS   =                    0 / number of data axes                            
+EXTEND  =                    T / FITS dataset may contain extensions            
+COMMENT   FITS (Flexible Image Transport System) format defined in Astronomy and
+COMMENT   Astrophysics Supplement Series v44/p363, v44/p371, v73/p359, v73/p365.
+COMMENT   Contact the NASA Science Office of Standards and Technology for the   
+COMMENT   FITS Definition document #100 and other FITS information.             
+INSTRUME= 'GNIRS   '           / Instrument used to acquire data                
+OBJECT  = 'GCALflat'           / Object Name                                    
+OBSTYPE = 'FLAT    '           / Observation type                               
+GEMPRGID= 'GS-2004A-SV-1'      / Gemini Science Program ID                      
+OBSID   = 'GS-2004A-SV-1-1'    / Gemini Observation ID                          
+DATALAB = 'GS-2004A-SV-1-1-002' / DHS Data Label                                
+OBSERVER= 'Rodriguez-Ardila, Puxley' / Gemini Observers                         
+OBSERVAT= 'Gemini-South'       / Name of telescope (Gemini-North|Gemini-South)  
+TELESCOP= 'Gemini-South'       / Gemini-North                                   
+PARALLAX=                   0. / Target Parallax                                
+RADVEL  =                   0. / Target Heliocentric Radial Velocity            
+EPOCH   =                2000. / Target Coordinate Epoch                        
+EQUINOX =                2000. / Equinox of coordinate system                   
+TRKEQUIN=                2000. / Tracking equinox                               
+SSA     = 'Marie-Claire'       / Gemini SSAs                                    
+RA      =         157.44016667 / Target Right Ascension                         
+DEC     =         -38.34886111 / Target Declination                             
+ELEVATIO=     75.1412638888889 / Current Elevation                              
+AZIMUTH =           126.998625 / Current Azimuth                                
+CRPA    =    -28.2069587885123 / Cass Rotator Position Angle at start           
+HA      = '-01:00:47.88'       / Telescope hour angle                           
+LT      = '00:45:45.4'         / Local time at start of observation             
+TRKFRAME= '        '           / Tracking co-ordinate                           
+DECTRACK=                   0. / Differential tracking rate Dec                 
+TRKEPOCH=                   0. / Differential tracking reference epoch          
+RATRACK =                   0. / Differential tracking rate RA                  
+FRAME   = 'FK5     '           / Target coordinate system                       
+PMDEC   =                   0. / Target Proper Motion in Declination            
+PMRA    =                   0. / Target Proper Motion in RA                     
+WAVELENG=               12500. / Effective Target Wavelength                    
+RAWIQ   = '70-percentile'      / Raw Image Quality                              
+RAWCC   = '50-percentile'      / Raw Cloud Cover                                
+RAWWV   = '80-percentile'      / Raw Water Vapour/Transparency                  
+RAWBG   = '80-percentile'      / Raw Background                                 
+RAWPIREQ= 'YES     '           / PI Requirements Met                            
+RAWGEMQA= 'USABLE  '           / Gemini Quality Assessment                      
+CGUIDMOD= 'Basic   '           / Carousel Mode                                  
+UT      = '04:45:46.4'         / UNIVERSAL TIME                                 
+DATE    = '2004-02-12'         / Date                                           
+M2BAFFLE= 'RETRACTED'          / Position of M2 baffle                          
+M2CENBAF= 'OPEN    '           / Position of M2 central hole baffle             
+ST      = '09:29:10.4'         / Sideral time at start of observation           
+XOFFSET =       -1.01084195965 / Telescope offset in x in arcsec                
+YOFFSET =       0.196502379439 / Telescope offset in y in arcsec                
+RAOFFSET=       0.200029679198 / Telescope offset in RA in arcsec               
+DECOFFSE=        1.01014987994 / Telescope offset in DEC in arcsec              
+PA      =                   0. / Sky Position Angle at start (degrees)          
+SFRT2   =               179.54 / Science fold rotation angle (degrees)          
+SFTILT  =                45.34 / Science fold tilt angle (degrees)              
+SFLINEAR=                 -3.1 / Science fold linear position (mm)              
+GCALLAMP= 'No Value'           / GCAL Lamp name                                 
+GCALFILT= 'ND5.0   '           / GCAL Filter name                               
+GCALDIFF= 'IR      '           / GCAL Diffuser name                             
+GCALSHUT= 'CLOSED  '           / GCAL Shutter (OPEN or CLOSED)                  
+ARRAYID = 'UNKNOWN '           / ID # of array                                  
+ARRAYTYP= 'ALADDIN_III_1024'   / ALADDIN II or ALADDIN III                      
+DATE-OBS= '2004-02-12'         / UT Date of observation (YYYY-MM-DD)            
+TIME-OBS= '04:37:03.9'         / Time of observation                            
+DETBIAS =               -0.281 / Achieved Detector Bias                         
+UTEND   = '04:45:51.4'         / UT at observation end                          
+OBSEPOCH=         2004.1141642 / Epoch at start of exposure                     
+AIRMASS =                1.035 / Mean airmass for the observation               
+AMSTART =                1.035 / Airmass at start of exposure                   
+AMEND   =                1.034 / Airmass at end of exposure                     
+CTYPE1  = 'RA---TAN'           / R.A. in tangent plane projection               
+CRPIX1  =    -20.0775859386519 / Ref pix of axis 1                              
+CRVAL1  =     333.262226416597 / RA at Ref pix in decimal degrees               
+CTYPE2  = 'DEC--TAN'           / DEC. in tangent plane projection               
+CRPIX2  =     13.5941591749464 / Ref pix of axis 2                              
+CRVAL2  =    -30.2440958183927 / DEC at Ref pix in decimal degrees              
+CD1_1   = -0.00158229273032081 / WCS matrix element 1 1                         
+CD1_2   =   0.0197515940373076 / WCS matrix element 1 2                         
+CD2_1   =   0.0198297466089049 / WCS matrix element 2 1                         
+CD2_2   =  0.00152450606656672 / WCS matrix element 2 2                         
+MJD_OBS =     53046.7311634925 / MJD of start of obseration                     
+FILTER1 = 'Open    '           / filter wheel 1 position                        
+FW1_ENG =                    0 / fw1 Eng position (steps)                       
+FILTER2 = 'J_G0505 '           / filter wheel 2 position                        
+FW2_ENG =               -20700 / fw2 eng psition (steps)                        
+CAMERA  = 'ShortBlue_G5513'    / Camera position                                
+CAM_ENG =               101400 / Camera eng psition (steps)                     
+SLIT    = 'Acquisition'        / slit position                                  
+SLIT_ENG=               168000 / slit Eng Position (steps)                      
+DECKER  = 'Acquisition'        / decker position                                
+DKR_ENG =                 5000 / decker Eng position (steps)                    
+GRATING = '10/mmLR_G5507'      / grating position                               
+GR_ENG  =               -96934 / grating Eng Position (steps)                   
+GRATWAVE=     4.74890990951145 / grating wavelength                             
+GRATORD =                    1 / order of grating                               
+GRATTILT=     1.46066666666667 / grating tilt                                   
+PRISM   = 'MIR_G5511'          / prism position                                 
+PRSM_ENG=               246400 / Prism Eng position (steps)                     
+ACQMIR  = 'In      '           / acquisition mirror position                    
+COVER   = 'Open    '           / cover position                                 
+FOCUS   = '** ENG 67000 **'    / focus position                                 
+FCS_ENG =                67000 / Focus Eng position (steps)                     
+UCODEPTH= './tpSource/ucode/NAAC/' / Path for ucode directory                   
+UCODENAM= 'gnAIII_1024xSU01_4u' / Name of ucode file loaded                     
+COADDS  =                    1 / # of coadded images                            
+LNRS    =                    1 / # of fowler samples                            
+NDAVGS  =                    1 / # of digital averages                          
+ROWS    =                 1024 / array rows                                     
+P_MODE  = 'STARE   '           / proc mode (stare, sep)                         
+COLS    =                 1024 / array cols                                     
+EXPTIME =                   2. / integration time (seconds)                     
+MIN_INT =                0.179 / minimum integration time (seconds)             
+FRMS_EXP=                    2                                                  
+COMMENT = 'string  '           / comment                                        
+TITLE   = 'string  '           / Title of observation                           
+DSRDTEMP=                  29. / desired detector temperature (K)               
+DETTEMP =                 29.1 / detector temperature (K)                       
+FOOT_PWR=                   0. / detector foot heater power                     
+RELEASE = '2004-02-12'                                                          
+ORIGNAME= 'S20040212S0191.fits' / Original filename prior to processing         
+HISTORY Corrected metadata: automated fixes from PyFITS                         
+HISTORY Corrected metadata: RELEASE (proper)
+
+--- HDU 0 ---
+XTENSION= 'IMAGE   '           / IMAGE extension                                
+BITPIX  =                   32 / number of bits per data pixel                  
+NAXIS   =                    2 / number of data axes                            
+NAXIS1  =                 1024 / length of data axis 1                          
+NAXIS2  =                 1022 / length of data axis 2                          
+PCOUNT  =                    0 / required keyword; must = 0                     
+GCOUNT  =                    1 / required keyword; must = 1                     
+DROINUM =                    0 / roi number                                     
+LOWROW  =                    0 / y min of region                                
+LOWCOL  =                    0 / Start col of region of interest                
+HIROW   =                 1023 / End row of region of interest                  
+HICOL   =                 1023 / End col of region of interest                  
+FRMNAME = 'S20040212S0191:0'   / Name assigned to a frame of data.              
+FRMID   = '0       '           / Gemini frame identifier                        
+DATATYPE= '        '                                                            
+EXTVER  =                    1 / Added by AstroData                             
+EXTNAME = 'SCI     '           / Added by AstroData

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+
+<title>Detail for Program: GS-2021A-Q-416</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-2021A-Q-416</h1>
+
+<table>
+ <tr><td>Title:<td>Deriving the nature of INTEGRAL-discovered hard X-ray sources: IGR J17040-4305</tr>
+ <tr><td>PI:<td>Aarran Shaw</tr>
+ <tr><td>Co-I(s):<td> John Tomsick</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+The International Gamma-ray Astrophysics Laboratory (INTEGRAL) has been surveying the sky and discovering hard X-ray sources in the 17-100 keV energy range since its 2002 launch. Many such sources remain unclassified, as classification requires an accurate localization such that spectroscopy can be performed on the optical or NIR counterparts, and INTEGRAL&#x27;s positional accuracy is poor. However, we are starting to uncover optical/NIR counterparts by utilizing the superior positional accuracy of Chandra, identifying the soft X-ray counterparts to INTEGRAL sources and comparing their positions with archival optical/NIR imaging. One such source is IGR J17040-4305, which may be part of a growing population of INTEGRAL-discovered magnetic Cataclysmic Variables. To truly determine its nature we are proposing to utilize Flamingos-2 as part of the poor weather program at Gemini South, and measure the J thru K spectrum of the NIR counterpart to the X-ray source, searching for accretion signatures in the form of broad emission lines. The brightness of this source makes it an ideal target for Gemini&#x27;s poor weather queue. 
+</div>
+
+
+
+</body>
+</html>
