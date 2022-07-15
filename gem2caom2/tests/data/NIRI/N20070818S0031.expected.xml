@@ -90,7 +90,8 @@
                         <caom2:cd22>2.98883768594274e-05</caom2:cd22>
                       </caom2:function>
                     </caom2:axis>
-                    <caom2:coordsys>ICRS</caom2:coordsys>
+                    <caom2:coordsys>FK5</caom2:coordsys>
+                    <caom2:equinox>2000.0</caom2:equinox>
                   </caom2:position>
                   <caom2:energy>
                     <caom2:axis>

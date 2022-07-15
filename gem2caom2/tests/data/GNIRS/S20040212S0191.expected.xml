@@ -1,60 +1,61 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="4b1dded0-c4de-4ba5-980f-c5b982b990e6" caom2:metaProducer="gem2caom2/0.8.4">
+<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="00000000-0000-0000-91d1-019b2c0573d4" caom2:lastModified="2018-11-18T00:00:51.533" caom2:maxLastModified="2018-11-18T00:00:51.533" caom2:metaChecksum="md5:2182c69beb1e8ae9f08f210426e307b6" caom2:accMetaChecksum="md5:0de6a9aa9f37c75f12c72c3013a8b10f" caom2:metaProducer="gem2caom2/0.8.1">
   <caom2:collection>GEMINI</caom2:collection>
-  <caom2:observationID>GN-CAL20200104-13-001</caom2:observationID>
-  <caom2:metaRelease>2020-01-03T22:16:59.800</caom2:metaRelease>
+  <caom2:observationID>GS-2004A-SV-1-1-002</caom2:observationID>
+  <caom2:metaRelease>2004-02-12T04:45:46.400</caom2:metaRelease>
   <caom2:algorithm>
     <caom2:name>exposure</caom2:name>
   </caom2:algorithm>
-  <caom2:type>ARC</caom2:type>
+  <caom2:type>FLAT</caom2:type>
   <caom2:intent>calibration</caom2:intent>
   <caom2:proposal>
-    <caom2:id>GN-CAL20200104</caom2:id>
-    <caom2:title>GN-CAL20200104</caom2:title>
+    <caom2:id>GS-2004A-SV-1</caom2:id>
+    <caom2:pi>Alberto Rodriguez-Ardila</caom2:pi>
+    <caom2:title>GNIRS SV: Buried AGN in Polar Ring Galaxies</caom2:title>
   </caom2:proposal>
   <caom2:target>
-    <caom2:name>Ar,Xe</caom2:name>
-    <caom2:type>object</caom2:type>
+    <caom2:name>GCALflat</caom2:name>
+    <caom2:type>field</caom2:type>
   </caom2:target>
   <caom2:telescope>
-    <caom2:name>Gemini-North</caom2:name>
-    <caom2:geoLocationX>-5464284.386715498</caom2:geoLocationX>
-    <caom2:geoLocationY>-2493782.3091076654</caom2:geoLocationY>
-    <caom2:geoLocationZ>2150786.380689657</caom2:geoLocationZ>
+    <caom2:name>Gemini-South</caom2:name>
+    <caom2:geoLocationX>1820184.055747326</caom2:geoLocationX>
+    <caom2:geoLocationY>-5208320.066618682</caom2:geoLocationY>
+    <caom2:geoLocationZ>-3194829.197152751</caom2:geoLocationZ>
   </caom2:telescope>
   <caom2:instrument>
-    <caom2:name>NIFS</caom2:name>
+    <caom2:name>GNIRS</caom2:name>
   </caom2:instrument>
   <caom2:planes>
-    <caom2:plane caom2:id="46563772-d079-4c05-8971-425a455b5325" caom2:metaProducer="gem2caom2/0.8.4">
-      <caom2:productID>N20200103S0434</caom2:productID>
-      <caom2:metaRelease>2020-01-03T22:16:59.800</caom2:metaRelease>
-      <caom2:dataRelease>2020-01-03T00:00:00.000</caom2:dataRelease>
-      <caom2:dataProductType>spectrum</caom2:dataProductType>
+    <caom2:plane caom2:id="00000000-0000-0000-a819-c53339e30ecc" caom2:lastModified="2018-11-18T00:00:51.533" caom2:maxLastModified="2018-11-18T00:00:51.533" caom2:metaChecksum="md5:1eb612313fcb251fe471ca09cac9f7d5" caom2:accMetaChecksum="md5:f0a263660d9e0e10feedac6ab21d038c" caom2:metaProducer="gem2caom2/0.8.1">
+      <caom2:productID>S20040212S0191</caom2:productID>
+      <caom2:metaRelease>2004-02-12T04:45:46.400</caom2:metaRelease>
+      <caom2:dataRelease>2004-02-12T00:00:00.000</caom2:dataRelease>
+      <caom2:dataProductType>image</caom2:dataProductType>
       <caom2:calibrationLevel>1</caom2:calibrationLevel>
       <caom2:provenance>
         <caom2:name>Gemini Observatory Data</caom2:name>
         <caom2:project>Gemini Archive</caom2:project>
         <caom2:producer>Gemini Observatory</caom2:producer>
-        <caom2:reference>http://archive.gemini.edu/searchform/GN-CAL20200104-13-001</caom2:reference>
+        <caom2:reference>http://archive.gemini.edu/searchform/GS-2004A-SV-1-1-002</caom2:reference>
       </caom2:provenance>
       <caom2:artifacts>
-        <caom2:artifact caom2:id="542b4298-34db-429d-9482-aa2d7bfa6af5" caom2:metaProducer="gem2caom2/0.8.4">
-          <caom2:uri>gemini:GEMINI/N20200103S0434.fits</caom2:uri>
+        <caom2:artifact caom2:id="3ea0adc5-e24e-4efb-af55-370c4fa411a1" caom2:metaProducer="gem2caom2/0.9.4">
+          <caom2:uri>gemini:GEMINI/S20040212S0191.fits</caom2:uri>
           <caom2:productType>calibration</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
           <caom2:contentType>application/fits</caom2:contentType>
-          <caom2:contentLength>16807680</caom2:contentLength>
-          <caom2:contentChecksum>md5:9a747f957e21125b2dac9838c07b519e</caom2:contentChecksum>
+          <caom2:contentLength>4201920</caom2:contentLength>
+          <caom2:contentChecksum>md5:4ee7797fea3cb69402216593526f5444</caom2:contentChecksum>
           <caom2:parts>
-            <caom2:part caom2:id="7b5dc8b0-3611-47be-aa9d-6ac19e4d8771">
+            <caom2:part caom2:id="3daeb0ad-629f-438d-91b1-5dd5fb239102">
               <caom2:name>0</caom2:name>
               <caom2:chunks/>
             </caom2:part>
-            <caom2:part caom2:id="d20296cb-4eb6-4f4d-a08c-0f662e5fc505">
+            <caom2:part caom2:id="5ad756a0-ffac-4473-9210-c607bc00d889">
               <caom2:name>1</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="0cc73b7b-70b7-43f7-8956-cc3f4260d866" caom2:metaProducer="gem2caom2/0.8.4">
+                <caom2:chunk caom2:id="4d8443b9-374a-4148-87ae-6c9062fe6e12" caom2:metaProducer="gem2caom2/0.9.4">
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
@@ -64,19 +65,19 @@
                       <caom2:range>
                         <caom2:start>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>1.995002</caom2:val>
+                          <caom2:val>1.17</caom2:val>
                         </caom2:start>
                         <caom2:end>
                           <caom2:pix>1.5</caom2:pix>
-                          <caom2:val>2.405002</caom2:val>
+                          <caom2:val>1.33</caom2:val>
                         </caom2:end>
                       </caom2:range>
                     </caom2:axis>
                     <caom2:specsys>TOPOCENT</caom2:specsys>
                     <caom2:ssysobs>TOPOCENT</caom2:ssysobs>
                     <caom2:ssyssrc>TOPOCENT</caom2:ssyssrc>
-                    <caom2:bandpassName>HK</caom2:bandpassName>
-                    <caom2:resolvingPower>5290.0</caom2:resolvingPower>
+                    <caom2:bandpassName>J</caom2:bandpassName>
+                    <caom2:resolvingPower>7.812499999999993</caom2:resolvingPower>
                   </caom2:energy>
                   <caom2:time>
                     <caom2:axis>
@@ -90,16 +91,16 @@
                       </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>0.000347222222222222</caom2:delta>
+                        <caom2:delta>2.31481481481481e-05</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>58851.92846990741</caom2:val>
+                          <caom2:val>53047.19845370371</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
                     <caom2:timesys>UTC</caom2:timesys>
-                    <caom2:exposure>30.0</caom2:exposure>
-                    <caom2:resolution>30.0</caom2:resolution>
+                    <caom2:exposure>2.0</caom2:exposure>
+                    <caom2:resolution>2.0</caom2:resolution>
                   </caom2:time>
                 </caom2:chunk>
               </caom2:chunks>

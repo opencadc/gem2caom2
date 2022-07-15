@@ -607,7 +607,7 @@ class GeminiMapping(cc.TelescopeMapping):
         bp.set('Chunk.time.axis.function.refCoord.pix', '0.5')
         bp.set(
             'Chunk.time.axis.function.refCoord.val',
-            'get_time_function_val(header)',
+            'get_time_function_val()',
         )
 
         self._logger.debug('Done accumulate_fits_bp.')
@@ -714,7 +714,9 @@ class GeminiMapping(cc.TelescopeMapping):
                                     c, plane.data_product_type, filter_name
                                 )
                             # position WCS
-                            if self._reset_position(observation.type):
+                            if self._reset_position(
+                                observation.type, artifact.product_type
+                            ):
                                 cc.reset_position(c)
                             else:
                                 self._update_position(part, c, int(part))
@@ -842,18 +844,7 @@ class GeminiMapping(cc.TelescopeMapping):
         :return: The filter names, or None if none found.
         """
         filter_name = self._lookup.filter_name(self._storage_name.file_uri)
-
-        # DB 24-04-19
-        # ND = neutral density and so any ND* filter can be ignored as it
-        # shouldn’t affect transmission band.  Likely observing a bright
-        # Other instruments occasionally have ND filters in the beam.
-        if filter_name is not None:
-            filter_name = filter_name.replace('&', '+')
-            temp = filter_name.split('+')
-            for fn in temp:
-                if fn.startswith('ND'):
-                    filter_name = filter_name.replace(fn, '')
-            filter_name = filter_name.strip('+')
+        filter_name = self._scrub_filter_name(filter_name)
         if filter_name is None or len(filter_name.strip()) == 0:
             result = self._search_through_keys(ext, ['FILTER'])
             filter_name = result
@@ -981,7 +972,7 @@ class GeminiMapping(cc.TelescopeMapping):
             result = True
         return result
 
-    def _reset_position(self, observation_type):
+    def _reset_position(self, observation_type, artifact_type):
         """
         Return True if there should be no spatial WCS information created at
         the chunk level.
@@ -1023,7 +1014,27 @@ class GeminiMapping(cc.TelescopeMapping):
         ):
             result = True
 
+        # DB 15-07-22
+        # if FRAME is 'No Value' the telescope is not tracking, ignore
+        # Spatial WCS for calibration artifacts
+        if artifact_type == ProductType.CALIBRATION and frame == 'No Value':
+            result = True
+
         return result
+
+    def _scrub_filter_name(self, filter_name):
+        # DB 24-04-19
+        # ND = neutral density and so any ND* filter can be ignored as it
+        # shouldn’t affect transmission band.  Likely observing a bright
+        # Other instruments occasionally have ND filters in the beam.
+        if filter_name is not None:
+            filter_name = filter_name.replace('&', '+')
+            temp = filter_name.split('+')
+            for fn in temp:
+                if fn.startswith('ND'):
+                    filter_name = filter_name.replace(fn, '')
+            filter_name = filter_name.strip('+')
+        return filter_name
 
     def _search_through_keys(self, ext, search_keys):
         result = []
@@ -1066,8 +1077,30 @@ class GeminiMapping(cc.TelescopeMapping):
         return result
 
     def _update_position(self, part, chunk, extension):
-        # the default is to do nothing, so not a NotImplemented exception
-        pass
+        self._logger.debug(
+            f'Enter _update_position for {self._storage_name.file_uri}'
+        )
+        if chunk.position is not None:
+            # DB 14-07-22
+            # test if the absolute value of any CD element is > 1/3600
+            # (one arcsecond/pixel). This is much larger than any Gemini
+            # pixel would be and so the spatial WCS would likely be nonsense
+            # for any science OR calibration image.
+            fail = False
+            for keyword in ['CD1_1', 'CD1_2', 'CD2_1', 'CD2_2']:
+                temp = mc.get_keyword(self._headers, keyword)
+                if temp is not None:
+                    if abs(temp) > 1.0 / 3600.0:
+                        fail = True
+                        break
+
+            if fail:
+                self._logger.warning(
+                    f'Large CD matrix values, no Spatial WCS for '
+                    f'{self._storage_name.file_uri}'
+                )
+                cc.reset_position(chunk)
+        self._logger.debug('End _update_position')
 
     def _update_position_from_zeroth_header(self, artifact):
         """Make the 0th header spatial WCS the WCS for all the
@@ -1441,6 +1474,40 @@ class F2(GeminiMapping):
             result = 'DARK'
         return result
 
+    def _get_filter_name(self, ext):
+        """
+        Look up and manipulate into an expected pattern the filter names for
+        use by _update_energy methods.
+
+        :return: The filter names, or None if none found.
+        """
+        for filter_name in [
+            self._lookup.filter_name(self._storage_name.file_uri),
+            self._search_through_keys(ext, ['FILTER']),
+            # OO/WF - 12-07-22
+            # Oliver stated that the header keyword “LYOT” is also used to
+            # confirm the filter keyword. In the case of S20220203S0019,
+            # LYOT=‘J-lo_G0801’ which is a valid filter element.
+            #
+            # In the cases of FILTER='OPEN' FILTER1='OPEN' FILTER2='OPEN', the
+            # logic is to look at LYOT
+            self._headers[0].get('LYOT'),
+        ]:
+            filter_name = self._scrub_filter_name(filter_name)
+            if (
+                filter_name is None
+                or len(filter_name.strip()) == 0
+                or filter_name.lower() == 'open'
+            ):
+                continue
+            else:
+                break
+
+        self._logger.debug(
+            f'Filter names are "{filter_name}" in {self._storage_name.obs_id}'
+        )
+        return filter_name
+
     def _update_energy(self, chunk, data_product_type, filter_name):
         self._logger.debug('Begin _update_energy')
         # DB - 02-05-19
@@ -1536,7 +1603,12 @@ class F2(GeminiMapping):
             )
             cc.reset_energy(chunk)
         else:
-            self._build_chunk_energy(chunk, filter_name)
+            temp = (
+                filter_name
+                if len(filter_md.filter_name) == 0
+                else '+'.join(ii for ii in filter_md.filter_name)
+            )
+            self._build_chunk_energy(chunk, temp)
         self._logger.debug('End _update_energy')
 
     def _update_time(self, chunk):
@@ -1715,8 +1787,8 @@ class Flamingos(GeminiMapping):
         # use the MJD header value in the header as the CRVAL for time.
         return self._headers[ext].get('MJD')
 
-    def _reset_position(self, observation_type):
-        result = super()._reset_position(observation_type)
+    def _reset_position(self, observation_type, artifact_type):
+        result = super()._reset_position(observation_type, artifact_type)
         ra_tel = self._headers[0].get('RA_TEL')
         if ra_tel == 'Unavailable':
             result = True
@@ -1947,7 +2019,7 @@ class Gmos(GeminiMapping):
             exptime = super().get_time_delta(ext)
         return exptime
 
-    def _reset_position(self, observation_type):
+    def _reset_position(self, observation_type, artifact_type):
         # DB - 04-03-19
         # Another type of GMOS-N/S dataset to archive.
         # Mask images.   json observation_type = “MASK”.
@@ -1957,7 +2029,7 @@ class Gmos(GeminiMapping):
         # instrument, obstype, datatype (spectrum) and
         # product type (AUXILIARY) set.
         return (
-            super()._reset_position(observation_type)
+            super()._reset_position(observation_type, artifact_type)
             or observation_type == 'MASK'
         )
 
@@ -2850,8 +2922,8 @@ class Graces(GeminiMapping):
     def _get_filter_name(self, ext):
         return None
 
-    def _reset_position(self, observation_type):
-        result = super()._reset_position(observation_type)
+    def _reset_position(self, observation_type, artifact_type):
+        result = super()._reset_position(observation_type, artifact_type)
         # DB 23-04-19
         # Ignore spatial WCS for the GRACES dataset with EPOCH=0.0.  Not
         # important for a bias. For GMOS we skip spatial WCS for biases
@@ -3047,8 +3119,8 @@ class Hokupaa(GeminiMapping):
             and ('LowFlx' in filter_name or 'home' in filter_name)
         )
 
-    def _reset_position(self, observation_type):
-        result = super()._reset_position(observation_type)
+    def _reset_position(self, observation_type, artifact_type):
+        result = super()._reset_position(observation_type, artifact_type)
         ra = self.get_ra(0)
         if ra is None:
             result = True
@@ -3633,8 +3705,8 @@ class Nifs(GeminiMapping):
             and ('Blocked' in filter_name or 'INVALID' in filter_name)
         )
 
-    def _reset_position(self, observation_type):
-        result = super()._reset_position(observation_type)
+    def _reset_position(self, observation_type, artifact_type):
+        result = super()._reset_position(observation_type, artifact_type)
 
         # DB - 08-04-19 - json ra/dec values are null for
         # the file with things set to -9999.  Ignore
@@ -4128,8 +4200,17 @@ class Niri(GeminiMapping):
             hdu0 = self._headers[1]
             pdu_cd1_1 = pdu.get('CD1_1')
             hdu0_cd1_1 = hdu0.get('CD1_1')
-            if not math.isclose(pdu_cd1_1, hdu0_cd1_1) and math.isclose(
-                pdu_cd1_1 * 1e-50, hdu0_cd1_1
+            if (
+                (
+                    not math.isclose(pdu_cd1_1, hdu0_cd1_1) and math.isclose(
+                        pdu_cd1_1 * 1e-50, hdu0_cd1_1
+                    )
+                ) or
+                    (
+                        hdu0.get('CRPIX1') != 0.0
+                        and hdu0.get('CRVAL1') != 0.0
+                        and hdu0.get('CRPIX2') != 0.0
+                        and hdu0.get('CRVAL2') != 0.0)
             ):
                 pdu['NAXIS1'] = hdu0.get('NAXIS1')
                 pdu['NAXIS2'] = hdu0.get('NAXIS2')
@@ -4145,6 +4226,9 @@ class Niri(GeminiMapping):
                     chunk.position_axis_2 = 2
                     chunk.position.coordsys = pdu.get('FRAME')
                     chunk.position.equinox = mc.to_float(pdu.get('EQUINOX'))
+            else:
+                if chunk is not None and chunk.position is not None:
+                    cc.reset_position(chunk)
         self._logger.info('End _update_position')
 
 
@@ -4430,8 +4514,8 @@ class Phoenix(GeminiMapping):
             filter_name is not None and 'invalid' in filter_name
         )
 
-    def _reset_position(self, observation_type):
-        result = super()._reset_position(observation_type)
+    def _reset_position(self, observation_type, artifact_type):
+        result = super()._reset_position(observation_type, artifact_type)
 
         # DB 30-04-19
         # Looks like many relatively recent PHOENIX files have no RA/Dec
