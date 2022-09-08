@@ -70,7 +70,7 @@
 from os import path
 from mock import patch
 import gem_mocks
-from caom2pipe import manage_composable as mc
+from caom2pipe.manage_composable import Config, StorageName
 from gem2caom2 import GemName, SCHEME, COLLECTION
 
 
@@ -82,22 +82,32 @@ def test_is_valid():
 @patch('cadcutils.net.ws.WsCapabilities.get_access_url')
 @patch('caom2pipe.client_composable.query_tap_client')
 def test_storage_name(tap_mock, cap_mock):
-    tap_mock.side_effect = gem_mocks.mock_query_tap
-    cap_mock.return_value = 'https://localhost'
-    test_config = mc.Config()
-    test_config.proxy_fqn = path.join(gem_mocks.TEST_DATA_DIR, 'cadcproxy.pem')
-    test_config.tap_id = 'ivo://cadc.nrc.ca/test'
-    test_sn = GemName(file_name='N20131203S0006i.fits.bz2')
-    assert (
-        test_sn.file_uri == f'{SCHEME}:{COLLECTION}/N20131203S0006i.fits.bz2'
-    )
-    assert test_sn.file_name == 'N20131203S0006i.fits.bz2'
-    assert test_sn.prev == 'N20131203S0006i.jpg'
-    assert test_sn.thumb == 'N20131203S0006i_th.jpg'
-    assert test_sn.file_id == 'N20131203S0006i'
+    original_collection = StorageName.collection
+    original_scheme = StorageName.scheme
+    try:
+        StorageName.scheme = SCHEME
+        StorageName.collection = COLLECTION
+        tap_mock.side_effect = gem_mocks.mock_query_tap
+        cap_mock.return_value = 'https://localhost'
+        test_config = Config()
+        test_config.proxy_fqn = path.join(gem_mocks.TEST_DATA_DIR, 'cadcproxy.pem')
+        test_config.tap_id = 'ivo://cadc.nrc.ca/test'
+        for extension in ['.gz', '.bz2']:
+            test_sn = GemName(file_name=f'N20131203S0006i.fits{extension}')
+            assert (
+                test_sn.file_uri == f'{SCHEME}:{COLLECTION}/N20131203S0006i.fits'
+            )
+            assert test_sn.file_name == f'N20131203S0006i.fits{extension}'
+            assert test_sn.prev == 'N20131203S0006i.jpg'
+            assert test_sn.thumb == 'N20131203S0006i_th.jpg'
+            assert test_sn.file_id == 'N20131203S0006i'
+            assert test_sn.file_uri == f'{SCHEME}:{COLLECTION}/N20131203S0006i.fits'
 
-    test_sn = GemName(file_name='S20060920S0137.jpg')
-    assert test_sn.file_uri == f'{SCHEME}:{COLLECTION}/S20060920S0137.jpg'
-    assert test_sn.file_name == 'S20060920S0137.jpg'
-    assert test_sn.prev == 'S20060920S0137.jpg'
-    assert test_sn.thumb == 'S20060920S0137_th.jpg'
+        test_sn = GemName(file_name='S20060920S0137.jpg')
+        assert test_sn.file_uri == f'{SCHEME}:{COLLECTION}/S20060920S0137.jpg'
+        assert test_sn.file_name == 'S20060920S0137.jpg'
+        assert test_sn.prev == 'S20060920S0137.jpg'
+        assert test_sn.thumb == 'S20060920S0137_th.jpg'
+    finally:
+        StorageName.scheme = original_scheme
+        StorageName.collection = original_collection
