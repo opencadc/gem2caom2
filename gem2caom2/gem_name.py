@@ -160,21 +160,6 @@ class GemName(mc.StorageName):
         return self._v_collection
 
     @property
-    def file_uri(self):
-        return f'{SCHEME}:{self._v_collection}/{self._file_name}'
-
-    @property
-    def file_name(self):
-        return self._file_name
-
-    @file_name.setter
-    def file_name(self, value):
-        if value is None:
-            self._file_name = None
-        else:
-            self._file_name = value.replace('.header', '')
-
-    @property
     def prev(self):
         return f'{self._file_id}.jpg'
 

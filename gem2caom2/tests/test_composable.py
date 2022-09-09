@@ -72,16 +72,21 @@ import os
 import shutil
 
 from astropy.io.fits import Header
-from datetime import datetime, timedelta
+from collections import deque
+from datetime import datetime, timedelta, timezone
 from tempfile import TemporaryDirectory
-from unittest.mock import patch, Mock
+from traceback import format_exc
+from unittest.mock import ANY, call, patch, Mock
 import gem_mocks
 
+from cadcdata import FileInfo
 from caom2 import SimpleObservation, Algorithm
-from caom2pipe.manage_composable import Config, make_seconds, write_as_yaml
-from caom2pipe.manage_composable import TaskType
+from caom2pipe.data_source_composable import StateRunnerMeta
+from caom2pipe.manage_composable import Config, exec_cmd_array, make_seconds, write_as_yaml
+from caom2pipe.manage_composable import StorageName, TaskType
 from gem2caom2 import composable, gem_name
 from gem2caom2.data_source import GEM_BOOKMARK
+from gem2caom2.util import COLLECTION, SCHEME
 
 
 STATE_FILE = f'{gem_mocks.TEST_DATA_DIR}/state.yml'
@@ -166,32 +171,40 @@ def test_run_incremental_rc(
     header_mock,
     data_client_mock,
 ):
-    cap_mock.return_value = 'https://localhost'
-    query_mock.side_effect = gem_mocks.mock_query_endpoint_2
-    tap_mock.side_effect = gem_mocks.mock_query_tap
-    json_mock.side_effect = gem_mocks.mock_retrieve_json
-    header_mock.side_effect = gem_mocks._mock_headers
-
-    _write_state(
-        prior_timestamp='2021-01-01 20:03:00.000000',
-        end_timestamp=datetime(
-            year=2021, month=1, day=4, hour=23, minute=3, second=0
-        ),
-    )
-    getcwd_orig = os.getcwd
-    os.getcwd = Mock(return_value=gem_mocks.TEST_DATA_DIR)
+    original_collection = StorageName.collection
+    original_scheme = StorageName.scheme
     try:
-        composable._run_state()
-        assert run_mock.called, 'run_mock should have been called'
-        args, kwargs = run_mock.call_args
-        test_storage = args[0]
-        assert isinstance(test_storage, gem_name.GemName), type(test_storage)
-        assert test_storage.obs_id == 'GN-2020B-LP-16-353-005', 'wrong obs id'
-        test_fid = 'N20210101S0042'
-        assert test_storage.file_name == f'{test_fid}.fits', 'wrong file_name'
-        assert test_storage.file_id == f'{test_fid}', 'wrong file_id'
+        StorageName.scheme = SCHEME
+        StorageName.collection = COLLECTION
+        cap_mock.return_value = 'https://localhost'
+        query_mock.side_effect = gem_mocks.mock_query_endpoint_2
+        tap_mock.side_effect = gem_mocks.mock_query_tap
+        json_mock.side_effect = gem_mocks.mock_retrieve_json
+        header_mock.side_effect = gem_mocks._mock_headers
+
+        _write_state(
+            prior_timestamp='2021-01-01 20:03:00.000000',
+            end_timestamp=datetime(
+                year=2021, month=1, day=4, hour=23, minute=3, second=0
+            ),
+        )
+        getcwd_orig = os.getcwd
+        os.getcwd = Mock(return_value=gem_mocks.TEST_DATA_DIR)
+        try:
+            composable._run_state()
+            assert run_mock.called, 'run_mock should have been called'
+            args, kwargs = run_mock.call_args
+            test_storage = args[0]
+            assert isinstance(test_storage, gem_name.GemName), type(test_storage)
+            assert test_storage.obs_id == 'GN-2020B-LP-16-353-005', 'wrong obs id'
+            test_fid = 'N20210101S0042'
+            assert test_storage.file_name == f'{test_fid}.fits', 'wrong file_name'
+            assert test_storage.file_id == f'{test_fid}', 'wrong file_id'
+        finally:
+            os.getcwd = getcwd_orig
     finally:
-        os.getcwd = getcwd_orig
+        StorageName.scheme = original_scheme
+        StorageName.collection = original_collection
 
 
 @patch('gem2caom2.gemini_metadata.GeminiMetadataReader._retrieve_headers')
@@ -520,6 +533,113 @@ def test_run_by_incremental_reproduce(
         finally:
             os.getcwd = getcwd_orig
             os.chdir(cwd)
+
+
+@patch('gem2caom2.gemini_metadata.retrieve_json')
+@patch('gem2caom2.composable.GemClientCollection')
+@patch(
+    'gem2caom2.data_source.IncrementalSource.'
+    'get_time_box_work',
+    autospec=True,
+)
+def test_run_state_compression_commands(
+    get_work_mock,
+    clients_mock,
+    json_mock,
+):
+    # this test works with FITS files, not header-only versions of FITS
+    # files, because it's testing the decompression/recompression cycle
+    # but it's checking that the commands to the exec_cmd_array call are
+    # correct
+
+    json_mock.side_effect = gem_mocks.mock_retrieve_json
+
+    uris = {
+        'GS-2005B-SV-301-16-005': FileInfo(
+            'gemini:GEMINI/S20050825S0143.fits',
+            size=19186560,  # not the compressed size of 4795130
+            file_type='application/fits',
+            md5sum='md5:24cf5c193a312d9aa76d94a5e2cf39c3',
+        ),
+    }
+
+    def _mock_dir_list(arg1, output_file='', data_only=True, response_format='arg4'):
+        result = deque()
+        result.append(
+            StateRunnerMeta(
+                '/test_files/S20050825S0143.fits.bz2',
+                '2019-10-23T16:27:19.000',
+            ),
+        )
+        return result
+
+    get_work_mock.side_effect = _mock_dir_list
+    clients_mock.return_value.data_client.info.side_effect = uris.get('GS-2005B-SV-301-16-005')
+
+    cwd = os.getcwd()
+    with TemporaryDirectory() as tmp_dir_name:
+        os.chdir(tmp_dir_name)
+        test_state_fqn = f'{tmp_dir_name}/state.yml'
+        start_time = datetime.now(tz=timezone.utc) - timedelta(minutes=5)
+        start_file_content = (
+            f'bookmarks:\n  gemini_timestamp:\n    last_record: {start_time}\n'
+        )
+        with open(test_state_fqn, 'w') as f:
+            f.write(start_file_content)
+
+        test_config = Config()
+        test_config.working_directory = tmp_dir_name
+        test_config.task_types = [TaskType.STORE]
+        test_config.logging_level = 'DEBUG'
+        test_config.collection = 'GEMINI'
+        test_config.proxy_file_name = 'cadcproxy.pem'
+        test_config.proxy_fqn = f'{tmp_dir_name}/cadcproxy.pem'
+        test_config.features.supports_latest_client = True
+        test_config.features.supports_decompression = True
+        test_config.use_local_files = True
+        test_config.data_sources = '/test_files'
+        test_config.state_file_name = 'state.yml'
+        test_config.retry_failures = False
+        test_config.cleanup_files_when_storing = False
+        Config.write_to_file(test_config)
+        with open(test_config.proxy_fqn, 'w') as f:
+            f.write('test content')
+        getcwd_orig = os.getcwd
+        os.getcwd = Mock(return_value=tmp_dir_name)
+        try:
+            # execution
+            try:
+                test_result = composable._run_state()
+                assert test_result == 0, 'expecting correct execution'
+            except Exception as e:
+                logging.error(e)
+                logging.error(format_exc())
+                raise e
+
+            clients_mock.return_value.data_client.put.assert_called(), 'put'
+            assert (
+                clients_mock.return_value.data_client.put.call_count == 1
+            ), 'put call count, no previews because it is just a STORE task'
+            put_calls = [
+                call(f'{tmp_dir_name}/GS-2005B-SV-301-16-005', 'gemini:GEMINI/S20050825S0143.fits', None),
+            ]
+            clients_mock.return_value.data_client.put.assert_has_calls(
+                put_calls
+            ), 'wrong put args'
+
+            # LocalStore, put is mocked, no info calls as part of that
+            clients_mock.return_value.data_client.info.assert_not_called(), 'info'
+
+            # LocalStore, get_head should not be called
+            clients_mock.return_value.data_client.get_head.assert_not_called()
+            # LocalStore, get should not be called
+            clients_mock.return_value.data_client.get.assert_not_called()
+            assert (
+                not clients_mock.return_value.metadata_client.read.called
+            ), 'read'
+        finally:
+            os.chdir(cwd)
+            os.getcwd = getcwd_orig
 
 
 def _write_todo(test_id):
