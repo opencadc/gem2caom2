@@ -123,7 +123,6 @@ def pytest_generate_tests(metafunc):
 
 @patch('caom2utils.data_util.get_file_type')
 @patch('gem2caom2.gemini_metadata.AbstractGeminiMetadataReader._retrieve_json')
-@patch('caom2pipe.reader_composable.FileMetadataReader._retrieve_headers')
 @patch('caom2pipe.astro_composable.get_vo_table_session')
 @patch('gem2caom2.gemini_metadata.ProvenanceFinder')
 @patch('gem2caom2.program_metadata.get_pi_metadata')
@@ -131,7 +130,6 @@ def test_visitor(
     get_pi_mock,
     pf_mock,
     svofps_mock,
-    retrieve_headers_mock,
     json_mock,
     file_type_mock,
     test_name,
@@ -148,7 +146,6 @@ def test_visitor(
         data_sources=[os.path.dirname(test_name)],
         get_pi_mock=get_pi_mock,
         svofps_mock=svofps_mock,
-        headers_mock=retrieve_headers_mock,
         pf_mock=pf_mock,
         json_mock=json_mock,
         file_type_mock=file_type_mock,

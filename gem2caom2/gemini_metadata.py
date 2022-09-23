@@ -183,7 +183,7 @@ class AbstractGeminiMetadataReader(rdc.MetadataReader):
         meta = '\n'.join(
             f'{key}: {value}' for key, value in self._file_info.items()
         )
-        return f'JSON\n{json}\nFITS\n{fits}\nMETA\n{meta}'
+        return f'\nJSON\n{json}\nFITS\n{fits}\nMETA\n{meta}'
 
 
 class GeminiMetadataReader(AbstractGeminiMetadataReader):
@@ -194,11 +194,11 @@ class GeminiMetadataReader(AbstractGeminiMetadataReader):
         self._provenance_finder = provenance_finder
         self._filter_cache = filter_cache
 
-    def _retrieve_file_info(self, source_name):
+    def _retrieve_file_info(self, key, source_name):
         pass
 
-    def _retrieve_headers(self, source_name):
-        return retrieve_headers(source_name, self._logger, self._session)
+    def _retrieve_headers(self, key, source_name):
+        self._headers[key] = retrieve_headers(source_name, self._logger, self._session)
 
     def set(self, storage_name):
         self._logger.debug(f'Begin set for {storage_name.file_name}')
@@ -233,6 +233,7 @@ class GeminiStorageClientReader(
     def set_headers(self, storage_name):
         self._logger.debug(f'Begin set_headers for {storage_name.file_name}')
         try:
+            # look for the headers at CADC first - be polite to archive.gemini.edu
             super().set_headers(storage_name)
         except exceptions.UnexpectedException as e:
             # file is not at CADC, so as a second option get the headers from

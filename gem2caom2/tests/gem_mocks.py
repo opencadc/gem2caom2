@@ -1397,7 +1397,7 @@ def mock_get_node(uri, **kwargs):
     return node
 
 
-def _mock_headers(file_id):
+def _mock_headers(key, file_id):
     test_fqn = None
     if isinstance(file_id, GemName):
         # the case if StorageClientReader is being mocked
@@ -1426,11 +1426,28 @@ def _mock_headers(file_id):
     return result
 
 
+def _mock_retrieve_headers(mock_name, ign1, ign2):
+    return _mock_headers(mock_name, mock_name)
+
+
+def _mock_get_head(file_id):
+    return _mock_headers(file_id, file_id)
+
+
+class MockFileReader(gemini_metadata.GeminiFileMetadataReader):
+
+    def __init__(self, pf_mock, filter_mock):
+        super().__init__(http_session=Mock(), provenance_finder=pf_mock, filter_cache=filter_mock)
+
+    def _retrieve_headers(self, key, file_id):
+        result = _mock_headers(key, file_id)
+        self._headers[key] = result
+
+
 def _run_test_common(
     data_sources,
     get_pi_mock,
     svofps_mock,
-    headers_mock,
     pf_mock,
     json_mock,
     file_type_mock,
@@ -1439,7 +1456,6 @@ def _run_test_common(
 ):
     get_pi_mock.side_effect = mock_get_pi_metadata
     svofps_mock.side_effect = mock_get_votable
-    headers_mock.side_effect = _mock_headers
     pf_mock.get.side_effect = mock_get_data_label
     json_mock.side_effect = mock_get_obs_metadata
     file_type_mock.return_value = 'application/fits'
@@ -1465,9 +1481,7 @@ def _run_test_common(
 
         for entry in test_set:
             filter_cache = svofps.FilterMetadataCache(svofps_mock)
-            metadata_reader = gemini_metadata.GeminiFileMetadataReader(
-                Mock(), pf_mock, filter_cache
-            )
+            metadata_reader = MockFileReader(pf_mock, filter_cache)
             test_metadata = gemini_metadata.GeminiMetadataLookup(
                 metadata_reader
             )
@@ -1476,7 +1490,6 @@ def _run_test_common(
             )
             storage_name = test_builder.build(entry)
             client_mock = Mock()
-            client_mock.metadata_client = headers_mock
             kwargs = {
                 'storage_name': storage_name,
                 'metadata_reader': metadata_reader,

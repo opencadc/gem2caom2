@@ -81,13 +81,13 @@ from gem2caom2 import gemini_metadata, gem_name
 import gem_mocks
 
 
-@patch('gem2caom2.gemini_metadata.GeminiMetadataReader._retrieve_headers')
+@patch('gem2caom2.gemini_metadata.retrieve_headers')
 @patch('gem2caom2.gemini_metadata.GeminiMetadataReader._retrieve_json')
 def test_set(retrieve_json_mock, retrieve_headers_mock):
     retrieve_json_mock.side_effect = gem_mocks.mock_get_obs_metadata
     test_f_name = 'N20030104S0065.fits'
     test_obs_id = 'GN-CAL20030104-14-001'
-    retrieve_headers_mock.side_effect = gem_mocks._mock_headers
+    retrieve_headers_mock.side_effect = gem_mocks._mock_retrieve_headers
     test_storage_name = gem_name.GemName(file_name=test_f_name)
     test_storage_name.obs_id = test_obs_id
     test_subject = gemini_metadata.GeminiMetadataReader(Mock(), Mock(), Mock())

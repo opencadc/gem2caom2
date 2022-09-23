@@ -99,7 +99,7 @@ PUBLIC_TEST_JSON = (
 @patch('caom2pipe.execute_composable.OrganizeExecutes.do_one')
 def test_run(run_mock, cap_mock, data_client_mock, json_mock):
     cap_mock.return_value = 'https://localhost'
-    data_client_mock.get_head.side_effect = gem_mocks._mock_headers
+    data_client_mock.get_head.side_effect = gem_mocks._mock_get_head
     data_client_mock.info.side_effect = gem_mocks.mock_get_file_info
     json_mock.side_effect = gem_mocks.mock_retrieve_json
     test_obs_id = 'GS-2006B-Q-47-76-003'
@@ -116,7 +116,6 @@ def test_run(run_mock, cap_mock, data_client_mock, json_mock):
         args, kwargs = run_mock.call_args
         test_storage = args[0]
         assert isinstance(test_storage, gem_name.GemName), type(test_storage)
-        logging.error(test_storage)
         assert test_storage.obs_id == test_obs_id, 'wrong obs id'
         assert test_storage.file_name == test_f_name, 'wrong file name'
     finally:
@@ -129,7 +128,7 @@ def test_run(run_mock, cap_mock, data_client_mock, json_mock):
 @patch('caom2pipe.execute_composable.OrganizeExecutes.do_one')
 def test_run_errors(run_mock, cap_mock, data_client_mock, json_mock):
     cap_mock.return_value = 'https://localhost'
-    data_client_mock.get_head.side_effect = gem_mocks._mock_headers
+    data_client_mock.get_head.side_effect = gem_mocks._mock_get_head
     data_client_mock.info.side_effect = gem_mocks.mock_get_file_info
     json_mock.side_effect = gem_mocks.mock_retrieve_json
     test_obs_id = 'GS-CAL20141226-7-029'

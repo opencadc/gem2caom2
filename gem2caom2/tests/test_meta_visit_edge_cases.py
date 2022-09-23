@@ -83,7 +83,6 @@ import gem_mocks
 
 @patch('caom2utils.data_util.get_file_type')
 @patch('gem2caom2.gemini_metadata.AbstractGeminiMetadataReader._retrieve_json')
-@patch('caom2pipe.reader_composable.FileMetadataReader._retrieve_headers')
 @patch('caom2pipe.astro_composable.get_vo_table_session')
 @patch('gem2caom2.program_metadata.get_pi_metadata')
 @patch('gem2caom2.gemini_metadata.ProvenanceFinder')
@@ -91,7 +90,6 @@ def test_broken_obs(
     pf_mock,
     get_pi_mock,
     svofps_mock,
-    headers_mock,
     json_mock,
     file_type_mock,
 ):
@@ -107,7 +105,6 @@ def test_broken_obs(
         data_sources=[f'{gem_mocks.TEST_DATA_DIR}/broken_files'],
         get_pi_mock=get_pi_mock,
         svofps_mock=svofps_mock,
-        headers_mock=headers_mock,
         pf_mock=pf_mock,
         json_mock=json_mock,
         file_type_mock=file_type_mock,
@@ -121,7 +118,6 @@ def test_broken_obs(
 )
 @patch('caom2utils.data_util.get_file_type')
 @patch('gem2caom2.gemini_metadata.AbstractGeminiMetadataReader._retrieve_json')
-@patch('gem2caom2.gemini_metadata.GeminiFileMetadataReader._retrieve_headers')
 @patch('caom2pipe.astro_composable.get_vo_table_session')
 @patch('gem2caom2.program_metadata.get_pi_metadata')
 @patch('gem2caom2.gemini_metadata.ProvenanceFinder')
@@ -129,7 +125,6 @@ def test_unauthorized_at_gemini(
     pf_mock,
     get_pi_mock,
     svofps_mock,
-    headers_mock,
     json_mock,
     file_type_mock,
     file_info_mock,
@@ -148,7 +143,6 @@ def test_unauthorized_at_gemini(
         data_sources=[f'{gem_mocks.TEST_DATA_DIR}/broken_files'],
         get_pi_mock=get_pi_mock,
         svofps_mock=svofps_mock,
-        headers_mock=headers_mock,
         pf_mock=pf_mock,
         json_mock=json_mock,
         file_type_mock=file_type_mock,
