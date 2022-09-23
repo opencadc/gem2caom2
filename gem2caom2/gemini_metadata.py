@@ -284,8 +284,8 @@ class GeminiMetadataLookup:
     def exposure_time(self, uri):
         return self._search_json(uri, 'exposure_time')
 
-    def file_md5(self, uri):
-        return self._search_json(uri, 'file_md5')
+    def data_md5(self, uri):
+        return self._search_json(uri, 'data_md5')
 
     def filter_name(self, uri):
         return self._search_json(uri, 'filter_name')

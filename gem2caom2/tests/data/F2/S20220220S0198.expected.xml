@@ -1,0 +1,7 @@
+<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:DerivedObservation" caom2:id="d726da35-089c-4a0e-b25e-53a31e788134">
+    <caom2:collection>GEMINI</caom2:collection>
+    <caom2:observationID>GS-CAL20220220-3-012</caom2:observationID>
+    <caom2:algorithm>
+        <caom2:name>exposure</caom2:name>
+    </caom2:algorithm>
+</caom2:Observation>

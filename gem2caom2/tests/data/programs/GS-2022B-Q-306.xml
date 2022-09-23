@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+
+<title>Detail for Program: GS-2022B-Q-306</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-2022B-Q-306</h1>
+
+<table>
+ <tr><td>Title:<td>Constraining a Redshift Dependent Type Ia Supernova Mass Step with Improved Stellar Mass Measurements</tr>
+ <tr><td>PI:<td>Benjamin Rose</tr>
+ <tr><td>Co-I(s):<td> Susana Deustua,  Bhavin Joshi,  Lisa Kelsey,  Erik Peterson,  Daniel Scolnic,  Louis-Gregory Strolger,  Maria Vincenzi,  Phillip Wiseman</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+Type Ia supernovae (SNIa) are standardizable candles, with empirical corrections to their absolute peak magnitude from light-curve shape, observed color, and host galaxy stellar mass. The host galaxy stellar mass correction, or &quot;mass step&quot;, is an empirical correction with little physical motivation. Further, some evidence suggests SNIa standardization may be better realized with the use of host galaxy star formation rates (SFRs). If SFR is a better standardization parameter, then the empirical mass step would be redshift dependent. A redshift dependence of the mass step was first measured in 2015. However, a recent paper shows that a redshift bias like this is also possible if one uses only optical host galaxy photometry, a common practice  for SNIa host galaxies. Now, the reason of the observed redshift dependence is unknown. This project will disentangle the cause for the redshift dependent mass step between an issue of data quality or because of a SFR correction to SNIa standardization. We propose to build a sample of SNIa host galaxies, with NIR photometry in order to test the redshift dependent mass step prediction again, but avoiding the bias from using only optical photometry. We will compare a &quot;low-z&quot; (z ~ 0.02) SNIa sample with a &quot;high-z&quot; (z ~ 0.2) sample. The low-z SN and host galaxy photometry are already published. The high-z sample (N=124) already has Y-band photometry for 101 galaxies. Using several telescopes, we are proposing to observe 23 host galaxies in Y-band and 124 galaxies in J and H. We are proposing to observe 73 of these objects with Gemini. 
+</div>
+
+
+
+</body>
+</html>
