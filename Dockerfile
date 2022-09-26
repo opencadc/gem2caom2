@@ -3,7 +3,6 @@ FROM opencadc/pandas:3.10-slim as builder
 RUN apt-get update --no-install-recommends  && apt-get dist-upgrade -y && \
     apt-get install -y build-essential \
                        libcfitsio-dev \
-                       curl \
                        git \
                        imagemagick \
                        libcurl4-openssl-dev \
@@ -17,10 +16,10 @@ ARG OPENCADC_REPO=opencadc
 ARG FITSVERIFY_VERSION=4.20
 ARG FITSVERIFY_URL=https://heasarc.gsfc.nasa.gov/docs/software/ftools/fitsverify/fitsverify-${FITSVERIFY_VERSION}.tar.gz
 
-RUN curl -LSs -o /usr/local/src/fitsverify-${FITSVERIFY_VERSION}.tar.gz ${FITSVERIFY_URL}
+ADD ${FITSVERIFY_URL} /usr/local/src
 
 RUN cd /usr/local/src \
-  && tar zxvf fitsverify-${FITSVERIFY_VERSION}.tar.gz \
+  && tar axvf fitsverify-${FITSVERIFY_VERSION}.tar.gz \
   && cd fitsverify-${FITSVERIFY_VERSION} \
   && gcc -o fitsverify ftverify.c fvrf_data.c fvrf_file.c fvrf_head.c fvrf_key.c fvrf_misc.c -DSTANDALONE -I/usr/local/include -L/usr/local/lib -lcfitsio -lm -lnsl \
   && cp ./fitsverify /usr/local/bin/ \
