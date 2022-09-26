@@ -351,7 +351,7 @@ class GeminiMetadataLookup:
     def _search_fits(self, uri, lookup_key):
         temp = None
         headers = self._reader.headers.get(uri)
-        if headers is not None:
+        if headers is not None and len(headers) > 0:
             # if headers are None, the file is proprietary at
             # archive.gemini.edu, and cannot be retrieved
             temp = headers[0].get(lookup_key)
