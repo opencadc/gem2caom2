@@ -157,6 +157,8 @@ def _common_init():
     name_builder = builder.GemObsIDBuilder(
         config, metadata_reader, reader_lookup
     )
+    mc.StorageName.collection = config.collection
+    mc.StorageName.scheme = 'gemini'
     return clients, config, metadata_reader, meta_visitors, name_builder
 
 

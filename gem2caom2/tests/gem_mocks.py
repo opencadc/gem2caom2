@@ -88,7 +88,7 @@ from caom2pipe import manage_composable as mc
 from gem2caom2 import data_source, obs_file_relationship, builder, svofps
 from gem2caom2 import gemini_metadata, fits2caom2_augmentation
 from gem2caom2.gem_name import GemName
-from gem2caom2.util import Inst
+from gem2caom2.util import COLLECTION, Inst, SCHEME
 
 
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
@@ -1460,47 +1460,56 @@ def _run_test_common(
     json_mock.side_effect = mock_get_obs_metadata
     file_type_mock.return_value = 'application/fits'
 
-    with TemporaryDirectory() as tmp_dir_name:
-        test_config = mc.Config()
-        test_config.task_types = [mc.TaskType.SCRAPE]
-        test_config.use_local_files = True
-        test_config.data_sources = data_sources
-        test_config.working_directory = tmp_dir_name
-        test_config.proxy_fqn = f'{tmp_dir_name}/test_proxy.pem'
+    original_collection = mc.StorageName.collection
+    original_scheme = mc.StorageName.scheme
+    try:
+        mc.StorageName.scheme = SCHEME
+        mc.StorageName.collection = COLLECTION
 
-        with open(test_config.proxy_fqn, 'w') as f:
-            f.write('test content')
+        with TemporaryDirectory() as tmp_dir_name:
+            test_config = mc.Config()
+            test_config.task_types = [mc.TaskType.SCRAPE]
+            test_config.use_local_files = True
+            test_config.data_sources = data_sources
+            test_config.working_directory = tmp_dir_name
+            test_config.proxy_fqn = f'{tmp_dir_name}/test_proxy.pem'
 
-        observation = None
-        in_fqn = expected_fqn.replace('.expected.', '.in.')
-        if os.path.exists(in_fqn):
-            observation = mc.read_obs_from_file(in_fqn)
-        actual_fqn = expected_fqn.replace('expected', 'actual')
-        if os.path.exists(actual_fqn):
-            os.unlink(actual_fqn)
+            with open(test_config.proxy_fqn, 'w') as f:
+                f.write('test content')
 
-        for entry in test_set:
-            filter_cache = svofps.FilterMetadataCache(svofps_mock)
-            metadata_reader = MockFileReader(pf_mock, filter_cache)
-            test_metadata = gemini_metadata.GeminiMetadataLookup(
-                metadata_reader
-            )
-            test_builder = builder.GemObsIDBuilder(
-                test_config, metadata_reader, test_metadata
-            )
-            storage_name = test_builder.build(entry)
-            client_mock = Mock()
-            kwargs = {
-                'storage_name': storage_name,
-                'metadata_reader': metadata_reader,
-                'clients': client_mock,
-            }
-            logging.getLogger(
-                'caom2utils.caom2blueprint',
-            ).setLevel(logging.INFO)
-            logging.getLogger('GeminiFits2caom2Visitor').setLevel(logging.INFO)
-            logging.getLogger('ValueRepairCache').setLevel(logging.INFO)
-            logging.getLogger('root').setLevel(logging.INFO)
-            # logging.getLogger('Gmos').setLevel(logging.INFO)
-            observation = fits2caom2_augmentation.visit(observation, **kwargs)
-        compare(expected_fqn, actual_fqn, observation)
+            observation = None
+            in_fqn = expected_fqn.replace('.expected.', '.in.')
+            if os.path.exists(in_fqn):
+                observation = mc.read_obs_from_file(in_fqn)
+            actual_fqn = expected_fqn.replace('expected', 'actual')
+            if os.path.exists(actual_fqn):
+                os.unlink(actual_fqn)
+
+            for entry in test_set:
+                filter_cache = svofps.FilterMetadataCache(svofps_mock)
+                metadata_reader = MockFileReader(pf_mock, filter_cache)
+                test_metadata = gemini_metadata.GeminiMetadataLookup(
+                    metadata_reader
+                )
+                test_builder = builder.GemObsIDBuilder(
+                    test_config, metadata_reader, test_metadata
+                )
+                storage_name = test_builder.build(entry)
+                client_mock = Mock()
+                kwargs = {
+                    'storage_name': storage_name,
+                    'metadata_reader': metadata_reader,
+                    'clients': client_mock,
+                }
+                logging.getLogger(
+                    'caom2utils.caom2blueprint',
+                ).setLevel(logging.INFO)
+                logging.getLogger('GeminiFits2caom2Visitor').setLevel(logging.INFO)
+                logging.getLogger('ValueRepairCache').setLevel(logging.INFO)
+                logging.getLogger('root').setLevel(logging.INFO)
+                # logging.getLogger('Gmos').setLevel(logging.INFO)
+                observation = fits2caom2_augmentation.visit(observation, **kwargs)
+            compare(expected_fqn, actual_fqn, observation)
+    finally:
+        mc.StorageName.scheme = original_scheme
+        mc.StorageName.collection = original_collection
