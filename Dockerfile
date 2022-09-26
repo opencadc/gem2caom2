@@ -1,14 +1,32 @@
 FROM opencadc/pandas:3.10-slim as builder
 
-RUN apt-get update --no-install-recommends && \
-    apt-get dist-upgrade -y && \
-    apt-get install -y build-essential git && \
+RUN apt-get update --no-install-recommends  && apt-get dist-upgrade -y && \
+    apt-get install -y build-essential \
+                       libcfitsio-dev \
+                       curl \
+                       git \
+                       imagemagick \
+                       libcurl4-openssl-dev \
+                       libnsl-dev \
+                       libssl-dev \
+                       zlib1g-dev && \
     rm -rf /var/lib/apt/lists/ /tmp/* /var/tmp/*
-
-WORKDIR /usr/src/app
 
 ARG OPENCADC_BRANCH=master
 ARG OPENCADC_REPO=opencadc
+ARG FITSVERIFY_VERSION=4.20
+ARG FITSVERIFY_URL=https://heasarc.gsfc.nasa.gov/docs/software/ftools/fitsverify/fitsverify-${FITSVERIFY_VERSION}.tar.gz
+
+RUN curl -LSs -o /usr/local/src/fitsverify-${FITSVERIFY_VERSION}.tar.gz ${FITSVERIFY_URL}
+
+RUN cd /usr/local/src \
+  && tar zxvf fitsverify-${FITSVERIFY_VERSION}.tar.gz \
+  && cd fitsverify-${FITSVERIFY_VERSION} \
+  && gcc -o fitsverify ftverify.c fvrf_data.c fvrf_file.c fvrf_head.c fvrf_key.c fvrf_misc.c -DSTANDALONE -I/usr/local/include -L/usr/local/lib -lcfitsio -lm -lnsl \
+  && cp ./fitsverify /usr/local/bin/ \
+  && ldconfig
+
+WORKDIR /usr/src/app
 
 RUN git clone https://github.com/opencadc/cadctools.git && \
     cd cadctools && \
@@ -40,6 +58,17 @@ COPY --from=builder /usr/lib/file/magic.mgc /usr/lib/file/
 COPY --from=builder /usr/share/misc/magic /usr/share/misc/magic
 COPY --from=builder /usr/share/misc/magic.mgc /usr/share/misc/magic.mgc
 COPY --from=builder /usr/share/file/magic.mgc /usr/share/file/magic.mgc
+
+# fitsverify
+COPY --from=builder /usr/lib/x86_64-linux-gnu/libcfitsio* /usr/lib/x86_64-linux-gnu/
+COPY --from=builder /usr/lib/x86_64-linux-gnu/libcurl-gnutls* /usr/lib/x86_64-linux-gnu/
+COPY --from=builder /usr/lib/x86_64-linux-gnu/libnghttp2* /usr/lib/x86_64-linux-gnu/
+COPY --from=builder /usr/lib/x86_64-linux-gnu/librtmp* /usr/lib/x86_64-linux-gnu/
+COPY --from=builder /usr/lib/x86_64-linux-gnu/libssh2* /usr/lib/x86_64-linux-gnu/
+COPY --from=builder /usr/lib/x86_64-linux-gnu/libpsl* /usr/lib/x86_64-linux-gnu/
+COPY --from=builder /usr/lib/x86_64-linux-gnu/libldap* /usr/lib/x86_64-linux-gnu/
+COPY --from=builder /usr/lib/x86_64-linux-gnu/liblber* /usr/lib/x86_64-linux-gnu/
+COPY --from=builder /usr/lib/x86_64-linux-gnu/libsasl* /usr/lib/x86_64-linux-gnu/
 
 RUN useradd --create-home --shell /bin/bash cadcops
 RUN chown -R cadcops:cadcops /usr/src/app

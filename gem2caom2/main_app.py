@@ -208,7 +208,7 @@ class GeminiMapping(cc.TelescopeMapping):
         self.fm = None
 
     def get_art_content_checksum(self, ext):
-        return f'md5:{self._lookup.file_md5(self._storage_name.file_uri)}'
+        return f'md5:{self._lookup.data_md5(self._storage_name.file_uri)}'
 
     def get_art_content_length(self, ext):
         return self._lookup.data_size(self._storage_name.file_uri)
@@ -1463,7 +1463,11 @@ class F2(GeminiMapping):
         """Configure the telescope-specific ObsBlueprint at the CAOM model
         Observation level."""
         super().accumulate_blueprint(bp)
-        bp.configure_position_axes((1, 2))
+        if (
+            self.get_obs_type(0) != 'FLAT'
+            or ( self.get_data_product_type(0) == DataProductType.SPECTRUM and self.get_obs_type(0) == 'FLAT')
+        ):
+            bp.configure_position_axes((1, 2))
 
     def get_obs_type(self, ext):
         # DB 03-06-21
@@ -1626,7 +1630,7 @@ class F2(GeminiMapping):
             )
             chunk.time.axis.function.delta = mc.convert_to_days(exposure)
             self._logger.info(
-                f'Updated time delta for {self._storage_name.obs_id} to'
+                f'Updated time delta for {self._storage_name.obs_id} to '
                 f'{exposure}.'
             )
         self._logger.debug(f'End _update_time')
@@ -2043,6 +2047,7 @@ class Gmos(GeminiMapping):
             'R600': 3744.0,
             'R400': 1918.0,
             'R150': 631.0,
+            # 'B480': 1522.0,  # WF - 16-09-22  ## TODO WF - 23-09-22 - need more accurate min/max values
         }
         # DB 02-12-19
         # Found basic info for the Lya395 filter in a published paper.
