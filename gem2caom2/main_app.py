@@ -1465,7 +1465,7 @@ class F2(GeminiMapping):
         super().accumulate_blueprint(bp)
         if (
             self.get_obs_type(0) != 'FLAT'
-            or ( self.get_data_product_type(0) == DataProductType.SPECTRUM and self.get_obs_type(0) == 'FLAT')
+            or (self.get_data_product_type(0) == DataProductType.SPECTRUM and self.get_obs_type(0) == 'FLAT')
         ):
             bp.configure_position_axes((1, 2))
 
@@ -1557,6 +1557,9 @@ class F2(GeminiMapping):
                     f'SpectralWCS: imaging mode for '
                     f'{self._storage_name.obs_id}.'
                 )
+                if filter_md is None:
+                    self._logger.warning(f'No filter metadata found for {filter_name} in {self._storage_name.file_uri}')
+                    reset_energy = True
                 self.fm = filter_md
             elif data_product_type == DataProductType.SPECTRUM:
                 self._logger.debug(
@@ -1602,14 +1605,12 @@ class F2(GeminiMapping):
                 )
 
         if reset_energy:
-            self._logger.info(
-                f'Setting spectral WCs to none for {self._storage_name.obs_id}'
-            )
+            self._logger.info(f'Setting spectral WCs to none for {self._storage_name.obs_id}')
             cc.reset_energy(chunk)
         else:
             temp = (
                 filter_name
-                if len(filter_md.filter_name) == 0
+                if (filter_md is None or len(filter_md.filter_name) == 0)
                 else '+'.join(ii for ii in filter_md.filter_name)
             )
             self._build_chunk_energy(chunk, temp)

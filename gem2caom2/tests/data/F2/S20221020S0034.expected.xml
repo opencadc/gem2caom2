@@ -1,0 +1,127 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="db739af9-54d4-4ec3-a7be-973eba13844d" caom2:metaProducer="gem2caom2/0.9.4">
+    <caom2:collection>GEMINI</caom2:collection>
+    <caom2:observationID>GS-2022B-DD-101-31-004</caom2:observationID>
+    <caom2:metaRelease>2022-10-20T04:11:25.700</caom2:metaRelease>
+    <caom2:algorithm>
+        <caom2:name>exposure</caom2:name>
+    </caom2:algorithm>
+    <caom2:type>ACQUISITION</caom2:type>
+    <caom2:intent>calibration</caom2:intent>
+    <caom2:proposal>
+        <caom2:id>GS-2022B-DD-101</caom2:id>
+        <caom2:pi>Jennifer Andrews</caom2:pi>
+        <caom2:title>Simultaneous Gemini and JWST spectroscopy of SN 2021aefx</caom2:title>
+    </caom2:proposal>
+    <caom2:target>
+        <caom2:name>SN2021aefx</caom2:name>
+        <caom2:type>field</caom2:type>
+    </caom2:target>
+    <caom2:telescope>
+        <caom2:name>Gemini-South</caom2:name>
+        <caom2:geoLocationX>1820184.055747326</caom2:geoLocationX>
+        <caom2:geoLocationY>-5208320.066618682</caom2:geoLocationY>
+        <caom2:geoLocationZ>-3194829.197152751</caom2:geoLocationZ>
+    </caom2:telescope>
+    <caom2:instrument>
+        <caom2:name>F2</caom2:name>
+    </caom2:instrument>
+    <caom2:planes>
+        <caom2:plane caom2:id="4961a16b-ac3b-4d9c-8712-9523e5585b6c" caom2:metaProducer="gem2caom2/0.9.6">
+            <caom2:productID>S20221020S0034</caom2:productID>
+            <caom2:metaRelease>2022-10-20T04:11:25.700</caom2:metaRelease>
+            <caom2:dataRelease>2023-04-20T00:00:00.000</caom2:dataRelease>
+            <caom2:dataProductType>image</caom2:dataProductType>
+            <caom2:calibrationLevel>1</caom2:calibrationLevel>
+            <caom2:provenance>
+                <caom2:name>Gemini Observatory Data</caom2:name>
+                <caom2:project>Gemini Archive</caom2:project>
+                <caom2:producer>Gemini Observatory</caom2:producer>
+                <caom2:reference>http://archive.gemini.edu/searchform/GS-2022B-DD-101-31-004</caom2:reference>
+            </caom2:provenance>
+            <caom2:artifacts>
+                <caom2:artifact caom2:id="f3327526-aa31-4051-abfc-b91f0f84986f" caom2:metaProducer="gem2caom2/0.9.6">
+                    <caom2:uri>gemini:GEMINI/S20221020S0034.fits</caom2:uri>
+                    <caom2:productType>calibration</caom2:productType>
+                    <caom2:releaseType>data</caom2:releaseType>
+                    <caom2:contentType>application/fits</caom2:contentType>
+                    <caom2:contentLength>16801920</caom2:contentLength>
+                    <caom2:contentChecksum>md5:f06bbeb4af6745160b5d0cb51dc059bb</caom2:contentChecksum>
+                    <caom2:parts>
+                        <caom2:part caom2:id="ce5b7d3d-05d6-467a-bbc2-21f270271e2f">
+                            <caom2:name>0</caom2:name>
+                            <caom2:chunks/>
+                        </caom2:part>
+                        <caom2:part caom2:id="ce478e71-0968-4d53-9170-641ee43c44cb">
+                            <caom2:name>1</caom2:name>
+                            <caom2:chunks>
+                                <caom2:chunk caom2:id="28267e96-0c14-45ad-822b-ed6207e4fe0a" caom2:metaProducer="gem2caom2/0.9.6">
+                                    <caom2:naxis>3</caom2:naxis>
+                                    <caom2:positionAxis1>1</caom2:positionAxis1>
+                                    <caom2:positionAxis2>2</caom2:positionAxis2>
+                                    <caom2:timeAxis>3</caom2:timeAxis>
+                                    <caom2:position>
+                                        <caom2:axis>
+                                            <caom2:axis1>
+                                                <caom2:ctype>RA---TAN</caom2:ctype>
+                                                <caom2:cunit>deg</caom2:cunit>
+                                            </caom2:axis1>
+                                            <caom2:axis2>
+                                                <caom2:ctype>DEC--TAN</caom2:ctype>
+                                                <caom2:cunit>deg</caom2:cunit>
+                                            </caom2:axis2>
+                                            <caom2:function>
+                                                <caom2:dimension>
+                                                    <caom2:naxis1>2048</caom2:naxis1>
+                                                    <caom2:naxis2>2048</caom2:naxis2>
+                                                </caom2:dimension>
+                                                <caom2:refCoord>
+                                                    <caom2:coord1>
+                                                        <caom2:pix>1023.78997802734</caom2:pix>
+                                                        <caom2:val>64.969596862793</caom2:val>
+                                                    </caom2:coord1>
+                                                    <caom2:coord2>
+                                                        <caom2:pix>1024.0400390625</caom2:pix>
+                                                        <caom2:val>-54.9436988830566</caom2:val>
+                                                    </caom2:coord2>
+                                                </caom2:refCoord>
+                                                <caom2:cd11>-1.70587991306093e-05</caom2:cd11>
+                                                <caom2:cd12>4.67665013275109e-05</caom2:cd12>
+                                                <caom2:cd21>4.67386016680393e-05</caom2:cd21>
+                                                <caom2:cd22>1.7060699974536e-05</caom2:cd22>
+                                            </caom2:function>
+                                        </caom2:axis>
+                                        <caom2:coordsys>ICRS</caom2:coordsys>
+                                    </caom2:position>
+                                    <caom2:time>
+                                        <caom2:axis>
+                                            <caom2:axis>
+                                                <caom2:ctype>TIME</caom2:ctype>
+                                                <caom2:cunit>d</caom2:cunit>
+                                            </caom2:axis>
+                                            <caom2:error>
+                                                <caom2:syser>1e-07</caom2:syser>
+                                                <caom2:rnder>1e-07</caom2:rnder>
+                                            </caom2:error>
+                                            <caom2:function>
+                                                <caom2:naxis>1</caom2:naxis>
+                                                <caom2:delta>0.0002314814814814815</caom2:delta>
+                                                <caom2:refCoord>
+                                                    <caom2:pix>0.5</caom2:pix>
+                                                    <caom2:val>59872.17460300926</caom2:val>
+                                                </caom2:refCoord>
+                                            </caom2:function>
+                                        </caom2:axis>
+                                        <caom2:timesys>UTC</caom2:timesys>
+                                        <caom2:exposure>20.0</caom2:exposure>
+                                        <caom2:resolution>20.0</caom2:resolution>
+                                    </caom2:time>
+                                </caom2:chunk>
+                            </caom2:chunks>
+                        </caom2:part>
+                    </caom2:parts>
+                </caom2:artifact>
+            </caom2:artifacts>
+        </caom2:plane>
+    </caom2:planes>
+</caom2:Observation>
