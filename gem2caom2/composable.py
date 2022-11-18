@@ -83,12 +83,7 @@ from gem2caom2 import cleanup_augmentation, fits2caom2_augmentation
 from gem2caom2 import gemini_metadata, svofps
 
 DATA_VISITORS = []
-META_VISITORS = [
-    fits2caom2_augmentation,
-    preview_augmentation,
-    pull_augmentation,
-    cleanup_augmentation,
-]
+META_VISITORS = [fits2caom2_augmentation, pull_augmentation, preview_augmentation, cleanup_augmentation]
 
 
 class GemClientCollection(ClientCollection):
