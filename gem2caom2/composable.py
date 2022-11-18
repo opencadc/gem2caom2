@@ -158,7 +158,8 @@ def _common_init():
         config, metadata_reader, reader_lookup
     )
     mc.StorageName.collection = config.collection
-    mc.StorageName.scheme = 'gemini'
+    mc.StorageName.scheme = config.scheme
+    mc.StorageName.preview_scheme = config.preview_scheme
     return clients, config, metadata_reader, meta_visitors, name_builder
 
 

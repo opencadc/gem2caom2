@@ -69,12 +69,6 @@
 
 from enum import Enum
 
-COLLECTION = 'GEMINI'
-# originates at gemini scheme
-SCHEME = 'gemini'
-# originates at CADC storage scheme
-V_SCHEME = 'cadc'
-
 
 class Inst(Enum):
 

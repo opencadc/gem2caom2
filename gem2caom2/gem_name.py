@@ -69,7 +69,6 @@
 
 from caom2pipe import manage_composable as mc
 
-from gem2caom2.util import COLLECTION, SCHEME, V_SCHEME
 from gem2caom2.obs_file_relationship import remove_extensions
 
 
@@ -148,16 +147,9 @@ class GemName(mc.StorageName):
         self,
         file_name=None,
     ):
-        self._v_scheme = V_SCHEME
-        self._v_collection = COLLECTION
-        super().__init__(
-            file_name=file_name.replace('.header', ''),
-        )
+        super().__init__(file_name=file_name.replace('.header', ''))
+        # use the file id because the extension doesn't help much in the archive.gemini.edu URL
         self._source_names = [self._file_id]
-
-    @property
-    def collection(self):
-        return self._v_collection
 
     @property
     def prev(self):
@@ -169,13 +161,13 @@ class GemName(mc.StorageName):
 
     @property
     def prev_uri(self):
-        return f'{SCHEME}:{self._v_collection}/{self.prev}'
+        # use the 'gemini' scheme because the previews are from archive.gemini.edu
+        return self._get_uri(self.prev, mc.StorageName.scheme)
 
     @property
     def thumb_uri(self):
-        """Note the v_scheme - the thumbnail is generated at CADC,
-        so acknowledge that with the CADC URI."""
-        return f'{self._v_scheme}:{self._v_collection}/{self.thumb}'
+        # use the 'cadc' scheme because the thumbnails are generated at CADC from the archive.gemini.edu previews
+        return self._get_uri(self.thumb, mc.StorageName.preview_scheme)
 
     def is_valid(self):
         return True

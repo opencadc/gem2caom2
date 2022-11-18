@@ -73,19 +73,13 @@ import traceback
 from datetime import datetime
 
 from caom2pipe import manage_composable as mc
-from gem2caom2 import gemini_metadata
-from gem2caom2.util import COLLECTION, SCHEME
 
 __all__ = ['GeminiValidator']
 
 
 class GeminiValidator(mc.Validator):
     def __init__(self):
-        super(GeminiValidator, self).__init__(
-            source_name=COLLECTION,
-            scheme=SCHEME,
-            preview_suffix='_th.jpg',
-        )
+        super(GeminiValidator, self).__init__(mc.StorageName.collection, mc.StorageName.scheme, '_th.jpg',)
         config = mc.Config()
         config.get_executors()
         # TODO

@@ -67,9 +67,11 @@
 #
 
 import os
+import warnings
 
 import pytest
 
+from astropy.wcs import FITSFixedWarning
 from gem2caom2.util import Inst
 from gem2caom2 import obs_file_relationship
 
@@ -132,8 +134,9 @@ def test_visitor(
     json_mock,
     file_type_mock,
     test_name,
+    test_config,
 ):
-
+    warnings.simplefilter('ignore', category=FITSFixedWarning)
     test_file_id = obs_file_relationship.remove_extensions(
         os.path.basename(test_name)
     )
@@ -148,6 +151,7 @@ def test_visitor(
         file_type_mock=file_type_mock,
         test_set=[test_name],
         expected_fqn=expected_fqn,
+        test_config=test_config,
     )
 
 

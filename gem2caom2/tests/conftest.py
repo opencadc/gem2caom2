@@ -3,7 +3,7 @@
 # ******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
 # *************  CENTRE CANADIEN DE DONNÉES ASTRONOMIQUES  **************
 #
-#  (c) 2018.                            (c) 2018.
+#  (c) 2022.                            (c) 2022.
 #  Government of Canada                 Gouvernement du Canada
 #  National Research Council            Conseil national de recherches
 #  Ottawa, Canada, K1A 0R6              Ottawa, Canada, K1A 0R6
@@ -62,42 +62,27 @@
 #  <http://www.gnu.org/licenses/>.      pas le cas, consultez :
 #                                       <http://www.gnu.org/licenses/>.
 #
-#  $Revision: 4 $
+#  : 4 $
 #
 # ***********************************************************************
 #
 
-from os import path
-from mock import patch
-import gem_mocks
-from gem2caom2 import GemName
+from caom2pipe.manage_composable import Config, StorageName
+import pytest
+
+COLLECTION = 'GEMINI'
+SCHEME = 'gemini'
+PREVIEW_SCHEME = 'cadc'
 
 
-def test_is_valid():
-    assert GemName(file_name='anything.fits').is_valid()
-    assert GemName(file_name='anything.jpg').is_valid()
-
-
-@patch('cadcutils.net.ws.WsCapabilities.get_access_url')
-@patch('caom2pipe.client_composable.query_tap_client')
-def test_storage_name(tap_mock, cap_mock, test_config):
-    tap_mock.side_effect = gem_mocks.mock_query_tap
-    cap_mock.return_value = 'https://localhost'
-    test_config.proxy_fqn = path.join(gem_mocks.TEST_DATA_DIR, 'cadcproxy.pem')
-    test_config.tap_id = 'ivo://cadc.nrc.ca/test'
-    for extension in ['.gz', '.bz2']:
-        test_sn = GemName(file_name=f'N20131203S0006i.fits{extension}')
-        assert (
-            test_sn.file_uri == f'{test_config.scheme}:{test_config.collection}/N20131203S0006i.fits'
-        )
-        assert test_sn.file_name == f'N20131203S0006i.fits{extension}'
-        assert test_sn.prev == 'N20131203S0006i.jpg'
-        assert test_sn.thumb == 'N20131203S0006i_th.jpg'
-        assert test_sn.file_id == 'N20131203S0006i'
-        assert test_sn.file_uri == f'{test_config.scheme}:{test_config.collection}/N20131203S0006i.fits'
-
-    test_sn = GemName(file_name='S20060920S0137.jpg')
-    assert test_sn.file_uri == f'{test_config.scheme}:{test_config.collection}/S20060920S0137.jpg'
-    assert test_sn.file_name == 'S20060920S0137.jpg'
-    assert test_sn.prev == 'S20060920S0137.jpg'
-    assert test_sn.thumb == 'S20060920S0137_th.jpg'
+@pytest.fixture()
+def test_config():
+    config = Config()
+    config.collection = COLLECTION
+    config.preview_scheme = PREVIEW_SCHEME
+    config.scheme = SCHEME
+    config.logging_level = 'INFO'
+    StorageName.collection = config.collection
+    StorageName.preview_scheme = config.preview_scheme
+    StorageName.scheme = config.scheme
+    return config

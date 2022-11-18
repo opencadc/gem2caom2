@@ -92,6 +92,7 @@ def test_broken_obs(
     svofps_mock,
     json_mock,
     file_type_mock,
+    test_config,
 ):
     # the observation is broken, test that retrieval will handle that
     test_f_name = 'gS20171114S0185_bias.fits.header'
@@ -110,6 +111,7 @@ def test_broken_obs(
         file_type_mock=file_type_mock,
         test_set=[test_fqn],
         expected_fqn=expected_fqn,
+        test_config=test_config,
     )
 
 
@@ -128,6 +130,7 @@ def test_unauthorized_at_gemini(
     json_mock,
     file_type_mock,
     file_info_mock,
+    test_config,
 ):
     # test case is unauthorized to retrieve metadata from
     # archive.gemini.edu - so no headers, no file
@@ -148,6 +151,7 @@ def test_unauthorized_at_gemini(
         file_type_mock=file_type_mock,
         test_set=[test_fqn],
         expected_fqn=expected_fqn,
+        test_config=test_config,
     )
 
 
@@ -166,6 +170,7 @@ def test_going_public(
     json_mock,
     file_type_mock,
     remote_headers_mock,
+    test_config,
 ):
     # test case is the data is going public, so the file needs to be
     # retrieved from archive.gemini.edu. The mocks are for the case
@@ -187,12 +192,11 @@ def test_going_public(
     file_type_mock.return_value = 'application/fits'
 
     with TemporaryDirectory() as tmp_dir_name:
-        test_config = mc.Config()
         test_config.task_types = [mc.TaskType.SCRAPE]
         test_config.use_local_files = True
         test_config.data_sources = [f'{gem_mocks.TEST_DATA_DIR}/broken_files']
-        test_config.working_directory = tmp_dir_name
-        test_config.proxy_fqn = f'{tmp_dir_name}/test_proxy.pem'
+        test_config.change_working_directory(tmp_dir_name)
+        test_config.proxy_file_name = 'test_proxy.pem'
 
         with open(test_config.proxy_fqn, 'w') as f:
             f.write('test content')
