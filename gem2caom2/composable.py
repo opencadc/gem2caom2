@@ -83,12 +83,7 @@ from gem2caom2 import cleanup_augmentation, fits2caom2_augmentation
 from gem2caom2 import gemini_metadata, svofps
 
 DATA_VISITORS = []
-META_VISITORS = [
-    fits2caom2_augmentation,
-    preview_augmentation,
-    pull_augmentation,
-    cleanup_augmentation,
-]
+META_VISITORS = [fits2caom2_augmentation, pull_augmentation, preview_augmentation, cleanup_augmentation]
 
 
 class GemClientCollection(ClientCollection):
@@ -158,7 +153,8 @@ def _common_init():
         config, metadata_reader, reader_lookup
     )
     mc.StorageName.collection = config.collection
-    mc.StorageName.scheme = 'gemini'
+    mc.StorageName.scheme = config.scheme
+    mc.StorageName.preview_scheme = config.preview_scheme
     return clients, config, metadata_reader, meta_visitors, name_builder
 
 

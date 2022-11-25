@@ -88,7 +88,7 @@ from caom2pipe import manage_composable as mc
 from gem2caom2 import data_source, obs_file_relationship, builder, svofps
 from gem2caom2 import gemini_metadata, fits2caom2_augmentation
 from gem2caom2.gem_name import GemName
-from gem2caom2.util import COLLECTION, Inst, SCHEME
+from gem2caom2.util import Inst
 
 
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
@@ -1347,11 +1347,9 @@ def compare(expected_fqn, actual_fqn, observation):
     if compare_result is not None:
         mc.write_obs_to_file(observation, actual_fqn)
         compare_text = '\n'.join([r for r in compare_result])
-        msg = (
-            f'Differences found in observation {expected.observation_id}\n'
-            f'{compare_text}. Check {actual_fqn}'
+        raise AssertionError(
+            f'Differences found in observation {expected.observation_id}\n{compare_text}.\nCheck {actual_fqn}'
         )
-        raise AssertionError(msg)
 
 
 def _query_mock_none(ignore1, ignore2):
@@ -1453,6 +1451,7 @@ def _run_test_common(
     file_type_mock,
     test_set,
     expected_fqn,
+    test_config,
 ):
     get_pi_mock.side_effect = mock_get_pi_metadata
     svofps_mock.side_effect = mock_get_votable
@@ -1460,19 +1459,16 @@ def _run_test_common(
     json_mock.side_effect = mock_get_obs_metadata
     file_type_mock.return_value = 'application/fits'
 
-    original_collection = mc.StorageName.collection
-    original_scheme = mc.StorageName.scheme
+    orig_cwd = os.getcwd()
     try:
-        mc.StorageName.scheme = SCHEME
-        mc.StorageName.collection = COLLECTION
-
         with TemporaryDirectory() as tmp_dir_name:
-            test_config = mc.Config()
+            os.chdir(tmp_dir_name)
             test_config.task_types = [mc.TaskType.SCRAPE]
             test_config.use_local_files = True
             test_config.data_sources = data_sources
-            test_config.working_directory = tmp_dir_name
-            test_config.proxy_fqn = f'{tmp_dir_name}/test_proxy.pem'
+            test_config.change_working_directory(tmp_dir_name)
+            test_config.proxy_file_name = 'test_proxy.pem'
+            test_config.write_to_file(test_config)
 
             with open(test_config.proxy_fqn, 'w') as f:
                 f.write('test content')
@@ -1511,5 +1507,4 @@ def _run_test_common(
                 observation = fits2caom2_augmentation.visit(observation, **kwargs)
             compare(expected_fqn, actual_fqn, observation)
     finally:
-        mc.StorageName.scheme = original_scheme
-        mc.StorageName.collection = original_collection
+        os.chdir(orig_cwd)

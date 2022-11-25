@@ -67,15 +67,12 @@
 # ***********************************************************************
 #
 
-import logging
-
 from collections import deque
 from datetime import datetime, timezone
 
 from caom2pipe import client_composable as clc
 from caom2pipe import data_source_composable as dsc
 from caom2pipe import manage_composable as mc
-from gem2caom2.util import COLLECTION, SCHEME
 
 
 __all__ = ['GEM_BOOKMARK', 'IncrementalSource', 'PublicIncremental']
@@ -99,7 +96,6 @@ class IncrementalSource(dsc.DataSource):
         self._encounter_end = None
         self._session = reader._session
         self._metadata_reader = reader
-        self._logger = logging.getLogger(__name__)
 
     def get_time_box_work(self, prev_exec_time, exec_time):
         """
@@ -131,7 +127,7 @@ class IncrementalSource(dsc.DataSource):
         try:
             response = mc.query_endpoint_session(url, self._session)
             if response is None:
-                logging.warning(f'Could not query {url}.')
+                self._logger.warning(f'Could not query {url}.')
             else:
                 metadata = response.json()
                 response.close()
@@ -150,7 +146,7 @@ class IncrementalSource(dsc.DataSource):
                                     file_name, entrytime.timestamp()
                                 )
                             )
-                            uri = mc.build_uri(COLLECTION, file_name, SCHEME)
+                            uri = mc.build_uri(mc.StorageName.collection, file_name, mc.StorageName.scheme)
                             # all the other cases where add_json_record is
                             # called, there's a list as input, so conform to
                             # that typing here
@@ -163,6 +159,7 @@ class IncrementalSource(dsc.DataSource):
             self._max_records_encountered = True
             self._encounter_start = prev_exec_time
             self._encounter_end = exec_time
+        self._reporter.capture_todo(len(entries), 0, 0)
         self._logger.debug('End get_time_box_work.')
         return entries
 
@@ -183,7 +180,6 @@ class PublicIncremental(dsc.QueryTimeBoxDataSource):
     def __init__(self, config, query_client):
         super(PublicIncremental, self).__init__(config)
         self._query_client = query_client
-        self._logger = logging.getLogger(__name__)
 
     def get_time_box_work(self, prev_exec_time, exec_time):
         """
@@ -192,8 +188,7 @@ class PublicIncremental(dsc.QueryTimeBoxDataSource):
         :return: a list of file names with time they were modified in /ams,
             structured as an astropy Table (for now).
         """
-
-        self._logger.debug('Entering get_time_box_work')
+        self._logger.debug('Begin get_time_box_work')
         # datetime format 2019-12-01T00:00:00.000000
         prev_dt_str = datetime.fromtimestamp(
             prev_exec_time, tz=timezone.utc
@@ -231,4 +226,6 @@ class PublicIncremental(dsc.QueryTimeBoxDataSource):
                     mc.make_time(row['lastModified']).timestamp(),
                 )
             )
+        self._reporter.capture_todo(len(entries), 0, 0)
+        self._logger.debug('End get_time_box_work')
         return entries

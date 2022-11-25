@@ -85,7 +85,7 @@ from caom2utils import data_util
 from caom2pipe import client_composable as clc
 from caom2pipe import manage_composable as mc
 from caom2pipe import reader_composable as rdc
-from gem2caom2.util import Inst, COLLECTION
+from gem2caom2.util import Inst
 from gem2caom2 import obs_file_relationship
 
 
@@ -403,7 +403,7 @@ class ProvenanceFinder:
         self._data_sources = config.data_sources
         self._logger = logging.getLogger(self.__class__.__name__)
 
-    def _check_caom2(self, uri, collection=COLLECTION):
+    def _check_caom2(self, uri, collection):
         self._logger.debug(f'Begin _check_caom2 for {uri}')
         # The URI comparison is a LIKE, because when searching for provenance,
         # sometimes there's only file ids in the file headers, and guessing
@@ -469,13 +469,13 @@ class ProvenanceFinder:
         """
         :param uri: Artifact URI at CADC
         """
-        ignore_scheme, ignore_collection, f_name = mc.decompose_uri(uri)
+        ignore_scheme, collection, f_name = mc.decompose_uri(uri)
         if self._connected:
             result = None
             if self._use_local_files:
                 result = self._check_local(f_name)
             if result is None:
-                result = self._check_caom2(uri)
+                result = self._check_caom2(uri, collection)
             if result is None:
                 result = self._check_remote(uri)
         else:

@@ -70,7 +70,7 @@
                       </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>6.92148148148148e-08</caom2:delta>
+                        <caom2:delta>6.94444444444444e-08</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
                           <caom2:val>52849.9876724537</caom2:val>

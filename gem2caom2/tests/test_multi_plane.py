@@ -133,6 +133,7 @@ def test_visitor(
     json_mock,
     file_type_mock,
     test_name,
+    test_config,
 ):
     expected_fqn = (
         f'{gem_mocks.TEST_DATA_DIR}/multi_plane/' f'{test_name}.expected.xml'
@@ -151,4 +152,5 @@ def test_visitor(
         file_type_mock=file_type_mock,
         test_set=test_set,
         expected_fqn=expected_fqn,
+        test_config=test_config,
     )
