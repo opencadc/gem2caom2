@@ -74,7 +74,6 @@ import shutil
 from astropy.io.fits import Header
 from collections import deque
 from datetime import datetime, timedelta, timezone
-from tempfile import TemporaryDirectory
 from traceback import format_exc
 from unittest.mock import call, patch, Mock
 import gem_mocks
@@ -101,7 +100,7 @@ PUBLIC_TEST_JSON = (
 @patch('caom2pipe.client_composable.ClientCollection.data_client')
 @patch('cadcutils.net.ws.WsCapabilities.get_access_url')
 @patch('caom2pipe.execute_composable.OrganizeExecutes.do_one')
-def test_run(run_mock, cap_mock, data_client_mock, json_mock):
+def test_run(run_mock, cap_mock, data_client_mock, json_mock, test_config, tmp_path):
     cap_mock.return_value = 'https://localhost'
     data_client_mock.get_head.side_effect = gem_mocks._mock_get_head
     data_client_mock.info.side_effect = gem_mocks.mock_get_file_info
@@ -109,11 +108,19 @@ def test_run(run_mock, cap_mock, data_client_mock, json_mock):
     test_obs_id = 'GS-2006B-Q-47-76-003'
     test_f_id = 'S20070130S0048'
     test_f_name = f'{test_f_id}.fits'
-    _write_todo(test_f_name)
-
-    getcwd_orig = os.getcwd
-    os.getcwd = Mock(return_value=gem_mocks.TEST_DATA_DIR)
+    test_config.change_working_directory(tmp_path.as_posix())
+    test_config.proxy_file_name = 'test_proxy.pem'
+    orig_cwd = os.getcwd()
     try:
+        os.chdir(tmp_path)
+        test_config.write_to_file(test_config)
+
+        with open(test_config.work_fqn, 'w') as f:
+            f.write(f'{test_f_name}\n')
+
+        with open(test_config.proxy_fqn, 'w') as f:
+            f.write('test content')
+
         # execution
         composable._run()
         assert run_mock.called, 'should have been called'
@@ -123,7 +130,7 @@ def test_run(run_mock, cap_mock, data_client_mock, json_mock):
         assert test_storage.obs_id == test_obs_id, 'wrong obs id'
         assert test_storage.file_name == test_f_name, 'wrong file name'
     finally:
-        os.getcwd = getcwd_orig
+        os.chdir(orig_cwd)
 
 
 @patch('gem2caom2.gemini_metadata.retrieve_json')
@@ -450,6 +457,7 @@ def test_run_by_incremental_reproduce(
     http_get_mock,
     reader_mock,
     test_config,
+    tmp_path,
 ):
     # https://archive.gemini.edu/jsonsummary/canonical/NotFail/notengineering/
     # entrytimedaterange=
@@ -482,39 +490,37 @@ def test_run_by_incremental_reproduce(
 
     cwd = os.getcwd()
     try:
-        with TemporaryDirectory() as tmp_dir_name:
-            os.chdir(tmp_dir_name)
+        os.chdir(tmp_path)
+        test_config.change_working_directory(tmp_path)
+        test_config.logging_level = 'INFO'
+        test_config.proxy_file_name = 'cadcproxy.pem'
+        test_config.task_types = [TaskType.VISIT]
+        test_config.interval = 70
+        test_config.write_to_file(test_config)
 
-            test_config.change_working_directory(tmp_dir_name)
-            test_config.logging_level = 'INFO'
-            test_config.proxy_file_name = 'cadcproxy.pem'
-            test_config.task_types = [TaskType.VISIT]
-            test_config.interval = 70
-            test_config.write_to_file(test_config)
+        with open(test_config.proxy_fqn, 'w') as f:
+            f.write('test content')
 
-            with open(test_config.proxy_fqn, 'w') as f:
-                f.write('test content')
-
-            test_bookmark = {
-                'bookmarks': {
-                    GEM_BOOKMARK: {
-                        'last_record': datetime.now() - timedelta(hours=1),
-                    },
+        test_bookmark = {
+            'bookmarks': {
+                GEM_BOOKMARK: {
+                    'last_record': datetime.now() - timedelta(hours=1),
                 },
-            }
-            write_as_yaml(test_bookmark, test_config.state_fqn)
+            },
+        }
+        write_as_yaml(test_bookmark, test_config.state_fqn)
 
-            # execution
-            composable._run_state()
-            assert meta_client_mock.read.called, 'should have been called'
-            assert (
-                meta_client_mock.read.call_count == 2
-            ), f'wrong call count {meta_client_mock.read.call_count}'
-            meta_client_mock.read.assert_called_with(
-                'GEMINI', 'GN-CAL20220314-18-090'
-            ), 'wrong run args'
-            assert reader_mock.called, 'reset called'
-            assert reader_mock.call_count == 1, 'reset call count'
+        # execution
+        composable._run_state()
+        assert meta_client_mock.read.called, 'should have been called'
+        assert (
+            meta_client_mock.read.call_count == 2
+        ), f'wrong call count {meta_client_mock.read.call_count}'
+        meta_client_mock.read.assert_called_with(
+            'GEMINI', 'GN-CAL20220314-18-090'
+        ), 'wrong run args'
+        assert reader_mock.called, 'reset called'
+        assert reader_mock.call_count == 1, 'reset call count'
     finally:
         os.chdir(cwd)
 
@@ -531,7 +537,10 @@ def test_run_state_compression_commands(
     clients_mock,
     json_mock,
     test_config,
+    tmp_path,
 ):
+    test_config.change_working_directory(tmp_path)
+
     # this test works with FITS files, not header-only versions of FITS
     # files, because it's testing the decompression/recompression cycle
     # but it's checking that the commands to the exec_cmd_array call are
@@ -563,59 +572,60 @@ def test_run_state_compression_commands(
 
     orig_cwd = os.getcwd()
     try:
-        with TemporaryDirectory() as tmp_dir_name:
-            os.chdir(tmp_dir_name)
-            test_config.change_working_directory(tmp_dir_name)
-            test_config.task_types = [TaskType.STORE]
-            test_config.logging_level = 'DEBUG'
-            test_config.proxy_file_name = 'cadcproxy.pem'
-            test_config.features.supports_latest_client = True
-            test_config.features.supports_decompression = True
-            test_config.use_local_files = True
-            test_config.data_sources = '/test_files'
-            test_config.retry_failures = False
-            test_config.cleanup_files_when_storing = False
-            test_config.write_to_file(test_config)
+        os.chdir(tmp_path)
+        test_config.task_types = [TaskType.STORE]
+        test_config.logging_level = 'DEBUG'
+        test_config.proxy_file_name = 'cadcproxy.pem'
+        test_config.features.supports_latest_client = True
+        test_config.features.supports_decompression = True
+        test_config.use_local_files = True
+        test_config.data_sources = '/test_files'
+        test_config.retry_failures = False
+        test_config.cleanup_files_when_storing = False
+        test_config.write_to_file(test_config)
 
-            with open(test_config.proxy_fqn, 'w') as f:
-                f.write('test content')
+        with open(test_config.proxy_fqn, 'w') as f:
+            f.write('test content')
 
-            start_time = datetime.now(tz=timezone.utc) - timedelta(minutes=5)
-            start_file_content = (
-                f'bookmarks:\n  gemini_timestamp:\n    last_record: {start_time}\n'
-            )
-            with open(test_config.state_fqn, 'w') as f:
-                f.write(start_file_content)
+        start_time = datetime.now(tz=timezone.utc) - timedelta(minutes=5)
+        start_file_content = (
+            f'bookmarks:\n  gemini_timestamp:\n    last_record: {start_time}\n'
+        )
+        with open(test_config.state_fqn, 'w') as f:
+            f.write(start_file_content)
 
-            try:
-                test_result = composable._run_state()
-                assert test_result == 0, 'expecting correct execution'
-            except Exception as e:
-                logging.error(e)
-                logging.error(format_exc())
-                raise e
+        try:
+            test_result = composable._run_state()
+            assert test_result == 0, 'expecting correct execution'
+        except Exception as e:
+            logging.error(e)
+            logging.error(format_exc())
+            raise e
 
-            clients_mock.return_value.data_client.put.assert_called(), 'put'
-            assert (
-                clients_mock.return_value.data_client.put.call_count == 1
-            ), 'put call count, no previews because it is just a STORE task'
-            put_calls = [
-                call(f'{tmp_dir_name}/GS-2005B-SV-301-16-005', 'gemini:GEMINI/S20050825S0143.fits'),
-            ]
-            clients_mock.return_value.data_client.put.assert_has_calls(
-                put_calls
-            ), 'wrong put args'
+        clients_mock.return_value.data_client.put.assert_called(), 'put'
+        assert (
+            clients_mock.return_value.data_client.put.call_count == 1
+        ), 'put call count, no previews because it is just a STORE task'
+        put_calls = [
+            call(
+                f'{tmp_path.as_posix()}/GS-2005B-SV-301-16-005',
+                f'{test_config.scheme}:{test_config.collection}/S20050825S0143.fits',
+            ),
+        ]
+        clients_mock.return_value.data_client.put.assert_has_calls(
+            put_calls
+        ), 'wrong put args'
 
-            # LocalStore, put is mocked, no info calls as part of that
-            clients_mock.return_value.data_client.info.assert_not_called(), 'info'
+        # LocalStore, put is mocked, no info calls as part of that
+        clients_mock.return_value.data_client.info.assert_not_called(), 'info'
 
-            # LocalStore, get_head should not be called
-            clients_mock.return_value.data_client.get_head.assert_not_called()
-            # LocalStore, get should not be called
-            clients_mock.return_value.data_client.get.assert_not_called()
-            assert (
-                not clients_mock.return_value.metadata_client.read.called
-            ), 'read'
+        # LocalStore, get_head should not be called
+        clients_mock.return_value.data_client.get_head.assert_not_called()
+        # LocalStore, get should not be called
+        clients_mock.return_value.data_client.get.assert_not_called()
+        assert (
+            not clients_mock.return_value.metadata_client.read.called
+        ), 'read'
     finally:
         os.chdir(orig_cwd)
 

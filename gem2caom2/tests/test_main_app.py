@@ -135,6 +135,7 @@ def test_visitor(
     file_type_mock,
     test_name,
     test_config,
+    tmp_path,
 ):
     warnings.simplefilter('ignore', category=FITSFixedWarning)
     test_file_id = obs_file_relationship.remove_extensions(
@@ -152,6 +153,7 @@ def test_visitor(
         test_set=[test_name],
         expected_fqn=expected_fqn,
         test_config=test_config,
+        tmp_path=tmp_path,
     )
 
 

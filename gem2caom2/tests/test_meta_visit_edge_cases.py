@@ -69,7 +69,6 @@
 
 from os import unlink
 from os.path import exists
-from tempfile import TemporaryDirectory
 
 from cadcutils import exceptions
 from caom2pipe import astro_composable as ac
@@ -93,6 +92,7 @@ def test_broken_obs(
     json_mock,
     file_type_mock,
     test_config,
+    tmp_path,
 ):
     # the observation is broken, test that retrieval will handle that
     test_f_name = 'gS20171114S0185_bias.fits.header'
@@ -112,6 +112,7 @@ def test_broken_obs(
         test_set=[test_fqn],
         expected_fqn=expected_fqn,
         test_config=test_config,
+        tmp_path=tmp_path,
     )
 
 
@@ -131,6 +132,7 @@ def test_unauthorized_at_gemini(
     file_type_mock,
     file_info_mock,
     test_config,
+    tmp_path,
 ):
     # test case is unauthorized to retrieve metadata from
     # archive.gemini.edu - so no headers, no file
@@ -152,6 +154,7 @@ def test_unauthorized_at_gemini(
         test_set=[test_fqn],
         expected_fqn=expected_fqn,
         test_config=test_config,
+        tmp_path=tmp_path,
     )
 
 
@@ -171,6 +174,7 @@ def test_going_public(
     file_type_mock,
     remote_headers_mock,
     test_config,
+    tmp_path,
 ):
     # test case is the data is going public, so the file needs to be
     # retrieved from archive.gemini.edu. The mocks are for the case
@@ -191,41 +195,40 @@ def test_going_public(
     json_mock.side_effect = gem_mocks.mock_get_obs_metadata
     file_type_mock.return_value = 'application/fits'
 
-    with TemporaryDirectory() as tmp_dir_name:
-        test_config.task_types = [mc.TaskType.SCRAPE]
-        test_config.use_local_files = True
-        test_config.data_sources = [f'{gem_mocks.TEST_DATA_DIR}/broken_files']
-        test_config.change_working_directory(tmp_dir_name)
-        test_config.proxy_file_name = 'test_proxy.pem'
+    test_config.task_types = [mc.TaskType.SCRAPE]
+    test_config.use_local_files = True
+    test_config.data_sources = [f'{gem_mocks.TEST_DATA_DIR}/broken_files']
+    test_config.change_working_directory(tmp_path.as_posix())
+    test_config.proxy_file_name = 'test_proxy.pem'
 
-        with open(test_config.proxy_fqn, 'w') as f:
-            f.write('test content')
+    with open(test_config.proxy_fqn, 'w') as f:
+        f.write('test content')
 
-        in_fqn = expected_fqn.replace('.expected.', '.in.')
-        observation = mc.read_obs_from_file(in_fqn)
-        actual_fqn = expected_fqn.replace('expected', 'actual')
-        if exists(actual_fqn):
-            unlink(actual_fqn)
+    in_fqn = expected_fqn.replace('.expected.', '.in.')
+    observation = mc.read_obs_from_file(in_fqn)
+    actual_fqn = expected_fqn.replace('expected', 'actual')
+    if exists(actual_fqn):
+        unlink(actual_fqn)
 
-        filter_cache = svofps.FilterMetadataCache(svofps_mock)
-        metadata_reader = gemini_metadata.GeminiStorageClientReader(
-            Mock(), Mock(), pf_mock, filter_cache
-        )
-        test_metadata = gemini_metadata.GeminiMetadataLookup(metadata_reader)
-        test_builder = builder.GemObsIDBuilder(
-            test_config, metadata_reader, test_metadata
-        )
-        storage_name = test_builder.build(mock_return_fqn)
-        client_mock = Mock()
-        client_mock.metadata_client = headers_mock
-        kwargs = {
-            'storage_name': storage_name,
-            'metadata_reader': metadata_reader,
-            'clients': client_mock,
-        }
-        ignore = fits2caom2_augmentation.visit(observation, **kwargs)
+    filter_cache = svofps.FilterMetadataCache(svofps_mock)
+    metadata_reader = gemini_metadata.GeminiStorageClientReader(
+        Mock(), Mock(), pf_mock, filter_cache
+    )
+    test_metadata = gemini_metadata.GeminiMetadataLookup(metadata_reader)
+    test_builder = builder.GemObsIDBuilder(
+        test_config, metadata_reader, test_metadata
+    )
+    storage_name = test_builder.build(mock_return_fqn)
+    client_mock = Mock()
+    client_mock.metadata_client = headers_mock
+    kwargs = {
+        'storage_name': storage_name,
+        'metadata_reader': metadata_reader,
+        'clients': client_mock,
+    }
+    ignore = fits2caom2_augmentation.visit(observation, **kwargs)
 
-        assert remote_headers_mock.called, 'expect remote header retrieval'
-        remote_headers_mock.assert_called_with(
-            'N20150929S0013.fits.header', ANY, ANY
-        ), 'wrong remote header args'
+    assert remote_headers_mock.called, 'expect remote header retrieval'
+    remote_headers_mock.assert_called_with(
+        'N20150929S0013.fits.header', ANY, ANY
+    ), 'wrong remote header args'
