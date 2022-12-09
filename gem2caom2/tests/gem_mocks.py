@@ -70,9 +70,11 @@ import json
 import logging
 import os
 import traceback
+import warnings
 
 from astropy.io.votable import parse_single_table
 from astropy.table import Table
+from astropy.utils.exceptions import AstropyWarning
 from bs4 import BeautifulSoup
 from collections import OrderedDict
 from datetime import datetime
@@ -1457,6 +1459,7 @@ def _run_test_common(
     test_config,
     tmp_path,
 ):
+    warnings.simplefilter('ignore', AstropyWarning)
     get_pi_mock.side_effect = mock_get_pi_metadata
     svofps_mock.side_effect = mock_get_votable
     pf_mock.get.side_effect = mock_get_data_label
@@ -1484,6 +1487,7 @@ def _run_test_common(
         if os.path.exists(actual_fqn):
             os.unlink(actual_fqn)
 
+        test_observable = mc.Observable(rejected=mc.Rejected(test_config.rejected_fqn), metrics=None)
         for entry in test_set:
             filter_cache = svofps.FilterMetadataCache(svofps_mock)
             metadata_reader = MockFileReader(pf_mock, filter_cache)
@@ -1499,6 +1503,7 @@ def _run_test_common(
                 'storage_name': storage_name,
                 'metadata_reader': metadata_reader,
                 'clients': client_mock,
+                'observable': test_observable,
             }
             logging.getLogger(
                 'caom2utils.caom2blueprint',
@@ -1507,7 +1512,20 @@ def _run_test_common(
             logging.getLogger('ValueRepairCache').setLevel(logging.INFO)
             logging.getLogger('root').setLevel(logging.INFO)
             # logging.getLogger('Gmos').setLevel(logging.INFO)
-            observation = fits2caom2_augmentation.visit(observation, **kwargs)
+            try:
+                observation = fits2caom2_augmentation.visit(observation, **kwargs)
+            except mc.CadcException as e:
+                if storage_name.file_name == 'N20220915S0113.fits':
+                    assert (
+                        test_observable.rejected.is_mystery_value(storage_name.file_name)
+                    ), 'expect rejected mystery value record'
+                raise e
+
         compare(expected_fqn, actual_fqn, observation)
+
+        if observation.observation_id == 'GS-2022B-Q-235-137-045':
+            assert test_observable.rejected.is_bad_metadata(storage_name.file_name), 'expect rejected record'
+        else:
+            assert not test_observable.rejected.is_bad_metadata(storage_name.file_name), 'expect no rejected record'
     finally:
         os.chdir(orig_cwd)

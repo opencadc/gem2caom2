@@ -170,7 +170,8 @@ class GemName(mc.StorageName):
         return self._get_uri(self.thumb, mc.StorageName.preview_scheme)
 
     def is_valid(self):
-        return True
+        # WF 07-12-22 - quick look images that should not make it into the archive
+        return 'ql_image' not in self._file_name
 
     def set_file_id(self):
         self._file_id = remove_extensions(self._file_name)
