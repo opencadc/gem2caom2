@@ -68,7 +68,7 @@
 #
 
 from datetime import datetime
-from mock import Mock, patch
+from mock import call, Mock, patch
 from gem2caom2 import data_source
 import gem_mocks
 
@@ -83,6 +83,8 @@ def test_incremental_source(query_mock):
 
     test_subject = data_source.IncrementalSource(Mock())
     assert test_subject is not None, 'expect construction success'
+    test_reporter = Mock()
+    test_subject.reporter = test_reporter
     prev_exec_time = datetime(
         year=2021, month=1, day=1, hour=20, minute=3, second=0
     ).timestamp()
@@ -98,6 +100,9 @@ def test_incremental_source(query_mock):
     test_entry = test_result.popleft()
     assert test_entry.entry_name == 'N20210101S0042.fits', 'wrong 2nd file'
     assert test_entry.entry_ts == 1609535567.250666, 'wrong 2nd timestamp'
+    assert test_reporter.capture_todo.called, 'capture_todo'
+    assert test_reporter.capture_todo.call_count == 1, 'wrong number of capture_todo calls'
+    test_reporter.capture_todo.assert_called_with(2, 0, 0)
 
     # get nothing
     prev_exec_time = datetime(
@@ -109,6 +114,9 @@ def test_incremental_source(query_mock):
     test_result = test_subject.get_time_box_work(prev_exec_time, exec_time)
     assert test_result is not None, 'expect a result'
     assert len(test_result) == 0, 'wrong number of empty result list'
+    assert test_reporter.capture_todo.called, 'capture_todo'
+    assert test_reporter.capture_todo.call_count == 2, 'wrong number of capture_todo calls'
+    test_reporter.capture_todo.assert_has_calls([call(2, 0, 0), call(0, 0, 0)])
 
 
 @patch('caom2pipe.manage_composable.query_endpoint_session')
@@ -122,6 +130,8 @@ def test_incremental_source_reproduce(query_mock):
 
     test_subject = data_source.IncrementalSource(Mock())
     assert test_subject is not None, 'expect construction success'
+    test_reporter = Mock()
+    test_subject.reporter = test_reporter
     prev_exec_time = datetime(
         year=2022, month=1, day=1, hour=20, minute=3, second=0
     ).timestamp()
@@ -131,3 +141,6 @@ def test_incremental_source_reproduce(query_mock):
     test_result = test_subject.get_time_box_work(prev_exec_time, exec_time)
     assert test_result is not None, 'expect a result'
     assert len(test_result) == 2, 'wrong number of results'
+    assert test_reporter.capture_todo.called, 'capture_todo'
+    assert test_reporter.capture_todo.call_count == 1, 'wrong number of capture_todo calls'
+    test_reporter.capture_todo.assert_called_with(2, 0, 0), 'wrong capture_todo args'

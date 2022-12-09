@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+
+<title>Detail for Program: GS-2022B-DD-101</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-2022B-DD-101</h1>
+
+<table>
+ <tr><td>Title:<td>Simultaneous Gemini and JWST spectroscopy of SN 2021aefx</tr>
+ <tr><td>PI:<td>Jennifer Andrews</tr>
+ <tr><td>Co-I(s):<td> David Sand,  Saurabh Jha,  Lindsey Kwok,  Griffin Hosseinzadeh,  Azalee Bostroem,  Maxime Deckers,  Or Graur</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+We request 2.0 hours of FLAMINGOS-2 JH+HK long slit spectroscopy of the nearby type Ia supernova, SN 2021aefx, during the month of September 2022 to coincide with an upcoming JWST MIRI spectrum.  SN 2021aefx will be the first type Ia SN with NIR+MIR nebular phase spectral sequence with JWST, a data set that will be unparalleled in wavelength range and sensitivity.  Crucially, the September JWST observations will only be in the MIR band, so ground-based NIR spectroscopy is essential for complementary information on the progenitor system, iron group elements, mixing in the ejecta and the explosion asymmetry.  Further Gemini requests will be made through the Fast Turnaround program in the months ahead, but this DDT request for NIR spectroscopy is needed on a shorter time scale to have the highest impact.  As with the JWST data, we waive any proprietary rights so the whole community can benefit from this data set. 
+</div>
+
+
+
+</body>
+</html>

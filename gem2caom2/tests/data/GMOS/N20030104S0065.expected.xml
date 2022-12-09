@@ -69,7 +69,7 @@
                       </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15796882245275e-05</caom2:delta>
+                        <caom2:delta>1.15798611111111e-05</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
                           <caom2:val>52643.10153009259</caom2:val>
@@ -99,7 +99,7 @@
                       </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15796882245275e-05</caom2:delta>
+                        <caom2:delta>1.15798611111111e-05</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
                           <caom2:val>52643.10153009259</caom2:val>
@@ -129,7 +129,7 @@
                       </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15796882245275e-05</caom2:delta>
+                        <caom2:delta>1.15798611111111e-05</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
                           <caom2:val>52643.10153009259</caom2:val>

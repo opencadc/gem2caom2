@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+
+<title>Detail for Program: GS-2022B-Q-235</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-2022B-Q-235</h1>
+
+<table>
+ <tr><td>Title:<td>Completing a near-infrared census of astrophysical transients</tr>
+ <tr><td>PI:<td>Samaporn Tinyanont</tr>
+ <tr><td>Co-I(s):<td> Ryan Foley,  David Coulter,  Kirsty Taggart,  Kyle Davis,  Phil Macias,  Matt Siebert,  Cesar Rojas-Bravo,  Maria Jose Bustamanta Rosell,  Charles Kilpatrick,  Griffin Hosseinzadeh,  David Sand,  Kaisey Mandel,  Stephen Thorp,  Ori Fox,  Daniel Scolnic,  Justin Pierel,  Jennifer Andrews,  Katie Auchettl,  Lluís Galbany,  Giacomo Terreran</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+We propose for standard ToO observations of 20 transient events, 6 epochs each in the J, H, and Ks bands with NIRI and FLAMINGOS-2. The current lack of publicly available near-infrared (NIR) photometry and spectroscopy of astrophysical transients hinders our ability to interpret observations from the James Webb Space Telescope (JWST) and prevents us from optimizing the supernova (SN) cosmology program for the Nancy Grace Roman Space Telescope. The rest-frame NIR is promising for improving the systematic uncertainty for cosmological parameters inferred from observations of Type Ia SNe. This is because SNe Ia appear to be more standard in the NIR and dust extinction is smaller. JWST may detect explosions of the first population III stars in the Universe. Due to time dilation, detecting these explosions in the time domain will be difficult, spectral template matching will be key. The current lack of NIR template for core-collapse and superluminous SNe make this difficult. The proposed observations will complement the ongoing Keck Infrared Transients Survey that will make NIR spectra of ~10 transients per month publicly available. 
+</div>
+
+
+
+</body>
+</html>

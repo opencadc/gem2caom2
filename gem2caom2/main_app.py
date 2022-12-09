@@ -109,7 +109,7 @@ import gem2caom2.obs_file_relationship as ofr
 from gem2caom2.gem_name import GemName
 from gem2caom2 import program_metadata, svofps
 from gem2caom2.gemini_metadata import GeminiMetadataLookup
-from gem2caom2.util import Inst, COLLECTION, SCHEME
+from gem2caom2.util import Inst
 
 
 __all__ = ['GeminiMapping', 'APPLICATION', 'mapping_factory']
@@ -199,8 +199,8 @@ class GeminiMapping(cc.TelescopeMapping):
     # value repair cache
     value_repair = GeminiValueRepair()
 
-    def __init__(self, storage_name, headers, lookup, instrument):
-        super().__init__(storage_name, headers)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
+        super().__init__(storage_name, headers, clients, observable)
         self._metadata_reader = lookup.reader
         self._instrument = instrument
         self._lookup = lookup
@@ -528,10 +528,11 @@ class GeminiMapping(cc.TelescopeMapping):
         return result
 
     def get_time_delta(self, ext):
+        result = None
         exptime = self.get_exposure(ext)
-        if exptime is None:
-            return None
-        return mc.to_float(exptime) / (24.0 * 3600.0)
+        if exptime is not None:
+            result = mc.convert_to_days(mc.to_float(exptime))
+        return result
 
     def get_time_function_val(self, ext):
         """
@@ -612,7 +613,7 @@ class GeminiMapping(cc.TelescopeMapping):
 
         self._logger.debug('Done accumulate_fits_bp.')
 
-    def update(self, observation, file_info, clients=None):
+    def update(self, observation, file_info):
 
         if self._headers is None:
             # proprietary header metadata at archive.gemini.edu, so do nothing
@@ -737,7 +738,7 @@ class GeminiMapping(cc.TelescopeMapping):
                             plane,
                             self._repair_provenance_value,
                             repaired_values,
-                            COLLECTION,
+                            self._storage_name.collection,
                             observation.observation_id,
                         )
 
@@ -918,7 +919,7 @@ class GeminiMapping(cc.TelescopeMapping):
         )
         prov_file_id = value
         try:
-            uri = mc.build_uri(COLLECTION, prov_file_id, SCHEME)
+            uri = mc.build_uri(self._storage_name.collection, prov_file_id, self._storage_name.scheme)
             # TODO - what to do about the data label search here? there's no
             # file metadata, it would be _most_ efficient to do this from CADC
             # so need to re-use this code somehow :(
@@ -1209,8 +1210,8 @@ def _remove_processing_detritus(values, obs_id):
 
 
 class Bhros(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument):
-        super().__init__(storage_name, headers, lookup, instrument)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
 
     def accumulate_blueprint(self, bp, application=None):
         super().accumulate_blueprint(bp)
@@ -1307,8 +1308,8 @@ class Bhros(GeminiMapping):
 
 
 class Cirpass(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument):
-        super().__init__(storage_name, headers, lookup, instrument)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
 
     def accumulate_blueprint(self, bp, application=None):
         super().accumulate_blueprint(bp)
@@ -1456,8 +1457,8 @@ class Cirpass(GeminiMapping):
 
 
 class F2(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument):
-        super().__init__(storage_name, headers, lookup, instrument)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
 
     def accumulate_blueprint(self, bp, application=None):
         """Configure the telescope-specific ObsBlueprint at the CAOM model
@@ -1465,9 +1466,17 @@ class F2(GeminiMapping):
         super().accumulate_blueprint(bp)
         if (
             self.get_obs_type(0) != 'FLAT'
-            or ( self.get_data_product_type(0) == DataProductType.SPECTRUM and self.get_obs_type(0) == 'FLAT')
+            or (self.get_data_product_type(0) == DataProductType.SPECTRUM and self.get_obs_type(0) == 'FLAT')
         ):
-            bp.configure_position_axes((1, 2))
+            # WF 07-12-22
+            # - be specific about the problem and ingest as best as possible
+            # - would like to know when the problem gets fixed (so, need to know when the problem first occurs)
+            ctype1 = mc.get_keyword(self._headers, 'CTYPE1')
+            ctype2 = mc.get_keyword(self._headers, 'CTYPE2')
+            if ctype1 is None or ctype2 is None or ctype1 == '?' or ctype2 == '?':
+                self._observable.rejected.record(mc.Rejected.BAD_METADATA, self._storage_name.file_name)
+            else:
+                bp.configure_position_axes((1, 2))
 
     def get_obs_type(self, ext):
         # DB 03-06-21
@@ -1557,6 +1566,9 @@ class F2(GeminiMapping):
                     f'SpectralWCS: imaging mode for '
                     f'{self._storage_name.obs_id}.'
                 )
+                if filter_md is None:
+                    self._logger.warning(f'No filter metadata found for {filter_name} in {self._storage_name.file_uri}')
+                    reset_energy = True
                 self.fm = filter_md
             elif data_product_type == DataProductType.SPECTRUM:
                 self._logger.debug(
@@ -1602,14 +1614,12 @@ class F2(GeminiMapping):
                 )
 
         if reset_energy:
-            self._logger.info(
-                f'Setting spectral WCs to none for {self._storage_name.obs_id}'
-            )
+            self._logger.info(f'Setting spectral WCs to none for {self._storage_name.obs_id}')
             cc.reset_energy(chunk)
         else:
             temp = (
                 filter_name
-                if len(filter_md.filter_name) == 0
+                if (filter_md is None or len(filter_md.filter_name) == 0)
                 else '+'.join(ii for ii in filter_md.filter_name)
             )
             self._build_chunk_energy(chunk, temp)
@@ -1637,8 +1647,8 @@ class F2(GeminiMapping):
 
 
 class Flamingos(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument):
-        super().__init__(storage_name, headers, lookup, instrument)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
 
     def accumulate_blueprint(self, bp, application=None):
         super().accumulate_blueprint(bp)
@@ -1835,6 +1845,7 @@ class Flamingos(GeminiMapping):
                 self._lookup.telescope(self._storage_name.file_uri),
             )
             if self.fm is None:
+                self._observable.rejected.record(mc.Rejected.MYSTERY_VALUE, self._storage_name.file_name)
                 raise mc.CadcException(
                     f'{self._instrument}: Mystery filter {filter_name} for '
                     f'{self._storage_name.obs_id}'
@@ -1922,8 +1933,8 @@ class Flamingos(GeminiMapping):
 
 
 class Fox(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument):
-        super().__init__(storage_name, headers, lookup, instrument)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
 
     def accumulate_blueprint(self, bp, application=None):
         """Configure the telescope-specific ObsBlueprint at the CAOM model
@@ -1971,6 +1982,7 @@ class Fox(GeminiMapping):
                 self._lookup.telescope(self._storage_name.file_uri),
             )
             if self.fm is None:
+                self._observable.rejected.record(mc.Rejected.MYSTERY_VALUE, self._storage_name.file_name)
                 raise mc.CadcException(
                     f'{self._instrument}: mystery filter {filter_name}'
                 )
@@ -2000,8 +2012,8 @@ class Fox(GeminiMapping):
 
 
 class Gmos(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument):
-        super().__init__(storage_name, headers, lookup, instrument)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
 
     def accumulate_blueprint(self, bp, application=None):
         super().accumulate_blueprint(bp)
@@ -2208,6 +2220,7 @@ class Gmos(GeminiMapping):
                 if disperser in GMOS_RESOLVING_POWER:
                     self.fm.resolving_power = GMOS_RESOLVING_POWER[disperser]
                 else:
+                    self._observable.rejected.record(mc.Rejected.MYSTERY_VALUE, self._storage_name.file_name)
                     raise mc.CadcException(
                         f'{self._instrument}: mystery disperser {disperser} '
                         f'for {self._storage_name.obs_id}'
@@ -2230,8 +2243,8 @@ class Gmos(GeminiMapping):
 
 
 class Gnirs(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument):
-        super().__init__(storage_name, headers, lookup, instrument)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
 
     def accumulate_blueprint(self, bp, application=None):
         """Configure the telescope-specific ObsBlueprint at the CAOM model
@@ -2507,6 +2520,7 @@ class Gnirs(GeminiMapping):
                         reset_energy = True
                     else:
                         if grating not in gnirs_lookup:
+                            self._observable.rejected.record(mc.Rejected.MYSTERY_VALUE, self._storage_name.file_name)
                             raise mc.CadcException(
                                 f'{self._instrument} Mystery grating {grating} '
                                 f'for {self._storage_name.obs_id}'
@@ -2590,6 +2604,9 @@ class Gnirs(GeminiMapping):
                                     slit_table_value = 0.3
                                     lookup_index = 2
                                 else:
+                                    self._observable.rejected.record(
+                                        mc.Rejected.MYSTERY_VALUE, self._storage_name.file_name
+                                    )
                                     raise mc.CadcException(
                                         f'{self._instrument} Mystery camera '
                                         f'definition {camera} for '
@@ -2626,6 +2643,9 @@ class Gnirs(GeminiMapping):
                                             slit_table_value = 0.3
                                             lookup_index = 2
                                     else:
+                                        self._observable.rejected.record(
+                                            mc.Rejected.MYSTERY_VALUE, self._storage_name.file_name
+                                        )
                                         raise mc.CadcException(
                                             f'{self._instrument}: Mystery '
                                             f'camera definition {camera} for '
@@ -2634,6 +2654,9 @@ class Gnirs(GeminiMapping):
 
                             lookup = lookup.upper()
                             if lookup not in gnirs_lookup[grating]:
+                                self._observable.rejected.record(
+                                    mc.Rejected.MYSTERY_VALUE, self._storage_name.file_name
+                                )
                                 raise mc.CadcException(
                                     f'{self._instrument}: Mystery lookup '
                                     f'{lookup} for grating {grating}, obs '
@@ -2729,8 +2752,8 @@ class Gnirs(GeminiMapping):
 
 
 class Gpi(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument):
-        super().__init__(storage_name, headers, lookup, instrument)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
 
     def accumulate_blueprint(self, bp, application=None):
         super().accumulate_blueprint(bp)
@@ -2771,6 +2794,7 @@ class Gpi(GeminiMapping):
         elif mode == 'IFS':
             result = DataProductType.SPECTRUM
         else:
+            self._observable.rejected.record(mc.Rejected.MYSTERY_VALUE, self._storage_name.file_name)
             raise mc.CadcException(
                 f'{self._instrument} Mystery mode {mode} for '
                 f'{self._storage_name.file_name}'
@@ -2823,6 +2847,7 @@ class Gpi(GeminiMapping):
             if filter_name in gpi_lookup:
                 self.fm.resolving_power = gpi_lookup[filter_name]
             else:
+                self._observable.rejected.record(mc.Rejected.MYSTERY_VALUE, self._storage_name.file_name)
                 raise mc.CadcException(
                     f'{self._instrument}:  Mystery filter name {filter_name} '
                     f'for resolving power {self._storage_name.obs_id}'
@@ -2907,8 +2932,8 @@ class Gpi(GeminiMapping):
 
 
 class Graces(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument):
-        super().__init__(storage_name, headers, lookup, instrument)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
 
     def accumulate_blueprint(self, bp, application=None):
         """Configure the telescope-specific ObsBlueprint at the CAOM model
@@ -3019,8 +3044,8 @@ class Graces(GeminiMapping):
 
 
 class Gsaoi(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument):
-        super().__init__(storage_name, headers, lookup, instrument)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
 
     def accumulate_blueprint(self, bp, application=None):
         """Configure the telescope-specific ObsBlueprint at the CAOM model
@@ -3052,6 +3077,7 @@ class Gsaoi(GeminiMapping):
                 self._lookup.telescope(self._storage_name.file_uri),
             )
             if self.fm is None:
+                self._observable.rejected.record(mc.Rejected.MYSTERY_VALUE, self._storage_name.file_name)
                 raise mc.CadcException(
                     f'{self._instrument}: mystery filter {filter_name}'
                 )
@@ -3066,8 +3092,8 @@ class Gsaoi(GeminiMapping):
 
 
 class Hokupaa(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument):
-        super().__init__(storage_name, headers, lookup, instrument)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
 
     def accumulate_blueprint(self, bp, application=None):
         super().accumulate_blueprint(bp)
@@ -3211,6 +3237,7 @@ class Hokupaa(GeminiMapping):
         if filter_name in filter_name_repair:
             filter_name = filter_name_repair[filter_name]
         if filter_name not in hokupaa_lookup:
+            self._observable.rejected.record(mc.Rejected.MYSTERY_VALUE, self._storage_name.file_name)
             raise mc.CadcException(
                 f'{self._instrument}: Mystery filter {filter_name} for '
                 f'{self._storage_name.obs_id}'
@@ -3270,8 +3297,8 @@ class Hokupaa(GeminiMapping):
 
 
 class Hrwfs(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument):
-        super().__init__(storage_name, headers, lookup, instrument)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
 
     def accumulate_blueprint(self, bp, application=None):
         super().accumulate_blueprint(bp)
@@ -3333,8 +3360,8 @@ class Hrwfs(GeminiMapping):
 
 
 class Igrins(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument):
-        super().__init__(storage_name, headers, lookup, instrument)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
 
     def accumulate_blueprint(self, bp, application=None):
         """Configure the telescope-specific ObsBlueprint at the CAOM model
@@ -3375,6 +3402,7 @@ class Igrins(GeminiMapping):
             )
             self.fm.resolving_power = 45000.0
         else:
+            self._observable.rejected.record(mc.Rejected.MYSTERY_VALUE, self._storage_name.file_name)
             raise mc.CadcException(
                 f'{self._instrument}: Mystery filter {filter_name} for '
                 f'{self._storage_name.obs_id}'
@@ -3414,8 +3442,8 @@ class Igrins(GeminiMapping):
 
 
 class Michelle(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument):
-        super().__init__(storage_name, headers, lookup, instrument)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
 
     def accumulate_blueprint(self, bp, application=None):
         super().accumulate_blueprint(bp)
@@ -3552,6 +3580,7 @@ class Michelle(GeminiMapping):
                 )
                 slit_width = float(focal_plane_mask.split('_')[0])
                 if disperser not in lookup:
+                    self._observable.rejected.record(mc.Rejected.MYSTERY_VALUE, self._storage_name.file_name)
                     raise mc.CadcException(
                         f'{self._instrument}: Mystery disperser {disperser} '
                         f'for {self._storage_name.obs_id}'
@@ -3578,8 +3607,8 @@ class Michelle(GeminiMapping):
 
 
 class Nici(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument):
-        super().__init__(storage_name, headers, lookup, instrument)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
 
     def accumulate_blueprint(self, bp, application=None):
         """Configure the telescope-specific ObsBlueprint at the CAOM model
@@ -3677,8 +3706,8 @@ class Nici(GeminiMapping):
 
 
 class Nifs(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument):
-        super().__init__(storage_name, headers, lookup, instrument)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
 
     def accumulate_blueprint(self, bp, application=None):
         super().accumulate_blueprint(bp)
@@ -3953,8 +3982,8 @@ class Nifs(GeminiMapping):
 
 
 class Niri(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument):
-        super().__init__(storage_name, headers, lookup, instrument)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
 
     def accumulate_blueprint(self, bp, application=None):
         super().accumulate_blueprint(bp)
@@ -4107,6 +4136,7 @@ class Niri(GeminiMapping):
                 self._lookup.telescope(self._storage_name.file_uri),
             )
             if filter_md is None:
+                self._observable.rejected.record(mc.Rejected.MYSTERY_VALUE, self._storage_name.file_name)
                 raise mc.CadcException(
                     f'{self._instrument}: mystery filter {filter_name} for '
                     f'{self._storage_name.obs_id}'
@@ -4169,12 +4199,14 @@ class Niri(GeminiMapping):
                     )
                     reset_energy = True
                 else:
+                    self._observable.rejected.record(mc.Rejected.MYSTERY_VALUE, self._storage_name.file_name)
                     raise mc.CadcException(
                         f'{self._instrument} Mystery bandpass name '
                         f'{bandpass_name} or f_ratio {f_ratio} for '
                         f'{self._storage_name.obs_id}.'
                     )
             else:
+                self._observable.rejected.record(mc.Rejected.MYSTERY_VALUE, self._storage_name.file_name)
                 raise mc.CadcException(
                     f'{self._instrument} Mystery disperser value {disperser} '
                     f'for {self._storage_name.obs_id}'
@@ -4238,8 +4270,8 @@ class Niri(GeminiMapping):
 
 
 class Oscir(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument):
-        super().__init__(storage_name, headers, lookup, instrument)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
 
     def accumulate_blueprint(self, bp, application=None):
         super().accumulate_blueprint(bp)
@@ -4355,6 +4387,7 @@ class Oscir(GeminiMapping):
         temp = filter_name
         filter_name = temp.split()[0]
         if filter_name not in oscir_lookup:
+            self._observable.rejected.record(mc.Rejected.MYSTERY_VALUE, self._storage_name.file_name)
             raise mc.CadcException(
                 f'{self._instrument}: Mystery FILTER keyword {filter_name} '
                 f'for {self._storage_name.obs_id}'
@@ -4406,8 +4439,8 @@ class Oscir(GeminiMapping):
 
 
 class Phoenix(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument):
-        super().__init__(storage_name, headers, lookup, instrument)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
 
     def accumulate_blueprint(self, bp, application=None):
         """Configure the telescope-specific ObsBlueprint at the CAOM model
@@ -4630,6 +4663,7 @@ class Phoenix(GeminiMapping):
                 self.fm.set_bandpass(5.0, 1.0)
                 self.fm.set_central_wl(5.0, 1.0)
             else:
+                self._observable.rejected.record(mc.Rejected.MYSTERY_VALUE, self._storage_name.file_name)
                 raise mc.CadcException(
                     f'{self._instrument} mystery filter name {filter_name} for '
                     f'{self._storage_name.obs_id}'
@@ -4677,8 +4711,8 @@ class Phoenix(GeminiMapping):
 
 
 class Texes(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument):
-        super().__init__(storage_name, headers, lookup, instrument)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
 
     def accumulate_blueprint(self, bp, application=None):
         """Configure the telescope-specific ObsBlueprint at the CAOM model
@@ -4800,8 +4834,8 @@ class Texes(GeminiMapping):
 
 
 class Trecs(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument):
-        super().__init__(storage_name, headers, lookup, instrument)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
 
     def accumulate_blueprint(self, bp, application=None):
         """Configure the telescope-specific ObsBlueprint at the CAOM model
@@ -4882,6 +4916,7 @@ class Trecs(GeminiMapping):
                     self._lookup.telescope(self._storage_name.file_uri),
                 )
             if self.fm is None:
+                self._observable.rejected.record(mc.Rejected.MYSTERY_VALUE, self._storage_name.file_name)
                 raise mc.CadcException(
                     f'{self._instrument}: Mystery filter {filter_name}'
                 )
@@ -4946,7 +4981,7 @@ class Trecs(GeminiMapping):
             )
 
 
-def mapping_factory(storage_name, headers, metadata_reader):
+def mapping_factory(storage_name, headers, metadata_reader, clients, observable):
     metadata_lookup = GeminiMetadataLookup(metadata_reader)
     inst = metadata_lookup.instrument(storage_name.file_uri)
     lookup = {
@@ -4976,6 +5011,7 @@ def mapping_factory(storage_name, headers, metadata_reader):
         Inst.TRECS: Trecs,
     }
     if inst in lookup:
-        return lookup.get(inst)(storage_name, headers, metadata_lookup, inst)
+        return lookup.get(inst)(storage_name, headers, metadata_lookup, inst, clients, observable)
     else:
+        observable.rejected.record(mc.Rejected.MYSTERY_VALUE, storage_name.file_name)
         raise mc.CadcException(f'Mystery name {inst}.')

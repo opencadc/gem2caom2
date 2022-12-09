@@ -31,6 +31,7 @@ retry_file_name: retries.txt
 retry_failures: False
 collection: GEMINI
 schema: gemini
+preview_schema: cadc
 # how many minutes the run_query timestamp chunk is going to process
 interval: 1440
 observe_execution: True
@@ -43,5 +44,3 @@ storage_inventory_resource_id: ivo://cadc.nrc.ca/uvic/minoc
 # - scrape, store, ingest, modify, visit
 task_types: 
   - visit
-features:
-  supports_latest_client: True

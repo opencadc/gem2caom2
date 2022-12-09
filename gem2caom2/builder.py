@@ -104,35 +104,38 @@ class GemObsIDBuilder(nbc.StorageNameBuilder):
             f_name = entry
             if entry != path.basename(entry):
                 f_name = path.basename(entry)
-            if (
-                mc.TaskType.SCRAPE in self._config.task_types
-                or self._config.use_local_files
-            ):
-                self._logger.debug(f'Using entry for source.')
+            if 'ql_image' in entry:
                 result = gem_name.GemName(file_name=f_name)
-                result.source_names = [entry]
-            elif '.fits' in entry or '.jpg' in entry:
-                self._logger.debug('Using file_id for source.')
-                result = gem_name.GemName(file_name=f_name)
-                result.source_names = [result.file_id]
-            elif '.fits' not in entry and '.jpg' not in entry:
-                # this case exists so that retries.txt entries are
-                # handled properly, as retries.txt use the source_names
-                # array. For GemName, source_names is a list of file_ids.
-                #
-                # if the list of inputs is a list of data labels, this is
-                # the wrong thing to do, but there's really no data
-                # label-based processing left operationally
-                self._logger.debug(
-                    'entry might be file_id, try a made-up name.'
-                )
-                made_up_file_name = f'{entry}.fits'
-                result = gem_name.GemName(file_name=made_up_file_name)
-                result.source_names = [result.file_id]
-            self._metadata_reader.set(result)
-            # StorageName instance is only partially constructed at this
-            # point
-            result.obs_id = self._metadata.data_label(result.file_uri)
+            else:
+                if (
+                    mc.TaskType.SCRAPE in self._config.task_types
+                    or self._config.use_local_files
+                ):
+                    self._logger.debug(f'Using entry for source.')
+                    result = gem_name.GemName(file_name=f_name)
+                    result.source_names = [entry]
+                elif '.fits' in entry or '.jpg' in entry:
+                    self._logger.debug('Using file_id for source.')
+                    result = gem_name.GemName(file_name=f_name)
+                    result.source_names = [result.file_id]
+                elif '.fits' not in entry and '.jpg' not in entry:
+                    # this case exists so that retries.txt entries are
+                    # handled properly, as retries.txt use the source_names
+                    # array. For GemName, source_names is a list of file_ids.
+                    #
+                    # if the list of inputs is a list of data labels, this is
+                    # the wrong thing to do, but there's really no data
+                    # label-based processing left operationally
+                    self._logger.debug(
+                        'entry might be file_id, try a made-up name.'
+                    )
+                    made_up_file_name = f'{entry}.fits'
+                    result = gem_name.GemName(file_name=made_up_file_name)
+                    result.source_names = [result.file_id]
+                self._metadata_reader.set(result)
+                # StorageName instance is only partially constructed at this
+                # point
+                result.obs_id = self._metadata.data_label(result.file_uri)
             self._logger.debug('Done build.')
             return result
         except Exception as e:
