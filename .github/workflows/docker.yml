@@ -40,11 +40,12 @@ jobs:
       -
         name: Set Docker tag
         run: |
-          TS_TAG=$(date +'%Y%m%d%H%M')
+          _TS_TAG=$(date +'%Y%m%d%H%M')
+          echo "::set-env name=TS_TAG::$_TS_TAG"
       -
         name: Build and push
         uses: docker/build-push-action@v3
         with:
           context: .
           push: true
-          tags: ${{ secrets.CI_REGISTRY_ORGANIZATION }}/${{ inputs.name }}:latest, ${{ secrets.CI_REGISTRY_ORGANIZATION }}/${{ inputs.name }}:${TS_TAG}
+          tags: ${{ secrets.CI_REGISTRY_ORGANIZATION }}/${{ inputs.name }}:latest, ${{ secrets.CI_REGISTRY_ORGANIZATION }}/${{ inputs.name }}:${{ env.TS_TAG }}
