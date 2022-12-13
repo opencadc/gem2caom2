@@ -40,7 +40,7 @@ jobs:
       -
         name: Set Docker tag
         run: |
-          echo "::set-env name=TS_TAG::$(date +'%Y%m%d%H%M')"
+          TS_TAG=$(date +'%Y%m%d%H%M')
       -
         name: Build and push
         uses: docker/build-push-action@v3
