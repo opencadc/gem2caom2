@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+
+<title>Detail for Program: GN-2009B-Q-3</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GN-2009B-Q-3</h1>
+
+<table>
+ <tr><td>Title:<td>Constraining the Effects of High Energy Photons on Proto-Planetary Disk Chemistry and Evolution</tr>
+ <tr><td>PI:<td>Jeff Bary</tr>
+ <tr><td>Co-I(s):<td> Gregory Herczeg,  Alexander Brown</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+We propose to conduct a multi-wavelength monitoring campaign of [Ne II], X-ray emission, and accretion rate from the classical T Tauri star GM Aur.  Leveraging the variable nature of X-rays, [Ne II] emission, and the mass accretion rates of these sources, we will search for a correlations in these data to provide the first direct observational evidence of the role X-rays and EUV photons play in driving disk chemistry and the evolution of proto-planetary disks.  We have obtained data from our first epoch and request two additional MICHELLE observations to be obtained simultaneous to Chandra X-ray observations of GM Aur.
+</div>
+
+
+
+</body>
+</html>

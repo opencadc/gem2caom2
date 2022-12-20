@@ -3565,7 +3565,7 @@ class Michelle(GeminiMapping):
         )
         if self.fm is None:  # means filter_name not found
             # DB 09-04-19 - Use 100 microns for the initial max for michelle.
-            w_max, w_min = self._multiple_filter_lookup(michelle, wl_max=100)
+            w_max, w_min = self._multiple_filter_lookup(filter_name, michelle, wl_max=100)
             self.fm = svofps.FilterMetadata()
             self.fm.set_bandpass(w_max, w_min)
             self.fm.set_central_wl(w_max, w_min)
