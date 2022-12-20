@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+
+<title>Detail for Program: GN-2021B-Q-110</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GN-2021B-Q-110</h1>
+
+<table>
+ <tr><td>Title:<td>Jupiter M-band Mapping during the Juno Extended Mission</tr>
+ <tr><td>PI:<td>Michael H. Wong</tr>
+ <tr><td>Co-I(s):<td> Imke de Pater,  Glenn S. Orton,  Gordon L. Bjoraker,  Andrew Stephens</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+Gemini-N NIRI global maps of Jupiter at 5 μm provide a crucial component in a tightly focused observational campaign supporting the Juno Extended Mission investigation of Jupiter&#x27;s atmosphere. Members of our small team are leading key support observations, each with great independent scientific value. The overarching goal of the joint campaign is to understand the 3D flow in Jupiter&#x27;s atmosphere, with Hubble data measuring horizontal flow, and Juno / Gemini / Keck / IRTF data measuring vertical flow, composition, and lightning (a tracer of active convection). In particular, areas that are bright in NIRI M-band maps represent clearings in the upper cloud decks, and thus downward dynamical flow. These coordinated observations are highly time-sensitive. We propose full-disk 5-μm maps with NIRI to coincide with 10 perijove passes distributed over the 2021B-2023A semesters (with Long-Term Status for Standard Programs). The maps will play a key role in a worldwide effort to provide global context for Juno atmospheric data, which cover only one narrow north-south swath during each orbit. Our &quot;lucky imaging&quot; data will be used to guide sample selections for Juno microwave retrievals of O/H on Jupiter, affected by inhomogeneity in the atmosphere. We will continue to use a more time-efficient observing strategy compared to our initial 2016-2017 observations. 
+</div>
+
+
+
+</body>
+</html>
