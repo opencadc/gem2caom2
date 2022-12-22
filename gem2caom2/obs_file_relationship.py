@@ -227,6 +227,7 @@ whereas the -G versions show up as distinct observations.
 
 import logging
 import re
+from caom2pipe.manage_composable import StorageName
 
 
 __all__ = ['repair_data_label', 'remove_extensions']
@@ -495,7 +496,11 @@ def repair_data_label(file_name, data_label):
             # has observation ID of GN-2006B-C-4-29-015-ARC in sc2.  I think
             # the sc2 value is correct since there are multiple members.
             prefix = ''
-
+            if StorageName.collection == 'GEMINI':
+                if 'ARC' in suffix:
+                    suffix.remove('ARC')
+                else:
+                    suffix.remove('arc')
         if (
             prefix == ''
             and len(suffix) == 1

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+
+<title>Detail for Program: GN-2012B-Q-110</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GN-2012B-Q-110</h1>
+
+<table>
+ <tr><td>Title:<td>Orbital Periods for Two Unique, Recently Discovered AM CVn Systems</tr>
+ <tr><td>PI:<td>David Levitan</tr>
+ <tr><td>Co-I(s):<td> Thomas Prince,  Paul Groot,  Thomas Kupfer</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+AM CVn systems are rare, ultra-compact binaries which are astrophysical laboratories that allow us to study phenomena including stellar evolution, accretion disk physics, gravitational waves and other aspects of general relativity. They are the He-rich counterparts to cataclysmic variables. We have discovered 7 such systems from Palomar Transient Factory data and here request Gemini time for phase-resolved spectroscopy of two unique systems to find orbital periods. This will provide information towards our goal of understanding the evolution and population distribution of these unique systems. 
+</div>
+
+
+<h2>Publications using this program's data</h2>
+<ul>
+<li>
+<a href="/searchform/publication=2014ApJ...785..114L" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2014ApJ...785..114L/abstract" target="_blank">[ADS]</a> PTF1 J191905.19+481506.2—a Partially Eclipsing AM CVn System Discovered in the Palomar Transient Factory
+</ul>
+
+
+</body>
+</html>
