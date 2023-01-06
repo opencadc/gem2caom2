@@ -515,10 +515,13 @@ def repair_data_label(file_name, data_label):
         for ii in suffix:
             if f'-{ii.upper()}' not in repaired:
                 repaired = f'{repaired}-{ii.upper()}'
-    elif file_id.endswith('r') or file_id.endswith('b'):
+    elif (file_id.endswith('r') or file_id.endswith('b')) and (file_id.startswith('S') or file_id.startswith('N')):
         # Alopeke/Zorro files, data_label is the file_id minus the
         # channel indicator
-        repaired = file_id[:-1]
+        year = int(file_id[1:5])
+        if year > 2017:
+            # commissioning for these instruments started in December 2017
+            repaired = file_id[:-1]
     elif file_id.startswith('SDC'):
         # IGRINS
         file_id_bits = file_id.split('_')
