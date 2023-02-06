@@ -185,6 +185,9 @@ class GeminiValueRepair(mc.ValueRepairCache):
         'chunk.position.axis.axis1.ctype': {
             'RA--TAN': 'RA---TAN',
         },
+        # WF - 02-02-23
+        # APPT is a typo, repair to GAPPT
+        'chunk.position.coordsys': { 'APPT': 'GAPPT' },
     }
 
     def __init__(self):
