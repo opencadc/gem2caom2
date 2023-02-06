@@ -90,7 +90,7 @@
                         <caom2:cd22>5.15627303663099e-06</caom2:cd22>
                       </caom2:function>
                     </caom2:axis>
-                    <caom2:coordsys>APPT</caom2:coordsys>
+                    <caom2:coordsys>GAPPT</caom2:coordsys>
                     <caom2:equinox>2021.79251156863</caom2:equinox>
                   </caom2:position>
                   <caom2:energy>
