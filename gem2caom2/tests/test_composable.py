@@ -560,10 +560,7 @@ def test_run_state_compression_commands(
     def _mock_dir_list(arg1, output_file='', data_only=True, response_format='arg4'):
         result = deque()
         result.append(
-            StateRunnerMeta(
-                '/test_files/S20050825S0143.fits.bz2',
-                '2019-10-23T16:27:19.000',
-            ),
+            StateRunnerMeta('/test_files/S20050825S0143.fits.bz2', datetime(2019, 10, 23, 16, 19, tzinfo=timezone.utc))
         )
         return result
 

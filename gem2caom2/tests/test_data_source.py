@@ -67,7 +67,7 @@
 # ***********************************************************************
 #
 
-from datetime import datetime
+from datetime import datetime, timezone
 from mock import call, Mock, patch
 from gem2caom2 import data_source
 import gem_mocks
@@ -85,32 +85,24 @@ def test_incremental_source(query_mock):
     assert test_subject is not None, 'expect construction success'
     test_reporter = Mock()
     test_subject.reporter = test_reporter
-    prev_exec_time = datetime(
-        year=2021, month=1, day=1, hour=20, minute=3, second=0
-    ).timestamp()
-    exec_time = datetime(
-        year=2021, month=1, day=1, hour=22, minute=13, second=0
-    ).timestamp()
+    prev_exec_time = datetime(year=2021, month=1, day=1, hour=20, minute=3, second=0)
+    exec_time = datetime(year=2021, month=1, day=1, hour=22, minute=13, second=0)
     test_result = test_subject.get_time_box_work(prev_exec_time, exec_time)
     assert test_result is not None, 'expect a result'
     assert len(test_result) == 2, 'wrong number of results'
     test_entry = test_result.popleft()
     assert test_entry.entry_name == 'N20210101S0043.fits', 'wrong first file'
-    assert test_entry.entry_ts == 1609535565.237183, 'wrong first timestamp'
+    assert test_entry.entry_dt == datetime(2021, 1, 1, 21, 12, 45, 237183, tzinfo=timezone.utc), 'wrong fits datetime'
     test_entry = test_result.popleft()
     assert test_entry.entry_name == 'N20210101S0042.fits', 'wrong 2nd file'
-    assert test_entry.entry_ts == 1609535567.250666, 'wrong 2nd timestamp'
+    assert test_entry.entry_dt == datetime(2021, 1, 1, 21, 12, 47, 250666, tzinfo=timezone.utc), 'wrong 2nd datetime'
     assert test_reporter.capture_todo.called, 'capture_todo'
     assert test_reporter.capture_todo.call_count == 1, 'wrong number of capture_todo calls'
     test_reporter.capture_todo.assert_called_with(2, 0, 0)
 
     # get nothing
-    prev_exec_time = datetime(
-        year=2019, month=1, day=1, hour=20, minute=3, second=0
-    ).timestamp()
-    exec_time = datetime(
-        year=2019, month=2, day=1, hour=22, minute=13, second=0
-    ).timestamp()
+    prev_exec_time = datetime(year=2019, month=1, day=1, hour=20, minute=3, second=0)
+    exec_time = datetime(year=2019, month=2, day=1, hour=22, minute=13, second=0)
     test_result = test_subject.get_time_box_work(prev_exec_time, exec_time)
     assert test_result is not None, 'expect a result'
     assert len(test_result) == 0, 'wrong number of empty result list'
@@ -132,12 +124,8 @@ def test_incremental_source_reproduce(query_mock):
     assert test_subject is not None, 'expect construction success'
     test_reporter = Mock()
     test_subject.reporter = test_reporter
-    prev_exec_time = datetime(
-        year=2022, month=1, day=1, hour=20, minute=3, second=0
-    ).timestamp()
-    exec_time = datetime(
-        year=2022, month=4, day=1, hour=22, minute=13, second=0
-    ).timestamp()
+    prev_exec_time = datetime(year=2022, month=1, day=1, hour=20, minute=3, second=0)
+    exec_time = datetime(year=2022, month=4, day=1, hour=22, minute=13, second=0)
     test_result = test_subject.get_time_box_work(prev_exec_time, exec_time)
     assert test_result is not None, 'expect a result'
     assert len(test_result) == 2, 'wrong number of results'

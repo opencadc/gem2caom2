@@ -667,6 +667,9 @@ class Object:
     def close(self):
         pass
 
+    def raise_for_status(self):
+        pass
+
 
 def mock_query_endpoint(url, timeout=-1):
     # returns response.text

@@ -1,5 +1,5 @@
-ARG PYTHON_VERSION=3.11
-FROM opencadc/pandas:${PYTHON_VERSION}-slim as builder
+ARG OPENCADC_PYTHON_VERSION=3.11
+FROM opencadc/pandas:${OPENCADC_PYTHON_VERSION}-slim as builder
 
 RUN apt-get update --no-install-recommends  && apt-get dist-upgrade -y && \
     apt-get install -y build-essential \
@@ -26,9 +26,9 @@ RUN pip install git+https://github.com/${OPENCADC_REPO}/caom2pipe@${OPENCADC_BRA
 
 RUN pip install git+https://github.com/${OPENCADC_REPO}/gem2caom2@${OPENCADC_BRANCH}#egg=gem2caom2
 
-FROM python:${PYTHON_VERSION}-slim
+FROM python:${OPENCADC_PYTHON_VERSION}-slim
 WORKDIR /usr/src/app
-ARG PYTHON_VERSION
+ARG OPENCADC_PYTHON_VERSION
 
 COPY --from=builder /usr/local/lib/python3.11/site-packages/ /usr/local/lib/python3.11/site-packages/
 COPY --from=builder /usr/local/bin/* /usr/local/bin/

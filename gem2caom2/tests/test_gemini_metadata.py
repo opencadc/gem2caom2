@@ -74,6 +74,7 @@ from astropy.table import Table
 
 from mock import patch, Mock
 
+from cadcutils import exceptions
 from caom2pipe import manage_composable as mc
 from gem2caom2 import gemini_metadata, gem_name
 
@@ -162,3 +163,29 @@ def test_provenance_finder(caom2_mock, local_mock):
                 )
     finally:
         os.path.exists = os_path_exists_orig
+
+
+@patch('caom2pipe.client_composable.ClientCollection')
+@patch('gem2caom2.gemini_metadata.GeminiMetadataReader._retrieve_json')
+@patch('caom2pipe.manage_composable.query_endpoint_session')
+def test_header_not_at_cadc(query_mock, retrieve_json_mock, clients_mock, test_config):
+    # the file is private, re-ingestion fails to find headers at CADC, needs to go back to archive.gemini.edu
+    test_f_name = 'N20220314S0229.fits.bz2'
+    test_obs_id = 'GN-CAL20220314-18-083'
+    query_mock.side_effect = gem_mocks.mock_query_endpoint_reproduce
+    retrieve_json_mock.side_effect = gem_mocks.mock_get_obs_metadata
+    test_provenance_finder = gemini_metadata.ProvenanceFinder(
+        test_config, clients_mock.return_value.query_client, Mock()
+    )
+    clients_mock.return_value.data_client.get_head.side_effect = exceptions.UnexpectedException
+    test_session_mock = Mock()
+    test_session_mock.get.side_effect = gem_mocks.mock_query_endpoint
+    test_filter_cache = Mock()
+    test_subject = gemini_metadata.GeminiStorageClientReader(
+        clients_mock.return_value.data_client, test_session_mock, test_provenance_finder, test_filter_cache
+    )
+    test_storage_name = gem_name.GemName(file_name=test_f_name)
+    test_storage_name.obs_id = test_obs_id
+    test_subject.set(test_storage_name)
+    assert test_subject.headers[test_storage_name.file_uri] is not None, 'expect query result'
+    assert len(test_subject.headers[test_storage_name.file_uri]) == 1, 'headers have content'
