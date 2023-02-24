@@ -238,12 +238,11 @@ class GeminiStorageClientReader(
         except exceptions.UnexpectedException as e:
             # file is not at CADC, so as a second option get the headers from
             # archive.gemini.edu
-            for entry in storage_name.source_names:
-                if '.fits' in entry:
-                    self._headers[entry] = retrieve_headers(
-                        path.basename(entry),
-                        self._logger,
-                        self._session,
+            self._logger.info(f'{storage_name.source_names[0]} not at CADC. Checking archive.gemini.edu.')
+            for idx, entry in enumerate(storage_name.source_names):
+                if '.jpg' not in entry:
+                    self._headers[storage_name.destination_uris[idx]] = retrieve_headers(
+                        path.basename(entry), self._logger, self._session
                     )
                     self._logger.debug(f'Found {entry} at archive.gemini.edu.')
                 else:

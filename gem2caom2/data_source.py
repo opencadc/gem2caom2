@@ -97,22 +97,18 @@ class IncrementalSource(dsc.DataSource):
         self._session = reader._session
         self._metadata_reader = reader
 
-    def get_time_box_work(self, prev_exec_time, exec_time):
+    def get_time_box_work(self, prev_exec_dt, exec_dt):
         """
-        :param prev_exec_time float timestamp start of the time-boxed chunk
-        :param exec_time float timestamp end of the time-boxed chunk
+        :param prev_exec_dt datetime start of the time-boxed chunk
+        :param exec_dt datetime end of the time-boxed chunk
         :return: a deque of file names with time their associated JSON (DB)
             records were modified from archive.gemini.edu.
         """
 
-        self._logger.debug(
-            f'Begin get_time_box_work from {prev_exec_time} to {exec_time}.'
-        )
+        self._logger.debug(f'Begin get_time_box_work from {prev_exec_dt} to {exec_dt}.')
         # datetime format 2019-12-01T00:00:00.000000
-        prev_dt_str = mc.make_time_tz(prev_exec_time).strftime(
-            mc.ISO_8601_FORMAT
-        )
-        exec_dt_str = mc.make_time_tz(exec_time).strftime(mc.ISO_8601_FORMAT)
+        prev_dt_str = prev_exec_dt.strftime(mc.ISO_8601_FORMAT)
+        exec_dt_str = exec_dt.strftime(mc.ISO_8601_FORMAT)
         url = (
             f'https://archive.gemini.edu/jsonsummary/canonical/'
             f'NotFail/notengineering/'
@@ -134,18 +130,13 @@ class IncrementalSource(dsc.DataSource):
                 if metadata is not None:
                     if len(metadata) == 0:
                         self._logger.warning(
-                            f'No query results returned for interval from '
-                            f'{prev_exec_time} to {exec_time}.'
+                            f'No query results returned for interval from {prev_exec_dt} to {exec_dt}.'
                         )
                     else:
                         for entry in metadata:
                             file_name = entry.get('name')
-                            entrytime = mc.make_time_tz(entry.get('entrytime'))
-                            entries.append(
-                                dsc.StateRunnerMeta(
-                                    file_name, entrytime.timestamp()
-                                )
-                            )
+                            entry_dt = mc.make_time_tz(entry.get('entrytime'))
+                            entries.append(dsc.StateRunnerMeta(file_name, entry_dt))
                             uri = mc.build_uri(mc.StorageName.collection, file_name, mc.StorageName.scheme)
                             # all the other cases where add_json_record is
                             # called, there's a list as input, so conform to
@@ -157,8 +148,8 @@ class IncrementalSource(dsc.DataSource):
                 response.close()
         if len(entries) == 10000:
             self._max_records_encountered = True
-            self._encounter_start = prev_exec_time
-            self._encounter_end = exec_time
+            self._encounter_start = prev_exec_dt
+            self._encounter_end = exec_dt
         self._reporter.capture_todo(len(entries), 0, 0)
         self._logger.debug('End get_time_box_work.')
         return entries
@@ -181,21 +172,17 @@ class PublicIncremental(dsc.QueryTimeBoxDataSource):
         super(PublicIncremental, self).__init__(config)
         self._query_client = query_client
 
-    def get_time_box_work(self, prev_exec_time, exec_time):
+    def get_time_box_work(self, prev_exec_dt, exec_dt):
         """
-        :param prev_exec_time datetime start of the timestamp chunk
-        :param exec_time datetime end of the timestamp chunk
+        :param prev_exec_dt datetime start of the timestamp chunk
+        :param exec_dt datetime end of the timestamp chunk
         :return: a list of file names with time they were modified in /ams,
             structured as an astropy Table (for now).
         """
         self._logger.debug('Begin get_time_box_work')
         # datetime format 2019-12-01T00:00:00.000000
-        prev_dt_str = datetime.fromtimestamp(
-            prev_exec_time, tz=timezone.utc
-        ).strftime(mc.ISO_8601_FORMAT)
-        exec_dt_str = datetime.fromtimestamp(
-            exec_time, tz=timezone.utc
-        ).strftime(mc.ISO_8601_FORMAT)
+        prev_dt_str = prev_exec_dt.strftime(mc.ISO_8601_FORMAT)
+        exec_dt_str = exec_dt.strftime(mc.ISO_8601_FORMAT)
         query = (
             f"SELECT A.uri, A.lastModified "
             f"FROM caom2.Observation AS O "
@@ -221,10 +208,7 @@ class PublicIncremental(dsc.QueryTimeBoxDataSource):
         entries = deque()
         for row in result:
             entries.append(
-                dsc.StateRunnerMeta(
-                    mc.CaomName(row['uri']).file_name,
-                    mc.make_time(row['lastModified']).timestamp(),
-                )
+                dsc.StateRunnerMeta(mc.CaomName(row['uri']).file_name, mc.make_time_tz(row['lastModified']))
             )
         self._reporter.capture_todo(len(entries), 0, 0)
         self._logger.debug('End get_time_box_work')
