@@ -120,6 +120,7 @@ def test_is_processed():
         'P2002DEC02_0075_SUB.0001': True,
         'N20191219A0004b': False,
         'N20120825S0597_arc': True,
+        'rgN20091120S0124_FRINGE': True,
     }
     for ii in tests:
         assert (
