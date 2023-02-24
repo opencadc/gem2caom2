@@ -119,6 +119,8 @@ def test_is_processed():
         'P2002DEC02_0161_SUB': True,
         'P2002DEC02_0075_SUB.0001': True,
         'N20191219A0004b': False,
+        'N20120825S0597_arc': True,
+        'rgN20091120S0124_FRINGE': True,
     }
     for ii in tests:
         assert (
@@ -126,7 +128,8 @@ def test_is_processed():
         ), f'failed {ii}'
 
 
-def test_repair_data_label():
+def test_repair_data_label(test_config):
+    # test_config is present so that caom2pipe.StorageName.collection is set properly
     for ii in gem_mocks.LOOKUP.keys():
         test_result = obs_file_relationship.repair_data_label(
             ii, gem_mocks.LOOKUP[ii][0]
