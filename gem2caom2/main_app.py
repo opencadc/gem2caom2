@@ -95,6 +95,8 @@ import math
 import re
 import traceback
 
+from dateutil import tz
+
 from caom2 import CalibrationLevel, Chunk, ProductType
 from caom2 import TypedList, DerivedObservation, DataProductType
 from caom2 import ObservationIntentType, TargetType, CoordAxis1D, Axis
@@ -187,7 +189,7 @@ class GeminiValueRepair(mc.ValueRepairCache):
         },
         # WF - 02-02-23
         # APPT is a typo, repair to GAPPT
-        'chunk.position.coordsys': { 'APPT': 'GAPPT' },
+        'chunk.position.coordsys': {'APPT': 'GAPPT'},
     }
 
     def __init__(self):
@@ -341,7 +343,8 @@ class GeminiMapping(cc.TelescopeMapping):
                 meta_release = self._lookup.release(
                     self._storage_name.file_uri
                 )
-        return meta_release
+        # metaRelease, dataRelease constructor includes a comparison with a non-aware value
+        return mc.make_datetime_tz(meta_release, tz.UTC).replace(tzinfo=None)
 
     def get_obs_intent(self, ext):
         result = ObservationIntentType.CALIBRATION
@@ -432,8 +435,8 @@ class GeminiMapping(cc.TelescopeMapping):
             result = None
             temp = comments.split('\n')
             if len(temp) > 6 and 'HST' in temp[6]:
-                # go from HST to UTC
-                result = mc.make_time(temp[6])
+                # go from HST to UTC, then remove the timezone, because the lastExecuted constructor doesn't expect it
+                result = mc.make_datetime_tz(temp[6], tz.gettz('HST')).astimezone(tz=tz.UTC).replace(tzinfo=None)
             return result
 
         return self._get_provenance_breakout(ext, breakout)
@@ -542,7 +545,7 @@ class GeminiMapping(cc.TelescopeMapping):
         Calculate the Chunk Time WCS function value, in 'mjd'.
         """
         time_string = self._lookup.ut_datetime(self._storage_name.file_uri)
-        return ac.get_datetime(time_string)
+        return ac.get_datetime_mjd(mc.make_datetime_tz(time_string, tz.UTC))
 
     def accumulate_blueprint(self, bp, application=None):
         """Configure the telescope-specific ObsBlueprint at the CAOM model
@@ -1476,7 +1479,7 @@ class F2(GeminiMapping):
             # - would like to know when the problem gets fixed (so, need to know when the problem first occurs)
             ctype1 = mc.get_keyword(self._headers, 'CTYPE1')
             ctype2 = mc.get_keyword(self._headers, 'CTYPE2')
-            if ctype1 is None or ctype2 is None or ctype1 == '?' or ctype2 == '?':
+            if ctype1 is None or ctype2 is None or '?' in ctype1 or '?' in ctype2:
                 self._observable.rejected.record(mc.Rejected.BAD_METADATA, self._storage_name.file_name)
             else:
                 bp.configure_position_axes((1, 2))
@@ -2629,14 +2632,10 @@ class Gnirs(GeminiMapping):
                                         slit_table_value = 0.1
                                         lookup_index = 3
                                     elif camera.startswith('Short'):
-                                        date_time = ac.get_datetime(
-                                            self._lookup.ut_datetime(
-                                                self._storage_name.file_uri
-                                            )
+                                        date_time = ac.get_datetime_mjd(
+                                            self._lookup.ut_datetime(self._storage_name.file_uri)
                                         )
-                                        if date_time > ac.get_datetime(
-                                            '2012-11-01T00:00:00'
-                                        ):
+                                        if date_time > ac.get_datetime_mjd('2012-11-01T00:00:00'):
                                             slit_table_value = 0.3
                                             if grating == '32':
                                                 lookup_index = 4

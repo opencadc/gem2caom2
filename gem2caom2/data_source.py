@@ -68,7 +68,7 @@
 #
 
 from collections import deque
-from datetime import datetime, timezone
+from dateutil import tz
 
 from caom2pipe import client_composable as clc
 from caom2pipe import data_source_composable as dsc
@@ -135,7 +135,7 @@ class IncrementalSource(dsc.DataSource):
                     else:
                         for entry in metadata:
                             file_name = entry.get('name')
-                            entry_dt = mc.make_time_tz(entry.get('entrytime'))
+                            entry_dt = mc.make_datetime_tz(entry.get('entrytime'), tz.UTC)
                             entries.append(dsc.StateRunnerMeta(file_name, entry_dt))
                             uri = mc.build_uri(mc.StorageName.collection, file_name, mc.StorageName.scheme)
                             # all the other cases where add_json_record is
@@ -208,7 +208,7 @@ class PublicIncremental(dsc.QueryTimeBoxDataSource):
         entries = deque()
         for row in result:
             entries.append(
-                dsc.StateRunnerMeta(mc.CaomName(row['uri']).file_name, mc.make_time_tz(row['lastModified']))
+                dsc.StateRunnerMeta(mc.CaomName(row['uri']).file_name, mc.make_datetime_tz(row['lastModified'], tz.UTC))
             )
         self._reporter.capture_todo(len(entries), 0, 0)
         self._logger.debug('End get_time_box_work')
