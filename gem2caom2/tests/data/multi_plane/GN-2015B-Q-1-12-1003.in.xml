@@ -44,10 +44,6 @@
         <caom2:producer>CFHT DetCom v3.60.15 (Apr 23 2015)</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/GN-2015B-Q-1-12-1003</caom2:reference>
       </caom2:provenance>
-      <caom2:position/>
-      <caom2:energy/>
-      <caom2:time/>
-      <caom2:polarization/>
       <caom2:artifacts>
         <caom2:artifact caom2:id="00000000-0000-0000-89ee-a283dd2c9d93" caom2:lastModified="2018-10-08T21:01:21.704" caom2:maxLastModified="2018-10-08T21:01:21.704" caom2:metaChecksum="md5:61a7181890cc9be1423fa100f2371795" caom2:accMetaChecksum="md5:fcbed865b226707dd0a7ec7f4eef8258" caom2:metaProducer="gem2caom2/0.8.1">
           <caom2:uri>gemini:GEMINI/N20150807G0044.fits</caom2:uri>

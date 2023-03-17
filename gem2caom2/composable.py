@@ -72,6 +72,7 @@ import sys
 import traceback
 
 from datetime import datetime
+from dateutil import tz
 
 from caom2pipe.client_composable import ClientCollection
 from caom2pipe import data_source_composable as dsc
@@ -256,12 +257,10 @@ def _run_state():
         meta_visitors,
         name_builder,
     ) = _common_init()
-    state = mc.State(config.state_fqn)
-    end_timestamp_s = state.bookmarks.get(data_source.GEM_BOOKMARK).get(
-        'end_timestamp', datetime.now()
-    )
-    end_timestamp_dt = mc.make_time_tz(end_timestamp_s)
-    logging.info(f'{main_app.APPLICATION} will end at {end_timestamp_s}')
+    state = mc.State(config.state_fqn, tz.UTC)
+    end_timestamp_s = state.bookmarks.get(data_source.GEM_BOOKMARK).get('end_timestamp', datetime.now())
+    end_timestamp_dt = mc.make_datetime_tz(end_timestamp_s, tz.UTC)
+    logging.info(f'{main_app.APPLICATION} will end at {end_timestamp_dt}')
     incremental_source = data_source.IncrementalSource(metadata_reader)
     result = rc.run_by_state(
         config=config,

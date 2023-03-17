@@ -85,6 +85,7 @@ from caom2utils import data_util
 from caom2pipe import client_composable as clc
 from caom2pipe import manage_composable as mc
 from caom2pipe import reader_composable as rdc
+from dateutil import tz
 from gem2caom2.util import Inst
 from gem2caom2 import obs_file_relationship
 
@@ -133,7 +134,7 @@ class AbstractGeminiMetadataReader(rdc.MetadataReader):
                 size=record.get('data_size'),
                 name=record.get('filename'),
                 md5sum=record.get('data_md5'),
-                lastmod=mc.make_time_tz(record.get('lastmod')),
+                lastmod=mc.make_datetime_tz(record.get('lastmod'), tz.UTC),
                 file_type=data_util.get_file_type(record.get('filename')),
                 encoding=data_util.get_file_encoding(record.get('filename')),
             )
@@ -342,7 +343,11 @@ class GeminiMetadataLookup:
         return self._search_json(uri, 'types')
 
     def ut_datetime(self, uri):
-        return self._search_json(uri, 'ut_datetime')
+        temp = self._search_json(uri, 'ut_datetime')
+        result = None
+        if temp is not None:
+            result = mc.make_datetime_tz(temp, tz.UTC)
+        return result
 
     def _search_json(self, uri, lookup_key):
         return self._reader.json_metadata.get(uri).get(lookup_key)

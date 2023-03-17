@@ -1000,7 +1000,7 @@ def _run_test_common(
             try:
                 observation = fits2caom2_augmentation.visit(observation, **kwargs)
             except mc.CadcException as e:
-                if storage_name.file_name == 'N20220915S0113.fits':
+                if storage_name.file_name in ['N20220915S0113.fits', 'S20230301S0170.fits']:
                     assert (
                         test_observable.rejected.is_mystery_value(storage_name.file_name)
                     ), 'expect rejected mystery value record'
@@ -1008,7 +1008,7 @@ def _run_test_common(
 
         compare(expected_fqn, actual_fqn, observation)
 
-        if observation.observation_id == 'GS-2022B-Q-235-137-045':
+        if observation.observation_id in ['GS-2022B-Q-235-137-045', 'GS-2023A-LP-103-23-017']:
             assert test_observable.rejected.is_bad_metadata(storage_name.file_name), 'expect rejected record'
         else:
             assert not test_observable.rejected.is_bad_metadata(storage_name.file_name), 'expect no rejected record'
