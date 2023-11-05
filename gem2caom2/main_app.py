@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # ***********************************************************************
 # ******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
 # *************  CENTRE CANADIEN DE DONNÉES ASTRONOMIQUES  **************
@@ -114,9 +113,7 @@ from gem2caom2.gemini_metadata import GeminiMetadataLookup
 from gem2caom2.util import Inst
 
 
-__all__ = ['GeminiMapping', 'APPLICATION', 'mapping_factory']
-
-APPLICATION = 'gem2caom2'
+__all__ = ['GeminiMapping', 'mapping_factory']
 
 # DB 01-04-21
 # PINHOLE is CALIBRATION
@@ -204,8 +201,8 @@ class GeminiMapping(cc.TelescopeMapping):
     # value repair cache
     value_repair = GeminiValueRepair()
 
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, clients, observable)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable, observation, config):
+        super().__init__(storage_name, headers, clients, observable, observation, config)
         self._metadata_reader = lookup.reader
         self._instrument = instrument
         self._lookup = lookup
@@ -547,10 +544,10 @@ class GeminiMapping(cc.TelescopeMapping):
         time_string = self._lookup.ut_datetime(self._storage_name.file_uri)
         return ac.get_datetime_mjd(mc.make_datetime_tz(time_string, tz.UTC))
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
         """Configure the telescope-specific ObsBlueprint at the CAOM model
         Observation level."""
-        super().accumulate_blueprint(bp, APPLICATION)
+        super().accumulate_blueprint(bp)
         self._logger.debug(
             f'Begin accumulate_fits_bp for {self._storage_name.file_id}.'
         )
@@ -619,17 +616,15 @@ class GeminiMapping(cc.TelescopeMapping):
 
         self._logger.debug('Done accumulate_fits_bp.')
 
-    def update(self, observation, file_info):
+    def update(self, file_info):
 
         if self._headers is None:
             # proprietary header metadata at archive.gemini.edu, so do nothing
-            return observation
+            return self._observation
 
         # processed files
-        if cc.is_composite(self._headers) and not isinstance(
-            observation, DerivedObservation
-        ):
-            observation = self._update_composite(observation)
+        if cc.is_composite(self._headers) and not isinstance(self._observation, DerivedObservation):
+            self._observation = self._update_composite(self._observation)
 
         if self._instrument in [Inst.MICHELLE, Inst.GNIRS]:
             # CSD-2511
@@ -649,15 +644,14 @@ class GeminiMapping(cc.TelescopeMapping):
             if len(self._headers) == 1:
                 self._logger.warning(
                     f'{self._instrument}: no image data for '
-                    f'{observation.observation_id}. Cannot build an '
-                    f'observation.'
+                    f'{self._observation.observation_id}. Cannot build an observation.'
                 )
                 return None
 
         config = mc.Config()
         config.get_executors()
         try:
-            for plane in observation.planes.values():
+            for plane in self._observation.planes.values():
                 if (
                     self._storage_name.product_id is not None
                     and self._storage_name.product_id != plane.product_id
@@ -697,7 +691,7 @@ class GeminiMapping(cc.TelescopeMapping):
                             # for each pixel (no WCS).
                             self._logger.info(
                                 f'GPI: Setting chunks to None for part {part} '
-                                f'for {observation.observation_id}'
+                                f'for {self._observation.observation_id}'
                             )
                             artifact.parts[part].chunks = TypedList(
                                 Chunk,
@@ -712,18 +706,14 @@ class GeminiMapping(cc.TelescopeMapping):
 
                             # energy WCS
                             filter_name = self._get_filter_name(int(part))
-                            if self._reset_energy(
-                                observation.type, filter_name
-                            ):
+                            if self._reset_energy(self._observation.type, filter_name):
                                 cc.reset_energy(c)
                             else:
                                 self._update_energy(
                                     c, plane.data_product_type, filter_name
                                 )
                             # position WCS
-                            if self._reset_position(
-                                observation.type, artifact.product_type
-                            ):
+                            if self._reset_position(self._observation.type, artifact.product_type):
                                 cc.reset_position(c)
                             else:
                                 self._update_position(part, c, int(part))
@@ -733,24 +723,22 @@ class GeminiMapping(cc.TelescopeMapping):
 
                             self._make_axes_consistent(c)
 
-                    if isinstance(observation, DerivedObservation):
+                    if isinstance(self._observation, DerivedObservation):
                         values = cc.find_keywords_in_headers(
                             self._headers[1:], ['IMCMB']
                         )
-                        repaired_values = _remove_processing_detritus(
-                            values, observation.observation_id
-                        )
+                        repaired_values = _remove_processing_detritus(values, self._observation.observation_id)
                         cc.update_plane_provenance_from_values(
                             plane,
                             self._repair_provenance_value,
                             repaired_values,
                             self._storage_name.collection,
-                            observation.observation_id,
+                            self._observation.observation_id,
                         )
 
                     if (
                         processed
-                        or isinstance(observation, DerivedObservation)
+                        or isinstance(self._observation, DerivedObservation)
                         or self._instrument is Inst.TEXES
                     ) and 'jpg' not in self._storage_name.file_name:
                         # not the preview artifact
@@ -767,25 +755,23 @@ class GeminiMapping(cc.TelescopeMapping):
                         )
                         artifact.parts.pop(part)
 
-                if observation.proposal is not None:
-                    program = program_metadata.get_pi_metadata(
-                        observation.proposal.id
-                    )
+                if self._observation.proposal is not None:
+                    program = program_metadata.get_pi_metadata(self._observation.proposal.id)
                     if program is not None:
-                        observation.proposal.pi_name = program['pi_name']
-                        observation.proposal.title = program['title']
+                        self._observation.proposal.pi_name = program['pi_name']
+                        self._observation.proposal.title = program['title']
 
-            if isinstance(observation, DerivedObservation):
-                cc.update_observation_members(observation)
+            if isinstance(self._observation, DerivedObservation):
+                cc.update_observation_members(self._observation)
 
-            GeminiMapping.value_repair.repair(observation)
+            GeminiMapping.value_repair.repair(self._observation)
         except Exception as e:
-            self._logger.error(f'Error {e} for {observation.observation_id}')
+            self._logger.error(f'Error {e} for {self._observation.observation_id}')
             tb = traceback.format_exc()
             self._logger.error(tb)
             raise mc.CadcException(e)
         self._logger.debug('Done update.')
-        return observation
+        return self._observation
 
     def _build_chunk_energy(self, chunk, filter_name):
         # If n_axis=1 (as I guess it will be for all but processes GRACES
@@ -1216,10 +1202,10 @@ def _remove_processing_detritus(values, obs_id):
 
 
 class Bhros(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable, observation, config):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable, observation, config)
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
         super().accumulate_blueprint(bp)
         bp.set_default('Observation.telescope.name', 'Gemini-South')
 
@@ -1314,10 +1300,10 @@ class Bhros(GeminiMapping):
 
 
 class Cirpass(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable, observation, config):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable, observation, config)
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
         super().accumulate_blueprint(bp)
         bp.set_default('Observation.telescope.name', 'Gemini-South')
         bp.configure_position_axes((1, 2))
@@ -1463,10 +1449,10 @@ class Cirpass(GeminiMapping):
 
 
 class F2(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable, observation, config):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable, observation, config)
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
         """Configure the telescope-specific ObsBlueprint at the CAOM model
         Observation level."""
         super().accumulate_blueprint(bp)
@@ -1653,10 +1639,10 @@ class F2(GeminiMapping):
 
 
 class Flamingos(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable, observation, config):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable, observation, config)
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
         super().accumulate_blueprint(bp)
         bp.configure_position_axes((1, 2))
         # DB 27-05-19
@@ -1939,10 +1925,10 @@ class Flamingos(GeminiMapping):
 
 
 class Fox(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable, observation, config):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable, observation, config)
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
         """Configure the telescope-specific ObsBlueprint at the CAOM model
         Observation level."""
         super().accumulate_blueprint(bp)
@@ -2018,10 +2004,10 @@ class Fox(GeminiMapping):
 
 
 class Gmos(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable, observation, config):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable, observation, config)
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
         super().accumulate_blueprint(bp)
         bp.set('Observation.instrument.keywords', 'get_provenance_keywords()')
         bp.configure_position_axes((1, 2))
@@ -2249,10 +2235,10 @@ class Gmos(GeminiMapping):
 
 
 class Gnirs(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable, observation, config):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable, observation, config)
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
         """Configure the telescope-specific ObsBlueprint at the CAOM model
         Observation level."""
         super().accumulate_blueprint(bp)
@@ -2754,10 +2740,10 @@ class Gnirs(GeminiMapping):
 
 
 class Gpi(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable, observation, config):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable, observation, config)
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
         super().accumulate_blueprint(bp)
         bp.configure_position_axes((1, 2))
 
@@ -2934,10 +2920,10 @@ class Gpi(GeminiMapping):
 
 
 class Graces(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable, observation, config):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable, observation, config)
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
         """Configure the telescope-specific ObsBlueprint at the CAOM model
         Observation level."""
         super().accumulate_blueprint(bp)
@@ -3046,10 +3032,10 @@ class Graces(GeminiMapping):
 
 
 class Gsaoi(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable, observation, config):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable, observation, config)
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
         """Configure the telescope-specific ObsBlueprint at the CAOM model
         Observation level."""
         super().accumulate_blueprint(bp)
@@ -3094,10 +3080,10 @@ class Gsaoi(GeminiMapping):
 
 
 class Hokupaa(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable, observation, config):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable, observation, config)
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
         super().accumulate_blueprint(bp)
         bp.set_default('Observation.telescope.name', 'Gemini-South')
 
@@ -3299,10 +3285,10 @@ class Hokupaa(GeminiMapping):
 
 
 class Hrwfs(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable, observation, config):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable, observation, config)
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
         super().accumulate_blueprint(bp)
         bp.set_default('Observation.telescope.name', 'Gemini-South')
         bp.configure_position_axes((1, 2))
@@ -3362,10 +3348,10 @@ class Hrwfs(GeminiMapping):
 
 
 class Igrins(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable, observation, config):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable, observation, config)
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
         """Configure the telescope-specific ObsBlueprint at the CAOM model
         Observation level."""
         super().accumulate_blueprint(bp)
@@ -3444,10 +3430,10 @@ class Igrins(GeminiMapping):
 
 
 class Michelle(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable, observation, config):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable, observation, config)
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
         super().accumulate_blueprint(bp)
         bp.set_default('Observation.telescope.name', 'Gemini-South')
         bp.configure_position_axes((1, 2))
@@ -3609,10 +3595,10 @@ class Michelle(GeminiMapping):
 
 
 class Nici(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable, observation, config):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable, observation, config)
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
         """Configure the telescope-specific ObsBlueprint at the CAOM model
         Observation level."""
         super().accumulate_blueprint(bp)
@@ -3708,10 +3694,10 @@ class Nici(GeminiMapping):
 
 
 class Nifs(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable, observation, config):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable, observation, config)
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
         super().accumulate_blueprint(bp)
         bp.set_default('Observation.telescope.name', 'Gemini-South')
 
@@ -3984,10 +3970,10 @@ class Nifs(GeminiMapping):
 
 
 class Niri(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable, observation, config):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable, observation, config)
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
         super().accumulate_blueprint(bp)
         bp.configure_position_axes((1, 2))
 
@@ -4272,10 +4258,10 @@ class Niri(GeminiMapping):
 
 
 class Oscir(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable, observation, config):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable, observation, config)
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
         super().accumulate_blueprint(bp)
         bp.set_default('Observation.telescope.name', 'Gemini-South')
 
@@ -4441,10 +4427,10 @@ class Oscir(GeminiMapping):
 
 
 class Phoenix(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable, observation, config):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable, observation, config)
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
         """Configure the telescope-specific ObsBlueprint at the CAOM model
         Observation level."""
         super().accumulate_blueprint(bp)
@@ -4713,10 +4699,10 @@ class Phoenix(GeminiMapping):
 
 
 class Texes(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable, observation, config):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable, observation, config)
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
         """Configure the telescope-specific ObsBlueprint at the CAOM model
         Observation level."""
         super().accumulate_blueprint(bp)
@@ -4836,10 +4822,10 @@ class Texes(GeminiMapping):
 
 
 class Trecs(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable, observation, config):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable, observation, config)
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
         """Configure the telescope-specific ObsBlueprint at the CAOM model
         Observation level."""
         super().accumulate_blueprint(bp)
@@ -4983,7 +4969,7 @@ class Trecs(GeminiMapping):
             )
 
 
-def mapping_factory(storage_name, headers, metadata_reader, clients, observable):
+def mapping_factory(storage_name, headers, metadata_reader, clients, observable, observation, config):
     metadata_lookup = GeminiMetadataLookup(metadata_reader)
     inst = metadata_lookup.instrument(storage_name.file_uri)
     lookup = {
@@ -5013,7 +4999,7 @@ def mapping_factory(storage_name, headers, metadata_reader, clients, observable)
         Inst.TRECS: Trecs,
     }
     if inst in lookup:
-        return lookup.get(inst)(storage_name, headers, metadata_lookup, inst, clients, observable)
+        return lookup.get(inst)(storage_name, headers, metadata_lookup, inst, clients, observable, observation, config)
     else:
         observable.rejected.record(mc.Rejected.MYSTERY_VALUE, storage_name.file_name)
         raise mc.CadcException(f'Mystery name {inst}.')

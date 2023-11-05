@@ -972,7 +972,7 @@ def _run_test_common(
         if os.path.exists(actual_fqn):
             os.unlink(actual_fqn)
 
-        test_observable = mc.Observable(rejected=mc.Rejected(test_config.rejected_fqn), metrics=None)
+        test_observable = mc.Observable(test_config)
         for entry in test_set:
             filter_cache = svofps.FilterMetadataCache(svofps_mock)
             metadata_reader = MockFileReader(pf_mock, filter_cache)
@@ -989,6 +989,7 @@ def _run_test_common(
                 'metadata_reader': metadata_reader,
                 'clients': client_mock,
                 'observable': test_observable,
+                'config': test_config,
             }
             logging.getLogger(
                 'caom2utils.caom2blueprint',

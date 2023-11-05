@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # ***********************************************************************
 # ******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
 # *************  CENTRE CANADIEN DE DONNÉES ASTRONOMIQUES  **************
@@ -78,7 +77,13 @@ class GeminiFits2caom2Visitor(cc.Fits2caom2Visitor):
 
     def _get_mapping(self, headers):
         return main_app.mapping_factory(
-            self._storage_name, headers, self._metadata_reader, self._clients, self._observable
+            self._storage_name,
+            headers,
+            self._metadata_reader,
+            self._clients,
+            self._observable,
+            self._observation,
+            self._config,
         )
 
 
