@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # ***********************************************************************
 # ******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
 # *************  CENTRE CANADIEN DE DONNÉES ASTRONOMIQUES  **************
@@ -68,7 +67,7 @@
 #
 
 from collections import deque
-from dateutil import tz
+from datetime import datetime
 
 from caom2pipe import client_composable as clc
 from caom2pipe import data_source_composable as dsc
@@ -80,7 +79,7 @@ __all__ = ['GEM_BOOKMARK', 'IncrementalSource', 'PublicIncremental']
 GEM_BOOKMARK = 'gemini_timestamp'
 
 
-class IncrementalSource(dsc.DataSource):
+class IncrementalSource(dsc.IncrementalDataSource):
     """Implements the identification of the work to be done, by querying
     archive.gemini.edu's incremental endpoint, in time-boxed chunks.
 
@@ -89,13 +88,16 @@ class IncrementalSource(dsc.DataSource):
     created.
     """
 
-    def __init__(self, reader):
-        super(IncrementalSource, self).__init__(config=None)
+    def __init__(self, config, reader):
+        super().__init__(config, start_key=GEM_BOOKMARK)
         self._max_records_encountered = False
         self._encounter_start = None
         self._encounter_end = None
         self._session = reader._session
         self._metadata_reader = reader
+
+    def _initialize_end_dt(self):
+        self._end_dt = datetime.now()
 
     def get_time_box_work(self, prev_exec_dt, exec_dt):
         """
@@ -135,7 +137,7 @@ class IncrementalSource(dsc.DataSource):
                     else:
                         for entry in metadata:
                             file_name = entry.get('name')
-                            entry_dt = mc.make_datetime_tz(entry.get('entrytime'), tz.UTC)
+                            entry_dt = mc.make_datetime(entry.get('entrytime'))
                             entries.append(dsc.StateRunnerMeta(file_name, entry_dt))
                             uri = mc.build_uri(mc.StorageName.collection, file_name, mc.StorageName.scheme)
                             # all the other cases where add_json_record is
@@ -169,7 +171,7 @@ class PublicIncremental(dsc.QueryTimeBoxDataSource):
     the local TAP service for files that have recently gone public."""
 
     def __init__(self, config, query_client):
-        super(PublicIncremental, self).__init__(config)
+        super().__init__(config)
         self._query_client = query_client
 
     def get_time_box_work(self, prev_exec_dt, exec_dt):
@@ -208,7 +210,7 @@ class PublicIncremental(dsc.QueryTimeBoxDataSource):
         entries = deque()
         for row in result:
             entries.append(
-                dsc.StateRunnerMeta(mc.CaomName(row['uri']).file_name, mc.make_datetime_tz(row['lastModified'], tz.UTC))
+                dsc.StateRunnerMeta(mc.CaomName(row['uri']).file_name, mc.make_datetime(row['lastModified']))
             )
         self._reporter.capture_todo(len(entries), 0, 0)
         self._logger.debug('End get_time_box_work')

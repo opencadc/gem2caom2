@@ -340,8 +340,7 @@ class GeminiMapping(cc.TelescopeMapping):
                 meta_release = self._lookup.release(
                     self._storage_name.file_uri
                 )
-        # metaRelease, dataRelease constructor includes a comparison with a non-aware value
-        return mc.make_datetime_tz(meta_release, tz.UTC).replace(tzinfo=None)
+        return mc.make_datetime(meta_release)
 
     def get_obs_intent(self, ext):
         result = ObservationIntentType.CALIBRATION
@@ -432,8 +431,7 @@ class GeminiMapping(cc.TelescopeMapping):
             result = None
             temp = comments.split('\n')
             if len(temp) > 6 and 'HST' in temp[6]:
-                # go from HST to UTC, then remove the timezone, because the lastExecuted constructor doesn't expect it
-                result = mc.make_datetime_tz(temp[6], tz.gettz('HST')).astimezone(tz=tz.UTC).replace(tzinfo=None)
+                result = mc.make_datetime(temp[6])
             return result
 
         return self._get_provenance_breakout(ext, breakout)
@@ -542,7 +540,7 @@ class GeminiMapping(cc.TelescopeMapping):
         Calculate the Chunk Time WCS function value, in 'mjd'.
         """
         time_string = self._lookup.ut_datetime(self._storage_name.file_uri)
-        return ac.get_datetime_mjd(mc.make_datetime_tz(time_string, tz.UTC))
+        return ac.get_datetime_mjd(mc.make_datetime(time_string))
 
     def accumulate_blueprint(self, bp):
         """Configure the telescope-specific ObsBlueprint at the CAOM model
@@ -1941,6 +1939,7 @@ class Fox(GeminiMapping):
         bp.add_attribute('Chunk.time.axis.function.naxis', 'NAXIS3')
         bp.set_default('Chunk.time.axis.function.naxis', 1)
         bp.configure_position_axes((1, 2))
+        bp.set('Chunk.position.equinox', 'get_position_equinox()')
 
     def get_data_product_type(self, ext):
         # DB 31-08-20
@@ -1956,6 +1955,13 @@ class Fox(GeminiMapping):
         # sense to create separate planes with dataProductType = image that
         # end up with the correct (distinct) energy metadata.
         return DataProductType.IMAGE
+
+    def get_position_equinox(self, ext):
+        result = self._headers[ext].get('EQUINOX', self._headers[ext].get('EPOCH'))
+        if result and 1800.0 <= result <= 2500:
+            return result
+        else:
+            return None
 
     def get_target_type(self, ext):
         return TargetType.OBJECT

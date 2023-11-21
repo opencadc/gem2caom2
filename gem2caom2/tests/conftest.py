@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # ***********************************************************************
 # ******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
 # *************  CENTRE CANADIEN DE DONNÉES ASTRONOMIQUES  **************
@@ -67,12 +66,16 @@
 # ***********************************************************************
 #
 
+from os.path import dirname, join, realpath
 from caom2pipe.manage_composable import Config, StorageName
 import pytest
 
 COLLECTION = 'GEMINI'
 SCHEME = 'gemini'
 PREVIEW_SCHEME = 'cadc'
+
+THIS_DIR = dirname(realpath(__file__))
+TEST_DATA_DIR = join(THIS_DIR, 'data')
 
 
 @pytest.fixture()
@@ -82,7 +85,14 @@ def test_config():
     config.preview_scheme = PREVIEW_SCHEME
     config.scheme = SCHEME
     config.logging_level = 'INFO'
+    config.rejected_directory = TEST_DATA_DIR
+    config.rejected_file_name = 'rejected.yml'
     StorageName.collection = config.collection
     StorageName.preview_scheme = config.preview_scheme
     StorageName.scheme = config.scheme
     return config
+
+
+@pytest.fixture()
+def test_data_dir():
+    return TEST_DATA_DIR

@@ -44,6 +44,3 @@ storage_inventory_resource_id: ivo://cadc.nrc.ca/test
 # - modify - create a footprint and previews for an existing CAOM model record
 task_types:
   - visit
-features:
-  supports_latest_client: True
-  supports_multiple_files: False

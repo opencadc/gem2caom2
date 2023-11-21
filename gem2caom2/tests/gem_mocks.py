@@ -862,6 +862,8 @@ def mock_query_tap(query_string, mock_tap_client):
             f'2020-02-25T20:36:31.230\n'.split('\n'),
             format='csv',
         )
+    elif query_string.strip().startswith('SELECT max(A.lastModified'):
+        return Table.read(f'm\n2020-02-25T20:36:31.230\n'.split('\n'), format='ascii.tab')
     else:
         file_id = (
             query_string.split('gemini:GEMINI/')[1]
@@ -991,13 +993,6 @@ def _run_test_common(
                 'observable': test_observable,
                 'config': test_config,
             }
-            logging.getLogger(
-                'caom2utils.caom2blueprint',
-            ).setLevel(logging.INFO)
-            logging.getLogger('GeminiFits2caom2Visitor').setLevel(logging.INFO)
-            logging.getLogger('ValueRepairCache').setLevel(logging.INFO)
-            logging.getLogger('root').setLevel(logging.INFO)
-            # logging.getLogger('Gmos').setLevel(logging.INFO)
             try:
                 observation = fits2caom2_augmentation.visit(observation, **kwargs)
             except mc.CadcException as e:

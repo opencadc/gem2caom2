@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # ***********************************************************************
 # ******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
 # *************  CENTRE CANADIEN DE DONNÉES ASTRONOMIQUES  **************
@@ -225,6 +224,7 @@ def test_going_public(
         'storage_name': storage_name,
         'metadata_reader': metadata_reader,
         'clients': client_mock,
+        'config': test_config,
     }
     ignore = fits2caom2_augmentation.visit(observation, **kwargs)
 
