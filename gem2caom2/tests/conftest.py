@@ -96,3 +96,8 @@ def test_config():
 @pytest.fixture()
 def test_data_dir():
     return TEST_DATA_DIR
+
+
+@pytest.fixture()
+def change_test_dir(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)

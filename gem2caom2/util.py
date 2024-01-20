@@ -77,6 +77,7 @@ class Inst(Enum):
     CIRPASS = 'CIRPASS'
     F2 = 'F2'
     FLAMINGOS = 'FLAMINGOS'
+    GHOST = 'GHOST'
     GMOS = 'GMOS'
     GMOSN = 'GMOS-N'
     GMOSS = 'GMOS-S'

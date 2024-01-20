@@ -548,5 +548,5 @@ def retrieve_json(source_name, logger, session):
             f'Could not find JSON record for {source_name} at '
             f'{gemini_url}.'
         )
-    logger.debug(f'End _retrieve_json')
+    logger.debug(f'End retrieve_json')
     return metadata

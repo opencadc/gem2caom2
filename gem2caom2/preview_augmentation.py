@@ -69,7 +69,7 @@
 import logging
 import traceback
 
-from datetime import datetime
+from datetime import datetime, timezone
 from os import access, remove
 from os.path import basename, exists, join
 
@@ -104,7 +104,8 @@ def visit(observation, **kwargs):
     for plane in observation.planes.values():
         if (
             plane.data_release is None
-            or plane.data_release > datetime.utcnow()
+            # data_release is timezone naive
+            or plane.data_release > datetime.now(tz=timezone.utc).replace(tzinfo=None)
         ):
             logging.info(
                 f'Plane {plane.product_id} is proprietary. No '

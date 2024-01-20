@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # ***********************************************************************
 # ******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
 # *************  CENTRE CANADIEN DE DONNÉES ASTRONOMIQUES  **************
@@ -70,7 +69,7 @@
 import logging
 import os
 
-from datetime import datetime
+from datetime import datetime, timezone
 
 from caom2 import Observation
 from caom2pipe import manage_composable as mc
@@ -109,7 +108,7 @@ def visit(observation, **kwargs):
         for plane in observation.planes.values():
             if (
                 plane.data_release is None
-                or plane.data_release > datetime.utcnow()
+                or plane.data_release > datetime.now(tz=timezone.utc).replace(tzinfo=None)
             ):
                 logging.info(
                     f'Plane {plane.product_id} is proprietary. No file '

@@ -110,6 +110,7 @@ def pytest_generate_tests(metafunc):
             Inst.ALOPEKE,
             Inst.ZORRO,
             Inst.IGRINS,
+            Inst.GHOST,
         ]:
             walk_dir = _get_inst_name(ii)
             for root, dirs, files in os.walk(
@@ -142,7 +143,6 @@ def test_visitor(
         os.path.basename(test_name)
     )
     expected_fqn = f'{os.path.dirname(test_name)}/{test_file_id}.expected.xml'
-
     gem_mocks._run_test_common(
         data_sources=[os.path.dirname(test_name)],
         get_pi_mock=get_pi_mock,

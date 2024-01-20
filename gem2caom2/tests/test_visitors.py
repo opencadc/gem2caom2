@@ -70,7 +70,7 @@ import os
 import pytest
 import shutil
 
-from datetime import datetime
+from datetime import datetime, timezone
 from mock import patch, Mock
 
 from cadcutils import exceptions
@@ -96,7 +96,7 @@ def test_preview_augment_known_no_preview(test_data_dir, test_config):
 
     try:
         obs = mc.read_obs_from_file(f'{test_data_dir}/visit_obs_start.xml')
-        obs.planes[TEST_PRODUCT_ID].data_release = datetime.utcnow()
+        obs.planes[TEST_PRODUCT_ID].data_release = datetime.now(tz=timezone.utc).replace(tzinfo=None)
         assert (
             len(obs.planes[TEST_PRODUCT_ID].artifacts) == 1
         ), 'initial condition'
@@ -147,7 +147,7 @@ def test_preview_augment_known_no_preview(test_data_dir, test_config):
 def test_preview_augment_unknown_no_preview(test_data_dir, test_config):
     # what happens when it's not known that there's no preview
     obs = mc.read_obs_from_file(f'{test_data_dir}/visit_obs_start.xml')
-    obs.planes[TEST_PRODUCT_ID].data_release = datetime.utcnow()
+    obs.planes[TEST_PRODUCT_ID].data_release = datetime.now(tz=timezone.utc).replace(tzinfo=None)
     assert len(obs.planes[TEST_PRODUCT_ID].artifacts) == 1, 'initial condition'
 
     # make sure the rejected file is empty
@@ -196,7 +196,7 @@ def test_preview_augment_unknown_no_preview(test_data_dir, test_config):
 @patch('caom2pipe.manage_composable.http_get')
 def test_pull_augmentation(http_mock, json_mock, header_mock, file_type_mock, test_config, test_data_dir):
     obs = mc.read_obs_from_file(f'{test_data_dir}/visit_original_uri_start.xml')
-    obs.planes[TEST_PRODUCT_ID].data_release = datetime.utcnow()
+    obs.planes[TEST_PRODUCT_ID].data_release = datetime.now(tz=timezone.utc).replace(tzinfo=None)
     original_uri = 'gemini:GEMINI/GN2001BQ013-04.fits'
     assert len(obs.planes[TEST_PRODUCT_ID].artifacts) == 1, 'initial condition'
     assert (
@@ -282,7 +282,7 @@ def test_preview_augment(http_mock, test_data_dir, test_config):
     # one for a thumbnail and one for a preview
 
     obs = mc.read_obs_from_file(f'{test_data_dir}/visit_obs_start.xml')
-    obs.planes[TEST_PRODUCT_ID].data_release = datetime.utcnow()
+    obs.planes[TEST_PRODUCT_ID].data_release = datetime.now(tz=timezone.utc).replace(tzinfo=None)
     assert len(obs.planes[TEST_PRODUCT_ID].artifacts) == 1, 'initial condition'
 
     test_observable = mc.Observable(test_config)
@@ -354,7 +354,7 @@ def test_preview_augment_failure(http_mock, test_data_dir, test_config):
         )
 
     obs = mc.read_obs_from_file(f'{test_data_dir}/visit_obs_start.xml')
-    obs.planes[TEST_PRODUCT_ID].data_release = datetime.utcnow()
+    obs.planes[TEST_PRODUCT_ID].data_release = datetime.now(tz=timezone.utc).replace(tzinfo=None)
     assert len(obs.planes[TEST_PRODUCT_ID].artifacts) == 1, 'initial condition'
 
     test_observable = mc.Observable(test_config)

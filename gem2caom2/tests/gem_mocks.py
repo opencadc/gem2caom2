@@ -77,7 +77,7 @@ from astropy.table import Table
 from astropy.utils.exceptions import AstropyWarning
 from bs4 import BeautifulSoup
 from collections import OrderedDict
-from datetime import datetime
+from datetime import datetime, timezone
 from hashlib import md5
 from mock import Mock
 
@@ -85,6 +85,7 @@ from cadcdata import FileInfo
 from caom2.diff import get_differences
 from caom2pipe import astro_composable as ac
 from caom2pipe import manage_composable as mc
+from caom2pipe.run_composable import set_logging
 
 from gem2caom2 import data_source, obs_file_relationship, builder, svofps
 from gem2caom2 import gemini_metadata, fits2caom2_augmentation
@@ -671,6 +672,17 @@ class Object:
         pass
 
 
+def mock_fullheader_endpoint(url, timeout=1):
+    result = Object()
+    result.text = None
+    if url == 'https://archive.gemini.edu/fullheader/N20220314S0229.fits':
+        with open(f'{TEST_DATA_DIR}/N20220314S0229.fits') as f:
+            result.text = f.read()
+    else:
+        raise mc.CadcException('mock_fullheader_endpoint failure')
+    return result
+
+
 def mock_query_endpoint(url, timeout=-1):
     # returns response.text
     result = Object()
@@ -680,7 +692,7 @@ def mock_query_endpoint(url, timeout=-1):
     if call_count == 0 and '20030106' not in url:
         with open(FIRST_FILE_LIST) as f:
             temp = f.read()
-            now_dt = datetime.utcnow()
+            now_dt = datetime.now(tz=timezone.utc).replace(tzinfo=None)
             now_date_str = datetime.strftime(now_dt, '%Y-%m-%d')
             now_time_str = datetime.strftime(now_dt, '%H:%M:%S')
             result.text = temp.replace('2019-10-10', now_date_str).replace(
@@ -783,7 +795,7 @@ def mock_write_state2(prior_timestamp=None):
     # must have a starting time greater than one config.interval prior
     # to 'now', default interval is 10 minutes
     if prior_timestamp is None:
-        prior_s = datetime.utcnow().timestamp() - 15 * 60
+        prior_s = datetime.now(tz=timezone.utc).timestamp() - 15 * 60
     else:
         prior_s = mc.make_seconds(prior_timestamp)
     test_start_time = datetime.fromtimestamp(prior_s)
@@ -961,7 +973,9 @@ def _run_test_common(
         test_config.data_sources = data_sources
         test_config.change_working_directory(tmp_path.as_posix())
         test_config.proxy_file_name = 'test_proxy.pem'
+        test_config.logging_level = 'ERROR'
         test_config.write_to_file(test_config)
+        set_logging(test_config)
 
         with open(test_config.proxy_fqn, 'w') as f:
             f.write('test content')

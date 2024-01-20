@@ -94,13 +94,16 @@ import math
 import re
 import traceback
 
+from astropy.time import Time
 from dateutil import tz
 
 from caom2 import CalibrationLevel, Chunk, ProductType
 from caom2 import TypedList, DerivedObservation, DataProductType
 from caom2 import ObservationIntentType, TargetType, CoordAxis1D, Axis
 from caom2 import SpectralWCS, RefCoord, CoordRange1D
-from caom2utils import FitsWcsParser, update_artifact_meta
+from caom2utils.caom2blueprint import update_artifact_meta
+from caom2utils.blueprints import _to_float
+from caom2utils.wcs_parsers import FitsWcsParser
 from caom2utils.data_util import get_file_type
 from caom2pipe import manage_composable as mc
 from caom2pipe import caom_composable as cc
@@ -158,6 +161,7 @@ FILTER_VALUES_TO_IGNORE = ['open', 'invalid', 'pupil', 'clear', 'nd']
 # NIFS - DB - 04-03-19 - hard-code 3" FOV
 # TEXES - DB - 07-03-19 - cd11=cd22 = 5.0/3600.0
 # IGRINS - DB - 21-07-21 - hard-code 5" FOV
+# GHOST - DB - 12-01-24 - hard-code to 0.94"
 RADIUS_LOOKUP = {
     Inst.GPI: 2.8 / 3600.0,  # units are arcseconds
     Inst.GRACES: 1.2 / 3600.0,
@@ -168,6 +172,7 @@ RADIUS_LOOKUP = {
     Inst.NIFS: 3.0 / 3600.0,
     Inst.TEXES: 5.0 / 3600.0,
     Inst.IGRINS: 5.0 / 3600.0,
+    Inst.GHOST: 0.94 / 3600.0,
 }
 
 
@@ -312,7 +317,7 @@ class GeminiMapping(cc.TelescopeMapping):
         total exposure time for some of the IR instruments.  For these EXPTIME
         is usually the individual exposure time for each chop/nod and a bunch
         of chops/nods are executed for one observation.  Gemini correctly
-         allows for this in the json ‘exposure_time’ value.
+        allows for this in the json ‘exposure_time’ value.
         """
         return self._lookup.exposure_time(self._storage_name.file_uri)
 
@@ -540,15 +545,32 @@ class GeminiMapping(cc.TelescopeMapping):
         Calculate the Chunk Time WCS function value, in 'mjd'.
         """
         time_string = self._lookup.ut_datetime(self._storage_name.file_uri)
-        return ac.get_datetime_mjd(mc.make_datetime(time_string))
+        result = ac.get_datetime_mjd(mc.make_datetime(time_string))
+        if result and isinstance(result, Time):
+            result = result.value
+        return result
 
-    def accumulate_blueprint(self, bp):
+    def _accumulate_chunk_time_axis_blueprint(self, bp, axis):
+        bp.configure_time_axis(axis)
+
+        # The Chunk time metadata is calculated using keywords from the primary header, and the only way I could
+        # figure out to access keywords in the primary is through a function.
+        bp.set('Chunk.time.resolution', 'get_exposure()')
+        bp.set('Chunk.time.exposure', 'get_exposure()')
+        bp.set('Chunk.time.axis.axis.ctype', 'TIME')
+        bp.set('Chunk.time.axis.axis.cunit', 'd')
+        bp.set('Chunk.time.axis.error.syser', '1e-07')
+        bp.set('Chunk.time.axis.error.rnder', '1e-07')
+        bp.set('Chunk.time.axis.function.naxis', '1')
+        bp.set('Chunk.time.axis.function.delta', 'get_time_delta()')
+        bp.set('Chunk.time.axis.function.refCoord.pix', '0.5')
+        bp.set('Chunk.time.axis.function.refCoord.val', 'get_time_function_val()')
+
+    def _accumulate_obs_plane_artifact_blueprint(self, bp):
         """Configure the telescope-specific ObsBlueprint at the CAOM model
         Observation level."""
         super().accumulate_blueprint(bp)
-        self._logger.debug(
-            f'Begin accumulate_fits_bp for {self._storage_name.file_id}.'
-        )
+        self._logger.debug(f'Begin accumulate_blueprint for {self._storage_name.file_id}.')
         bp.set('Observation.type', 'get_obs_type()')
         bp.set('Observation.intent', 'get_obs_intent()')
         bp.set('Observation.metaRelease', 'get_meta_release()')
@@ -580,10 +602,7 @@ class GeminiMapping(cc.TelescopeMapping):
         bp.add_attribute('Plane.provenance.producer', 'IMAGESWV')
         bp.set_default('Plane.provenance.producer', 'Gemini Observatory')
         data_label = self._lookup.data_label(self._storage_name.file_uri)
-        bp.set(
-            'Plane.provenance.reference',
-            f'http://archive.gemini.edu/searchform/{data_label}',
-        )
+        bp.set('Plane.provenance.reference', f'http://archive.gemini.edu/searchform/{data_label}')
 
         bp.set('Artifact.productType', 'get_art_product_type()')
         bp.set('Artifact.contentChecksum', 'get_art_content_checksum()')
@@ -593,26 +612,13 @@ class GeminiMapping(cc.TelescopeMapping):
         bp.set('Artifact.releaseType', 'data')
         bp.set('Artifact.uri', self._storage_name.file_uri)
 
-        bp.configure_time_axis(3)
-
-        # The Chunk time metadata is calculated using keywords from the
-        # primary header, and the only I could figure out to access keywords
-        # in the primary is through a function. JB
-        bp.set('Chunk.time.resolution', 'get_exposure()')
-        bp.set('Chunk.time.exposure', 'get_exposure()')
-        bp.set('Chunk.time.axis.axis.ctype', 'TIME')
-        bp.set('Chunk.time.axis.axis.cunit', 'd')
-        bp.set('Chunk.time.axis.error.syser', '1e-07')
-        bp.set('Chunk.time.axis.error.rnder', '1e-07')
-        bp.set('Chunk.time.axis.function.naxis', '1')
-        bp.set('Chunk.time.axis.function.delta', 'get_time_delta()')
-        bp.set('Chunk.time.axis.function.refCoord.pix', '0.5')
-        bp.set(
-            'Chunk.time.axis.function.refCoord.val',
-            'get_time_function_val()',
-        )
-
-        self._logger.debug('Done accumulate_fits_bp.')
+    def accumulate_blueprint(self, bp):
+        """Configure the telescope-specific ObsBlueprint at the CAOM model
+        Observation level."""
+        self._logger.debug(f'Begin accumulate_blueprint for {self._storage_name.file_id}.' )
+        self._accumulate_obs_plane_artifact_blueprint(bp)
+        self._accumulate_chunk_time_axis_blueprint(bp, 3)
+        self._logger.debug('Done accumulate_blueprint.')
 
     def update(self, file_info):
 
@@ -712,6 +718,7 @@ class GeminiMapping(cc.TelescopeMapping):
                                 )
                             # position WCS
                             if self._reset_position(self._observation.type, artifact.product_type):
+                                self._logger.error(f'Resetting position for {part}')
                                 cc.reset_position(c)
                             else:
                                 self._update_position(part, c, int(part))
@@ -2007,6 +2014,245 @@ class Fox(GeminiMapping):
             chunk.time.exposure = self._headers[0].get('EXPOSURE')
             # chunk.time.resolution already set by blueprint
         self._logger.debug(f'End _update_time')
+
+
+class GHOST(GeminiMapping):
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable, observation, config):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable, observation, config)
+
+    def accumulate_blueprint(self, bp):
+        """Configure the telescope-specific ObsBlueprint at the CAOM model
+        Observation level."""
+        # skip the GeminiMapping, because it will set TemporalWCS to the incorrect axis
+        super(GeminiMapping, self).accumulate_blueprint(bp)
+        self._accumulate_obs_plane_artifact_blueprint(bp)
+        self._accumulate_chunk_time_axis_blueprint(bp, 4)
+        self._logger.debug('Done accumulate_blueprint.')
+
+    def _reset_energy(self, observation_type, filter_name):
+        return False
+
+    def _update_energy(self, part, chunk, extension):
+        pass
+
+    def _reset_position(self, observation_type, artifact_type):
+        pass
+
+    def _update_position(self, part, chunk, extension):
+        pass
+
+
+class GHOSTSpectralTemporal(GeminiMapping):
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable, observation, config):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable, observation, config)
+
+    def accumulate_blueprint(self, bp):
+        """Configure the telescope-specific ObsBlueprint at the CAOM model Observation level."""
+        super(GeminiMapping, self).accumulate_blueprint(bp)
+        self._accumulate_obs_plane_artifact_blueprint(bp)
+        bp.configure_energy_axis(3)
+        bp.configure_time_axis(4)
+        for extension in range(0, len(self._headers)):
+            bp.set('Chunk.energy.specsys', 'TOPOCENT', extension)
+
+            camera = self._headers[extension].get('CAMERA', extension)
+            if camera and camera in ['RED', 'BLUE']:
+                # if camera is SLITV, there's no interesting science information in the HDU
+                bp.set('Chunk.energy.axis.axis.ctype', 'WAVE', extension)
+                bp.set('Chunk.energy.axis.axis.cunit', 'nm', extension)
+                bp.set('Chunk.energy.axis.range.start.pix', 0.5, extension)
+                bp.set('Chunk.energy.axis.range.start.val', '_get_energy_chunk_range_start_val()', extension)
+                bp.set('Chunk.energy.axis.range.end.pix', 1.5, extension)
+                bp.set('Chunk.energy.axis.range.end.val', '_get_energy_chunk_range_start_val()', extension)
+                bp.set('Chunk.energy.resolvingPower', '_get_energy_chunk_resolving_power()', extension)
+
+            naxis = self._headers[extension].get('NAXIS')
+            date_obs = self._headers[extension].get('DATE-OBS')
+            if naxis and naxis == 2 and date_obs:
+                bp.set('Chunk.time.axis.axis.ctype', 'TIME', extension)
+                bp.set('Chunk.time.axis.axis.cunit', 'd', extension)
+                bp.set('Chunk.time.axis.function.naxis', '1', extension)
+                bp.set('Chunk.time.axis.function.refCoord.pix', '0.5', extension)
+                bp.set('Chunk.time.resolution', 'get_exposure()', extension)
+                bp.set('Chunk.time.exposure', 'get_exposure()', extension)
+                bp.set('Chunk.time.axis.function.delta', 'get_time_delta()', extension)
+                bp.set('Chunk.time.axis.function.refCoord.val', 'get_time_function_val()', extension)
+
+        self._logger.debug(f'End accumulate_blueprint')
+
+    def get_time_delta(self, ext):
+        """
+        DB 18-01-24
+        Each of the RED and BLUE image extensions with NAXIS = 2 each have DATE-OBS, UTSTART and UTEND keywords.
+        The PHU has REDEXPT and BLUEEXPT keywords with the exposure times in seconds.  (Presumably these are
+        the same as are the NREDEXP and NBLUEXP values.)
+
+        Starting time should be the earliest  UTSTART value and ending time should be the latest UTEND  value in the
+        extensions with NREDEXP/NBLUEXP CAMERA=RED/BLUE NAXIS=2.
+        """
+        result = None
+        date_obs = self._headers[ext].get('DATE-OBS')
+        ut_end = self._headers[ext].get('UTEND')
+        ut_start = self._headers[ext].get('UTSTART')
+        if date_obs and ut_end and ut_start:
+            temp_start = f'{date_obs} {ut_start}'
+            temp_end = f'{date_obs} {ut_end}'
+            start = ac.get_datetime_mjd(temp_start)
+            end = ac.get_datetime_mjd(temp_end)
+            if start and end:
+                result = end.value - start.value
+            else:
+                self._logger.debug(f'Cannot convert {temp_start} or {temp_end} to MJD in ext {ext}')
+        else:
+            self._logger.error(
+                f'Missing one of DATE-OBS {date_obs}, UTSTART {ut_start}, or UTEND {ut_end} in ext {ext}'
+            )
+        return result
+
+    def get_time_function_val(self, ext):
+        # see get_time_delta()
+        result = None
+        date_obs = self._headers[ext].get('DATE-OBS')
+        ut_start = self._headers[ext].get('UTSTART')
+        if date_obs and ut_start:
+            temp_start = f'{date_obs} {ut_start}'
+            start = ac.get_datetime_mjd(temp_start)
+            if start:
+                result = start.value
+            else:
+                self._logger.debug(f'Cannot convert {temp_start} to MJD in ext {ext}')
+        else:
+            self._logger.error(f'Missing one of DATE-OBS {date_obs} or UTSTART {ut_start} in ext {ext}')
+        return result
+
+    def _get_energy_chunk_range_end_val(self, ext):
+        # DB 18-01-24
+        # blue channel wavelength coverage is 347 to 530 nm; red channel is 520 to 1060 nm. So 347 to 1060 nm total.
+        result = None
+        camera = self._headers[ext].get('CAMERA')
+        if camera == 'RED':
+            result = 1060.0  # nm
+        elif camera == 'BLUE':
+            result = 530.0  # nm
+        return result
+
+    def _get_energy_chunk_range_start_val(self, ext):
+        # DB 18-01-24
+        # blue channel wavelength coverage is 347 to 530 nm; red channel is 520 to 1060 nm. So 347 to 1060 nm total.
+        result = None
+        camera = self._headers[ext].get('CAMERA')
+        if camera == 'RED':
+            result = 520.0  # nm
+        elif camera == 'BLUE':
+            result = 347.0  # nm
+        return result
+
+    def _get_energy_chunk_resolving_power(self, ext):
+        """
+        DB 18-01-24
+        1. resolution is determined by the value for the PHU RESOLUT keyword.  If the value is Standard then the
+        starting point for the resolution is 56,000; if High then it's 76,000.
+
+        2. PHU keywords REDCCDS and BLUCCDS give the binning factor along the X (dispersion) and Y (spatial)
+        direction.  e.g. a value of 2 x 4 would reduce the resolution by a factor of about 2 (the first number
+        in that value).
+        """
+        result = None
+        start = None
+        resolut = self._headers[0].get('RESOLUT')
+        if resolut == 'Standard':
+            start = 56000.0
+        elif resolut == 'High':
+            start = 76000.0
+        elif resolut == 'No Value':
+            return result
+
+        if start:
+            red_ccds = self._headers[0].get('REDCCDS')
+            blue_ccds = self._headers[0].get('BLUCCDS')
+
+            factor_1 = _to_float(red_ccds.split('x')[0])
+            factor_2 = _to_float(blue_ccds.split('x')[0])
+            if factor_1 == factor_2:
+                factor = factor_1
+            else:
+                raise mc.CadcException(
+                    f'Factors do not match for {self._storage_name.file_uri}. Blue {factor_2}, Red {factor_1}'
+                )
+            result = start / factor
+        else:
+            self._logger.error(f'Could not determine resolution for {resolut} for {self._storage_name.file_uri}')
+        return result
+
+    def _reset_energy(self, observation_type, filter_name):
+        return False
+
+    def _update_energy(self, part, chunk, extension):
+        pass
+
+    def _reset_position(self, observation_type, artifact_type):
+        return
+
+    def _update_position(self, part, chunk, extension):
+        pass
+
+
+class GHOSTSpatialSpectralTemporal(GHOSTSpectralTemporal):
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable, observation, config):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable, observation, config)
+
+    def accumulate_blueprint(self, bp):
+        """Configure the telescope-specific ObsBlueprint at the CAOM model Observation level."""
+        super().accumulate_blueprint(bp)
+        bp.configure_position_axes((1, 2))
+        for extension in range(0, len(self._headers)):
+            camera = self._headers[extension].get('CAMERA', extension)
+            if camera and camera in ['RED', 'BLUE']:
+                # if camera is SLITV, there's no interesting science information in the HDU
+                bp.set('Chunk.position.axis.axis1.ctype', 'RA---TAN', extension)
+                bp.set('Chunk.position.axis.axis1.cunit', 'deg', extension)
+                bp.set('Chunk.position.axis.axis2.ctype', 'DEC--TAN', extension)
+                bp.set('Chunk.position.axis.axis2.cunit', 'deg', extension)
+                bp.set('Chunk.position.axis.function.cd11', '_get_cd_point()', extension)
+                bp.set('Chunk.position.axis.function.cd12', 0.0, extension)
+                bp.set('Chunk.position.axis.function.cd21', 0.0, extension)
+                bp.set('Chunk.position.axis.function.cd22', '_get_cd_point()', extension)
+                bp.set('Chunk.position.axis.function.refCoord.coord1.pix', '_get_crpix1()', extension)
+                bp.set('Chunk.position.axis.function.refCoord.coord1.val', '_get_0th_ra()', extension)
+                bp.set('Chunk.position.axis.function.refCoord.coord2.pix', '_get_crpix2()', extension)
+                bp.set('Chunk.position.axis.function.refCoord.coord2.val', '_get_0th_dec()', extension)
+                bp.add_attribute('Chunk.position.coordsys', '', extension)
+                bp.add_attribute('Chunk.position.equinox', 'EQUINOX', extension)
+                bp.add_attribute('Chunk.position.resolution', '', extension)
+        self._logger.debug(f'End accumulate_blueprint')
+
+    def _get_0th_dec(self, ext):
+        return self._headers[0].get('DEC')
+
+    def _get_0th_ra(self, ext):
+        return self._headers[0].get('RA')
+
+    def _get_cd_point(self, ext):
+        return RADIUS_LOOKUP[self._instrument]
+
+    def _get_crpix(self, ext, keyword):
+        result = None
+        value = self._headers[ext].get(keyword)
+        if value:
+            result = value / 2.0
+        return result
+
+    def _get_crpix1(self, ext):
+        return self._get_crpix(ext, 'NAXIS1')
+
+    def _get_crpix2(self, ext):
+        return self._get_crpix(ext, 'NAXIS2')
+
+    def _reset_position(self, observation_type, artifact_type):
+        pass
+
+    def _update_position(self, part, chunk, extension):
+        pass
 
 
 class Gmos(GeminiMapping):
@@ -4975,6 +5221,14 @@ class Trecs(GeminiMapping):
             )
 
 
+def get_obs_type(lookup, storage_name):
+    result = lookup.observation_type(storage_name.file_uri)
+    obs_class = lookup.observation_class(storage_name.file_uri)
+    if obs_class is not None and (obs_class == 'acq' or obs_class == 'acqCal'):
+        result = 'ACQUISITION'
+    return result
+
+
 def mapping_factory(storage_name, headers, metadata_reader, clients, observable, observation, config):
     metadata_lookup = GeminiMetadataLookup(metadata_reader)
     inst = metadata_lookup.instrument(storage_name.file_uri)
@@ -5004,8 +5258,24 @@ def mapping_factory(storage_name, headers, metadata_reader, clients, observable,
         Inst.TEXES: Texes,
         Inst.TRECS: Trecs,
     }
+    result = None
     if inst in lookup:
-        return lookup.get(inst)(storage_name, headers, metadata_lookup, inst, clients, observable, observation, config)
+        result = lookup.get(inst)(storage_name, headers, metadata_lookup, inst, clients, observable, observation, config)
+    elif inst is Inst.GHOST:
+        obs_type = get_obs_type(metadata_lookup, storage_name)
+        logging.error(obs_type)
+        if obs_type in ['ARC']:
+            result = GHOST(storage_name, headers, metadata_lookup, inst, clients, observable, observation, config)
+        elif obs_type in ['FLAT']:
+            result = GHOSTSpectralTemporal(
+                storage_name, headers, metadata_lookup, inst, clients, observable, observation, config
+            )
+        else:
+            result = GHOSTSpatialSpectralTemporal(
+                storage_name, headers, metadata_lookup, inst, clients, observable, observation, config
+            )
     else:
         observable.rejected.record(mc.Rejected.MYSTERY_VALUE, storage_name.file_name)
         raise mc.CadcException(f'Mystery name {inst}.')
+    logging.error(f'Created {result.__class__.__name__} for mapping.')
+    return result

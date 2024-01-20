@@ -73,8 +73,7 @@ import shutil
 
 from astropy.io.fits import Header
 from collections import deque
-from datetime import datetime, timedelta
-from dateutil import tz
+from datetime import datetime, timedelta, timezone
 from traceback import format_exc
 from unittest.mock import call, patch, Mock, PropertyMock
 import gem_mocks
@@ -324,7 +323,7 @@ def test_run_by_incremental2(
     exec_mock.return_value = 0
 
     _write_cert()
-    prior_s = datetime.utcnow().timestamp() - 60
+    prior_s = datetime.now(tz=timezone.utc).timestamp() - 60
     _write_state(prior_s)
     getcwd_orig = os.getcwd
     os.getcwd = Mock(return_value=f'{gem_mocks.TEST_DATA_DIR}/edu_query')
@@ -367,7 +366,7 @@ def test_run_by_public(
         shutil.copy(f'{gem_mocks.TEST_DATA_DIR}/expected.xml', expected_fqn)
 
     _write_cert()
-    now_dt = datetime.utcnow()
+    now_dt = datetime.now(tz=timezone.utc).replace(tzinfo=None)
     prior_s = now_dt.timestamp() - 1440 * 60
     _write_state(prior_s)
     getcwd_orig = os.getcwd
@@ -676,7 +675,7 @@ def _write_state(prior_timestamp=None, end_timestamp=None):
     # must have a starting time greater than one config.interval prior
     # to 'now', default interval is 10 minutes
     if prior_timestamp is None:
-        prior_s = datetime.utcnow().timestamp() - 15 * 60
+        prior_s = datetime.now(tz=timezone.utc).timestamp() - 15 * 60
     else:
         if type(prior_timestamp) is float:
             prior_s = prior_timestamp
