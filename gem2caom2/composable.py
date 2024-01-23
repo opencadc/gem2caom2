@@ -74,12 +74,12 @@ from caom2pipe.client_composable import ClientCollection
 from caom2pipe import data_source_composable as dsc
 from caom2pipe import manage_composable as mc
 from caom2pipe import run_composable as rc
-from gem2caom2 import preview_augmentation
+from gem2caom2 import ghost_preview_augmentation, preview_augmentation
 from gem2caom2 import pull_augmentation, data_source, builder
 from gem2caom2 import cleanup_augmentation, fits2caom2_augmentation
 from gem2caom2 import gemini_metadata, svofps
 
-DATA_VISITORS = []
+DATA_VISITORS = [ghost_preview_augmentation]
 META_VISITORS = [fits2caom2_augmentation, pull_augmentation, preview_augmentation, cleanup_augmentation]
 
 
@@ -133,7 +133,7 @@ def _common_init():
             preview_augmentation,
             cleanup_augmentation,
         ]
-    elif [mc.TaskType.VISIT] == config.task_types:
+    elif [mc.TaskType.VISIT] == config.task_types or [mc.TaskType.VISIT, mc.TaskType.MODIFY] == config.task_types:
         metadata_reader = gemini_metadata.GeminiStorageClientReader(
             clients.data_client,
             gemini_session,

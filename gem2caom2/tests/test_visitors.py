@@ -75,7 +75,8 @@ from mock import patch, Mock
 
 from cadcutils import exceptions
 from cadcdata import FileInfo
-from gem2caom2 import preview_augmentation, pull_augmentation, cleanup_augmentation, gemini_metadata
+from gem2caom2 import ghost_preview_augmentation, preview_augmentation, pull_augmentation, cleanup_augmentation
+from gem2caom2 import gemini_metadata, util
 from gem2caom2 import svofps, gem_name
 from caom2pipe import caom_composable as cc
 from caom2pipe import manage_composable as mc
@@ -482,3 +483,31 @@ def test_look_pull_and_put(http_mock, mock_client, test_data_dir):
         test_data_dir, test_storage_name
     ), 'mock not called'
     http_mock.assert_called_with(url, test_fqn), 'http mock not called'
+
+
+@patch('gem2caom2.gemini_metadata.GeminiMetadataLookup.instrument')
+def test_ghost_preview_augmentation(metadata_mock, test_config, test_data_dir):
+    metadata_mock.side_effect = [util.Inst.GMOS, util.Inst.GHOST]
+    test_f_id = 'S20230518S0121'
+    obs = mc.read_obs_from_file(f'{test_data_dir}/GHOST/{test_f_id}.expected.xml')
+    test_observable = mc.Observable(test_config)
+    test_storage_name = gem_name.GemName(file_name=f'/test_files/{test_f_id}.fits')
+    test_storage_name._obs_id = 'GS-2023A-SV-101-13-009'
+    test_storage_name._destination_uris = [f'gemini:GEMINI/{test_f_id}.fits']
+    test_storage_name._product_id = test_f_id
+    test_storage_name._file_name = f'{test_f_id}.fits'
+    test_storage_name._source_names = [f'/test_files/{test_f_id}.fits']
+    kwargs = {
+        'working_directory': test_data_dir,
+        'clients': None,
+        'observable': test_observable,
+        'metadata_reader': Mock(),
+        'storage_name': test_storage_name,
+    }
+    assert len(obs.planes[test_f_id].artifacts) == 1, 'pre-condition'
+    obs = ghost_preview_augmentation.visit(obs, **kwargs)
+    assert obs is not None, 'expect a result'
+    assert len(obs.planes[test_f_id].artifacts) == 1, 'GMOS post-condition'
+    obs = ghost_preview_augmentation.visit(obs, **kwargs)
+    assert obs is not None, 'expect a result'
+    assert len(obs.planes[test_f_id].artifacts) == 3, 'GHOST post-condition'
