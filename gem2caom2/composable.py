@@ -175,6 +175,7 @@ def _run():
         config=config,
         name_builder=name_builder,
         meta_visitors=meta_visitors,
+        data_visitors=DATA_VISITORS,
         sources=[source],
         metadata_reader=metadata_reader,
         clients=clients,

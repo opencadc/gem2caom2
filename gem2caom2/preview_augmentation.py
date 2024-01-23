@@ -78,6 +78,7 @@ import matplotlib.image as image
 from cadcutils import exceptions
 from caom2 import Observation, ProductType, ReleaseType
 from caom2pipe import manage_composable as mc
+from gem2caom2.util import Inst
 
 __all__ = ['visit']
 
@@ -99,6 +100,10 @@ def visit(observation, **kwargs):
     storage_name = kwargs.get('storage_name')
     if storage_name is None:
         raise mc.CadcException('Visitor needs a storage_name parameter.')
+
+    if observation.instrument.name == Inst.GHOST.value:
+        logging.info(f'Skip generic preview augmentation for GHOST.')
+        return observation
 
     count = 0
     for plane in observation.planes.values():

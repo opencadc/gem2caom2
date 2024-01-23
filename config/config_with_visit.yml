@@ -30,7 +30,7 @@ failure_log_file_name: failure_log.txt
 retry_file_name: retries.txt
 retry_failures: False
 collection: GEMINI
-schema: gemini
+scheme: gemini
 preview_schema: cadc
 # how many minutes the run_query timestamp chunk is going to process
 interval: 1440

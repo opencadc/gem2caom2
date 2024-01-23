@@ -70,7 +70,6 @@ from astropy.io import fits
 from astropy.visualization import astropy_mpl_style
 from caom2 import ReleaseType
 from caom2pipe.manage_composable import PreviewVisitor
-from gem2caom2.gemini_metadata import GeminiMetadataLookup
 from gem2caom2.util import Inst
 from matplotlib import colors as colors
 from os.path import basename
@@ -138,9 +137,7 @@ class GHOSTPreviews(PreviewVisitor):
 
 
 def visit(observation, **kwargs):
-    metadata_reader = kwargs.get('metadata_reader')
-    lookup = GeminiMetadataLookup(metadata_reader)
-    if lookup.instrument() == Inst.GHOST:
+    if observation.instrument.name == Inst.GHOST.value:
         return GHOSTPreviews(**kwargs).visit(observation)
     else:
         return observation

@@ -75,6 +75,7 @@ from mock import patch, Mock
 
 from cadcutils import exceptions
 from cadcdata import FileInfo
+from caom2 import Instrument
 from gem2caom2 import ghost_preview_augmentation, preview_augmentation, pull_augmentation, cleanup_augmentation
 from gem2caom2 import gemini_metadata, util
 from gem2caom2 import svofps, gem_name
@@ -485,9 +486,7 @@ def test_look_pull_and_put(http_mock, mock_client, test_data_dir):
     http_mock.assert_called_with(url, test_fqn), 'http mock not called'
 
 
-@patch('gem2caom2.gemini_metadata.GeminiMetadataLookup.instrument')
-def test_ghost_preview_augmentation(metadata_mock, test_config, test_data_dir):
-    metadata_mock.side_effect = [util.Inst.GMOS, util.Inst.GHOST]
+def test_ghost_preview_augmentation(test_config, test_data_dir):
     test_f_id = 'S20230518S0121'
     obs = mc.read_obs_from_file(f'{test_data_dir}/GHOST/{test_f_id}.expected.xml')
     test_observable = mc.Observable(test_config)
@@ -505,9 +504,11 @@ def test_ghost_preview_augmentation(metadata_mock, test_config, test_data_dir):
         'storage_name': test_storage_name,
     }
     assert len(obs.planes[test_f_id].artifacts) == 1, 'pre-condition'
+    obs.instrument = Instrument(name=util.Inst.GMOS.value)
     obs = ghost_preview_augmentation.visit(obs, **kwargs)
     assert obs is not None, 'expect a result'
     assert len(obs.planes[test_f_id].artifacts) == 1, 'GMOS post-condition'
+    obs.instrument = Instrument(name=util.Inst.GHOST.value)
     obs = ghost_preview_augmentation.visit(obs, **kwargs)
     assert obs is not None, 'expect a result'
     assert len(obs.planes[test_f_id].artifacts) == 3, 'GHOST post-condition'

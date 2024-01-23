@@ -128,7 +128,7 @@ def visit(observation, **kwargs):
                 try:
                     f_name = mc.CaomName(artifact.uri).file_name
                     if '.jpg' not in f_name:
-                        logging.debug(f'Checking for {f_name}')
+                        logging.debug(f'Checking for {f_name} against {artifact.uri}')
                         file_url = f'{FILE_URL}/{f_name}'
                         fqn = os.path.join(working_dir, f_name)
 
