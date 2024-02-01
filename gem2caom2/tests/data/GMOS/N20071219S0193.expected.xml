@@ -42,10 +42,6 @@
         <caom2:producer>Gemini Observatory</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/GN-2007B-Q-112-14-018</caom2:reference>
       </caom2:provenance>
-      <caom2:position/>
-      <caom2:energy/>
-      <caom2:time/>
-      <caom2:polarization/>
       <caom2:artifacts>
         <caom2:artifact caom2:id="00000000-0000-0000-b943-0150cbcff92c" caom2:lastModified="2018-05-10T19:36:06.533" caom2:metaChecksum="md5:73bddf228f00954b976c18897c6eb803" caom2:accMetaChecksum="md5:7a04974a7488581d397ffeeda2bc6b11" caom2:metaProducer="gem2caom2/0.8.1">
           <caom2:uri>gemini:GEMINI/N20071219S0193.fits</caom2:uri>

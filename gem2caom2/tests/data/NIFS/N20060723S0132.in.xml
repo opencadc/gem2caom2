@@ -36,10 +36,10 @@
         <caom2:producer>Gemini Observatory</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/GN-2006A-C-11-670-006</caom2:reference>
       </caom2:provenance>
-      <caom2:position/>
-      <caom2:energy/>
-      <caom2:time/>
-      <caom2:polarization/>
+      
+      
+      
+      
       <caom2:artifacts>
         <caom2:artifact caom2:id="00000000-0000-0000-a7b3-54c3dca6bd4c" caom2:lastModified="2018-11-18T10:15:47.338" caom2:maxLastModified="2018-11-18T10:15:47.338" caom2:metaChecksum="md5:7ecf0a4fb2595b0cf5c539bf8e2e1184" caom2:accMetaChecksum="md5:24221aef8b3a936113d686512312048f" caom2:metaProducer="gem2caom2/0.8.1">
           <caom2:uri>gemini:GEMINI/N20060723S0132.fits</caom2:uri>
