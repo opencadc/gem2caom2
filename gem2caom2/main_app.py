@@ -161,7 +161,7 @@ FILTER_VALUES_TO_IGNORE = ['open', 'invalid', 'pupil', 'clear', 'nd']
 # NIFS - DB - 04-03-19 - hard-code 3" FOV
 # TEXES - DB - 07-03-19 - cd11=cd22 = 5.0/3600.0
 # IGRINS - DB - 21-07-21 - hard-code 5" FOV
-# GHOST - DB - 12-01-24 - hard-code to 0.94"
+# GHOST - DB - 12-01-24 - hard-code to sqrt(0.94)"
 RADIUS_LOOKUP = {
     Inst.GPI: 2.8 / 3600.0,  # units are arcseconds
     Inst.GRACES: 1.2 / 3600.0,
@@ -172,7 +172,7 @@ RADIUS_LOOKUP = {
     Inst.NIFS: 3.0 / 3600.0,
     Inst.TEXES: 5.0 / 3600.0,
     Inst.IGRINS: 5.0 / 3600.0,
-    Inst.GHOST: 0.94 / 3600.0,
+    Inst.GHOST: 0.9695 / 3600.0,
 }
 
 
@@ -668,6 +668,7 @@ class GeminiMapping(cc.TelescopeMapping):
                     if GemName.is_preview(artifact.uri):
                         continue
                     update_artifact_meta(artifact, file_info)
+                    self._update_artifact(artifact)
                     processed = ofr.is_processed(self._storage_name.file_name)
                     if self._instrument in [
                         Inst.MICHELLE,
@@ -1050,6 +1051,9 @@ class GeminiMapping(cc.TelescopeMapping):
                     else:
                         result.append(self._headers[ext].get(key).strip())
         return '+'.join(result)
+
+    def _update_artifact(self, artifact):
+        pass
 
     def _update_composite(self, obs):
         result = None
@@ -2055,7 +2059,7 @@ class GHOSTSpectralTemporal(GeminiMapping):
         for extension in range(0, len(self._headers)):
             bp.set('Chunk.energy.specsys', 'TOPOCENT', extension)
 
-            camera = self._headers[extension].get('CAMERA', extension)
+            camera = self._headers[extension].get('CAMERA')
             if camera and camera in ['RED', 'BLUE']:
                 # if camera is SLITV, there's no interesting science information in the HDU
                 bp.set('Chunk.energy.axis.axis.ctype', 'WAVE', extension)
@@ -2063,7 +2067,7 @@ class GHOSTSpectralTemporal(GeminiMapping):
                 bp.set('Chunk.energy.axis.range.start.pix', 0.5, extension)
                 bp.set('Chunk.energy.axis.range.start.val', '_get_energy_chunk_range_start_val()', extension)
                 bp.set('Chunk.energy.axis.range.end.pix', 1.5, extension)
-                bp.set('Chunk.energy.axis.range.end.val', '_get_energy_chunk_range_start_val()', extension)
+                bp.set('Chunk.energy.axis.range.end.val', '_get_energy_chunk_range_end_val()', extension)
                 bp.set('Chunk.energy.resolvingPower', '_get_energy_chunk_resolving_power()', extension)
 
             naxis = self._headers[extension].get('NAXIS')
@@ -2079,6 +2083,12 @@ class GHOSTSpectralTemporal(GeminiMapping):
                 bp.set('Chunk.time.axis.function.refCoord.val', 'get_time_function_val()', extension)
 
         self._logger.debug(f'End accumulate_blueprint')
+
+    def get_data_product_type(self, ext):
+        return DataProductType.SPECTRUM
+
+    def get_target_type(self, ext):
+        return TargetType.OBJECT
 
     def get_time_delta(self, ext):
         """
@@ -2195,6 +2205,15 @@ class GHOSTSpectralTemporal(GeminiMapping):
 
     def _update_position(self, part, chunk, extension):
         pass
+
+    def _update_artifact(self, artifact):
+        self._logger.debug(f'Begin _update_artifact for {artifact.uri}')
+        for part in artifact.parts.values():
+            extension = int(part.name)
+            camera = self._headers[extension].get('CAMERA')
+            if camera and camera == 'SLITV':
+                part.product_type = ProductType.AUXILIARY
+        self._logger.debug('End _update_artifact')
 
 
 class GHOSTSpatialSpectralTemporal(GHOSTSpectralTemporal):
@@ -5264,9 +5283,7 @@ def mapping_factory(storage_name, headers, metadata_reader, clients, observable,
     elif inst is Inst.GHOST:
         obs_type = get_obs_type(metadata_lookup, storage_name)
         logging.error(obs_type)
-        if obs_type in ['ARC']:
-            result = GHOST(storage_name, headers, metadata_lookup, inst, clients, observable, observation, config)
-        elif obs_type in ['FLAT']:
+        if obs_type in ['ARC', 'FLAT']:
             result = GHOSTSpectralTemporal(
                 storage_name, headers, metadata_lookup, inst, clients, observable, observation, config
             )

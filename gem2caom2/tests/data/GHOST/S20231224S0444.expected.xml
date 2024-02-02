@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="d124f546-c383-4cd4-a950-f9b35b952f50" caom2:metaProducer="GEMINI2caom2/0.0.0">
+<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="43f0ff2c-7584-4b62-a5ea-16f4e813aed3" caom2:metaProducer="GEMINI2caom2/0.0.0">
   <caom2:collection>GEMINI</caom2:collection>
   <caom2:observationID>GS-CAL20231224-19-001</caom2:observationID>
   <caom2:metaRelease>2023-12-24T16:29:05.000</caom2:metaRelease>
@@ -14,7 +14,7 @@
   </caom2:proposal>
   <caom2:target>
     <caom2:name>GCALflat</caom2:name>
-    <caom2:type>field</caom2:type>
+    <caom2:type>object</caom2:type>
   </caom2:target>
   <caom2:telescope>
     <caom2:name>Gemini-South</caom2:name>
@@ -26,11 +26,11 @@
     <caom2:name>GHOST</caom2:name>
   </caom2:instrument>
   <caom2:planes>
-    <caom2:plane caom2:id="a209806a-91d1-41f0-930c-340eb1c6409b" caom2:metaProducer="GEMINI2caom2/0.0.0">
+    <caom2:plane caom2:id="b74c54f5-d541-4fda-807f-2de6e0ac8f70" caom2:metaProducer="GEMINI2caom2/0.0.0">
       <caom2:productID>S20231224S0444</caom2:productID>
       <caom2:metaRelease>2023-12-24T16:29:05.000</caom2:metaRelease>
       <caom2:dataRelease>2023-12-24T00:00:00.000</caom2:dataRelease>
-      <caom2:dataProductType>image</caom2:dataProductType>
+      <caom2:dataProductType>spectrum</caom2:dataProductType>
       <caom2:calibrationLevel>1</caom2:calibrationLevel>
       <caom2:provenance>
         <caom2:name>Gemini Observatory Data</caom2:name>
@@ -39,7 +39,7 @@
         <caom2:reference>http://archive.gemini.edu/searchform/GS-CAL20231224-19-001</caom2:reference>
       </caom2:provenance>
       <caom2:artifacts>
-        <caom2:artifact caom2:id="76f73135-b464-4f69-b7ae-c2a59b93fef0" caom2:metaProducer="GEMINI2caom2/0.0.0">
+        <caom2:artifact caom2:id="c02a4d8d-4a42-41e7-9df2-9943d8a977b1" caom2:metaProducer="GEMINI2caom2/0.0.0">
           <caom2:uri>gemini:GEMINI/S20231224S0444.fits</caom2:uri>
           <caom2:productType>calibration</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
@@ -47,14 +47,15 @@
           <caom2:contentLength>554353920</caom2:contentLength>
           <caom2:contentChecksum>md5:32d3d3e4ef49d20748f2f209b8c849d6</caom2:contentChecksum>
           <caom2:parts>
-            <caom2:part caom2:id="18ba2db6-4d1f-459d-a448-f56a3bb54381">
+            <caom2:part caom2:id="73ba4b66-4755-4e58-9ed2-222e479ebd0c">
               <caom2:name>0</caom2:name>
               <caom2:chunks/>
             </caom2:part>
-            <caom2:part caom2:id="7ef41a5c-1255-4ad3-a15a-b0b8b780e978">
+            <caom2:part caom2:id="c392a26a-70b1-45c9-b096-72bbf0f72c98">
               <caom2:name>1</caom2:name>
+              <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="5a8d5ef5-d161-419a-9993-5b128e4ef1b3" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="35bcd3ab-0540-4a00-a3f7-87bf030a7c12" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
@@ -77,10 +78,11 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="5ae512e7-7ec2-4088-861b-957e24dd0b72">
+            <caom2:part caom2:id="7859c291-8e6d-481f-849f-09178fbece39">
               <caom2:name>2</caom2:name>
+              <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="bc8a756e-013c-4f1b-bd89-2bd62d6114be" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="1a563d5b-a217-44ed-9c3f-f595a4b1a31d" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
@@ -103,14 +105,14 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="e8e492a8-4590-498b-9133-74c773863139">
+            <caom2:part caom2:id="7bd67ca6-f60b-4086-9480-232b7222c454">
               <caom2:name>3</caom2:name>
               <caom2:chunks/>
             </caom2:part>
-            <caom2:part caom2:id="1d3d88cf-3d2e-43de-bf89-436d78ba7c16">
+            <caom2:part caom2:id="d1765a10-b61f-410d-9eab-6e789c4c85f9">
               <caom2:name>4</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="8c880177-08b8-4ac3-92dc-9b19c2fb6987" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="ad2e6106-d72e-40a5-b04b-89a2b883aa37" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
@@ -124,7 +126,7 @@
                         </caom2:start>
                         <caom2:end>
                           <caom2:pix>1.5</caom2:pix>
-                          <caom2:val>347.0</caom2:val>
+                          <caom2:val>530.0</caom2:val>
                         </caom2:end>
                       </caom2:range>
                     </caom2:axis>
@@ -133,10 +135,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="0981353b-65ff-4240-80b8-d74c7b771131">
+            <caom2:part caom2:id="37a4bd5d-d1d3-4ef0-86a7-a0610fdc2940">
               <caom2:name>5</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="424b5422-da01-48a8-b550-24b1f98369a0" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="de1b2433-0c5d-460b-a299-dc31dc2d8a33" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
@@ -150,7 +152,7 @@
                         </caom2:start>
                         <caom2:end>
                           <caom2:pix>1.5</caom2:pix>
-                          <caom2:val>347.0</caom2:val>
+                          <caom2:val>530.0</caom2:val>
                         </caom2:end>
                       </caom2:range>
                     </caom2:axis>
@@ -159,10 +161,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="93b9293f-8f15-4c31-b0bf-6f45054e1164">
+            <caom2:part caom2:id="879fa741-fd8f-4b23-86b5-fb691717930c">
               <caom2:name>6</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="8adfa5e0-f5a4-4806-a6a0-c9cd90cfea1d" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="be347c3e-013f-42ef-8849-ab6e45839332" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
@@ -176,7 +178,7 @@
                         </caom2:start>
                         <caom2:end>
                           <caom2:pix>1.5</caom2:pix>
-                          <caom2:val>347.0</caom2:val>
+                          <caom2:val>530.0</caom2:val>
                         </caom2:end>
                       </caom2:range>
                     </caom2:axis>
@@ -185,10 +187,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="4713c50f-9815-47ea-8066-ae17c2eb2ebf">
+            <caom2:part caom2:id="f17ef99e-970c-4b4f-88d7-32c0e13470b3">
               <caom2:name>7</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="86985b28-93b7-4190-8f1b-21d65c4a7d07" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="07f1216b-c55d-433a-80df-539a9ec97ed8" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
@@ -202,7 +204,7 @@
                         </caom2:start>
                         <caom2:end>
                           <caom2:pix>1.5</caom2:pix>
-                          <caom2:val>347.0</caom2:val>
+                          <caom2:val>530.0</caom2:val>
                         </caom2:end>
                       </caom2:range>
                     </caom2:axis>
@@ -211,14 +213,14 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="8d4e6dec-19ce-4592-b0d5-c8fdda0350a4">
+            <caom2:part caom2:id="7c582d9a-8884-4ec6-857d-6160329b30b2">
               <caom2:name>8</caom2:name>
               <caom2:chunks/>
             </caom2:part>
-            <caom2:part caom2:id="bb77aa3c-a728-4031-8839-db18b889c47b">
+            <caom2:part caom2:id="f0bcc725-240b-4db8-b31d-40fd077d2716">
               <caom2:name>9</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="d43f63e4-2fb2-4fe6-bc91-f130abe6fea8" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="2673d258-6e60-4fae-bf75-b5e4490ca593" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
@@ -232,7 +234,7 @@
                         </caom2:start>
                         <caom2:end>
                           <caom2:pix>1.5</caom2:pix>
-                          <caom2:val>520.0</caom2:val>
+                          <caom2:val>1060.0</caom2:val>
                         </caom2:end>
                       </caom2:range>
                     </caom2:axis>
@@ -241,10 +243,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="ab366ba0-1a7e-40cd-809e-b4c25b366fe5">
+            <caom2:part caom2:id="c4f199aa-f11e-4b3e-9099-48565fbda04a">
               <caom2:name>10</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="91391bd4-7a3e-4277-a1ba-ff50d8ea1bf0" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="7133dca1-a5fe-410c-bc16-f09974b051e9" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
@@ -258,7 +260,7 @@
                         </caom2:start>
                         <caom2:end>
                           <caom2:pix>1.5</caom2:pix>
-                          <caom2:val>520.0</caom2:val>
+                          <caom2:val>1060.0</caom2:val>
                         </caom2:end>
                       </caom2:range>
                     </caom2:axis>
@@ -267,10 +269,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="5f56dc94-452e-47ca-9e56-94a04bc64f0a">
+            <caom2:part caom2:id="7e2ea5aa-8b16-4fa2-9ad1-54e34de57903">
               <caom2:name>11</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="5fa57dc5-a8bb-44b6-9f2c-9a52be9513cc" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="4e8b6ecd-3da5-4c55-ab86-470e49bf9b90" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
@@ -284,7 +286,7 @@
                         </caom2:start>
                         <caom2:end>
                           <caom2:pix>1.5</caom2:pix>
-                          <caom2:val>520.0</caom2:val>
+                          <caom2:val>1060.0</caom2:val>
                         </caom2:end>
                       </caom2:range>
                     </caom2:axis>
@@ -293,10 +295,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="f33340b6-6a6a-4acf-b32c-062ff7f10061">
+            <caom2:part caom2:id="ca0177da-00c3-4c23-82dd-0b342116a748">
               <caom2:name>12</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="b6057d7d-7a29-41ce-90c8-0da6c2f91f33" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="c4bed855-e0c2-4a2a-a4c3-43259b8b143e" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
@@ -310,7 +312,7 @@
                         </caom2:start>
                         <caom2:end>
                           <caom2:pix>1.5</caom2:pix>
-                          <caom2:val>520.0</caom2:val>
+                          <caom2:val>1060.0</caom2:val>
                         </caom2:end>
                       </caom2:range>
                     </caom2:axis>
@@ -319,14 +321,14 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="d9922b3c-c862-40f9-b15b-3e5e2fb58013">
+            <caom2:part caom2:id="9dd5d24d-11a4-407d-985e-40fc6674baee">
               <caom2:name>13</caom2:name>
               <caom2:chunks/>
             </caom2:part>
-            <caom2:part caom2:id="71973ddd-5e1c-40c1-962e-649a21052f27">
+            <caom2:part caom2:id="d68b7fe7-fbd7-4425-8a38-0f2dd53720fe">
               <caom2:name>14</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="3e30c91b-b92c-4568-a6d0-5c6037cd78ed" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="9992266c-0034-4098-8647-989cd080edda" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
@@ -340,7 +342,7 @@
                         </caom2:start>
                         <caom2:end>
                           <caom2:pix>1.5</caom2:pix>
-                          <caom2:val>347.0</caom2:val>
+                          <caom2:val>530.0</caom2:val>
                         </caom2:end>
                       </caom2:range>
                     </caom2:axis>
@@ -349,10 +351,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="a995cf54-9218-4036-b5be-022160f33f05">
+            <caom2:part caom2:id="a0201933-992c-4048-9903-a7ea8fd2c8f2">
               <caom2:name>15</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="6c81ed9e-7c64-4f1d-8ed5-83807c8b2257" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="ba56e284-05b0-4dad-a18b-bf3d7f777d66" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
@@ -366,7 +368,7 @@
                         </caom2:start>
                         <caom2:end>
                           <caom2:pix>1.5</caom2:pix>
-                          <caom2:val>347.0</caom2:val>
+                          <caom2:val>530.0</caom2:val>
                         </caom2:end>
                       </caom2:range>
                     </caom2:axis>
@@ -375,10 +377,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="7456c9ea-432c-4f00-8a7a-892eaefb4e63">
+            <caom2:part caom2:id="522bd0d2-1825-4438-b1ed-ef4b0882a0f8">
               <caom2:name>16</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="c99389fe-7bdc-4a62-a9bc-b9797996bbcd" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="677cbacb-8bdc-49ae-b1a6-2569ae73c96c" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
@@ -392,7 +394,7 @@
                         </caom2:start>
                         <caom2:end>
                           <caom2:pix>1.5</caom2:pix>
-                          <caom2:val>347.0</caom2:val>
+                          <caom2:val>530.0</caom2:val>
                         </caom2:end>
                       </caom2:range>
                     </caom2:axis>
@@ -401,10 +403,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="461c7775-9a2e-498f-8cfd-a1aa9f131f63">
+            <caom2:part caom2:id="c7bd618d-c5f1-47e1-aca7-0081100970a8">
               <caom2:name>17</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="dd929cce-1753-4085-b576-92f4dd03a718" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="7b5057a0-391a-462c-b9d6-144722790a87" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
@@ -418,7 +420,7 @@
                         </caom2:start>
                         <caom2:end>
                           <caom2:pix>1.5</caom2:pix>
-                          <caom2:val>347.0</caom2:val>
+                          <caom2:val>530.0</caom2:val>
                         </caom2:end>
                       </caom2:range>
                     </caom2:axis>
@@ -427,14 +429,14 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="ac30aa99-c07a-4b11-8e65-67df85477558">
+            <caom2:part caom2:id="d04b6382-af5f-454b-845d-ca7cac50c765">
               <caom2:name>18</caom2:name>
               <caom2:chunks/>
             </caom2:part>
-            <caom2:part caom2:id="fb4fd5f5-c5ca-4150-b320-6aa355584355">
+            <caom2:part caom2:id="8244c076-9c0a-440b-aabe-671b5b1c9523">
               <caom2:name>19</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="a9342028-256e-4cd3-95c6-8c91d45636b4" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="6c100dc5-e585-43c6-95a9-ff1e1be48399" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
@@ -448,7 +450,7 @@
                         </caom2:start>
                         <caom2:end>
                           <caom2:pix>1.5</caom2:pix>
-                          <caom2:val>520.0</caom2:val>
+                          <caom2:val>1060.0</caom2:val>
                         </caom2:end>
                       </caom2:range>
                     </caom2:axis>
@@ -457,10 +459,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="fda7bffa-0c07-4f84-8dc2-b72682aa2975">
+            <caom2:part caom2:id="a7fe9cc3-be27-4f44-9446-9e52b37e1613">
               <caom2:name>20</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="26e46a81-0a27-4424-983b-cefd97c2be6b" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="55ee53a9-d889-4232-a205-2ceaf2b233b5" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
@@ -474,7 +476,7 @@
                         </caom2:start>
                         <caom2:end>
                           <caom2:pix>1.5</caom2:pix>
-                          <caom2:val>520.0</caom2:val>
+                          <caom2:val>1060.0</caom2:val>
                         </caom2:end>
                       </caom2:range>
                     </caom2:axis>
@@ -483,10 +485,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="e90e6ce8-4042-45a1-887d-abf1017484fc">
+            <caom2:part caom2:id="8c7be0e4-3f90-4395-a63f-cf1ad0831090">
               <caom2:name>21</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="0c8c5550-6863-4e4e-9d90-c7f9d0cf4c4d" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="1ffe42aa-b275-4b48-83a9-9152212ad5c5" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
@@ -500,7 +502,7 @@
                         </caom2:start>
                         <caom2:end>
                           <caom2:pix>1.5</caom2:pix>
-                          <caom2:val>520.0</caom2:val>
+                          <caom2:val>1060.0</caom2:val>
                         </caom2:end>
                       </caom2:range>
                     </caom2:axis>
@@ -509,10 +511,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="0d35d981-eff4-4043-92fa-2775c729fae1">
+            <caom2:part caom2:id="9ba92260-01d1-4429-a395-d2b98d4cdd71">
               <caom2:name>22</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="37cbd897-8e94-4cbe-9aa3-1f78c80b739a" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="f97c574b-d025-4d60-b621-b1a493ec3921" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
@@ -526,7 +528,7 @@
                         </caom2:start>
                         <caom2:end>
                           <caom2:pix>1.5</caom2:pix>
-                          <caom2:val>520.0</caom2:val>
+                          <caom2:val>1060.0</caom2:val>
                         </caom2:end>
                       </caom2:range>
                     </caom2:axis>
@@ -535,14 +537,14 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="5c0afe9a-e7c1-4690-86c4-f2a25be224d5">
+            <caom2:part caom2:id="a1fe1c76-70b9-4056-bb97-9ca348eb7114">
               <caom2:name>23</caom2:name>
               <caom2:chunks/>
             </caom2:part>
-            <caom2:part caom2:id="7ea5bc8a-10b0-4555-ac38-98d8f55ac601">
+            <caom2:part caom2:id="50186327-49d8-4116-9cfe-7f9094985786">
               <caom2:name>24</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="b625d13c-0b7f-464c-97af-c8681a3c2ae6" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="aa0bbb34-19ad-4e77-886c-d45b48ed57bb" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
@@ -556,7 +558,7 @@
                         </caom2:start>
                         <caom2:end>
                           <caom2:pix>1.5</caom2:pix>
-                          <caom2:val>347.0</caom2:val>
+                          <caom2:val>530.0</caom2:val>
                         </caom2:end>
                       </caom2:range>
                     </caom2:axis>
@@ -565,10 +567,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="1aff919d-fcfa-4879-814c-a1b0d026fb1d">
+            <caom2:part caom2:id="ee6792f9-3621-45c6-b57d-d43e095be9eb">
               <caom2:name>25</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="e886aae6-bacd-4bb5-90b4-785b43038171" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="80abce42-0dbf-4a44-a981-bc4fd6836989" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
@@ -582,7 +584,7 @@
                         </caom2:start>
                         <caom2:end>
                           <caom2:pix>1.5</caom2:pix>
-                          <caom2:val>347.0</caom2:val>
+                          <caom2:val>530.0</caom2:val>
                         </caom2:end>
                       </caom2:range>
                     </caom2:axis>
@@ -591,10 +593,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="d36cd3b9-35df-4710-8ac6-5e99e550fa6f">
+            <caom2:part caom2:id="42120d6e-6aa3-4319-8c10-70111c69204b">
               <caom2:name>26</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="1f9fab59-c574-469e-b059-91da9daf0a96" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="919e0297-d920-4565-88b4-19d21458fd9b" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
@@ -608,7 +610,7 @@
                         </caom2:start>
                         <caom2:end>
                           <caom2:pix>1.5</caom2:pix>
-                          <caom2:val>347.0</caom2:val>
+                          <caom2:val>530.0</caom2:val>
                         </caom2:end>
                       </caom2:range>
                     </caom2:axis>
@@ -617,10 +619,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="936fb956-d107-4e9b-a12f-4c316f46b8b4">
+            <caom2:part caom2:id="4a88961b-da3c-45c7-b1a2-63e6e2f8c6e7">
               <caom2:name>27</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="baccdc89-257f-484d-b0d1-a306b1c70d89" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="d704919c-ab41-4543-ab81-ff6f0c953fe8" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
@@ -634,7 +636,7 @@
                         </caom2:start>
                         <caom2:end>
                           <caom2:pix>1.5</caom2:pix>
-                          <caom2:val>347.0</caom2:val>
+                          <caom2:val>530.0</caom2:val>
                         </caom2:end>
                       </caom2:range>
                     </caom2:axis>
@@ -643,14 +645,14 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="3c758734-d3e4-41ac-af56-fd9d6163b532">
+            <caom2:part caom2:id="a9a55e16-72a1-44d9-9d27-0f0058a5b3fe">
               <caom2:name>28</caom2:name>
               <caom2:chunks/>
             </caom2:part>
-            <caom2:part caom2:id="16445fa4-775e-4150-bbc2-9db5a8819744">
+            <caom2:part caom2:id="a0f2f2c5-c132-42f6-88e4-6bf61febe5ef">
               <caom2:name>29</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="fc82bc25-923e-4ae2-b98b-c57f42a7870e" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="64187fff-c4c9-403c-b3e2-edd842c4f305" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
@@ -664,7 +666,7 @@
                         </caom2:start>
                         <caom2:end>
                           <caom2:pix>1.5</caom2:pix>
-                          <caom2:val>520.0</caom2:val>
+                          <caom2:val>1060.0</caom2:val>
                         </caom2:end>
                       </caom2:range>
                     </caom2:axis>
@@ -673,10 +675,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="9ce8a6f0-de1a-439a-a044-d901b6f667b3">
+            <caom2:part caom2:id="2fd0814a-8502-48c0-a169-4409f19ae33f">
               <caom2:name>30</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="715aab9a-6d3a-489b-8a69-503dc22cc413" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="1b2b8723-ce5c-4563-b9a4-821e9ac14e34" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
@@ -690,7 +692,7 @@
                         </caom2:start>
                         <caom2:end>
                           <caom2:pix>1.5</caom2:pix>
-                          <caom2:val>520.0</caom2:val>
+                          <caom2:val>1060.0</caom2:val>
                         </caom2:end>
                       </caom2:range>
                     </caom2:axis>
@@ -699,10 +701,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="9057e4ec-4e7c-4644-8ad9-4469a38aa498">
+            <caom2:part caom2:id="f1002d11-9f29-4930-ab26-e88cdffe6436">
               <caom2:name>31</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="3b5d15a8-f963-42de-b421-35dad521875c" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="031c6960-0459-467d-ac6e-39f3abbb4d7b" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
@@ -716,7 +718,7 @@
                         </caom2:start>
                         <caom2:end>
                           <caom2:pix>1.5</caom2:pix>
-                          <caom2:val>520.0</caom2:val>
+                          <caom2:val>1060.0</caom2:val>
                         </caom2:end>
                       </caom2:range>
                     </caom2:axis>
@@ -725,10 +727,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="0575e090-d126-499d-b0ac-e7ab9f564416">
+            <caom2:part caom2:id="adb9c9c4-2392-42cf-badd-19b2e5a229df">
               <caom2:name>32</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="13ede311-912e-4323-b7a8-def648077f57" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="1162e7ca-d812-4f95-b24c-125b4ba336de" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
@@ -742,7 +744,7 @@
                         </caom2:start>
                         <caom2:end>
                           <caom2:pix>1.5</caom2:pix>
-                          <caom2:val>520.0</caom2:val>
+                          <caom2:val>1060.0</caom2:val>
                         </caom2:end>
                       </caom2:range>
                     </caom2:axis>
@@ -751,14 +753,14 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="feca1fe6-f06c-49a0-9f93-cad26f1ec192">
+            <caom2:part caom2:id="a4fc6991-0fa4-4431-8fbe-1bb1d3b98397">
               <caom2:name>33</caom2:name>
               <caom2:chunks/>
             </caom2:part>
-            <caom2:part caom2:id="430ba96e-a49d-41c5-8d3e-bdd56ee665b8">
+            <caom2:part caom2:id="fe63ebb4-33f5-4e93-8519-fa8c5506c55a">
               <caom2:name>34</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="563aec91-f97f-476e-81c7-31c253156751" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="0cc659ca-6016-441e-bd3f-e4542066d01d" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
@@ -772,7 +774,7 @@
                         </caom2:start>
                         <caom2:end>
                           <caom2:pix>1.5</caom2:pix>
-                          <caom2:val>347.0</caom2:val>
+                          <caom2:val>530.0</caom2:val>
                         </caom2:end>
                       </caom2:range>
                     </caom2:axis>
@@ -781,10 +783,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="d2446cc2-18ff-4ce5-909f-5eb319a3e523">
+            <caom2:part caom2:id="de54a183-1d90-49ed-99f4-70409f025a65">
               <caom2:name>35</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="761f8a5b-0745-4345-9d14-9b36713aa7d2" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="1092de41-a463-4a8d-9d1b-d914d3279279" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
@@ -798,7 +800,7 @@
                         </caom2:start>
                         <caom2:end>
                           <caom2:pix>1.5</caom2:pix>
-                          <caom2:val>347.0</caom2:val>
+                          <caom2:val>530.0</caom2:val>
                         </caom2:end>
                       </caom2:range>
                     </caom2:axis>
@@ -807,10 +809,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="035b0626-138f-40ae-a5dc-1a5d39f3f830">
+            <caom2:part caom2:id="89934c8c-3ce1-44bf-8789-014790321faf">
               <caom2:name>36</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="45e7480d-a095-424a-a34d-9b5594812f26" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="434e660b-7abf-481d-ad98-865d0d8b6480" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
@@ -824,7 +826,7 @@
                         </caom2:start>
                         <caom2:end>
                           <caom2:pix>1.5</caom2:pix>
-                          <caom2:val>347.0</caom2:val>
+                          <caom2:val>530.0</caom2:val>
                         </caom2:end>
                       </caom2:range>
                     </caom2:axis>
@@ -833,10 +835,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="f30bdee0-89f4-45a7-b5fd-e6c6d004015d">
+            <caom2:part caom2:id="c5dc4691-dc32-4c4b-9db8-f4dafafbef25">
               <caom2:name>37</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="acd87341-f923-4e06-9cf1-215d537239bb" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="8fd0521a-d807-4da9-9d98-c3e6df21b068" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
@@ -850,7 +852,7 @@
                         </caom2:start>
                         <caom2:end>
                           <caom2:pix>1.5</caom2:pix>
-                          <caom2:val>347.0</caom2:val>
+                          <caom2:val>530.0</caom2:val>
                         </caom2:end>
                       </caom2:range>
                     </caom2:axis>
@@ -859,14 +861,14 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="c93d1f53-13ae-4501-93d0-e18fff3fcdcc">
+            <caom2:part caom2:id="7bca3d14-87e1-49b6-a2b9-df7ee1254c34">
               <caom2:name>38</caom2:name>
               <caom2:chunks/>
             </caom2:part>
-            <caom2:part caom2:id="40212f79-f144-40c0-aec2-737915bcb665">
+            <caom2:part caom2:id="728a4616-7f96-4b57-97ea-dfd1dfccce6c">
               <caom2:name>39</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="03a7f714-6026-49f5-8017-bc0015c6084a" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="ff043c8b-1cfd-433a-8bfe-eb38c4e35c03" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
@@ -880,7 +882,7 @@
                         </caom2:start>
                         <caom2:end>
                           <caom2:pix>1.5</caom2:pix>
-                          <caom2:val>520.0</caom2:val>
+                          <caom2:val>1060.0</caom2:val>
                         </caom2:end>
                       </caom2:range>
                     </caom2:axis>
@@ -889,10 +891,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="f5cf9f74-91fb-440d-8de8-35fea8c88b3a">
+            <caom2:part caom2:id="874d15f0-5e76-4b0f-8b1f-b8e1ef6e606f">
               <caom2:name>40</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="67e56e9d-8986-4bf2-9d37-f99482704c53" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="cb0fef84-3555-4283-852c-9d83a4d80b36" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
@@ -906,7 +908,7 @@
                         </caom2:start>
                         <caom2:end>
                           <caom2:pix>1.5</caom2:pix>
-                          <caom2:val>520.0</caom2:val>
+                          <caom2:val>1060.0</caom2:val>
                         </caom2:end>
                       </caom2:range>
                     </caom2:axis>
@@ -915,10 +917,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="f3570a28-9b9e-4bc6-8a6c-ca3912339fea">
+            <caom2:part caom2:id="f787559e-5dfc-4061-91aa-5f981ee5665e">
               <caom2:name>41</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="e6ad7d1f-bb24-45e0-962c-a841bc11d689" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="70a51d72-adf6-425f-bbbc-0d81c48d235c" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
@@ -932,7 +934,7 @@
                         </caom2:start>
                         <caom2:end>
                           <caom2:pix>1.5</caom2:pix>
-                          <caom2:val>520.0</caom2:val>
+                          <caom2:val>1060.0</caom2:val>
                         </caom2:end>
                       </caom2:range>
                     </caom2:axis>
@@ -941,10 +943,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="a6870964-a5bf-49fb-baca-2f7f7e9506ea">
+            <caom2:part caom2:id="17771367-e1c0-44ab-9f28-4bdc4d784608">
               <caom2:name>42</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="c319b9c9-008a-4a68-8cc4-ab7f0f36b343" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="e9281570-82b2-4768-905c-263e8c78f4f8" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
@@ -958,7 +960,7 @@
                         </caom2:start>
                         <caom2:end>
                           <caom2:pix>1.5</caom2:pix>
-                          <caom2:val>520.0</caom2:val>
+                          <caom2:val>1060.0</caom2:val>
                         </caom2:end>
                       </caom2:range>
                     </caom2:axis>
@@ -967,14 +969,14 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="797519a7-72e2-4c21-aa89-b32fed077f89">
+            <caom2:part caom2:id="96ceb161-ac07-4220-89ee-785fe0ba65db">
               <caom2:name>43</caom2:name>
               <caom2:chunks/>
             </caom2:part>
-            <caom2:part caom2:id="d4bf2d5f-6bb1-4569-ac05-e294fb3100d5">
+            <caom2:part caom2:id="ca1d5df5-7753-475a-bb44-ecddfdc01b12">
               <caom2:name>44</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="30b02cf8-cc67-496e-b356-8b626c86e0e0" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="9272633c-15a5-470c-a702-20528c7d8104" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
@@ -988,7 +990,7 @@
                         </caom2:start>
                         <caom2:end>
                           <caom2:pix>1.5</caom2:pix>
-                          <caom2:val>347.0</caom2:val>
+                          <caom2:val>530.0</caom2:val>
                         </caom2:end>
                       </caom2:range>
                     </caom2:axis>
@@ -997,10 +999,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="ab18f836-c0c1-45cf-877b-7f8a797b100f">
+            <caom2:part caom2:id="5d3bdefe-b42d-44dd-b667-04d7f085031e">
               <caom2:name>45</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="52ad8663-6535-4161-8923-243df08fe69c" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="4c294182-493c-49ef-8585-d29e7d5dfeac" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
@@ -1014,7 +1016,7 @@
                         </caom2:start>
                         <caom2:end>
                           <caom2:pix>1.5</caom2:pix>
-                          <caom2:val>347.0</caom2:val>
+                          <caom2:val>530.0</caom2:val>
                         </caom2:end>
                       </caom2:range>
                     </caom2:axis>
@@ -1023,10 +1025,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="9287bb65-848b-49a0-854c-32f9b2210635">
+            <caom2:part caom2:id="3a4749a1-b7a3-4782-8e3b-88bbca5e2e1d">
               <caom2:name>46</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="8507bb70-826a-43a5-b109-f51160b86cde" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="91e28e41-4837-4314-91d4-c784ac1d1fc2" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
@@ -1040,7 +1042,7 @@
                         </caom2:start>
                         <caom2:end>
                           <caom2:pix>1.5</caom2:pix>
-                          <caom2:val>347.0</caom2:val>
+                          <caom2:val>530.0</caom2:val>
                         </caom2:end>
                       </caom2:range>
                     </caom2:axis>
@@ -1049,10 +1051,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="06b3f136-eefe-4e1f-8dbb-ad077ca50110">
+            <caom2:part caom2:id="c3d0fc08-e265-4e23-9091-5a35308df5fc">
               <caom2:name>47</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="07cf5695-360d-44b2-bc10-577c9dd7eb49" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="73131fc3-7678-42da-b788-ad8306b97082" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
@@ -1066,7 +1068,7 @@
                         </caom2:start>
                         <caom2:end>
                           <caom2:pix>1.5</caom2:pix>
-                          <caom2:val>347.0</caom2:val>
+                          <caom2:val>530.0</caom2:val>
                         </caom2:end>
                       </caom2:range>
                     </caom2:axis>
@@ -1075,14 +1077,14 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="e0e28563-224e-4c2c-a6ad-db6144bcc281">
+            <caom2:part caom2:id="f185fecf-5202-4f70-878d-45246a9d3cb0">
               <caom2:name>48</caom2:name>
               <caom2:chunks/>
             </caom2:part>
-            <caom2:part caom2:id="a3dde550-6d76-446e-890a-30eba6362f87">
+            <caom2:part caom2:id="8c1095a1-c4a8-4d74-9de2-17fb8e47f1bb">
               <caom2:name>49</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="431b7522-293b-4136-94c0-958231341421" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="2b2cd8aa-269b-492b-b51b-a7cf24fbd88c" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
@@ -1096,7 +1098,7 @@
                         </caom2:start>
                         <caom2:end>
                           <caom2:pix>1.5</caom2:pix>
-                          <caom2:val>520.0</caom2:val>
+                          <caom2:val>1060.0</caom2:val>
                         </caom2:end>
                       </caom2:range>
                     </caom2:axis>
@@ -1105,10 +1107,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="853a5469-d9a8-4b90-bda7-592b28ad0291">
+            <caom2:part caom2:id="bb3004b9-59ff-48f7-8bbc-67981c2b1287">
               <caom2:name>50</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="df4cdc79-cd11-4411-9cce-14201d9a04d4" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="fcf35f24-a486-46c5-8f05-7195a8f75e18" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
@@ -1122,7 +1124,7 @@
                         </caom2:start>
                         <caom2:end>
                           <caom2:pix>1.5</caom2:pix>
-                          <caom2:val>520.0</caom2:val>
+                          <caom2:val>1060.0</caom2:val>
                         </caom2:end>
                       </caom2:range>
                     </caom2:axis>
@@ -1131,10 +1133,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="72994d0f-6ddf-41e9-a641-9b02af40712b">
+            <caom2:part caom2:id="dbe5ccc6-78d9-4c5b-93ea-5a46a7821770">
               <caom2:name>51</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="ed241c5d-4822-4978-ad12-1128366e9ab2" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="5c7a2397-e8a5-4ad1-9e71-2ee7bd612eb9" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
@@ -1148,7 +1150,7 @@
                         </caom2:start>
                         <caom2:end>
                           <caom2:pix>1.5</caom2:pix>
-                          <caom2:val>520.0</caom2:val>
+                          <caom2:val>1060.0</caom2:val>
                         </caom2:end>
                       </caom2:range>
                     </caom2:axis>
@@ -1157,10 +1159,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="68d900b0-4a20-4f5f-af6b-061723f5c475">
+            <caom2:part caom2:id="b73016b0-68b4-4578-a252-1a08432c1247">
               <caom2:name>52</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="4a3b5a57-ae96-4455-b104-7f4c88046bd1" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="65a3fd04-3eb2-41a0-8c5b-e5a01c402a83" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
@@ -1174,7 +1176,7 @@
                         </caom2:start>
                         <caom2:end>
                           <caom2:pix>1.5</caom2:pix>
-                          <caom2:val>520.0</caom2:val>
+                          <caom2:val>1060.0</caom2:val>
                         </caom2:end>
                       </caom2:range>
                     </caom2:axis>

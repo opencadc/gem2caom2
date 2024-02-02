@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="2e9d9674-404b-4474-9625-5c0cfe67561b" caom2:metaProducer="GEMINI2caom2/0.0.0">
+<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="0589baaf-4424-4a0a-9de3-aeb56d0b3877" caom2:metaProducer="GEMINI2caom2/0.0.0">
   <caom2:collection>GEMINI</caom2:collection>
   <caom2:observationID>GS-2023A-SV-101-13-009</caom2:observationID>
   <caom2:metaRelease>2023-05-18T09:12:54.000</caom2:metaRelease>
@@ -15,7 +15,7 @@
   </caom2:proposal>
   <caom2:target>
     <caom2:name>CD-38 245</caom2:name>
-    <caom2:type>field</caom2:type>
+    <caom2:type>object</caom2:type>
   </caom2:target>
   <caom2:telescope>
     <caom2:name>Gemini-South</caom2:name>
@@ -27,11 +27,11 @@
     <caom2:name>GHOST</caom2:name>
   </caom2:instrument>
   <caom2:planes>
-    <caom2:plane caom2:id="71e6cd05-1c08-4bf2-98e4-e5495aff8562" caom2:metaProducer="GEMINI2caom2/0.0.0">
+    <caom2:plane caom2:id="5bd19528-eb34-4e19-b24b-1217c564c1c0" caom2:metaProducer="GEMINI2caom2/0.0.0">
       <caom2:productID>S20230518S0121</caom2:productID>
       <caom2:metaRelease>2023-05-18T09:12:54.000</caom2:metaRelease>
       <caom2:dataRelease>2023-06-18T00:00:00.000</caom2:dataRelease>
-      <caom2:dataProductType>image</caom2:dataProductType>
+      <caom2:dataProductType>spectrum</caom2:dataProductType>
       <caom2:calibrationLevel>1</caom2:calibrationLevel>
       <caom2:provenance>
         <caom2:name>Gemini Observatory Data</caom2:name>
@@ -40,7 +40,7 @@
         <caom2:reference>http://archive.gemini.edu/searchform/GS-2023A-SV-101-13-009</caom2:reference>
       </caom2:provenance>
       <caom2:artifacts>
-        <caom2:artifact caom2:id="953e922b-46cf-474b-8cb1-1612e66e904f" caom2:metaProducer="GEMINI2caom2/0.0.0">
+        <caom2:artifact caom2:id="20a77354-dfe4-4b58-bbd0-3fa6a5ee56e8" caom2:metaProducer="GEMINI2caom2/0.0.0">
           <caom2:uri>gemini:GEMINI/S20230518S0121.fits</caom2:uri>
           <caom2:productType>science</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
@@ -48,14 +48,15 @@
           <caom2:contentLength>18383040</caom2:contentLength>
           <caom2:contentChecksum>md5:916912dfa1bc11c82dea4f7171876fe2</caom2:contentChecksum>
           <caom2:parts>
-            <caom2:part caom2:id="a442e5ed-95d3-44e2-bbac-6a5de152455e">
+            <caom2:part caom2:id="3015972d-0068-482a-92c4-6503d9b0a776">
               <caom2:name>0</caom2:name>
               <caom2:chunks/>
             </caom2:part>
-            <caom2:part caom2:id="3cb16412-881f-45fa-a6e2-6c60ce571c98">
+            <caom2:part caom2:id="47d1efcc-9b84-405b-be0a-e631df45c1a2">
               <caom2:name>1</caom2:name>
+              <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="279d6761-4df3-44ec-bf83-fa3283a8e86a" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="65e2eefa-510a-4451-afec-dbe8288a84aa" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
@@ -78,14 +79,14 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="8b75f0ce-e6de-4bcb-851c-643112b32ace">
+            <caom2:part caom2:id="02b68860-fa40-40f8-b33c-a895a08f288c">
               <caom2:name>2</caom2:name>
               <caom2:chunks/>
             </caom2:part>
-            <caom2:part caom2:id="4301ca6d-33ef-4c4f-8a95-139ca4d46700">
+            <caom2:part caom2:id="76320256-986d-400f-879c-d1bec00fc6d2">
               <caom2:name>3</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="e90605e4-41d2-4cc4-95a0-292c56f388d6" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="c20ec378-0175-4039-b0a1-cd190a3d575d" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -114,10 +115,10 @@
                             <caom2:val>-37.65932222222222</caom2:val>
                           </caom2:coord2>
                         </caom2:refCoord>
-                        <caom2:cd11>0.000261111111111111</caom2:cd11>
+                        <caom2:cd11>0.000269305555555555</caom2:cd11>
                         <caom2:cd12>0.0</caom2:cd12>
                         <caom2:cd21>0.0</caom2:cd21>
-                        <caom2:cd22>0.000261111111111111</caom2:cd22>
+                        <caom2:cd22>0.000269305555555555</caom2:cd22>
                       </caom2:function>
                     </caom2:axis>
                     <caom2:coordsys>ICRS</caom2:coordsys>
@@ -135,7 +136,7 @@
                         </caom2:start>
                         <caom2:end>
                           <caom2:pix>1.5</caom2:pix>
-                          <caom2:val>347.0</caom2:val>
+                          <caom2:val>530.0</caom2:val>
                         </caom2:end>
                       </caom2:range>
                     </caom2:axis>
@@ -145,10 +146,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="4b0e8c6a-d4d3-4ac1-9bd4-1a4ecc5ede01">
+            <caom2:part caom2:id="5aaebe34-6888-4354-8d8a-bf261053bc0f">
               <caom2:name>4</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="0bd915a2-2554-478e-8587-6df03dace8f8" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="a0c9ddee-440f-48fa-b9f4-08f9a6d01749" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -177,10 +178,10 @@
                             <caom2:val>-37.65932222222222</caom2:val>
                           </caom2:coord2>
                         </caom2:refCoord>
-                        <caom2:cd11>0.000261111111111111</caom2:cd11>
+                        <caom2:cd11>0.000269305555555555</caom2:cd11>
                         <caom2:cd12>0.0</caom2:cd12>
                         <caom2:cd21>0.0</caom2:cd21>
-                        <caom2:cd22>0.000261111111111111</caom2:cd22>
+                        <caom2:cd22>0.000269305555555555</caom2:cd22>
                       </caom2:function>
                     </caom2:axis>
                     <caom2:coordsys>ICRS</caom2:coordsys>
@@ -198,7 +199,7 @@
                         </caom2:start>
                         <caom2:end>
                           <caom2:pix>1.5</caom2:pix>
-                          <caom2:val>347.0</caom2:val>
+                          <caom2:val>530.0</caom2:val>
                         </caom2:end>
                       </caom2:range>
                     </caom2:axis>
@@ -208,10 +209,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="052e4284-ed06-4e2e-a725-e73b8d4571d9">
+            <caom2:part caom2:id="fcdea5c5-5f8b-4486-b1d9-006990878743">
               <caom2:name>5</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="a1623aa8-64e3-4bbd-8e29-af85f3851f2a" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="a88c58a5-2b11-48f7-b7c9-a6a6faabd6cc" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -240,10 +241,10 @@
                             <caom2:val>-37.65932222222222</caom2:val>
                           </caom2:coord2>
                         </caom2:refCoord>
-                        <caom2:cd11>0.000261111111111111</caom2:cd11>
+                        <caom2:cd11>0.000269305555555555</caom2:cd11>
                         <caom2:cd12>0.0</caom2:cd12>
                         <caom2:cd21>0.0</caom2:cd21>
-                        <caom2:cd22>0.000261111111111111</caom2:cd22>
+                        <caom2:cd22>0.000269305555555555</caom2:cd22>
                       </caom2:function>
                     </caom2:axis>
                     <caom2:coordsys>ICRS</caom2:coordsys>
@@ -261,7 +262,7 @@
                         </caom2:start>
                         <caom2:end>
                           <caom2:pix>1.5</caom2:pix>
-                          <caom2:val>347.0</caom2:val>
+                          <caom2:val>530.0</caom2:val>
                         </caom2:end>
                       </caom2:range>
                     </caom2:axis>
@@ -271,10 +272,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="1b78bec3-6960-46a3-a8fe-d656b8fd7b5b">
+            <caom2:part caom2:id="437f16ac-652b-470d-8290-8d6db6c245c4">
               <caom2:name>6</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="1aef263f-1aab-4892-8ee9-0d2e451d115e" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="29a14bd7-2801-4795-ba64-e1ebed7666a3" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -303,10 +304,10 @@
                             <caom2:val>-37.65932222222222</caom2:val>
                           </caom2:coord2>
                         </caom2:refCoord>
-                        <caom2:cd11>0.000261111111111111</caom2:cd11>
+                        <caom2:cd11>0.000269305555555555</caom2:cd11>
                         <caom2:cd12>0.0</caom2:cd12>
                         <caom2:cd21>0.0</caom2:cd21>
-                        <caom2:cd22>0.000261111111111111</caom2:cd22>
+                        <caom2:cd22>0.000269305555555555</caom2:cd22>
                       </caom2:function>
                     </caom2:axis>
                     <caom2:coordsys>ICRS</caom2:coordsys>
@@ -324,7 +325,7 @@
                         </caom2:start>
                         <caom2:end>
                           <caom2:pix>1.5</caom2:pix>
-                          <caom2:val>347.0</caom2:val>
+                          <caom2:val>530.0</caom2:val>
                         </caom2:end>
                       </caom2:range>
                     </caom2:axis>
@@ -334,14 +335,14 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="7da23faf-817e-4486-b0e7-11f72e1ad2c3">
+            <caom2:part caom2:id="286c72f8-a134-4ebd-8a06-b01e916b2607">
               <caom2:name>7</caom2:name>
               <caom2:chunks/>
             </caom2:part>
-            <caom2:part caom2:id="2e499877-908c-4f82-be2f-72bd57ebe2f9">
+            <caom2:part caom2:id="429779f5-2c80-42b2-a25c-abf1b35fff4e">
               <caom2:name>8</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="ec7be3d2-6c1a-445a-a2de-37c591799d2f" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="553fcd5b-730e-420f-acf5-44c0ca4ffa1b" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -370,10 +371,10 @@
                             <caom2:val>-37.65932222222222</caom2:val>
                           </caom2:coord2>
                         </caom2:refCoord>
-                        <caom2:cd11>0.000261111111111111</caom2:cd11>
+                        <caom2:cd11>0.000269305555555555</caom2:cd11>
                         <caom2:cd12>0.0</caom2:cd12>
                         <caom2:cd21>0.0</caom2:cd21>
-                        <caom2:cd22>0.000261111111111111</caom2:cd22>
+                        <caom2:cd22>0.000269305555555555</caom2:cd22>
                       </caom2:function>
                     </caom2:axis>
                     <caom2:coordsys>ICRS</caom2:coordsys>
@@ -391,7 +392,7 @@
                         </caom2:start>
                         <caom2:end>
                           <caom2:pix>1.5</caom2:pix>
-                          <caom2:val>520.0</caom2:val>
+                          <caom2:val>1060.0</caom2:val>
                         </caom2:end>
                       </caom2:range>
                     </caom2:axis>
@@ -401,10 +402,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="e49fcf89-4052-43c9-8d4b-2fc18ba2039b">
+            <caom2:part caom2:id="42e6a120-dd37-40f5-a623-72029c04287c">
               <caom2:name>9</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="b3b468ea-beb2-427d-b799-ede600522fbe" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="64efac77-1bd0-4cbd-a7c2-832a1ec998db" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -433,10 +434,10 @@
                             <caom2:val>-37.65932222222222</caom2:val>
                           </caom2:coord2>
                         </caom2:refCoord>
-                        <caom2:cd11>0.000261111111111111</caom2:cd11>
+                        <caom2:cd11>0.000269305555555555</caom2:cd11>
                         <caom2:cd12>0.0</caom2:cd12>
                         <caom2:cd21>0.0</caom2:cd21>
-                        <caom2:cd22>0.000261111111111111</caom2:cd22>
+                        <caom2:cd22>0.000269305555555555</caom2:cd22>
                       </caom2:function>
                     </caom2:axis>
                     <caom2:coordsys>ICRS</caom2:coordsys>
@@ -454,7 +455,7 @@
                         </caom2:start>
                         <caom2:end>
                           <caom2:pix>1.5</caom2:pix>
-                          <caom2:val>520.0</caom2:val>
+                          <caom2:val>1060.0</caom2:val>
                         </caom2:end>
                       </caom2:range>
                     </caom2:axis>
@@ -464,10 +465,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="819a469f-a7a9-46d2-b38c-0cd86380959f">
+            <caom2:part caom2:id="2b44a4a2-629f-4282-8a84-e97938bffdb1">
               <caom2:name>10</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="4db75525-4487-4359-b4bf-26e45b885a10" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="d6c65411-7dc6-40ae-8ecf-d9f1eff21e06" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -496,10 +497,10 @@
                             <caom2:val>-37.65932222222222</caom2:val>
                           </caom2:coord2>
                         </caom2:refCoord>
-                        <caom2:cd11>0.000261111111111111</caom2:cd11>
+                        <caom2:cd11>0.000269305555555555</caom2:cd11>
                         <caom2:cd12>0.0</caom2:cd12>
                         <caom2:cd21>0.0</caom2:cd21>
-                        <caom2:cd22>0.000261111111111111</caom2:cd22>
+                        <caom2:cd22>0.000269305555555555</caom2:cd22>
                       </caom2:function>
                     </caom2:axis>
                     <caom2:coordsys>ICRS</caom2:coordsys>
@@ -517,7 +518,7 @@
                         </caom2:start>
                         <caom2:end>
                           <caom2:pix>1.5</caom2:pix>
-                          <caom2:val>520.0</caom2:val>
+                          <caom2:val>1060.0</caom2:val>
                         </caom2:end>
                       </caom2:range>
                     </caom2:axis>
@@ -527,10 +528,10 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="c513d30d-9347-4d93-9a0d-67ee12259af6">
+            <caom2:part caom2:id="d2a69ba7-5564-4c42-878c-7cd99f0d5b78">
               <caom2:name>11</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="daa7ab73-a099-4250-9c0d-9b1ad8cc1d52" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="fadee27e-ba6e-49c7-8339-e5e707732049" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -559,10 +560,10 @@
                             <caom2:val>-37.65932222222222</caom2:val>
                           </caom2:coord2>
                         </caom2:refCoord>
-                        <caom2:cd11>0.000261111111111111</caom2:cd11>
+                        <caom2:cd11>0.000269305555555555</caom2:cd11>
                         <caom2:cd12>0.0</caom2:cd12>
                         <caom2:cd21>0.0</caom2:cd21>
-                        <caom2:cd22>0.000261111111111111</caom2:cd22>
+                        <caom2:cd22>0.000269305555555555</caom2:cd22>
                       </caom2:function>
                     </caom2:axis>
                     <caom2:coordsys>ICRS</caom2:coordsys>
@@ -580,7 +581,7 @@
                         </caom2:start>
                         <caom2:end>
                           <caom2:pix>1.5</caom2:pix>
-                          <caom2:val>520.0</caom2:val>
+                          <caom2:val>1060.0</caom2:val>
                         </caom2:end>
                       </caom2:range>
                     </caom2:axis>
@@ -590,10 +591,11 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="72d6b2e1-0b15-4e7d-8f2e-2ed21ce09379">
+            <caom2:part caom2:id="49f04724-14a6-455d-b19a-21b5cc0173c0">
               <caom2:name>12</caom2:name>
+              <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="c9c17809-3e0f-44af-a37e-b0d7eb524fba" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="6ef12bad-a184-4e33-b562-d3cae04e1e9a" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
