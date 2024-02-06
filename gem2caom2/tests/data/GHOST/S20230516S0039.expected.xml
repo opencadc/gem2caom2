@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="c229737e-abb5-445b-8d6b-b04ab243fc7a" caom2:metaProducer="GEMINI2caom2/0.0.0">
+<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="0ffddf12-a77d-429d-a5e7-39e070823ebd" caom2:metaProducer="GEMINI2caom2/0.0.0">
   <caom2:collection>GEMINI</caom2:collection>
   <caom2:observationID>GS-2023A-SV-104-12-003</caom2:observationID>
   <caom2:metaRelease>2023-05-15T23:37:15.000</caom2:metaRelease>
@@ -27,11 +27,11 @@
     <caom2:name>GHOST</caom2:name>
   </caom2:instrument>
   <caom2:planes>
-    <caom2:plane caom2:id="30c69f82-24d7-422e-86cd-b4558806a1b4" caom2:metaProducer="GEMINI2caom2/0.0.0">
+    <caom2:plane caom2:id="78fc8d2f-4fe5-4e04-9742-3cea7f625cf3" caom2:metaProducer="GEMINI2caom2/0.0.0">
       <caom2:productID>S20230516S0039</caom2:productID>
       <caom2:metaRelease>2023-05-15T23:37:15.000</caom2:metaRelease>
       <caom2:dataRelease>2023-06-15T00:00:00.000</caom2:dataRelease>
-      <caom2:dataProductType>spectrum</caom2:dataProductType>
+      <caom2:dataProductType>image</caom2:dataProductType>
       <caom2:calibrationLevel>1</caom2:calibrationLevel>
       <caom2:provenance>
         <caom2:name>Gemini Observatory Data</caom2:name>
@@ -40,7 +40,7 @@
         <caom2:reference>http://archive.gemini.edu/searchform/GS-2023A-SV-104-12-003</caom2:reference>
       </caom2:provenance>
       <caom2:artifacts>
-        <caom2:artifact caom2:id="1ec71af4-148e-4b57-ae03-b1d9498b8913" caom2:metaProducer="GEMINI2caom2/0.0.0">
+        <caom2:artifact caom2:id="6680ca91-33cb-44d2-95d4-65c8ed9f659d" caom2:metaProducer="GEMINI2caom2/0.0.0">
           <caom2:uri>gemini:GEMINI/S20230516S0039.fits</caom2:uri>
           <caom2:productType>science</caom2:productType>
           <caom2:releaseType>data</caom2:releaseType>
@@ -48,24 +48,28 @@
           <caom2:contentLength>59889600</caom2:contentLength>
           <caom2:contentChecksum>md5:00b7cf03b3938abcaf04e005c209f6b7</caom2:contentChecksum>
           <caom2:parts>
-            <caom2:part caom2:id="426b5fd7-1db1-4939-902d-0a4799fc9521">
+            <caom2:part caom2:id="6ad0757f-c811-47ef-87c1-2c2af9d9fa32">
               <caom2:name>0</caom2:name>
               <caom2:chunks/>
             </caom2:part>
-            <caom2:part caom2:id="182417e7-e640-4e0a-8740-d3814bd0e287">
+            <caom2:part caom2:id="a046bc47-a55f-4dfb-840a-a582d0e9891a">
               <caom2:name>1</caom2:name>
               <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="3ca64045-7f97-40a8-868f-a17e1470d145" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="e342bd77-10e8-481a-a215-4e5187ba91fc" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>TIME</caom2:ctype>
                         <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15740695036947e-05</caom2:delta>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
                           <caom2:val>60079.98420138889</caom2:val>
@@ -79,23 +83,27 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="dc28a220-0c78-45db-b58e-dcdf1ba3f10b">
+            <caom2:part caom2:id="50ca3a90-d81d-44f5-9c30-8df23ab84a0c">
               <caom2:name>2</caom2:name>
               <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="1828b12c-6dd4-4aad-a3f0-7c6c83833776" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="84f2d9ae-7eca-43e9-b36d-5e4bfaa3dc5e" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>TIME</caom2:ctype>
                         <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15740767796523e-05</caom2:delta>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>60079.98423611111</caom2:val>
+                          <caom2:val>60079.98420138889</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -106,23 +114,27 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="49e6ed6e-961d-466c-880d-3d39fcfc228c">
+            <caom2:part caom2:id="0959bdec-4023-4203-9d51-4f4158d00e34">
               <caom2:name>3</caom2:name>
               <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="397da8e2-e160-4d19-844f-7e5555687f88" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="1f6d7490-4386-4996-98f7-f8e485a483cc" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>TIME</caom2:ctype>
                         <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15740767796523e-05</caom2:delta>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>60079.98427083333</caom2:val>
+                          <caom2:val>60079.98420138889</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -133,23 +145,27 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="40a83dfc-b5a5-4547-a446-f9870fd52ddd">
+            <caom2:part caom2:id="a5b912e3-c263-4fbb-95dc-088156541ebc">
               <caom2:name>4</caom2:name>
               <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="543643ce-e12f-4d31-b942-c1a930537aa1" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="ce92e510-6da9-4d3c-9456-2dab706c3473" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>TIME</caom2:ctype>
                         <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15740767796523e-05</caom2:delta>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>60079.984305555554</caom2:val>
+                          <caom2:val>60079.98420138889</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -160,23 +176,27 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="0a04a7d8-930c-413d-aca4-f8ef3f8d7fd1">
+            <caom2:part caom2:id="762a7741-1862-4537-a66b-0957e9634b5d">
               <caom2:name>5</caom2:name>
               <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="25a14a1c-c28b-4f11-b459-cfb53b0ce7ae" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="8ae974bf-80ca-4511-b5dc-522ddc3d28d1" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>TIME</caom2:ctype>
                         <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15740767796523e-05</caom2:delta>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>60079.98434027778</caom2:val>
+                          <caom2:val>60079.98420138889</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -187,23 +207,27 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="6d752df6-3fd5-40d7-b737-8b94ff392a61">
+            <caom2:part caom2:id="e7a4f4cc-3a59-4174-a6dd-bddbc3703bf9">
               <caom2:name>6</caom2:name>
               <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="482a72a5-32c1-46fc-9589-5aa5be6610c8" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="ec0004fc-38e6-441e-a17e-346e13341f19" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>TIME</caom2:ctype>
                         <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15740767796523e-05</caom2:delta>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>60079.984375</caom2:val>
+                          <caom2:val>60079.98420138889</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -214,23 +238,27 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="4ee87508-3b76-4a63-9eab-f47164e644c2">
+            <caom2:part caom2:id="15d7951e-1115-41da-ad3c-dc421c78c146">
               <caom2:name>7</caom2:name>
               <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="425791c3-61af-42bd-bcdb-c8594feb6136" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="31789f5a-c8d2-455d-b844-63ab55b861f1" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>TIME</caom2:ctype>
                         <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15740767796523e-05</caom2:delta>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>60079.98440972222</caom2:val>
+                          <caom2:val>60079.98420138889</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -241,23 +269,27 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="9f7f3654-aff2-42bb-ae4a-d8bb6fc311b9">
+            <caom2:part caom2:id="cff14d7b-6c16-49d3-9732-ea73e20571e9">
               <caom2:name>8</caom2:name>
               <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="8c4c1c7e-78a0-4c34-a0d0-de57eafdad46" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="2bdcaa01-7762-41a0-a801-436cbfc28212" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>TIME</caom2:ctype>
                         <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15740695036947e-05</caom2:delta>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>60079.984444444446</caom2:val>
+                          <caom2:val>60079.98420138889</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -268,23 +300,27 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="dca277d1-f87b-4562-b739-efbe16f1d545">
+            <caom2:part caom2:id="f4f8a61d-736e-4b32-a8f3-7263727f6fbd">
               <caom2:name>9</caom2:name>
               <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="145a8483-6485-473c-af95-2870e8a150be" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="6088003e-f41f-42b4-9995-7fa739159834" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>TIME</caom2:ctype>
                         <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15740695036947e-05</caom2:delta>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>60079.98447916667</caom2:val>
+                          <caom2:val>60079.98420138889</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -295,23 +331,27 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="2e792b37-87f2-4606-b5f0-24de765925b9">
+            <caom2:part caom2:id="a93a2d4b-9d24-4736-923b-e845f30149fd">
               <caom2:name>10</caom2:name>
               <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="f66b14b4-e571-43d9-81f2-d68ef32b5686" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="9cbaace8-4f5d-4bd6-8b64-639a3f0f9c8f" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>TIME</caom2:ctype>
                         <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15740695036947e-05</caom2:delta>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>60079.98451388889</caom2:val>
+                          <caom2:val>60079.98420138889</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -322,23 +362,27 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="0812665b-5506-4aa2-8ed2-c132a3b63b0a">
+            <caom2:part caom2:id="0a34b178-9cc7-4e0a-b07c-408664e475ed">
               <caom2:name>11</caom2:name>
               <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="1dc3239f-54b3-4a0f-8d79-fa5134231da6" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="e964d582-a83a-45c0-b72f-47838c539f2e" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>TIME</caom2:ctype>
                         <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15740767796523e-05</caom2:delta>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>60079.98454861111</caom2:val>
+                          <caom2:val>60079.98420138889</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -349,23 +393,27 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="c60064c3-44b6-4c50-9dc5-f5a70a1ae607">
+            <caom2:part caom2:id="4831115b-8d0c-44a1-bb62-6f1469ecd1c8">
               <caom2:name>12</caom2:name>
               <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="447f5d59-63b7-4b26-90ff-0a084df01a75" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="cb9246fb-2b04-49a5-90a9-80fc574cdfde" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>TIME</caom2:ctype>
                         <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15740767796523e-05</caom2:delta>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>60079.98458333333</caom2:val>
+                          <caom2:val>60079.98420138889</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -376,23 +424,27 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="a285590d-8e37-4169-8c81-b1aa8de31ca9">
+            <caom2:part caom2:id="5d916306-1830-4f67-932d-b214268ab38b">
               <caom2:name>13</caom2:name>
               <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="f84dc0b0-7ab9-4c5e-8a35-0c64008d89e7" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="c58af779-ce69-42c4-a21f-dcd4660b81e7" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>TIME</caom2:ctype>
                         <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15740767796523e-05</caom2:delta>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>60079.984618055554</caom2:val>
+                          <caom2:val>60079.98420138889</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -403,23 +455,27 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="6a57b361-38ba-4f69-b943-3343ca2ad166">
+            <caom2:part caom2:id="80e43cea-2521-484a-9260-eddfaf848d42">
               <caom2:name>14</caom2:name>
               <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="fd7948b4-247f-46f9-8b9c-9333d10d9287" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="eb8c5321-56f3-44c8-bf5a-9c7a336084c4" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>TIME</caom2:ctype>
                         <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15740767796523e-05</caom2:delta>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>60079.98465277778</caom2:val>
+                          <caom2:val>60079.98420138889</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -430,23 +486,27 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="1b33370e-6b89-4212-9cf3-921015d9cea3">
+            <caom2:part caom2:id="f9673254-2c18-45e9-aa65-052ba71f7274">
               <caom2:name>15</caom2:name>
               <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="8960e1ed-106e-49b6-85ee-b03417825212" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="2fc2334a-e4f4-407e-bfae-cc065cf1cef6" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>TIME</caom2:ctype>
                         <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15740767796523e-05</caom2:delta>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>60079.9846875</caom2:val>
+                          <caom2:val>60079.98420138889</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -457,23 +517,27 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="107e6d5f-c8b7-40fa-bcee-94ef3a173f08">
+            <caom2:part caom2:id="520c9e84-7775-48dd-a663-06abad42b415">
               <caom2:name>16</caom2:name>
               <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="ec808733-30e3-406a-bbaf-8d1bd20331e4" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="756cb156-ec57-4a24-a0c4-4042ccbbf800" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>TIME</caom2:ctype>
                         <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15740695036947e-05</caom2:delta>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>60079.98472222222</caom2:val>
+                          <caom2:val>60079.98420138889</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -484,23 +548,27 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="b1c213c6-e0ac-48fe-8c85-ffd1dd0dc1d9">
+            <caom2:part caom2:id="cbe61829-7571-4327-93dc-42075698f126">
               <caom2:name>17</caom2:name>
               <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="7aa66a36-bc34-4122-b0c7-12104b3eb21a" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="78ce67cb-411d-4c45-85c7-f8c8ffcdaee2" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>TIME</caom2:ctype>
                         <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15740695036947e-05</caom2:delta>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>60079.98475694445</caom2:val>
+                          <caom2:val>60079.98420138889</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -511,23 +579,27 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="55029275-17dd-4d62-8d89-b2ab3b71b543">
+            <caom2:part caom2:id="3b3f3550-227d-4498-96ca-9ad8b45183f3">
               <caom2:name>18</caom2:name>
               <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="2363462b-043e-42a1-88e7-9630dad3ef76" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="3dae6870-1764-4bce-8be7-0d978070f37c" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>TIME</caom2:ctype>
                         <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15740695036947e-05</caom2:delta>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>60079.98479166667</caom2:val>
+                          <caom2:val>60079.98420138889</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -538,23 +610,27 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="d347f17b-c3eb-4807-bcd2-ac2feed9bd74">
+            <caom2:part caom2:id="1f81d9ee-2250-431c-86a1-fdef850ab798">
               <caom2:name>19</caom2:name>
               <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="c0896e23-8615-44aa-a48a-d1a32e8c74d5" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="644302ad-4cae-4f15-8ed4-18fb7f11cba8" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>TIME</caom2:ctype>
                         <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15740767796523e-05</caom2:delta>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>60079.984826388885</caom2:val>
+                          <caom2:val>60079.98420138889</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -565,23 +641,27 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="1d93b24a-06d1-43ff-a1e3-6a335dc2992d">
+            <caom2:part caom2:id="a3326690-afda-4baf-9bb5-4a80a90059cc">
               <caom2:name>20</caom2:name>
               <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="d381e7f7-af41-43ef-b12a-ee1ee6125a6c" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="c12ea25d-2199-4c42-81aa-e819c117fa00" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>TIME</caom2:ctype>
                         <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15740767796523e-05</caom2:delta>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>60079.98486111111</caom2:val>
+                          <caom2:val>60079.98420138889</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -592,23 +672,27 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="a9d56caf-4a8b-471a-b4e4-9ba1ff77b1b8">
+            <caom2:part caom2:id="35549f53-ab82-4c40-9005-587a2f18873c">
               <caom2:name>21</caom2:name>
               <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="47f58442-1f00-4657-abd9-d41477481e01" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="48cafeab-b111-4967-b9d0-35e1666e7ef9" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>TIME</caom2:ctype>
                         <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15740767796523e-05</caom2:delta>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>60079.98489583333</caom2:val>
+                          <caom2:val>60079.98420138889</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -619,23 +703,27 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="e8dcc8f8-31a2-471d-aa5d-29570b237b7b">
+            <caom2:part caom2:id="4f12c99b-675f-4b37-9401-2af8c70cbb49">
               <caom2:name>22</caom2:name>
               <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="d1953f86-6e87-40d3-9c22-eae732c44cb3" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="61e20040-9b55-4827-960e-8d17cca0b8da" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>TIME</caom2:ctype>
                         <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15740767796523e-05</caom2:delta>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>60079.984930555554</caom2:val>
+                          <caom2:val>60079.98420138889</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -646,23 +734,27 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="8ac2e0dd-cbf7-46c5-9c99-eb759984d54b">
+            <caom2:part caom2:id="599be3a9-c57c-4ed6-8be2-d2248b3f4aca">
               <caom2:name>23</caom2:name>
               <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="5c6cb9d2-3bc0-4ab2-aab5-8cd766d5ddcf" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="38fcadf0-cb71-4ad7-b526-6ea6883cb037" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>TIME</caom2:ctype>
                         <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15740767796523e-05</caom2:delta>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>60079.98496527778</caom2:val>
+                          <caom2:val>60079.98420138889</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -673,23 +765,27 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="14c1a846-0d3b-4217-8727-2ae4c09e7245">
+            <caom2:part caom2:id="688ba8f4-128a-445d-bbc7-089a2fbcb229">
               <caom2:name>24</caom2:name>
               <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="61fc1f8e-8734-4879-aeaa-8c89596823e9" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="5a619a6f-373d-4a09-a952-ef57a077a88c" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>TIME</caom2:ctype>
                         <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15740767796523e-05</caom2:delta>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>60079.985</caom2:val>
+                          <caom2:val>60079.98420138889</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -700,23 +796,27 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="c8a29443-fd0f-49ac-b625-4e6764e76ef4">
+            <caom2:part caom2:id="b03f9fa7-8bb7-4b21-b2f2-b143813affbb">
               <caom2:name>25</caom2:name>
               <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="f106bdd2-ddcf-4b49-8129-1c6ca24d2555" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="c8ebe891-0c8b-4047-baa1-f26d0efaf0ff" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>TIME</caom2:ctype>
                         <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15740695036947e-05</caom2:delta>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>60079.985034722224</caom2:val>
+                          <caom2:val>60079.98420138889</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -727,23 +827,27 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="5a508686-2b37-4b4a-bbb8-99e6439f3907">
+            <caom2:part caom2:id="5961d2bc-42d5-4566-987c-05deae80dbf5">
               <caom2:name>26</caom2:name>
               <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="da1d2217-8420-43e2-9bd6-ca4c9928fc3c" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="c5314e65-e8b5-4fba-a50f-5b5c9573046e" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>TIME</caom2:ctype>
                         <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15740695036947e-05</caom2:delta>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>60079.98506944445</caom2:val>
+                          <caom2:val>60079.98420138889</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -754,23 +858,27 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="03e740fa-bf96-4360-a025-90a6eee79cfc">
+            <caom2:part caom2:id="0d2146e7-61f5-4b2d-a68d-038067c667dc">
               <caom2:name>27</caom2:name>
               <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="0ccdda46-32af-4ebb-af4e-74475a17ae37" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="ff567020-2bca-4180-a677-a082c3aafff1" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>TIME</caom2:ctype>
                         <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15740695036947e-05</caom2:delta>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>60079.98510416667</caom2:val>
+                          <caom2:val>60079.98420138889</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -781,23 +889,27 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="fbc6abea-c10f-4da7-a0eb-34964308e259">
+            <caom2:part caom2:id="c960798f-7f44-4970-9e87-04c59c14d8dd">
               <caom2:name>28</caom2:name>
               <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="cdc04b96-ccfe-43af-8330-d7dfce327f1d" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="6f2f2fc1-f6c4-4186-962d-6502cd675069" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>TIME</caom2:ctype>
                         <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15740767796523e-05</caom2:delta>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>60079.985138888886</caom2:val>
+                          <caom2:val>60079.98420138889</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -808,23 +920,27 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="0c77b0c9-3f35-445b-b156-8ac714b17f6f">
+            <caom2:part caom2:id="85f74521-0228-47c8-8fc2-63956329ea51">
               <caom2:name>29</caom2:name>
               <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="bf7c877e-18fc-4d0c-bedd-902c2439b625" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="bad598bb-3dd3-4b4f-8cec-6d6beed57944" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>TIME</caom2:ctype>
                         <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15740767796523e-05</caom2:delta>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>60079.98517361111</caom2:val>
+                          <caom2:val>60079.98420138889</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -835,23 +951,27 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="8a29a7d2-a229-415e-8b8e-056236027589">
+            <caom2:part caom2:id="a5e29347-7ee7-4633-b27d-385a18a53f90">
               <caom2:name>30</caom2:name>
               <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="a1530211-7080-45ab-b62b-646c61d8fd81" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="dbec350e-dfd2-4985-9a5f-a715750fa65f" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>TIME</caom2:ctype>
                         <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15740767796523e-05</caom2:delta>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>60079.98520833333</caom2:val>
+                          <caom2:val>60079.98420138889</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -862,23 +982,27 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="60f11bae-5a82-44c2-ba24-52f1b9d09f70">
+            <caom2:part caom2:id="e00bee00-bddc-47e6-9cc0-d68ab4be5d6f">
               <caom2:name>31</caom2:name>
               <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="2128d7fa-2620-44ab-aa72-c3533096a9ab" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="2f4a39b9-dad3-4561-b8df-f6dfad66900b" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>TIME</caom2:ctype>
                         <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15740767796523e-05</caom2:delta>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>60079.985243055555</caom2:val>
+                          <caom2:val>60079.98420138889</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -889,23 +1013,27 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="e665f943-49ca-4497-925a-6e77c992354f">
+            <caom2:part caom2:id="452a7a1a-37a8-40b4-b7f9-e205a7e13b3e">
               <caom2:name>32</caom2:name>
               <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="e43ba700-fd9d-432c-8d9a-d72aff96482f" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="b35ce07f-5703-4f58-8364-d401a2a7d2cf" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>TIME</caom2:ctype>
                         <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15740767796523e-05</caom2:delta>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>60079.98527777778</caom2:val>
+                          <caom2:val>60079.98420138889</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -916,23 +1044,27 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="3d2e76db-1114-4e3b-97a8-aea68f47bd82">
+            <caom2:part caom2:id="bb1f5ab9-df8f-436e-8eb6-42f2f8fe6e62">
               <caom2:name>33</caom2:name>
               <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="79066ef4-50f6-460b-9a39-7fee9ba4db6d" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="b476c7b4-d017-4011-bf8a-6992b76d2537" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>TIME</caom2:ctype>
                         <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15740767796523e-05</caom2:delta>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>60079.9853125</caom2:val>
+                          <caom2:val>60079.98420138889</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -943,23 +1075,27 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="e36c10db-2263-4312-b33e-f40378f43884">
+            <caom2:part caom2:id="aec9b184-300a-4ca2-a7ab-eb369e234728">
               <caom2:name>34</caom2:name>
               <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="229f13ae-dd24-4dbf-a361-6b71570022fe" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="d68f47af-04f2-4870-92fe-43661b2d29db" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>TIME</caom2:ctype>
                         <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15740695036947e-05</caom2:delta>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>60079.985347222224</caom2:val>
+                          <caom2:val>60079.98420138889</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -970,23 +1106,27 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="af91747f-552b-4e05-9cb3-9a18d5da968b">
+            <caom2:part caom2:id="d0a68420-7021-438c-a2af-b4041e7f8780">
               <caom2:name>35</caom2:name>
               <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="e9f4855e-d6d2-422f-8927-966f13de2fb6" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="88e286bf-0465-46fa-a635-a465310557b8" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>TIME</caom2:ctype>
                         <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15740695036947e-05</caom2:delta>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>60079.98538194445</caom2:val>
+                          <caom2:val>60079.98420138889</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -997,23 +1137,27 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="37ef2146-0467-4321-b82c-51efbe60da40">
+            <caom2:part caom2:id="7a758952-e021-45e4-b784-1e973b18aa89">
               <caom2:name>36</caom2:name>
               <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="334db0ef-87ed-4b26-be73-38b3fdd38c14" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="fd6a65b6-7676-4477-8b4b-849eecbeb5c5" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>TIME</caom2:ctype>
                         <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15740695036947e-05</caom2:delta>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>60079.98541666667</caom2:val>
+                          <caom2:val>60079.98420138889</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -1024,23 +1168,27 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="d69d9523-ba47-4807-b9ef-ded1d41dafea">
+            <caom2:part caom2:id="49d8c09c-a78b-4d1a-b12b-4e3595ca8594">
               <caom2:name>37</caom2:name>
               <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="f08c7dc2-2fb8-48fd-8aef-699cd49faae4" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="64c59bf8-6df1-4f69-a0de-d3b38b2f527c" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>TIME</caom2:ctype>
                         <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15740767796523e-05</caom2:delta>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>60079.985451388886</caom2:val>
+                          <caom2:val>60079.98420138889</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -1051,23 +1199,27 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="d39476a7-7620-4065-ac41-7215c3cd5ffc">
+            <caom2:part caom2:id="a972ba4b-9e62-4d4e-8142-7a541a5414bc">
               <caom2:name>38</caom2:name>
               <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="eefc2b12-047d-480f-a2b2-8b7194e8d9ec" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="a473682d-7c3d-4f0a-8f75-51aabbe53727" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>TIME</caom2:ctype>
                         <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15740767796523e-05</caom2:delta>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>60079.98548611111</caom2:val>
+                          <caom2:val>60079.98420138889</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -1078,23 +1230,27 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="84847892-d490-448d-9783-fd1c9c95232c">
+            <caom2:part caom2:id="6e32a7f1-8c40-4a49-8584-a5c5b3ade67a">
               <caom2:name>39</caom2:name>
               <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="94928774-6fb7-40d3-a56b-9488ff60aec0" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="81386983-461d-4f6f-be97-7829a5bccd6d" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>TIME</caom2:ctype>
                         <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15740767796523e-05</caom2:delta>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>60079.98552083333</caom2:val>
+                          <caom2:val>60079.98420138889</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -1105,23 +1261,27 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="952848d1-e4db-41fd-b2a6-790e7ca92a35">
+            <caom2:part caom2:id="9658b27c-a466-4d59-9652-17774fbe1103">
               <caom2:name>40</caom2:name>
               <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="be970d39-b762-4b5b-9441-11acfd79038c" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="9482f2d6-4367-46c2-94cb-c61223446b2b" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>TIME</caom2:ctype>
                         <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15740767796523e-05</caom2:delta>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>60079.985555555555</caom2:val>
+                          <caom2:val>60079.98420138889</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -1132,23 +1292,27 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="70295b22-4aad-419a-af31-d2c13f1f4b58">
+            <caom2:part caom2:id="879dec0b-531e-4f7d-9215-be7b0d7d0509">
               <caom2:name>41</caom2:name>
               <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="165103c4-d213-44ff-af55-808acf1f2190" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="50eda5a6-6f1b-4ef3-8c04-dfb6d98df2ec" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>TIME</caom2:ctype>
                         <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15740767796523e-05</caom2:delta>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>60079.98559027778</caom2:val>
+                          <caom2:val>60079.98420138889</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -1159,23 +1323,27 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="4a6dfc2a-3d83-4395-bbea-418828bbef7f">
+            <caom2:part caom2:id="118fb334-7fb3-457e-8971-78f6dd15cd63">
               <caom2:name>42</caom2:name>
               <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="c909f1d2-1a00-42f1-b6a7-d9ed0798e4b1" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="e0875576-5980-4088-b63e-50380ffe0fed" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>TIME</caom2:ctype>
                         <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15740695036947e-05</caom2:delta>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>60079.985625</caom2:val>
+                          <caom2:val>60079.98420138889</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -1186,23 +1354,27 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="58d16d0f-c50e-4313-8761-e3981b9c1a25">
+            <caom2:part caom2:id="019dfd78-67e4-43dc-a165-800d882fb144">
               <caom2:name>43</caom2:name>
               <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="efed3750-9b38-49e6-9118-75ce70cf5ed2" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="1efa5a13-cb01-4e37-bf65-04dc95f181ff" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>TIME</caom2:ctype>
                         <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15740695036947e-05</caom2:delta>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>60079.985659722224</caom2:val>
+                          <caom2:val>60079.98420138889</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -1213,23 +1385,27 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="5a77c47e-c760-4720-b591-bf0dc9a17aa8">
+            <caom2:part caom2:id="fdc5a00a-7341-43e5-b85c-c90a017e3885">
               <caom2:name>44</caom2:name>
               <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="ce705e34-76b2-401b-a625-15ac80ac410d" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="fcbab247-79b2-4fc1-831c-33f049054ab1" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>TIME</caom2:ctype>
                         <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15740695036947e-05</caom2:delta>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>60079.98569444445</caom2:val>
+                          <caom2:val>60079.98420138889</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -1240,23 +1416,27 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="349e8f5d-6424-449e-8ef1-651e87dc1b4d">
+            <caom2:part caom2:id="ef7397c8-f9df-4fa9-b328-c6b164ad6185">
               <caom2:name>45</caom2:name>
               <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="f34a12b4-cc50-40f7-a441-962caff7e326" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="862a67d5-9052-48ca-aea4-f941a33d58a7" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>TIME</caom2:ctype>
                         <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15740767796523e-05</caom2:delta>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>60079.98572916666</caom2:val>
+                          <caom2:val>60079.98420138889</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -1267,23 +1447,27 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="3aa9f958-d61a-4472-a141-67b0c9712649">
+            <caom2:part caom2:id="1631c7ff-5f68-4268-a59a-de07d734ff5a">
               <caom2:name>46</caom2:name>
               <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="624cf8c9-7de6-4ebe-b834-ee1c8c2d8cb4" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="2e5fd947-7b0f-4abe-a2a4-61183d5e412a" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>TIME</caom2:ctype>
                         <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15740767796523e-05</caom2:delta>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>60079.985763888886</caom2:val>
+                          <caom2:val>60079.98420138889</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -1294,23 +1478,27 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="5951805e-284e-4630-8a7d-c162e8e3883f">
+            <caom2:part caom2:id="c0e48391-fd9b-4b70-b23f-cb39f1d12a54">
               <caom2:name>47</caom2:name>
               <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="563b343d-ae5e-4896-b674-42a52a055b07" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="def61acf-31a6-417b-9014-868d1310473e" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>TIME</caom2:ctype>
                         <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15740767796523e-05</caom2:delta>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>60079.98579861111</caom2:val>
+                          <caom2:val>60079.98420138889</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -1321,23 +1509,27 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="e09648ab-4b5b-4439-b8f2-d8f1c36648fb">
+            <caom2:part caom2:id="0c127dfb-f70a-4ab3-b630-3b5732a71cf4">
               <caom2:name>48</caom2:name>
               <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="4e1ac1b1-7328-42d6-8df6-80cba998ca9a" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="6d28f159-bddf-4dce-aedd-7f3ea70c7cee" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>TIME</caom2:ctype>
                         <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15740767796523e-05</caom2:delta>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>60079.98583333333</caom2:val>
+                          <caom2:val>60079.98420138889</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -1348,23 +1540,27 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="d51fd731-90ac-4ce4-b194-99b3c1547d05">
+            <caom2:part caom2:id="bc6e3927-c028-4a01-a8e1-0ddcbb4e1d4c">
               <caom2:name>49</caom2:name>
               <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="42324758-91c5-4dd8-acc8-5f86447a21dd" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="555a9974-704b-415e-b3a5-3f828a7a80ff" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>TIME</caom2:ctype>
                         <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15740767796523e-05</caom2:delta>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>60079.985868055555</caom2:val>
+                          <caom2:val>60079.98420138889</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -1375,23 +1571,27 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="d8242bc5-2bc4-4b51-a24c-03e48869dee2">
+            <caom2:part caom2:id="6741878b-d851-48e0-b2f3-4e54fcf1f079">
               <caom2:name>50</caom2:name>
               <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="59c793d1-6e4c-4afa-9580-d67ef2ca4614" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="4606db4c-f47e-439d-8bac-dc399821050c" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>TIME</caom2:ctype>
                         <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15740767796523e-05</caom2:delta>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>60079.98590277778</caom2:val>
+                          <caom2:val>60079.98420138889</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -1402,23 +1602,27 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="d34b04d3-cae0-45cd-8d09-8ef03a6b5d2a">
+            <caom2:part caom2:id="9a591930-f14e-4313-8a3e-338c7072b04f">
               <caom2:name>51</caom2:name>
               <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="c66ac97f-0aad-465b-b50d-330ddc7a92bc" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="f24fed13-6792-4a72-8cfa-329999d5d0b4" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>TIME</caom2:ctype>
                         <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15740695036947e-05</caom2:delta>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>60079.9859375</caom2:val>
+                          <caom2:val>60079.98420138889</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -1429,23 +1633,27 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="0ebb2582-8116-4e62-ad2b-58c33037fca2">
+            <caom2:part caom2:id="69ecc335-2591-4288-85f1-e307f1312bfd">
               <caom2:name>52</caom2:name>
               <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="9473fee1-f7ca-487f-b129-a46468920f1a" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="1bc5cda2-980e-47d3-ba6c-68f8c36a8a89" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>TIME</caom2:ctype>
                         <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15740695036947e-05</caom2:delta>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>60079.985972222225</caom2:val>
+                          <caom2:val>60079.98420138889</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -1456,23 +1664,27 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="c09fe091-bada-4958-8ce2-74d52d98481a">
+            <caom2:part caom2:id="0a375a60-d35f-436b-a8a0-8cb6510e6dab">
               <caom2:name>53</caom2:name>
               <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="24c3961b-44a0-436f-9063-91cb3b7f1780" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="85a84a45-1dcd-4f11-8753-b54c186161db" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>TIME</caom2:ctype>
                         <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15740695036947e-05</caom2:delta>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>60079.98600694445</caom2:val>
+                          <caom2:val>60079.98420138889</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -1483,23 +1695,27 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="78b502fc-1e61-48d0-82ad-98f57b21e243">
+            <caom2:part caom2:id="e227bc6b-6e54-4425-86a9-3b1b480f0d17">
               <caom2:name>54</caom2:name>
               <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="5c0d8695-77b3-4f18-99c5-8357aee3fb52" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="cc74377e-02e6-4938-be44-6efe864fa3e8" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>TIME</caom2:ctype>
                         <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15740767796523e-05</caom2:delta>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>60079.98604166666</caom2:val>
+                          <caom2:val>60079.98420138889</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -1510,23 +1726,27 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="a26c78fa-0c28-4653-9f1b-7b073105cba5">
+            <caom2:part caom2:id="8186547d-9426-4455-b173-c7388fbe02db">
               <caom2:name>55</caom2:name>
               <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="21ff8827-62af-4bb4-9680-6f22516b8b11" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="b507f230-4432-41e6-9104-0892fe082184" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>TIME</caom2:ctype>
                         <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15740767796523e-05</caom2:delta>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>60079.98607638889</caom2:val>
+                          <caom2:val>60079.98420138889</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -1537,23 +1757,27 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="9df2326d-7782-4978-9591-4b61d010550b">
+            <caom2:part caom2:id="b3ce878e-0ef0-47e5-bd1f-b0fb49febec4">
               <caom2:name>56</caom2:name>
               <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="41fe2da8-81df-42fd-8666-2399df1a71e3" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="4bc4f117-e51f-44e5-a5ff-17109e06589f" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>TIME</caom2:ctype>
                         <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15740767796523e-05</caom2:delta>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>60079.98611111111</caom2:val>
+                          <caom2:val>60079.98420138889</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -1564,23 +1788,27 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="f71e24e3-48dd-4fe5-9356-41178eef134a">
+            <caom2:part caom2:id="a431bdfe-228f-4135-a1da-e2c6e8ff9e3b">
               <caom2:name>57</caom2:name>
               <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="68ad5fba-597e-40e4-9c55-a62adaf385b7" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="509a2c03-cf55-49fe-a237-068104036abe" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>TIME</caom2:ctype>
                         <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15740767796523e-05</caom2:delta>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>60079.98614583333</caom2:val>
+                          <caom2:val>60079.98420138889</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -1591,23 +1819,27 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="84f4639c-7893-4ff0-a9d5-2cf120311f54">
+            <caom2:part caom2:id="d6359f41-c501-4a91-a388-68311bbae163">
               <caom2:name>58</caom2:name>
               <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="de9bf602-4703-477a-8c07-10f27a5ff744" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="2b79a36f-f591-4cb9-92d1-3b2504f84469" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>TIME</caom2:ctype>
                         <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15740767796523e-05</caom2:delta>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>60079.986180555556</caom2:val>
+                          <caom2:val>60079.98420138889</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -1618,23 +1850,27 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="c03b07b2-4efb-40be-9ac1-f1ca86ffa1bc">
+            <caom2:part caom2:id="fa1279f0-1d8c-46c0-a7bf-03a27dec10cc">
               <caom2:name>59</caom2:name>
               <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="e4aee2e9-a286-4680-acd1-e326e23d80ad" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="4988bf11-e0c1-46d4-a0f6-2405fbe3479e" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>TIME</caom2:ctype>
                         <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15740695036947e-05</caom2:delta>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>60079.986226851855</caom2:val>
+                          <caom2:val>60079.98420138889</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -1645,23 +1881,27 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="31d85ae4-5ecd-4da7-9055-dddf8f82485a">
+            <caom2:part caom2:id="4e059138-2675-4566-9089-c8ecd84a3fa4">
               <caom2:name>60</caom2:name>
               <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="4264ded8-9ec7-4505-996c-2d817726319b" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="d95bb04f-6547-4087-a9ac-c4959626ba44" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>TIME</caom2:ctype>
                         <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15740695036947e-05</caom2:delta>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>60079.98625</caom2:val>
+                          <caom2:val>60079.98420138889</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -1672,23 +1912,27 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="e39f5e01-d790-4eac-99d3-cdec0d469cbd">
+            <caom2:part caom2:id="b2747449-360f-4774-a372-f69f3d0dd5d6">
               <caom2:name>61</caom2:name>
               <caom2:productType>auxiliary</caom2:productType>
               <caom2:chunks>
-                <caom2:chunk caom2:id="12ef0ee5-9b1d-41b5-80ae-7d4b5f608297" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="4db937dc-3e4e-4d5d-a2f0-0d9513740c5a" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:time>
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>TIME</caom2:ctype>
                         <caom2:cunit>d</caom2:cunit>
                       </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
                       <caom2:function>
                         <caom2:naxis>1</caom2:naxis>
-                        <caom2:delta>1.15740767796523e-05</caom2:delta>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
                         <caom2:refCoord>
                           <caom2:pix>0.5</caom2:pix>
-                          <caom2:val>60079.986296296294</caom2:val>
+                          <caom2:val>60079.98420138889</caom2:val>
                         </caom2:refCoord>
                       </caom2:function>
                     </caom2:axis>
@@ -1699,14 +1943,14 @@
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="8db43434-a064-4805-9470-6692c35d9bfa">
+            <caom2:part caom2:id="696124dd-adfc-4c60-896e-fb6bcbc996a7">
               <caom2:name>62</caom2:name>
               <caom2:chunks/>
             </caom2:part>
-            <caom2:part caom2:id="aa668e8e-c4c1-40a6-a56f-bb7e932135d5">
+            <caom2:part caom2:id="2392f885-1c2b-46c0-858b-f4b841dc1fa4">
               <caom2:name>63</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="ebd72e2a-e56a-40db-bbac-978e2bbf3093" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="1ef99880-6169-435f-8cb4-6cd955c877e5" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -1763,13 +2007,36 @@
                     <caom2:specsys>TOPOCENT</caom2:specsys>
                     <caom2:resolvingPower>76000.0</caom2:resolvingPower>
                   </caom2:energy>
+                  <caom2:time>
+                    <caom2:axis>
+                      <caom2:axis>
+                        <caom2:ctype>TIME</caom2:ctype>
+                        <caom2:cunit>d</caom2:cunit>
+                      </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
+                      <caom2:function>
+                        <caom2:naxis>1</caom2:naxis>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
+                        <caom2:refCoord>
+                          <caom2:pix>0.5</caom2:pix>
+                          <caom2:val>60079.98420138889</caom2:val>
+                        </caom2:refCoord>
+                      </caom2:function>
+                    </caom2:axis>
+                    <caom2:timesys>UTC</caom2:timesys>
+                    <caom2:exposure>180.0</caom2:exposure>
+                    <caom2:resolution>180.0</caom2:resolution>
+                  </caom2:time>
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="887edc28-42c8-4896-b948-4eb00b7f3f52">
+            <caom2:part caom2:id="623512fc-04fe-477a-b348-353e37d92763">
               <caom2:name>64</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="7b09fdc0-011c-46e5-80ec-338bb457e6a5" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="26d7b7f2-c567-4ea4-ad47-73a66dab51f9" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -1826,13 +2093,36 @@
                     <caom2:specsys>TOPOCENT</caom2:specsys>
                     <caom2:resolvingPower>76000.0</caom2:resolvingPower>
                   </caom2:energy>
+                  <caom2:time>
+                    <caom2:axis>
+                      <caom2:axis>
+                        <caom2:ctype>TIME</caom2:ctype>
+                        <caom2:cunit>d</caom2:cunit>
+                      </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
+                      <caom2:function>
+                        <caom2:naxis>1</caom2:naxis>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
+                        <caom2:refCoord>
+                          <caom2:pix>0.5</caom2:pix>
+                          <caom2:val>60079.98420138889</caom2:val>
+                        </caom2:refCoord>
+                      </caom2:function>
+                    </caom2:axis>
+                    <caom2:timesys>UTC</caom2:timesys>
+                    <caom2:exposure>180.0</caom2:exposure>
+                    <caom2:resolution>180.0</caom2:resolution>
+                  </caom2:time>
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="420fa5e2-eb82-4d33-a853-938a8f9930ba">
+            <caom2:part caom2:id="c7b966df-948a-433a-b2b7-5f899ff49053">
               <caom2:name>65</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="bfbe9dcf-6832-4cff-ae34-668268e9e83e" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="3e8aa315-3f68-492e-b228-f965165dab99" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -1889,13 +2179,36 @@
                     <caom2:specsys>TOPOCENT</caom2:specsys>
                     <caom2:resolvingPower>76000.0</caom2:resolvingPower>
                   </caom2:energy>
+                  <caom2:time>
+                    <caom2:axis>
+                      <caom2:axis>
+                        <caom2:ctype>TIME</caom2:ctype>
+                        <caom2:cunit>d</caom2:cunit>
+                      </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
+                      <caom2:function>
+                        <caom2:naxis>1</caom2:naxis>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
+                        <caom2:refCoord>
+                          <caom2:pix>0.5</caom2:pix>
+                          <caom2:val>60079.98420138889</caom2:val>
+                        </caom2:refCoord>
+                      </caom2:function>
+                    </caom2:axis>
+                    <caom2:timesys>UTC</caom2:timesys>
+                    <caom2:exposure>180.0</caom2:exposure>
+                    <caom2:resolution>180.0</caom2:resolution>
+                  </caom2:time>
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="6053fbeb-44dc-4eab-bc07-f6dbeda335bb">
+            <caom2:part caom2:id="6862c574-48c8-458e-b967-a2272b835bfe">
               <caom2:name>66</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="98a88c23-832d-48f4-abd6-84ccc97dfd54" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="268476dc-0122-4dfd-a3ff-a5149fec0ba2" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -1952,17 +2265,40 @@
                     <caom2:specsys>TOPOCENT</caom2:specsys>
                     <caom2:resolvingPower>76000.0</caom2:resolvingPower>
                   </caom2:energy>
+                  <caom2:time>
+                    <caom2:axis>
+                      <caom2:axis>
+                        <caom2:ctype>TIME</caom2:ctype>
+                        <caom2:cunit>d</caom2:cunit>
+                      </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
+                      <caom2:function>
+                        <caom2:naxis>1</caom2:naxis>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
+                        <caom2:refCoord>
+                          <caom2:pix>0.5</caom2:pix>
+                          <caom2:val>60079.98420138889</caom2:val>
+                        </caom2:refCoord>
+                      </caom2:function>
+                    </caom2:axis>
+                    <caom2:timesys>UTC</caom2:timesys>
+                    <caom2:exposure>180.0</caom2:exposure>
+                    <caom2:resolution>180.0</caom2:resolution>
+                  </caom2:time>
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="91730190-1359-46f5-b8e4-54f7a1b2a252">
+            <caom2:part caom2:id="dd01afea-4199-4e32-bc0d-cea52cee2b55">
               <caom2:name>67</caom2:name>
               <caom2:chunks/>
             </caom2:part>
-            <caom2:part caom2:id="bb24b192-32fb-4556-b9a0-387c4cfb0fcd">
+            <caom2:part caom2:id="0516e1b8-7e0e-4120-9549-c69a7307f524">
               <caom2:name>68</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="adc42422-20a3-4a10-9a7a-4e6c07773f99" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="c0e0674a-993e-49f2-99e2-b0cfc6559661" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -2019,13 +2355,36 @@
                     <caom2:specsys>TOPOCENT</caom2:specsys>
                     <caom2:resolvingPower>76000.0</caom2:resolvingPower>
                   </caom2:energy>
+                  <caom2:time>
+                    <caom2:axis>
+                      <caom2:axis>
+                        <caom2:ctype>TIME</caom2:ctype>
+                        <caom2:cunit>d</caom2:cunit>
+                      </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
+                      <caom2:function>
+                        <caom2:naxis>1</caom2:naxis>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
+                        <caom2:refCoord>
+                          <caom2:pix>0.5</caom2:pix>
+                          <caom2:val>60079.98420138889</caom2:val>
+                        </caom2:refCoord>
+                      </caom2:function>
+                    </caom2:axis>
+                    <caom2:timesys>UTC</caom2:timesys>
+                    <caom2:exposure>180.0</caom2:exposure>
+                    <caom2:resolution>180.0</caom2:resolution>
+                  </caom2:time>
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="aa095678-4f93-4859-893a-f0f321ab42ed">
+            <caom2:part caom2:id="4fd2280b-2955-425b-95d9-0764464e31be">
               <caom2:name>69</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="ba978313-2cb0-4b4e-a1f8-5b012877c1f0" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="12549ed2-4e49-423d-b202-def18e172303" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -2082,13 +2441,36 @@
                     <caom2:specsys>TOPOCENT</caom2:specsys>
                     <caom2:resolvingPower>76000.0</caom2:resolvingPower>
                   </caom2:energy>
+                  <caom2:time>
+                    <caom2:axis>
+                      <caom2:axis>
+                        <caom2:ctype>TIME</caom2:ctype>
+                        <caom2:cunit>d</caom2:cunit>
+                      </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
+                      <caom2:function>
+                        <caom2:naxis>1</caom2:naxis>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
+                        <caom2:refCoord>
+                          <caom2:pix>0.5</caom2:pix>
+                          <caom2:val>60079.98420138889</caom2:val>
+                        </caom2:refCoord>
+                      </caom2:function>
+                    </caom2:axis>
+                    <caom2:timesys>UTC</caom2:timesys>
+                    <caom2:exposure>180.0</caom2:exposure>
+                    <caom2:resolution>180.0</caom2:resolution>
+                  </caom2:time>
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="7b308c72-5a98-4ff8-bef1-acf3700bc297">
+            <caom2:part caom2:id="93ef0c61-bb26-456d-843d-9a0c5d1be902">
               <caom2:name>70</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="75615011-cf46-4229-ae7c-581bac453dd3" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="e72f6669-f49c-4400-9626-cf185ece76d3" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -2145,13 +2527,36 @@
                     <caom2:specsys>TOPOCENT</caom2:specsys>
                     <caom2:resolvingPower>76000.0</caom2:resolvingPower>
                   </caom2:energy>
+                  <caom2:time>
+                    <caom2:axis>
+                      <caom2:axis>
+                        <caom2:ctype>TIME</caom2:ctype>
+                        <caom2:cunit>d</caom2:cunit>
+                      </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
+                      <caom2:function>
+                        <caom2:naxis>1</caom2:naxis>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
+                        <caom2:refCoord>
+                          <caom2:pix>0.5</caom2:pix>
+                          <caom2:val>60079.98420138889</caom2:val>
+                        </caom2:refCoord>
+                      </caom2:function>
+                    </caom2:axis>
+                    <caom2:timesys>UTC</caom2:timesys>
+                    <caom2:exposure>180.0</caom2:exposure>
+                    <caom2:resolution>180.0</caom2:resolution>
+                  </caom2:time>
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>
-            <caom2:part caom2:id="840c362d-a1a1-457a-803e-2dea7f977b74">
+            <caom2:part caom2:id="2b3d86d1-fe89-4f3b-9ab5-508a6318882f">
               <caom2:name>71</caom2:name>
               <caom2:chunks>
-                <caom2:chunk caom2:id="a4f33775-543a-4301-9d97-a25e0e7ebc24" caom2:metaProducer="GEMINI2caom2/0.0.0">
+                <caom2:chunk caom2:id="f5b1a8a3-020f-44c5-8636-7a25ed9c38f0" caom2:metaProducer="GEMINI2caom2/0.0.0">
                   <caom2:naxis>2</caom2:naxis>
                   <caom2:positionAxis1>1</caom2:positionAxis1>
                   <caom2:positionAxis2>2</caom2:positionAxis2>
@@ -2208,6 +2613,29 @@
                     <caom2:specsys>TOPOCENT</caom2:specsys>
                     <caom2:resolvingPower>76000.0</caom2:resolvingPower>
                   </caom2:energy>
+                  <caom2:time>
+                    <caom2:axis>
+                      <caom2:axis>
+                        <caom2:ctype>TIME</caom2:ctype>
+                        <caom2:cunit>d</caom2:cunit>
+                      </caom2:axis>
+                      <caom2:error>
+                        <caom2:syser>1e-07</caom2:syser>
+                        <caom2:rnder>1e-07</caom2:rnder>
+                      </caom2:error>
+                      <caom2:function>
+                        <caom2:naxis>1</caom2:naxis>
+                        <caom2:delta>0.002083333333333333</caom2:delta>
+                        <caom2:refCoord>
+                          <caom2:pix>0.5</caom2:pix>
+                          <caom2:val>60079.98420138889</caom2:val>
+                        </caom2:refCoord>
+                      </caom2:function>
+                    </caom2:axis>
+                    <caom2:timesys>UTC</caom2:timesys>
+                    <caom2:exposure>180.0</caom2:exposure>
+                    <caom2:resolution>180.0</caom2:resolution>
+                  </caom2:time>
                 </caom2:chunk>
               </caom2:chunks>
             </caom2:part>

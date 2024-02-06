@@ -2047,6 +2047,7 @@ class GHOST(GeminiMapping):
 
 
 class GHOSTSpectralTemporal(GeminiMapping):
+    """Fibre-fed spectrograph"""
     def __init__(self, storage_name, headers, lookup, instrument, clients, observable, observation, config):
         super().__init__(storage_name, headers, lookup, instrument, clients, observable, observation, config)
 
@@ -2054,8 +2055,11 @@ class GHOSTSpectralTemporal(GeminiMapping):
         """Configure the telescope-specific ObsBlueprint at the CAOM model Observation level."""
         super(GeminiMapping, self).accumulate_blueprint(bp)
         self._accumulate_obs_plane_artifact_blueprint(bp)
+        # DB 02-02-24
+        # for temporal WCS use JSON ut_datetime for the starting time, exposure_time for the exposure time and add
+        # the exposure_time to the ut_datetime to determine the end time for ALL obstypes.
+        self._accumulate_chunk_time_axis_blueprint(bp, 4)
         bp.configure_energy_axis(3)
-        bp.configure_time_axis(4)
         for extension in range(0, len(self._headers)):
             bp.set('Chunk.energy.specsys', 'TOPOCENT', extension)
 
@@ -2070,70 +2074,10 @@ class GHOSTSpectralTemporal(GeminiMapping):
                 bp.set('Chunk.energy.axis.range.end.val', '_get_energy_chunk_range_end_val()', extension)
                 bp.set('Chunk.energy.resolvingPower', '_get_energy_chunk_resolving_power()', extension)
 
-            naxis = self._headers[extension].get('NAXIS')
-            date_obs = self._headers[extension].get('DATE-OBS')
-            if naxis and naxis == 2 and date_obs:
-                bp.set('Chunk.time.axis.axis.ctype', 'TIME', extension)
-                bp.set('Chunk.time.axis.axis.cunit', 'd', extension)
-                bp.set('Chunk.time.axis.function.naxis', '1', extension)
-                bp.set('Chunk.time.axis.function.refCoord.pix', '0.5', extension)
-                bp.set('Chunk.time.resolution', 'get_exposure()', extension)
-                bp.set('Chunk.time.exposure', 'get_exposure()', extension)
-                bp.set('Chunk.time.axis.function.delta', 'get_time_delta()', extension)
-                bp.set('Chunk.time.axis.function.refCoord.val', 'get_time_function_val()', extension)
-
         self._logger.debug(f'End accumulate_blueprint')
-
-    def get_data_product_type(self, ext):
-        return DataProductType.SPECTRUM
 
     def get_target_type(self, ext):
         return TargetType.OBJECT
-
-    def get_time_delta(self, ext):
-        """
-        DB 18-01-24
-        Each of the RED and BLUE image extensions with NAXIS = 2 each have DATE-OBS, UTSTART and UTEND keywords.
-        The PHU has REDEXPT and BLUEEXPT keywords with the exposure times in seconds.  (Presumably these are
-        the same as are the NREDEXP and NBLUEXP values.)
-
-        Starting time should be the earliest  UTSTART value and ending time should be the latest UTEND  value in the
-        extensions with NREDEXP/NBLUEXP CAMERA=RED/BLUE NAXIS=2.
-        """
-        result = None
-        date_obs = self._headers[ext].get('DATE-OBS')
-        ut_end = self._headers[ext].get('UTEND')
-        ut_start = self._headers[ext].get('UTSTART')
-        if date_obs and ut_end and ut_start:
-            temp_start = f'{date_obs} {ut_start}'
-            temp_end = f'{date_obs} {ut_end}'
-            start = ac.get_datetime_mjd(temp_start)
-            end = ac.get_datetime_mjd(temp_end)
-            if start and end:
-                result = end.value - start.value
-            else:
-                self._logger.debug(f'Cannot convert {temp_start} or {temp_end} to MJD in ext {ext}')
-        else:
-            self._logger.error(
-                f'Missing one of DATE-OBS {date_obs}, UTSTART {ut_start}, or UTEND {ut_end} in ext {ext}'
-            )
-        return result
-
-    def get_time_function_val(self, ext):
-        # see get_time_delta()
-        result = None
-        date_obs = self._headers[ext].get('DATE-OBS')
-        ut_start = self._headers[ext].get('UTSTART')
-        if date_obs and ut_start:
-            temp_start = f'{date_obs} {ut_start}'
-            start = ac.get_datetime_mjd(temp_start)
-            if start:
-                result = start.value
-            else:
-                self._logger.debug(f'Cannot convert {temp_start} to MJD in ext {ext}')
-        else:
-            self._logger.error(f'Missing one of DATE-OBS {date_obs} or UTSTART {ut_start} in ext {ext}')
-        return result
 
     def _get_energy_chunk_range_end_val(self, ext):
         # DB 18-01-24
@@ -2232,27 +2176,18 @@ class GHOSTSpatialSpectralTemporal(GHOSTSpectralTemporal):
                 bp.set('Chunk.position.axis.axis1.cunit', 'deg', extension)
                 bp.set('Chunk.position.axis.axis2.ctype', 'DEC--TAN', extension)
                 bp.set('Chunk.position.axis.axis2.cunit', 'deg', extension)
-                bp.set('Chunk.position.axis.function.cd11', '_get_cd_point()', extension)
+                bp.set('Chunk.position.axis.function.cd11', 'get_cd11()', extension)
                 bp.set('Chunk.position.axis.function.cd12', 0.0, extension)
                 bp.set('Chunk.position.axis.function.cd21', 0.0, extension)
-                bp.set('Chunk.position.axis.function.cd22', '_get_cd_point()', extension)
-                bp.set('Chunk.position.axis.function.refCoord.coord1.pix', '_get_crpix1()', extension)
-                bp.set('Chunk.position.axis.function.refCoord.coord1.val', '_get_0th_ra()', extension)
-                bp.set('Chunk.position.axis.function.refCoord.coord2.pix', '_get_crpix2()', extension)
-                bp.set('Chunk.position.axis.function.refCoord.coord2.val', '_get_0th_dec()', extension)
+                bp.set('Chunk.position.axis.function.cd22', 'get_cd22()', extension)
+                bp.set('Chunk.position.axis.function.refCoord.coord1.pix', 'get_crpix1()', extension)
+                bp.set('Chunk.position.axis.function.refCoord.coord1.val', 'get_ra()', extension)
+                bp.set('Chunk.position.axis.function.refCoord.coord2.pix', 'get_crpix2()', extension)
+                bp.set('Chunk.position.axis.function.refCoord.coord2.val', 'get_dec()', extension)
                 bp.add_attribute('Chunk.position.coordsys', '', extension)
                 bp.add_attribute('Chunk.position.equinox', 'EQUINOX', extension)
                 bp.add_attribute('Chunk.position.resolution', '', extension)
         self._logger.debug(f'End accumulate_blueprint')
-
-    def _get_0th_dec(self, ext):
-        return self._headers[0].get('DEC')
-
-    def _get_0th_ra(self, ext):
-        return self._headers[0].get('RA')
-
-    def _get_cd_point(self, ext):
-        return RADIUS_LOOKUP[self._instrument]
 
     def _get_crpix(self, ext, keyword):
         result = None
@@ -2261,10 +2196,10 @@ class GHOSTSpatialSpectralTemporal(GHOSTSpectralTemporal):
             result = value / 2.0
         return result
 
-    def _get_crpix1(self, ext):
+    def get_crpix1(self, ext):
         return self._get_crpix(ext, 'NAXIS1')
 
-    def _get_crpix2(self, ext):
+    def get_crpix2(self, ext):
         return self._get_crpix(ext, 'NAXIS2')
 
     def _reset_position(self, observation_type, artifact_type):
@@ -3191,6 +3126,7 @@ class Gpi(GeminiMapping):
 
 
 class Graces(GeminiMapping):
+    """Fibre-fed spectrograph"""
     def __init__(self, storage_name, headers, lookup, instrument, clients, observable, observation, config):
         super().__init__(storage_name, headers, lookup, instrument, clients, observable, observation, config)
 
