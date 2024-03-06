@@ -76,11 +76,13 @@ This module is the classes and methods that do and use the retrieval.
 
 
 import logging
+from astropy.time import TimeDelta
 from os import path
 
 from cadcutils import exceptions
 from cadcdata import FileInfo
 from caom2utils import data_util
+from caom2pipe.astro_composable import get_datetime_mjd
 from caom2pipe import client_composable as clc
 from caom2pipe import manage_composable as mc
 from caom2pipe import reader_composable as rdc
@@ -252,6 +254,7 @@ class GeminiStorageClientReader(
 class GeminiMetadataLookup:
     def __init__(self, metadata_reader):
         self._reader = metadata_reader
+        self._max_exputend = {}
 
     def camera(self, uri):
         return self._search_json(uri, 'camera')
@@ -300,6 +303,19 @@ class GeminiMetadataLookup:
         if temp is not None:
             result = repair_instrument(temp)
         return result
+
+    def max_exputend(self, uri):
+        if self._max_exputend.get(uri) is None:
+            headers = self._reader.headers.get(uri)
+            if headers is not None and len(headers) > 0:
+                exputend_values = [header.get('EXPUTEND') for header in headers if header.get('EXPUTEND') is not None]
+                start = get_datetime_mjd(mc.make_datetime(exputend_values[0]))
+                end = get_datetime_mjd(mc.make_datetime(exputend_values[-1]))
+                if end < start:
+                    # in case the observation crosses midnight
+                    end = end + TimeDelta('1d')
+                self._max_exputend[uri] = end.value
+        return self._max_exputend[uri]
 
     def mode(self, uri):
         return self._search_json(uri, 'mode')

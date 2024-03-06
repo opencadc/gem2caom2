@@ -552,7 +552,6 @@ class GeminiMapping(cc.TelescopeMapping):
 
     def _accumulate_chunk_time_axis_blueprint(self, bp, axis):
         bp.configure_time_axis(axis)
-
         # The Chunk time metadata is calculated using keywords from the primary header, and the only way I could
         # figure out to access keywords in the primary is through a function.
         bp.set('Chunk.time.resolution', 'get_exposure()')
@@ -652,8 +651,6 @@ class GeminiMapping(cc.TelescopeMapping):
                 )
                 return None
 
-        config = mc.Config()
-        config.get_executors()
         try:
             for plane in self._observation.planes.values():
                 if (
@@ -2020,32 +2017,6 @@ class Fox(GeminiMapping):
         self._logger.debug(f'End _update_time')
 
 
-class GHOST(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable, observation, config):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable, observation, config)
-
-    def accumulate_blueprint(self, bp):
-        """Configure the telescope-specific ObsBlueprint at the CAOM model
-        Observation level."""
-        # skip the GeminiMapping, because it will set TemporalWCS to the incorrect axis
-        super(GeminiMapping, self).accumulate_blueprint(bp)
-        self._accumulate_obs_plane_artifact_blueprint(bp)
-        self._accumulate_chunk_time_axis_blueprint(bp, 4)
-        self._logger.debug('Done accumulate_blueprint.')
-
-    def _reset_energy(self, observation_type, filter_name):
-        return False
-
-    def _update_energy(self, part, chunk, extension):
-        pass
-
-    def _reset_position(self, observation_type, artifact_type):
-        pass
-
-    def _update_position(self, part, chunk, extension):
-        pass
-
-
 class GHOSTSpectralTemporal(GeminiMapping):
     """Fibre-fed spectrograph"""
     def __init__(self, storage_name, headers, lookup, instrument, clients, observable, observation, config):
@@ -2158,6 +2129,16 @@ class GHOSTSpectralTemporal(GeminiMapping):
             if camera and camera == 'SLITV':
                 part.product_type = ProductType.AUXILIARY
         self._logger.debug('End _update_artifact')
+
+    def _update_time(self, chunk):
+        if (
+            chunk is not None and
+            chunk.time is not None and
+            chunk.time.axis is not None and
+            chunk.time.axis.function is not None and
+            chunk.time.axis.function.ref_coord is not None
+        ):
+            chunk.time.axis.function.ref_coord.val = self._lookup.max_exputend(self._storage_name.file_uri)
 
 
 class GHOSTSpatialSpectralTemporal(GHOSTSpectralTemporal):
@@ -5215,5 +5196,5 @@ def mapping_factory(storage_name, headers, metadata_reader, clients, observable,
     else:
         observable.rejected.record(mc.Rejected.MYSTERY_VALUE, storage_name.file_name)
         raise mc.CadcException(f'Mystery name {inst}.')
-    logging.error(f'Created {result.__class__.__name__} for mapping.')
+    logging.debug(f'Created {result.__class__.__name__} for mapping.')
     return result
