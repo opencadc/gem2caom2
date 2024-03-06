@@ -172,7 +172,7 @@ RADIUS_LOOKUP = {
     Inst.NIFS: 3.0 / 3600.0,
     Inst.TEXES: 5.0 / 3600.0,
     Inst.IGRINS: 5.0 / 3600.0,
-    Inst.GHOST: 0.9695 / 3600.0,
+    Inst.GHOST: math.sqrt(0.94) / 3600.0,
 }
 
 
@@ -2180,6 +2180,8 @@ class GHOSTSpatialSpectralTemporal(GHOSTSpectralTemporal):
                 bp.set('Chunk.position.axis.function.cd12', 0.0, extension)
                 bp.set('Chunk.position.axis.function.cd21', 0.0, extension)
                 bp.set('Chunk.position.axis.function.cd22', 'get_cd22()', extension)
+                bp.set('Chunk.position.axis.function.dimension.naxis1', 1)
+                bp.set('Chunk.position.axis.function.dimension.naxis2', 1)
                 bp.set('Chunk.position.axis.function.refCoord.coord1.pix', 'get_crpix1()', extension)
                 bp.set('Chunk.position.axis.function.refCoord.coord1.val', 'get_ra()', extension)
                 bp.set('Chunk.position.axis.function.refCoord.coord2.pix', 'get_crpix2()', extension)
@@ -2189,23 +2191,23 @@ class GHOSTSpatialSpectralTemporal(GHOSTSpectralTemporal):
                 bp.add_attribute('Chunk.position.resolution', '', extension)
         self._logger.debug(f'End accumulate_blueprint')
 
-    def _get_crpix(self, ext, keyword):
-        result = None
-        value = self._headers[ext].get(keyword)
-        if value:
-            result = value / 2.0
-        return result
+    # def _get_crpix(self, ext, keyword):
+    #     result = None
+    #     value = self._headers[ext].get(keyword)
+    #     if value:
+    #         result = value / 2.0
+    #     return result
 
-    def get_crpix1(self, ext):
-        return self._get_crpix(ext, 'NAXIS1')
+    # def get_crpix1(self, ext):
+    #     return self._get_crpix(ext, 'NAXIS1')
 
-    def get_crpix2(self, ext):
-        return self._get_crpix(ext, 'NAXIS2')
+    # def get_crpix2(self, ext):
+    #     return self._get_crpix(ext, 'NAXIS2')
 
     def _reset_position(self, observation_type, artifact_type):
         pass
 
-    def _update_position(self, part, chunk, extension):
+    def _update_position(self, part, chunk, ext):
         pass
 
 
@@ -2951,21 +2953,53 @@ class Gpi(GeminiMapping):
 
     def accumulate_blueprint(self, bp):
         super().accumulate_blueprint(bp)
-        bp.configure_position_axes((1, 2))
+        equinox = self._headers[0].get('TRKEQUIN')
+        if equinox and 1800.0 <= equinox <= 2500.0:
+            # DB 07-06-21
+            # No spatial WCS if equinox not properly set
+            #
+            # DB - 22-02-19 - GPI
+            # WCS info is garbage in header, so for spatial WCS (for both image and spectrum)
+            # override with the following functions
+            bp.configure_position_axes((1, 2))
+            for extension in range(1, len(self._headers)):
+                bp.set('Chunk.position.axis.axis1.ctype', 'RA---TAN', extension)
+                bp.set('Chunk.position.axis.axis1.cunit', 'deg', extension)
+                bp.set('Chunk.position.axis.axis2.ctype', 'DEC--TAN', extension)
+                bp.set('Chunk.position.axis.axis2.cunit', 'deg', extension)
+                bp.set('Chunk.position.axis.function.cd11', 'get_cd11()', extension)
+                # cd1_2 = cd2_1 = 0.0 since we don’t know rotation value
+                bp.set('Chunk.position.axis.function.cd12', 0.0, extension)
+                bp.set('Chunk.position.axis.function.cd21', 0.0, extension)
+                bp.set('Chunk.position.axis.function.cd22', 'get_cd22()', extension)
+                bp.set('Chunk.position.axis.function.refCoord.coord1.pix', 'get_crpix1()', extension)
+                # crval1 = json ra value
+                # crval2 = json dec value
+                bp.set('Chunk.position.axis.function.refCoord.coord1.val', 'get_ra()', extension)
+                bp.set('Chunk.position.axis.function.refCoord.coord2.pix', 'get_crpix2()', extension)
+                bp.set('Chunk.position.axis.function.refCoord.coord2.val', 'get_dec()', extension)
+                bp.set('Chunk.position.equinox', '_get_trkequin()', extension)
+                bp.add_attribute('Chunk.position.coordsys', 'RADESYS', extension)
 
-    def get_cd11(self, ext):
-        return RADIUS_LOOKUP[self._instrument] / self._headers[ext].get(
-            'NAXIS1'
-        )
+    def _get_trkequin(self, ext):
+        return self._headers[0].get('TRKEQUIN')
+
+    def get_cd11(self, ext, keyword='NAXIS1'):
+        # FOV is 2.8" x 2.8" on each side or 2.8/3600.0 degrees
+        # cd1_1 = 2.8/(3600.0 * naxis1)
+        # cd2_2 = 2.8/(3600.0 * naxis2)
+        return RADIUS_LOOKUP[self._instrument] / self._headers[ext].get(keyword)
 
     def get_cd22(self, ext):
-        return self.get_cd11(ext)
+        return self.get_cd11(ext, 'NAXIS2')
 
     def get_crpix1(self, ext, keyword='NAXIS1'):
+        # naxis1 = extension header NAXIS1 value
+        # naxis2 = extension header NAXIS2 value
+        # crpix1 = naxis1/2.0
+        # crpix2 = naxis2/2.0
         naxis1 = self._headers[ext].get(keyword)
-        if naxis1 is None:
-            result = None
-        else:
+        if naxis1:
             result = naxis1 / 2.0
         return result
 
@@ -3056,73 +3090,7 @@ class Gpi(GeminiMapping):
         self._logger.debug('End _update_energy')
 
     def _update_position(self, part, chunk, extension):
-        self._logger.debug('Begin _update_position')
-
-        # DB - 18-02-19 - for hard-coded field of views use:
-        # CRVAL1  = RA value from json or header (degrees
-        # CRVAL2  = Dec value from json or header (degrees)
-        # CDELT1  = 5.0/3600.0 (Plate scale along axis1 in degrees/pixel
-        #           for 5" size)
-        # CDELT2  = 5.0/3600.0
-        # CROTA1  = 0.0 / Rotation in degrees
-        # NAXIS1 = 1
-        # NAXIS2 = 1
-        # CRPIX1 = 1.0
-        # CRPIX2 = 1.0
-        # CTYPE1 = RA---TAN
-        # CTYPE2 = DEC--TAN
-        #
-        # DB - 22-02-19 - GPI
-        # WCS info is garbage in header, so for spatial WCS (for both image and
-        # spectrum):
-        #
-        # crval1 = json ra value
-        # crval2 = json dec value
-        # naxis1 = extension header NAXIS1 value
-        # naxis2 = extension header NAXIS2 value
-        # crpix1 = naxis1/2.0
-        # crpix2 = naxis2/2.0
-        #
-        # FOV is 2.8" x 2.8" on each side or 2.8/3600.0 degrees
-        # cd1_1 = 2.8/(3600.0 * naxis1)
-        # cd2_2 = 2.8/(3600.0 * naxis2)
-        # cd1_2 = cd2_1 = 0.0 since we don’t know rotation value
-
-        header = self._headers[1]
-        header['CTYPE1'] = 'RA---TAN'
-        header['CTYPE2'] = 'DEC--TAN'
-        header['CUNIT1'] = 'deg'
-        header['CUNIT2'] = 'deg'
-        header['CRVAL1'] = self.get_ra(extension)
-        header['CRVAL2'] = self.get_dec(extension)
-        header['CRPIX1'] = self.get_crpix1(extension)
-        header['CRPIX2'] = self.get_crpix2(extension)
-        header['CD1_1'] = self.get_cd11(extension)
-        header['CD1_2'] = 0.0
-        header['CD2_1'] = 0.0
-        header['CD2_2'] = self.get_cd22(extension)
-
-        wcs_parser = FitsWcsParser(
-            header, self._storage_name.obs_id, extension
-        )
-        if chunk is None:
-            chunk = Chunk()
-            part.chunks.append(chunk)
-        wcs_parser.augment_position(chunk)
-        chunk.position_axis_1 = 1
-        chunk.position_axis_2 = 2
-        chunk.position.coordsys = header.get('RADESYS')
-        if extension == 1:
-            # equinox information only available from
-            # 0th header
-            equinox = self._headers[0].get('TRKEQUIN')
-            if equinox is not None and 1800.0 <= equinox <= 2500.0:
-                chunk.position.equinox = equinox
-            else:
-                # DB 07-06-21
-                # No spatial WCS in these cases.
-                cc.reset_position(chunk)
-        self._logger.debug('End update_position')
+        pass
 
 
 class Graces(GeminiMapping):
@@ -3143,6 +3111,23 @@ class Graces(GeminiMapping):
         mode = self._lookup.mode(self._storage_name.file_uri)
         if mode is not None and mode != 'imaging':
             bp.configure_position_axes((1, 2))
+            bp.set('Chunk.position.axis.axis1.ctype', 'RA---TAN')
+            bp.set('Chunk.position.axis.axis1.cunit', 'deg')
+            bp.set('Chunk.position.axis.axis2.ctype', 'DEC--TAN')
+            bp.set('Chunk.position.axis.axis2.cunit', 'deg')
+            bp.set('Chunk.position.axis.function.cd11', 'get_cd11()')
+            bp.set('Chunk.position.axis.function.cd12', 0.0)
+            bp.set('Chunk.position.axis.function.cd21', 0.0)
+            bp.set('Chunk.position.axis.function.cd22', 'get_cd22()')
+            bp.set('Chunk.position.axis.function.dimension.naxis1', 1)
+            bp.set('Chunk.position.axis.function.dimension.naxis2', 1)
+            bp.set('Chunk.position.axis.function.refCoord.coord1.pix', 'get_crpix1()')
+            bp.set('Chunk.position.axis.function.refCoord.coord1.val', 'get_ra()')
+            bp.set('Chunk.position.axis.function.refCoord.coord2.pix', 'get_crpix2()')
+            bp.set('Chunk.position.axis.function.refCoord.coord2.val', 'get_dec()')
+            bp.add_attribute('Chunk.position.coordsys', '')
+            bp.add_attribute('Chunk.position.equinox', 'EQUINOX')
+            bp.add_attribute('Chunk.position.resolution', '')
 
     def _get_filter_name(self, ext):
         return None
@@ -3209,33 +3194,34 @@ class Graces(GeminiMapping):
         self._logger.debug(f'End _update_energy')
 
     def _update_position(self, part, chunk, ext):
-        mode = self._lookup.mode(self._storage_name.file_uri)
-        if mode is not None and mode != 'imaging':
-            header = self._headers[ext]
-            header['CTYPE1'] = 'RA---TAN'
-            header['CTYPE2'] = 'DEC--TAN'
-            header['CUNIT1'] = 'deg'
-            header['CUNIT2'] = 'deg'
-            header['CRVAL1'] = self.get_ra(ext)
-            header['CRVAL2'] = self.get_dec(ext)
-            header['CDELT1'] = RADIUS_LOOKUP[self._instrument]
-            header['CDELT2'] = RADIUS_LOOKUP[self._instrument]
-            header['CROTA1'] = 0.0
-            header['NAXIS1'] = 1
-            header['NAXIS2'] = 1
-            header['CRPIX1'] = self.get_crpix1(ext)
-            header['CRPIX2'] = self.get_crpix2(ext)
-            header['CD1_1'] = self.get_cd11(ext)
-            header['CD1_2'] = 0.0
-            header['CD2_1'] = 0.0
-            header['CD2_2'] = self.get_cd22(ext)
-            wcs_parser = FitsWcsParser(header, self._storage_name.obs_id, ext)
-            if chunk is None:
-                chunk = Chunk()
-            wcs_parser.augment_position(chunk)
-            chunk.position_axis_1 = 1
-            chunk.position_axis_2 = 2
-        self._logger.debug('End update_position')
+        pass
+        # mode = self._lookup.mode(self._storage_name.file_uri)
+        # if mode is not None and mode != 'imaging':
+        #     header = self._headers[ext]
+        #     header['CTYPE1'] = 'RA---TAN'
+        #     header['CTYPE2'] = 'DEC--TAN'
+        #     header['CUNIT1'] = 'deg'
+        #     header['CUNIT2'] = 'deg'
+        #     header['CRVAL1'] = self.get_ra(ext)
+        #     header['CRVAL2'] = self.get_dec(ext)
+        #     header['CDELT1'] = RADIUS_LOOKUP[self._instrument]
+        #     header['CDELT2'] = RADIUS_LOOKUP[self._instrument]
+        #     header['CROTA1'] = 0.0
+        #     header['NAXIS1'] = 1
+        #     header['NAXIS2'] = 1
+        #     header['CRPIX1'] = self.get_crpix1(ext)
+        #     header['CRPIX2'] = self.get_crpix2(ext)
+        #     header['CD1_1'] = self.get_cd11(ext)
+        #     header['CD1_2'] = 0.0
+        #     header['CD2_1'] = 0.0
+        #     header['CD2_2'] = self.get_cd22(ext)
+        #     wcs_parser = FitsWcsParser(header, self._storage_name.obs_id, ext)
+        #     if chunk is None:
+        #         chunk = Chunk()
+        #     wcs_parser.augment_position(chunk)
+        #     chunk.position_axis_1 = 1
+        #     chunk.position_axis_2 = 2
+        # self._logger.debug('End update_position')
 
 
 class Gsaoi(GeminiMapping):
@@ -5218,8 +5204,7 @@ def mapping_factory(storage_name, headers, metadata_reader, clients, observable,
         result = lookup.get(inst)(storage_name, headers, metadata_lookup, inst, clients, observable, observation, config)
     elif inst is Inst.GHOST:
         obs_type = get_obs_type(metadata_lookup, storage_name)
-        logging.error(obs_type)
-        if obs_type in ['ARC', 'FLAT']:
+        if obs_type in ['ARC', 'BIAS', 'FLAT']:
             result = GHOSTSpectralTemporal(
                 storage_name, headers, metadata_lookup, inst, clients, observable, observation, config
             )
