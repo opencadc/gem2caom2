@@ -77,6 +77,7 @@ This module is the classes and methods that do and use the retrieval.
 
 import logging
 from astropy.time import TimeDelta
+from collections import deque
 from os import path
 
 from cadcutils import exceptions
@@ -308,9 +309,14 @@ class GeminiMetadataLookup:
         if self._max_exputend.get(uri) is None:
             headers = self._reader.headers.get(uri)
             if headers is not None and len(headers) > 0:
-                exputend_values = [header.get('EXPUTEND') for header in headers if header.get('EXPUTEND') is not None]
-                start = get_datetime_mjd(mc.make_datetime(exputend_values[0]))
-                end = get_datetime_mjd(mc.make_datetime(exputend_values[-1]))
+                exputend_values = deque()
+                for header in headers:
+                    if header.get('EXPUTEND') is not None:
+                        date_obs = header.get('DATE-OBS')
+                        temp = header.get('EXPUTEND')
+                        exputend_values.append(f'{date_obs} {temp}')
+                start = get_datetime_mjd(mc.make_datetime(exputend_values.popleft()))
+                end = get_datetime_mjd(mc.make_datetime(exputend_values.pop()))
                 if end < start:
                     # in case the observation crosses midnight
                     end = end + TimeDelta('1d')
