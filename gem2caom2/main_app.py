@@ -550,6 +550,25 @@ class GeminiMapping(cc.TelescopeMapping):
             result = result.value
         return result
 
+    def _accumulate_chunk_position_axes_blueprint(self, bp, extension):
+        bp.set('Chunk.position.axis.axis1.ctype', 'RA---TAN', extension)
+        bp.set('Chunk.position.axis.axis1.cunit', 'deg', extension)
+        bp.set('Chunk.position.axis.axis2.ctype', 'DEC--TAN', extension)
+        bp.set('Chunk.position.axis.axis2.cunit', 'deg', extension)
+        bp.set('Chunk.position.axis.function.cd11', 'get_cd11()', extension)
+        bp.set('Chunk.position.axis.function.cd12', 0.0, extension)
+        bp.set('Chunk.position.axis.function.cd21', 0.0, extension)
+        bp.set('Chunk.position.axis.function.cd22', 'get_cd22()', extension)
+        bp.set('Chunk.position.axis.function.dimension.naxis1', 1)
+        bp.set('Chunk.position.axis.function.dimension.naxis2', 1)
+        bp.set('Chunk.position.axis.function.refCoord.coord1.pix', 'get_crpix1()', extension)
+        bp.set('Chunk.position.axis.function.refCoord.coord1.val', 'get_ra()', extension)
+        bp.set('Chunk.position.axis.function.refCoord.coord2.pix', 'get_crpix2()', extension)
+        bp.set('Chunk.position.axis.function.refCoord.coord2.val', 'get_dec()', extension)
+        bp.add_attribute('Chunk.position.coordsys', '', extension)
+        bp.add_attribute('Chunk.position.equinox', 'EQUINOX', extension)
+        bp.add_attribute('Chunk.position.resolution', '', extension)
+
     def _accumulate_chunk_time_axis_blueprint(self, bp, axis):
         bp.configure_time_axis(axis)
         # The Chunk time metadata is calculated using keywords from the primary header, and the only way I could
@@ -2153,23 +2172,7 @@ class GHOSTSpatialSpectralTemporal(GHOSTSpectralTemporal):
             camera = self._headers[extension].get('CAMERA', extension)
             if camera and camera in ['RED', 'BLUE']:
                 # if camera is SLITV, there's no interesting science information in the HDU
-                bp.set('Chunk.position.axis.axis1.ctype', 'RA---TAN', extension)
-                bp.set('Chunk.position.axis.axis1.cunit', 'deg', extension)
-                bp.set('Chunk.position.axis.axis2.ctype', 'DEC--TAN', extension)
-                bp.set('Chunk.position.axis.axis2.cunit', 'deg', extension)
-                bp.set('Chunk.position.axis.function.cd11', 'get_cd11()', extension)
-                bp.set('Chunk.position.axis.function.cd12', 0.0, extension)
-                bp.set('Chunk.position.axis.function.cd21', 0.0, extension)
-                bp.set('Chunk.position.axis.function.cd22', 'get_cd22()', extension)
-                bp.set('Chunk.position.axis.function.dimension.naxis1', 1)
-                bp.set('Chunk.position.axis.function.dimension.naxis2', 1)
-                bp.set('Chunk.position.axis.function.refCoord.coord1.pix', 'get_crpix1()', extension)
-                bp.set('Chunk.position.axis.function.refCoord.coord1.val', 'get_ra()', extension)
-                bp.set('Chunk.position.axis.function.refCoord.coord2.pix', 'get_crpix2()', extension)
-                bp.set('Chunk.position.axis.function.refCoord.coord2.val', 'get_dec()', extension)
-                bp.add_attribute('Chunk.position.coordsys', '', extension)
-                bp.add_attribute('Chunk.position.equinox', 'EQUINOX', extension)
-                bp.add_attribute('Chunk.position.resolution', '', extension)
+                self._accumulate_chunk_position_axes_blueprint(bp, extension)
         self._logger.debug(f'End accumulate_blueprint')
 
     def _reset_position(self, observation_type, artifact_type):
@@ -3061,68 +3064,24 @@ class Gpi(GeminiMapping):
         pass
 
 
-class Graces(GeminiMapping):
+class GracesSpectralTemporal(GeminiMapping):
     """Fibre-fed spectrograph"""
     def __init__(self, storage_name, headers, lookup, instrument, clients, observable, observation, config):
         super().__init__(storage_name, headers, lookup, instrument, clients, observable, observation, config)
 
     def accumulate_blueprint(self, bp):
-        """Configure the telescope-specific ObsBlueprint at the CAOM model
-        Observation level."""
+        """Configure the telescope-specific ObsBlueprint at the CAOM model Observation level."""
         super().accumulate_blueprint(bp)
-        bp.set(
-            'Plane.provenance.lastExecuted', 'get_provenance_last_executed()'
-        )
+        bp.set('Plane.provenance.lastExecuted', 'get_provenance_last_executed()')
         bp.set('Plane.provenance.producer', 'get_provenance_producer()')
         bp.set('Plane.provenance.reference', 'get_provenance_reference()')
         bp.set('Plane.provenance.version', 'get_provenance_version()')
-        mode = self._lookup.mode(self._storage_name.file_uri)
-        if mode is not None and mode != 'imaging':
-            bp.configure_position_axes((1, 2))
-            bp.set('Chunk.position.axis.axis1.ctype', 'RA---TAN')
-            bp.set('Chunk.position.axis.axis1.cunit', 'deg')
-            bp.set('Chunk.position.axis.axis2.ctype', 'DEC--TAN')
-            bp.set('Chunk.position.axis.axis2.cunit', 'deg')
-            bp.set('Chunk.position.axis.function.cd11', 'get_cd11()')
-            bp.set('Chunk.position.axis.function.cd12', 0.0)
-            bp.set('Chunk.position.axis.function.cd21', 0.0)
-            bp.set('Chunk.position.axis.function.cd22', 'get_cd22()')
-            bp.set('Chunk.position.axis.function.dimension.naxis1', 1)
-            bp.set('Chunk.position.axis.function.dimension.naxis2', 1)
-            bp.set('Chunk.position.axis.function.refCoord.coord1.pix', 'get_crpix1()')
-            bp.set('Chunk.position.axis.function.refCoord.coord1.val', 'get_ra()')
-            bp.set('Chunk.position.axis.function.refCoord.coord2.pix', 'get_crpix2()')
-            bp.set('Chunk.position.axis.function.refCoord.coord2.val', 'get_dec()')
-            bp.add_attribute('Chunk.position.coordsys', '')
-            bp.add_attribute('Chunk.position.equinox', 'EQUINOX')
-            bp.add_attribute('Chunk.position.resolution', '')
 
     def _get_filter_name(self, ext):
         return None
 
     def _reset_position(self, observation_type, artifact_type):
-        result = super()._reset_position(observation_type, artifact_type)
-        # DB 23-04-19
-        # Ignore spatial WCS for the GRACES dataset with EPOCH=0.0.  Not
-        # important for a bias. For GMOS we skip spatial WCS for biases
-        # (and maybe for some other instruments).
-
-        # DB 24-04-19
-        # GRACES:  you can ignore spatial WCS for flats if RA/Dec are not
-        # available.   Ditto for GNIRS darks.
-
-        # DB 30-04-19
-        # Ignore spatial WCS for any GRACES arcs without RA/Dec values.
-
-        ra = self._lookup.ra(self._storage_name.file_uri)
-        dec = self._lookup.dec(self._storage_name.file_uri)
-        if (ra is None and dec is None) or observation_type in [
-            'BIAS',
-            'FLAT',
-            'ARC',
-        ]:
-            result = True
-        return result
+        pass
 
     def _update_energy(self, chunk, data_product_type, filter_name):
         """graces-specific chunk-level Energy WCS construction."""
@@ -3166,6 +3125,19 @@ class Graces(GeminiMapping):
 
     def _update_time(self, chunk):
         cc.undo_astropy_cdfix_call(chunk, self.get_time_delta(0))
+
+
+class GracesSpatialSpectralTemporal(GracesSpectralTemporal):
+    """Fibre-fed spectrograph"""
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable, observation, config):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable, observation, config)
+
+    def accumulate_blueprint(self, bp):
+        """Configure the telescope-specific ObsBlueprint at the CAOM model Observation level."""
+        super().accumulate_blueprint(bp)
+        bp.configure_position_axes((1, 2))
+        self._accumulate_chunk_position_axes_blueprint(bp, 0)
+
 
 class Gsaoi(GeminiMapping):
     def __init__(self, storage_name, headers, lookup, instrument, clients, observable, observation, config):
@@ -5128,7 +5100,7 @@ def mapping_factory(storage_name, headers, metadata_reader, clients, observable,
         Inst.GMOSN: Gmos,
         Inst.GNIRS: Gnirs,
         Inst.GPI: Gpi,
-        Inst.GRACES: Graces,
+        # Inst.GRACES: Graces,
         Inst.GSAOI: Gsaoi,
         Inst.HOKUPAA: Hokupaa,
         Inst.HRWFS: Hrwfs,
@@ -5144,7 +5116,9 @@ def mapping_factory(storage_name, headers, metadata_reader, clients, observable,
     }
     result = None
     if inst in lookup:
-        result = lookup.get(inst)(storage_name, headers, metadata_lookup, inst, clients, observable, observation, config)
+        result = lookup.get(inst)(
+            storage_name, headers, metadata_lookup, inst, clients, observable, observation, config
+        )
     elif inst is Inst.GHOST:
         obs_type = get_obs_type(metadata_lookup, storage_name)
         if obs_type in ['ARC', 'BIAS', 'FLAT']:
@@ -5153,6 +5127,24 @@ def mapping_factory(storage_name, headers, metadata_reader, clients, observable,
             )
         else:
             result = GHOSTSpatialSpectralTemporal(
+                storage_name, headers, metadata_lookup, inst, clients, observable, observation, config
+            )
+    elif inst is Inst.GRACES:
+        obs_type = get_obs_type(metadata_lookup, storage_name)
+        mode = metadata_lookup.mode(storage_name.file_uri)
+        # DB 30-04-19
+        # Ignore spatial WCS for any GRACES arcs without RA/Dec values.  Ditto for GNIRS darks.
+        ra = metadata_lookup.ra(storage_name.file_uri)
+        dec = metadata_lookup.dec(storage_name.file_uri)
+        if (ra is None and dec is None) or mode == 'imaging' or obs_type in ['ARC', 'BIAS', 'FLAT']:
+            # DB 23-04-19
+            # Ignore spatial WCS for the GRACES dataset with EPOCH=0.0.  Not important for a bias. For GMOS we skip
+            # spatial WCS for biases  (and maybe for some other instruments).
+            result = GracesSpectralTemporal(
+                storage_name, headers, metadata_lookup, inst, clients, observable, observation, config
+            )
+        else:
+            result = GracesSpatialSpectralTemporal(
                 storage_name, headers, metadata_lookup, inst, clients, observable, observation, config
             )
     else:
