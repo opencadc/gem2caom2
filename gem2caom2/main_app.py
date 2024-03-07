@@ -716,7 +716,7 @@ class GeminiMapping(cc.TelescopeMapping):
                                 )
                             # position WCS
                             if self._reset_position(self._observation.type, artifact.product_type):
-                                self._logger.error(f'Resetting position for {part}')
+                                self._logger.warning(f'Resetting position for part {part}')
                                 cc.reset_position(c)
                             else:
                                 self._update_position(part, c, int(part))
@@ -2172,19 +2172,6 @@ class GHOSTSpatialSpectralTemporal(GHOSTSpectralTemporal):
                 bp.add_attribute('Chunk.position.resolution', '', extension)
         self._logger.debug(f'End accumulate_blueprint')
 
-    # def _get_crpix(self, ext, keyword):
-    #     result = None
-    #     value = self._headers[ext].get(keyword)
-    #     if value:
-    #         result = value / 2.0
-    #     return result
-
-    # def get_crpix1(self, ext):
-    #     return self._get_crpix(ext, 'NAXIS1')
-
-    # def get_crpix2(self, ext):
-    #     return self._get_crpix(ext, 'NAXIS2')
-
     def _reset_position(self, observation_type, artifact_type):
         pass
 
@@ -3176,34 +3163,9 @@ class Graces(GeminiMapping):
 
     def _update_position(self, part, chunk, ext):
         pass
-        # mode = self._lookup.mode(self._storage_name.file_uri)
-        # if mode is not None and mode != 'imaging':
-        #     header = self._headers[ext]
-        #     header['CTYPE1'] = 'RA---TAN'
-        #     header['CTYPE2'] = 'DEC--TAN'
-        #     header['CUNIT1'] = 'deg'
-        #     header['CUNIT2'] = 'deg'
-        #     header['CRVAL1'] = self.get_ra(ext)
-        #     header['CRVAL2'] = self.get_dec(ext)
-        #     header['CDELT1'] = RADIUS_LOOKUP[self._instrument]
-        #     header['CDELT2'] = RADIUS_LOOKUP[self._instrument]
-        #     header['CROTA1'] = 0.0
-        #     header['NAXIS1'] = 1
-        #     header['NAXIS2'] = 1
-        #     header['CRPIX1'] = self.get_crpix1(ext)
-        #     header['CRPIX2'] = self.get_crpix2(ext)
-        #     header['CD1_1'] = self.get_cd11(ext)
-        #     header['CD1_2'] = 0.0
-        #     header['CD2_1'] = 0.0
-        #     header['CD2_2'] = self.get_cd22(ext)
-        #     wcs_parser = FitsWcsParser(header, self._storage_name.obs_id, ext)
-        #     if chunk is None:
-        #         chunk = Chunk()
-        #     wcs_parser.augment_position(chunk)
-        #     chunk.position_axis_1 = 1
-        #     chunk.position_axis_2 = 2
-        # self._logger.debug('End update_position')
 
+    def _update_time(self, chunk):
+        cc.undo_astropy_cdfix_call(chunk, self.get_time_delta(0))
 
 class Gsaoi(GeminiMapping):
     def __init__(self, storage_name, headers, lookup, instrument, clients, observable, observation, config):
