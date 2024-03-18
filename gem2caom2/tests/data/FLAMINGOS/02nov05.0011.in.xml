@@ -34,10 +34,6 @@
         <caom2:producer>Gemini Observatory</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/GS-2002B-DS-1-41-0011</caom2:reference>
       </caom2:provenance>
-      <caom2:position/>
-      <caom2:energy/>
-      <caom2:time/>
-      <caom2:polarization/>
       <caom2:artifacts>
         <caom2:artifact caom2:id="00000000-0000-0000-83d7-375a7d0074e6" caom2:lastModified="2018-10-10T05:30:03.493" caom2:maxLastModified="2018-10-10T05:30:03.493" caom2:metaChecksum="md5:e32d2a5fff22c7c5b927baed38281b10" caom2:accMetaChecksum="md5:780df932925b6b04c50ceaba4c587d35" caom2:metaProducer="gem2caom2/0.8.1">
           <caom2:uri>gemini:GEMINI/02nov05.0011.fits</caom2:uri>

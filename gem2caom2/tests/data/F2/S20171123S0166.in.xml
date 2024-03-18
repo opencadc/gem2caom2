@@ -36,10 +36,6 @@
         <caom2:producer>Gemini Observatory</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/GS-2017B-Q-45-156-079</caom2:reference>
       </caom2:provenance>
-      <caom2:position/>
-      <caom2:energy/>
-      <caom2:time/>
-      <caom2:polarization/>
       <caom2:artifacts>
         <caom2:artifact caom2:id="00000000-0000-0000-8305-0aa030ea6d6a" caom2:lastModified="2018-11-30T08:25:23.770" caom2:maxLastModified="2018-11-30T08:25:23.770" caom2:metaChecksum="md5:27ed34b1bf6ea2c018d3bb72d351dd71" caom2:accMetaChecksum="md5:c49b44445cb7725f03b279645a379ea7" caom2:metaProducer="gem2caom2/0.8.1">
           <caom2:uri>gemini:GEMINI/S20171123S0166.fits</caom2:uri>

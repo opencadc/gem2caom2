@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # ***********************************************************************
 # ******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
 # *************  CENTRE CANADIEN DE DONNÉES ASTRONOMIQUES  **************
@@ -71,19 +70,16 @@ import logging
 import sys
 import traceback
 
-from datetime import datetime
-from dateutil import tz
-
 from caom2pipe.client_composable import ClientCollection
 from caom2pipe import data_source_composable as dsc
 from caom2pipe import manage_composable as mc
 from caom2pipe import run_composable as rc
-from gem2caom2 import main_app, preview_augmentation
+from gem2caom2 import ghost_preview_augmentation, preview_augmentation
 from gem2caom2 import pull_augmentation, data_source, builder
 from gem2caom2 import cleanup_augmentation, fits2caom2_augmentation
 from gem2caom2 import gemini_metadata, svofps
 
-DATA_VISITORS = []
+DATA_VISITORS = [ghost_preview_augmentation]
 META_VISITORS = [fits2caom2_augmentation, pull_augmentation, preview_augmentation, cleanup_augmentation]
 
 
@@ -137,7 +133,7 @@ def _common_init():
             preview_augmentation,
             cleanup_augmentation,
         ]
-    elif [mc.TaskType.VISIT] == config.task_types:
+    elif [mc.TaskType.VISIT] == config.task_types or [mc.TaskType.VISIT, mc.TaskType.MODIFY] == config.task_types:
         metadata_reader = gemini_metadata.GeminiStorageClientReader(
             clients.data_client,
             gemini_session,
@@ -179,7 +175,8 @@ def _run():
         config=config,
         name_builder=name_builder,
         meta_visitors=meta_visitors,
-        source=source,
+        data_visitors=DATA_VISITORS,
+        sources=[source],
         metadata_reader=metadata_reader,
         clients=clients,
     )
@@ -221,11 +218,9 @@ def _run_by_public():
     return rc.run_by_state(
         config=config,
         name_builder=name_builder,
-        bookmark_name=data_source.GEM_BOOKMARK,
         meta_visitors=meta_visitors,
         data_visitors=DATA_VISITORS,
-        end_time=None,
-        source=incremental_source,
+        sources=[incremental_source],
         clients=clients,
         metadata_reader=metadata_reader,
     )
@@ -244,8 +239,7 @@ def run_by_public():
 
 def _run_state():
     """Run incremental processing for observations that are posted on the site
-    archive.gemini.edu. TODO in the future this will depend on the incremental
-    query endpoint.
+    archive.gemini.edu. This depends on the incremental query endpoint.
 
     :return 0 if successful, -1 if there's any sort of failure. Return status
         is used by airflow for task instance management and reporting.
@@ -257,19 +251,13 @@ def _run_state():
         meta_visitors,
         name_builder,
     ) = _common_init()
-    state = mc.State(config.state_fqn, tz.UTC)
-    end_timestamp_s = state.bookmarks.get(data_source.GEM_BOOKMARK).get('end_timestamp', datetime.now())
-    end_timestamp_dt = mc.make_datetime_tz(end_timestamp_s, tz.UTC)
-    logging.info(f'{main_app.APPLICATION} will end at {end_timestamp_dt}')
-    incremental_source = data_source.IncrementalSource(metadata_reader)
+    incremental_source = data_source.IncrementalSource(config, metadata_reader)
     result = rc.run_by_state(
         config=config,
         name_builder=name_builder,
-        bookmark_name=data_source.GEM_BOOKMARK,
         meta_visitors=meta_visitors,
         data_visitors=DATA_VISITORS,
-        end_time=end_timestamp_dt,
-        source=incremental_source,
+        sources=[incremental_source],
         clients=clients,
         metadata_reader=metadata_reader,
     )

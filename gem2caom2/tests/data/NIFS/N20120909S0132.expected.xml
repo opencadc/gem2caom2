@@ -39,10 +39,6 @@
         <caom2:producer>Gemini Observatory</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/GN-2012B-Q-73-172-002</caom2:reference>
       </caom2:provenance>
-      <caom2:position/>
-      <caom2:energy/>
-      <caom2:time/>
-      <caom2:polarization/>
       <caom2:artifacts>
         <caom2:artifact caom2:id="00000000-0000-0000-8c92-55b75fde7cfe" caom2:lastModified="2018-10-22T02:54:46.169" caom2:maxLastModified="2018-10-22T02:54:46.169" caom2:metaChecksum="md5:560213e8e8b69f7843ac19acd3435609" caom2:accMetaChecksum="md5:d88202d10486ffaa33359c64f4aee4f9" caom2:metaProducer="gem2caom2/0.8.1">
           <caom2:uri>gemini:GEMINI/N20120909S0132.fits</caom2:uri>

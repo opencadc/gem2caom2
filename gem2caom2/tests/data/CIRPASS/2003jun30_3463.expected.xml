@@ -37,10 +37,6 @@
         <caom2:producer>Gemini Observatory</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/GS-CAL20030630-4-3463</caom2:reference>
       </caom2:provenance>
-      <caom2:position/>
-      <caom2:energy/>
-      <caom2:time/>
-      <caom2:polarization/>
       <caom2:artifacts>
         <caom2:artifact caom2:id="00000000-0000-0000-9659-0f68869bc8c1" caom2:lastModified="2018-11-09T07:50:37.375" caom2:maxLastModified="2018-11-09T07:50:37.375" caom2:metaChecksum="md5:9c318ca9023e2ad08913289f31618277" caom2:accMetaChecksum="md5:420dfe001617337a23f58dd334d4ad86" caom2:metaProducer="gem2caom2/0.8.1">
           <caom2:uri>gemini:GEMINI/2003jun30_3463.fits</caom2:uri>

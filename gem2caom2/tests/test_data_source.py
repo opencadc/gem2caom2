@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # ***********************************************************************
 # ******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
 # *************  CENTRE CANADIEN DE DONNÉES ASTRONOMIQUES  **************
@@ -74,14 +73,14 @@ import gem_mocks
 
 
 @patch('caom2pipe.manage_composable.query_endpoint_session')
-def test_incremental_source(query_mock):
+def test_incremental_source(query_mock, test_config):
     # https://archive.gemini.edu/jsonsummary/canonical/entrytimedaterange=
     # 2021-01-01T20:03:00.000000%202021-01-01T22:13:00.000000/
     # ?orderby=entrytime
     # get results
     query_mock.side_effect = gem_mocks.mock_query_endpoint_2
 
-    test_subject = data_source.IncrementalSource(Mock())
+    test_subject = data_source.IncrementalSource(test_config, reader=Mock())
     assert test_subject is not None, 'expect construction success'
     test_reporter = Mock()
     test_subject.reporter = test_reporter
@@ -92,10 +91,10 @@ def test_incremental_source(query_mock):
     assert len(test_result) == 2, 'wrong number of results'
     test_entry = test_result.popleft()
     assert test_entry.entry_name == 'N20210101S0043.fits', 'wrong first file'
-    assert test_entry.entry_dt == datetime(2021, 1, 1, 21, 12, 45, 237183, tzinfo=timezone.utc), 'wrong fits datetime'
+    assert test_entry.entry_dt == datetime(2021, 1, 1, 21, 12, 45, 237183), 'wrong fits datetime'
     test_entry = test_result.popleft()
     assert test_entry.entry_name == 'N20210101S0042.fits', 'wrong 2nd file'
-    assert test_entry.entry_dt == datetime(2021, 1, 1, 21, 12, 47, 250666, tzinfo=timezone.utc), 'wrong 2nd datetime'
+    assert test_entry.entry_dt == datetime(2021, 1, 1, 21, 12, 47, 250666), 'wrong 2nd datetime'
     assert test_reporter.capture_todo.called, 'capture_todo'
     assert test_reporter.capture_todo.call_count == 1, 'wrong number of capture_todo calls'
     test_reporter.capture_todo.assert_called_with(2, 0, 0)
@@ -112,7 +111,7 @@ def test_incremental_source(query_mock):
 
 
 @patch('caom2pipe.manage_composable.query_endpoint_session')
-def test_incremental_source_reproduce(query_mock):
+def test_incremental_source_reproduce(query_mock, test_config):
     # https://archive.gemini.edu/jsonsummary/canonical/NotFail/notengineering/
     # entrytimedaterange=
     # 2022-03-14T17:30:05.000006%202022-03-14T17:31:05.000006/
@@ -120,7 +119,7 @@ def test_incremental_source_reproduce(query_mock):
     # get results
     query_mock.side_effect = gem_mocks.mock_query_endpoint_reproduce
 
-    test_subject = data_source.IncrementalSource(Mock())
+    test_subject = data_source.IncrementalSource(test_config, reader=Mock())
     assert test_subject is not None, 'expect construction success'
     test_reporter = Mock()
     test_subject.reporter = test_reporter

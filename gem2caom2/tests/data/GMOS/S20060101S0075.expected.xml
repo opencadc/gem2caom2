@@ -42,10 +42,6 @@
         <caom2:producer>Gemini Observatory</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/GS-2005B-Q-22-17-006</caom2:reference>
       </caom2:provenance>
-      <caom2:position/>
-      <caom2:energy/>
-      <caom2:time/>
-      <caom2:polarization/>
       <caom2:artifacts>
         <caom2:artifact caom2:id="00000000-0000-0000-80c2-a0b7af4b6fc8" caom2:lastModified="2018-11-16T03:18:59.073" caom2:maxLastModified="2018-11-16T03:18:59.073" caom2:metaChecksum="md5:f333a96ebef35f727cf06488e06c9704" caom2:accMetaChecksum="md5:6b247f9fe75d5ce07a07632dbacbcc93" caom2:metaProducer="gem2caom2/0.8.1">
           <caom2:uri>gemini:GEMINI/S20060101S0075.fits</caom2:uri>

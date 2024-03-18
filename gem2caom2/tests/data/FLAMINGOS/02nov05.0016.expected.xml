@@ -37,10 +37,6 @@
         <caom2:producer>Gemini-South</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/GS-2002B-DS-1-41-0016</caom2:reference>
       </caom2:provenance>
-      <caom2:position/>
-      <caom2:energy/>
-      <caom2:time/>
-      <caom2:polarization/>
       <caom2:artifacts>
         <caom2:artifact caom2:id="00000000-0000-0000-a090-e809f83c73c8" caom2:lastModified="2018-10-10T05:30:10.921" caom2:maxLastModified="2018-10-10T05:30:10.921" caom2:metaChecksum="md5:b16d11d6aa891198e1eacddb5dd1e71c" caom2:accMetaChecksum="md5:b631784b5f4ef172bd079e1508d01fde" caom2:metaProducer="gem2caom2/0.8.1">
           <caom2:uri>gemini:GEMINI/02nov05.0016.fits</caom2:uri>

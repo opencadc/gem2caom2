@@ -36,10 +36,6 @@
         <caom2:producer>Gemini Observatory</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/GN-2011B-Q-63-101-006</caom2:reference>
       </caom2:provenance>
-      <caom2:position/>
-      <caom2:energy/>
-      <caom2:time/>
-      <caom2:polarization/>
       <caom2:artifacts>
         <caom2:artifact caom2:id="00000000-0000-0000-80f1-b822c6829033" caom2:lastModified="2018-10-16T17:37:43.049" caom2:maxLastModified="2018-10-16T17:37:43.049" caom2:metaChecksum="md5:2d983ac0db2d625a9e413d1a6ebbfda3" caom2:accMetaChecksum="md5:950074e9dd9acb9224150e20ce9496f5" caom2:metaProducer="gem2caom2/0.8.1">
           <caom2:uri>gemini:GEMINI/N20120104S0167.fits</caom2:uri>

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # ***********************************************************************
 # ******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
 # *************  CENTRE CANADIEN DE DONNÉES ASTRONOMIQUES  **************
@@ -70,7 +69,7 @@
 import logging
 import traceback
 
-from datetime import datetime
+from datetime import datetime, timezone
 from os import access, remove
 from os.path import basename, exists, join
 
@@ -79,6 +78,7 @@ import matplotlib.image as image
 from cadcutils import exceptions
 from caom2 import Observation, ProductType, ReleaseType
 from caom2pipe import manage_composable as mc
+from gem2caom2.util import Inst
 
 __all__ = ['visit']
 
@@ -101,11 +101,16 @@ def visit(observation, **kwargs):
     if storage_name is None:
         raise mc.CadcException('Visitor needs a storage_name parameter.')
 
+    if observation.instrument.name == Inst.GHOST.value:
+        logging.info(f'Skip generic preview augmentation for GHOST.')
+        return observation
+
     count = 0
     for plane in observation.planes.values():
         if (
             plane.data_release is None
-            or plane.data_release > datetime.utcnow()
+            # data_release is timezone naive
+            or plane.data_release > datetime.now(tz=timezone.utc).replace(tzinfo=None)
         ):
             logging.info(
                 f'Plane {plane.product_id} is proprietary. No '

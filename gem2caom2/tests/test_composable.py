@@ -73,17 +73,16 @@ import shutil
 
 from astropy.io.fits import Header
 from collections import deque
-from datetime import datetime, timedelta
-from dateutil import tz
+from datetime import datetime, timedelta, timezone
 from traceback import format_exc
-from unittest.mock import call, patch, Mock
+from unittest.mock import call, patch, Mock, PropertyMock
 import gem_mocks
 
 from cadcdata import FileInfo
 from caom2 import SimpleObservation, Algorithm
 from caom2pipe.data_source_composable import StateRunnerMeta
-from caom2pipe.manage_composable import exec_cmd_array, make_datetime_tz, write_as_yaml
-from caom2pipe.manage_composable import StorageName, TaskType
+from caom2pipe.manage_composable import make_datetime, write_as_yaml
+from caom2pipe.manage_composable import TaskType
 from gem2caom2 import composable, gem_name
 from gem2caom2.data_source import GEM_BOOKMARK
 
@@ -324,7 +323,7 @@ def test_run_by_incremental2(
     exec_mock.return_value = 0
 
     _write_cert()
-    prior_s = datetime.utcnow().timestamp() - 60
+    prior_s = datetime.now(tz=timezone.utc).timestamp() - 60
     _write_state(prior_s)
     getcwd_orig = os.getcwd
     os.getcwd = Mock(return_value=f'{gem_mocks.TEST_DATA_DIR}/edu_query')
@@ -367,15 +366,17 @@ def test_run_by_public(
         shutil.copy(f'{gem_mocks.TEST_DATA_DIR}/expected.xml', expected_fqn)
 
     _write_cert()
-    prior_s = datetime.utcnow().timestamp() - 1440 * 60
+    now_dt = datetime.now(tz=timezone.utc).replace(tzinfo=None)
+    prior_s = now_dt.timestamp() - 1440 * 60
     _write_state(prior_s)
     getcwd_orig = os.getcwd
     os.getcwd = Mock(return_value=f'{gem_mocks.TEST_DATA_DIR}/edu_query')
     test_f_id = 'N20191101S0007'
     try:
-        # execution
-        test_result = composable._run_by_public()
-        assert test_result == 0, 'wrong result'
+        with patch('caom2pipe.data_source_composable.QueryTimeBoxDataSource.end_dt', PropertyMock(return_value=now_dt)):
+             # execution
+            test_result = composable._run_by_public()
+            assert test_result == 0, 'wrong result'
     except Exception as e:
         import logging
         import traceback
@@ -561,7 +562,7 @@ def test_run_state_compression_commands(
     def _mock_dir_list(arg1, output_file='', data_only=True, response_format='arg4'):
         result = deque()
         result.append(
-            StateRunnerMeta('/test_files/S20050825S0143.fits.bz2', datetime(2019, 10, 23, 16, 19, tzinfo=tz.UTC))
+            StateRunnerMeta('/test_files/S20050825S0143.fits.bz2', datetime(2019, 10, 23, 16, 19))
         )
         return result
 
@@ -585,7 +586,7 @@ def test_run_state_compression_commands(
         with open(test_config.proxy_fqn, 'w') as f:
             f.write('test content')
 
-        start_time = datetime.now(tz=tz.UTC) - timedelta(minutes=5)
+        start_time = datetime.now() - timedelta(minutes=5)
         start_file_content = (
             f'bookmarks:\n  gemini_timestamp:\n    last_record: {start_time}\n'
         )
@@ -674,13 +675,13 @@ def _write_state(prior_timestamp=None, end_timestamp=None):
     # must have a starting time greater than one config.interval prior
     # to 'now', default interval is 10 minutes
     if prior_timestamp is None:
-        prior_s = datetime.utcnow().timestamp() - 15 * 60
+        prior_s = datetime.now(tz=timezone.utc).timestamp() - 15 * 60
     else:
         if type(prior_timestamp) is float:
             prior_s = prior_timestamp
         else:
-            prior_s = make_datetime_tz(prior_timestamp, tz.UTC)
-    test_start_time = make_datetime_tz(prior_s, tz.UTC)
+            prior_s = make_datetime(prior_timestamp)
+    test_start_time = make_datetime(prior_s)
     if end_timestamp is None:
         test_bookmark = {
             'bookmarks': {

@@ -42,9 +42,9 @@
         <caom2:producer>NOAO-IRAF FITS Image Kernel July 2003</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/filepre=mrgS20160901S0122_add.fits</caom2:reference>
         <caom2:inputs>
-          <caom2:planeURI>caom:GEMINI/GS-2016B-Q-72-23-002/S20160901S0123</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/GS-2016B-Q-72-23-001/S20160901S0122</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/GS-2016B-Q-72-23-004/S20160901S0125</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GS-2016B-Q-72-23-002/S20160901S0123</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/GS-2016B-Q-72-23-003/S20160901S0124</caom2:planeURI>
         </caom2:inputs>
       </caom2:provenance>
@@ -166,9 +166,9 @@
     </caom2:plane>
   </caom2:planes>
   <caom2:members>
-    <caom2:observationURI>caom:GEMINI/GS-2016B-Q-72-23-004</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GS-2016B-Q-72-23-001</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GS-2016B-Q-72-23-002</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GS-2016B-Q-72-23-004</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GS-2016B-Q-72-23-003</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GS-2016B-Q-72-23-002</caom2:observationURI>
   </caom2:members>
 </caom2:Observation>

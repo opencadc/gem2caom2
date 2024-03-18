@@ -36,10 +36,6 @@
         <caom2:producer>Gemini Observatory</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/GN-CAL20160202-3-039</caom2:reference>
       </caom2:provenance>
-      <caom2:position/>
-      <caom2:energy/>
-      <caom2:time/>
-      <caom2:polarization/>
       <caom2:artifacts>
         <caom2:artifact caom2:id="00000000-0000-0000-a18c-c28ab00d15a9" caom2:lastModified="2018-11-18T00:00:51.533" caom2:maxLastModified="2018-11-18T00:00:51.533" caom2:metaChecksum="md5:2c9a78b0316e5da68124918d96e232de" caom2:accMetaChecksum="md5:8484b643e206233a61aca7a1591a6d93" caom2:metaProducer="gem2caom2/0.8.1">
           <caom2:uri>gemini:GEMINI/N20160202S0098.fits</caom2:uri>

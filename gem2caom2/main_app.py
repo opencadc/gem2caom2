@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # ***********************************************************************
 # ******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
 # *************  CENTRE CANADIEN DE DONNÉES ASTRONOMIQUES  **************
@@ -95,13 +94,16 @@ import math
 import re
 import traceback
 
+from astropy.time import Time
 from dateutil import tz
 
 from caom2 import CalibrationLevel, Chunk, ProductType
 from caom2 import TypedList, DerivedObservation, DataProductType
 from caom2 import ObservationIntentType, TargetType, CoordAxis1D, Axis
 from caom2 import SpectralWCS, RefCoord, CoordRange1D
-from caom2utils import FitsWcsParser, update_artifact_meta
+from caom2utils.caom2blueprint import update_artifact_meta
+from caom2utils.blueprints import _to_float
+from caom2utils.wcs_parsers import FitsWcsParser
 from caom2utils.data_util import get_file_type
 from caom2pipe import manage_composable as mc
 from caom2pipe import caom_composable as cc
@@ -114,9 +116,7 @@ from gem2caom2.gemini_metadata import GeminiMetadataLookup
 from gem2caom2.util import Inst
 
 
-__all__ = ['GeminiMapping', 'APPLICATION', 'mapping_factory']
-
-APPLICATION = 'gem2caom2'
+__all__ = ['GeminiMapping', 'mapping_factory']
 
 # DB 01-04-21
 # PINHOLE is CALIBRATION
@@ -161,6 +161,7 @@ FILTER_VALUES_TO_IGNORE = ['open', 'invalid', 'pupil', 'clear', 'nd']
 # NIFS - DB - 04-03-19 - hard-code 3" FOV
 # TEXES - DB - 07-03-19 - cd11=cd22 = 5.0/3600.0
 # IGRINS - DB - 21-07-21 - hard-code 5" FOV
+# GHOST - DB - 12-01-24 - hard-code to sqrt(0.94)"
 RADIUS_LOOKUP = {
     Inst.GPI: 2.8 / 3600.0,  # units are arcseconds
     Inst.GRACES: 1.2 / 3600.0,
@@ -171,6 +172,7 @@ RADIUS_LOOKUP = {
     Inst.NIFS: 3.0 / 3600.0,
     Inst.TEXES: 5.0 / 3600.0,
     Inst.IGRINS: 5.0 / 3600.0,
+    Inst.GHOST: math.sqrt(0.94) / 3600.0,
 }
 
 
@@ -204,8 +206,8 @@ class GeminiMapping(cc.TelescopeMapping):
     # value repair cache
     value_repair = GeminiValueRepair()
 
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, clients, observable)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable, observation, config):
+        super().__init__(storage_name, headers, clients, observable, observation, config)
         self._metadata_reader = lookup.reader
         self._instrument = instrument
         self._lookup = lookup
@@ -315,7 +317,7 @@ class GeminiMapping(cc.TelescopeMapping):
         total exposure time for some of the IR instruments.  For these EXPTIME
         is usually the individual exposure time for each chop/nod and a bunch
         of chops/nods are executed for one observation.  Gemini correctly
-         allows for this in the json ‘exposure_time’ value.
+        allows for this in the json ‘exposure_time’ value.
         """
         return self._lookup.exposure_time(self._storage_name.file_uri)
 
@@ -343,8 +345,7 @@ class GeminiMapping(cc.TelescopeMapping):
                 meta_release = self._lookup.release(
                     self._storage_name.file_uri
                 )
-        # metaRelease, dataRelease constructor includes a comparison with a non-aware value
-        return mc.make_datetime_tz(meta_release, tz.UTC).replace(tzinfo=None)
+        return mc.make_datetime(meta_release)
 
     def get_obs_intent(self, ext):
         result = ObservationIntentType.CALIBRATION
@@ -435,8 +436,7 @@ class GeminiMapping(cc.TelescopeMapping):
             result = None
             temp = comments.split('\n')
             if len(temp) > 6 and 'HST' in temp[6]:
-                # go from HST to UTC, then remove the timezone, because the lastExecuted constructor doesn't expect it
-                result = mc.make_datetime_tz(temp[6], tz.gettz('HST')).astimezone(tz=tz.UTC).replace(tzinfo=None)
+                result = mc.make_datetime(temp[6])
             return result
 
         return self._get_provenance_breakout(ext, breakout)
@@ -545,15 +545,50 @@ class GeminiMapping(cc.TelescopeMapping):
         Calculate the Chunk Time WCS function value, in 'mjd'.
         """
         time_string = self._lookup.ut_datetime(self._storage_name.file_uri)
-        return ac.get_datetime_mjd(mc.make_datetime_tz(time_string, tz.UTC))
+        result = ac.get_datetime_mjd(mc.make_datetime(time_string))
+        if result and isinstance(result, Time):
+            result = result.value
+        return result
 
-    def accumulate_blueprint(self, bp, application=None):
+    def _accumulate_chunk_position_axes_blueprint(self, bp, extension):
+        bp.set('Chunk.position.axis.axis1.ctype', 'RA---TAN', extension)
+        bp.set('Chunk.position.axis.axis1.cunit', 'deg', extension)
+        bp.set('Chunk.position.axis.axis2.ctype', 'DEC--TAN', extension)
+        bp.set('Chunk.position.axis.axis2.cunit', 'deg', extension)
+        bp.set('Chunk.position.axis.function.cd11', 'get_cd11()', extension)
+        bp.set('Chunk.position.axis.function.cd12', 0.0, extension)
+        bp.set('Chunk.position.axis.function.cd21', 0.0, extension)
+        bp.set('Chunk.position.axis.function.cd22', 'get_cd22()', extension)
+        bp.set('Chunk.position.axis.function.dimension.naxis1', 1)
+        bp.set('Chunk.position.axis.function.dimension.naxis2', 1)
+        bp.set('Chunk.position.axis.function.refCoord.coord1.pix', 'get_crpix1()', extension)
+        bp.set('Chunk.position.axis.function.refCoord.coord1.val', 'get_ra()', extension)
+        bp.set('Chunk.position.axis.function.refCoord.coord2.pix', 'get_crpix2()', extension)
+        bp.set('Chunk.position.axis.function.refCoord.coord2.val', 'get_dec()', extension)
+        bp.add_attribute('Chunk.position.coordsys', '', extension)
+        bp.add_attribute('Chunk.position.equinox', 'EQUINOX', extension)
+        bp.add_attribute('Chunk.position.resolution', '', extension)
+
+    def _accumulate_chunk_time_axis_blueprint(self, bp, axis):
+        bp.configure_time_axis(axis)
+        # The Chunk time metadata is calculated using keywords from the primary header, and the only way I could
+        # figure out to access keywords in the primary is through a function.
+        bp.set('Chunk.time.resolution', 'get_exposure()')
+        bp.set('Chunk.time.exposure', 'get_exposure()')
+        bp.set('Chunk.time.axis.axis.ctype', 'TIME')
+        bp.set('Chunk.time.axis.axis.cunit', 'd')
+        bp.set('Chunk.time.axis.error.syser', '1e-07')
+        bp.set('Chunk.time.axis.error.rnder', '1e-07')
+        bp.set('Chunk.time.axis.function.naxis', '1')
+        bp.set('Chunk.time.axis.function.delta', 'get_time_delta()')
+        bp.set('Chunk.time.axis.function.refCoord.pix', '0.5')
+        bp.set('Chunk.time.axis.function.refCoord.val', 'get_time_function_val()')
+
+    def _accumulate_obs_plane_artifact_blueprint(self, bp):
         """Configure the telescope-specific ObsBlueprint at the CAOM model
         Observation level."""
-        super().accumulate_blueprint(bp, APPLICATION)
-        self._logger.debug(
-            f'Begin accumulate_fits_bp for {self._storage_name.file_id}.'
-        )
+        super().accumulate_blueprint(bp)
+        self._logger.debug(f'Begin accumulate_blueprint for {self._storage_name.file_id}.')
         bp.set('Observation.type', 'get_obs_type()')
         bp.set('Observation.intent', 'get_obs_intent()')
         bp.set('Observation.metaRelease', 'get_meta_release()')
@@ -585,10 +620,7 @@ class GeminiMapping(cc.TelescopeMapping):
         bp.add_attribute('Plane.provenance.producer', 'IMAGESWV')
         bp.set_default('Plane.provenance.producer', 'Gemini Observatory')
         data_label = self._lookup.data_label(self._storage_name.file_uri)
-        bp.set(
-            'Plane.provenance.reference',
-            f'http://archive.gemini.edu/searchform/{data_label}',
-        )
+        bp.set('Plane.provenance.reference', f'http://archive.gemini.edu/searchform/{data_label}')
 
         bp.set('Artifact.productType', 'get_art_product_type()')
         bp.set('Artifact.contentChecksum', 'get_art_content_checksum()')
@@ -598,38 +630,23 @@ class GeminiMapping(cc.TelescopeMapping):
         bp.set('Artifact.releaseType', 'data')
         bp.set('Artifact.uri', self._storage_name.file_uri)
 
-        bp.configure_time_axis(3)
+    def accumulate_blueprint(self, bp):
+        """Configure the telescope-specific ObsBlueprint at the CAOM model
+        Observation level."""
+        self._logger.debug(f'Begin accumulate_blueprint for {self._storage_name.file_id}.' )
+        self._accumulate_obs_plane_artifact_blueprint(bp)
+        self._accumulate_chunk_time_axis_blueprint(bp, 3)
+        self._logger.debug('Done accumulate_blueprint.')
 
-        # The Chunk time metadata is calculated using keywords from the
-        # primary header, and the only I could figure out to access keywords
-        # in the primary is through a function. JB
-        bp.set('Chunk.time.resolution', 'get_exposure()')
-        bp.set('Chunk.time.exposure', 'get_exposure()')
-        bp.set('Chunk.time.axis.axis.ctype', 'TIME')
-        bp.set('Chunk.time.axis.axis.cunit', 'd')
-        bp.set('Chunk.time.axis.error.syser', '1e-07')
-        bp.set('Chunk.time.axis.error.rnder', '1e-07')
-        bp.set('Chunk.time.axis.function.naxis', '1')
-        bp.set('Chunk.time.axis.function.delta', 'get_time_delta()')
-        bp.set('Chunk.time.axis.function.refCoord.pix', '0.5')
-        bp.set(
-            'Chunk.time.axis.function.refCoord.val',
-            'get_time_function_val()',
-        )
-
-        self._logger.debug('Done accumulate_fits_bp.')
-
-    def update(self, observation, file_info):
+    def update(self, file_info):
 
         if self._headers is None:
             # proprietary header metadata at archive.gemini.edu, so do nothing
-            return observation
+            return self._observation
 
         # processed files
-        if cc.is_composite(self._headers) and not isinstance(
-            observation, DerivedObservation
-        ):
-            observation = self._update_composite(observation)
+        if cc.is_composite(self._headers) and not isinstance(self._observation, DerivedObservation):
+            self._observation = self._update_composite(self._observation)
 
         if self._instrument in [Inst.MICHELLE, Inst.GNIRS]:
             # CSD-2511
@@ -649,15 +666,12 @@ class GeminiMapping(cc.TelescopeMapping):
             if len(self._headers) == 1:
                 self._logger.warning(
                     f'{self._instrument}: no image data for '
-                    f'{observation.observation_id}. Cannot build an '
-                    f'observation.'
+                    f'{self._observation.observation_id}. Cannot build an observation.'
                 )
                 return None
 
-        config = mc.Config()
-        config.get_executors()
         try:
-            for plane in observation.planes.values():
+            for plane in self._observation.planes.values():
                 if (
                     self._storage_name.product_id is not None
                     and self._storage_name.product_id != plane.product_id
@@ -670,6 +684,7 @@ class GeminiMapping(cc.TelescopeMapping):
                     if GemName.is_preview(artifact.uri):
                         continue
                     update_artifact_meta(artifact, file_info)
+                    self._update_artifact(artifact)
                     processed = ofr.is_processed(self._storage_name.file_name)
                     if self._instrument in [
                         Inst.MICHELLE,
@@ -697,7 +712,7 @@ class GeminiMapping(cc.TelescopeMapping):
                             # for each pixel (no WCS).
                             self._logger.info(
                                 f'GPI: Setting chunks to None for part {part} '
-                                f'for {observation.observation_id}'
+                                f'for {self._observation.observation_id}'
                             )
                             artifact.parts[part].chunks = TypedList(
                                 Chunk,
@@ -712,18 +727,15 @@ class GeminiMapping(cc.TelescopeMapping):
 
                             # energy WCS
                             filter_name = self._get_filter_name(int(part))
-                            if self._reset_energy(
-                                observation.type, filter_name
-                            ):
+                            if self._reset_energy(self._observation.type, filter_name):
                                 cc.reset_energy(c)
                             else:
                                 self._update_energy(
                                     c, plane.data_product_type, filter_name
                                 )
                             # position WCS
-                            if self._reset_position(
-                                observation.type, artifact.product_type
-                            ):
+                            if self._reset_position(self._observation.type, artifact.product_type):
+                                self._logger.warning(f'Resetting position for part {part}')
                                 cc.reset_position(c)
                             else:
                                 self._update_position(part, c, int(part))
@@ -733,24 +745,22 @@ class GeminiMapping(cc.TelescopeMapping):
 
                             self._make_axes_consistent(c)
 
-                    if isinstance(observation, DerivedObservation):
+                    if isinstance(self._observation, DerivedObservation):
                         values = cc.find_keywords_in_headers(
                             self._headers[1:], ['IMCMB']
                         )
-                        repaired_values = _remove_processing_detritus(
-                            values, observation.observation_id
-                        )
+                        repaired_values = _remove_processing_detritus(values, self._observation.observation_id)
                         cc.update_plane_provenance_from_values(
                             plane,
                             self._repair_provenance_value,
                             repaired_values,
                             self._storage_name.collection,
-                            observation.observation_id,
+                            self._observation.observation_id,
                         )
 
                     if (
                         processed
-                        or isinstance(observation, DerivedObservation)
+                        or isinstance(self._observation, DerivedObservation)
                         or self._instrument is Inst.TEXES
                     ) and 'jpg' not in self._storage_name.file_name:
                         # not the preview artifact
@@ -767,25 +777,23 @@ class GeminiMapping(cc.TelescopeMapping):
                         )
                         artifact.parts.pop(part)
 
-                if observation.proposal is not None:
-                    program = program_metadata.get_pi_metadata(
-                        observation.proposal.id
-                    )
+                if self._observation.proposal is not None:
+                    program = program_metadata.get_pi_metadata(self._observation.proposal.id)
                     if program is not None:
-                        observation.proposal.pi_name = program['pi_name']
-                        observation.proposal.title = program['title']
+                        self._observation.proposal.pi_name = program['pi_name']
+                        self._observation.proposal.title = program['title']
 
-            if isinstance(observation, DerivedObservation):
-                cc.update_observation_members(observation)
+            if isinstance(self._observation, DerivedObservation):
+                cc.update_observation_members(self._observation)
 
-            GeminiMapping.value_repair.repair(observation)
+            GeminiMapping.value_repair.repair(self._observation)
         except Exception as e:
-            self._logger.error(f'Error {e} for {observation.observation_id}')
+            self._logger.error(f'Error {e} for {self._observation.observation_id}')
             tb = traceback.format_exc()
             self._logger.error(tb)
             raise mc.CadcException(e)
         self._logger.debug('Done update.')
-        return observation
+        return self._observation
 
     def _build_chunk_energy(self, chunk, filter_name):
         # If n_axis=1 (as I guess it will be for all but processes GRACES
@@ -1060,6 +1068,9 @@ class GeminiMapping(cc.TelescopeMapping):
                         result.append(self._headers[ext].get(key).strip())
         return '+'.join(result)
 
+    def _update_artifact(self, artifact):
+        pass
+
     def _update_composite(self, obs):
         result = None
         if self._instrument is Inst.TRECS:
@@ -1216,10 +1227,10 @@ def _remove_processing_detritus(values, obs_id):
 
 
 class Bhros(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable, observation, config):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable, observation, config)
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
         super().accumulate_blueprint(bp)
         bp.set_default('Observation.telescope.name', 'Gemini-South')
 
@@ -1314,10 +1325,10 @@ class Bhros(GeminiMapping):
 
 
 class Cirpass(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable, observation, config):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable, observation, config)
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
         super().accumulate_blueprint(bp)
         bp.set_default('Observation.telescope.name', 'Gemini-South')
         bp.configure_position_axes((1, 2))
@@ -1463,10 +1474,10 @@ class Cirpass(GeminiMapping):
 
 
 class F2(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable, observation, config):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable, observation, config)
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
         """Configure the telescope-specific ObsBlueprint at the CAOM model
         Observation level."""
         super().accumulate_blueprint(bp)
@@ -1653,10 +1664,10 @@ class F2(GeminiMapping):
 
 
 class Flamingos(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable, observation, config):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable, observation, config)
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
         super().accumulate_blueprint(bp)
         bp.configure_position_axes((1, 2))
         # DB 27-05-19
@@ -1939,10 +1950,10 @@ class Flamingos(GeminiMapping):
 
 
 class Fox(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable, observation, config):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable, observation, config)
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
         """Configure the telescope-specific ObsBlueprint at the CAOM model
         Observation level."""
         super().accumulate_blueprint(bp)
@@ -1955,6 +1966,7 @@ class Fox(GeminiMapping):
         bp.add_attribute('Chunk.time.axis.function.naxis', 'NAXIS3')
         bp.set_default('Chunk.time.axis.function.naxis', 1)
         bp.configure_position_axes((1, 2))
+        bp.set('Chunk.position.equinox', 'get_position_equinox()')
 
     def get_data_product_type(self, ext):
         # DB 31-08-20
@@ -1970,6 +1982,13 @@ class Fox(GeminiMapping):
         # sense to create separate planes with dataProductType = image that
         # end up with the correct (distinct) energy metadata.
         return DataProductType.IMAGE
+
+    def get_position_equinox(self, ext):
+        result = self._headers[ext].get('EQUINOX', self._headers[ext].get('EPOCH'))
+        if result and 1800.0 <= result <= 2500:
+            return result
+        else:
+            return None
 
     def get_target_type(self, ext):
         return TargetType.OBJECT
@@ -2017,11 +2036,157 @@ class Fox(GeminiMapping):
         self._logger.debug(f'End _update_time')
 
 
-class Gmos(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
+class GHOSTSpectralTemporal(GeminiMapping):
+    """Fibre-fed spectrograph"""
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable, observation, config):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable, observation, config)
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
+        """Configure the telescope-specific ObsBlueprint at the CAOM model Observation level."""
+        super(GeminiMapping, self).accumulate_blueprint(bp)
+        self._accumulate_obs_plane_artifact_blueprint(bp)
+        # DB 02-02-24
+        # for temporal WCS use JSON ut_datetime for the starting time, exposure_time for the exposure time and add
+        # the exposure_time to the ut_datetime to determine the end time for ALL obstypes.
+        self._accumulate_chunk_time_axis_blueprint(bp, 4)
+        bp.configure_energy_axis(3)
+        for extension in range(0, len(self._headers)):
+            bp.set('Chunk.energy.specsys', 'TOPOCENT', extension)
+
+            camera = self._headers[extension].get('CAMERA')
+            if camera and camera in ['RED', 'BLUE']:
+                # if camera is SLITV, there's no interesting science information in the HDU
+                bp.set('Chunk.energy.axis.axis.ctype', 'WAVE', extension)
+                bp.set('Chunk.energy.axis.axis.cunit', 'nm', extension)
+                bp.set('Chunk.energy.axis.range.start.pix', 0.5, extension)
+                bp.set('Chunk.energy.axis.range.start.val', '_get_energy_chunk_range_start_val()', extension)
+                bp.set('Chunk.energy.axis.range.end.pix', 1.5, extension)
+                bp.set('Chunk.energy.axis.range.end.val', '_get_energy_chunk_range_end_val()', extension)
+                bp.set('Chunk.energy.resolvingPower', '_get_energy_chunk_resolving_power()', extension)
+
+        self._logger.debug(f'End accumulate_blueprint')
+
+    def get_target_type(self, ext):
+        return TargetType.OBJECT
+
+    def _get_energy_chunk_range_end_val(self, ext):
+        # DB 18-01-24
+        # blue channel wavelength coverage is 347 to 530 nm; red channel is 520 to 1060 nm. So 347 to 1060 nm total.
+        result = None
+        camera = self._headers[ext].get('CAMERA')
+        if camera == 'RED':
+            result = 1060.0  # nm
+        elif camera == 'BLUE':
+            result = 530.0  # nm
+        return result
+
+    def _get_energy_chunk_range_start_val(self, ext):
+        # DB 18-01-24
+        # blue channel wavelength coverage is 347 to 530 nm; red channel is 520 to 1060 nm. So 347 to 1060 nm total.
+        result = None
+        camera = self._headers[ext].get('CAMERA')
+        if camera == 'RED':
+            result = 520.0  # nm
+        elif camera == 'BLUE':
+            result = 347.0  # nm
+        return result
+
+    def _get_energy_chunk_resolving_power(self, ext):
+        """
+        DB 18-01-24
+        1. resolution is determined by the value for the PHU RESOLUT keyword.  If the value is Standard then the
+        starting point for the resolution is 56,000; if High then it's 76,000.
+
+        2. PHU keywords REDCCDS and BLUCCDS give the binning factor along the X (dispersion) and Y (spatial)
+        direction.  e.g. a value of 2 x 4 would reduce the resolution by a factor of about 2 (the first number
+        in that value).
+        """
+        result = None
+        start = None
+        resolut = self._headers[0].get('RESOLUT')
+        if resolut == 'Standard':
+            start = 56000.0
+        elif resolut == 'High':
+            start = 76000.0
+        elif resolut == 'No Value':
+            return result
+
+        if start:
+            red_ccds = self._headers[0].get('REDCCDS')
+            blue_ccds = self._headers[0].get('BLUCCDS')
+
+            factor_1 = _to_float(red_ccds.split('x')[0])
+            factor_2 = _to_float(blue_ccds.split('x')[0])
+            if factor_1 == factor_2:
+                factor = factor_1
+            else:
+                raise mc.CadcException(
+                    f'Factors do not match for {self._storage_name.file_uri}. Blue {factor_2}, Red {factor_1}'
+                )
+            result = start / factor
+        else:
+            self._logger.error(f'Could not determine resolution for {resolut} for {self._storage_name.file_uri}')
+        return result
+
+    def _reset_energy(self, observation_type, filter_name):
+        return False
+
+    def _update_energy(self, part, chunk, extension):
+        pass
+
+    def _reset_position(self, observation_type, artifact_type):
+        return
+
+    def _update_position(self, part, chunk, extension):
+        pass
+
+    def _update_artifact(self, artifact):
+        self._logger.debug(f'Begin _update_artifact for {artifact.uri}')
+        for part in artifact.parts.values():
+            extension = int(part.name)
+            camera = self._headers[extension].get('CAMERA')
+            if camera and camera == 'SLITV':
+                part.product_type = ProductType.AUXILIARY
+        self._logger.debug('End _update_artifact')
+
+    def _update_time(self, chunk):
+        if (
+            chunk is not None and
+            chunk.time is not None and
+            chunk.time.axis is not None and
+            chunk.time.axis.function is not None and
+            chunk.time.axis.function.ref_coord is not None
+        ):
+            chunk.time.axis.function.ref_coord.val = self._lookup.max_exputend(self._storage_name.file_uri)
+
+
+class GHOSTSpatialSpectralTemporal(GHOSTSpectralTemporal):
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable, observation, config):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable, observation, config)
+
+    def accumulate_blueprint(self, bp):
+        """Configure the telescope-specific ObsBlueprint at the CAOM model Observation level."""
+        super().accumulate_blueprint(bp)
+        bp.configure_position_axes((1, 2))
+        for extension in range(0, len(self._headers)):
+            camera = self._headers[extension].get('CAMERA', extension)
+            if camera and camera in ['RED', 'BLUE']:
+                # if camera is SLITV, there's no interesting science information in the HDU
+                self._accumulate_chunk_position_axes_blueprint(bp, extension)
+        self._logger.debug(f'End accumulate_blueprint')
+
+    def _reset_position(self, observation_type, artifact_type):
+        pass
+
+    def _update_position(self, part, chunk, ext):
+        pass
+
+
+class Gmos(GeminiMapping):
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable, observation, config):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable, observation, config)
+
+    def accumulate_blueprint(self, bp):
         super().accumulate_blueprint(bp)
         bp.set('Observation.instrument.keywords', 'get_provenance_keywords()')
         bp.configure_position_axes((1, 2))
@@ -2249,10 +2414,10 @@ class Gmos(GeminiMapping):
 
 
 class Gnirs(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable, observation, config):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable, observation, config)
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
         """Configure the telescope-specific ObsBlueprint at the CAOM model
         Observation level."""
         super().accumulate_blueprint(bp)
@@ -2754,26 +2919,58 @@ class Gnirs(GeminiMapping):
 
 
 class Gpi(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable, observation, config):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable, observation, config)
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
         super().accumulate_blueprint(bp)
-        bp.configure_position_axes((1, 2))
+        equinox = self._headers[0].get('TRKEQUIN')
+        if equinox and 1800.0 <= equinox <= 2500.0:
+            # DB 07-06-21
+            # No spatial WCS if equinox not properly set
+            #
+            # DB - 22-02-19 - GPI
+            # WCS info is garbage in header, so for spatial WCS (for both image and spectrum)
+            # override with the following functions
+            bp.configure_position_axes((1, 2))
+            for extension in range(1, len(self._headers)):
+                bp.set('Chunk.position.axis.axis1.ctype', 'RA---TAN', extension)
+                bp.set('Chunk.position.axis.axis1.cunit', 'deg', extension)
+                bp.set('Chunk.position.axis.axis2.ctype', 'DEC--TAN', extension)
+                bp.set('Chunk.position.axis.axis2.cunit', 'deg', extension)
+                bp.set('Chunk.position.axis.function.cd11', 'get_cd11()', extension)
+                # cd1_2 = cd2_1 = 0.0 since we don’t know rotation value
+                bp.set('Chunk.position.axis.function.cd12', 0.0, extension)
+                bp.set('Chunk.position.axis.function.cd21', 0.0, extension)
+                bp.set('Chunk.position.axis.function.cd22', 'get_cd22()', extension)
+                bp.set('Chunk.position.axis.function.refCoord.coord1.pix', 'get_crpix1()', extension)
+                # crval1 = json ra value
+                # crval2 = json dec value
+                bp.set('Chunk.position.axis.function.refCoord.coord1.val', 'get_ra()', extension)
+                bp.set('Chunk.position.axis.function.refCoord.coord2.pix', 'get_crpix2()', extension)
+                bp.set('Chunk.position.axis.function.refCoord.coord2.val', 'get_dec()', extension)
+                bp.set('Chunk.position.equinox', '_get_trkequin()', extension)
+                bp.add_attribute('Chunk.position.coordsys', 'RADESYS', extension)
 
-    def get_cd11(self, ext):
-        return RADIUS_LOOKUP[self._instrument] / self._headers[ext].get(
-            'NAXIS1'
-        )
+    def _get_trkequin(self, ext):
+        return self._headers[0].get('TRKEQUIN')
+
+    def get_cd11(self, ext, keyword='NAXIS1'):
+        # FOV is 2.8" x 2.8" on each side or 2.8/3600.0 degrees
+        # cd1_1 = 2.8/(3600.0 * naxis1)
+        # cd2_2 = 2.8/(3600.0 * naxis2)
+        return RADIUS_LOOKUP[self._instrument] / self._headers[ext].get(keyword)
 
     def get_cd22(self, ext):
-        return self.get_cd11(ext)
+        return self.get_cd11(ext, 'NAXIS2')
 
     def get_crpix1(self, ext, keyword='NAXIS1'):
+        # naxis1 = extension header NAXIS1 value
+        # naxis2 = extension header NAXIS2 value
+        # crpix1 = naxis1/2.0
+        # crpix2 = naxis2/2.0
         naxis1 = self._headers[ext].get(keyword)
-        if naxis1 is None:
-            result = None
-        else:
+        if naxis1:
             result = naxis1 / 2.0
         return result
 
@@ -2864,119 +3061,27 @@ class Gpi(GeminiMapping):
         self._logger.debug('End _update_energy')
 
     def _update_position(self, part, chunk, extension):
-        self._logger.debug('Begin _update_position')
-
-        # DB - 18-02-19 - for hard-coded field of views use:
-        # CRVAL1  = RA value from json or header (degrees
-        # CRVAL2  = Dec value from json or header (degrees)
-        # CDELT1  = 5.0/3600.0 (Plate scale along axis1 in degrees/pixel
-        #           for 5" size)
-        # CDELT2  = 5.0/3600.0
-        # CROTA1  = 0.0 / Rotation in degrees
-        # NAXIS1 = 1
-        # NAXIS2 = 1
-        # CRPIX1 = 1.0
-        # CRPIX2 = 1.0
-        # CTYPE1 = RA---TAN
-        # CTYPE2 = DEC--TAN
-        #
-        # DB - 22-02-19 - GPI
-        # WCS info is garbage in header, so for spatial WCS (for both image and
-        # spectrum):
-        #
-        # crval1 = json ra value
-        # crval2 = json dec value
-        # naxis1 = extension header NAXIS1 value
-        # naxis2 = extension header NAXIS2 value
-        # crpix1 = naxis1/2.0
-        # crpix2 = naxis2/2.0
-        #
-        # FOV is 2.8" x 2.8" on each side or 2.8/3600.0 degrees
-        # cd1_1 = 2.8/(3600.0 * naxis1)
-        # cd2_2 = 2.8/(3600.0 * naxis2)
-        # cd1_2 = cd2_1 = 0.0 since we don’t know rotation value
-
-        header = self._headers[1]
-        header['CTYPE1'] = 'RA---TAN'
-        header['CTYPE2'] = 'DEC--TAN'
-        header['CUNIT1'] = 'deg'
-        header['CUNIT2'] = 'deg'
-        header['CRVAL1'] = self.get_ra(extension)
-        header['CRVAL2'] = self.get_dec(extension)
-        header['CRPIX1'] = self.get_crpix1(extension)
-        header['CRPIX2'] = self.get_crpix2(extension)
-        header['CD1_1'] = self.get_cd11(extension)
-        header['CD1_2'] = 0.0
-        header['CD2_1'] = 0.0
-        header['CD2_2'] = self.get_cd22(extension)
-
-        wcs_parser = FitsWcsParser(
-            header, self._storage_name.obs_id, extension
-        )
-        if chunk is None:
-            chunk = Chunk()
-            part.chunks.append(chunk)
-        wcs_parser.augment_position(chunk)
-        chunk.position_axis_1 = 1
-        chunk.position_axis_2 = 2
-        chunk.position.coordsys = header.get('RADESYS')
-        if extension == 1:
-            # equinox information only available from
-            # 0th header
-            equinox = self._headers[0].get('TRKEQUIN')
-            if equinox is not None and 1800.0 <= equinox <= 2500.0:
-                chunk.position.equinox = equinox
-            else:
-                # DB 07-06-21
-                # No spatial WCS in these cases.
-                cc.reset_position(chunk)
-        self._logger.debug('End update_position')
+        pass
 
 
-class Graces(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
+class GracesSpectralTemporal(GeminiMapping):
+    """Fibre-fed spectrograph"""
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable, observation, config):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable, observation, config)
 
-    def accumulate_blueprint(self, bp, application=None):
-        """Configure the telescope-specific ObsBlueprint at the CAOM model
-        Observation level."""
+    def accumulate_blueprint(self, bp):
+        """Configure the telescope-specific ObsBlueprint at the CAOM model Observation level."""
         super().accumulate_blueprint(bp)
-        bp.set(
-            'Plane.provenance.lastExecuted', 'get_provenance_last_executed()'
-        )
+        bp.set('Plane.provenance.lastExecuted', 'get_provenance_last_executed()')
         bp.set('Plane.provenance.producer', 'get_provenance_producer()')
         bp.set('Plane.provenance.reference', 'get_provenance_reference()')
         bp.set('Plane.provenance.version', 'get_provenance_version()')
-        mode = self._lookup.mode(self._storage_name.file_uri)
-        if mode is not None and mode != 'imaging':
-            bp.configure_position_axes((1, 2))
 
     def _get_filter_name(self, ext):
         return None
 
     def _reset_position(self, observation_type, artifact_type):
-        result = super()._reset_position(observation_type, artifact_type)
-        # DB 23-04-19
-        # Ignore spatial WCS for the GRACES dataset with EPOCH=0.0.  Not
-        # important for a bias. For GMOS we skip spatial WCS for biases
-        # (and maybe for some other instruments).
-
-        # DB 24-04-19
-        # GRACES:  you can ignore spatial WCS for flats if RA/Dec are not
-        # available.   Ditto for GNIRS darks.
-
-        # DB 30-04-19
-        # Ignore spatial WCS for any GRACES arcs without RA/Dec values.
-
-        ra = self._lookup.ra(self._storage_name.file_uri)
-        dec = self._lookup.dec(self._storage_name.file_uri)
-        if (ra is None and dec is None) or observation_type in [
-            'BIAS',
-            'FLAT',
-            'ARC',
-        ]:
-            result = True
-        return result
+        pass
 
     def _update_energy(self, chunk, data_product_type, filter_name):
         """graces-specific chunk-level Energy WCS construction."""
@@ -3016,40 +3121,29 @@ class Graces(GeminiMapping):
         self._logger.debug(f'End _update_energy')
 
     def _update_position(self, part, chunk, ext):
-        mode = self._lookup.mode(self._storage_name.file_uri)
-        if mode is not None and mode != 'imaging':
-            header = self._headers[ext]
-            header['CTYPE1'] = 'RA---TAN'
-            header['CTYPE2'] = 'DEC--TAN'
-            header['CUNIT1'] = 'deg'
-            header['CUNIT2'] = 'deg'
-            header['CRVAL1'] = self.get_ra(ext)
-            header['CRVAL2'] = self.get_dec(ext)
-            header['CDELT1'] = RADIUS_LOOKUP[self._instrument]
-            header['CDELT2'] = RADIUS_LOOKUP[self._instrument]
-            header['CROTA1'] = 0.0
-            header['NAXIS1'] = 1
-            header['NAXIS2'] = 1
-            header['CRPIX1'] = self.get_crpix1(ext)
-            header['CRPIX2'] = self.get_crpix2(ext)
-            header['CD1_1'] = self.get_cd11(ext)
-            header['CD1_2'] = 0.0
-            header['CD2_1'] = 0.0
-            header['CD2_2'] = self.get_cd22(ext)
-            wcs_parser = FitsWcsParser(header, self._storage_name.obs_id, ext)
-            if chunk is None:
-                chunk = Chunk()
-            wcs_parser.augment_position(chunk)
-            chunk.position_axis_1 = 1
-            chunk.position_axis_2 = 2
-        self._logger.debug('End update_position')
+        pass
+
+    def _update_time(self, chunk):
+        cc.undo_astropy_cdfix_call(chunk, self.get_time_delta(0))
+
+
+class GracesSpatialSpectralTemporal(GracesSpectralTemporal):
+    """Fibre-fed spectrograph"""
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable, observation, config):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable, observation, config)
+
+    def accumulate_blueprint(self, bp):
+        """Configure the telescope-specific ObsBlueprint at the CAOM model Observation level."""
+        super().accumulate_blueprint(bp)
+        bp.configure_position_axes((1, 2))
+        self._accumulate_chunk_position_axes_blueprint(bp, 0)
 
 
 class Gsaoi(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable, observation, config):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable, observation, config)
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
         """Configure the telescope-specific ObsBlueprint at the CAOM model
         Observation level."""
         super().accumulate_blueprint(bp)
@@ -3094,10 +3188,10 @@ class Gsaoi(GeminiMapping):
 
 
 class Hokupaa(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable, observation, config):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable, observation, config)
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
         super().accumulate_blueprint(bp)
         bp.set_default('Observation.telescope.name', 'Gemini-South')
 
@@ -3299,10 +3393,10 @@ class Hokupaa(GeminiMapping):
 
 
 class Hrwfs(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable, observation, config):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable, observation, config)
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
         super().accumulate_blueprint(bp)
         bp.set_default('Observation.telescope.name', 'Gemini-South')
         bp.configure_position_axes((1, 2))
@@ -3362,10 +3456,10 @@ class Hrwfs(GeminiMapping):
 
 
 class Igrins(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable, observation, config):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable, observation, config)
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
         """Configure the telescope-specific ObsBlueprint at the CAOM model
         Observation level."""
         super().accumulate_blueprint(bp)
@@ -3444,10 +3538,10 @@ class Igrins(GeminiMapping):
 
 
 class Michelle(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable, observation, config):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable, observation, config)
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
         super().accumulate_blueprint(bp)
         bp.set_default('Observation.telescope.name', 'Gemini-South')
         bp.configure_position_axes((1, 2))
@@ -3609,10 +3703,10 @@ class Michelle(GeminiMapping):
 
 
 class Nici(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable, observation, config):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable, observation, config)
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
         """Configure the telescope-specific ObsBlueprint at the CAOM model
         Observation level."""
         super().accumulate_blueprint(bp)
@@ -3708,10 +3802,10 @@ class Nici(GeminiMapping):
 
 
 class Nifs(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable, observation, config):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable, observation, config)
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
         super().accumulate_blueprint(bp)
         bp.set_default('Observation.telescope.name', 'Gemini-South')
 
@@ -3984,10 +4078,10 @@ class Nifs(GeminiMapping):
 
 
 class Niri(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable, observation, config):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable, observation, config)
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
         super().accumulate_blueprint(bp)
         bp.configure_position_axes((1, 2))
 
@@ -4272,10 +4366,10 @@ class Niri(GeminiMapping):
 
 
 class Oscir(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable, observation, config):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable, observation, config)
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
         super().accumulate_blueprint(bp)
         bp.set_default('Observation.telescope.name', 'Gemini-South')
 
@@ -4441,10 +4535,10 @@ class Oscir(GeminiMapping):
 
 
 class Phoenix(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable, observation, config):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable, observation, config)
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
         """Configure the telescope-specific ObsBlueprint at the CAOM model
         Observation level."""
         super().accumulate_blueprint(bp)
@@ -4713,10 +4807,10 @@ class Phoenix(GeminiMapping):
 
 
 class Texes(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable, observation, config):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable, observation, config)
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
         """Configure the telescope-specific ObsBlueprint at the CAOM model
         Observation level."""
         super().accumulate_blueprint(bp)
@@ -4836,10 +4930,10 @@ class Texes(GeminiMapping):
 
 
 class Trecs(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
+    def __init__(self, storage_name, headers, lookup, instrument, clients, observable, observation, config):
+        super().__init__(storage_name, headers, lookup, instrument, clients, observable, observation, config)
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
         """Configure the telescope-specific ObsBlueprint at the CAOM model
         Observation level."""
         super().accumulate_blueprint(bp)
@@ -4983,7 +5077,15 @@ class Trecs(GeminiMapping):
             )
 
 
-def mapping_factory(storage_name, headers, metadata_reader, clients, observable):
+def get_obs_type(lookup, storage_name):
+    result = lookup.observation_type(storage_name.file_uri)
+    obs_class = lookup.observation_class(storage_name.file_uri)
+    if obs_class is not None and (obs_class == 'acq' or obs_class == 'acqCal'):
+        result = 'ACQUISITION'
+    return result
+
+
+def mapping_factory(storage_name, headers, metadata_reader, clients, observable, observation, config):
     metadata_lookup = GeminiMetadataLookup(metadata_reader)
     inst = metadata_lookup.instrument(storage_name.file_uri)
     lookup = {
@@ -4998,7 +5100,7 @@ def mapping_factory(storage_name, headers, metadata_reader, clients, observable)
         Inst.GMOSN: Gmos,
         Inst.GNIRS: Gnirs,
         Inst.GPI: Gpi,
-        Inst.GRACES: Graces,
+        # Inst.GRACES: Graces,
         Inst.GSAOI: Gsaoi,
         Inst.HOKUPAA: Hokupaa,
         Inst.HRWFS: Hrwfs,
@@ -5012,8 +5114,41 @@ def mapping_factory(storage_name, headers, metadata_reader, clients, observable)
         Inst.TEXES: Texes,
         Inst.TRECS: Trecs,
     }
+    result = None
     if inst in lookup:
-        return lookup.get(inst)(storage_name, headers, metadata_lookup, inst, clients, observable)
+        result = lookup.get(inst)(
+            storage_name, headers, metadata_lookup, inst, clients, observable, observation, config
+        )
+    elif inst is Inst.GHOST:
+        obs_type = get_obs_type(metadata_lookup, storage_name)
+        if obs_type in ['ARC', 'BIAS', 'FLAT']:
+            result = GHOSTSpectralTemporal(
+                storage_name, headers, metadata_lookup, inst, clients, observable, observation, config
+            )
+        else:
+            result = GHOSTSpatialSpectralTemporal(
+                storage_name, headers, metadata_lookup, inst, clients, observable, observation, config
+            )
+    elif inst is Inst.GRACES:
+        obs_type = get_obs_type(metadata_lookup, storage_name)
+        mode = metadata_lookup.mode(storage_name.file_uri)
+        # DB 30-04-19
+        # Ignore spatial WCS for any GRACES arcs without RA/Dec values.  Ditto for GNIRS darks.
+        ra = metadata_lookup.ra(storage_name.file_uri)
+        dec = metadata_lookup.dec(storage_name.file_uri)
+        if (ra is None and dec is None) or mode == 'imaging' or obs_type in ['ARC', 'BIAS', 'FLAT']:
+            # DB 23-04-19
+            # Ignore spatial WCS for the GRACES dataset with EPOCH=0.0.  Not important for a bias. For GMOS we skip
+            # spatial WCS for biases  (and maybe for some other instruments).
+            result = GracesSpectralTemporal(
+                storage_name, headers, metadata_lookup, inst, clients, observable, observation, config
+            )
+        else:
+            result = GracesSpatialSpectralTemporal(
+                storage_name, headers, metadata_lookup, inst, clients, observable, observation, config
+            )
     else:
         observable.rejected.record(mc.Rejected.MYSTERY_VALUE, storage_name.file_name)
         raise mc.CadcException(f'Mystery name {inst}.')
+    logging.debug(f'Created {result.__class__.__name__} for mapping.')
+    return result

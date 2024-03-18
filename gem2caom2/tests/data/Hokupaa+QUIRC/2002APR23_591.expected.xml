@@ -37,10 +37,6 @@
         <caom2:producer>Gemini-North</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/GN-2002A-DD-1-319-591</caom2:reference>
       </caom2:provenance>
-      <caom2:position/>
-      <caom2:energy/>
-      <caom2:time/>
-      <caom2:polarization/>
       <caom2:artifacts>
         <caom2:artifact caom2:id="00000000-0000-0000-8ac4-25c0f4580716" caom2:lastModified="2018-10-08T01:24:00.692" caom2:maxLastModified="2018-10-08T01:24:00.692" caom2:metaChecksum="md5:6705ed5ccbb46e1f660c78feb05aff87" caom2:accMetaChecksum="md5:d7001894e0b7604dff42e4e53e625e81" caom2:metaProducer="gem2caom2/0.8.1">
           <caom2:uri>gemini:GEMINI/2002APR23_591.fits</caom2:uri>

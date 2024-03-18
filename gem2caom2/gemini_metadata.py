@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # ***********************************************************************
 # ******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
 # *************  CENTRE CANADIEN DE DONNÉES ASTRONOMIQUES  **************
@@ -77,15 +76,17 @@ This module is the classes and methods that do and use the retrieval.
 
 
 import logging
+from astropy.time import TimeDelta
+from collections import deque
 from os import path
 
 from cadcutils import exceptions
 from cadcdata import FileInfo
 from caom2utils import data_util
+from caom2pipe.astro_composable import get_datetime_mjd
 from caom2pipe import client_composable as clc
 from caom2pipe import manage_composable as mc
 from caom2pipe import reader_composable as rdc
-from dateutil import tz
 from gem2caom2.util import Inst
 from gem2caom2 import obs_file_relationship
 
@@ -134,7 +135,7 @@ class AbstractGeminiMetadataReader(rdc.MetadataReader):
                 size=record.get('data_size'),
                 name=record.get('filename'),
                 md5sum=record.get('data_md5'),
-                lastmod=mc.make_datetime_tz(record.get('lastmod'), tz.UTC),
+                lastmod=mc.make_datetime(record.get('lastmod')),
                 file_type=data_util.get_file_type(record.get('filename')),
                 encoding=data_util.get_file_encoding(record.get('filename')),
             )
@@ -254,6 +255,7 @@ class GeminiStorageClientReader(
 class GeminiMetadataLookup:
     def __init__(self, metadata_reader):
         self._reader = metadata_reader
+        self._max_exputend = {}
 
     def camera(self, uri):
         return self._search_json(uri, 'camera')
@@ -303,6 +305,24 @@ class GeminiMetadataLookup:
             result = repair_instrument(temp)
         return result
 
+    def max_exputend(self, uri):
+        if self._max_exputend.get(uri) is None:
+            headers = self._reader.headers.get(uri)
+            if headers is not None and len(headers) > 0:
+                exputend_values = deque()
+                for header in headers:
+                    if header.get('EXPUTEND') is not None:
+                        date_obs = header.get('DATE-OBS')
+                        temp = header.get('EXPUTEND')
+                        exputend_values.append(f'{date_obs} {temp}')
+                start = get_datetime_mjd(mc.make_datetime(exputend_values.popleft()))
+                end = get_datetime_mjd(mc.make_datetime(exputend_values.pop()))
+                if end < start:
+                    # in case the observation crosses midnight
+                    end = end + TimeDelta('1d')
+                self._max_exputend[uri] = end.value
+        return self._max_exputend[uri]
+
     def mode(self, uri):
         return self._search_json(uri, 'mode')
 
@@ -346,7 +366,7 @@ class GeminiMetadataLookup:
         temp = self._search_json(uri, 'ut_datetime')
         result = None
         if temp is not None:
-            result = mc.make_datetime_tz(temp, tz.UTC)
+            result = mc.make_datetime(temp)
         return result
 
     def _search_json(self, uri, lookup_key):
@@ -417,7 +437,7 @@ class ProvenanceFinder:
         FROM caom2.Observation AS O
         JOIN caom2.Plane AS P on P.obsID = O.obsID
         JOIN caom2.Artifact AS A on A.planeID = P.planeID
-        WHERE A.uri LIKE '{uri}%' 
+        WHERE A.uri LIKE '{uri}%'
         AND O.collection = '{collection}'
         """
         table = clc.query_tap_client(query_string, self._tap_client)
@@ -550,5 +570,5 @@ def retrieve_json(source_name, logger, session):
             f'Could not find JSON record for {source_name} at '
             f'{gemini_url}.'
         )
-    logger.debug(f'End _retrieve_json')
+    logger.debug(f'End retrieve_json')
     return metadata

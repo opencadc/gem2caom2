@@ -40,10 +40,6 @@
         <caom2:producer>Gemini Observatory</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/GS-2013B-Q-26-19-004</caom2:reference>
       </caom2:provenance>
-      <caom2:position/>
-      <caom2:energy/>
-      <caom2:time/>
-      <caom2:polarization/>
       <caom2:artifacts>
         <caom2:artifact caom2:id="00000000-0000-0000-828c-40030e926ce4" caom2:lastModified="2018-10-12T00:35:22.744" caom2:maxLastModified="2018-10-12T00:35:22.744" caom2:metaChecksum="md5:d7afa9578743b66d48b1bc227e0b8dac" caom2:accMetaChecksum="md5:f2b3797bcb6d77421a9a7dbbe5599aad" caom2:metaProducer="gem2caom2/0.8.1">
           <caom2:uri>gemini:GEMINI/S20140122S0227.fits</caom2:uri>

@@ -41,11 +41,11 @@
         <caom2:reference>http://archive.gemini.edu/searchform/filepre=rgS20161227S0051_fringe.fits</caom2:reference>
         <caom2:inputs>
           <caom2:planeURI>caom:GEMINI/GS-CAL20161227-5-004/S20161227S0054</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/GS-CAL20161227-5-003/S20161227S0053</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/GS-CAL20161227-5-006/S20161227S0056</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/GS-CAL20161227-5-001/S20161227S0051</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/GS-CAL20161227-5-002/S20161227S0052</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GS-CAL20161227-5-003/S20161227S0053</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/GS-CAL20161227-5-007/S20161227S0057</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GS-CAL20161227-5-002/S20161227S0052</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GS-CAL20161227-5-006/S20161227S0056</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/GS-CAL20161227-5-005/S20161227S0055</caom2:planeURI>
         </caom2:inputs>
       </caom2:provenance>
@@ -1148,12 +1148,12 @@
     </caom2:plane>
   </caom2:planes>
   <caom2:members>
-    <caom2:observationURI>caom:GEMINI/GS-CAL20161227-5-002</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GS-CAL20161227-5-004</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GS-CAL20161227-5-007</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GS-CAL20161227-5-006</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GS-CAL20161227-5-005</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GS-CAL20161227-5-001</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GS-CAL20161227-5-003</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GS-CAL20161227-5-007</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GS-CAL20161227-5-002</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GS-CAL20161227-5-004</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GS-CAL20161227-5-006</caom2:observationURI>
   </caom2:members>
 </caom2:Observation>
