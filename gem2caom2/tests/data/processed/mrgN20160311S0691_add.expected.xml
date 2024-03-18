@@ -42,10 +42,10 @@
         <caom2:producer>NOAO-IRAF FITS Image Kernel July 2003</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/filepre=mrgN20160311S0691_add.fits</caom2:reference>
         <caom2:inputs>
-          <caom2:planeURI>caom:GEMINI/GN-2016A-Q-68-46-001/N20160311S0691</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/GN-2016A-Q-68-46-004/N20160311S0694</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/GN-2016A-Q-68-46-003/N20160311S0693</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/GN-2016A-Q-68-46-002/N20160311S0692</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GN-2016A-Q-68-46-004/N20160311S0694</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GN-2016A-Q-68-46-001/N20160311S0691</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GN-2016A-Q-68-46-003/N20160311S0693</caom2:planeURI>
         </caom2:inputs>
       </caom2:provenance>
       <caom2:artifacts>
@@ -165,9 +165,9 @@
     </caom2:plane>
   </caom2:planes>
   <caom2:members>
+    <caom2:observationURI>caom:GEMINI/GN-2016A-Q-68-46-001</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GN-2016A-Q-68-46-004</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GN-2016A-Q-68-46-003</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GN-2016A-Q-68-46-002</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GN-2016A-Q-68-46-004</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GN-2016A-Q-68-46-001</caom2:observationURI>
   </caom2:members>
 </caom2:Observation>

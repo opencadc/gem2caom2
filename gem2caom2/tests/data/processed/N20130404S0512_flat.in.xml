@@ -36,13 +36,13 @@
   <caom2:members>
     <caom2:observationURI>caom:GEMINI/GN-2013A-Q-63-54-054</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GN-2013A-Q-63-54-057</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GN-2013A-Q-63-54-060</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GN-2013A-Q-63-54-052</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GN-2013A-Q-63-54-055</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GN-2013A-Q-63-54-059</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GN-2013A-Q-63-54-056</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GN-2013A-Q-63-54-052</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GN-2013A-Q-63-54-060</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GN-2013A-Q-63-54-058</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GN-2013A-Q-63-54-053</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GN-2013A-Q-63-54-056</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GN-2013A-Q-63-54-051</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GN-2013A-Q-63-54-053</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GN-2013A-Q-63-54-059</caom2:observationURI>
   </caom2:members>
 </caom2:Observation>

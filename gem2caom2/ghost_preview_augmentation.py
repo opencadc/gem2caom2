@@ -114,11 +114,11 @@ class GHOSTPreviews(PreviewVisitor):
         # channels. They are then 'flip'ed appropriately so that short wavelengths are at the top of each image
         # Note:  this assumes that the order of each image extension does not change!
         red_image1 = np.concatenate((red_data[0], red_data[1]), axis=1)
-        red_image2= np.concatenate((red_data[3], red_data[2]), axis=1)
+        red_image2 = np.concatenate((red_data[3], red_data[2]), axis=1)
         red_image = np.concatenate((red_image1, red_image2), axis=0)
         red_image = np.flip(red_image, axis=1)
         blue_image1 = np.concatenate((blue_data[0], blue_data[1]), axis=1)
-        blue_image2= np.concatenate((blue_data[3], blue_data[2]), axis=1)
+        blue_image2 = np.concatenate((blue_data[3], blue_data[2]), axis=1)
         blue_image = np.concatenate((blue_image1, blue_image2), axis=0)
         blue_image = np.flip(blue_image)
         fig.add_subplot(2, 1, 1)

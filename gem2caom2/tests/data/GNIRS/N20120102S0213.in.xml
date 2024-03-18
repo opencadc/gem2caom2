@@ -36,10 +36,6 @@
         <caom2:producer>Gemini Observatory</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/GN-2011B-Q-63-126-005</caom2:reference>
       </caom2:provenance>
-      
-      
-      
-      
       <caom2:artifacts>
         <caom2:artifact caom2:id="00000000-0000-0000-b9fa-c1f6f7e8c070" caom2:lastModified="2018-10-16T17:01:25.684" caom2:maxLastModified="2018-10-16T17:01:25.684" caom2:metaChecksum="md5:9d1d1344547d0c489b62335c93f9fcab" caom2:accMetaChecksum="md5:3a834026e89fbf140d2b2a14afa299f1" caom2:metaProducer="gem2caom2/0.8.1">
           <caom2:uri>gemini:GEMINI/N20120102S0213.fits</caom2:uri>

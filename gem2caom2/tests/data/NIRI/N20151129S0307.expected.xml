@@ -40,10 +40,6 @@
         <caom2:producer>Gemini Observatory</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/GN-2015B-Q-34-55-040</caom2:reference>
       </caom2:provenance>
-      
-      
-      
-      
       <caom2:artifacts>
         <caom2:artifact caom2:id="00000000-0000-0000-bf4c-cc69cc65cf08" caom2:lastModified="2018-10-11T08:17:08.111" caom2:maxLastModified="2018-10-11T08:17:08.111" caom2:metaChecksum="md5:0c8664bee3c16b2bfdb2d2c7078a508a" caom2:accMetaChecksum="md5:59a5ec8207c320b9876287f92db24762" caom2:metaProducer="gem2caom2/0.8.1">
           <caom2:uri>gemini:GEMINI/N20151129S0307.fits</caom2:uri>

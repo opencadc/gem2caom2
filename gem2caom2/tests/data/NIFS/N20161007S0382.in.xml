@@ -36,10 +36,6 @@
         <caom2:producer>Gemini Observatory</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/GN-2016B-Q-27-31-007</caom2:reference>
       </caom2:provenance>
-      
-      
-      
-      
       <caom2:artifacts>
         <caom2:artifact caom2:id="00000000-0000-0000-8e1f-08c7dbf95ed0" caom2:lastModified="2018-11-23T14:55:06.098" caom2:maxLastModified="2018-11-23T14:55:06.098" caom2:metaChecksum="md5:2edd16d6ab09ae2ab1e4ca63941c6239" caom2:accMetaChecksum="md5:cd61922f3ad6ee8a6da7c74d30a745ff" caom2:metaProducer="gem2caom2/0.8.1">
           <caom2:uri>gemini:GEMINI/N20161007S0382.fits</caom2:uri>

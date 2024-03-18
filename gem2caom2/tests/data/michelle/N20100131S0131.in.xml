@@ -36,10 +36,6 @@
         <caom2:producer>Gemini Observatory</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/GN-2009B-C-1-62-001</caom2:reference>
       </caom2:provenance>
-      
-      
-      
-      
       <caom2:artifacts>
         <caom2:artifact caom2:id="00000000-0000-0000-9db9-1ca410c9be8e" caom2:lastModified="2018-10-26T23:19:38.027" caom2:maxLastModified="2018-10-26T23:19:38.027" caom2:metaChecksum="md5:547d12ac53f012e4cab5a32733f77001" caom2:accMetaChecksum="md5:243d7108a78bda4527e06b8fb31222be" caom2:metaProducer="gem2caom2/0.8.1">
           <caom2:uri>gemini:GEMINI/N20100131S0131.fits</caom2:uri>

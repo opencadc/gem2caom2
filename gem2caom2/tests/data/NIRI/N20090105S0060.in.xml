@@ -36,10 +36,6 @@
         <caom2:producer>Gemini Observatory</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/GN-2008B-C-3-2-012</caom2:reference>
       </caom2:provenance>
-      
-      
-      
-      
       <caom2:artifacts>
         <caom2:artifact caom2:id="00000000-0000-0000-9569-45eccef3c536" caom2:lastModified="2018-10-29T01:13:43.866" caom2:maxLastModified="2018-10-29T01:13:43.866" caom2:metaChecksum="md5:4b61f492de9f720553998adb850660cd" caom2:accMetaChecksum="md5:f2c3b1ffbc61c03d9e11d2c0dc53ede1" caom2:metaProducer="gem2caom2/0.8.1">
           <caom2:uri>gemini:GEMINI/N20090105S0060.fits</caom2:uri>

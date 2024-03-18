@@ -36,10 +36,6 @@
         <caom2:producer>Gemini Observatory</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/GS-2009B-Q-14-129-029</caom2:reference>
       </caom2:provenance>
-      
-      
-      
-      
       <caom2:artifacts>
         <caom2:artifact caom2:id="00000000-0000-0000-94e5-8d1ad590fcef" caom2:lastModified="2018-10-25T23:18:54.186" caom2:maxLastModified="2018-10-25T23:18:54.186" caom2:metaChecksum="md5:444bbe73b6e5aa73558a33f9d0c28fa6" caom2:accMetaChecksum="md5:7c48d1af5266dbf9f06c91d0365387c3" caom2:metaProducer="gem2caom2/0.8.1">
           <caom2:uri>gemini:GEMINI/S20100102S0035.fits</caom2:uri>

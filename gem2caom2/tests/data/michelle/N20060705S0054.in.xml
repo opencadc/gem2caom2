@@ -36,10 +36,6 @@
         <caom2:producer>Gemini Observatory</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/GN-2006A-C-14-49-002</caom2:reference>
       </caom2:provenance>
-      
-      
-      
-      
       <caom2:artifacts>
         <caom2:artifact caom2:id="00000000-0000-0000-a2b4-0918aca96843" caom2:lastModified="2018-11-18T07:33:35.487" caom2:maxLastModified="2018-11-18T07:33:35.487" caom2:metaChecksum="md5:54719f87dc8a77b71b68c1abf3f16792" caom2:accMetaChecksum="md5:5188bc0e58f9c2b8b0191cdfcadbe4f9" caom2:metaProducer="gem2caom2/0.8.1">
           <caom2:uri>gemini:GEMINI/N20060705S0054.fits</caom2:uri>

@@ -37,10 +37,6 @@
         <caom2:producer>Gemini-North</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/GN-CAL20020424-1-007</caom2:reference>
       </caom2:provenance>
-      
-      
-      
-      
       <caom2:artifacts>
         <caom2:artifact caom2:id="00000000-0000-0000-afe1-acff28afef95" caom2:lastModified="2018-10-08T01:24:50.530" caom2:maxLastModified="2018-10-08T01:24:50.530" caom2:metaChecksum="md5:74f7a279e78efd97ffcbf45b3f01f0c1" caom2:accMetaChecksum="md5:49f5b864c3f3e45ea4529e2bdab6eaf5" caom2:metaProducer="gem2caom2/0.8.1">
           <caom2:uri>gemini:GEMINI/2002APR24_007.fits</caom2:uri>

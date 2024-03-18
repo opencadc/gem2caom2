@@ -36,10 +36,6 @@
         <caom2:producer>Gemini Observatory</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/GS-CAL20030105-2-0072</caom2:reference>
       </caom2:provenance>
-      
-      
-      
-      
       <caom2:artifacts>
         <caom2:artifact caom2:id="00000000-0000-0000-93b3-9119cd2faa4d" caom2:lastModified="2018-11-08T06:33:13.522" caom2:maxLastModified="2018-11-08T06:33:13.522" caom2:metaChecksum="md5:dce6e472cbf177a6b58b77b621181fa4" caom2:accMetaChecksum="md5:02eecd7c404a6e6a496f48d37845bda8" caom2:metaProducer="gem2caom2/0.8.1">
           <caom2:uri>gemini:GEMINI/2003jan05_0082.fits</caom2:uri>

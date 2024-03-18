@@ -36,10 +36,6 @@
         <caom2:producer>Gemini Observatory</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/GN-2010A-Q-44-175-015</caom2:reference>
       </caom2:provenance>
-      
-      
-      
-      
       <caom2:artifacts>
         <caom2:artifact caom2:id="00000000-0000-0000-b76c-1c1c23013615" caom2:lastModified="2018-10-29T07:43:16.363" caom2:maxLastModified="2018-10-29T07:43:16.363" caom2:metaChecksum="md5:f22734038e9ef6a709a4cd20328674a3" caom2:accMetaChecksum="md5:29d636db2a2d5b6ba8464c1e264baae9" caom2:metaProducer="gem2caom2/0.8.1">
           <caom2:uri>gemini:GEMINI/N20100620S0126.fits</caom2:uri>

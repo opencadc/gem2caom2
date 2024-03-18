@@ -36,10 +36,6 @@
         <caom2:producer>Gemini Observatory</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/GN-2015A-C-1-27-071</caom2:reference>
       </caom2:provenance>
-      
-      
-      
-      
       <caom2:artifacts>
         <caom2:artifact caom2:id="00000000-0000-0000-bc7d-b23a4a1f6fd4" caom2:lastModified="2018-10-05T23:43:50.266" caom2:maxLastModified="2018-10-05T23:43:50.266" caom2:metaChecksum="md5:699985a010fc8e1d70fb915eb2e56fda" caom2:accMetaChecksum="md5:d5147e28b0e74b70526d4f66c17992ca" caom2:metaProducer="gem2caom2/0.8.1">
           <caom2:uri>gemini:GEMINI/N20150405S0028.fits</caom2:uri>

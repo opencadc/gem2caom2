@@ -38,10 +38,6 @@
         <caom2:producer>Gemini Observatory</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/GS-CAL20100110-1-026</caom2:reference>
       </caom2:provenance>
-      
-      
-      
-      
       <caom2:artifacts>
         <caom2:artifact caom2:id="00000000-0000-0000-ab1b-ad84afbcdb85" caom2:lastModified="2018-10-26T02:41:55.544" caom2:maxLastModified="2018-10-26T02:41:55.544" caom2:metaChecksum="md5:b7ba9454a297eb1a18525978cec95a80" caom2:accMetaChecksum="md5:b9cfa4f6b95cece83b40bf754e905e59" caom2:metaProducer="gem2caom2/0.8.1">
           <caom2:uri>gemini:GEMINI/S20100110S0026.fits</caom2:uri>

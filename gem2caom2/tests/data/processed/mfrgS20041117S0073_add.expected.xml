@@ -163,7 +163,7 @@
     </caom2:plane>
   </caom2:planes>
   <caom2:members>
-    <caom2:observationURI>caom:GEMINI/GS-2004B-Q-42-1-001</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GS-2004B-Q-42-1-002</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GS-2004B-Q-42-1-001</caom2:observationURI>
   </caom2:members>
 </caom2:Observation>

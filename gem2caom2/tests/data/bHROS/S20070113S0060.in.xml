@@ -36,10 +36,6 @@
         <caom2:producer>Gemini Observatory</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/GS-2006B-Q-7-32-008</caom2:reference>
       </caom2:provenance>
-      
-      
-      
-      
       <caom2:artifacts>
         <caom2:artifact caom2:id="00000000-0000-0000-a368-9a3b5108705a" caom2:lastModified="2018-11-12T23:18:01.662" caom2:maxLastModified="2018-11-12T23:18:01.662" caom2:metaChecksum="md5:bb6ac4b945d4800057af01f42d909991" caom2:accMetaChecksum="md5:47422693064e6b0c47b4388fb573e787" caom2:metaProducer="gem2caom2/0.8.1">
           <caom2:uri>gemini:GEMINI/S20070113S0060.fits</caom2:uri>

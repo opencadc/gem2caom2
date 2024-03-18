@@ -39,10 +39,6 @@
         <caom2:producer>NOAO-IRAF FITS Image Kernel July 2003</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/GS-2005A-Q-15-1-001</caom2:reference>
       </caom2:provenance>
-      
-      
-      
-      
       <caom2:artifacts>
         <caom2:artifact caom2:id="00000000-0000-0000-8eef-b5222de63624" caom2:lastModified="2018-11-15T23:45:05.050" caom2:maxLastModified="2018-11-15T23:45:05.050" caom2:metaChecksum="md5:3bdc2e78376289a8e11619a8e9874fc8" caom2:accMetaChecksum="md5:f82e2576cbad5f5cb37e8e9eb0da91d4" caom2:metaProducer="gem2caom2/0.8.1">
           <caom2:uri>gemini:GEMINI/S20050621S0037.fits</caom2:uri>

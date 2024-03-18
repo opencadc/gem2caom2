@@ -35,10 +35,6 @@
         <caom2:producer>Gemini Observatory</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/GN-2002A-C-4-2-001</caom2:reference>
       </caom2:provenance>
-      
-      
-      
-      
       <caom2:artifacts>
         <caom2:artifact caom2:id="00000000-0000-0000-beda-ddf47dde433a" caom2:lastModified="2018-10-07T23:48:30.739" caom2:maxLastModified="2018-10-07T23:48:30.739" caom2:metaChecksum="md5:cb42492a6ece4f872689381363a4fcfe" caom2:accMetaChecksum="md5:7d0d5423d0877939cf139965dd6e758b">
           <caom2:uri>gemini:GEMINI/N20020405S0044.fits</caom2:uri>

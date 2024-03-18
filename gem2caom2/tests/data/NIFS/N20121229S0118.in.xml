@@ -36,10 +36,6 @@
         <caom2:producer>Gemini Observatory</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/GN-2012B-Q-51-108-001</caom2:reference>
       </caom2:provenance>
-      
-      
-      
-      
       <caom2:artifacts>
         <caom2:artifact caom2:id="00000000-0000-0000-a4ea-7ce732796160" caom2:lastModified="2018-10-25T20:56:16.800" caom2:maxLastModified="2018-10-25T20:56:16.800" caom2:metaChecksum="md5:1da04d2b090390195a6b2e7890e0e4be" caom2:accMetaChecksum="md5:4e913b30bb52692f2270fc54b03c7098" caom2:metaProducer="gem2caom2/0.8.1">
           <caom2:uri>gemini:GEMINI/N20121229S0118.fits</caom2:uri>
