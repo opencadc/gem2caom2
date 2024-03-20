@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+
+<title>Detail for Program: GN-2019B-Q-415</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GN-2019B-Q-415</h1>
+
+<table>
+ <tr><td>Title:<td>Studying the CO disk structure of B[e] stars</tr>
+ <tr><td>PI:<td>Maria Laura Arias</tr>
+ <tr><td>Co-I(s):<td> Lydia Cidale,  Michaela Kraus,  Andrea Torres</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+We propose to use GNIRS to obtain high-resolution near infrared spectra of three B[e] star candidates,  that have confirmed detection of CO molecular emission based on previous lower resolution or lower quality infrared  spectra. We will perform a detail modeling on the 12CO and 13CO molecular emission.  The emission from CO bands has proven to be an ideal tool to study the disk properties. As the CO emission typically emerges from the inner rim of the molecular disk,  the shape of the 12 CO bandhead delivers detailed information on the disk kinematics, while the  relative strength of individual CO band heads constrains temperature and density (Kraus 2009). The measured 12CO/13CO ratio will enable us to distinguish between pre main sequence or evolved nature. 
+</div>
+
+
+
+</body>
+</html>
