@@ -174,6 +174,9 @@ class PublicIncremental(dsc.QueryTimeBoxDataSource):
         super().__init__(config)
         self._query_client = query_client
 
+    def _initialize_end_dt(self):
+        self._end_dt = datetime.now()
+
     def get_time_box_work(self, prev_exec_dt, exec_dt):
         """
         :param prev_exec_dt datetime start of the timestamp chunk
