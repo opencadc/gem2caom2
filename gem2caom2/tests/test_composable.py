@@ -81,8 +81,7 @@ import gem_mocks
 from cadcdata import FileInfo
 from caom2 import SimpleObservation, Algorithm
 from caom2pipe.data_source_composable import StateRunnerMeta
-from caom2pipe.manage_composable import make_datetime, write_as_yaml
-from caom2pipe.manage_composable import TaskType
+from caom2pipe.manage_composable import Config, make_datetime, TaskType, write_as_yaml
 from gem2caom2 import composable, gem_name
 from gem2caom2.data_source import GEM_BOOKMARK
 
@@ -137,7 +136,7 @@ def test_run(run_mock, cap_mock, data_client_mock, json_mock, test_config, tmp_p
 @patch('caom2pipe.client_composable.ClientCollection.data_client')
 @patch('cadcutils.net.ws.WsCapabilities.get_access_url')
 @patch('caom2pipe.execute_composable.OrganizeExecutes.do_one')
-def test_run_errors(run_mock, cap_mock, data_client_mock, json_mock):
+def test_run_errors(run_mock, cap_mock, data_client_mock, json_mock, test_config, tmp_path, change_test_dir):
     cap_mock.return_value = 'https://localhost'
     data_client_mock.get_head.side_effect = gem_mocks._mock_get_head
     data_client_mock.info.side_effect = gem_mocks.mock_get_file_info
@@ -145,19 +144,20 @@ def test_run_errors(run_mock, cap_mock, data_client_mock, json_mock):
     test_obs_id = 'GS-CAL20141226-7-029'
     test_f_id = 'S20141226S0206'
     test_f_name = f'{test_f_id}.fits'
-    _write_todo(test_f_name)
-    getcwd_orig = os.getcwd
-    os.getcwd = Mock(return_value=gem_mocks.TEST_DATA_DIR)
-    try:
-        composable._run()
-        assert run_mock.called, 'should have been called'
-        args, kwargs = run_mock.call_args
-        test_storage = args[0]
-        assert isinstance(test_storage, gem_name.GemName), type(test_storage)
-        assert test_storage.obs_id == test_obs_id, 'wrong obs id'
-        assert test_storage.file_name == test_f_name, 'wrong file name'
-    finally:
-        os.getcwd = getcwd_orig
+    test_config.change_working_directory(tmp_path)
+    test_config.proxy_file_name = 'testproxy.pem'
+    Config.write_to_file(test_config)
+    with open(test_config.proxy_fqn, 'w') as f:
+        f.write('test content')
+    with open(test_config.work_fqn, 'w') as f:
+        f.write(f'{test_f_name}\n')
+    composable._run()
+    assert run_mock.called, 'should have been called'
+    args, kwargs = run_mock.call_args
+    test_storage = args[0]
+    assert isinstance(test_storage, gem_name.GemName), type(test_storage)
+    assert test_storage.obs_id == test_obs_id, 'wrong obs id'
+    assert test_storage.file_name == test_f_name, 'wrong file name'
 
 
 @patch('caom2pipe.client_composable.ClientCollection.data_client')
