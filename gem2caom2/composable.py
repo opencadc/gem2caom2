@@ -71,6 +71,7 @@ import sys
 import traceback
 
 from caom2pipe.client_composable import ClientCollection
+from caom2pipe.execute_composable import OrganizeExecutes
 from caom2pipe import data_source_composable as dsc
 from caom2pipe import manage_composable as mc
 from caom2pipe import run_composable as rc
@@ -109,6 +110,38 @@ class GemClientCollection(ClientCollection):
     @svo_session.setter
     def svo_session(self, value):
         self._svo_session = value
+
+
+class GemOrganizeExecutes(OrganizeExecutes):
+
+    def __init__(
+            self,
+            config,
+            meta_visitors,
+            data_visitors,
+            chooser,
+            store_transfer,
+            modify_transfer,
+            metadata_reader,
+            clients,
+            observable,
+            reporter,
+        ):
+        super().__init__(
+            config,
+            meta_visitors,
+            data_visitors,
+            chooser,
+            store_transfer,
+            modify_transfer,
+            metadata_reader,
+            clients,
+            observable,
+            reporter,
+        )
+
+    def can_use_single_visit(self):
+        return False
 
 
 def _common_init():
@@ -179,6 +212,8 @@ def _run():
         sources=[source],
         metadata_reader=metadata_reader,
         clients=clients,
+        organizer_module_name='gem2caom2.composable',
+        organizer_class_name='GemOrganizeExecutes',
     )
 
 
@@ -223,6 +258,8 @@ def _run_by_public():
         sources=[incremental_source],
         clients=clients,
         metadata_reader=metadata_reader,
+        organizer_module_name='gem2caom2.composable',
+        organizer_class_name='GemOrganizeExecutes',
     )
 
 
@@ -260,6 +297,8 @@ def _run_state():
         sources=[incremental_source],
         clients=clients,
         metadata_reader=metadata_reader,
+        organizer_module_name='gem2caom2.composable',
+        organizer_class_name='GemOrganizeExecutes',
     )
     if incremental_source.max_records_encountered:
         logging.warning('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
