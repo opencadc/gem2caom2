@@ -70,6 +70,7 @@ import json
 import logging
 import os
 import shutil
+import traceback
 
 from astropy.io.fits import Header
 from collections import deque
@@ -90,57 +91,50 @@ STATE_FILE = f'{gem_mocks.TEST_DATA_DIR}/state.yml'
 TODO_FILE = f'{gem_mocks.TEST_DATA_DIR}/todo.txt'
 REJECTED_FILE = f'{gem_mocks.TEST_DATA_DIR}/logs/rejected.yml'
 PROGRESS_FILE = f'{gem_mocks.TEST_DATA_DIR}/logs/progress.txt'
-PUBLIC_TEST_JSON = (
-    f'{gem_mocks.TEST_DATA_DIR}/json/GN-2019B-ENG-1-160-008.json'
-)
+PUBLIC_TEST_JSON = f'{gem_mocks.TEST_DATA_DIR}/json/GN-2019B-ENG-1-160-008.json'
 
 
+@patch('gem2caom2.gemini_metadata.retrieve_headers')
 @patch('gem2caom2.gemini_metadata.retrieve_json')
-@patch('caom2pipe.client_composable.ClientCollection.data_client')
-@patch('cadcutils.net.ws.WsCapabilities.get_access_url')
+@patch('gem2caom2.composable.GemClientCollection')
 @patch('caom2pipe.execute_composable.OrganizeExecutes.do_one')
-def test_run(run_mock, cap_mock, data_client_mock, json_mock, test_config, tmp_path):
-    cap_mock.return_value = 'https://localhost'
-    data_client_mock.get_head.side_effect = gem_mocks._mock_get_head
-    data_client_mock.info.side_effect = gem_mocks.mock_get_file_info
-    json_mock.side_effect = gem_mocks.mock_retrieve_json
+def test_run(run_mock, clients_mock, retrieve_json_mock, retrieve_headers_mock, test_config, tmp_path, change_test_dir):
+    clients_mock.data_client.get_head.side_effect = gem_mocks._mock_get_head
+    clients_mock.data_client.info.side_effect = gem_mocks.mock_get_file_info
+    retrieve_json_mock.side_effect = gem_mocks.mock_retrieve_json
+    retrieve_headers_mock.side_effect = gem_mocks._mock_retrieve_headers
     test_obs_id = 'GS-2006B-Q-47-76-003'
     test_f_id = 'S20070130S0048'
     test_f_name = f'{test_f_id}.fits'
     test_config.change_working_directory(tmp_path.as_posix())
     test_config.proxy_file_name = 'test_proxy.pem'
-    orig_cwd = os.getcwd()
-    try:
-        os.chdir(tmp_path)
-        test_config.write_to_file(test_config)
+    test_config.write_to_file(test_config)
 
-        with open(test_config.work_fqn, 'w') as f:
-            f.write(f'{test_f_name}\n')
+    with open(test_config.work_fqn, 'w') as f:
+        f.write(f'{test_f_name}\n')
 
-        with open(test_config.proxy_fqn, 'w') as f:
-            f.write('test content')
+    with open(test_config.proxy_fqn, 'w') as f:
+        f.write('test content')
 
-        # execution
-        composable._run()
-        assert run_mock.called, 'should have been called'
-        args, kwargs = run_mock.call_args
-        test_storage = args[0]
-        assert isinstance(test_storage, gem_name.GemName), type(test_storage)
-        assert test_storage.obs_id == test_obs_id, 'wrong obs id'
-        assert test_storage.file_name == test_f_name, 'wrong file name'
-    finally:
-        os.chdir(orig_cwd)
+    # execution
+    composable._run()
+    assert run_mock.called, 'should have been called'
+    args, kwargs = run_mock.call_args
+    test_storage = args[0]
+    assert isinstance(test_storage, gem_name.GemName), type(test_storage)
+    assert test_storage.obs_id == test_obs_id, 'wrong obs id'
+    assert test_storage.file_name == test_f_name, 'wrong file name'
 
 
+@patch('gem2caom2.gemini_metadata.retrieve_headers')
 @patch('gem2caom2.gemini_metadata.retrieve_json')
-@patch('caom2pipe.client_composable.ClientCollection.data_client')
-@patch('cadcutils.net.ws.WsCapabilities.get_access_url')
+@patch('gem2caom2.composable.GemClientCollection')
 @patch('caom2pipe.execute_composable.OrganizeExecutes.do_one')
-def test_run_errors(run_mock, cap_mock, data_client_mock, json_mock, test_config, tmp_path, change_test_dir):
-    cap_mock.return_value = 'https://localhost'
-    data_client_mock.get_head.side_effect = gem_mocks._mock_get_head
-    data_client_mock.info.side_effect = gem_mocks.mock_get_file_info
+def test_run_errors(run_mock, clients_mock, json_mock, headers_mock, test_config, tmp_path, change_test_dir):
+    clients_mock.data_client.get_head.side_effect = gem_mocks._mock_get_head
+    clients_mock.data_client.info.side_effect = gem_mocks.mock_get_file_info
     json_mock.side_effect = gem_mocks.mock_retrieve_json
+    headers_mock.side_effect = gem_mocks._mock_retrieve_headers
     test_obs_id = 'GS-CAL20141226-7-029'
     test_f_id = 'S20141226S0206'
     test_f_name = f'{test_f_id}.fits'
@@ -160,9 +154,9 @@ def test_run_errors(run_mock, cap_mock, data_client_mock, json_mock, test_config
     assert test_storage.file_name == test_f_name, 'wrong file name'
 
 
-@patch('gem2caom2.gemini_metadata.GeminiMetadataReader._retrieve_headers')
+@patch('gem2caom2.composable.GemClientCollection')
+@patch('gem2caom2.gemini_metadata.retrieve_headers')
 @patch('gem2caom2.gemini_metadata.retrieve_json')
-@patch('cadcutils.net.ws.WsCapabilities.get_access_url')
 @patch('caom2pipe.execute_composable.OrganizeExecutes.do_one')
 @patch('caom2pipe.manage_composable.query_endpoint_session')
 @patch('caom2pipe.client_composable.query_tap_client')
@@ -170,18 +164,17 @@ def test_run_incremental_rc(
     tap_mock,
     query_mock,
     run_mock,
-    cap_mock,
     json_mock,
     header_mock,
+    clients_mock,
     test_config,
     tmp_path,
     change_test_dir,
 ):
-    cap_mock.return_value = 'https://localhost'
     query_mock.side_effect = gem_mocks.mock_query_endpoint_2
     tap_mock.side_effect = gem_mocks.mock_query_tap
     json_mock.side_effect = gem_mocks.mock_retrieve_json
-    header_mock.side_effect = gem_mocks._mock_headers
+    header_mock.side_effect = gem_mocks._mock_retrieve_headers
 
     test_config.change_working_directory(tmp_path)
     test_config.proxy_file_name = 'testproxy.pem'
@@ -191,9 +184,7 @@ def test_run_incremental_rc(
 
     _write_state(
         prior_timestamp='2021-01-01 20:03:00.000000',
-        end_timestamp=datetime(
-            year=2021, month=1, day=4, hour=23, minute=3, second=0
-        ),
+        end_timestamp=datetime(year=2021, month=1, day=4, hour=23, minute=3, second=0),
         fqn=test_config.state_fqn,
     )
     composable._run_state()
@@ -207,42 +198,31 @@ def test_run_incremental_rc(
     assert test_storage.file_id == f'{test_fid}', 'wrong file_id'
 
 
-@patch('gem2caom2.gemini_metadata.GeminiMetadataReader._retrieve_headers')
+@patch('gem2caom2.gemini_metadata.retrieve_headers')
 @patch('gem2caom2.gemini_metadata.retrieve_json')
-@patch('cadcutils.net.ws.WsCapabilities.get_access_url')
 @patch('caom2pipe.execute_composable.OrganizeExecutes.do_one')
-@patch('caom2pipe.client_composable.CAOM2RepoClient')
-@patch('caom2pipe.client_composable.StorageClientWrapper')
+@patch('gem2caom2.composable.GemClientCollection')
 @patch('caom2pipe.manage_composable.read_obs_from_file')
 @patch('caom2pipe.manage_composable.query_endpoint_session')
 def test_run_by_incremental2(
     query_mock,
     read_mock,
-    data_client_mock,
-    repo_mock,
+    clients_mock,
     exec_mock,
-    cap_mock,
     json_mock,
     header_mock,
 ):
-    cap_mock.return_value = 'https://localhost'
-    data_client_mock.return_value.info.side_effect = (
-        gem_mocks.mock_get_file_info
-    )
-    data_client_mock.return_value.get.side_effect = Mock()
+    clients_mock.data_client.return_value.info.side_effect = gem_mocks.mock_get_file_info
+    clients_mock.data_client.return_value.get.side_effect = Mock()
     exec_mock.return_value = 0
-    repo_mock.return_value.create.side_effect = gem_mocks.mock_repo_create
-    repo_mock.return_value.read.side_effect = gem_mocks.mock_repo_read
-    repo_mock.return_value.update.side_effect = gem_mocks.mock_repo_update
+    clients_mock.metadata_client.create.side_effect = gem_mocks.mock_repo_create
+    clients_mock.metadata_client.side_effect = gem_mocks.mock_repo_read
+    clients_mock.metadata_client.update.side_effect = gem_mocks.mock_repo_update
     json_mock.side_effect = gem_mocks.mock_retrieve_json
-    header_mock.side_effect = gem_mocks._mock_headers
+    header_mock.side_effect = gem_mocks._mock_retrieve_headers
 
     def _read_mock(ignore_fqn):
-        return SimpleObservation(
-            collection='TEST',
-            observation_id='TEST_OBS_ID',
-            algorithm=Algorithm('exposure'),
-        )
+        return SimpleObservation(collection='TEST', observation_id='TEST_OBS_ID', algorithm=Algorithm('exposure'))
 
     read_mock.side_effect = _read_mock
 
@@ -336,34 +316,24 @@ def test_run_by_incremental2(
     finally:
         os.getcwd = getcwd_orig
 
-    # assert repo_mock.return_value.create.called, 'create not called'
-    # assert repo_mock.return_value.read.called, 'read not called'
     assert exec_mock.called, 'exec mock not called'
     assert not (
-        data_client_mock.return_value.info.called
+        clients_mock.data_client.return_value.info.called
     ), 'data client mock get file info should not be not called'
     assert query_mock.called, 'query mock not called'
 
 
-@patch('caom2pipe.client_composable.ClientCollection.data_client')
-@patch('gem2caom2.gemini_metadata.GeminiMetadataReader._retrieve_headers')
-@patch('gem2caom2.gemini_metadata.retrieve_json')
-@patch('cadcutils.net.ws.WsCapabilities.get_access_url')
-@patch('caom2pipe.execute_composable.OrganizeExecutes.do_one')
 @patch('caom2pipe.client_composable.query_tap_client')
-@patch('caom2pipe.client_composable.CadcTapClient')
-def test_run_by_public(
-    ds_mock, tap_mock, exec_mock, cap_mock, json_mock, header_mock, client_mock
-):
-    cap_mock.return_value = 'https://localhost'
+@patch('gem2caom2.composable.GemClientCollection')
+@patch('gem2caom2.gemini_metadata.retrieve_headers')
+@patch('gem2caom2.gemini_metadata.retrieve_json')
+@patch('caom2pipe.execute_composable.OrganizeExecutes.do_one')
+def test_run_by_public(exec_mock, json_mock, header_mock, clients_mock, query_mock):
     exec_mock.side_effect = Mock(return_value=0)
-    tap_mock.side_effect = gem_mocks.mock_query_tap
+    query_mock.side_effect = gem_mocks.mock_query_tap
     json_mock.side_effect = gem_mocks.mock_retrieve_json
-    header_mock.side_effect = gem_mocks._mock_headers
-    expected_fqn = (
-        f'{gem_mocks.TEST_DATA_DIR}/logs/'
-        f'{gem_mocks.TEST_BUILDER_OBS_ID}.expected.xml'
-    )
+    header_mock.side_effect = gem_mocks._mock_retrieve_headers
+    expected_fqn = f'{gem_mocks.TEST_DATA_DIR}/logs/{gem_mocks.TEST_BUILDER_OBS_ID}.expected.xml'
     if not os.path.exists(expected_fqn):
         shutil.copy(f'{gem_mocks.TEST_DATA_DIR}/expected.xml', expected_fqn)
 
@@ -380,13 +350,11 @@ def test_run_by_public(
             test_result = composable._run_by_public()
             assert test_result == 0, 'wrong result'
     except Exception as e:
-        import logging
-        import traceback
-
         logging.error(traceback.format_exc())
     finally:
         os.getcwd = getcwd_orig
 
+    assert query_mock.called, 'tap mock not called'
     assert exec_mock.called, 'exec mock not called'
     args, kwargs = exec_mock.call_args
     test_storage = args[0]
@@ -394,38 +362,6 @@ def test_run_by_public(
     assert test_storage.obs_id == 'GN-2019B-ENG-1-160-008', 'wrong obs id'
     assert test_storage.file_name == f'{test_f_id}.fits', 'wrong file_name'
     assert test_storage.file_id == test_f_id, 'wrong file_id'
-    assert tap_mock.called, 'tap mock not called'
-
-
-@patch('gem2caom2.gemini_metadata.GeminiMetadataReader._retrieve_headers')
-@patch('gem2caom2.gemini_metadata.retrieve_json')
-@patch('cadcutils.net.ws.WsCapabilities.get_access_url')
-@patch('caom2pipe.execute_composable.OrganizeExecutes.do_one')
-@patch('caom2pipe.manage_composable.query_endpoint_session')
-@patch('caom2pipe.client_composable.query_tap_client')
-def test_run_by_public2(
-    tap_mock, query_mock, run_mock, cap_mock, json_mock, header_mock, test_config, tmp_path, change_test_dir
-):
-    cap_mock.return_value = 'https://localhost'
-    query_mock.side_effect = gem_mocks.mock_query_endpoint_2
-    tap_mock.side_effect = gem_mocks.mock_query_tap
-    json_mock.side_effect = gem_mocks.mock_retrieve_json
-    header_mock.side_effect = gem_mocks._mock_headers
-
-    test_config.change_working_directory(tmp_path)
-    test_config.proxy_file_name = 'testproxy.pem'
-    Config.write_to_file(test_config)
-    with open(test_config.proxy_fqn, 'w') as f:
-        f.write('test content')
-    _write_state(prior_timestamp='2020-03-06 03:22:10.787835', fqn=test_config.state_fqn)
-    composable._run_by_public()
-    assert run_mock.called, 'should have been called'
-    args, kwargs = run_mock.call_args
-    test_storage = args[0]
-    assert isinstance(test_storage, gem_name.GemName), type(test_storage)
-    assert test_storage.obs_id == 'GN-2019B-ENG-1-160-008', 'wrong obs id'
-    assert test_storage.file_name == 'N20191101S0007.fits', 'wrong file_name'
-    assert test_storage.file_id == 'N20191101S0007', 'wrong file_id'
 
 
 @patch('caom2pipe.reader_composable.MetadataReader.reset')
@@ -516,29 +452,26 @@ def test_run_by_incremental_reproduce(
         os.chdir(cwd)
 
 
+@patch('gem2caom2.gemini_metadata.retrieve_headers')
 @patch('gem2caom2.gemini_metadata.retrieve_json')
 @patch('gem2caom2.composable.GemClientCollection')
-@patch(
-    'gem2caom2.data_source.IncrementalSource.'
-    'get_time_box_work',
-    autospec=True,
-)
+@patch('gem2caom2.data_source.IncrementalSource.get_time_box_work', autospec=True)
 def test_run_state_compression_commands(
     get_work_mock,
     clients_mock,
     json_mock,
+    headers_mock,
     test_config,
     tmp_path,
     change_test_dir,
 ):
     test_config.change_working_directory(tmp_path)
 
-    # this test works with FITS files, not header-only versions of FITS
-    # files, because it's testing the decompression/recompression cycle
-    # but it's checking that the commands to the exec_cmd_array call are
-    # correct
+    # this test works with FITS files, not header-only versions of FITS files, because it's testing the
+    # decompression/recompression cycle but it's checking that the commands to the exec_cmd_array call are correct
 
     json_mock.side_effect = gem_mocks.mock_retrieve_json
+    headers_mock.side_effect = gem_mocks._mock_retrieve_headers
 
     uris = {
         'GS-2005B-SV-301-16-005': FileInfo(
@@ -551,9 +484,7 @@ def test_run_state_compression_commands(
 
     def _mock_dir_list(arg1, output_file='', data_only=True, response_format='arg4'):
         result = deque()
-        result.append(
-            StateRunnerMeta('/test_files/S20050825S0143.fits.bz2', datetime(2019, 10, 23, 16, 19))
-        )
+        result.append(StateRunnerMeta('/test_files/S20050825S0143.fits.bz2', datetime(2019, 10, 23, 16, 19)))
         return result
 
     get_work_mock.side_effect = _mock_dir_list
