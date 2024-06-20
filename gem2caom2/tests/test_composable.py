@@ -108,6 +108,7 @@ def test_run(run_mock, clients_mock, retrieve_json_mock, retrieve_headers_mock, 
     test_f_name = f'{test_f_id}.fits'
     test_config.change_working_directory(tmp_path.as_posix())
     test_config.proxy_file_name = 'test_proxy.pem'
+    test_config.task_types = [TaskType.INGEST]
     test_config.write_to_file(test_config)
 
     with open(test_config.work_fqn, 'w') as f:
@@ -140,6 +141,7 @@ def test_run_errors(run_mock, clients_mock, json_mock, headers_mock, test_config
     test_f_name = f'{test_f_id}.fits'
     test_config.change_working_directory(tmp_path)
     test_config.proxy_file_name = 'testproxy.pem'
+    test_config.task_types = [TaskType.INGEST]
     Config.write_to_file(test_config)
     with open(test_config.proxy_fqn, 'w') as f:
         f.write('test content')
@@ -178,6 +180,7 @@ def test_run_incremental_rc(
 
     test_config.change_working_directory(tmp_path)
     test_config.proxy_file_name = 'testproxy.pem'
+    test_config.task_types = [TaskType.INGEST]
     Config.write_to_file(test_config)
     with open(test_config.proxy_fqn, 'w') as f:
         f.write('test content')
@@ -214,7 +217,7 @@ def test_run_by_incremental2(
 ):
     clients_mock.data_client.return_value.info.side_effect = gem_mocks.mock_get_file_info
     clients_mock.data_client.return_value.get.side_effect = Mock()
-    exec_mock.return_value = 0
+    exec_mock.return_value = (0, None)
     clients_mock.metadata_client.create.side_effect = gem_mocks.mock_repo_create
     clients_mock.metadata_client.side_effect = gem_mocks.mock_repo_read
     clients_mock.metadata_client.update.side_effect = gem_mocks.mock_repo_update
@@ -302,7 +305,7 @@ def test_run_by_incremental2(
     query_result.json = _query_mock
     query_mock.return_value = query_result
 
-    exec_mock.return_value = 0
+    exec_mock.return_value = (0, None)
 
     _write_cert()
     prior_s = datetime.now(tz=timezone.utc).timestamp() - 60
@@ -547,14 +550,14 @@ def test_run_state_compression_commands(
 
 @patch('caom2pipe.manage_composable.ExecutionSummary', autospec=True)
 @patch('cadcutils.net.ws.WsCapabilities.get_access_url')
-@patch('caom2pipe.execute_composable.OrganizeExecutes.do_one')
-def test_run_is_valid_fails(run_mock, cap_mock, summary_mock, test_config, tmp_path):
+def test_run_is_valid_fails(cap_mock, summary_mock, test_config, tmp_path):
     summary_mock.return_value.report.return_value = 'msg'
     cap_mock.return_value = 'https://localhost'
     test_f_id = ' N20220601S0052_ql_image'
     test_f_name = f'{test_f_id}.fits'
     test_config.change_working_directory(tmp_path.as_posix())
     test_config.proxy_file_name = 'test_proxy.pem'
+    test_config.task_types = [TaskType.INGEST]
     orig_cwd = os.getcwd()
     try:
         os.chdir(tmp_path)
@@ -569,7 +572,6 @@ def test_run_is_valid_fails(run_mock, cap_mock, summary_mock, test_config, tmp_p
         # execution
         test_result = composable._run()
         assert test_result == -1, 'expect failure'
-        assert not run_mock.called, 'should have been called'
         assert summary_mock.return_value.add_errors.called
         assert summary_mock.return_value.add_errors.call_count == 1
         assert summary_mock.return_value.add_rejections.called
@@ -579,11 +581,6 @@ def test_run_is_valid_fails(run_mock, cap_mock, summary_mock, test_config, tmp_p
         summary_mock.return_value.add_entries.assert_called_with(1)
     finally:
         os.chdir(orig_cwd)
-
-
-def _write_todo(test_id):
-    with open(TODO_FILE, 'w') as f:
-        f.write(f'{test_id}\n')
 
 
 def _write_state(prior_timestamp=None, end_timestamp=None, fqn=STATE_FILE):
@@ -617,11 +614,6 @@ def _write_state(prior_timestamp=None, end_timestamp=None, fqn=STATE_FILE):
             },
         }
     write_as_yaml(test_bookmark, fqn)
-
-
-def _write_rejected(test_obs_id):
-    content = {'bad_metadata': [test_obs_id]}
-    write_as_yaml(content, REJECTED_FILE)
 
 
 def _write_cert():

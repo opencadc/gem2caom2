@@ -125,7 +125,6 @@ class GemOrganizeExecutes(OrganizeExecutes):
             metadata_reader,
             clients,
             observable,
-            reporter,
         ):
         super().__init__(
             config,
@@ -137,7 +136,6 @@ class GemOrganizeExecutes(OrganizeExecutes):
             metadata_reader,
             clients,
             observable,
-            reporter,
         )
 
     def can_use_single_visit(self):
