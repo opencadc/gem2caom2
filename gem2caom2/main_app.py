@@ -280,7 +280,6 @@ class GeminiMapping(cc.TelescopeMapping):
     def get_data_product_type(self, ext):
         mode = self._lookup.mode(self._storage_name.file_uri)
         obs_type = self._lookup.observation_type(self._storage_name.file_uri)
-
         if mode is None:
             raise mc.CadcException(
                 f'{self._instrument}: No mode information found for '
@@ -2157,7 +2156,13 @@ class GHOSTSpectralTemporal(GeminiMapping):
             chunk.time.axis.function is not None and
             chunk.time.axis.function.ref_coord is not None
         ):
-            chunk.time.axis.function.ref_coord.val = self._lookup.max_exputend(self._storage_name.file_uri)
+            temp = self._lookup.max_exputend(self._storage_name.file_uri)
+            if temp:
+                chunk.time.axis.function.ref_coord.val = temp
+            else:
+                self._logger.warning(f'Missing EXPUTEND. Set time to None for {self._storage_name.file_uri}.')
+                chunk.time = None
+                chunk.time_axis = None
 
 
 class GHOSTSpatialSpectralTemporal(GHOSTSpectralTemporal):

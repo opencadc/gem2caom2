@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+
+<title>Detail for Program: GS-2024A-LP-106</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-2024A-LP-106</h1>
+
+<table>
+ <tr><td>Title:<td>Exploring the Diversity of Exoplanet Atmospheres at High Spectral Resolution</tr>
+ <tr><td>PI:<td>Jake Turner</tr>
+ <tr><td>Co-I(s):<td> Andrew Ridden-Harper,  Ryan Macdonald,  Ray Jayawardhana,  Miranda Herman,  Emily Deibert,  Jonathan Fortney,  David Sing,  Drake Deming,  David Lafreniere,  Matteo Brogi,  Romain Allart,  Ernst de Mooij,  Luca Fossati</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+Following over two decades of discoveries, we now have a substantial sample of exoplanets that can be characterized in detail with current facilities, enabling the emerging field of comparative exoplanetology. Studies of hot Jupiters at low spectral resolution have revealed a rich diversity of planetary atmospheres that range from cloudy to cloud-free, and exhibit scattering slopes from aerosols and absorption features from species such as Na, K, and TiO. Our proposal will advance the field by carrying out the first comparative study of exoplanet atmospheres at high spectral resolution with Gemini-N/GRACES.  High-spectral-resolution observations are emerging as a particularly powerful and robust probe of exoplanetary atmospheres. The use of high-resolution spectroscopy, where we can uniquely identify atoms and molecules, distinguishes it from other comparative studies. The proposed observations can place strong constraints on the abundances, altitudes, and local temperatures where each species forms. High-resolution observations have also been used to measure atmospheric winds, structure and planetary rotation. Additionally, the stellar line profile distortions caused by the Rossiter-Mclaughlin effect can reveal the broadband atmospheric transmission, (complementing previous low-resolution studies) and the alignment of the host star&#x27;s spin axis with the orbit of the exoplanet, providing insight into planetary formation and migration. We propose to observe 62 exoplanets for our high-spectral-resolution survey. These planets span a wide range of sizes, from 5 Neptune radii to 2.1 Jupiter radii, masses, from 0.1 Neptune mass to 4.4 Jupiter mass, and effective temperatures, from 700 to 4000 K. Our targets were chosen to maximize the explored parameter space, while also ensuring detectable signals. Significantly, our sample includes 20 exoplanets that were studied with low-resolution HST observations.  By including planets with existing HST data, we can carry out a joint analysis, which can yield much tighter constraints than analyses that treat the low- and high-resolution data sets separately.  Furthermore, our sample includes 4 planets that will be observed by JWST during Early Release Science and 6 planets to be observed with the JWST NIRISS Guaranteed Time Observations, thus enhancing the value of the JWST data. Our survey includes 49 planets with no published high-resolution observations and 31 planets for which our observations will provide the first detailed atmospheric characterizations. Our findings will address key unresolved questions, test theoretical models, and pave the way for future investigations. In summary, our proposed observations will advance our understanding of the diversity of exoplanet atmospheres in significant ways, and shed new light on how this diversity depends on the physical properties of the planets and their host stars. 
+</div>
+
+
+
+</body>
+</html>

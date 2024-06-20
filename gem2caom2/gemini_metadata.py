@@ -76,6 +76,7 @@ This module is the classes and methods that do and use the retrieval.
 
 
 import logging
+from astropy import units
 from astropy.time import TimeDelta
 from collections import deque
 from os import path
@@ -315,13 +316,15 @@ class GeminiMetadataLookup:
                         date_obs = header.get('DATE-OBS')
                         temp = header.get('EXPUTEND')
                         exputend_values.append(f'{date_obs} {temp}')
-                start = get_datetime_mjd(mc.make_datetime(exputend_values.popleft()))
-                end = get_datetime_mjd(mc.make_datetime(exputend_values.pop()))
-                if end < start:
-                    # in case the observation crosses midnight
-                    end = end + TimeDelta('1d')
-                self._max_exputend[uri] = end.value
-        return self._max_exputend[uri]
+
+                if len(exputend_values) >= 2:
+                    start = get_datetime_mjd(mc.make_datetime(exputend_values.popleft()))
+                    end = get_datetime_mjd(mc.make_datetime(exputend_values.pop()))
+                    if end < start:
+                        # in case the observation crosses midnight
+                        end = end + TimeDelta(1.0 * units.day)
+                    self._max_exputend[uri] = end.value
+        return self._max_exputend.get(uri)
 
     def mode(self, uri):
         return self._search_json(uri, 'mode')
