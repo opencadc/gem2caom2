@@ -512,3 +512,27 @@ def test_ghost_preview_augmentation(test_config, test_data_dir):
     obs = ghost_preview_augmentation.visit(obs, **kwargs)
     assert obs is not None, 'expect a result'
     assert len(obs.planes[test_f_id].artifacts) == 3, 'GHOST post-condition'
+
+
+def test_ghost_preview_augmentation_2(test_config, test_data_dir):
+    test_f_id = 'S20231208S0060'
+    obs = mc.read_obs_from_file(f'{test_data_dir}/GHOST/{test_f_id}.expected.xml')
+    test_observable = mc.Observable(test_config)
+    test_storage_name = gem_name.GemName(file_name=f'/test_files/{test_f_id}.fits')
+    test_storage_name._obs_id = 'GS-2023B-FT-104-11-001'
+    test_storage_name._destination_uris = [f'gemini:GEMINI/{test_f_id}.fits']
+    test_storage_name._product_id = test_f_id
+    test_storage_name._file_name = f'{test_f_id}.fits'
+    test_storage_name._source_names = [f'/test_files/{test_f_id}.fits']
+    kwargs = {
+        'working_directory': test_data_dir,
+        'clients': None,
+        'observable': test_observable,
+        'metadata_reader': Mock(),
+        'storage_name': test_storage_name,
+    }
+    assert len(obs.planes[test_f_id].artifacts) == 1, 'pre-condition'
+    obs.instrument = Instrument(name=util.Inst.GHOST.value)
+    obs = ghost_preview_augmentation.visit(obs, **kwargs)
+    assert obs is not None, 'expect a result'
+    assert len(obs.planes[test_f_id].artifacts) == 1, 'GHOST post-condition, there is no preview data'

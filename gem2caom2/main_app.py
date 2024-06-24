@@ -336,14 +336,12 @@ class GeminiMapping(cc.TelescopeMapping):
             # date. If no PROP_MD present or value is F use the JSON
             # ut_datetime value.
             prop_md = self._headers[ext].get('PROP_MD')
+            meta_release = None
             if prop_md is None or prop_md is False or prop_md == 'F':
-                meta_release = self._lookup.ut_datetime(
-                    self._storage_name.file_uri
-                )
-            else:
-                meta_release = self._lookup.release(
-                    self._storage_name.file_uri
-                )
+                meta_release = self._lookup.ut_datetime(self._storage_name.file_uri)
+            if meta_release is None or prop_md and prop_md == 'T' or prop_md:
+                # a late value is better than None, since that makes the Observation unfindable
+                meta_release = self._lookup.release(self._storage_name.file_uri)
         return mc.make_datetime(meta_release)
 
     def get_obs_intent(self, ext):
@@ -2179,12 +2177,6 @@ class GHOSTSpatialSpectralTemporal(GHOSTSpectralTemporal):
                 # if camera is SLITV, there's no interesting science information in the HDU
                 self._accumulate_chunk_position_axes_blueprint(bp, extension)
         self._logger.debug(f'End accumulate_blueprint')
-
-    def _reset_position(self, observation_type, artifact_type):
-        pass
-
-    def _update_position(self, part, chunk, ext):
-        pass
 
 
 class Gmos(GeminiMapping):
