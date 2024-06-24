@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+
+<title>Detail for Program: GS-2023B-FT-104</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-2023B-FT-104</h1>
+
+<table>
+ <tr><td>Title:<td>The oldest and most metal-poor remnants of the Magellanic Stellar Stream</tr>
+ <tr><td>PI:<td>Federico Sestito</tr>
+ <tr><td>Co-I(s):<td> Kim Venn,  Akshara Viswanathan,  Else Starkenburg,  Chris Hayes,  Jaclyn Jensen,  Alan McConnachie,  Simon Smith,  Camila Navarrete,  Tadafumi Matsuno,  Amanda Byström,  Manuel Bayer,  Pascale Jablonka,  Vanessa Hill,  Anke Arentsen,  Pierre Francois,  George Kordopatis</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+This proposal aims to understand the chemodynamical origin of the Magellanic Stream by studying its stellar counterpart, the Magellanic Stellar Stream (MSS). We have identified 24 high-confidence MSS member candidates, all of which have a photometric metallicity of [Fe/H]&lt;-2.4, beyond the influence of the Magellanic Clouds. Among them, we select 5 targets to confirm their membership across a large portion of the MSS (100 degree range in longitude), a wide range in photmetric metallicity and magnitudes. We require GHOST observations to obtain precise radial velocities and metallicities from the Calcium triplet region. We will confirm their association with the radial velocities and precise metallicity. These data will refine our understanding of galactic interactions, dark matter distribution, and formation sites of the oldest stripped stars from the Clouds. Success ensures an exceptionally fruitful return on telescope time investment, surpassing many other searches for extremely metal-poor and distant (&gt;50 kpc) halo tracers linked to the Magellanic Clouds. Further investigations will be proposed with GHOST. In case these candidates prove to be members of the MSS, we will discover the large extension of this stream in the rare low-metallicity regime. Alternatively, if these are Milky Way stars, it will still be an interesting result since it is extremely rare to find such old, distant and metal-poor objects, likely relics of a past accretion event. 
+</div>
+
+
+
+</body>
+</html>

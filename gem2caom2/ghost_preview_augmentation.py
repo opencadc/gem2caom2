@@ -113,27 +113,32 @@ class GHOSTPreviews(PreviewVisitor):
         # Not very elegant, but the image arrays need to be combined to create a final large, 2D image for both
         # channels. They are then 'flip'ed appropriately so that short wavelengths are at the top of each image
         # Note:  this assumes that the order of each image extension does not change!
-        red_image1 = np.concatenate((red_data[0], red_data[1]), axis=1)
-        red_image2 = np.concatenate((red_data[3], red_data[2]), axis=1)
-        red_image = np.concatenate((red_image1, red_image2), axis=0)
-        red_image = np.flip(red_image, axis=1)
-        blue_image1 = np.concatenate((blue_data[0], blue_data[1]), axis=1)
-        blue_image2 = np.concatenate((blue_data[3], blue_data[2]), axis=1)
-        blue_image = np.concatenate((blue_image1, blue_image2), axis=0)
-        blue_image = np.flip(blue_image)
-        fig.add_subplot(2, 1, 1)
-        plt.axis('off')
-        plt.title(f'{basename(self._science_fqn)}:   {target}\nBlue Channel')
-        plt.imshow(blue_image, cmap='Blues_r', norm=colors.LogNorm())
-        fig.add_subplot(2, 1, 2)
-        plt.axis('off')
-        plt.title(f'Red Channel')
-        plt.imshow(red_image, cmap='Reds_r', norm=colors.LogNorm())
-        plt.subplots_adjust(left=0.0, bottom=0.0, right=1.0, top=0.92, wspace=0.0, hspace=0.1)
-        plt.savefig(self._preview_fqn)
-        plt.close()
-        self._logger.debug('Finish generate_plots')
-        return self._save_figure()
+        if red_data and blue_data:
+            red_image1 = np.concatenate((red_data[0], red_data[1]), axis=1)
+            red_image2 = np.concatenate((red_data[3], red_data[2]), axis=1)
+            red_image = np.concatenate((red_image1, red_image2), axis=0)
+            red_image = np.flip(red_image, axis=1)
+            blue_image1 = np.concatenate((blue_data[0], blue_data[1]), axis=1)
+            blue_image2 = np.concatenate((blue_data[3], blue_data[2]), axis=1)
+            blue_image = np.concatenate((blue_image1, blue_image2), axis=0)
+            blue_image = np.flip(blue_image)
+            fig.add_subplot(2, 1, 1)
+            plt.axis('off')
+            plt.title(f'{basename(self._science_fqn)}:   {target}\nBlue Channel')
+            plt.imshow(blue_image, cmap='Blues_r', norm=colors.LogNorm())
+            fig.add_subplot(2, 1, 2)
+            plt.axis('off')
+            plt.title(f'Red Channel')
+            plt.imshow(red_image, cmap='Reds_r', norm=colors.LogNorm())
+            plt.subplots_adjust(left=0.0, bottom=0.0, right=1.0, top=0.92, wspace=0.0, hspace=0.1)
+            plt.savefig(self._preview_fqn)
+            plt.close()
+            self._logger.debug('Finish generate_plots')
+            return self._save_figure()
+        else:
+            self._logger.warning(f'Found no image metadata for {self._storage_name.file_uri}')
+            return 0
+
 
 
 def visit(observation, **kwargs):
