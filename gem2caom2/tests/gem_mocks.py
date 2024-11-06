@@ -775,6 +775,19 @@ def mock_query_endpoint_reproduce(url, timeout=-1):
     return result
 
 
+def mock_query_endpoint_4(url, timeout=-1):
+    # returns response.text
+    result = Object()
+    result.text = None
+
+    if url.startswith('https://archive.gemini.edu/diskfiles'):
+        with open(f'{TEST_DATA_DIR}/diskfiles_mock/gemini_out.html') as f:
+            result.text = f.read()
+    else:
+        raise Exception(f'wut {url} count {call_count}')
+    return result
+
+
 def mock_session_get_not_found(url):
     # returns json via response.text, depending on url
     result = Object()

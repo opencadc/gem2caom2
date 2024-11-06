@@ -66,13 +66,13 @@
 # ***********************************************************************
 #
 
-from datetime import datetime, timezone
+from datetime import datetime
 from mock import call, Mock, patch
-from gem2caom2 import data_source
+from gem2caom2 import data_source, gemini_metadata
 import gem_mocks
 
 
-@patch('caom2pipe.manage_composable.query_endpoint_session')
+@patch('gem2caom2.data_source.query_endpoint_session')
 def test_incremental_source(query_mock, test_config):
     # https://archive.gemini.edu/jsonsummary/canonical/entrytimedaterange=
     # 2021-01-01T20:03:00.000000%202021-01-01T22:13:00.000000/
@@ -110,7 +110,7 @@ def test_incremental_source(query_mock, test_config):
     test_reporter.capture_todo.assert_has_calls([call(2, 0, 0), call(0, 0, 0)])
 
 
-@patch('caom2pipe.manage_composable.query_endpoint_session')
+@patch('gem2caom2.data_source.query_endpoint_session')
 def test_incremental_source_reproduce(query_mock, test_config):
     # https://archive.gemini.edu/jsonsummary/canonical/NotFail/notengineering/
     # entrytimedaterange=
@@ -131,3 +131,38 @@ def test_incremental_source_reproduce(query_mock, test_config):
     assert test_reporter.capture_todo.called, 'capture_todo'
     assert test_reporter.capture_todo.call_count == 1, 'wrong number of capture_todo calls'
     test_reporter.capture_todo.assert_called_with(2, 0, 0), 'wrong capture_todo args'
+
+
+@patch('gem2caom2.data_source.query_endpoint_session')
+def test_diskfiles_incremental_source(query_mock, test_config):
+    # https://archive.gemini.edu/diskfiles/entrytimedaterange=<start date>--<end date>
+    # get results
+    query_mock.side_effect = gem_mocks.mock_query_endpoint_4
+
+    test_data_client = Mock()
+    test_http_session = Mock()
+    test_provenance_finder = Mock()
+    test_filter_cache = Mock()
+    test_reader = gemini_metadata.WaitForJsonReader(
+        test_data_client, test_http_session, test_provenance_finder, test_filter_cache
+    )
+    test_subject = data_source.IncrementalSourceDiskfiles(test_config, reader=test_reader)
+    assert test_subject is not None, 'expect construction success'
+    test_reporter = Mock()
+    test_subject.reporter = test_reporter
+
+    prev_exec_time = datetime(year=2021, month=1, day=1, hour=20, minute=3, second=0)
+    exec_time = datetime(year=2021, month=1, day=1, hour=22, minute=13, second=0)
+
+    test_result = test_subject.get_time_box_work(prev_exec_time, exec_time)
+    assert test_result is not None, 'expect a result'
+    assert len(test_result) == 16, 'wrong number of results'
+    test_first_entry = test_result.popleft()
+    assert test_first_entry.entry_name == 'S20241030S0188.fits', 'wrong first file'
+    assert test_first_entry.entry_dt == datetime(2024, 10, 30, 10, 51, 37, 360130), 'wrong fits datetime'
+    test_last_entry = test_result.pop()
+    assert test_last_entry.entry_name == 'S20241030S0203.fits', 'wrong 2nd file'
+    assert test_last_entry.entry_dt == datetime(2024, 10, 30, 10, 54, 45, 941860), 'wrong last datetime'
+    assert test_reporter.capture_todo.called, 'capture_todo'
+    assert test_reporter.capture_todo.call_count == 1, 'wrong number of capture_todo calls'
+    test_reporter.capture_todo.assert_called_with(16, 0, 0)
