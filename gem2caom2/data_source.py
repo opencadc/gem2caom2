@@ -79,7 +79,7 @@ from caom2pipe.manage_composable import StorageName
 __all__ = ['GEM_BOOKMARK', 'IncrementalSource', 'PublicIncremental']
 
 GEM_BOOKMARK = 'gemini_timestamp'
-
+MAX_ENTRIES = 500
 
 class IncrementalSource(dsc.IncrementalDataSource):
     """Implements the identification of the work to be done, by querying
@@ -150,7 +150,7 @@ class IncrementalSource(dsc.IncrementalDataSource):
         finally:
             if response is not None:
                 response.close()
-        if len(entries) == 10000:
+        if len(entries) == MAX_ENTRIES:
             self._max_records_encountered = True
             self._encounter_start = prev_exec_dt
             self._encounter_end = exec_dt
@@ -283,7 +283,7 @@ class IncrementalSourceDiskfiles(dsc.IncrementalDataSource):
         finally:
             if response is not None:
                 response.close()
-        if len(entries) == 10000:
+        if len(entries) == MAX_ENTRIES:
             self._max_records_encountered = True
             self._encounter_start = prev_exec_dt
             self._encounter_end = exec_dt
