@@ -2,7 +2,7 @@
 # ******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
 # *************  CENTRE CANADIEN DE DONNÉES ASTRONOMIQUES  **************
 #
-#  (c) 2019.                            (c) 2019.
+#  (c) 2024.                            (c) 2024.
 #  Government of Canada                 Gouvernement du Canada
 #  National Research Council            Conseil national de recherches
 #  Ottawa, Canada, K1A 0R6              Ottawa, Canada, K1A 0R6
@@ -772,6 +772,19 @@ def mock_query_endpoint_reproduce(url, timeout=-1):
 
     result = Object()
     result.json = x
+    return result
+
+
+def mock_query_endpoint_4(url, timeout=-1):
+    # returns response.text
+    result = Object()
+    result.text = None
+
+    if url.startswith('https://archive.gemini.edu/diskfiles'):
+        with open(f'{TEST_DATA_DIR}/diskfiles_mock/gemini_out.html') as f:
+            result.text = f.read()
+    else:
+        raise Exception(f'wut {url} count {call_count}')
     return result
 
 

@@ -2,7 +2,7 @@
 # ******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
 # *************  CENTRE CANADIEN DE DONNÉES ASTRONOMIQUES  **************
 #
-#  (c) 2022.                            (c) 2022.
+#  (c) 2024.                            (c) 2024.
 #  Government of Canada                 Gouvernement du Canada
 #  National Research Council            Conseil national de recherches
 #  Ottawa, Canada, K1A 0R6              Ottawa, Canada, K1A 0R6
@@ -252,6 +252,31 @@ class GeminiStorageClientReader(
                     self._headers[entry] = []
         self._logger.debug('End set_headers')
 
+
+class FileInfoBeforeJsonReader(GeminiStorageClientReader):
+    """The general use of the "Reader" classes is for keeping FileInfo and header metadata in memory for quick access.
+    For Gemini, there is additional header metadata that is retrieved from archive.gemini.edu as a JSON record. The
+    other Gemini-specific Reader specializations are all written with the assumption that the JSON record, which
+    contains all the FileInfo metadata, is queried and received before all other metadata. Using the "diskfiles"
+    endpoint for incremental harvesting breaks that assumption. The purpose of the method add_file_info_html_record is
+    to assist the IncrementalSourceDiskfiles class in data_source.py with handling that broken assumption."""
+
+    def __init__(self, data_client, http_session, provenance_finder, filter_cache):
+        super().__init__(data_client, http_session, provenance_finder, filter_cache)
+
+    def add_file_info_html_record(self, uri, html_record):
+        """add_json_record has not been successfully called"""
+        if uri not in self._file_info.keys():
+            self._file_info[uri] = FileInfo(
+                id=uri,
+                size=html_record.get('data_size'),
+                name=html_record.get('filename'),
+                md5sum=html_record.get('data_md5'),
+                lastmod=mc.make_datetime(html_record.get('lastmod')),
+                file_type=data_util.get_file_type(html_record.get('filename')),
+                encoding=data_util.get_file_encoding(html_record.get('filename')),
+            )
+            self._logger.debug(f'Adding FileInfo for {uri}')
 
 class GeminiMetadataLookup:
     def __init__(self, metadata_reader):

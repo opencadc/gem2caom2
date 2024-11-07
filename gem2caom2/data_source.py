@@ -2,7 +2,7 @@
 # ******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
 # *************  CENTRE CANADIEN DE DONNÉES ASTRONOMIQUES  **************
 #
-#  (c) 2020.                            (c) 2020.
+#  (c) 2024.                            (c) 2024.
 #  Government of Canada                 Gouvernement du Canada
 #  National Research Council            Conseil national de recherches
 #  Ottawa, Canada, K1A 0R6              Ottawa, Canada, K1A 0R6
@@ -66,12 +66,14 @@
 # ***********************************************************************
 #
 
-from collections import deque
+from bs4 import BeautifulSoup
+from collections import defaultdict, deque, OrderedDict
 from datetime import datetime
 
 from caom2pipe import client_composable as clc
 from caom2pipe import data_source_composable as dsc
-from caom2pipe import manage_composable as mc
+from caom2pipe.manage_composable import build_uri, CaomName, ISO_8601_FORMAT, make_datetime, query_endpoint_session
+from caom2pipe.manage_composable import StorageName
 
 
 __all__ = ['GEM_BOOKMARK', 'IncrementalSource', 'PublicIncremental']
@@ -109,8 +111,8 @@ class IncrementalSource(dsc.IncrementalDataSource):
 
         self._logger.debug(f'Begin get_time_box_work from {prev_exec_dt} to {exec_dt}.')
         # datetime format 2019-12-01T00:00:00.000000
-        prev_dt_str = prev_exec_dt.strftime(mc.ISO_8601_FORMAT)
-        exec_dt_str = exec_dt.strftime(mc.ISO_8601_FORMAT)
+        prev_dt_str = prev_exec_dt.strftime(ISO_8601_FORMAT)
+        exec_dt_str = exec_dt.strftime(ISO_8601_FORMAT)
         url = (
             f'https://archive.gemini.edu/jsonsummary/canonical/'
             f'NotFail/notengineering/'
@@ -123,7 +125,7 @@ class IncrementalSource(dsc.IncrementalDataSource):
         entries = deque()
         response = None
         try:
-            response = mc.query_endpoint_session(url, self._session)
+            response = query_endpoint_session(url, self._session)
             if response is None:
                 self._logger.warning(f'Could not query {url}.')
             else:
@@ -137,9 +139,9 @@ class IncrementalSource(dsc.IncrementalDataSource):
                     else:
                         for entry in metadata:
                             file_name = entry.get('name')
-                            entry_dt = mc.make_datetime(entry.get('entrytime'))
+                            entry_dt = make_datetime(entry.get('entrytime'))
                             entries.append(dsc.StateRunnerMeta(file_name, entry_dt))
-                            uri = mc.build_uri(mc.StorageName.collection, file_name, mc.StorageName.scheme)
+                            uri = build_uri(StorageName.collection, file_name, StorageName.scheme)
                             # all the other cases where add_json_record is
                             # called, there's a list as input, so conform to
                             # that typing here
@@ -186,8 +188,8 @@ class PublicIncremental(dsc.QueryTimeBoxDataSource):
         """
         self._logger.debug('Begin get_time_box_work')
         # datetime format 2019-12-01T00:00:00.000000
-        prev_dt_str = prev_exec_dt.strftime(mc.ISO_8601_FORMAT)
-        exec_dt_str = exec_dt.strftime(mc.ISO_8601_FORMAT)
+        prev_dt_str = prev_exec_dt.strftime(ISO_8601_FORMAT)
+        exec_dt_str = exec_dt.strftime(ISO_8601_FORMAT)
         query = (
             f"SELECT A.uri, A.lastModified "
             f"FROM caom2.Observation AS O "
@@ -213,8 +215,106 @@ class PublicIncremental(dsc.QueryTimeBoxDataSource):
         entries = deque()
         for row in result:
             entries.append(
-                dsc.StateRunnerMeta(mc.CaomName(row['uri']).file_name, mc.make_datetime(row['lastModified']))
+                dsc.StateRunnerMeta(CaomName(row['uri']).file_name, make_datetime(row['lastModified']))
             )
         self._reporter.capture_todo(len(entries), 0, 0)
         self._logger.debug('End get_time_box_work')
         return entries
+
+
+class IncrementalSourceDiskfiles(dsc.IncrementalDataSource):
+    """Implements the identification of the work to be done, by querying archive.gemini.edu's incremental diskfiles
+    endpoint, in time-boxed chunks.
+
+    OO - email 21-04-21
+    entrytime is when the DB record behind the JSON being displayed was created.
+    """
+
+    def __init__(self, config, reader):
+        super().__init__(config, start_key=GEM_BOOKMARK)
+        self._max_records_encountered = False
+        self._encounter_start = None
+        self._encounter_end = None
+        self._session = reader._session
+        self._metadata_reader = reader
+
+    def _initialize_end_dt(self):
+        self._end_dt = datetime.now()
+
+    def get_time_box_work(self, prev_exec_dt, exec_dt):
+        """
+        :param prev_exec_dt datetime start of the time-boxed chunk
+        :param exec_dt datetime end of the time-boxed chunk
+        :return: a deque of file names with time their associated JSON (DB) records were modified from
+            archive.gemini.edu.
+        """
+
+        self._logger.debug(f'Begin get_time_box_work from {prev_exec_dt} to {exec_dt}.')
+        # datetime format 2019-12-01T00:00:00 => no microseconds in the url
+        prev_exec_dt_iso = prev_exec_dt.replace(microsecond=0)
+        exec_dt_iso = exec_dt.replace(microsecond=0)
+        url = f'https://archive.gemini.edu/diskfiles/entrytimedaterange={prev_exec_dt_iso.isoformat()}--{exec_dt_iso.isoformat()}'
+
+        # needs to be ordered by timestamps when processed
+        self._logger.info(f'Querying {url}')
+        entries = deque()
+        response = None
+        try:
+            response = query_endpoint_session(url, self._session)
+            if response is None:
+                self._logger.warning(f'Could not query {url}.')
+            else:
+                # x is a dict, sorted by the key
+                # key is the timestamp
+                # value is the html meta that comes back, also in a dict
+                metadata = self._parse_diskfiles_response(response.text)
+                response.close()
+                if len(metadata) == 0:
+                    self._logger.warning(
+                        f'No query results returned for interval from {prev_exec_dt} to {exec_dt}.'
+                    )
+                else:
+                    for entry_dt, values  in metadata.items():
+                        for value in values:
+                            file_name = value.get('filename')
+                            entries.append(dsc.StateRunnerMeta(file_name, entry_dt))
+                            uri = build_uri(StorageName.collection, file_name, StorageName.scheme)
+                            self._metadata_reader.add_file_info_html_record(uri, value)
+        finally:
+            if response is not None:
+                response.close()
+        if len(entries) == 10000:
+            self._max_records_encountered = True
+            self._encounter_start = prev_exec_dt
+            self._encounter_end = exec_dt
+        self._reporter.capture_todo(len(entries), 0, 0)
+        self._logger.debug('End get_time_box_work.')
+        return entries
+
+    def _parse_diskfiles_response(self, html_string):
+        temp = defaultdict(list)
+        soup = BeautifulSoup(html_string, features='lxml')
+        rows = soup.find_all('tr', {'class':'alternating'})
+        for row in rows:
+            cells = row.find_all('td')
+            entry_time = make_datetime(cells[5].text.strip())  # what the https query is keyed on
+            value = {
+                'filename': cells[0].text.strip(),
+                'datalabel': cells[1].text.strip(),
+                'instrument': cells[2].text.strip(),
+                'lastmod': make_datetime(cells[6].text.strip()),
+                'data_size': cells[10].text.strip(),
+                'data_md5': cells[11].text.strip(),
+            }
+            temp[entry_time].append(value)
+        result = OrderedDict(sorted(temp.items()))
+        return result
+
+    @property
+    def max_records_encountered(self):
+        if self._max_records_encountered:
+            self._logger.error(
+                f'Max records window {self._encounter_start} to '
+                f'{self._encounter_end}.'
+            )
+        return self._max_records_encountered

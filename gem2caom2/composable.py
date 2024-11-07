@@ -2,7 +2,7 @@
 # ******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
 # *************  CENTRE CANADIEN DE DONNÉES ASTRONOMIQUES  **************
 #
-#  (c) 2018.                            (c) 2018.
+#  (c) 2024.                            (c) 2024.
 #  Government of Canada                 Gouvernement du Canada
 #  National Research Council            Conseil national de recherches
 #  Ottawa, Canada, K1A 0R6              Ottawa, Canada, K1A 0R6
@@ -309,6 +309,67 @@ def _run_state():
 def run_state():
     try:
         result = _run_state()
+        sys.exit(result)
+    except Exception as e:
+        logging.error(e)
+        tb = traceback.format_exc()
+        logging.debug(tb)
+        sys.exit(-1)
+
+
+def _run_incremental_diskfiles():
+    """Run incremental processing for observations that are posted on the site archive.gemini.edu. This depends on
+    the diskfiles query endpoint.
+
+    :return 0 if successful, -1 if there's any sort of failure.
+    """
+    config = mc.Config()
+    config.get_executors()
+    mc.StorageName.collection = config.collection
+    mc.StorageName.scheme = config.scheme
+    mc.StorageName.preview_scheme = config.preview_scheme
+    clients = GemClientCollection(config)
+    meta_visitors = META_VISITORS
+    gemini_session = mc.get_endpoint_session()
+    provenance_finder = gemini_metadata.ProvenanceFinder(config, clients.query_client, gemini_session)
+    svofps_session = mc.get_endpoint_session()
+    filter_cache = svofps.FilterMetadataCache(svofps_session)
+    clients.gemini_session = gemini_session
+    clients.svo_session = svofps_session
+    metadata_reader = gemini_metadata.FileInfoBeforeJsonReader(
+        clients.data_client, gemini_session, provenance_finder, filter_cache
+        )
+    reader_lookup = gemini_metadata.GeminiMetadataLookup(metadata_reader)
+    reader_lookup.reader = metadata_reader
+    name_builder = builder.GemObsIDBuilder(config, metadata_reader, reader_lookup)
+    incremental_source = data_source.IncrementalSourceDiskfiles(config, metadata_reader)
+    result = rc.run_by_state(
+        config=config,
+        name_builder=name_builder,
+        meta_visitors=meta_visitors,
+        data_visitors=DATA_VISITORS,
+        sources=[incremental_source],
+        clients=clients,
+        metadata_reader=metadata_reader,
+        organizer_module_name='gem2caom2.composable',
+        organizer_class_name='GemOrganizeExecutes',
+    )
+    if incremental_source.max_records_encountered:
+        # There's a currently 10k limit on the number of records returned from the archive.gemini.edu endpoints.
+        # As of this writing, if that limit is encountered, the ingestion requires manual intervention to recover.
+        # As opposed to stopping the incremental ingestion with a time-box where it will just continually fail
+        # with this same error, which is what raising the exception would do, the app notifies Ops via the log
+        # message, and then carries on, so as to more efficiently process large numbers of inputs.
+        logging.warning('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+        logging.warning('Encountered maximum records!!')
+        logging.warning('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+        result |= -1
+    return result
+
+
+def run_incremental_diskfiles():
+    try:
+        result = _run_incremental_diskfiles()
         sys.exit(result)
     except Exception as e:
         logging.error(e)

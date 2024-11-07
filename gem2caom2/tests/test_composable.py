@@ -2,7 +2,7 @@
 # ******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
 # *************  CENTRE CANADIEN DE DONNÉES ASTRONOMIQUES  **************
 #
-#  (c) 2019.                            (c) 2019.
+#  (c) 2024.                            (c) 2024.
 #  Government of Canada                 Gouvernement du Canada
 #  National Research Council            Conseil national de recherches
 #  Ottawa, Canada, K1A 0R6              Ottawa, Canada, K1A 0R6
@@ -117,6 +117,8 @@ def test_run(run_mock, clients_mock, retrieve_json_mock, retrieve_headers_mock, 
     with open(test_config.proxy_fqn, 'w') as f:
         f.write('test content')
 
+    run_mock.return_value = (0, None)
+
     # execution
     composable._run()
     assert run_mock.called, 'should have been called'
@@ -147,6 +149,7 @@ def test_run_errors(run_mock, clients_mock, json_mock, headers_mock, test_config
         f.write('test content')
     with open(test_config.work_fqn, 'w') as f:
         f.write(f'{test_f_name}\n')
+    run_mock.return_value = (0, None)
     composable._run()
     assert run_mock.called, 'should have been called'
     args, kwargs = run_mock.call_args
@@ -160,7 +163,7 @@ def test_run_errors(run_mock, clients_mock, json_mock, headers_mock, test_config
 @patch('gem2caom2.gemini_metadata.retrieve_headers')
 @patch('gem2caom2.gemini_metadata.retrieve_json')
 @patch('caom2pipe.execute_composable.OrganizeExecutes.do_one')
-@patch('caom2pipe.manage_composable.query_endpoint_session')
+@patch('gem2caom2.data_source.query_endpoint_session')
 @patch('caom2pipe.client_composable.query_tap_client')
 def test_run_incremental_rc(
     tap_mock,
@@ -190,6 +193,7 @@ def test_run_incremental_rc(
         end_timestamp=datetime(year=2021, month=1, day=4, hour=23, minute=3, second=0),
         fqn=test_config.state_fqn,
     )
+    run_mock.return_value = (0, None)
     composable._run_state()
     assert run_mock.called, 'run_mock should have been called'
     args, kwargs = run_mock.call_args
@@ -206,7 +210,7 @@ def test_run_incremental_rc(
 @patch('caom2pipe.execute_composable.OrganizeExecutes.do_one')
 @patch('gem2caom2.composable.GemClientCollection')
 @patch('caom2pipe.manage_composable.read_obs_from_file')
-@patch('caom2pipe.manage_composable.query_endpoint_session')
+@patch('gem2caom2.data_source.query_endpoint_session')
 def test_run_by_incremental2(
     query_mock,
     read_mock,
@@ -374,7 +378,7 @@ def test_run_by_public(exec_mock, json_mock, header_mock, clients_mock, query_mo
 @patch('caom2pipe.client_composable.ClientCollection.metadata_client')
 @patch('caom2pipe.client_composable.ClientCollection.data_client')
 @patch('gem2caom2.gemini_metadata.retrieve_headers')
-@patch('caom2pipe.manage_composable.query_endpoint_session')
+@patch('gem2caom2.data_source.query_endpoint_session')
 @patch('cadcutils.net.ws.WsCapabilities.get_access_url')
 def test_run_by_incremental_reproduce(
     access_mock,
@@ -581,6 +585,55 @@ def test_run_is_valid_fails(cap_mock, summary_mock, test_config, tmp_path):
         summary_mock.return_value.add_entries.assert_called_with(1)
     finally:
         os.chdir(orig_cwd)
+
+
+@patch('gem2caom2.composable.GemClientCollection')
+@patch('gem2caom2.gemini_metadata.retrieve_headers')
+@patch('gem2caom2.gemini_metadata.retrieve_json')
+@patch('caom2pipe.execute_composable.OrganizeExecutes.do_one')
+@patch('gem2caom2.data_source.query_endpoint_session')
+@patch('caom2pipe.client_composable.query_tap_client')
+def test_run_incremental_diskfiles(
+    tap_mock,
+    query_mock,
+    run_mock,
+    json_mock,
+    header_mock,
+    clients_mock,
+    test_config,
+    tmp_path,
+    change_test_dir,
+):
+    query_mock.side_effect = gem_mocks.mock_query_endpoint_4
+    tap_mock.side_effect = gem_mocks.mock_query_tap
+    json_mock.side_effect = gem_mocks.mock_retrieve_json
+    header_mock.side_effect = gem_mocks._mock_retrieve_headers
+
+    test_config.change_working_directory(tmp_path)
+    test_config.proxy_file_name = 'testproxy.pem'
+    test_config.task_types = [TaskType.INGEST]
+    test_config.interval = 28800
+    Config.write_to_file(test_config)
+    with open(test_config.proxy_fqn, 'w') as f:
+        f.write('test content')
+
+    _write_state(
+        prior_timestamp='2024-10-20 20:03:00.000000',
+        end_timestamp=datetime(year=2024, month=11, day=1, hour=23, minute=3, second=0),
+        fqn=test_config.state_fqn,
+    )
+
+    run_mock.return_value = (0, None)
+
+    composable._run_incremental_diskfiles()
+    assert run_mock.called, 'run_mock should have been called'
+    args, kwargs = run_mock.call_args
+    test_storage = args[0]
+    assert isinstance(test_storage, gem_name.GemName), type(test_storage)
+    assert test_storage.obs_id == 'test_data_label', 'wrong obs id'
+    test_fid = 'S20241030S0203'
+    assert test_storage.file_name == f'{test_fid}.fits', 'wrong file_name'
+    assert test_storage.file_id == f'{test_fid}', 'wrong file_id'
 
 
 def _write_state(prior_timestamp=None, end_timestamp=None, fqn=STATE_FILE):
