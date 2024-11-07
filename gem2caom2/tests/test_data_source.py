@@ -2,7 +2,7 @@
 # ******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
 # *************  CENTRE CANADIEN DE DONNÉES ASTRONOMIQUES  **************
 #
-#  (c) 2021.                            (c) 2021.
+#  (c) 2024.                            (c) 2024.
 #  Government of Canada                 Gouvernement du Canada
 #  National Research Council            Conseil national de recherches
 #  Ottawa, Canada, K1A 0R6              Ottawa, Canada, K1A 0R6
@@ -143,7 +143,7 @@ def test_diskfiles_incremental_source(query_mock, test_config):
     test_http_session = Mock()
     test_provenance_finder = Mock()
     test_filter_cache = Mock()
-    test_reader = gemini_metadata.WaitForJsonReader(
+    test_reader = gemini_metadata.FileInfoBeforeJsonReader(
         test_data_client, test_http_session, test_provenance_finder, test_filter_cache
     )
     test_subject = data_source.IncrementalSourceDiskfiles(test_config, reader=test_reader)

@@ -2,7 +2,7 @@
 # ******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
 # *************  CENTRE CANADIEN DE DONNÉES ASTRONOMIQUES  **************
 #
-#  (c) 2018.                            (c) 2018.
+#  (c) 2024.                            (c) 2024.
 #  Government of Canada                 Gouvernement du Canada
 #  National Research Council            Conseil national de recherches
 #  Ottawa, Canada, K1A 0R6              Ottawa, Canada, K1A 0R6
@@ -336,7 +336,7 @@ def _run_incremental_diskfiles():
     filter_cache = svofps.FilterMetadataCache(svofps_session)
     clients.gemini_session = gemini_session
     clients.svo_session = svofps_session
-    metadata_reader = gemini_metadata.WaitForJsonReader(
+    metadata_reader = gemini_metadata.FileInfoBeforeJsonReader(
         clients.data_client, gemini_session, provenance_finder, filter_cache
         )
     reader_lookup = gemini_metadata.GeminiMetadataLookup(metadata_reader)
@@ -355,6 +355,11 @@ def _run_incremental_diskfiles():
         organizer_class_name='GemOrganizeExecutes',
     )
     if incremental_source.max_records_encountered:
+        # There's a currently 10k limit on the number of records returned from the archive.gemini.edu endpoints.
+        # As of this writing, if that limit is encountered, the ingestion requires manual intervention to recover.
+        # As opposed to stopping the incremental ingestion with a time-box where it will just continually fail
+        # with this same error, which is what raising the exception would do, the app notifies Ops via the log
+        # message, and then carries on, so as to more efficiently process large numbers of inputs.
         logging.warning('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
         logging.warning('Encountered maximum records!!')
         logging.warning('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')

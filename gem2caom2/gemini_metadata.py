@@ -2,7 +2,7 @@
 # ******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
 # *************  CENTRE CANADIEN DE DONNÉES ASTRONOMIQUES  **************
 #
-#  (c) 2022.                            (c) 2022.
+#  (c) 2024.                            (c) 2024.
 #  Government of Canada                 Gouvernement du Canada
 #  National Research Council            Conseil national de recherches
 #  Ottawa, Canada, K1A 0R6              Ottawa, Canada, K1A 0R6
@@ -253,7 +253,13 @@ class GeminiStorageClientReader(
         self._logger.debug('End set_headers')
 
 
-class WaitForJsonReader(GeminiStorageClientReader):
+class FileInfoBeforeJsonReader(GeminiStorageClientReader):
+    """The general use of the "Reader" classes is for keeping FileInfo and header metadata in memory for quick access.
+    For Gemini, there is additional header metadata that is retrieved from archive.gemini.edu as a JSON record. The
+    other Gemini-specific Reader specializations are all written with the assumption that the JSON record, which
+    contains all the FileInfo metadata, is queried and received before all other metadata. Using the "diskfiles"
+    endpoint for incremental harvesting breaks that assumption. The purpose of the method add_file_info_html_record is
+    to assist the IncrementalSourceDiskfiles class in data_source.py with handling that broken assumption."""
 
     def __init__(self, data_client, http_session, provenance_finder, filter_cache):
         super().__init__(data_client, http_session, provenance_finder, filter_cache)
