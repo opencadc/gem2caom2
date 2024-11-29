@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # ***********************************************************************
 # ******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
 # *************  CENTRE CANADIEN DE DONNÉES ASTRONOMIQUES  **************
@@ -80,7 +79,7 @@ import gem_mocks
 @patch('gem2caom2.gemini_metadata.GeminiMetadataReader._retrieve_headers')
 @patch('gem2caom2.gemini_metadata.GeminiMetadataReader._retrieve_json')
 def test_builder(file_info_mock, header_mock, test_config):
-    file_info_mock.side_effect = gem_mocks.mock_get_obs_metadata
+    file_info_mock.side_effect = gem_mocks.mock_get_obs_metadata_37
 
     test_config.working_directory = '/test_files'
     test_config.proxy_fqn = os.path.join(

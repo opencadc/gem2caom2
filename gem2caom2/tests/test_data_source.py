@@ -68,7 +68,8 @@
 
 from datetime import datetime
 from mock import call, Mock, patch
-from gem2caom2 import data_source, gemini_metadata
+from gem2caom2 import data_source
+from gem2caom2.gem_name import GemName
 import gem_mocks
 
 
@@ -139,14 +140,8 @@ def test_diskfiles_incremental_source(query_mock, test_config):
     # get results
     query_mock.side_effect = gem_mocks.mock_query_endpoint_4
 
-    test_data_client = Mock()
     test_http_session = Mock()
-    test_provenance_finder = Mock()
-    test_filter_cache = Mock()
-    test_reader = gemini_metadata.FileInfoBeforeJsonReader(
-        test_data_client, test_http_session, test_provenance_finder, test_filter_cache
-    )
-    test_subject = data_source.IncrementalSourceDiskfiles(test_config, reader=test_reader)
+    test_subject = data_source.IncrementalSourceDiskfiles(test_config, test_http_session, GemName, Mock())
     assert test_subject is not None, 'expect construction success'
     test_reporter = Mock()
     test_subject.reporter = test_reporter
@@ -158,10 +153,39 @@ def test_diskfiles_incremental_source(query_mock, test_config):
     assert test_result is not None, 'expect a result'
     assert len(test_result) == 16, 'wrong number of results'
     test_first_entry = test_result.popleft()
-    assert test_first_entry.entry_name == 'S20241030S0188.fits', 'wrong first file'
+    assert test_first_entry.storage_entry.file_name == 'S20241030S0188.fits', 'wrong first file'
     assert test_first_entry.entry_dt == datetime(2024, 10, 30, 10, 51, 37, 360130), 'wrong fits datetime'
     test_last_entry = test_result.pop()
-    assert test_last_entry.entry_name == 'S20241030S0203.fits', 'wrong 2nd file'
+    assert test_last_entry.storage_entry.file_name == 'S20241030S0203.fits', 'wrong 2nd file'
+    assert test_last_entry.entry_dt == datetime(2024, 10, 30, 10, 54, 45, 941860), 'wrong last datetime'
+    assert test_reporter.capture_todo.called, 'capture_todo'
+    assert test_reporter.capture_todo.call_count == 1, 'wrong number of capture_todo calls'
+    test_reporter.capture_todo.assert_called_with(16, 0, 0)
+
+
+@patch('gem2caom2.data_source.query_endpoint_session')
+def test_diskfiles_incremental_source_limit(query_mock, test_config):
+    # https://archive.gemini.edu/diskfiles/entrytimedaterange=<start date>--<end date>
+    # get results
+    query_mock.side_effect = gem_mocks.mock_query_endpoint_5
+
+    test_http_session = Mock()
+    test_subject = data_source.IncrementalSourceDiskfiles(test_config, test_http_session, GemName, Mock())
+    assert test_subject is not None, 'expect construction success'
+    test_reporter = Mock()
+    test_subject.reporter = test_reporter
+
+    prev_exec_time = datetime(year=2021, month=1, day=1, hour=20, minute=3, second=0)
+    exec_time = datetime(year=2021, month=1, day=1, hour=22, minute=13, second=0)
+
+    test_result = test_subject.get_time_box_work(prev_exec_time, exec_time)
+    assert test_result is not None, 'expect a result'
+    assert len(test_result) == 16, 'wrong number of results'
+    test_first_entry = test_result.popleft()
+    assert test_first_entry.storage_entry.file_name == 'S20241030S0188.fits', 'wrong first file'
+    assert test_first_entry.entry_dt == datetime(2024, 10, 30, 10, 51, 37, 360130), 'wrong fits datetime'
+    test_last_entry = test_result.pop()
+    assert test_last_entry.storage_entry.file_name == 'S20241030S0203.fits', 'wrong 2nd file'
     assert test_last_entry.entry_dt == datetime(2024, 10, 30, 10, 54, 45, 941860), 'wrong last datetime'
     assert test_reporter.capture_todo.called, 'capture_todo'
     assert test_reporter.capture_todo.call_count == 1, 'wrong number of capture_todo calls'

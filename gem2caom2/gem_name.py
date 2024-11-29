@@ -66,6 +66,8 @@
 # ***********************************************************************
 #
 
+from os.path import basename
+
 from caom2pipe import manage_composable as mc
 
 from gem2caom2.obs_file_relationship import remove_extensions
@@ -145,10 +147,21 @@ class GemName(mc.StorageName):
     def __init__(
         self,
         file_name=None,
+        filter_cache=None,
     ):
-        super().__init__(file_name=file_name.replace('.header', ''))
+        super().__init__(file_name=basename(file_name.replace('.header', '')))
         # use the file id because the extension doesn't help much in the archive.gemini.edu URL
         self._source_names = [self._file_id]
+        self._json_metadata = {}
+        self._filter_cache = filter_cache
+
+    @property
+    def json_metadata(self):
+        return self._json_metadata
+
+    @property
+    def name(self):
+        return self._file_id
 
     @property
     def prev(self):

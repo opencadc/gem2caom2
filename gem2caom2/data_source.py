@@ -230,13 +230,14 @@ class IncrementalSourceDiskfiles(dsc.IncrementalDataSource):
     entrytime is when the DB record behind the JSON being displayed was created.
     """
 
-    def __init__(self, config, reader):
+    def __init__(self, config, gemini_session, storage_name_ctor, filter_cache):
         super().__init__(config, start_key=GEM_BOOKMARK)
         self._max_records_encountered = False
         self._encounter_start = None
         self._encounter_end = None
-        self._session = reader._session
-        self._metadata_reader = reader
+        self._session = gemini_session
+        self._storage_name_ctor = storage_name_ctor
+        self._filter_cache = filter_cache
 
     def _initialize_end_dt(self):
         self._end_dt = datetime.now()
@@ -250,10 +251,14 @@ class IncrementalSourceDiskfiles(dsc.IncrementalDataSource):
         """
 
         self._logger.debug(f'Begin get_time_box_work from {prev_exec_dt} to {exec_dt}.')
+        self._max_records_encountered = False
         # datetime format 2019-12-01T00:00:00 => no microseconds in the url
         prev_exec_dt_iso = prev_exec_dt.replace(microsecond=0)
         exec_dt_iso = exec_dt.replace(microsecond=0)
-        url = f'https://archive.gemini.edu/diskfiles/entrytimedaterange={prev_exec_dt_iso.isoformat()}--{exec_dt_iso.isoformat()}'
+        url = (
+            f'https://archive.gemini.edu/diskfiles/entrytimedaterange='
+            f'{prev_exec_dt_iso.isoformat()}--{exec_dt_iso.isoformat()}'
+        )
 
         # needs to be ordered by timestamps when processed
         self._logger.info(f'Querying {url}')
@@ -277,13 +282,14 @@ class IncrementalSourceDiskfiles(dsc.IncrementalDataSource):
                     for entry_dt, values  in metadata.items():
                         for value in values:
                             file_name = value.get('filename')
-                            entries.append(dsc.StateRunnerMeta(file_name, entry_dt))
-                            uri = build_uri(StorageName.collection, file_name, StorageName.scheme)
-                            self._metadata_reader.add_file_info_html_record(uri, value)
+                            storage_name = self._storage_name_ctor(file_name, self._filter_cache)
+                            storage_name.file_info[storage_name.destination_uris[0]] = value
+                            entries.append(dsc.RunnerMeta(storage_name, entry_dt))
         finally:
             if response is not None:
                 response.close()
         if len(entries) == MAX_ENTRIES:
+            self._logger.error(f'Max records window {self._encounter_start} to {self._encounter_end}.')
             self._max_records_encountered = True
             self._encounter_start = prev_exec_dt
             self._encounter_end = exec_dt
@@ -310,11 +316,5 @@ class IncrementalSourceDiskfiles(dsc.IncrementalDataSource):
         result = OrderedDict(sorted(temp.items()))
         return result
 
-    @property
     def max_records_encountered(self):
-        if self._max_records_encountered:
-            self._logger.error(
-                f'Max records window {self._encounter_start} to '
-                f'{self._encounter_end}.'
-            )
         return self._max_records_encountered

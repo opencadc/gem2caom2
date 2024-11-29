@@ -76,7 +76,7 @@ from astropy.io.fits import Header
 from collections import deque
 from datetime import datetime, timedelta, timezone
 from traceback import format_exc
-from unittest.mock import call, patch, Mock, PropertyMock
+from unittest.mock import ANY, call, patch, Mock, PropertyMock
 import gem_mocks
 
 from cadcdata import FileInfo
@@ -532,7 +532,7 @@ def test_run_state_compression_commands(
     ), 'put call count, no previews because it is just a STORE task'
     put_calls = [
         call(
-            f'{tmp_path.as_posix()}/GS-2005B-SV-301-16-005',
+            f'{tmp_path.as_posix()}/S20050825S0143',
             f'{test_config.scheme}:{test_config.collection}/S20050825S0143.fits',
         ),
     ]
@@ -590,13 +590,11 @@ def test_run_is_valid_fails(cap_mock, summary_mock, test_config, tmp_path):
 @patch('gem2caom2.composable.GemClientCollection')
 @patch('gem2caom2.gemini_metadata.retrieve_headers')
 @patch('gem2caom2.gemini_metadata.retrieve_json')
-@patch('caom2pipe.execute_composable.OrganizeExecutes.do_one')
 @patch('gem2caom2.data_source.query_endpoint_session')
 @patch('caom2pipe.client_composable.query_tap_client')
 def test_run_incremental_diskfiles(
     tap_mock,
     query_mock,
-    run_mock,
     json_mock,
     header_mock,
     clients_mock,
@@ -607,7 +605,8 @@ def test_run_incremental_diskfiles(
     query_mock.side_effect = gem_mocks.mock_query_endpoint_4
     tap_mock.side_effect = gem_mocks.mock_query_tap
     json_mock.side_effect = gem_mocks.mock_retrieve_json
-    header_mock.side_effect = gem_mocks._mock_retrieve_headers
+    header_mock.side_effect = gem_mocks._mock_retrieve_headers_37
+    clients_mock.return_value.metadata_client.read.side_effect = gem_mocks.read_mock_37
 
     test_config.change_working_directory(tmp_path)
     test_config.proxy_file_name = 'testproxy.pem'
@@ -623,17 +622,73 @@ def test_run_incremental_diskfiles(
         fqn=test_config.state_fqn,
     )
 
-    run_mock.return_value = (0, None)
+    test_result = composable._run_incremental_diskfiles()
+    assert test_result is not None, 'expect result'
+    assert test_result == -1, 'expect failure, no metadata mocking results set up'
+    assert not clients_mock.return_value.data_client.put.called, 'data put called'
+    # 16 is the number of records processed
+    assert clients_mock.return_value.metadata_client.read.called, 'meta read called'
+    assert clients_mock.return_value.metadata_client.read.call_count == 16, 'meta read count'
+    assert not clients_mock.return_value.metadata_client.update.called, 'meta update called'
+    assert not tap_mock.called, 'tap called'
+    assert query_mock.called, 'query endpoint session called'
+    # https://archive.gemini.edu/diskfiles/entrytimedaterange=2024-10-20T20:03:00--2024-11-01T23:03:00
+    assert query_mock.call_count == 1, 'query endpoint session count'
+    assert json_mock.called, 'json mock called'
+    assert json_mock.call_count == 16, 'json mock count'
+    assert header_mock.called, 'header mock called'
+    assert header_mock.call_count == 16, 'header mock count'
 
-    composable._run_incremental_diskfiles()
-    assert run_mock.called, 'run_mock should have been called'
-    args, kwargs = run_mock.call_args
-    test_storage = args[0]
-    assert isinstance(test_storage, gem_name.GemName), type(test_storage)
-    assert test_storage.obs_id == 'test_data_label', 'wrong obs id'
-    test_fid = 'S20241030S0203'
-    assert test_storage.file_name == f'{test_fid}.fits', 'wrong file_name'
-    assert test_storage.file_id == f'{test_fid}', 'wrong file_id'
+
+
+
+@patch('gem2caom2.gemini_metadata.GeminiOrganizeExecutesRunnerMeta.do_one')
+@patch('gem2caom2.composable.GemClientCollection')
+@patch('gem2caom2.data_source.query_endpoint_session')
+@patch('caom2pipe.client_composable.query_tap_client')
+def test_run_incremental_diskfiles_limit(
+    tap_mock,
+    query_mock,
+    clients_mock,
+    do_one_mock,
+    test_config,
+    tmp_path,
+    change_test_dir,
+):
+    query_mock.side_effect = gem_mocks.mock_query_endpoint_5
+    tap_mock.side_effect = gem_mocks.mock_query_tap
+    clients_mock.return_value.metadata_client.read.side_effect = gem_mocks.read_mock_37
+    do_one_mock.return_value = (0, None)
+
+    test_config.change_working_directory(tmp_path)
+    test_config.proxy_file_name = 'testproxy.pem'
+    test_config.task_types = [TaskType.INGEST]
+    test_config.interval = 60
+    test_config.logging_level = 'WARNING'
+    Config.write_to_file(test_config)
+    with open(test_config.proxy_fqn, 'w') as f:
+        f.write('test content')
+
+    _write_state(
+        prior_timestamp='2024-08-28 17:05:00.000000',
+        end_timestamp=datetime(year=2024, month=8, day=28, hour=18, minute=5, second=0),
+        fqn=test_config.state_fqn,
+    )
+
+    test_result = composable._run_incremental_diskfiles()
+    assert test_result is not None, 'expect result'
+    assert test_result == 0, 'expect success'
+    assert query_mock.called, 'query endpoint session called'
+    # https://archive.gemini.edu/diskfiles/entrytimedaterange=2024-10-20T20:03:00--2024-11-01T23:03:00
+    assert query_mock.call_count == 2, 'query endpoint session count'
+    query_mock.assert_has_calls([
+        call('https://archive.gemini.edu/diskfiles/entrytimedaterange=2024-08-28T17:05:00--2024-08-28T18:05:00', ANY),
+        call('https://archive.gemini.edu/diskfiles/entrytimedaterange=2024-08-28T17:07:32--2024-08-28T18:05:00', ANY),
+    ])
+    assert not clients_mock.return_value.data_client.put.called, 'data put called'
+    assert not clients_mock.return_value.metadata_client.read.called, 'meta read called'
+    assert not clients_mock.return_value.metadata_client.update.called, 'meta update called'
+    assert not tap_mock.called, 'tap called'
 
 
 def _write_state(prior_timestamp=None, end_timestamp=None, fqn=STATE_FILE):

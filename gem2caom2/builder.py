@@ -111,11 +111,11 @@ class GemObsIDBuilder(nbc.StorageNameBuilder):
                     or self._config.use_local_files
                 ):
                     self._logger.debug(f'Using entry for source.')
-                    result = gem_name.GemName(file_name=f_name)
+                    result = gem_name.GemName(file_name=f_name, filter_cache=self._metadata_reader.filter_cache)
                     result.source_names = [entry]
                 elif '.fits' in entry or '.jpg' in entry:
                     self._logger.debug('Using file_id for source.')
-                    result = gem_name.GemName(file_name=f_name)
+                    result = gem_name.GemName(file_name=f_name, filter_cache=self._metadata_reader.filter_cache)
                     result.source_names = [result.file_id]
                 elif '.fits' not in entry and '.jpg' not in entry:
                     # this case exists so that retries.txt entries are
@@ -129,7 +129,9 @@ class GemObsIDBuilder(nbc.StorageNameBuilder):
                         'entry might be file_id, try a made-up name.'
                     )
                     made_up_file_name = f'{entry}.fits'
-                    result = gem_name.GemName(file_name=made_up_file_name)
+                    result = gem_name.GemName(
+                        file_name=made_up_file_name, filter_cache=self._metadata_reader.filter_cache
+                    )
                     result.source_names = [result.file_id]
                 self._metadata_reader.set(result)
                 # StorageName instance is only partially constructed at this
@@ -139,5 +141,5 @@ class GemObsIDBuilder(nbc.StorageNameBuilder):
             return result
         except Exception as e:
             self._logger.error(e)
-            self._logger.debug(traceback.format_exc())
+            self._logger.error(traceback.format_exc())
             raise mc.CadcException(e)

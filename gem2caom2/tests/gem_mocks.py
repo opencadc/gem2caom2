@@ -86,8 +86,9 @@ from caom2.diff import get_differences
 from caom2pipe import astro_composable as ac
 from caom2pipe import manage_composable as mc
 from caom2pipe.run_composable import set_logging
+from caom2utils.data_util import get_local_file_headers
 
-from gem2caom2 import data_source, obs_file_relationship, builder, svofps
+from gem2caom2 import data_source, obs_file_relationship, svofps
 from gem2caom2 import gemini_metadata, fits2caom2_augmentation
 from gem2caom2.gem_name import GemName
 from gem2caom2.util import Inst
@@ -622,10 +623,10 @@ def mock_get_file_info(file_id):
 
 
 def mock_retrieve_json(source_name, ign1, ign2):
-    return mock_get_obs_metadata(source_name)
+    return mock_get_obs_metadata(source_name, ign1, ign2)
 
 
-def mock_get_obs_metadata(file_id):
+def mock_get_obs_metadata(file_id, ignore1, ignore2):
     file_id = obs_file_relationship.remove_extensions(file_id.split('/')[-1])
     try:
         fname = f'{TEST_DATA_DIR}/json/{file_id}.json'
@@ -652,10 +653,14 @@ def mock_get_obs_metadata(file_id):
         logging.error(tb)
 
 
+def mock_get_obs_metadata_37(file_id):
+    return mock_get_obs_metadata(file_id, None, None)
+
+
 def mock_get_data_label(uri):
     ignore_scheme, ignore_collection, f_name = mc.decompose_uri(uri)
     file_id = GemName.remove_extensions(f_name)
-    temp = mock_get_obs_metadata(file_id)
+    temp = mock_get_obs_metadata(file_id, None, None)
     result = None
     for ii in temp:
         y = obs_file_relationship.remove_extensions(ii.get('filename'))
@@ -788,6 +793,17 @@ def mock_query_endpoint_4(url, timeout=-1):
     return result
 
 
+def mock_query_endpoint_5(url, timeout=-1):
+    # returns response.text
+    result = Object()
+    result.text = '<title>x</title>'
+
+    if url.startswith('https://archive.gemini.edu/diskfiles/entrytimedaterange=2024-08-28T17:05:00'):
+        with open(f'{TEST_DATA_DIR}/diskfiles_mock/query_limit.html') as f:
+            result.text = f.read()
+    return result
+
+
 def mock_session_get_not_found(url):
     # returns json via response.text, depending on url
     result = Object()
@@ -856,18 +872,24 @@ def mock_repo_update(ignore1):
 
 
 def compare(expected_fqn, actual_fqn, observation):
-    try:
-        expected = mc.read_obs_from_file(expected_fqn)
-        compare_result = get_differences(expected, observation)
-    except Exception as e:
-        mc.write_obs_to_file(observation, actual_fqn)
-        assert False, f'{e}'
-    if compare_result is not None:
-        mc.write_obs_to_file(observation, actual_fqn)
-        compare_text = '\n'.join([r for r in compare_result])
-        raise AssertionError(
-            f'Differences found in observation {expected.observation_id}\n{compare_text}.\nCheck {actual_fqn}'
-        )
+    if observation:
+        if os.path.exists(expected_fqn):
+            expected = mc.read_obs_from_file(expected_fqn)
+            try:
+                compare_result = get_differences(expected, observation)
+            except Exception as e:
+                mc.write_obs_to_file(observation, actual_fqn)
+                assert False, f'{e}'
+            if compare_result is not None:
+                mc.write_obs_to_file(observation, actual_fqn)
+                compare_text = '\n'.join([r for r in compare_result])
+                raise AssertionError(
+                    f'Differences found in observation {expected.observation_id}\n{compare_text}.\nCheck {actual_fqn}'
+                )
+        else:
+            raise AssertionError(f'No expected observation here {expected_fqn}. See actual here {actual_fqn}')
+    else:
+        raise AssertionError(f'No observation created for comparison with {expected_fqn}')
 
 
 def _query_mock_none(ignore1, ignore2):
@@ -948,8 +970,19 @@ def _mock_retrieve_headers(mock_name, ign1, ign2):
     return _mock_headers(mock_name, mock_name)
 
 
+def _mock_retrieve_headers_37(mock_name, ign1, ign2, ignore3):
+    return _mock_headers(mock_name, mock_name)
+
+
 def _mock_get_head(file_id):
     return _mock_headers(file_id, file_id)
+
+
+from caom2 import Algorithm, SimpleObservation
+
+
+def read_mock_37(collection, obs_id):
+    return SimpleObservation(collection='OMM', observation_id='test_obs_id', algorithm=Algorithm(name='exposure'))
 
 
 class MockFileReader(gemini_metadata.GeminiFileMetadataReader):
@@ -967,6 +1000,7 @@ def _run_test_common(
     get_pi_mock,
     svofps_mock,
     pf_mock,
+    header_mock,
     json_mock,
     file_type_mock,
     test_set,
@@ -977,66 +1011,66 @@ def _run_test_common(
     warnings.simplefilter('ignore', AstropyWarning)
     get_pi_mock.side_effect = mock_get_pi_metadata
     svofps_mock.side_effect = mock_get_votable
-    pf_mock.get.side_effect = mock_get_data_label
+    pf_mock.return_value.get.side_effect = mock_get_data_label
     json_mock.side_effect = mock_get_obs_metadata
     file_type_mock.return_value = 'application/fits'
 
-    orig_cwd = os.getcwd()
-    try:
-        os.chdir(tmp_path)
-        test_config.task_types = [mc.TaskType.SCRAPE]
-        test_config.use_local_files = True
-        test_config.data_sources = data_sources
-        test_config.change_working_directory(tmp_path.as_posix())
-        test_config.proxy_file_name = 'test_proxy.pem'
-        test_config.logging_level = 'ERROR'
-        test_config.write_to_file(test_config)
-        set_logging(test_config)
+    test_config.task_types = [mc.TaskType.SCRAPE]
+    test_config.use_local_files = True
+    test_config.log_to_file = True  # set the xml creation location
+    test_config.data_sources = data_sources
+    test_config.change_working_directory(tmp_path.as_posix())
+    test_config.proxy_file_name = 'test_proxy.pem'
+    test_config.logging_level = 'ERROR'
+    test_config.write_to_file(test_config)
+    set_logging(test_config)
 
-        with open(test_config.proxy_fqn, 'w') as f:
-            f.write('test content')
+    with open(test_config.proxy_fqn, 'w') as f:
+        f.write('test content')
 
-        observation = None
-        in_fqn = expected_fqn.replace('.expected.', '.in.')
-        if os.path.exists(in_fqn):
-            observation = mc.read_obs_from_file(in_fqn)
-        actual_fqn = expected_fqn.replace('expected', 'actual')
-        if os.path.exists(actual_fqn):
-            os.unlink(actual_fqn)
+    observation = None
+    in_fqn = expected_fqn.replace('.expected.', '.in.')
+    if os.path.exists(in_fqn):
+        observation = mc.read_obs_from_file(in_fqn)
+    actual_fqn = expected_fqn.replace('expected', 'actual')
+    if os.path.exists(actual_fqn):
+        os.unlink(actual_fqn)
 
-        test_observable = mc.Observable(test_config)
-        for entry in test_set:
-            filter_cache = svofps.FilterMetadataCache(svofps_mock)
-            metadata_reader = MockFileReader(pf_mock, filter_cache)
-            test_metadata = gemini_metadata.GeminiMetadataLookup(
-                metadata_reader
-            )
-            test_builder = builder.GemObsIDBuilder(
-                test_config, metadata_reader, test_metadata
-            )
-            storage_name = test_builder.build(entry)
-            client_mock = Mock()
-            kwargs = {
-                'storage_name': storage_name,
-                'metadata_reader': metadata_reader,
-                'clients': client_mock,
-                'observable': test_observable,
-                'config': test_config,
-            }
-            try:
-                observation = fits2caom2_augmentation.visit(observation, **kwargs)
-            except mc.CadcException as e:
-                if storage_name.file_name in ['N20220915S0113.fits', 'S20230301S0170.fits']:
-                    assert (
-                        test_observable.rejected.is_mystery_value(storage_name.file_name)
-                    ), 'expect rejected mystery value record'
-                raise e
+    test_reporter = mc.ExecutionReporter2(test_config)
+    filter_cache = svofps.FilterMetadataCache(svofps_mock)
+    clients_mock = Mock()
+    for entry in test_set:
+        storage_name = GemName(entry, filter_cache)
+        test_subject = gemini_metadata.GeminiMetaVisitRunnerMeta(
+            clients_mock, test_config, [fits2caom2_augmentation], test_reporter
+        )
 
-        compare(expected_fqn, actual_fqn, observation)
+        def _read_header_mock(ignore1, ignore2, ignore3, ignore4):
+            if 'S20210518S0022' in entry:
+                return []
+            else:
+                return get_local_file_headers(entry)
+        header_mock.side_effect = _read_header_mock
 
-        if observation.observation_id in ['GS-2022B-Q-235-137-045', 'GS-2023A-LP-103-23-017']:
-            assert test_observable.rejected.is_bad_metadata(storage_name.file_name), 'expect rejected record'
-        else:
-            assert not test_observable.rejected.is_bad_metadata(storage_name.file_name), 'expect no rejected record'
-    finally:
-        os.chdir(orig_cwd)
+        clients_mock.metadata_client.read.return_value = observation
+
+        context = {'storage_name': storage_name}
+        try:
+            test_subject.execute(context)
+        except mc.CadcException as e:
+            if storage_name.file_name in ['N20220915S0113.fits', 'S20230301S0170.fits']:
+                assert (
+                    test_reporter._observable.rejected.is_mystery_value(storage_name.file_name)
+                ), 'expect rejected mystery value record'
+            raise e
+
+    compare(expected_fqn, actual_fqn, test_subject._observation)
+
+    if test_subject._observation.observation_id in ['GS-2022B-Q-235-137-045', 'GS-2023A-LP-103-23-017']:
+        assert (
+            test_reporter._observable.rejected.is_bad_metadata(storage_name.file_name)
+        ), 'expect rejected record'
+    else:
+        assert (
+            not test_reporter._observable.rejected.is_bad_metadata(storage_name.file_name)
+        ), 'expect no rejected record'

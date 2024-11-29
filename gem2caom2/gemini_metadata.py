@@ -86,6 +86,7 @@ from cadcdata import FileInfo
 from caom2utils import data_util
 from caom2pipe.astro_composable import get_datetime_mjd
 from caom2pipe import client_composable as clc
+from caom2pipe.execute_composable import MetaVisitRunnerMeta, OrganizeExecutesRunnerMeta
 from caom2pipe import manage_composable as mc
 from caom2pipe import reader_composable as rdc
 from gem2caom2.util import Inst
@@ -201,7 +202,7 @@ class GeminiMetadataReader(AbstractGeminiMetadataReader):
         pass
 
     def _retrieve_headers(self, key, source_name):
-        self._headers[key] = retrieve_headers(source_name, self._logger, self._session)
+        self._headers[key] = retrieve_gemini_headers(source_name, self._logger, self._session)
 
     def set(self, storage_name):
         self._logger.debug(f'Begin set for {storage_name.file_name}')
@@ -244,7 +245,7 @@ class GeminiStorageClientReader(
             self._logger.info(f'{storage_name.source_names[0]} not at CADC. Checking archive.gemini.edu.')
             for idx, entry in enumerate(storage_name.source_names):
                 if '.jpg' not in entry:
-                    self._headers[storage_name.destination_uris[idx]] = retrieve_headers(
+                    self._headers[storage_name.destination_uris[idx]] = retrieve_gemini_headers(
                         path.basename(entry), self._logger, self._session
                     )
                     self._logger.debug(f'Found {entry} at archive.gemini.edu.')
@@ -277,6 +278,7 @@ class FileInfoBeforeJsonReader(GeminiStorageClientReader):
                 encoding=data_util.get_file_encoding(html_record.get('filename')),
             )
             self._logger.debug(f'Adding FileInfo for {uri}')
+
 
 class GeminiMetadataLookup:
     def __init__(self, metadata_reader):
@@ -411,13 +413,45 @@ class GeminiMetadataLookup:
                 temp = headers[1].get(lookup_key)
         return temp
 
-    @property
-    def reader(self):
-        return self._reader
 
-    @reader.setter
-    def reader(self, value):
-        self._reader = value
+class GeminiMetadataLookupStorageName(GeminiMetadataLookup):
+    def __init__(self, storage_name):
+        super().__init__(None)
+        self._storage_name = storage_name
+
+    def max_exputend(self, uri):
+        if self._max_exputend.get(uri) is None:
+            headers = self._storage_name.metadata.get(uri)
+            if headers is not None and len(headers) > 0:
+                exputend_values = deque()
+                for header in headers:
+                    if header.get('EXPUTEND') is not None:
+                        date_obs = header.get('DATE-OBS')
+                        temp = header.get('EXPUTEND')
+                        exputend_values.append(f'{date_obs} {temp}')
+
+                if len(exputend_values) >= 2:
+                    start = get_datetime_mjd(mc.make_datetime(exputend_values.popleft()))
+                    end = get_datetime_mjd(mc.make_datetime(exputend_values.pop()))
+                    if end < start:
+                        # in case the observation crosses midnight
+                        end = end + TimeDelta(1.0 * units.day)
+                    self._max_exputend[uri] = end.value
+        return self._max_exputend.get(uri)
+
+    def _search_json(self, uri, lookup_key):
+        return self._storage_name.json_metadata.get(uri).get(lookup_key)
+
+    def _search_fits(self, uri, lookup_key):
+        temp = None
+        headers = self._storage_name.metadata.get(uri)
+        if headers is not None and len(headers) > 0:
+            # if headers are None, the file is proprietary at
+            # archive.gemini.edu, and cannot be retrieved
+            temp = headers[0].get(lookup_key)
+            if temp is None and len(headers) > 1:
+                temp = headers[1].get(lookup_key)
+        return temp
 
 
 class ProvenanceFinder:
@@ -447,11 +481,12 @@ class ProvenanceFinder:
     for provenance T/F case.
     """
 
-    def __init__(self, config, tap_client, gemini_session):
+    # def __init__(self, config, tap_client, gemini_session):
+    def __init__(self, clients, config):
         self._use_local_files = config.use_local_files
         self._connected = mc.TaskType.SCRAPE not in config.task_types
-        self._tap_client = tap_client
-        self._gemini_session = gemini_session
+        self._tap_client = clients.query_client
+        self._gemini_session = clients.gemini_session
         self._data_sources = config.data_sources
         self._logger = logging.getLogger(self.__class__.__name__)
 
@@ -540,6 +575,126 @@ class ProvenanceFinder:
         return repaired_data_label
 
 
+class GeminiMetaVisitRunnerMeta(MetaVisitRunnerMeta):
+    """
+    Defines the pipeline step for Collection creation or augmentation by a visitor of metadata into CAOM.
+    """
+
+    def __init__(
+        self,
+        clients,
+        config,
+        meta_visitors,
+        reporter,
+    ):
+        super().__init__(
+            clients=clients,
+            config=config,
+            meta_visitors=meta_visitors,
+            reporter=reporter,
+        )
+
+    def _set_preconditions(self):
+        """This is probably not the best approach, but I want to think about where the optimal location for the
+        retrieve_file_info and retrieve_headers methods will be long-term. So, for the moment, use them here."""
+        self._logger.debug(f'Begin _set_preconditions for {self._storage_name.file_uri}')
+        # ask archive.gemini.edu for the information
+        for index, source_name in enumerate(self._storage_name.source_names):
+            uri = self._storage_name.destination_uris[index]
+            if uri not in self._storage_name.metadata:
+                self._storage_name.metadata[uri] = []
+                if '.fits' in uri:
+                    self._storage_name._metadata[uri] = retrieve_headers(
+                        source_name, self._logger, self._clients, self._config
+                    )
+            # TODO - is there a time when not needing archive.gemini.edu is possible?
+            if uri not in self._storage_name.json_metadata:
+                json_record = retrieve_json(source_name, self._logger, self._clients.gemini_session)
+                # json is an array of dicts, one dict per file, find the right dict
+                for jj in json_record:
+                    # choose this key, and the comparison, because the lhs can be
+                    # a file id
+                    f_name = uri.split('/')[-1]
+                    if f_name in jj.get('filename'):
+                        self._storage_name._json_metadata[uri] = jj
+                        self._logger.debug(f'Adding JSON metadata for {uri}')
+                        break
+
+                if uri not in self._storage_name.file_info:
+                    self._storage_name._file_info[uri] = FileInfo(
+                        id=uri,
+                        size=self._storage_name._json_metadata[uri].get('data_size'),
+                        name=self._storage_name._json_metadata[uri].get('filename'),
+                        md5sum=self._storage_name._json_metadata[uri].get('data_md5'),
+                        lastmod=mc.make_datetime(self._storage_name._json_metadata[uri].get('lastmod')),
+                        file_type=data_util.get_file_type(self._storage_name._json_metadata[uri].get('filename')),
+                        encoding=data_util.get_file_encoding(self._storage_name._json_metadata[uri].get('filename')),
+                    )
+            if uri not in self._storage_name.file_info:
+                if self._config.use_local_files:
+                    self._storage_name._file_info[uri] = data_util.get_local_file_info(source_name)
+                else:
+                    self._storage_name._file_info[uri] = self._clients.data_client.info(uri)
+
+            file_name = self._storage_name._json_metadata[uri].get('filename')
+            data_label = self._storage_name._json_metadata[uri].get('data_label')
+            repaired_data_label = obs_file_relationship.repair_data_label(file_name, data_label)
+            self._storage_name.obs_id = repaired_data_label
+        self._logger.debug('End _set_preconditions')
+
+
+class GeminiOrganizeExecutesRunnerMeta(OrganizeExecutesRunnerMeta):
+    """A class that extends OrganizeExecutes to handle the choosing of the correct executors based on the config.yml.
+    Attributes:
+        _needs_delete (bool): if True, the CAOM repo action is delete/create instead of update.
+        _reporter: An instance responsible for reporting the execution status.
+    Methods:
+        _choose():
+            Determines which descendants of CaomExecute to instantiate based on the content of the config.yml
+            file for an application.
+    """
+
+    def __init__(
+            self,
+            config,
+            meta_visitors,
+            data_visitors,
+            needs_delete=False,
+            store_transfer=None,
+            modify_transfer=None,
+            clients=None,
+            reporter=None,
+    ):
+        super().__init__(
+            config,
+            meta_visitors,
+            data_visitors,
+            store_transfer=store_transfer,
+            modify_transfer=modify_transfer,
+            clients=clients,
+            reporter=reporter,
+            needs_delete=needs_delete,
+        )
+
+    def _choose(self):
+        """The logic that decides which descendants of CaomExecute to instantiate. This is based on the content of
+        the config.yml file for an application.
+        """
+        super()._choose()
+        for task_type in self.task_types:
+            if task_type == mc.TaskType.INGEST:
+                if self._needs_delete:
+                    raise mc.CadcException('No need identified for this yet.')
+                else:
+                    self._logger.debug(f'Choosing executor GeminiMetaVisit for {task_type}.')
+                    self._executors = []  # over-ride the default choice.
+                    self._executors.append(
+                        GeminiMetaVisitRunnerMeta(
+                            self._clients, self.config, self._meta_visitors, self._reporter
+                        )
+                    )
+
+
 def repair_instrument(in_name):
     if in_name == 'ALOPEKE':
         # because the value in JSON is a different case than the value in
@@ -563,7 +718,19 @@ def repair_instrument(in_name):
     return Inst(in_name)
 
 
-def retrieve_headers(source_name, logger, session):
+def retrieve_headers(source_name, logger, clients, config):
+    result = None
+    if config.use_local_files:
+        result = data_util.get_local_file_headers(source_name)
+    else:
+        result = clients.data_client.get_head(f'{config.scheme}:{config.collection}/{path.basename(source_name)}')
+        if not result:
+            # if the header is not at CADC, retrieve it from archive.gemini.edu
+            result = retrieve_gemini_headers(source_name, logger, clients.gemini_session)
+    return result
+
+
+def retrieve_gemini_headers(source_name, logger, session):
     logger.debug(f'Begin retrieve_headers for {source_name}')
     header_url = f'{HEADER_URL}{source_name}.fits'
     # Open the URL and fetch the JSON document for the observation

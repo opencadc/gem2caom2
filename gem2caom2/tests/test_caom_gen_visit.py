@@ -71,11 +71,15 @@ import warnings
 
 import pytest
 
+from astropy.utils.exceptions import AstropyWarning
 from astropy.wcs import FITSFixedWarning
+from caom2utils import data_util
+from caom2pipe.manage_composable import CadcException, ExecutionReporter2, read_obs_from_file, TaskType
 from gem2caom2.util import Inst
-from gem2caom2 import obs_file_relationship
+from gem2caom2 import fits2caom2_augmentation, gemini_metadata, obs_file_relationship, svofps
+from gem2caom2.gem_name import GemName
 
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 import gem_mocks
 
 
@@ -124,37 +128,91 @@ def pytest_generate_tests(metafunc):
 
 
 @patch('caom2utils.data_util.get_file_type')
-@patch('gem2caom2.gemini_metadata.AbstractGeminiMetadataReader._retrieve_json')
+@patch('gem2caom2.gemini_metadata.retrieve_headers')
+@patch('gem2caom2.gemini_metadata.retrieve_json')
 @patch('caom2pipe.astro_composable.get_vo_table_session')
 @patch('gem2caom2.program_metadata.get_pi_metadata')
-@patch('gem2caom2.gemini_metadata.ProvenanceFinder')
+@patch('gem2caom2.main_app.ProvenanceFinder')
 def test_visitor(
     pf_mock,
     get_pi_mock,
     svofps_mock,
     json_mock,
+    header_mock,
     file_type_mock,
     test_name,
     test_config,
     tmp_path,
+    change_test_dir,
 ):
     warnings.simplefilter('ignore', category=FITSFixedWarning)
-    test_file_id = obs_file_relationship.remove_extensions(
-        os.path.basename(test_name)
-    )
+    warnings.simplefilter('ignore', AstropyWarning)
+    test_file_id = obs_file_relationship.remove_extensions(os.path.basename(test_name))
+    get_pi_mock.side_effect = gem_mocks.mock_get_pi_metadata
+    svofps_mock.side_effect = gem_mocks.mock_get_votable
+    pf_mock.return_value.get.side_effect = gem_mocks.mock_get_data_label
+    json_mock.side_effect = gem_mocks.mock_get_obs_metadata
+    file_type_mock.return_value = 'application/fits'
+
+    test_config.task_types = [TaskType.SCRAPE]
+    test_config.use_local_files = True
+    test_config.log_to_file = True
+    test_config.data_sources = [tmp_path.as_posix()]
+    test_config.change_working_directory(tmp_path.as_posix())
+    test_config.proxy_file_name = 'test_proxy.pem'
+    test_config.logging_level = 'ERROR'
+    test_config.write_to_file(test_config)
+    gem_mocks.set_logging(test_config)
+
+    with open(test_config.proxy_fqn, 'w') as f:
+        f.write('test content')
+
     expected_fqn = f'{os.path.dirname(test_name)}/{test_file_id}.expected.xml'
-    gem_mocks._run_test_common(
-        data_sources=[os.path.dirname(test_name)],
-        get_pi_mock=get_pi_mock,
-        svofps_mock=svofps_mock,
-        pf_mock=pf_mock,
-        json_mock=json_mock,
-        file_type_mock=file_type_mock,
-        test_set=[test_name],
-        expected_fqn=expected_fqn,
-        test_config=test_config,
-        tmp_path=tmp_path,
+    in_fqn = expected_fqn.replace('.expected.', '.in.')
+
+    clients_mock = Mock()
+    def _mock_repo_read(collection, obs_id):
+        input_observation = None
+        if os.path.exists(in_fqn):
+            input_observation = read_obs_from_file(in_fqn)
+        return input_observation
+    clients_mock.metadata_client.read.side_effect = _mock_repo_read
+
+    def _read_header_mock(ignore1, ignore2, ignore3, ignore4):
+        return data_util.get_local_file_headers(test_name)
+    header_mock.side_effect = _read_header_mock
+
+    actual_fqn = expected_fqn.replace('expected', 'actual')
+    if os.path.exists(actual_fqn):
+        os.unlink(actual_fqn)
+
+    test_reporter = ExecutionReporter2(test_config)
+    filter_cache = svofps.FilterMetadataCache(svofps_mock)
+    test_subject = gemini_metadata.GeminiMetaVisitRunnerMeta(
+        clients_mock, test_config, [fits2caom2_augmentation], test_reporter
     )
+    storage_name = GemName(test_name, filter_cache)
+    context = {'storage_name': storage_name}
+    try:
+        test_subject.execute(context)
+    except CadcException as e:
+        if storage_name.file_name in ['N20220915S0113.fits', 'S20230301S0170.fits']:
+            assert (
+                test_reporter._observable.rejected.is_mystery_value(storage_name.file_name)
+            ), 'expect rejected mystery value record'
+        else:
+            raise e
+
+    gem_mocks.compare(expected_fqn, actual_fqn, test_subject._observation)
+
+    if test_subject._observation.observation_id in ['GS-2022B-Q-235-137-045', 'GS-2023A-LP-103-23-017']:
+        assert (
+            test_reporter._observable.rejected.is_bad_metadata(storage_name.file_name)
+        ), 'expect rejected record'
+    else:
+        assert (
+            not test_reporter._observable.rejected.is_bad_metadata(storage_name.file_name)
+        ), 'expect no rejected record'
 
 
 def _get_inst_name(inst):

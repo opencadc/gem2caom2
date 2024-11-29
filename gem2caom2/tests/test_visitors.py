@@ -193,10 +193,10 @@ def test_preview_augment_unknown_no_preview(test_data_dir, test_config):
 
 
 @patch('caom2utils.data_util.get_file_type')
-@patch('gem2caom2.gemini_metadata.GeminiFileMetadataReader._retrieve_headers')
 @patch('gem2caom2.gemini_metadata.retrieve_json')
 @patch('caom2pipe.manage_composable.http_get')
-def test_pull_augmentation(http_mock, json_mock, header_mock, file_type_mock, test_config, test_data_dir):
+def test_pull_augmentation(http_mock, json_mock, file_type_mock, test_config, test_data_dir, tmp_path):
+    test_config.change_working_directory(tmp_path)
     obs = mc.read_obs_from_file(f'{test_data_dir}/visit_original_uri_start.xml')
     obs.planes[TEST_PRODUCT_ID].data_release = datetime.now(tz=timezone.utc).replace(tzinfo=None)
     original_uri = 'gemini:GEMINI/GN2001BQ013-04.fits'
@@ -206,27 +206,25 @@ def test_pull_augmentation(http_mock, json_mock, header_mock, file_type_mock, te
     ), 'initial condition'
     test_uri = f'{test_config.scheme}:{test_config.collection}/{TEST_PRODUCT_ID}.fits'
 
-    test_observable = mc.Observable(test_config)
+    test_reporter = mc.ExecutionReporter2(test_config)
     cadc_client_mock = Mock()
     cadc_client_mock.return_value.info.return_value = None
     clients_mock = Mock()
     clients_mock.data_client = cadc_client_mock
     json_mock.side_effect = gem_mocks.mock_retrieve_json
     filter_cache = svofps.FilterMetadataCache(Mock())
-    test_reader = gemini_metadata.GeminiFileMetadataReader(
-        Mock(), Mock(), filter_cache
-    )
-    test_storage_name = gem_name.GemName(file_name='GN2001BQ013-04.fits')
-    header_mock.side_effect = gem_mocks._mock_headers
+    test_storage_name = gem_name.GemName(file_name='GN2001BQ013-04.fits', filter_cache=filter_cache)
     file_type_mock.return_values = 'application/fits'
-    test_reader.set(test_storage_name)
     kwargs = {
         'working_directory': test_data_dir,
         'clients': clients_mock,
-        'observable': test_observable,
-        'metadata_reader': test_reader,
+        'reporter': test_reporter,
         'storage_name': test_storage_name,
     }
+
+    test_precondition = gemini_metadata.GeminiMetaVisitRunnerMeta(clients_mock, test_config, [], test_reporter)
+    test_precondition._storage_name = test_storage_name
+    test_precondition._set_preconditions()
 
     obs = pull_augmentation.visit(obs, **kwargs)
     test_url = f'{pull_augmentation.FILE_URL}/{TEST_PRODUCT_ID}.fits'

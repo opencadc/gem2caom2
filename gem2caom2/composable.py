@@ -79,6 +79,8 @@ from gem2caom2 import ghost_preview_augmentation, preview_augmentation
 from gem2caom2 import pull_augmentation, data_source, builder
 from gem2caom2 import cleanup_augmentation, fits2caom2_augmentation
 from gem2caom2 import gemini_metadata, svofps
+from gem2caom2.gem_name import GemName
+
 
 DATA_VISITORS = [ghost_preview_augmentation]
 META_VISITORS = [fits2caom2_augmentation, pull_augmentation, preview_augmentation, cleanup_augmentation]
@@ -148,13 +150,11 @@ def _common_init():
     clients = GemClientCollection(config)
     meta_visitors = META_VISITORS
     gemini_session = mc.get_endpoint_session()
-    provenance_finder = gemini_metadata.ProvenanceFinder(
-        config, clients.query_client, gemini_session
-    )
     svofps_session = mc.get_endpoint_session()
     filter_cache = svofps.FilterMetadataCache(svofps_session)
     clients.gemini_session = gemini_session
     clients.svo_session = svofps_session
+    provenance_finder = gemini_metadata.ProvenanceFinder(clients, config)
     if config.use_local_files or mc.TaskType.SCRAPE in config.task_types:
         metadata_reader = gemini_metadata.GeminiFileMetadataReader(
             gemini_session, provenance_finder, filter_cache
@@ -331,40 +331,21 @@ def _run_incremental_diskfiles():
     clients = GemClientCollection(config)
     meta_visitors = META_VISITORS
     gemini_session = mc.get_endpoint_session()
-    provenance_finder = gemini_metadata.ProvenanceFinder(config, clients.query_client, gemini_session)
     svofps_session = mc.get_endpoint_session()
     filter_cache = svofps.FilterMetadataCache(svofps_session)
     clients.gemini_session = gemini_session
     clients.svo_session = svofps_session
-    metadata_reader = gemini_metadata.FileInfoBeforeJsonReader(
-        clients.data_client, gemini_session, provenance_finder, filter_cache
-        )
-    reader_lookup = gemini_metadata.GeminiMetadataLookup(metadata_reader)
-    reader_lookup.reader = metadata_reader
-    name_builder = builder.GemObsIDBuilder(config, metadata_reader, reader_lookup)
-    incremental_source = data_source.IncrementalSourceDiskfiles(config, metadata_reader)
-    result = rc.run_by_state(
+    incremental_source = data_source.IncrementalSourceDiskfiles(config, gemini_session, GemName, filter_cache)
+    return rc.run_by_state_runner_meta(
         config=config,
-        name_builder=name_builder,
         meta_visitors=meta_visitors,
         data_visitors=DATA_VISITORS,
         sources=[incremental_source],
         clients=clients,
-        metadata_reader=metadata_reader,
-        organizer_module_name='gem2caom2.composable',
-        organizer_class_name='GemOrganizeExecutes',
+        organizer_module_name='gem2caom2.gemini_metadata',
+        organizer_class_name='GeminiOrganizeExecutesRunnerMeta',
+        storage_name_ctor=GemName,
     )
-    if incremental_source.max_records_encountered:
-        # There's a currently 10k limit on the number of records returned from the archive.gemini.edu endpoints.
-        # As of this writing, if that limit is encountered, the ingestion requires manual intervention to recover.
-        # As opposed to stopping the incremental ingestion with a time-box where it will just continually fail
-        # with this same error, which is what raising the exception would do, the app notifies Ops via the log
-        # message, and then carries on, so as to more efficiently process large numbers of inputs.
-        logging.warning('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-        logging.warning('Encountered maximum records!!')
-        logging.warning('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-        result |= -1
-    return result
 
 
 def run_incremental_diskfiles():

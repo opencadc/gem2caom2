@@ -88,12 +88,10 @@ def visit(observation, **kwargs):
     if clients is None:
         logging.warning('Need clients to update. Stopping pull visitor.')
         return
-    observable = kwargs.get('observable')
-    if observable is None:
-        raise mc.CadcException('Visitor needs a observable parameter.')
-    metadata_reader = kwargs.get('metadata_reader')
-    if metadata_reader is None:
-        raise mc.CadcException('Visitor needs a metadata_reader parameter.')
+    reporter = kwargs.get('reporter')
+    if reporter is None:
+        raise mc.CadcException('Visitor needs a reporter parameter.')
+    observable = reporter._observable
     storage_name = kwargs.get('storage_name')
     if storage_name is None:
         raise mc.CadcException('Visitor needs a storage_name parameter.')
@@ -135,9 +133,7 @@ def visit(observation, **kwargs):
                         # want to compare the checksum from the JSON, and the
                         # checksum at CADC storage - if they are not the same,
                         # retrieve the file from archive.gemini.edu again
-                        json_md5sum = metadata_reader.file_info.get(
-                            artifact.uri
-                        ).md5sum
+                        json_md5sum = storage_name.file_info.get(artifact.uri).md5sum
                         look_pull_and_put(
                             artifact.uri, fqn, file_url, clients, json_md5sum
                         )
