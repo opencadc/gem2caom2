@@ -175,18 +175,18 @@ def test_diskfiles_incremental_source_limit(query_mock, test_config):
     test_reporter = Mock()
     test_subject.reporter = test_reporter
 
-    prev_exec_time = datetime(year=2021, month=1, day=1, hour=20, minute=3, second=0)
-    exec_time = datetime(year=2021, month=1, day=1, hour=22, minute=13, second=0)
+    prev_exec_time = datetime(year=2024, month=8, day=28, hour=17, minute=5, second=0)
+    exec_time = datetime(year=2024, month=8, day=28, hour=18, minute=0, second=0)
 
     test_result = test_subject.get_time_box_work(prev_exec_time, exec_time)
     assert test_result is not None, 'expect a result'
-    assert len(test_result) == 16, 'wrong number of results'
+    assert len(test_result) == 500, 'wrong number of results'
     test_first_entry = test_result.popleft()
-    assert test_first_entry.storage_entry.file_name == 'S20241030S0188.fits', 'wrong first file'
-    assert test_first_entry.entry_dt == datetime(2024, 10, 30, 10, 51, 37, 360130), 'wrong fits datetime'
+    assert test_first_entry.storage_entry.file_name == 'S20190619Z0121b.fits', 'wrong first file'
+    assert test_first_entry.entry_dt == datetime(2024, 8, 28, 17, 5, 0, 127507), 'wrong fits datetime'
     test_last_entry = test_result.pop()
-    assert test_last_entry.storage_entry.file_name == 'S20241030S0203.fits', 'wrong 2nd file'
-    assert test_last_entry.entry_dt == datetime(2024, 10, 30, 10, 54, 45, 941860), 'wrong last datetime'
+    assert test_last_entry.storage_entry.file_name == 'N20190618S1656.fits', 'wrong 2nd file'
+    assert test_last_entry.entry_dt == datetime(2024, 8, 28, 17, 7, 32, 267675), 'wrong last datetime'
     assert test_reporter.capture_todo.called, 'capture_todo'
     assert test_reporter.capture_todo.call_count == 1, 'wrong number of capture_todo calls'
-    test_reporter.capture_todo.assert_called_with(16, 0, 0)
+    assert test_subject.max_records_encountered(), 'limit warning'

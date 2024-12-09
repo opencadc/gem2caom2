@@ -82,7 +82,7 @@ import gem_mocks
 from cadcdata import FileInfo
 from caom2 import SimpleObservation, Algorithm
 from caom2pipe.data_source_composable import StateRunnerMeta
-from caom2pipe.manage_composable import Config, make_datetime, TaskType, write_as_yaml
+from caom2pipe.manage_composable import Config, make_datetime, State, TaskType, write_as_yaml
 from gem2caom2 import composable, gem_name
 from gem2caom2.data_source import GEM_BOOKMARK
 
@@ -655,6 +655,10 @@ def test_run_incremental_diskfiles_limit(
     tmp_path,
     change_test_dir,
 ):
+
+    # test that, when the limit of files is hit, the datetime for the increment is that from the time of the record
+    # at the limit, not the upper end of the timebox
+
     query_mock.side_effect = gem_mocks.mock_query_endpoint_5
     tap_mock.side_effect = gem_mocks.mock_query_tap
     clients_mock.return_value.metadata_client.read.side_effect = gem_mocks.read_mock_37
@@ -689,6 +693,9 @@ def test_run_incremental_diskfiles_limit(
     assert not clients_mock.return_value.metadata_client.read.called, 'meta read called'
     assert not clients_mock.return_value.metadata_client.update.called, 'meta update called'
     assert not tap_mock.called, 'tap called'
+
+    test_state_post = State(test_config.state_fqn, zone=timezone.utc)
+    assert test_state_post.get_bookmark(test_config.bookmark) == datetime(2024, 8, 28, 18, 5, 0, 0), 'saved state'
 
 
 def _write_state(prior_timestamp=None, end_timestamp=None, fqn=STATE_FILE):
