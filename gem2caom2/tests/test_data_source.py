@@ -218,6 +218,12 @@ def test_diskfiles_incremental_source_md(query_mock, test_config):
     assert test_last_entry.storage_entry.file_name == 'S20240827S0035.fits', 'wrong 2nd file'
     assert test_last_entry.entry_dt == datetime(2024, 8, 27, 3, 56, 43, 418974), 'wrong last datetime'
     assert test_last_entry.storage_entry.obs_id == 'GS-2024B-DD-103-8-002', 'wrong last obs id'
+    test_file_info = test_last_entry.storage_entry.file_info.get('gemini:GEMINI/S20240827S0035.fits')
+    assert test_file_info is not None, 'file info'
+    assert test_file_info.id == 'S20240827S0035.fits', 'file info id'
+    assert test_file_info.size == 14849280, 'file info size'
+    assert test_file_info.md5sum == '8ea7e29801fec81aa54c966bb3584490', 'file info checksum'
+    assert test_file_info.file_type == 'application/fits', 'file info type'
     assert test_reporter.capture_todo.called, 'capture_todo'
     assert test_reporter.capture_todo.call_count == 1, 'wrong number of capture_todo calls'
     assert not test_subject.max_records_encountered(), 'limit warning'

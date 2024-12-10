@@ -70,6 +70,9 @@ from bs4 import BeautifulSoup
 from collections import defaultdict, deque, OrderedDict
 from datetime import datetime
 
+from cadcdata import FileInfo
+from caom2utils.blueprints import _to_int
+from caom2utils.data_util import get_file_type
 from caom2pipe import client_composable as clc
 from caom2pipe import data_source_composable as dsc
 from caom2pipe.manage_composable import build_uri, CaomName, ISO_8601_FORMAT, make_datetime, query_endpoint_session
@@ -284,7 +287,12 @@ class IncrementalSourceDiskfiles(dsc.IncrementalDataSource):
                         for value in values:
                             file_name = value.get('filename')
                             storage_name = self._storage_name_ctor(file_name, self._filter_cache)
-                            storage_name.file_info[storage_name.destination_uris[0]] = value
+                            storage_name.file_info[storage_name.destination_uris[0]] = FileInfo(
+                                id=file_name,
+                                size=_to_int(value.get('data_size')),
+                                md5sum=value.get('data_md5'),
+                                file_type=get_file_type(file_name),
+                            )
                             repaired_data_label = repair_data_label(file_name, value.get('datalabel'))
                             storage_name.obs_id = repaired_data_label
                             entries.append(dsc.RunnerMeta(storage_name, entry_dt))
