@@ -104,6 +104,8 @@ def test_broken_obs(
         f'{gem_mocks.TEST_DATA_DIR}/broken_files/{test_obs_id}.expected.xml'
     )
 
+    test_set = {test_fqn: test_obs_id}
+
     gem_mocks._run_test_common(
         data_sources=[f'{gem_mocks.TEST_DATA_DIR}/broken_files'],
         get_pi_mock=get_pi_mock,
@@ -112,7 +114,7 @@ def test_broken_obs(
         header_mock=header_mock,
         json_mock=json_mock,
         file_type_mock=file_type_mock,
-        test_set=[test_fqn],
+        test_set=test_set,
         expected_fqn=expected_fqn,
         test_config=test_config,
         tmp_path=tmp_path,
@@ -149,6 +151,7 @@ def test_unauthorized_at_gemini(
     # non-zero length list
     test_fqn = f'{gem_mocks.TEST_DATA_DIR}/broken_files/{test_f_name}'
     expected_fqn = f'{gem_mocks.TEST_DATA_DIR}/GMOS/{test_fid}.expected.xml'
+    test_set = {test_fqn: 'GS-2021A-Q-777-1-001'}
     gem_mocks._run_test_common(
         data_sources=[f'{gem_mocks.TEST_DATA_DIR}/broken_files'],
         get_pi_mock=get_pi_mock,
@@ -157,7 +160,7 @@ def test_unauthorized_at_gemini(
         json_mock=json_mock,
         header_mock=header_mock,
         file_type_mock=file_type_mock,
-        test_set=[test_fqn],
+        test_set=test_set,
         expected_fqn=expected_fqn,
         test_config=test_config,
         tmp_path=tmp_path,

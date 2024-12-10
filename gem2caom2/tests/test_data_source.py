@@ -190,3 +190,34 @@ def test_diskfiles_incremental_source_limit(query_mock, test_config):
     assert test_reporter.capture_todo.called, 'capture_todo'
     assert test_reporter.capture_todo.call_count == 1, 'wrong number of capture_todo calls'
     assert test_subject.max_records_encountered(), 'limit warning'
+
+
+@patch('gem2caom2.data_source.query_endpoint_session')
+def test_diskfiles_incremental_source_md(query_mock, test_config):
+    # https://archive.gemini.edu/diskfiles/entrytimedaterange=<start date>--<end date>
+    # get results
+    query_mock.side_effect = gem_mocks.mock_query_endpoint_5
+
+    test_http_session = Mock()
+    test_subject = data_source.IncrementalSourceDiskfiles(test_config, test_http_session, GemName, Mock())
+    assert test_subject is not None, 'expect construction success'
+    test_reporter = Mock()
+    test_subject.reporter = test_reporter
+
+    prev_exec_time = datetime(year=2024, month=8, day=27, hour=3, minute=50, second=0)
+    exec_time = datetime(year=2024, month=8, day=27, hour=4, minute=0, second=0)
+
+    test_result = test_subject.get_time_box_work(prev_exec_time, exec_time)
+    assert test_result is not None, 'expect a result'
+    assert len(test_result) == 3, 'wrong number of results'
+    test_first_entry = test_result.popleft()
+    assert test_first_entry.storage_entry.file_name == 'S20240827S0034.fits', 'wrong first file'
+    assert test_first_entry.entry_dt == datetime(2024, 8, 27, 3, 54, 50, 692569), 'wrong fits datetime'
+    assert test_first_entry.storage_entry.obs_id == 'GS-2024B-DD-103-8-001', 'wrong first obs id'
+    test_last_entry = test_result.pop()
+    assert test_last_entry.storage_entry.file_name == 'S20240827S0035.fits', 'wrong 2nd file'
+    assert test_last_entry.entry_dt == datetime(2024, 8, 27, 3, 56, 43, 418974), 'wrong last datetime'
+    assert test_last_entry.storage_entry.obs_id == 'GS-2024B-DD-103-8-002', 'wrong last obs id'
+    assert test_reporter.capture_todo.called, 'capture_todo'
+    assert test_reporter.capture_todo.call_count == 1, 'wrong number of capture_todo calls'
+    assert not test_subject.max_records_encountered(), 'limit warning'

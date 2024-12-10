@@ -305,6 +305,14 @@ LOOKUP = {
     'S20170905S0318': ['GS-2017A-Q-58-66-027', Inst.F2, 'GS-2017A-Q-58'],
     'S20191214S0301': ['GS-CAL20191214-1-029', Inst.F2, 'GS-CAL20191214'],
     'S20141130S0001': ['GS-CAL20141129-3-001', Inst.F2, 'GS-CAL20141129'],
+    'S20210522S0033': ['GS-2021A-Q-322-12-033', Inst.F2, 'GS-2021A-Q-322'],
+    'S20230301S0170': ['GS-2023A-LP-103-23-017', Inst.F2, '>GS-2023A-LP-103'],
+    'S20210530S0047': ['GS-2021A-Q-416-20-001', Inst.F2, 'GS-2021A-Q-416'],
+    'S20220220S0198': ['GS-CAL20220220-3-012', Inst.F2, 'GS-CAL20220220'],
+    'S20220912S0299': ['GS-2022B-Q-306-70-014', Inst.F2, 'GS-2022B-Q-306'],
+    'S20221020S0034': ['GS-2022B-DD-101-31-004', Inst.F2, 'GS-2022B-DD-101'],
+    'S20220203S0019': ['GS-CAL20220203-1-005', Inst.F2, 'GS-CAL20220203'],
+    'S20221115S0124': ['GS-2022B-Q-235-137-045', Inst.F2, 'GS-2022B-Q-235'],
     # Flamingos
     '02jul07.0186': ['GS-2002A-Q-13-2-0186', Inst.FLAMINGOS, 'GS-2002A-Q-13'],
     '02jun25.0071': ['GS-2002A-Q-7-1-0071', Inst.FLAMINGOS, 'GS-2002A-Q-7'],
@@ -329,6 +337,12 @@ LOOKUP = {
     # GHOST
     'S20240601S0038_blue001_dragons': ['GS-2024A-LP-106-12-013-BLUE-001-SQ-BLUE001-DRAGONS', Inst.GHOST, 'GS-2024A-LP-106-12-013'],
     'S20240607S0038': ['GS-2024A-Q-144-3-004', Inst.GHOST, 'GS-2024A-Q-144'],
+    'S20230517S0047': ['GS-CAL20230517-12-001', Inst.GHOST, 'GS-CAL20230517'],
+    'S20240215S0050': ['GS-CAL20240215-15-001', Inst.GHOST, 'GS-CAL20240215'],
+    'S20231224S0444': ['GS-CAL20231224-19-001', Inst.GHOST, 'GS-CAL20231224'],
+    'S20230518S0121': ['GS-2023A-SV-101-13-009', Inst.GHOST, 'GS-2023A-SV-101'],
+    'S20230516S0039': ['GS-2023A-SV-104-12-003', Inst.GHOST, 'GS-2023A-SV-104'],
+    'S20231208S0060': ['GS-2023B-FT-104-11-001', Inst.GHOST, 'GS-2023B-FT-104'],
     # GMOS
     'N20030107S0163': ['GN-2003A-Q-22-3-004', Inst.GMOS, 'GN-2003A-Q-22'],
     'N20071219S0193': ['GN-2007B-Q-112-14-018', Inst.GMOS, 'GN-2007B-Q-112'],
@@ -367,6 +381,7 @@ LOOKUP = {
     'N20120117S0009_stack_fringe': ['GN-CAL20120117-900-009-STACK-FRINGE', Inst.GMOS, 'GS-CAL20131007-1'],
     'rS20040502S0077': ['GS-CAL20040502-3-002', Inst.GMOS, 'GS-CAL20040502-3'],
     'S20131007S0001_flat': ['GS-CAL20131007-1-001-FLAT', Inst.GMOS, 'GS-CAL20131007-1'],
+    'N20220915S0113': ['GN-CAL20220915-20-001', Inst.GMOSN, 'GN-CAL20220915'],
     # GNIRS
     'N20100915S0167': ['GN-2010B-Q-2-44-003', Inst.GNIRS, 'GN-2010B-Q-2'],
     'N20100722S0185': ['GN-2010B-SV-142-10-007', Inst.GNIRS, 'GN-2010B-SV-142'],
@@ -388,6 +403,8 @@ LOOKUP = {
     'N20180224S0063': ['GN-CAL20180224-3-001', Inst.GNIRS, 'GN-CAL20180224-3'],
     'N20171106S0187': ['GN-2017B-LP-16-470-002', Inst.GNIRS, 'GN-2017B-LP-16'],
     'N20170210S0013': ['GN-CAL20170209-5-003', Inst.GNIRS, 'GN-CAL20170209-5'],
+    'S20040212S0191': ['GS-2004A-SV-1-1-002', Inst.GNIRS, 'GS-2004A-SV-1'],
+    'S20040212S0281': ['GS-2004A-SV-1-4-024', Inst.GNIRS, 'GS-2004A-SV-1'],
     # GPI
     'S20140422S0167': ['GS-2014A-SV-408-6-003', Inst.GPI, 'GS-2014A-SV-408'],
     'S20180313S0108': ['GS-2018A-FT-101-5-043', Inst.GPI, 'GS-2018A-FT-101'],
@@ -433,6 +450,7 @@ LOOKUP = {
     'N20050826S0137': ['GN-2005B-Q-16-85-001', Inst.MICHELLE, 'GN-2005B-Q-16'],
     'N20060413S0129': ['GN-CAL20060413-7-001', Inst.MICHELLE, 'GN-CAL20060413'],
     'N20080308S0086': ['GN-CAL20080308-8-016', Inst.MICHELLE, 'GN-CAL20080308'],
+    'N20100116S0154': ['GN-2009B-Q-3-64-002', Inst.MICHELLE, 'GN-2009B-Q-3'],
     # NICI
     'S20100102S0035': ['GS-2009B-Q-14-129-029', Inst.NICI, 'GS-2009B-Q-14'],
     'S20100218S0028': ['GS-2009B-Q-21-19-001', Inst.NICI, 'GS-2009B-Q-21'],
@@ -472,6 +490,7 @@ LOOKUP = {
     'N20141203S0891': ['GN-2014B-C-1-157-100', Inst.NIRI, 'GN-2014B-C-1'],
     'N20030325S0098': ['GN-2003A-Q-51-2-004', Inst.NIRI, 'GN-2003A-Q-51'],
     'N20211017S0139': ['GN-2021B-Q-110-28-126', Inst.NIRI, 'GN-2021B-Q-110'],
+    'N20030325S0353': ['GN-CAL20030325-21-003', Inst.NIRI, 'GN-CAL20030325'],
     # OSCIR
     'r01dec05_007': ['GS-2001B-Q-31-9-007', Inst.OSCIR, 'GS-2001B-Q-31'],
     '01MAY08_023': ['GN-2001A-C-4-11-9023', Inst.OSCIR, 'GN-2001A-C-4'],
@@ -801,6 +820,9 @@ def mock_query_endpoint_5(url, timeout=-1):
     if url.startswith('https://archive.gemini.edu/diskfiles/entrytimedaterange=2024-08-28T17:05:00'):
         with open(f'{TEST_DATA_DIR}/diskfiles_mock/query_limit.html') as f:
             result.text = f.read()
+    elif url.startswith('https://archive.gemini.edu/diskfiles/entrytimedaterange=2024-08-27T03:50:00'):
+        with open(f'{TEST_DATA_DIR}/diskfiles_mock/md.html') as f:
+            result.text = f.read()
     return result
 
 
@@ -1039,17 +1061,18 @@ def _run_test_common(
     test_reporter = mc.ExecutionReporter2(test_config)
     filter_cache = svofps.FilterMetadataCache(svofps_mock)
     clients_mock = Mock()
-    for entry in test_set:
-        storage_name = GemName(entry, filter_cache)
+    for test_f_name, test_obs_id in test_set.items():
+        storage_name = GemName(test_f_name, filter_cache)
+        storage_name.obs_id = test_obs_id
         test_subject = gemini_metadata.GeminiMetaVisitRunnerMeta(
             clients_mock, test_config, [fits2caom2_augmentation], test_reporter
         )
 
         def _read_header_mock(ignore1, ignore2, ignore3, ignore4):
-            if 'S20210518S0022' in entry:
+            if 'S20210518S0022' in test_f_name:
                 return []
             else:
-                return get_local_file_headers(entry)
+                return get_local_file_headers(test_f_name)
         header_mock.side_effect = _read_header_mock
 
         clients_mock.metadata_client.read.return_value = observation

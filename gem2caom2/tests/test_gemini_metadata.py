@@ -71,7 +71,7 @@ import os
 from astropy.io import fits
 from astropy.table import Table
 
-from mock import patch, Mock
+from mock import ANY, patch, Mock
 
 from cadcutils import exceptions
 from caom2pipe import manage_composable as mc
@@ -187,3 +187,19 @@ def test_header_not_at_cadc(retrieve_json_mock, clients_mock, test_config):
     test_session_mock.get.assert_called_with(
         'https://archive.gemini.edu/fullheader/N20220314S0229.fits', timeout=20
     ), 'wrong mock args'
+
+
+@patch('caom2pipe.client_composable.ClientCollection')
+@patch('gem2caom2.gemini_metadata.retrieve_gemini_headers')
+def test_header_not_at_cadc_no_reader(retrieve_gemini_mock, clients_mock, test_config):
+    # the file is private, re-ingestion fails to find headers at CADC, needs to go back to archive.gemini.edu
+    test_f_name = 'N20220314S0229.fits.bz2'
+    test_obs_id = 'GN-CAL20220314-18-083'
+    retrieve_gemini_mock.side_effect = gem_mocks._mock_retrieve_headers
+    clients_mock.data_client.get_head.side_effect = exceptions.UnexpectedException
+    test_storage_name = gem_name.GemName(file_name=test_f_name)
+    test_storage_name.obs_id = test_obs_id
+    test_result = gemini_metadata.retrieve_headers(test_f_name, Mock(), clients_mock, test_config)
+    assert test_result is not None, 'expect a result'
+    assert retrieve_gemini_mock.called, 'retrieve mock not called'
+    retrieve_gemini_mock.assert_called_with(test_f_name, ANY, ANY ), 'wrong mock args'

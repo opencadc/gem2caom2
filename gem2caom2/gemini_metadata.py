@@ -636,10 +636,6 @@ class GeminiMetaVisitRunnerMeta(MetaVisitRunnerMeta):
                 else:
                     self._storage_name._file_info[uri] = self._clients.data_client.info(uri)
 
-            file_name = self._storage_name._json_metadata[uri].get('filename')
-            data_label = self._storage_name._json_metadata[uri].get('data_label')
-            repaired_data_label = obs_file_relationship.repair_data_label(file_name, data_label)
-            self._storage_name.obs_id = repaired_data_label
         self._logger.debug('End _set_preconditions')
 
 
@@ -723,9 +719,11 @@ def retrieve_headers(source_name, logger, clients, config):
     if config.use_local_files:
         result = data_util.get_local_file_headers(source_name)
     else:
-        result = clients.data_client.get_head(f'{config.scheme}:{config.collection}/{path.basename(source_name)}')
-        if not result:
-            # if the header is not at CADC, retrieve it from archive.gemini.edu
+        try:
+            result = clients.data_client.get_head(f'{config.scheme}:{config.collection}/{path.basename(source_name)}')
+        except exceptions.UnexpectedException as e:
+            # the exceptions.NotFoundException is turned into exceptions.UnexpectedException in data_util
+            # the header is not at CADC, retrieve it from archive.gemini.edu
             result = retrieve_gemini_headers(source_name, logger, clients.gemini_session)
     return result
 

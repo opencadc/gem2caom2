@@ -74,6 +74,7 @@ from caom2pipe import client_composable as clc
 from caom2pipe import data_source_composable as dsc
 from caom2pipe.manage_composable import build_uri, CaomName, ISO_8601_FORMAT, make_datetime, query_endpoint_session
 from caom2pipe.manage_composable import StorageName
+from gem2caom2.obs_file_relationship import repair_data_label
 
 
 __all__ = ['GEM_BOOKMARK', 'IncrementalSource', 'PublicIncremental']
@@ -284,6 +285,8 @@ class IncrementalSourceDiskfiles(dsc.IncrementalDataSource):
                             file_name = value.get('filename')
                             storage_name = self._storage_name_ctor(file_name, self._filter_cache)
                             storage_name.file_info[storage_name.destination_uris[0]] = value
+                            repaired_data_label = repair_data_label(file_name, value.get('datalabel'))
+                            storage_name.obs_id = repaired_data_label
                             entries.append(dsc.RunnerMeta(storage_name, entry_dt))
         finally:
             if response is not None:
@@ -304,9 +307,12 @@ class IncrementalSourceDiskfiles(dsc.IncrementalDataSource):
         for row in rows:
             cells = row.find_all('td')
             entry_time = make_datetime(cells[5].text.strip())  # what the https query is keyed on
+            file_name = cells[0].text.strip()
+            if file_name.endswith('-fits!-md!'):
+                continue
             value = {
-                'filename': cells[0].text.strip(),
-                'datalabel': cells[1].text.strip(),
+                'filename': file_name,
+                'datalabel': cells[1].text.strip().split('\n')[-1],
                 'instrument': cells[2].text.strip(),
                 'lastmod': make_datetime(cells[6].text.strip()),
                 'data_size': cells[10].text.strip(),

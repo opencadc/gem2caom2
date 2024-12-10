@@ -192,6 +192,10 @@ def test_visitor(
         clients_mock, test_config, [fits2caom2_augmentation], test_reporter
     )
     storage_name = GemName(test_name, filter_cache)
+    if gem_mocks.LOOKUP[test_file_id][1] == Inst.ZORRO:
+        storage_name.obs_id = test_file_id[:-1]
+    else:
+        storage_name.obs_id = gem_mocks.LOOKUP[test_file_id][0]
     context = {'storage_name': storage_name}
     try:
         test_subject.execute(context)
