@@ -89,9 +89,13 @@ def visit(observation, **kwargs):
         logging.warning('Need clients to update. Stopping pull visitor.')
         return
     reporter = kwargs.get('reporter')
-    if reporter is None:
-        raise mc.CadcException('Visitor needs a reporter parameter.')
-    observable = reporter._observable
+    observer = kwargs.get('observable')
+    if reporter is None and observer is None:
+        raise mc.CadcException('Visitor needs a reporter or observable parameter.')
+    if reporter:
+        observable = reporter._observable
+    else:
+        observable = observer
     storage_name = kwargs.get('storage_name')
     if storage_name is None:
         raise mc.CadcException('Visitor needs a storage_name parameter.')

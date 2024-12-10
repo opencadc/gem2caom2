@@ -70,8 +70,23 @@
 from caom2pipe import caom_composable as cc
 from gem2caom2 import main_app
 
+class GeminiFits2caom2Visitor(cc.Fits2caom2Visitor):
+    def __init__(self, observation, **kwargs):
+        super().__init__(observation, **kwargs)
 
-class GeminiFits2caom2Visitor(cc.Fits2caom2VisitorRunnerMeta):
+    def _get_mapping(self, headers, _):
+        return main_app.mapping_factory(
+            self._storage_name,
+            headers,
+            self._metadata_reader,
+            self._clients,
+            self._observable,
+            self._observation,
+            self._config,
+        )
+
+
+class GeminiFits2caom2VisitorRunnerMeta(cc.Fits2caom2VisitorRunnerMeta):
     def __init__(self, observation, **kwargs):
         super().__init__(observation, **kwargs)
 
@@ -88,4 +103,7 @@ class GeminiFits2caom2Visitor(cc.Fits2caom2VisitorRunnerMeta):
 
 
 def visit(observation, **kwargs):
-    return GeminiFits2caom2Visitor(observation, **kwargs).visit()
+    if 'reporter' in kwargs:
+        return GeminiFits2caom2VisitorRunnerMeta(observation, **kwargs).visit()
+    else:
+        return GeminiFits2caom2Visitor(observation, **kwargs).visit()

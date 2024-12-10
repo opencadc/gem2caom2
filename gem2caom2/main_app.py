@@ -692,7 +692,10 @@ class GeminiMapping(cc.TelescopeMapping):
                         continue
                     if GemName.is_preview(artifact.uri):
                         continue
-                    update_artifact_meta(artifact, self._storage_name.file_info.get(artifact.uri))
+                    if self._lookup._reader:
+                        update_artifact_meta(artifact, self._lookup._reader.file_info.get(artifact.uri))
+                    else:
+                        update_artifact_meta(artifact, self._storage_name.file_info.get(artifact.uri))
                     self._update_artifact(artifact)
                     processed = ofr.is_processed(self._storage_name.file_name)
                     if self._instrument in [
@@ -2344,7 +2347,8 @@ class Gmos(GeminiMapping):
             'R600': 3744.0,
             'R400': 1918.0,
             'R150': 631.0,
-            # 'B480': 1522.0,  # WF - 16-09-22  ## TODO WF - 23-09-22 - need more accurate min/max values
+            # current best value available from https://gemini.edu/instrumentation/gmos/components#Gratings
+            'B480': 1522.0,  # WF - 16-09-22  ## TODO WF - 23-09-22 - need more accurate min/max values
         }
         # DB 02-12-19
         # Found basic info for the Lya395 filter in a published paper.

@@ -94,9 +94,14 @@ def visit(observation, **kwargs):
     clients = kwargs.get('clients')
     if clients is None or clients.data_client is None:
         logging.warning('Need a cadc_client to update preview records.')
-    observable = kwargs.get('observable')
-    if observable is None:
-        raise mc.CadcException('Visitor needs a observable parameter.')
+    reporter = kwargs.get('reporter')
+    observer = kwargs.get('observable')
+    if reporter is None and observer is None:
+        raise mc.CadcException('Visitor needs a reporter or observable parameter.')
+    if reporter:
+        observable = reporter._observable
+    else:
+        observable = observer
     storage_name = kwargs.get('storage_name')
     if storage_name is None:
         raise mc.CadcException('Visitor needs a storage_name parameter.')
