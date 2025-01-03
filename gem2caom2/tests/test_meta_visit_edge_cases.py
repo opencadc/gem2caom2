@@ -229,4 +229,6 @@ def test_going_public(
     context = {'storage_name': storage_name}
     test_subject.execute(context)
     assert remote_headers_mock.called, 'expect remote header retrieval'
-    remote_headers_mock.assert_called_with('N20150929S0013', ANY, ANY, ANY), 'wrong remote header args'
+    remote_headers_mock.assert_called_with(
+        f'{gem_mocks.TEST_DATA_DIR}/GMOS/N20150929S0013.fits.header', ANY, ANY, ANY
+    ), 'wrong remote header args'

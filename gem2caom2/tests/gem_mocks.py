@@ -83,6 +83,7 @@ from mock import Mock
 
 from cadcdata import FileInfo
 from caom2.diff import get_differences
+from caom2 import Algorithm, SimpleObservation
 from caom2pipe import astro_composable as ac
 from caom2pipe import manage_composable as mc
 from caom2pipe.run_composable import set_logging
@@ -826,6 +827,14 @@ def mock_query_endpoint_5(url, timeout=-1):
     return result
 
 
+def mock_query_endpoint_6(url, timeout=-1):
+    # returns response.text
+    result = Object()
+    with open(f'{TEST_DATA_DIR}/diskfiles_mock/md.html') as f:
+        result.text = f.read()
+    return result
+
+
 def mock_session_get_not_found(url):
     # returns json via response.text, depending on url
     result = Object()
@@ -927,11 +936,10 @@ def _query_mock_one(ignore1, ignore2):
 
 
 def mock_query_tap(query_string, mock_tap_client):
-    if query_string.startswith('SELECT A.uri'):
+    if query_string.startswith('SELECT O.observationID, A.uri'):
         return Table.read(
-            f'uri,lastModified\n'
-            f'gemini:GEMINI/N20191101S0007.fits,'
-            f'2020-02-25T20:36:31.230\n'.split('\n'),
+            f'observationID,uri,lastModified\n'
+            f'GN-2019B-ENG-1-160-008,gemini:GEMINI/N20191101S0007.fits,2020-02-25T20:36:31.230\n'.split('\n'),
             format='csv',
         )
     elif query_string.strip().startswith('SELECT max(A.lastModified'):
@@ -998,9 +1006,6 @@ def _mock_retrieve_headers_37(mock_name, ign1, ign2, ignore3):
 
 def _mock_get_head(file_id):
     return _mock_headers(file_id, file_id)
-
-
-from caom2 import Algorithm, SimpleObservation
 
 
 def read_mock_37(collection, obs_id):

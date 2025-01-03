@@ -77,6 +77,7 @@ from caom2pipe import client_composable as clc
 from caom2pipe import data_source_composable as dsc
 from caom2pipe.manage_composable import build_uri, CaomName, ISO_8601_FORMAT, make_datetime, query_endpoint_session
 from caom2pipe.manage_composable import StorageName
+from gem2caom2.gem_name import GemName
 from gem2caom2.obs_file_relationship import repair_data_label
 
 
@@ -94,13 +95,14 @@ class IncrementalSource(dsc.IncrementalDataSource):
     created.
     """
 
-    def __init__(self, config, reader):
+    def __init__(self, config, reader, filter_cache):
         super().__init__(config, start_key=GEM_BOOKMARK)
         self._max_records_encountered = False
         self._encounter_start = None
         self._encounter_end = None
         self._session = reader._session
         self._metadata_reader = reader
+        self._filter_cache = filter_cache
 
     def _initialize_end_dt(self):
         self._end_dt = datetime.now()
@@ -109,11 +111,12 @@ class IncrementalSource(dsc.IncrementalDataSource):
         """
         :param prev_exec_dt datetime start of the time-boxed chunk
         :param exec_dt datetime end of the time-boxed chunk
-        :return: a deque of file names with time their associated JSON (DB)
-            records were modified from archive.gemini.edu.
+        :return: a deque of StorageName instances with time their associated JSON (DB) records were modified from
+            archive.gemini.edu.
         """
 
         self._logger.debug(f'Begin get_time_box_work from {prev_exec_dt} to {exec_dt}.')
+        self._max_records_encountered = False
         # datetime format 2019-12-01T00:00:00.000000
         prev_dt_str = prev_exec_dt.strftime(ISO_8601_FORMAT)
         exec_dt_str = exec_dt.strftime(ISO_8601_FORMAT)
@@ -144,7 +147,12 @@ class IncrementalSource(dsc.IncrementalDataSource):
                         for entry in metadata:
                             file_name = entry.get('name')
                             entry_dt = make_datetime(entry.get('entrytime'))
-                            entries.append(dsc.StateRunnerMeta(file_name, entry_dt))
+                            # entries.append(dsc.StateRunnerMeta(file_name, entry_dt))
+                            entries.append(
+                                dsc.RunnerMeta(
+                                    GemName(file_name=file_name, filter_cache=self._filter_cache), entry_dt
+                                )
+                            )
                             uri = build_uri(StorageName.collection, file_name, StorageName.scheme)
                             # all the other cases where add_json_record is
                             # called, there's a list as input, so conform to
@@ -162,13 +170,7 @@ class IncrementalSource(dsc.IncrementalDataSource):
         self._logger.debug('End get_time_box_work.')
         return entries
 
-    @property
     def max_records_encountered(self):
-        if self._max_records_encountered:
-            self._logger.error(
-                f'Max records window {self._encounter_start} to '
-                f'{self._encounter_end}.'
-            )
         return self._max_records_encountered
 
 
@@ -176,9 +178,10 @@ class PublicIncremental(dsc.QueryTimeBoxDataSource):
     """Implements the identification of the work to be done, by querying
     the local TAP service for files that have recently gone public."""
 
-    def __init__(self, config, query_client):
+    def __init__(self, config, query_client, filter_cache):
         super().__init__(config)
         self._query_client = query_client
+        self._filter_cache = filter_cache
 
     def _initialize_end_dt(self):
         self._end_dt = datetime.now()
@@ -195,7 +198,7 @@ class PublicIncremental(dsc.QueryTimeBoxDataSource):
         prev_dt_str = prev_exec_dt.strftime(ISO_8601_FORMAT)
         exec_dt_str = exec_dt.strftime(ISO_8601_FORMAT)
         query = (
-            f"SELECT A.uri, A.lastModified "
+            f"SELECT O.observationID, A.uri, A.lastModified "
             f"FROM caom2.Observation AS O "
             f"JOIN caom2.Plane AS P ON O.obsID = P.obsID "
             f"JOIN caom2.Artifact AS A ON P.planeID = A.planeID "
@@ -214,12 +217,15 @@ class PublicIncremental(dsc.QueryTimeBoxDataSource):
         )
         result = clc.query_tap_client(query, self._query_client)
         # results look like:
-        # gemini:GEM/N20191202S0125.fits, ISO 8601
+        # GN-2019B-ENG-1-160-008, gemini:GEM/N20191202S0125.fits, ISO 8601
 
         entries = deque()
         for row in result:
+            gem_name = GemName(file_name=CaomName(row['uri']).file_name, filter_cache=self._filter_cache)
+            gem_name._obs_id = repair_data_label(CaomName(row['uri']).file_name, row['observationID'])
             entries.append(
-                dsc.StateRunnerMeta(CaomName(row['uri']).file_name, make_datetime(row['lastModified']))
+                # dsc.StateRunnerMeta(CaomName(row['uri']).file_name, make_datetime(row['lastModified']))
+                dsc.RunnerMeta(gem_name, make_datetime(row['lastModified']))
             )
         self._reporter.capture_todo(len(entries), 0, 0)
         self._logger.debug('End get_time_box_work')
@@ -300,7 +306,7 @@ class IncrementalSourceDiskfiles(dsc.IncrementalDataSource):
             if response is not None:
                 response.close()
         if len(entries) == MAX_ENTRIES:
-            self._logger.error(f'Max records window {self._encounter_start} to {self._encounter_end}.')
+            self._logger.warning(f'Max records window {self._encounter_start} to {self._encounter_end}.')
             self._max_records_encountered = True
             self._encounter_start = prev_exec_dt
             self._encounter_end = exec_dt
@@ -332,3 +338,19 @@ class IncrementalSourceDiskfiles(dsc.IncrementalDataSource):
 
     def max_records_encountered(self):
         return self._max_records_encountered
+
+
+class GeminiTodoFile(dsc.TodoFileDataSourceRunnerMeta):
+
+    def __init__(self, config, filter_cache):
+        super().__init__(config, GemName)
+        self._filter_cache = filter_cache
+
+    def _find_work(self, entry_path):
+        with open(entry_path) as f:
+            for line in f:
+                temp = line.strip()
+                if len(temp) > 0:
+                    # ignore empty lines
+                    self._logger.debug(f'Adding entry {temp} to work list.')
+                    self._work.append(GemName(file_name=temp, filter_cache=self._filter_cache))

@@ -634,7 +634,14 @@ class GeminiMetaVisitRunnerMeta(MetaVisitRunnerMeta):
                 if self._config.use_local_files:
                     self._storage_name._file_info[uri] = data_util.get_local_file_info(source_name)
                 else:
+                    # archive.gemini.edu lookup failed
                     self._storage_name._file_info[uri] = self._clients.data_client.info(uri)
+
+        if not self._storage_name.obs_id:
+            self._storage_name.obs_id = obs_file_relationship.repair_data_label(
+                self._storage_name.file_name,
+                self._storage_name._json_metadata.get(self._storage_name.file_uri).get('data_label'),
+            )
 
         self._logger.debug('End _set_preconditions')
 
@@ -678,7 +685,7 @@ class GeminiOrganizeExecutesRunnerMeta(OrganizeExecutesRunnerMeta):
         """
         super()._choose()
         for task_type in self.task_types:
-            if task_type == mc.TaskType.INGEST:
+            if task_type == mc.TaskType.INGEST or task_type == mc.TaskType.VISIT:
                 if self._needs_delete:
                     raise mc.CadcException('No need identified for this yet.')
                 else:
@@ -689,6 +696,9 @@ class GeminiOrganizeExecutesRunnerMeta(OrganizeExecutesRunnerMeta):
                             self._clients, self.config, self._meta_visitors, self._reporter
                         )
                     )
+
+    def can_use_single_visit(self):
+        return False
 
 
 def repair_instrument(in_name):

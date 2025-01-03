@@ -150,8 +150,7 @@ class GemName(mc.StorageName):
         filter_cache=None,
     ):
         super().__init__(file_name=basename(file_name.replace('.header', '')))
-        # use the file id because the extension doesn't help much in the archive.gemini.edu URL
-        self._source_names = [self._file_id]
+        self._source_names = [file_name]
         self._json_metadata = {}
         self._filter_cache = filter_cache
 

@@ -87,9 +87,11 @@ def test_config():
     config.logging_level = 'INFO'
     config.rejected_directory = TEST_DATA_DIR
     config.rejected_file_name = 'rejected.yml'
+    config.data_source_extensions = ['.fits', '.fits.bz2']
     StorageName.collection = config.collection
     StorageName.preview_scheme = config.preview_scheme
     StorageName.scheme = config.scheme
+    StorageName.data_source_extensions = config.data_source_extensions
     return config
 
 
