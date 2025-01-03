@@ -337,7 +337,6 @@ def test_run_by_public(exec_mock, json_mock, header_mock, clients_mock, query_mo
     assert test_storage.file_id == test_f_id, 'wrong file_id'
 
 
-@patch('caom2pipe.reader_composable.MetadataReader.reset')
 @patch('caom2pipe.manage_composable.http_get')
 @patch('gem2caom2.svofps.FilterMetadataCache.filter_metadata')
 @patch('gem2caom2.program_metadata.get_pi_metadata')
@@ -355,7 +354,6 @@ def test_run_by_incremental_reproduce(
     pi_mock,
     svo_mock,
     http_get_mock,
-    reader_mock,
     test_config,
     tmp_path,
     change_test_dir,
@@ -417,8 +415,6 @@ def test_run_by_incremental_reproduce(
     meta_client_mock.read.assert_called_with(
         'GEMINI', 'GN-CAL20220314-18-090'
     ), 'wrong run args'
-    # assert reader_mock.called, 'reset called'
-    # assert reader_mock.call_count == 1, 'reset call count'
 
 
 @patch('gem2caom2.gemini_metadata.retrieve_headers')

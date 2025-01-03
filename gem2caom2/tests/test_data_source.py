@@ -81,7 +81,7 @@ def test_incremental_source(query_mock, test_config):
     # get results
     query_mock.side_effect = gem_mocks.mock_query_endpoint_2
 
-    test_subject = data_source.IncrementalSource(test_config, reader=Mock(), filter_cache=Mock())
+    test_subject = data_source.IncrementalSource(test_config, session=Mock(), filter_cache=Mock())
     assert test_subject is not None, 'expect construction success'
     test_reporter = Mock()
     test_subject.reporter = test_reporter
@@ -120,7 +120,7 @@ def test_incremental_source_reproduce(query_mock, test_config):
     # get results
     query_mock.side_effect = gem_mocks.mock_query_endpoint_reproduce
 
-    test_subject = data_source.IncrementalSource(test_config, reader=Mock(), filter_cache=Mock())
+    test_subject = data_source.IncrementalSource(test_config, session=Mock(), filter_cache=Mock())
     assert test_subject is not None, 'expect construction success'
     test_reporter = Mock()
     test_subject.reporter = test_reporter

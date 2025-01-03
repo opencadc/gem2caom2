@@ -121,9 +121,6 @@ def test_broken_obs(
     )
 
 
-@patch(
-    'gem2caom2.gemini_metadata.GeminiFileMetadataReader._retrieve_file_info'
-)
 @patch('caom2utils.data_util.get_file_type')
 @patch('gem2caom2.gemini_metadata.retrieve_headers')
 @patch('gem2caom2.gemini_metadata.retrieve_json')
@@ -137,14 +134,12 @@ def test_unauthorized_at_gemini(
     json_mock,
     header_mock,
     file_type_mock,
-    file_info_mock,
     test_config,
     tmp_path,
 ):
     # test case is unauthorized to retrieve metadata from
     # archive.gemini.edu - so no headers, no file
 
-    file_info_mock.return_value = None
     test_fid = 'S20210518S0022'
     test_f_name = f'{test_fid}.fits'
     # the value of test_fqn doesn't actually matter, there just has to be a

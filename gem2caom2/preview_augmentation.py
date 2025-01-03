@@ -2,7 +2,7 @@
 # ******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
 # *************  CENTRE CANADIEN DE DONNÉES ASTRONOMIQUES  **************
 #
-#  (c) 2018.                            (c) 2018.
+#  (c) 2025.                            (c) 2025.
 #  Government of Canada                 Gouvernement du Canada
 #  National Research Council            Conseil national de recherches
 #  Ottawa, Canada, K1A 0R6              Ottawa, Canada, K1A 0R6
@@ -95,13 +95,9 @@ def visit(observation, **kwargs):
     if clients is None or clients.data_client is None:
         logging.warning('Need a cadc_client to update preview records.')
     reporter = kwargs.get('reporter')
-    observer = kwargs.get('observable')
-    if reporter is None and observer is None:
-        raise mc.CadcException('Visitor needs a reporter or observable parameter.')
-    if reporter:
-        observable = reporter._observable
-    else:
-        observable = observer
+    if reporter is None:
+        raise mc.CadcException('Visitor needs a reporter parameter.')
+    observable = reporter._observable
     storage_name = kwargs.get('storage_name')
     if storage_name is None:
         raise mc.CadcException('Visitor needs a storage_name parameter.')

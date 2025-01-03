@@ -77,7 +77,7 @@ from caom2pipe import run_composable as rc
 from gem2caom2 import ghost_preview_augmentation, preview_augmentation
 from gem2caom2 import pull_augmentation, data_source
 from gem2caom2 import cleanup_augmentation, fits2caom2_augmentation
-from gem2caom2 import gemini_metadata, svofps
+from gem2caom2 import svofps
 from gem2caom2.gem_name import GemName
 
 
@@ -123,33 +123,16 @@ def _common_init():
     filter_cache = svofps.FilterMetadataCache(svofps_session)
     clients.gemini_session = gemini_session
     clients.svo_session = svofps_session
-    provenance_finder = gemini_metadata.ProvenanceFinder(clients, config)
     if config.use_local_files or mc.TaskType.SCRAPE in config.task_types:
-        metadata_reader = gemini_metadata.GeminiFileMetadataReader(
-            gemini_session, provenance_finder, filter_cache
-        )
         meta_visitors = [
             fits2caom2_augmentation,
             preview_augmentation,
             cleanup_augmentation,
         ]
-    elif [mc.TaskType.VISIT] == config.task_types or [mc.TaskType.VISIT, mc.TaskType.MODIFY] == config.task_types:
-        metadata_reader = gemini_metadata.GeminiStorageClientReader(
-            clients.data_client,
-            gemini_session,
-            provenance_finder,
-            filter_cache,
-        )
-    else:
-        metadata_reader = gemini_metadata.GeminiMetadataReader(
-            gemini_session, provenance_finder, filter_cache
-        )
-    reader_lookup = gemini_metadata.GeminiMetadataLookup(metadata_reader)
-    reader_lookup.reader = metadata_reader
     mc.StorageName.collection = config.collection
     mc.StorageName.scheme = config.scheme
     mc.StorageName.preview_scheme = config.preview_scheme
-    return clients, config, metadata_reader, meta_visitors, None, filter_cache
+    return clients, config, meta_visitors, filter_cache
 
 
 def _run():
@@ -157,14 +140,7 @@ def _run():
     Uses a todo file with file names, even though Gemini provides
     information about existing data referenced by observation ID.
     """
-    (
-        clients,
-        config,
-        metadata_reader,
-        meta_visitors,
-        name_builder,
-        filter_cache,
-    ) = _common_init()
+    clients, config, meta_visitors, filter_cache = _common_init()
     if config.use_local_files or mc.TaskType.SCRAPE in config.task_types:
         source = dsc.ListDirSeparateDataSource(config)
     else:
@@ -204,14 +180,7 @@ def _run_by_public():
     :return 0 if successful, -1 if there's any sort of failure. Return status
         is used by airflow for task instance management and reporting.
     """
-    (
-        clients,
-        config,
-        metadata_reader,
-        meta_visitors,
-        name_builder,
-        filter_cache,
-    ) = _common_init()
+    clients, config, meta_visitors, filter_cache = _common_init()
     incremental_source = data_source.PublicIncremental(config, clients.query_client, filter_cache)
     return rc.run_by_state_runner_meta(
         config=config,
@@ -243,15 +212,8 @@ def _run_state():
     :return 0 if successful, -1 if there's any sort of failure. Return status
         is used by airflow for task instance management and reporting.
     """
-    (
-        clients,
-        config,
-        metadata_reader,
-        meta_visitors,
-        name_builder,
-        filter_cache,
-    ) = _common_init()
-    incremental_source = data_source.IncrementalSource(config, metadata_reader, filter_cache)
+    clients, config, meta_visitors, filter_cache = _common_init()
+    incremental_source = data_source.IncrementalSource(config, clients.gemini_session, filter_cache)
     return rc.run_by_state_runner_meta(
         config=config,
         meta_visitors=meta_visitors,
@@ -281,19 +243,10 @@ def _run_incremental_diskfiles():
 
     :return 0 if successful, -1 if there's any sort of failure.
     """
-    config = mc.Config()
-    config.get_executors()
-    mc.StorageName.collection = config.collection
-    mc.StorageName.scheme = config.scheme
-    mc.StorageName.preview_scheme = config.preview_scheme
-    clients = GemClientCollection(config)
-    meta_visitors = META_VISITORS
-    gemini_session = mc.get_endpoint_session()
-    svofps_session = mc.get_endpoint_session()
-    filter_cache = svofps.FilterMetadataCache(svofps_session)
-    clients.gemini_session = gemini_session
-    clients.svo_session = svofps_session
-    incremental_source = data_source.IncrementalSourceDiskfiles(config, gemini_session, GemName, filter_cache)
+    clients, config, meta_visitors, filter_cache = _common_init()
+    incremental_source = data_source.IncrementalSourceDiskfiles(
+        config, clients.gemini_session, GemName, filter_cache
+    )
     return rc.run_by_state_runner_meta(
         config=config,
         meta_visitors=meta_visitors,

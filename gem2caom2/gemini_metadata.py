@@ -88,17 +88,13 @@ from caom2pipe.astro_composable import get_datetime_mjd
 from caom2pipe import client_composable as clc
 from caom2pipe.execute_composable import MetaVisitRunnerMeta, OrganizeExecutesRunnerMeta
 from caom2pipe import manage_composable as mc
-from caom2pipe import reader_composable as rdc
 from gem2caom2.util import Inst
 from gem2caom2 import obs_file_relationship
 
 
 __all__ = [
-    'GeminiFileMetadataReader',
     'GeminiMetadataLookup',
-    'GeminiMetadataReader',
     'GEMINI_METADATA_URL',
-    'GeminiStorageClientReader',
     'HEADER_URL',
     'ProvenanceFinder',
     'repair_instrument',
@@ -110,174 +106,6 @@ GEMINI_METADATA_URL = (
     'https://archive.gemini.edu/jsonsummary/canonical/filepre='
 )
 HEADER_URL = 'https://archive.gemini.edu/fullheader/'
-
-
-class AbstractGeminiMetadataReader(rdc.MetadataReader):
-    @property
-    def json_metadata(self):
-        return self._json_metadata
-
-    @property
-    def provenance_finder(self):
-        return self._provenance_finder
-
-    @property
-    def filter_cache(self):
-        return self._filter_cache
-
-    def _retrieve_json(self, source_name):
-        return retrieve_json(source_name, self._logger, self._session)
-
-    def add_file_info_record(self, uri):
-        """add_json_record has already been successfully called"""
-        if uri not in self._file_info.keys():
-            record = self._json_metadata[uri]
-            self._file_info[uri] = FileInfo(
-                id=uri,
-                size=record.get('data_size'),
-                name=record.get('filename'),
-                md5sum=record.get('data_md5'),
-                lastmod=mc.make_datetime(record.get('lastmod')),
-                file_type=data_util.get_file_type(record.get('filename')),
-                encoding=data_util.get_file_encoding(record.get('filename')),
-            )
-            self._logger.debug(f'Adding FileInfo for {uri}')
-
-    def add_json_record(self, uri, json_record):
-        if uri not in self._json_metadata.keys():
-            # json is an array of dicts, one dict per file, find the right dict
-            for jj in json_record:
-                # choose this key, and the comparison, because the lhs can be
-                # a file id
-                f_name = uri.split('/')[-1]
-                if f_name in jj.get('filename'):
-                    self._json_metadata[uri] = jj
-                    self._logger.debug(f'Adding JSON metadata for {uri}')
-                    break
-
-    def reset(self):
-        super().reset()
-        self._json_metadata = {}
-
-    def set(self, storage_name):
-        self.set_json_metadata(storage_name)
-        super().set(storage_name)
-        self._logger.debug(f'Have metadata for {self._json_metadata.keys()}')
-
-    def set_json_metadata(self, storage_name):
-        """Retrieves Gemini JSON metadata to memory."""
-        self._logger.debug(
-            f'Begin set_json_metadata for {storage_name.file_name}'
-        )
-        for index, entry in enumerate(storage_name.destination_uris):
-            if entry not in self._json_metadata.keys():
-                self._logger.debug(f'Retrieve JSON Metadata for {entry}')
-                temp = self._retrieve_json(storage_name.source_names[index])
-                self.add_json_record(entry, temp)
-                self.add_file_info_record(entry)
-        self._logger.debug(f'End set_json_metadata')
-
-    def __str__(self):
-        json = '\n'.join(
-            f'{key}: {value}' for key, value in self._json_metadata.items()
-        )
-        fits = '\n'.join(
-            f'{key}: {value}' for key, value in self._headers.items()
-        )
-        meta = '\n'.join(
-            f'{key}: {value}' for key, value in self._file_info.items()
-        )
-        return f'\nJSON\n{json}\nFITS\n{fits}\nMETA\n{meta}'
-
-
-class GeminiMetadataReader(AbstractGeminiMetadataReader):
-    def __init__(self, http_session, provenance_finder, filter_cache):
-        super().__init__()
-        self._json_metadata = {}
-        self._session = http_session
-        self._provenance_finder = provenance_finder
-        self._filter_cache = filter_cache
-
-    def _retrieve_file_info(self, key, source_name):
-        pass
-
-    def _retrieve_headers(self, key, source_name):
-        self._headers[key] = retrieve_gemini_headers(source_name, self._logger, self._session)
-
-    def set(self, storage_name):
-        self._logger.debug(f'Begin set for {storage_name.file_name}')
-        self.set_json_metadata(storage_name)
-        self.set_headers(storage_name)
-        self._logger.debug('End set')
-
-
-class GeminiFileMetadataReader(
-    AbstractGeminiMetadataReader, rdc.FileMetadataReader
-):
-    def __init__(self, http_session, provenance_finder, filter_cache):
-        super().__init__()
-        self._json_metadata = {}
-        self._session = http_session
-        self._provenance_finder = provenance_finder
-        self._filter_cache = filter_cache
-
-
-class GeminiStorageClientReader(
-    AbstractGeminiMetadataReader, rdc.StorageClientReader
-):
-    def __init__(
-        self, data_client, http_session, provenance_finder, filter_cache
-    ):
-        super().__init__(data_client)
-        self._json_metadata = {}
-        self._session = http_session
-        self._provenance_finder = provenance_finder
-        self._filter_cache = filter_cache
-
-    def set_headers(self, storage_name):
-        self._logger.debug(f'Begin set_headers for {storage_name.file_name}')
-        try:
-            # look for the headers at CADC first - be polite to archive.gemini.edu
-            super().set_headers(storage_name)
-        except exceptions.UnexpectedException as e:
-            # file is not at CADC, so as a second option get the headers from
-            # archive.gemini.edu
-            self._logger.info(f'{storage_name.source_names[0]} not at CADC. Checking archive.gemini.edu.')
-            for idx, entry in enumerate(storage_name.source_names):
-                if '.jpg' not in entry:
-                    self._headers[storage_name.destination_uris[idx]] = retrieve_gemini_headers(
-                        path.basename(entry), self._logger, self._session
-                    )
-                    self._logger.debug(f'Found {entry} at archive.gemini.edu.')
-                else:
-                    self._headers[entry] = []
-        self._logger.debug('End set_headers')
-
-
-class FileInfoBeforeJsonReader(GeminiStorageClientReader):
-    """The general use of the "Reader" classes is for keeping FileInfo and header metadata in memory for quick access.
-    For Gemini, there is additional header metadata that is retrieved from archive.gemini.edu as a JSON record. The
-    other Gemini-specific Reader specializations are all written with the assumption that the JSON record, which
-    contains all the FileInfo metadata, is queried and received before all other metadata. Using the "diskfiles"
-    endpoint for incremental harvesting breaks that assumption. The purpose of the method add_file_info_html_record is
-    to assist the IncrementalSourceDiskfiles class in data_source.py with handling that broken assumption."""
-
-    def __init__(self, data_client, http_session, provenance_finder, filter_cache):
-        super().__init__(data_client, http_session, provenance_finder, filter_cache)
-
-    def add_file_info_html_record(self, uri, html_record):
-        """add_json_record has not been successfully called"""
-        if uri not in self._file_info.keys():
-            self._file_info[uri] = FileInfo(
-                id=uri,
-                size=html_record.get('data_size'),
-                name=html_record.get('filename'),
-                md5sum=html_record.get('data_md5'),
-                lastmod=mc.make_datetime(html_record.get('lastmod')),
-                file_type=data_util.get_file_type(html_record.get('filename')),
-                encoding=data_util.get_file_encoding(html_record.get('filename')),
-            )
-            self._logger.debug(f'Adding FileInfo for {uri}')
 
 
 class GeminiMetadataLookup:

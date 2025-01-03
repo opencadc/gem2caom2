@@ -80,22 +80,6 @@ from gem2caom2 import gemini_metadata, gem_name
 import gem_mocks
 
 
-@patch('gem2caom2.gemini_metadata.retrieve_gemini_headers')
-@patch('gem2caom2.gemini_metadata.GeminiMetadataReader._retrieve_json')
-def test_set(retrieve_json_mock, retrieve_headers_mock):
-    retrieve_json_mock.side_effect = gem_mocks.mock_get_obs_metadata_37
-    test_f_name = 'N20030104S0065.fits'
-    test_obs_id = 'GN-CAL20030104-14-001'
-    retrieve_headers_mock.side_effect = gem_mocks._mock_retrieve_headers
-    test_storage_name = gem_name.GemName(file_name=test_f_name)
-    test_storage_name.obs_id = test_obs_id
-    test_subject = gemini_metadata.GeminiMetadataReader(Mock(), Mock(), Mock())
-    test_subject.set(test_storage_name)
-    assert len(test_subject._json_metadata) == 1, 'json entries'
-    assert len(test_subject._headers) == 1, 'header entries'
-    assert len(test_subject._file_info) == 1, 'file info entries'
-
-
 @patch('caom2utils.data_util.get_local_file_headers', autospec=True)
 @patch('caom2pipe.client_composable.query_tap_client', autospec=True)
 def test_provenance_finder(caom2_mock, local_mock):
@@ -159,34 +143,6 @@ def test_provenance_finder(caom2_mock, local_mock):
                 )
     finally:
         os.path.exists = os_path_exists_orig
-
-
-@patch('caom2pipe.client_composable.ClientCollection')
-@patch('gem2caom2.gemini_metadata.AbstractGeminiMetadataReader._retrieve_json')
-def test_header_not_at_cadc(retrieve_json_mock, clients_mock, test_config):
-    # the file is private, re-ingestion fails to find headers at CADC, needs to go back to archive.gemini.edu
-    test_f_name = 'N20220314S0229.fits.bz2'
-    test_obs_id = 'GN-CAL20220314-18-083'
-    retrieve_json_mock.side_effect = gem_mocks.mock_get_obs_metadata_37
-    test_provenance_finder = gemini_metadata.ProvenanceFinder(clients_mock, test_config)
-    clients_mock.return_value.data_client.get_head.side_effect = exceptions.UnexpectedException
-    test_session_mock = Mock()
-    test_session_mock.get.side_effect = gem_mocks.mock_fullheader_endpoint
-    test_filter_cache = Mock()
-    test_subject = gemini_metadata.GeminiStorageClientReader(
-        clients_mock.return_value.data_client, test_session_mock, test_provenance_finder, test_filter_cache
-    )
-    test_storage_name = gem_name.GemName(file_name=test_f_name)
-    test_storage_name.obs_id = test_obs_id
-    test_subject.set(test_storage_name)
-    assert test_subject.headers[test_storage_name.file_uri] is not None, 'expect query result'
-    assert (
-        len(test_subject.headers[test_storage_name.file_uri]) == 13
-    ), f'headers have content {len(test_subject.headers[test_storage_name.file_uri])}'
-    assert test_session_mock.get.called, 'get mock not called'
-    test_session_mock.get.assert_called_with(
-        'https://archive.gemini.edu/fullheader/N20220314S0229.fits', timeout=20
-    ), 'wrong mock args'
 
 
 @patch('caom2pipe.client_composable.ClientCollection')

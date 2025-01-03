@@ -923,18 +923,6 @@ def compare(expected_fqn, actual_fqn, observation):
         raise AssertionError(f'No observation created for comparison with {expected_fqn}')
 
 
-def _query_mock_none(ignore1, ignore2):
-    return Table.read('observationID,lastModified\n'.split('\n'), format='csv')
-
-
-def _query_mock_one(ignore1, ignore2):
-    return Table.read(
-        'observationID,lastModified\n'
-        'test_data_label,2020-02-25T20:36:31.230\n'.split('\n'),
-        format='csv',
-    )
-
-
 def mock_query_tap(query_string, mock_tap_client):
     if query_string.startswith('SELECT O.observationID, A.uri'):
         return Table.read(
@@ -1004,22 +992,8 @@ def _mock_retrieve_headers_37(mock_name, ign1, ign2, ignore3):
     return _mock_headers(mock_name, mock_name)
 
 
-def _mock_get_head(file_id):
-    return _mock_headers(file_id, file_id)
-
-
 def read_mock_37(collection, obs_id):
     return SimpleObservation(collection='OMM', observation_id='test_obs_id', algorithm=Algorithm(name='exposure'))
-
-
-class MockFileReader(gemini_metadata.GeminiFileMetadataReader):
-
-    def __init__(self, pf_mock, filter_mock):
-        super().__init__(http_session=Mock(), provenance_finder=pf_mock, filter_cache=filter_mock)
-
-    def _retrieve_headers(self, key, file_id):
-        result = _mock_headers(key, file_id)
-        self._headers[key] = result
 
 
 def _run_test_common(
