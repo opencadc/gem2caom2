@@ -2,7 +2,7 @@
 # ******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
 # *************  CENTRE CANADIEN DE DONNÉES ASTRONOMIQUES  **************
 #
-#  (c) 2024.                            (c) 2024.
+#  (c) 2025.                            (c) 2025.
 #  Government of Canada                 Gouvernement du Canada
 #  National Research Council            Conseil national de recherches
 #  Ottawa, Canada, K1A 0R6              Ottawa, Canada, K1A 0R6
@@ -83,11 +83,13 @@ from mock import Mock
 
 from cadcdata import FileInfo
 from caom2.diff import get_differences
+from caom2 import Algorithm, SimpleObservation
 from caom2pipe import astro_composable as ac
 from caom2pipe import manage_composable as mc
 from caom2pipe.run_composable import set_logging
+from caom2utils.data_util import get_local_file_headers
 
-from gem2caom2 import data_source, obs_file_relationship, builder, svofps
+from gem2caom2 import data_source, obs_file_relationship, svofps
 from gem2caom2 import gemini_metadata, fits2caom2_augmentation
 from gem2caom2.gem_name import GemName
 from gem2caom2.util import Inst
@@ -304,6 +306,14 @@ LOOKUP = {
     'S20170905S0318': ['GS-2017A-Q-58-66-027', Inst.F2, 'GS-2017A-Q-58'],
     'S20191214S0301': ['GS-CAL20191214-1-029', Inst.F2, 'GS-CAL20191214'],
     'S20141130S0001': ['GS-CAL20141129-3-001', Inst.F2, 'GS-CAL20141129'],
+    'S20210522S0033': ['GS-2021A-Q-322-12-033', Inst.F2, 'GS-2021A-Q-322'],
+    'S20230301S0170': ['GS-2023A-LP-103-23-017', Inst.F2, '>GS-2023A-LP-103'],
+    'S20210530S0047': ['GS-2021A-Q-416-20-001', Inst.F2, 'GS-2021A-Q-416'],
+    'S20220220S0198': ['GS-CAL20220220-3-012', Inst.F2, 'GS-CAL20220220'],
+    'S20220912S0299': ['GS-2022B-Q-306-70-014', Inst.F2, 'GS-2022B-Q-306'],
+    'S20221020S0034': ['GS-2022B-DD-101-31-004', Inst.F2, 'GS-2022B-DD-101'],
+    'S20220203S0019': ['GS-CAL20220203-1-005', Inst.F2, 'GS-CAL20220203'],
+    'S20221115S0124': ['GS-2022B-Q-235-137-045', Inst.F2, 'GS-2022B-Q-235'],
     # Flamingos
     '02jul07.0186': ['GS-2002A-Q-13-2-0186', Inst.FLAMINGOS, 'GS-2002A-Q-13'],
     '02jun25.0071': ['GS-2002A-Q-7-1-0071', Inst.FLAMINGOS, 'GS-2002A-Q-7'],
@@ -328,6 +338,12 @@ LOOKUP = {
     # GHOST
     'S20240601S0038_blue001_dragons': ['GS-2024A-LP-106-12-013-BLUE-001-SQ-BLUE001-DRAGONS', Inst.GHOST, 'GS-2024A-LP-106-12-013'],
     'S20240607S0038': ['GS-2024A-Q-144-3-004', Inst.GHOST, 'GS-2024A-Q-144'],
+    'S20230517S0047': ['GS-CAL20230517-12-001', Inst.GHOST, 'GS-CAL20230517'],
+    'S20240215S0050': ['GS-CAL20240215-15-001', Inst.GHOST, 'GS-CAL20240215'],
+    'S20231224S0444': ['GS-CAL20231224-19-001', Inst.GHOST, 'GS-CAL20231224'],
+    'S20230518S0121': ['GS-2023A-SV-101-13-009', Inst.GHOST, 'GS-2023A-SV-101'],
+    'S20230516S0039': ['GS-2023A-SV-104-12-003', Inst.GHOST, 'GS-2023A-SV-104'],
+    'S20231208S0060': ['GS-2023B-FT-104-11-001', Inst.GHOST, 'GS-2023B-FT-104'],
     # GMOS
     'N20030107S0163': ['GN-2003A-Q-22-3-004', Inst.GMOS, 'GN-2003A-Q-22'],
     'N20071219S0193': ['GN-2007B-Q-112-14-018', Inst.GMOS, 'GN-2007B-Q-112'],
@@ -366,6 +382,7 @@ LOOKUP = {
     'N20120117S0009_stack_fringe': ['GN-CAL20120117-900-009-STACK-FRINGE', Inst.GMOS, 'GS-CAL20131007-1'],
     'rS20040502S0077': ['GS-CAL20040502-3-002', Inst.GMOS, 'GS-CAL20040502-3'],
     'S20131007S0001_flat': ['GS-CAL20131007-1-001-FLAT', Inst.GMOS, 'GS-CAL20131007-1'],
+    'N20220915S0113': ['GN-CAL20220915-20-001', Inst.GMOSN, 'GN-CAL20220915'],
     # GNIRS
     'N20100915S0167': ['GN-2010B-Q-2-44-003', Inst.GNIRS, 'GN-2010B-Q-2'],
     'N20100722S0185': ['GN-2010B-SV-142-10-007', Inst.GNIRS, 'GN-2010B-SV-142'],
@@ -387,6 +404,8 @@ LOOKUP = {
     'N20180224S0063': ['GN-CAL20180224-3-001', Inst.GNIRS, 'GN-CAL20180224-3'],
     'N20171106S0187': ['GN-2017B-LP-16-470-002', Inst.GNIRS, 'GN-2017B-LP-16'],
     'N20170210S0013': ['GN-CAL20170209-5-003', Inst.GNIRS, 'GN-CAL20170209-5'],
+    'S20040212S0191': ['GS-2004A-SV-1-1-002', Inst.GNIRS, 'GS-2004A-SV-1'],
+    'S20040212S0281': ['GS-2004A-SV-1-4-024', Inst.GNIRS, 'GS-2004A-SV-1'],
     # GPI
     'S20140422S0167': ['GS-2014A-SV-408-6-003', Inst.GPI, 'GS-2014A-SV-408'],
     'S20180313S0108': ['GS-2018A-FT-101-5-043', Inst.GPI, 'GS-2018A-FT-101'],
@@ -432,6 +451,7 @@ LOOKUP = {
     'N20050826S0137': ['GN-2005B-Q-16-85-001', Inst.MICHELLE, 'GN-2005B-Q-16'],
     'N20060413S0129': ['GN-CAL20060413-7-001', Inst.MICHELLE, 'GN-CAL20060413'],
     'N20080308S0086': ['GN-CAL20080308-8-016', Inst.MICHELLE, 'GN-CAL20080308'],
+    'N20100116S0154': ['GN-2009B-Q-3-64-002', Inst.MICHELLE, 'GN-2009B-Q-3'],
     # NICI
     'S20100102S0035': ['GS-2009B-Q-14-129-029', Inst.NICI, 'GS-2009B-Q-14'],
     'S20100218S0028': ['GS-2009B-Q-21-19-001', Inst.NICI, 'GS-2009B-Q-21'],
@@ -471,6 +491,7 @@ LOOKUP = {
     'N20141203S0891': ['GN-2014B-C-1-157-100', Inst.NIRI, 'GN-2014B-C-1'],
     'N20030325S0098': ['GN-2003A-Q-51-2-004', Inst.NIRI, 'GN-2003A-Q-51'],
     'N20211017S0139': ['GN-2021B-Q-110-28-126', Inst.NIRI, 'GN-2021B-Q-110'],
+    'N20030325S0353': ['GN-CAL20030325-21-003', Inst.NIRI, 'GN-CAL20030325'],
     # OSCIR
     'r01dec05_007': ['GS-2001B-Q-31-9-007', Inst.OSCIR, 'GS-2001B-Q-31'],
     '01MAY08_023': ['GN-2001A-C-4-11-9023', Inst.OSCIR, 'GN-2001A-C-4'],
@@ -622,10 +643,10 @@ def mock_get_file_info(file_id):
 
 
 def mock_retrieve_json(source_name, ign1, ign2):
-    return mock_get_obs_metadata(source_name)
+    return mock_get_obs_metadata(source_name, ign1, ign2)
 
 
-def mock_get_obs_metadata(file_id):
+def mock_get_obs_metadata(file_id, ignore1, ignore2):
     file_id = obs_file_relationship.remove_extensions(file_id.split('/')[-1])
     try:
         fname = f'{TEST_DATA_DIR}/json/{file_id}.json'
@@ -652,10 +673,14 @@ def mock_get_obs_metadata(file_id):
         logging.error(tb)
 
 
+def mock_get_obs_metadata_37(file_id):
+    return mock_get_obs_metadata(file_id, None, None)
+
+
 def mock_get_data_label(uri):
     ignore_scheme, ignore_collection, f_name = mc.decompose_uri(uri)
     file_id = GemName.remove_extensions(f_name)
-    temp = mock_get_obs_metadata(file_id)
+    temp = mock_get_obs_metadata(file_id, None, None)
     result = None
     for ii in temp:
         y = obs_file_relationship.remove_extensions(ii.get('filename'))
@@ -788,6 +813,28 @@ def mock_query_endpoint_4(url, timeout=-1):
     return result
 
 
+def mock_query_endpoint_5(url, timeout=-1):
+    # returns response.text
+    result = Object()
+    result.text = '<title>x</title>'
+
+    if url.startswith('https://archive.gemini.edu/diskfiles/entrytimedaterange=2024-08-28T17:05:00'):
+        with open(f'{TEST_DATA_DIR}/diskfiles_mock/query_limit.html') as f:
+            result.text = f.read()
+    elif url.startswith('https://archive.gemini.edu/diskfiles/entrytimedaterange=2024-08-27T03:50:00'):
+        with open(f'{TEST_DATA_DIR}/diskfiles_mock/md.html') as f:
+            result.text = f.read()
+    return result
+
+
+def mock_query_endpoint_6(url, timeout=-1):
+    # returns response.text
+    result = Object()
+    with open(f'{TEST_DATA_DIR}/diskfiles_mock/md.html') as f:
+        result.text = f.read()
+    return result
+
+
 def mock_session_get_not_found(url):
     # returns json via response.text, depending on url
     result = Object()
@@ -856,38 +903,31 @@ def mock_repo_update(ignore1):
 
 
 def compare(expected_fqn, actual_fqn, observation):
-    try:
-        expected = mc.read_obs_from_file(expected_fqn)
-        compare_result = get_differences(expected, observation)
-    except Exception as e:
-        mc.write_obs_to_file(observation, actual_fqn)
-        assert False, f'{e}'
-    if compare_result is not None:
-        mc.write_obs_to_file(observation, actual_fqn)
-        compare_text = '\n'.join([r for r in compare_result])
-        raise AssertionError(
-            f'Differences found in observation {expected.observation_id}\n{compare_text}.\nCheck {actual_fqn}'
-        )
-
-
-def _query_mock_none(ignore1, ignore2):
-    return Table.read('observationID,lastModified\n'.split('\n'), format='csv')
-
-
-def _query_mock_one(ignore1, ignore2):
-    return Table.read(
-        'observationID,lastModified\n'
-        'test_data_label,2020-02-25T20:36:31.230\n'.split('\n'),
-        format='csv',
-    )
+    if observation:
+        if os.path.exists(expected_fqn):
+            expected = mc.read_obs_from_file(expected_fqn)
+            try:
+                compare_result = get_differences(expected, observation)
+            except Exception as e:
+                mc.write_obs_to_file(observation, actual_fqn)
+                assert False, f'{e}'
+            if compare_result is not None:
+                mc.write_obs_to_file(observation, actual_fqn)
+                compare_text = '\n'.join([r for r in compare_result])
+                raise AssertionError(
+                    f'Differences found in observation {expected.observation_id}\n{compare_text}.\nCheck {actual_fqn}'
+                )
+        else:
+            raise AssertionError(f'No expected observation here {expected_fqn}. See actual here {actual_fqn}')
+    else:
+        raise AssertionError(f'No observation created for comparison with {expected_fqn}')
 
 
 def mock_query_tap(query_string, mock_tap_client):
-    if query_string.startswith('SELECT A.uri'):
+    if query_string.startswith('SELECT O.observationID, A.uri'):
         return Table.read(
-            f'uri,lastModified\n'
-            f'gemini:GEMINI/N20191101S0007.fits,'
-            f'2020-02-25T20:36:31.230\n'.split('\n'),
+            f'observationID,uri,lastModified\n'
+            f'GN-2019B-ENG-1-160-008,gemini:GEMINI/N20191101S0007.fits,2020-02-25T20:36:31.230\n'.split('\n'),
             format='csv',
         )
     elif query_string.strip().startswith('SELECT max(A.lastModified'):
@@ -948,18 +988,12 @@ def _mock_retrieve_headers(mock_name, ign1, ign2):
     return _mock_headers(mock_name, mock_name)
 
 
-def _mock_get_head(file_id):
-    return _mock_headers(file_id, file_id)
+def _mock_retrieve_headers_37(mock_name, ign1, ign2, ignore3):
+    return _mock_headers(mock_name, mock_name)
 
 
-class MockFileReader(gemini_metadata.GeminiFileMetadataReader):
-
-    def __init__(self, pf_mock, filter_mock):
-        super().__init__(http_session=Mock(), provenance_finder=pf_mock, filter_cache=filter_mock)
-
-    def _retrieve_headers(self, key, file_id):
-        result = _mock_headers(key, file_id)
-        self._headers[key] = result
+def read_mock_37(collection, obs_id):
+    return SimpleObservation(collection='OMM', observation_id='test_obs_id', algorithm=Algorithm(name='exposure'))
 
 
 def _run_test_common(
@@ -967,6 +1001,7 @@ def _run_test_common(
     get_pi_mock,
     svofps_mock,
     pf_mock,
+    header_mock,
     json_mock,
     file_type_mock,
     test_set,
@@ -977,66 +1012,67 @@ def _run_test_common(
     warnings.simplefilter('ignore', AstropyWarning)
     get_pi_mock.side_effect = mock_get_pi_metadata
     svofps_mock.side_effect = mock_get_votable
-    pf_mock.get.side_effect = mock_get_data_label
+    pf_mock.return_value.get.side_effect = mock_get_data_label
     json_mock.side_effect = mock_get_obs_metadata
     file_type_mock.return_value = 'application/fits'
 
-    orig_cwd = os.getcwd()
-    try:
-        os.chdir(tmp_path)
-        test_config.task_types = [mc.TaskType.SCRAPE]
-        test_config.use_local_files = True
-        test_config.data_sources = data_sources
-        test_config.change_working_directory(tmp_path.as_posix())
-        test_config.proxy_file_name = 'test_proxy.pem'
-        test_config.logging_level = 'ERROR'
-        test_config.write_to_file(test_config)
-        set_logging(test_config)
+    test_config.task_types = [mc.TaskType.SCRAPE]
+    test_config.use_local_files = True
+    test_config.log_to_file = True  # set the xml creation location
+    test_config.data_sources = data_sources
+    test_config.change_working_directory(tmp_path.as_posix())
+    test_config.proxy_file_name = 'test_proxy.pem'
+    test_config.logging_level = 'ERROR'
+    test_config.write_to_file(test_config)
+    set_logging(test_config)
 
-        with open(test_config.proxy_fqn, 'w') as f:
-            f.write('test content')
+    with open(test_config.proxy_fqn, 'w') as f:
+        f.write('test content')
 
-        observation = None
-        in_fqn = expected_fqn.replace('.expected.', '.in.')
-        if os.path.exists(in_fqn):
-            observation = mc.read_obs_from_file(in_fqn)
-        actual_fqn = expected_fqn.replace('expected', 'actual')
-        if os.path.exists(actual_fqn):
-            os.unlink(actual_fqn)
+    observation = None
+    in_fqn = expected_fqn.replace('.expected.', '.in.')
+    if os.path.exists(in_fqn):
+        observation = mc.read_obs_from_file(in_fqn)
+    actual_fqn = expected_fqn.replace('expected', 'actual')
+    if os.path.exists(actual_fqn):
+        os.unlink(actual_fqn)
 
-        test_observable = mc.Observable(test_config)
-        for entry in test_set:
-            filter_cache = svofps.FilterMetadataCache(svofps_mock)
-            metadata_reader = MockFileReader(pf_mock, filter_cache)
-            test_metadata = gemini_metadata.GeminiMetadataLookup(
-                metadata_reader
-            )
-            test_builder = builder.GemObsIDBuilder(
-                test_config, metadata_reader, test_metadata
-            )
-            storage_name = test_builder.build(entry)
-            client_mock = Mock()
-            kwargs = {
-                'storage_name': storage_name,
-                'metadata_reader': metadata_reader,
-                'clients': client_mock,
-                'observable': test_observable,
-                'config': test_config,
-            }
-            try:
-                observation = fits2caom2_augmentation.visit(observation, **kwargs)
-            except mc.CadcException as e:
-                if storage_name.file_name in ['N20220915S0113.fits', 'S20230301S0170.fits']:
-                    assert (
-                        test_observable.rejected.is_mystery_value(storage_name.file_name)
-                    ), 'expect rejected mystery value record'
-                raise e
+    test_reporter = mc.ExecutionReporter2(test_config)
+    filter_cache = svofps.FilterMetadataCache(svofps_mock)
+    clients_mock = Mock()
+    for test_f_name, test_obs_id in test_set.items():
+        storage_name = GemName(test_f_name, filter_cache)
+        storage_name.obs_id = test_obs_id
+        test_subject = gemini_metadata.GeminiMetaVisitRunnerMeta(
+            clients_mock, test_config, [fits2caom2_augmentation], test_reporter
+        )
 
-        compare(expected_fqn, actual_fqn, observation)
+        def _read_header_mock(ignore1, ignore2, ignore3, ignore4):
+            if 'S20210518S0022' in test_f_name:
+                return []
+            else:
+                return get_local_file_headers(test_f_name)
+        header_mock.side_effect = _read_header_mock
 
-        if observation.observation_id in ['GS-2022B-Q-235-137-045', 'GS-2023A-LP-103-23-017']:
-            assert test_observable.rejected.is_bad_metadata(storage_name.file_name), 'expect rejected record'
-        else:
-            assert not test_observable.rejected.is_bad_metadata(storage_name.file_name), 'expect no rejected record'
-    finally:
-        os.chdir(orig_cwd)
+        clients_mock.metadata_client.read.return_value = observation
+
+        context = {'storage_name': storage_name}
+        try:
+            test_subject.execute(context)
+        except mc.CadcException as e:
+            if storage_name.file_name in ['N20220915S0113.fits', 'S20230301S0170.fits']:
+                assert (
+                    test_reporter._observable.rejected.is_mystery_value(storage_name.file_name)
+                ), 'expect rejected mystery value record'
+            raise e
+
+    compare(expected_fqn, actual_fqn, test_subject._observation)
+
+    if test_subject._observation.observation_id in ['GS-2022B-Q-235-137-045', 'GS-2023A-LP-103-23-017']:
+        assert (
+            test_reporter._observable.rejected.is_bad_metadata(storage_name.file_name)
+        ), 'expect rejected record'
+    else:
+        assert (
+            not test_reporter._observable.rejected.is_bad_metadata(storage_name.file_name)
+        ), 'expect no rejected record'

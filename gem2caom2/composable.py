@@ -2,7 +2,7 @@
 # ******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
 # *************  CENTRE CANADIEN DE DONNÉES ASTRONOMIQUES  **************
 #
-#  (c) 2024.                            (c) 2024.
+#  (c) 2025.                            (c) 2025.
 #  Government of Canada                 Gouvernement du Canada
 #  National Research Council            Conseil national de recherches
 #  Ottawa, Canada, K1A 0R6              Ottawa, Canada, K1A 0R6
@@ -71,14 +71,15 @@ import sys
 import traceback
 
 from caom2pipe.client_composable import ClientCollection
-from caom2pipe.execute_composable import OrganizeExecutes
 from caom2pipe import data_source_composable as dsc
 from caom2pipe import manage_composable as mc
 from caom2pipe import run_composable as rc
 from gem2caom2 import ghost_preview_augmentation, preview_augmentation
-from gem2caom2 import pull_augmentation, data_source, builder
+from gem2caom2 import pull_augmentation, data_source
 from gem2caom2 import cleanup_augmentation, fits2caom2_augmentation
-from gem2caom2 import gemini_metadata, svofps
+from gem2caom2 import svofps
+from gem2caom2.gem_name import GemName
+
 
 DATA_VISITORS = [ghost_preview_augmentation]
 META_VISITORS = [fits2caom2_augmentation, pull_augmentation, preview_augmentation, cleanup_augmentation]
@@ -112,78 +113,26 @@ class GemClientCollection(ClientCollection):
         self._svo_session = value
 
 
-class GemOrganizeExecutes(OrganizeExecutes):
-
-    def __init__(
-            self,
-            config,
-            meta_visitors,
-            data_visitors,
-            chooser,
-            store_transfer,
-            modify_transfer,
-            metadata_reader,
-            clients,
-            observable,
-        ):
-        super().__init__(
-            config,
-            meta_visitors,
-            data_visitors,
-            chooser,
-            store_transfer,
-            modify_transfer,
-            metadata_reader,
-            clients,
-            observable,
-        )
-
-    def can_use_single_visit(self):
-        return False
-
-
 def _common_init():
     config = mc.Config()
     config.get_executors()
     clients = GemClientCollection(config)
     meta_visitors = META_VISITORS
     gemini_session = mc.get_endpoint_session()
-    provenance_finder = gemini_metadata.ProvenanceFinder(
-        config, clients.query_client, gemini_session
-    )
     svofps_session = mc.get_endpoint_session()
     filter_cache = svofps.FilterMetadataCache(svofps_session)
     clients.gemini_session = gemini_session
     clients.svo_session = svofps_session
     if config.use_local_files or mc.TaskType.SCRAPE in config.task_types:
-        metadata_reader = gemini_metadata.GeminiFileMetadataReader(
-            gemini_session, provenance_finder, filter_cache
-        )
         meta_visitors = [
             fits2caom2_augmentation,
             preview_augmentation,
             cleanup_augmentation,
         ]
-    elif [mc.TaskType.VISIT] == config.task_types or [mc.TaskType.VISIT, mc.TaskType.MODIFY] == config.task_types:
-        metadata_reader = gemini_metadata.GeminiStorageClientReader(
-            clients.data_client,
-            gemini_session,
-            provenance_finder,
-            filter_cache,
-        )
-    else:
-        metadata_reader = gemini_metadata.GeminiMetadataReader(
-            gemini_session, provenance_finder, filter_cache
-        )
-    reader_lookup = gemini_metadata.GeminiMetadataLookup(metadata_reader)
-    reader_lookup.reader = metadata_reader
-    name_builder = builder.GemObsIDBuilder(
-        config, metadata_reader, reader_lookup
-    )
     mc.StorageName.collection = config.collection
     mc.StorageName.scheme = config.scheme
     mc.StorageName.preview_scheme = config.preview_scheme
-    return clients, config, metadata_reader, meta_visitors, name_builder
+    return clients, config, meta_visitors, filter_cache
 
 
 def _run():
@@ -191,27 +140,20 @@ def _run():
     Uses a todo file with file names, even though Gemini provides
     information about existing data referenced by observation ID.
     """
-    (
-        clients,
-        config,
-        metadata_reader,
-        meta_visitors,
-        name_builder,
-    ) = _common_init()
+    clients, config, meta_visitors, filter_cache = _common_init()
     if config.use_local_files or mc.TaskType.SCRAPE in config.task_types:
         source = dsc.ListDirSeparateDataSource(config)
     else:
-        source = dsc.TodoFileDataSource(config)
-    return rc.run_by_todo(
+        source = data_source.GeminiTodoFile(config, filter_cache)
+    return rc.run_by_todo_runner_meta(
         config=config,
-        name_builder=name_builder,
         meta_visitors=meta_visitors,
         data_visitors=DATA_VISITORS,
         sources=[source],
-        metadata_reader=metadata_reader,
         clients=clients,
-        organizer_module_name='gem2caom2.composable',
-        organizer_class_name='GemOrganizeExecutes',
+        organizer_module_name='gem2caom2.gemini_metadata',
+        organizer_class_name='GeminiOrganizeExecutesRunnerMeta',
+        storage_name_ctor=GemName,
     )
 
 
@@ -238,26 +180,17 @@ def _run_by_public():
     :return 0 if successful, -1 if there's any sort of failure. Return status
         is used by airflow for task instance management and reporting.
     """
-    (
-        clients,
-        config,
-        metadata_reader,
-        meta_visitors,
-        name_builder,
-    ) = _common_init()
-    incremental_source = data_source.PublicIncremental(
-        config, clients.query_client
-    )
-    return rc.run_by_state(
+    clients, config, meta_visitors, filter_cache = _common_init()
+    incremental_source = data_source.PublicIncremental(config, clients.query_client, filter_cache)
+    return rc.run_by_state_runner_meta(
         config=config,
-        name_builder=name_builder,
         meta_visitors=meta_visitors,
         data_visitors=DATA_VISITORS,
         sources=[incremental_source],
         clients=clients,
-        metadata_reader=metadata_reader,
-        organizer_module_name='gem2caom2.composable',
-        organizer_class_name='GemOrganizeExecutes',
+        organizer_module_name='gem2caom2.gemini_metadata',
+        organizer_class_name='GeminiOrganizeExecutesRunnerMeta',
+        storage_name_ctor=GemName,
     )
 
 
@@ -279,31 +212,18 @@ def _run_state():
     :return 0 if successful, -1 if there's any sort of failure. Return status
         is used by airflow for task instance management and reporting.
     """
-    (
-        clients,
-        config,
-        metadata_reader,
-        meta_visitors,
-        name_builder,
-    ) = _common_init()
-    incremental_source = data_source.IncrementalSource(config, metadata_reader)
-    result = rc.run_by_state(
+    clients, config, meta_visitors, filter_cache = _common_init()
+    incremental_source = data_source.IncrementalSource(config, clients.gemini_session, filter_cache)
+    return rc.run_by_state_runner_meta(
         config=config,
-        name_builder=name_builder,
         meta_visitors=meta_visitors,
         data_visitors=DATA_VISITORS,
         sources=[incremental_source],
         clients=clients,
-        metadata_reader=metadata_reader,
-        organizer_module_name='gem2caom2.composable',
-        organizer_class_name='GemOrganizeExecutes',
+        organizer_module_name='gem2caom2.gemini_metadata',
+        organizer_class_name='GeminiOrganizeExecutesRunnerMeta',
+        storage_name_ctor=GemName,
     )
-    if incremental_source.max_records_encountered:
-        logging.warning('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-        logging.warning('Encountered maximum records!!')
-        logging.warning('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-        result |= -1
-    return result
 
 
 def run_state():
@@ -323,48 +243,20 @@ def _run_incremental_diskfiles():
 
     :return 0 if successful, -1 if there's any sort of failure.
     """
-    config = mc.Config()
-    config.get_executors()
-    mc.StorageName.collection = config.collection
-    mc.StorageName.scheme = config.scheme
-    mc.StorageName.preview_scheme = config.preview_scheme
-    clients = GemClientCollection(config)
-    meta_visitors = META_VISITORS
-    gemini_session = mc.get_endpoint_session()
-    provenance_finder = gemini_metadata.ProvenanceFinder(config, clients.query_client, gemini_session)
-    svofps_session = mc.get_endpoint_session()
-    filter_cache = svofps.FilterMetadataCache(svofps_session)
-    clients.gemini_session = gemini_session
-    clients.svo_session = svofps_session
-    metadata_reader = gemini_metadata.FileInfoBeforeJsonReader(
-        clients.data_client, gemini_session, provenance_finder, filter_cache
-        )
-    reader_lookup = gemini_metadata.GeminiMetadataLookup(metadata_reader)
-    reader_lookup.reader = metadata_reader
-    name_builder = builder.GemObsIDBuilder(config, metadata_reader, reader_lookup)
-    incremental_source = data_source.IncrementalSourceDiskfiles(config, metadata_reader)
-    result = rc.run_by_state(
+    clients, config, meta_visitors, filter_cache = _common_init()
+    incremental_source = data_source.IncrementalSourceDiskfiles(
+        config, clients.gemini_session, GemName, filter_cache
+    )
+    return rc.run_by_state_runner_meta(
         config=config,
-        name_builder=name_builder,
         meta_visitors=meta_visitors,
         data_visitors=DATA_VISITORS,
         sources=[incremental_source],
         clients=clients,
-        metadata_reader=metadata_reader,
-        organizer_module_name='gem2caom2.composable',
-        organizer_class_name='GemOrganizeExecutes',
+        organizer_module_name='gem2caom2.gemini_metadata',
+        organizer_class_name='GeminiOrganizeExecutesRunnerMeta',
+        storage_name_ctor=GemName,
     )
-    if incremental_source.max_records_encountered:
-        # There's a currently 10k limit on the number of records returned from the archive.gemini.edu endpoints.
-        # As of this writing, if that limit is encountered, the ingestion requires manual intervention to recover.
-        # As opposed to stopping the incremental ingestion with a time-box where it will just continually fail
-        # with this same error, which is what raising the exception would do, the app notifies Ops via the log
-        # message, and then carries on, so as to more efficiently process large numbers of inputs.
-        logging.warning('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-        logging.warning('Encountered maximum records!!')
-        logging.warning('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-        result |= -1
-    return result
 
 
 def run_incremental_diskfiles():

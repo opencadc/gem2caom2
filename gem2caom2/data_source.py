@@ -2,7 +2,7 @@
 # ******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
 # *************  CENTRE CANADIEN DE DONNÉES ASTRONOMIQUES  **************
 #
-#  (c) 2024.                            (c) 2024.
+#  (c) 2025.                            (c) 2025.
 #  Government of Canada                 Gouvernement du Canada
 #  National Research Council            Conseil national de recherches
 #  Ottawa, Canada, K1A 0R6              Ottawa, Canada, K1A 0R6
@@ -70,10 +70,14 @@ from bs4 import BeautifulSoup
 from collections import defaultdict, deque, OrderedDict
 from datetime import datetime
 
+from cadcdata import FileInfo
+from caom2utils.blueprints import _to_int
+from caom2utils.data_util import get_file_type
 from caom2pipe import client_composable as clc
 from caom2pipe import data_source_composable as dsc
-from caom2pipe.manage_composable import build_uri, CaomName, ISO_8601_FORMAT, make_datetime, query_endpoint_session
-from caom2pipe.manage_composable import StorageName
+from caom2pipe.manage_composable import CaomName, ISO_8601_FORMAT, make_datetime, query_endpoint_session
+from gem2caom2.gem_name import GemName
+from gem2caom2.obs_file_relationship import repair_data_label
 
 
 __all__ = ['GEM_BOOKMARK', 'IncrementalSource', 'PublicIncremental']
@@ -90,13 +94,13 @@ class IncrementalSource(dsc.IncrementalDataSource):
     created.
     """
 
-    def __init__(self, config, reader):
+    def __init__(self, config, session, filter_cache):
         super().__init__(config, start_key=GEM_BOOKMARK)
         self._max_records_encountered = False
         self._encounter_start = None
         self._encounter_end = None
-        self._session = reader._session
-        self._metadata_reader = reader
+        self._session = session
+        self._filter_cache = filter_cache
 
     def _initialize_end_dt(self):
         self._end_dt = datetime.now()
@@ -105,11 +109,11 @@ class IncrementalSource(dsc.IncrementalDataSource):
         """
         :param prev_exec_dt datetime start of the time-boxed chunk
         :param exec_dt datetime end of the time-boxed chunk
-        :return: a deque of file names with time their associated JSON (DB)
-            records were modified from archive.gemini.edu.
+        :return: a deque of StorageName instances with time their associated JSON (DB) records were modified from
+            archive.gemini.edu.
         """
-
         self._logger.debug(f'Begin get_time_box_work from {prev_exec_dt} to {exec_dt}.')
+        self._max_records_encountered = False
         # datetime format 2019-12-01T00:00:00.000000
         prev_dt_str = prev_exec_dt.strftime(ISO_8601_FORMAT)
         exec_dt_str = exec_dt.strftime(ISO_8601_FORMAT)
@@ -140,13 +144,11 @@ class IncrementalSource(dsc.IncrementalDataSource):
                         for entry in metadata:
                             file_name = entry.get('name')
                             entry_dt = make_datetime(entry.get('entrytime'))
-                            entries.append(dsc.StateRunnerMeta(file_name, entry_dt))
-                            uri = build_uri(StorageName.collection, file_name, StorageName.scheme)
-                            # all the other cases where add_json_record is
-                            # called, there's a list as input, so conform to
-                            # that typing here
-                            self._metadata_reader.add_json_record(uri, [entry])
-                            self._metadata_reader.add_file_info_record(uri)
+                            entries.append(
+                                dsc.RunnerMeta(
+                                    GemName(file_name=file_name, filter_cache=self._filter_cache), entry_dt
+                                )
+                            )
         finally:
             if response is not None:
                 response.close()
@@ -158,13 +160,7 @@ class IncrementalSource(dsc.IncrementalDataSource):
         self._logger.debug('End get_time_box_work.')
         return entries
 
-    @property
     def max_records_encountered(self):
-        if self._max_records_encountered:
-            self._logger.error(
-                f'Max records window {self._encounter_start} to '
-                f'{self._encounter_end}.'
-            )
         return self._max_records_encountered
 
 
@@ -172,9 +168,10 @@ class PublicIncremental(dsc.QueryTimeBoxDataSource):
     """Implements the identification of the work to be done, by querying
     the local TAP service for files that have recently gone public."""
 
-    def __init__(self, config, query_client):
+    def __init__(self, config, query_client, filter_cache):
         super().__init__(config)
         self._query_client = query_client
+        self._filter_cache = filter_cache
 
     def _initialize_end_dt(self):
         self._end_dt = datetime.now()
@@ -191,7 +188,7 @@ class PublicIncremental(dsc.QueryTimeBoxDataSource):
         prev_dt_str = prev_exec_dt.strftime(ISO_8601_FORMAT)
         exec_dt_str = exec_dt.strftime(ISO_8601_FORMAT)
         query = (
-            f"SELECT A.uri, A.lastModified "
+            f"SELECT O.observationID, A.uri, A.lastModified "
             f"FROM caom2.Observation AS O "
             f"JOIN caom2.Plane AS P ON O.obsID = P.obsID "
             f"JOIN caom2.Artifact AS A ON P.planeID = A.planeID "
@@ -210,12 +207,14 @@ class PublicIncremental(dsc.QueryTimeBoxDataSource):
         )
         result = clc.query_tap_client(query, self._query_client)
         # results look like:
-        # gemini:GEM/N20191202S0125.fits, ISO 8601
+        # GN-2019B-ENG-1-160-008, gemini:GEM/N20191202S0125.fits, ISO 8601
 
         entries = deque()
         for row in result:
+            gem_name = GemName(file_name=CaomName(row['uri']).file_name, filter_cache=self._filter_cache)
+            gem_name._obs_id = repair_data_label(CaomName(row['uri']).file_name, row['observationID'])
             entries.append(
-                dsc.StateRunnerMeta(CaomName(row['uri']).file_name, make_datetime(row['lastModified']))
+                dsc.RunnerMeta(gem_name, make_datetime(row['lastModified']))
             )
         self._reporter.capture_todo(len(entries), 0, 0)
         self._logger.debug('End get_time_box_work')
@@ -230,13 +229,14 @@ class IncrementalSourceDiskfiles(dsc.IncrementalDataSource):
     entrytime is when the DB record behind the JSON being displayed was created.
     """
 
-    def __init__(self, config, reader):
+    def __init__(self, config, gemini_session, storage_name_ctor, filter_cache):
         super().__init__(config, start_key=GEM_BOOKMARK)
         self._max_records_encountered = False
         self._encounter_start = None
         self._encounter_end = None
-        self._session = reader._session
-        self._metadata_reader = reader
+        self._session = gemini_session
+        self._storage_name_ctor = storage_name_ctor
+        self._filter_cache = filter_cache
 
     def _initialize_end_dt(self):
         self._end_dt = datetime.now()
@@ -250,10 +250,14 @@ class IncrementalSourceDiskfiles(dsc.IncrementalDataSource):
         """
 
         self._logger.debug(f'Begin get_time_box_work from {prev_exec_dt} to {exec_dt}.')
+        self._max_records_encountered = False
         # datetime format 2019-12-01T00:00:00 => no microseconds in the url
         prev_exec_dt_iso = prev_exec_dt.replace(microsecond=0)
         exec_dt_iso = exec_dt.replace(microsecond=0)
-        url = f'https://archive.gemini.edu/diskfiles/entrytimedaterange={prev_exec_dt_iso.isoformat()}--{exec_dt_iso.isoformat()}'
+        url = (
+            f'https://archive.gemini.edu/diskfiles/entrytimedaterange='
+            f'{prev_exec_dt_iso.isoformat()}--{exec_dt_iso.isoformat()}'
+        )
 
         # needs to be ordered by timestamps when processed
         self._logger.info(f'Querying {url}')
@@ -277,13 +281,21 @@ class IncrementalSourceDiskfiles(dsc.IncrementalDataSource):
                     for entry_dt, values  in metadata.items():
                         for value in values:
                             file_name = value.get('filename')
-                            entries.append(dsc.StateRunnerMeta(file_name, entry_dt))
-                            uri = build_uri(StorageName.collection, file_name, StorageName.scheme)
-                            self._metadata_reader.add_file_info_html_record(uri, value)
+                            storage_name = self._storage_name_ctor(file_name, self._filter_cache)
+                            storage_name.file_info[storage_name.destination_uris[0]] = FileInfo(
+                                id=file_name,
+                                size=_to_int(value.get('data_size')),
+                                md5sum=value.get('data_md5'),
+                                file_type=get_file_type(file_name),
+                            )
+                            repaired_data_label = repair_data_label(file_name, value.get('datalabel'))
+                            storage_name.obs_id = repaired_data_label
+                            entries.append(dsc.RunnerMeta(storage_name, entry_dt))
         finally:
             if response is not None:
                 response.close()
         if len(entries) == MAX_ENTRIES:
+            self._logger.warning(f'Max records window {self._encounter_start} to {self._encounter_end}.')
             self._max_records_encountered = True
             self._encounter_start = prev_exec_dt
             self._encounter_end = exec_dt
@@ -298,9 +310,12 @@ class IncrementalSourceDiskfiles(dsc.IncrementalDataSource):
         for row in rows:
             cells = row.find_all('td')
             entry_time = make_datetime(cells[5].text.strip())  # what the https query is keyed on
+            file_name = cells[0].text.strip()
+            if file_name.endswith('-fits!-md!'):
+                continue
             value = {
-                'filename': cells[0].text.strip(),
-                'datalabel': cells[1].text.strip(),
+                'filename': file_name,
+                'datalabel': cells[1].text.strip().split('\n')[-1],
                 'instrument': cells[2].text.strip(),
                 'lastmod': make_datetime(cells[6].text.strip()),
                 'data_size': cells[10].text.strip(),
@@ -310,11 +325,21 @@ class IncrementalSourceDiskfiles(dsc.IncrementalDataSource):
         result = OrderedDict(sorted(temp.items()))
         return result
 
-    @property
     def max_records_encountered(self):
-        if self._max_records_encountered:
-            self._logger.error(
-                f'Max records window {self._encounter_start} to '
-                f'{self._encounter_end}.'
-            )
         return self._max_records_encountered
+
+
+class GeminiTodoFile(dsc.TodoFileDataSourceRunnerMeta):
+
+    def __init__(self, config, filter_cache):
+        super().__init__(config, GemName)
+        self._filter_cache = filter_cache
+
+    def _find_work(self, entry_path):
+        with open(entry_path) as f:
+            for line in f:
+                temp = line.strip()
+                if len(temp) > 0:
+                    # ignore empty lines
+                    self._logger.debug(f'Adding entry {temp} to work list.')
+                    self._work.append(GemName(file_name=temp, filter_cache=self._filter_cache))

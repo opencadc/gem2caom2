@@ -2,7 +2,7 @@
 # ******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
 # *************  CENTRE CANADIEN DE DONNÉES ASTRONOMIQUES  **************
 #
-#  (c) 2022.                            (c) 2022.
+#  (c) 2025.                            (c) 2025.
 #  Government of Canada                 Gouvernement du Canada
 #  National Research Council            Conseil national de recherches
 #  Ottawa, Canada, K1A 0R6              Ottawa, Canada, K1A 0R6
@@ -71,29 +71,13 @@ import os
 from astropy.io import fits
 from astropy.table import Table
 
-from mock import patch, Mock
+from mock import ANY, patch, Mock
 
 from cadcutils import exceptions
 from caom2pipe import manage_composable as mc
 from gem2caom2 import gemini_metadata, gem_name
 
 import gem_mocks
-
-
-@patch('gem2caom2.gemini_metadata.retrieve_headers')
-@patch('gem2caom2.gemini_metadata.GeminiMetadataReader._retrieve_json')
-def test_set(retrieve_json_mock, retrieve_headers_mock):
-    retrieve_json_mock.side_effect = gem_mocks.mock_get_obs_metadata
-    test_f_name = 'N20030104S0065.fits'
-    test_obs_id = 'GN-CAL20030104-14-001'
-    retrieve_headers_mock.side_effect = gem_mocks._mock_retrieve_headers
-    test_storage_name = gem_name.GemName(file_name=test_f_name)
-    test_storage_name.obs_id = test_obs_id
-    test_subject = gemini_metadata.GeminiMetadataReader(Mock(), Mock(), Mock())
-    test_subject.set(test_storage_name)
-    assert len(test_subject._json_metadata) == 1, 'json entries'
-    assert len(test_subject._headers) == 1, 'header entries'
-    assert len(test_subject._file_info) == 1, 'file info entries'
 
 
 @patch('caom2utils.data_util.get_local_file_headers', autospec=True)
@@ -140,9 +124,7 @@ def test_provenance_finder(caom2_mock, local_mock):
                 else:
                     test_config.task_types = [mc.TaskType.SCRAPE]
 
-                test_subject = gemini_metadata.ProvenanceFinder(
-                    test_config, Mock(), Mock()
-                )
+                test_subject = gemini_metadata.ProvenanceFinder(Mock(), test_config)
                 assert test_subject is not None, (
                     f'ctor does not work:: '
                     f'local {test_use_local}, '
@@ -164,30 +146,16 @@ def test_provenance_finder(caom2_mock, local_mock):
 
 
 @patch('caom2pipe.client_composable.ClientCollection')
-@patch('gem2caom2.gemini_metadata.AbstractGeminiMetadataReader._retrieve_json')
-def test_header_not_at_cadc(retrieve_json_mock, clients_mock, test_config):
+@patch('gem2caom2.gemini_metadata.retrieve_gemini_headers')
+def test_header_not_at_cadc_no_reader(retrieve_gemini_mock, clients_mock, test_config):
     # the file is private, re-ingestion fails to find headers at CADC, needs to go back to archive.gemini.edu
     test_f_name = 'N20220314S0229.fits.bz2'
     test_obs_id = 'GN-CAL20220314-18-083'
-    retrieve_json_mock.side_effect = gem_mocks.mock_get_obs_metadata
-    test_provenance_finder = gemini_metadata.ProvenanceFinder(
-        test_config, clients_mock.return_value.query_client, Mock()
-    )
-    clients_mock.return_value.data_client.get_head.side_effect = exceptions.UnexpectedException
-    test_session_mock = Mock()
-    test_session_mock.get.side_effect = gem_mocks.mock_fullheader_endpoint
-    test_filter_cache = Mock()
-    test_subject = gemini_metadata.GeminiStorageClientReader(
-        clients_mock.return_value.data_client, test_session_mock, test_provenance_finder, test_filter_cache
-    )
+    retrieve_gemini_mock.side_effect = gem_mocks._mock_retrieve_headers
+    clients_mock.data_client.get_head.side_effect = exceptions.UnexpectedException
     test_storage_name = gem_name.GemName(file_name=test_f_name)
     test_storage_name.obs_id = test_obs_id
-    test_subject.set(test_storage_name)
-    assert test_subject.headers[test_storage_name.file_uri] is not None, 'expect query result'
-    assert (
-        len(test_subject.headers[test_storage_name.file_uri]) == 13
-    ), f'headers have content {len(test_subject.headers[test_storage_name.file_uri])}'
-    assert test_session_mock.get.called, 'get mock not called'
-    test_session_mock.get.assert_called_with(
-        'https://archive.gemini.edu/fullheader/N20220314S0229.fits', timeout=20
-    ), 'wrong mock args'
+    test_result = gemini_metadata.retrieve_headers(test_f_name, Mock(), clients_mock, test_config)
+    assert test_result is not None, 'expect a result'
+    assert retrieve_gemini_mock.called, 'retrieve mock not called'
+    retrieve_gemini_mock.assert_called_with(test_f_name, ANY, ANY ), 'wrong mock args'
