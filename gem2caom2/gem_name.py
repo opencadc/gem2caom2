@@ -199,9 +199,7 @@ class GemName(mc.StorageName):
                 # DB 20-07-21
                 #  each pair of H/K files will be one observation with one
                 #  plane with two artifacts.
-                self._product_id = self._file_id.replace(
-                    'SDCH', 'SDC'
-                ).replace('SDCK', 'SDC')
+                self._product_id = self._file_id.replace('SDCH', 'SDC').replace('SDCK', 'SDC')
             else:
                 self._product_id = self._file_id
 

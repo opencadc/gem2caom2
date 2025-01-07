@@ -319,7 +319,7 @@ def test_run_by_public(exec_mock, json_mock, header_mock, clients_mock, query_mo
         with patch(
             'caom2pipe.data_source_composable.QueryTimeBoxDataSource.end_dt', PropertyMock(return_value=now_dt)
         ):
-             # execution
+            # execution
             test_result = composable._run_by_public()
             assert test_result == 0, 'wrong result'
     except Exception as e:
@@ -409,12 +409,8 @@ def test_run_by_incremental_reproduce(
     # execution
     composable._run_state()
     assert meta_client_mock.read.called, 'should have been called'
-    assert (
-        meta_client_mock.read.call_count == 2
-    ), f'wrong call count {meta_client_mock.read.call_count}'
-    meta_client_mock.read.assert_called_with(
-        'GEMINI', 'GN-CAL20220314-18-090'
-    ), 'wrong run args'
+    assert meta_client_mock.read.call_count == 2, f'wrong call count {meta_client_mock.read.call_count}'
+    meta_client_mock.read.assert_called_with('GEMINI', 'GN-CAL20220314-18-090'), 'wrong run args'
 
 
 @patch('gem2caom2.gemini_metadata.retrieve_headers')
@@ -471,9 +467,7 @@ def test_run_state_compression_commands(
         f.write('test content')
 
     start_time = datetime.now() - timedelta(minutes=5)
-    start_file_content = (
-        f'bookmarks:\n  gemini_timestamp:\n    last_record: {start_time}\n'
-    )
+    start_file_content = f'bookmarks:\n  gemini_timestamp:\n    last_record: {start_time}\n'
     with open(test_config.state_fqn, 'w') as f:
         f.write(start_file_content)
 
@@ -495,9 +489,7 @@ def test_run_state_compression_commands(
             f'{test_config.scheme}:{test_config.collection}/S20050825S0143.fits',
         ),
     ]
-    clients_mock.return_value.data_client.put.assert_has_calls(
-        put_calls
-    ), 'wrong put args'
+    clients_mock.return_value.data_client.put.assert_has_calls(put_calls), 'wrong put args'
 
     # LocalStore, put is mocked, no info calls as part of that
     clients_mock.return_value.data_client.info.assert_not_called(), 'info'
@@ -506,9 +498,7 @@ def test_run_state_compression_commands(
     clients_mock.return_value.data_client.get_head.assert_not_called()
     # LocalStore, get should not be called
     clients_mock.return_value.data_client.get.assert_not_called()
-    assert (
-        not clients_mock.return_value.metadata_client.read.called
-    ), 'read'
+    assert not clients_mock.return_value.metadata_client.read.called, 'read'
 
 
 @patch('caom2pipe.manage_composable.ExecutionSummary', autospec=True)
@@ -642,10 +632,18 @@ def test_run_incremental_diskfiles_limit(
     assert query_mock.called, 'query endpoint session called'
     # https://archive.gemini.edu/diskfiles/entrytimedaterange=2024-10-20T20:03:00--2024-11-01T23:03:00
     assert query_mock.call_count == 2, 'query endpoint session count'
-    query_mock.assert_has_calls([
-        call('https://archive.gemini.edu/diskfiles/entrytimedaterange=2024-08-28T17:05:00--2024-08-28T18:05:00', ANY),
-        call('https://archive.gemini.edu/diskfiles/entrytimedaterange=2024-08-28T17:07:32--2024-08-28T18:05:00', ANY),
-    ])
+    query_mock.assert_has_calls(
+        [
+            call(
+                'https://archive.gemini.edu/diskfiles/entrytimedaterange=2024-08-28T17:05:00--2024-08-28T18:05:00',
+                ANY,
+            ),
+            call(
+                'https://archive.gemini.edu/diskfiles/entrytimedaterange=2024-08-28T17:07:32--2024-08-28T18:05:00',
+                ANY,
+            ),
+        ]
+    )
     assert not clients_mock.return_value.data_client.put.called, 'data put called'
     assert not clients_mock.return_value.metadata_client.read.called, 'meta read called'
     assert not clients_mock.return_value.metadata_client.update.called, 'meta update called'

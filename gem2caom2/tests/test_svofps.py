@@ -89,9 +89,7 @@ test_subjects = {
 
 def test_repair_filter_name():
     for ii in test_subjects:
-        test_result = svofps.FilterMetadataCache._repair_filter_name_for_svo(
-            test_subjects[ii][0], ii
-        )
+        test_result = svofps.FilterMetadataCache._repair_filter_name_for_svo(test_subjects[ii][0], ii)
         assert test_result == test_subjects[ii][1], 'wrong value'
 
 
@@ -100,19 +98,14 @@ def test_get_filter_metadata(get_vo_mock):
     get_vo_mock.side_effect = gem_mocks.mock_get_votable
     cache = Mock()
     test_subject = svofps.FilterMetadataCache(Mock())
-    test_result = test_subject.get_filter_metadata(
-        Inst.NIRI, 'filters', 'telescope_name'
-    )
+    test_result = test_subject.get_filter_metadata(Inst.NIRI, 'filters', 'telescope_name')
     assert get_vo_mock.call_count == 2, 'wrong number of calls'
     get_vo_mock.assert_called_with(
-        'http://svo2.cab.inta-csic.es/svo/theory/fps3/fps.php?ID=Gemini/'
-        'NIRI.filtersw&VERB=0',
+        'http://svo2.cab.inta-csic.es/svo/theory/fps3/fps.php?ID=Gemini/' 'NIRI.filtersw&VERB=0',
         ANY,
     ), 'wrong call args'
     assert test_result is None, 'do not expect a result'
     # do the same thing again, check that the result has been cached
-    test_result = test_subject.get_filter_metadata(
-        Inst.NIRI, 'filters', 'telescope_name'
-    )
+    test_result = test_subject.get_filter_metadata(Inst.NIRI, 'filters', 'telescope_name')
     assert get_vo_mock.call_count == 2, 'wrong number of calls'
     assert test_result is None, 'do not expect a result this time either'

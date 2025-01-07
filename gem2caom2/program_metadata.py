@@ -87,15 +87,11 @@ def get_pi_metadata(program_id):
             metadata = None
             logging.warning(f'No external access. No PI metadata.')
         else:
-            program_url = (
-                f'https://archive.gemini.edu/programinfo/{program_id}'
-            )
+            program_url = f'https://archive.gemini.edu/programinfo/{program_id}'
             # Open the URL and fetch the JSON document for the observation
             response = None
             try:
-                response = mc.query_endpoint_session(
-                    program_url, gemini_session
-                )
+                response = mc.query_endpoint_session(program_url, gemini_session)
                 xml_metadata = response.text
             finally:
                 if response:

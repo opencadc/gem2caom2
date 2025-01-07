@@ -70,6 +70,7 @@
 from caom2pipe import caom_composable as cc
 from gem2caom2 import main_app
 
+
 class GeminiFits2caom2Visitor(cc.Fits2caom2VisitorRunnerMeta):
     def __init__(self, observation, **kwargs):
         super().__init__(observation, **kwargs)

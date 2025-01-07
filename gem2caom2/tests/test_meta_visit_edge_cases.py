@@ -100,9 +100,7 @@ def test_broken_obs(
     test_f_name = 'gS20171114S0185_bias.fits.header'
     test_obs_id = 'GS-CAL20171114-2-086-G-BIAS'
     test_fqn = f'{gem_mocks.TEST_DATA_DIR}/broken_files/{test_f_name}'
-    expected_fqn = (
-        f'{gem_mocks.TEST_DATA_DIR}/broken_files/{test_obs_id}.expected.xml'
-    )
+    expected_fqn = f'{gem_mocks.TEST_DATA_DIR}/broken_files/{test_obs_id}.expected.xml'
 
     test_set = {test_fqn: test_obs_id}
 
@@ -185,9 +183,7 @@ def test_going_public(
     test_fid = 'N20150929S0013'
     test_f_name = f'{test_fid}.fits'
     mock_return_fqn = f'{gem_mocks.TEST_DATA_DIR}/GMOS/{test_f_name}.header'
-    remote_headers_mock.side_effect = [
-        ac.make_headers_from_file(mock_return_fqn)
-    ]
+    remote_headers_mock.side_effect = [ac.make_headers_from_file(mock_return_fqn)]
     expected_fqn = f'{gem_mocks.TEST_DATA_DIR}/GMOS/{test_fid}.expected.xml'
 
     get_pi_mock.side_effect = gem_mocks.mock_get_pi_metadata

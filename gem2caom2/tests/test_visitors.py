@@ -99,9 +99,7 @@ def test_preview_augment_known_no_preview(test_data_dir, test_config, tmp_path):
     test_config.change_working_directory(tmp_path.as_posix())
     obs = mc.read_obs_from_file(f'{test_data_dir}/visit_obs_start.xml')
     obs.planes[TEST_PRODUCT_ID].data_release = datetime.now(tz=timezone.utc).replace(tzinfo=None)
-    assert (
-        len(obs.planes[TEST_PRODUCT_ID].artifacts) == 1
-    ), 'initial condition'
+    assert len(obs.planes[TEST_PRODUCT_ID].artifacts) == 1, 'initial condition'
 
     if os.path.exists(test_config.rejected_fqn):
         os.unlink(test_config.rejected_fqn)
@@ -123,21 +121,15 @@ def test_preview_augment_known_no_preview(test_data_dir, test_config, tmp_path):
 
     with patch('caom2pipe.manage_composable.http_get') as http_mock, patch(
         'caom2pipe.manage_composable.get_artifact_metadata'
-    ) as art_mock, patch(
-        'caom2pipe.manage_composable.exec_cmd'
-    ) as exec_mock:
-        cadc_client_mock.return_value.data_get.return_value = (
-            mc.CadcException('test')
-        )
+    ) as art_mock, patch('caom2pipe.manage_composable.exec_cmd') as exec_mock:
+        cadc_client_mock.return_value.data_get.return_value = mc.CadcException('test')
         obs = preview_augmentation.visit(obs, **kwargs)
         assert not http_mock.called, 'http mock should not be called'
         assert not cadc_client_mock.put.called, 'put mock should not be called'
         assert not art_mock.called, 'art mock should not be called'
         assert not exec_mock.called, 'exec mock should not be called'
         assert obs is not None, 'expect a result'
-        assert (
-            len(obs.planes[TEST_PRODUCT_ID].artifacts) == 1
-        ), 'no new artifacts'
+        assert len(obs.planes[TEST_PRODUCT_ID].artifacts) == 1, 'no new artifacts'
 
     test_rejected.persist_state()
     assert os.path.exists(test_config.rejected_fqn)
@@ -166,17 +158,11 @@ def test_preview_augment_unknown_no_preview(test_data_dir, test_config, tmp_path
 
     with patch(
         'caom2pipe.manage_composable.http_get',
-        side_effect=mc.CadcException(
-            'Not Found for url: https://archive.gemini.edu/preview'
-        ),
-    ) as http_mock, patch(
-        'caom2pipe.manage_composable.get_artifact_metadata'
-    ) as art_mock, patch(
+        side_effect=mc.CadcException('Not Found for url: https://archive.gemini.edu/preview'),
+    ) as http_mock, patch('caom2pipe.manage_composable.get_artifact_metadata') as art_mock, patch(
         'caom2pipe.manage_composable.exec_cmd'
     ) as exec_mock:
-        cadc_client_mock.get.side_effect = exceptions.UnexpectedException(
-            'test'
-        )
+        cadc_client_mock.get.side_effect = exceptions.UnexpectedException('test')
         obs = preview_augmentation.visit(obs, **kwargs)
         assert obs is not None, 'expect result'
         test_url = f'{preview_augmentation.PREVIEW_URL}{TEST_PRODUCT_ID}.fits'
@@ -196,9 +182,7 @@ def test_pull_augmentation(http_mock, json_mock, file_type_mock, test_config, te
     obs.planes[TEST_PRODUCT_ID].data_release = datetime.now(tz=timezone.utc).replace(tzinfo=None)
     original_uri = 'gemini:GEMINI/GN2001BQ013-04.fits'
     assert len(obs.planes[TEST_PRODUCT_ID].artifacts) == 1, 'initial condition'
-    assert (
-        original_uri in obs.planes[TEST_PRODUCT_ID].artifacts.keys()
-    ), 'initial condition'
+    assert original_uri in obs.planes[TEST_PRODUCT_ID].artifacts.keys(), 'initial condition'
     test_uri = f'{test_config.scheme}:{test_config.collection}/{TEST_PRODUCT_ID}.fits'
 
     test_reporter = mc.ExecutionReporter2(test_config)
@@ -226,9 +210,7 @@ def test_pull_augmentation(http_mock, json_mock, file_type_mock, test_config, te
     test_prev = f'{test_data_dir}/{TEST_PRODUCT_ID}.fits'
     http_mock.assert_called_with(test_url, test_prev), 'mock not called'
     assert cadc_client_mock.put.called, 'put mock not called'
-    cadc_client_mock.put.assert_called_with(
-        test_data_dir, 'gemini:GEMINI/GN2001BQ013-04.fits'
-    ), 'wrong put args'
+    cadc_client_mock.put.assert_called_with(test_data_dir, 'gemini:GEMINI/GN2001BQ013-04.fits'), 'wrong put args'
     assert obs is not None, 'expect a result'
     assert len(obs.planes[TEST_PRODUCT_ID].artifacts) == 1, 'no new artifacts'
     try:
@@ -302,14 +284,10 @@ def test_preview_augment(http_mock, test_data_dir, test_config, tmp_path):
         shutil.copy(f'{test_data_dir}/{TEST_FILE}', f'/test_files/{TEST_PRODUCT_ID}.jpg')
 
     try:
-        cadc_client_mock.get.side_effect = exceptions.UnexpectedException(
-            'test'
-        )
+        cadc_client_mock.get.side_effect = exceptions.UnexpectedException('test')
         http_mock.side_effect = _get_mock
         obs = preview_augmentation.visit(obs, **kwargs)
-        test_url = (
-            f'{preview_augmentation.PREVIEW_URL}' f'{TEST_PRODUCT_ID}.fits'
-        )
+        test_url = f'{preview_augmentation.PREVIEW_URL}' f'{TEST_PRODUCT_ID}.fits'
         assert http_mock.called, 'http mock should be called'
         http_mock.assert_called_with(test_url, test_prev), 'mock not called'
         assert cadc_client_mock.put.called, 'put mock not called'
@@ -318,17 +296,11 @@ def test_preview_augment(http_mock, test_data_dir, test_config, tmp_path):
             'cadc:GEMINI/GN2001BQ013-04_th.jpg',
         ), 'wrong put arguments'
         assert obs is not None, 'expect a result'
-        assert (
-            len(obs.planes[TEST_PRODUCT_ID].artifacts) == 3
-        ), 'two new artifacts'
+        assert len(obs.planes[TEST_PRODUCT_ID].artifacts) == 3, 'two new artifacts'
         prev_uri = mc.build_uri(test_config.collection, f'{TEST_PRODUCT_ID}.jpg', test_config.scheme)
         thumb_uri = mc.build_uri(test_config.collection, f'{TEST_PRODUCT_ID}_th.jpg', test_config.preview_scheme)
-        assert (
-            prev_uri in obs.planes[TEST_PRODUCT_ID].artifacts.keys()
-        ), 'no preview'
-        assert (
-            thumb_uri in obs.planes[TEST_PRODUCT_ID].artifacts
-        ), 'no thumbnail'
+        assert prev_uri in obs.planes[TEST_PRODUCT_ID].artifacts.keys(), 'no preview'
+        assert thumb_uri in obs.planes[TEST_PRODUCT_ID].artifacts, 'no thumbnail'
     finally:
         if os.path.exists(test_prev):
             os.unlink(test_prev)
@@ -372,32 +344,20 @@ def test_preview_augment_failure(http_mock, test_data_dir, test_config, tmp_path
         os.unlink(test_prev)
 
     try:
-        cadc_client_mock.get.side_effect = exceptions.UnexpectedException(
-            'test'
-        )
+        cadc_client_mock.get.side_effect = exceptions.UnexpectedException('test')
         http_mock.side_effect = _failure_mock
         obs = preview_augmentation.visit(obs, **kwargs)
-        test_url = (
-            f'{preview_augmentation.PREVIEW_URL}' f'{TEST_PRODUCT_ID}.fits'
-        )
+        test_url = f'{preview_augmentation.PREVIEW_URL}' f'{TEST_PRODUCT_ID}.fits'
         assert http_mock.called, 'http mock should be called'
         http_mock.assert_called_with(test_url, test_prev), 'mock not called'
         assert not cadc_client_mock.put.called, 'put mock should not be called'
         assert obs is not None, 'expect a result'
-        assert (
-            len(obs.planes[TEST_PRODUCT_ID].artifacts) == 1
-        ), 'same as the pre-condition'
+        assert len(obs.planes[TEST_PRODUCT_ID].artifacts) == 1, 'same as the pre-condition'
         prev_uri = mc.build_uri(test_config.collection, f'{TEST_PRODUCT_ID}.jpg', test_config.scheme)
         thumb_uri = mc.build_uri(test_config.collection, f'{TEST_PRODUCT_ID}_th.jpg', test_config.preview_scheme)
-        assert (
-            prev_uri not in obs.planes[TEST_PRODUCT_ID].artifacts.keys()
-        ), 'should be no preview'
-        assert (
-            thumb_uri not in obs.planes[TEST_PRODUCT_ID].artifacts
-        ), 'should be no thumbnail'
-        assert not (
-            test_reporter._observable._rejected.is_no_preview(prev_uri)
-        ), 'preview should be tracked'
+        assert prev_uri not in obs.planes[TEST_PRODUCT_ID].artifacts.keys(), 'should be no preview'
+        assert thumb_uri not in obs.planes[TEST_PRODUCT_ID].artifacts, 'should be no thumbnail'
+        assert not (test_reporter._observable._rejected.is_no_preview(prev_uri)), 'preview should be tracked'
 
         assert http_mock.call_count == 1, 'wrong number of calls'
         # now try again to generate the preview, and ensure that the
@@ -417,32 +377,24 @@ def test_cleanup(test_data_dir):
     test_artifact_id = 'cadc:GEMINI/N20140811S0033_BIAS_th.jpg'
     obs = mc.read_obs_from_file(test_cleanup_file)
     initial_all_artifact_keys = cc.get_all_artifact_keys(obs)
-    assert (
-        test_artifact_id in initial_all_artifact_keys
-    ), 'wrong initial conditions'
+    assert test_artifact_id in initial_all_artifact_keys, 'wrong initial conditions'
     obs = cleanup_augmentation.visit(obs, **test_kwargs)
     assert obs is not None, 'expect a result'
     post_all_artifact_keys = cc.get_all_artifact_keys(obs)
-    assert (
-        test_artifact_id not in post_all_artifact_keys
-    ), 'wrong post conditions'
+    assert test_artifact_id not in post_all_artifact_keys, 'wrong post conditions'
 
     # test that cleaning up a clean observation won't break that
     # observation
     obs = cleanup_augmentation.visit(obs, **test_kwargs)
 
     # test that cleanup doesn't occur where it shouldn't
-    test_no_cleanup_file = (
-        f'{test_data_dir}/cleanup_no_cleanup_aug_start_obs.xml'
-    )
+    test_no_cleanup_file = f'{test_data_dir}/cleanup_no_cleanup_aug_start_obs.xml'
     no_cleanup_obs = mc.read_obs_from_file(test_no_cleanup_file)
     all_artifact_keys = cc.get_all_artifact_keys(no_cleanup_obs)
     assert len(all_artifact_keys) == 6, 'wrong no cleanup initial conditions'
     no_cleanup_obs = cleanup_augmentation.visit(no_cleanup_obs, **test_kwargs)
     all_artifact_keys = cc.get_all_artifact_keys(no_cleanup_obs)
-    assert (
-        len(all_artifact_keys) == 6
-    ), 'wrong no cleanup post conditions, should not be different'
+    assert len(all_artifact_keys) == 6, 'wrong no cleanup post conditions, should not be different'
 
     # test a FOX observation, because it's odd to begin with
     test_fox_file = f'{test_data_dir}/cleanup_fox_aug_start.xml'
@@ -476,9 +428,7 @@ def test_look_pull_and_put(http_mock, mock_client, test_data_dir):
         mock_client,
         'md5:01234',
     )
-    mock_client.data_client.put.assert_called_with(
-        test_data_dir, test_storage_name
-    ), 'mock not called'
+    mock_client.data_client.put.assert_called_with(test_data_dir, test_storage_name), 'mock not called'
     http_mock.assert_called_with(url, test_fqn), 'http mock not called'
 
 

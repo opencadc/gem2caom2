@@ -87,7 +87,7 @@ class GHOSTPreviews(PreviewVisitor):
         self._logger.debug(f'Begin generate_plots for {obs_id}')
         # code by https://github.com/dbohlender
         plt.style.use(astropy_mpl_style)
-        fig = plt.figure(figsize=(8,8))
+        fig = plt.figure(figsize=(8, 8))
         hdulist = fits.open(self._science_fqn)
         target = hdulist[0].header['OBJECT']
         # The extension numbers must be determined from the extension with FITS header values for NAXIS = 2 and
@@ -138,7 +138,6 @@ class GHOSTPreviews(PreviewVisitor):
         else:
             self._logger.warning(f'Found no image metadata for {self._storage_name.file_uri}')
             return 0
-
 
 
 def visit(observation, **kwargs):

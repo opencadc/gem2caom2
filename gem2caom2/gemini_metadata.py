@@ -102,9 +102,7 @@ __all__ = [
 ]
 
 
-GEMINI_METADATA_URL = (
-    'https://archive.gemini.edu/jsonsummary/canonical/filepre='
-)
+GEMINI_METADATA_URL = 'https://archive.gemini.edu/jsonsummary/canonical/filepre='
 HEADER_URL = 'https://archive.gemini.edu/fullheader/'
 
 
@@ -123,9 +121,7 @@ class GeminiMetadataLookup:
         temp = self._search_json(uri, 'data_label')
         if temp is None:
             temp = self._search_fits(uri, 'DATALAB')
-        return obs_file_relationship.repair_data_label(
-            uri.split('/')[-1], temp
-        )
+        return obs_file_relationship.repair_data_label(uri.split('/')[-1], temp)
 
     def data_size(self, uri):
         return self._search_json(uri, 'data_size')
@@ -335,9 +331,7 @@ class ProvenanceFinder:
         result = None
         if len(table) == 1:
             result = table[0]['observationID']
-            self._logger.debug(
-                f'Found observation ID {result} for {uri} at CADC.'
-            )
+            self._logger.debug(f'Found observation ID {result} for {uri} at CADC.')
         self._logger.debug('End _check_caom2')
         return result
 
@@ -359,10 +353,7 @@ class ProvenanceFinder:
                     temp = headers[0].get('DATALAB').upper()
                     if temp is not None:
                         result = headers[0].get('DATALAB')
-                        self._logger.debug(
-                            f'Found observation ID {result} for {f_name} on '
-                            f'disk.'
-                        )
+                        self._logger.debug(f'Found observation ID {result} for {f_name} on ' f'disk.')
                         break
         self._logger.debug('End _check_local')
         return result
@@ -397,9 +388,7 @@ class ProvenanceFinder:
             result = self._check_local(f_name)
         repaired_data_label = None
         if result is not None:
-            repaired_data_label = obs_file_relationship.repair_data_label(
-                f_name, result
-            )
+            repaired_data_label = obs_file_relationship.repair_data_label(f_name, result)
         return repaired_data_label
 
 
@@ -486,15 +475,15 @@ class GeminiOrganizeExecutesRunnerMeta(OrganizeExecutesRunnerMeta):
     """
 
     def __init__(
-            self,
-            config,
-            meta_visitors,
-            data_visitors,
-            needs_delete=False,
-            store_transfer=None,
-            modify_transfer=None,
-            clients=None,
-            reporter=None,
+        self,
+        config,
+        meta_visitors,
+        data_visitors,
+        needs_delete=False,
+        store_transfer=None,
+        modify_transfer=None,
+        clients=None,
+        reporter=None,
     ):
         super().__init__(
             config,
@@ -520,9 +509,7 @@ class GeminiOrganizeExecutesRunnerMeta(OrganizeExecutesRunnerMeta):
                     self._logger.debug(f'Choosing executor GeminiMetaVisit for {task_type}.')
                     self._executors = []  # over-ride the default choice.
                     self._executors.append(
-                        GeminiMetaVisitRunnerMeta(
-                            self._clients, self.config, self._meta_visitors, self._reporter
-                        )
+                        GeminiMetaVisitRunnerMeta(self._clients, self.config, self._meta_visitors, self._reporter)
                     )
 
     def can_use_single_visit(self):
@@ -597,9 +584,6 @@ def retrieve_json(source_name, logger, session):
         if response is not None:
             response.close()
     if len(metadata) == 0:
-        raise mc.CadcException(
-            f'Could not find JSON record for {source_name} at '
-            f'{gemini_url}.'
-        )
+        raise mc.CadcException(f'Could not find JSON record for {source_name} at ' f'{gemini_url}.')
     logger.debug(f'End retrieve_json')
     return metadata

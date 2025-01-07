@@ -261,12 +261,7 @@ def get_suffix(file_id, data_label):
         temp = file_id.split('-')[:1]
     elif '_' in file_id:
         if file_id.startswith(('p', 'P')):
-            if (
-                '_FLAT' in file_id
-                or '_COMB' in file_id
-                or '_flat' in file_id
-                or '_comb' in file_id
-            ):
+            if '_FLAT' in file_id or '_COMB' in file_id or '_flat' in file_id or '_comb' in file_id:
                 temp = file_id.split('_')[2:]
         elif file_id.startswith('TX2'):
             # when the data label is the file id, fix every
@@ -276,9 +271,7 @@ def get_suffix(file_id, data_label):
                     temp = ['flt']
         else:
             temp = file_id.split('_')[1:]
-    if data_label.endswith('-G') and (
-        file_id.startswith('rS') or file_id.startswith('rN')
-    ):
+    if data_label.endswith('-G') and (file_id.startswith('rS') or file_id.startswith('rN')):
         # DB 16-06-20
         # I think the ‘g’ prefix is used a little inconsistently.  It is
         # supposed to be set whenever the IRAF GPREPARE is executed and I
@@ -312,9 +305,7 @@ def is_processed(file_name):
     file_id = remove_extensions(file_name)
     # ALOPEKE file id ends with 'r' or 'b', so avoid checking that letter
     if file_id.startswith(('S', 'N', 'GN', 'GS', 'c', 'abu')):
-        if file_id.endswith(
-            ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9')
-        ):
+        if file_id.endswith(('0', '1', '2', '3', '4', '5', '6', '7', '8', '9')):
             result = False
         if file_id[:15].endswith(('b', 'r')):
             result = False
@@ -324,10 +315,7 @@ def is_processed(file_name):
     elif file_id.startswith('TX2') and '_raw' in file_id:
         result = False
     # OSCIR file naming pattern
-    elif (
-        file_id.startswith('r')
-        and re.match('r\\w{7}_\\d{3}', file_id, flags=re.ASCII) is not None
-    ):
+    elif file_id.startswith('r') and re.match('r\\w{7}_\\d{3}', file_id, flags=re.ASCII) is not None:
         result = False
     return result
 
@@ -408,19 +396,13 @@ def repair_data_label(file_name, data_label):
     """
     # if the data label is missing, the file name, including
     # extensions, is treated as the data label, so get rid of .fits
-    logging.debug(
-        f'Begin repair_data_label with file {file_name} and data label '
-        f'{data_label}.'
-    )
+    logging.debug(f'Begin repair_data_label with file {file_name} and data label ' f'{data_label}.')
     file_id = remove_extensions(file_name)
     if data_label is not None and data_label.endswith('BIAS/MBIAS/G-BIAS'):
         # from Oliver Oberdorf at Gemini, 26-05-21: "prefer lower case, as
         # that's what we use today"
         data_label = data_label.replace('BIAS/MBIAS/G-BIAS', 'g-bias')
-        logging.debug(
-            f'End repair_data_label with file {file_name} and data label '
-            f'{data_label}.'
-        )
+        logging.debug(f'End repair_data_label with file {file_name} and data label ' f'{data_label}.')
         return data_label
     repaired = data_label if data_label else ''
     if is_processed(file_id) or file_id.startswith('TX2'):
@@ -474,14 +456,7 @@ def repair_data_label(file_name, data_label):
         # SGo - this means make the data labels the same
         if (
             ('mfrg' == prefix or 'mrg' == prefix or 'rg' == prefix)
-            and (
-                not (
-                    'add' in suffix
-                    or 'ADD' in suffix
-                    or 'fringe' in suffix
-                    or 'FRINGE' in suffix
-                )
-            )
+            and (not ('add' in suffix or 'ADD' in suffix or 'fringe' in suffix or 'FRINGE' in suffix))
         ) or ('r' == prefix or 'R' == prefix):
             prefix = ''
             suffix = []
@@ -500,11 +475,7 @@ def repair_data_label(file_name, data_label):
                     suffix.remove('ARC')
                 else:
                     suffix.remove('arc')
-        if (
-            prefix == ''
-            and len(suffix) == 1
-            and ('FRINGE' in suffix or 'fringe' in suffix)
-        ):
+        if prefix == '' and len(suffix) == 1 and ('FRINGE' in suffix or 'fringe' in suffix):
             suffix = []
 
         if len(prefix) > 0:
@@ -528,10 +499,7 @@ def repair_data_label(file_name, data_label):
         repaired = f'{data_label_good_bits[0]}-{file_id_bits[1][4:]}'
     else:
         repaired = file_id if repaired is None else repaired
-    logging.debug(
-        f'End repair_data_label with file {file_name} and data label '
-        f'{repaired}.'
-    )
+    logging.debug(f'End repair_data_label with file {file_name} and data label ' f'{repaired}.')
     return repaired
 
 
@@ -539,10 +507,4 @@ def remove_extensions(name):
     """How to get the file_id from a file_name."""
     # Note the .gz extension is on some TRECS files, not that it is
     # an accepted GEMINI extension
-    return (
-        name.replace('.fits', '')
-        .replace('.bz2', '')
-        .replace('.header', '')
-        .replace('.jpg', '')
-        .replace('.gz', '')
-    )
+    return name.replace('.fits', '').replace('.bz2', '').replace('.header', '').replace('.jpg', '').replace('.gz', '')

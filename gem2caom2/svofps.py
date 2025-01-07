@@ -160,9 +160,7 @@ class FilterMetadata(object):
         self._resolving_power = value
 
     def adjust_bandpass(self, variance):
-        self.bandpass = (self.central_wl + variance) - (
-            self.central_wl - variance
-        )
+        self.bandpass = (self.central_wl + variance) - (self.central_wl - variance)
 
     def set_bandpass(self, w_max, w_min):
         self.bandpass = w_max - w_min
@@ -235,22 +233,15 @@ class FilterMetadataCache:
                 # only for 'w'arm filters.  First check for filter without 'w'
                 # appended to the ID (which I assume means bandpass is for cold
                 # filter), then search for 'w' if nothing is found...
-                votable, error_message = ac.get_vo_table_session(
-                    url, self._svo_session
-                )
+                votable, error_message = ac.get_vo_table_session(url, self._svo_session)
                 if not votable:
                     if instrument == 'Flamingos':
                         url = f"{ac.SVO_URL}KPNO/{filter_id}w&VERB=0"
                     else:
                         url = f"{ac.SVO_URL}Gemini/{filter_id}w&VERB=0"
-                    votable, error_message = ac.get_vo_table_session(
-                        url, self._svo_session
-                    )
+                    votable, error_message = ac.get_vo_table_session(url, self._svo_session)
                 if not votable:
-                    logging.error(
-                        f'Unable to download SVO filter data from {url} because '
-                        f'{error_message}'
-                    )
+                    logging.error(f'Unable to download SVO filter data from {url} because ' f'{error_message}')
                     continue
 
                 # DB - 14-04-19 After discussion with a few others use the
@@ -278,10 +269,7 @@ class FilterMetadataCache:
                 # microns
                 local_fm.central_wl = wl_eff / 1.0e4
                 local_fm.bandpass = wl_width / 1.0e4
-                logging.info(
-                    f'Filter(s): {filter_names}  MD: {local_fm.central_wl}, '
-                    f'{local_fm.bandpass}'
-                )
+                logging.info(f'Filter(s): {filter_names}  MD: {local_fm.central_wl}, ' f'{local_fm.bandpass}')
                 return local_fm
             else:
                 return None
@@ -298,23 +286,13 @@ class FilterMetadataCache:
             f'Begin get_filter_metadata with instrument {instrument} '
             f'filter name {filter_name} telescope {telescope}'
         )
-        repaired_inst = FilterMetadataCache._repair_instrument_name_for_svo(
-            instrument, telescope
-        )
-        repaired_filters = FilterMetadataCache._repair_filter_name_for_svo(
-            instrument, filter_name
-        )
-        self._logger.debug(
-            f'Find information for filter {repaired_filters} on instrument '
-            f'{repaired_inst}'
-        )
+        repaired_inst = FilterMetadataCache._repair_instrument_name_for_svo(instrument, telescope)
+        repaired_filters = FilterMetadataCache._repair_filter_name_for_svo(instrument, filter_name)
+        self._logger.debug(f'Find information for filter {repaired_filters} on instrument ' f'{repaired_inst}')
         if repaired_filters is None:
             # nothing to look up, try something else
             return None
-        if (
-            repaired_inst in self._fm
-            and repaired_filters in self._fm[repaired_inst]
-        ):
+        if repaired_inst in self._fm and repaired_filters in self._fm[repaired_inst]:
             result = self._fm[repaired_inst][repaired_filters]
             if result is not None:
                 result.adjust_resolving_power()
@@ -504,9 +482,7 @@ class FilterMetadataCache:
         result = instrument.value
         if instrument is Inst.HRWFS:
             if telescope is None:
-                raise mc.CadcException(
-                    f'{instrument}: No observatory information.'
-                )
+                raise mc.CadcException(f'{instrument}: No observatory information.')
             else:
                 if 'Gemini-South' == telescope:
                     result = 'AcqCam-S'

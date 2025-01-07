@@ -81,7 +81,11 @@ __all__ = ['GeminiValidator']
 
 class GeminiValidator(Validator):
     def __init__(self):
-        super(GeminiValidator, self).__init__(mc.StorageName.collection, mc.StorageName.scheme, '_th.jpg',)
+        super(GeminiValidator, self).__init__(
+            mc.StorageName.collection,
+            mc.StorageName.scheme,
+            '_th.jpg',
+        )
         config = mc.Config()
         config.get_executors()
         # TODO
@@ -148,21 +152,14 @@ class GeminiValidator(Validator):
                 index = 2
                 splitter = candidate[6]
             else:
-                logging.warning(
-                    f'Pretty sure this is an unexpected file name format '
-                    f'{file_name}'
-                )
+                logging.warning(f'Pretty sure this is an unexpected file name format ' f'{file_name}')
 
             candidate = candidate[index:]
             if candidate.count('G') == 1:
                 splitter = 'G'
-            result = datetime.strptime(
-                candidate.split(splitter)[0], pattern
-            ).date()
+            result = datetime.strptime(candidate.split(splitter)[0], pattern).date()
         except ValueError as ex:
-            self._logger.error(
-                f'Do not understand date format in file name {file_name}'
-            )
+            self._logger.error(f'Do not understand date format in file name {file_name}')
             result = None
 
         return result
@@ -188,18 +185,10 @@ class GeminiValidator(Validator):
         """
         remove = self._get_date_remove_set(self._source, 'source')
         self._source = list(set(self._source).difference(remove))
-        remove = self._get_date_remove_set(
-            self._destination_meta, 'destination meta'
-        )
-        self._destination_meta = list(
-            set(self._destination_meta).difference(remove)
-        )
-        remove = self._get_date_remove_set(
-            self._destination_data, 'destination data'
-        )
-        self._destination_data = list(
-            set(self._destination_data).difference(remove)
-        )
+        remove = self._get_date_remove_set(self._destination_meta, 'destination meta')
+        self._destination_meta = list(set(self._destination_meta).difference(remove))
+        remove = self._get_date_remove_set(self._destination_data, 'destination data')
+        self._destination_data = list(set(self._destination_data).difference(remove))
 
     def read_from_source(self):
         result = {}

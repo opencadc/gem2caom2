@@ -90,9 +90,7 @@ def test_provenance_finder(caom2_mock, local_mock):
 
     def _caom2_mock(ignore1, ignore2):
         return Table.read(
-            f'observationID,instrument_name\n'
-            f'{test_data_label},'
-            f'GMOS\n'.split('\n'),
+            f'observationID,instrument_name\n' f'{test_data_label},' f'GMOS\n'.split('\n'),
             format='csv',
         )
 
@@ -110,9 +108,7 @@ def test_provenance_finder(caom2_mock, local_mock):
 
     test_config = mc.Config()
     test_config.data_sources = [gem_mocks.TEST_DATA_DIR]
-    test_config.proxy_fqn = os.path.join(
-        gem_mocks.TEST_DATA_DIR, 'cadcproxy.pem'
-    )
+    test_config.proxy_fqn = os.path.join(gem_mocks.TEST_DATA_DIR, 'cadcproxy.pem')
     test_config.tap_id = 'ivo://cadc.nrc.ca/test'
 
     try:
@@ -126,15 +122,11 @@ def test_provenance_finder(caom2_mock, local_mock):
 
                 test_subject = gemini_metadata.ProvenanceFinder(Mock(), test_config)
                 assert test_subject is not None, (
-                    f'ctor does not work:: '
-                    f'local {test_use_local}, '
-                    f'connected {test_connected}'
+                    f'ctor does not work:: ' f'local {test_use_local}, ' f'connected {test_connected}'
                 )
                 test_result = test_subject.get(test_uri)
                 assert test_result is not None, (
-                    f'expect a result '
-                    f'local {test_use_local}, '
-                    f'connected {test_connected}'
+                    f'expect a result ' f'local {test_use_local}, ' f'connected {test_connected}'
                 )
                 assert test_result == repaired_data_label, (
                     f'data_label should be {repaired_data_label} '
@@ -158,4 +150,4 @@ def test_header_not_at_cadc_no_reader(retrieve_gemini_mock, clients_mock, test_c
     test_result = gemini_metadata.retrieve_headers(test_f_name, Mock(), clients_mock, test_config)
     assert test_result is not None, 'expect a result'
     assert retrieve_gemini_mock.called, 'retrieve mock not called'
-    retrieve_gemini_mock.assert_called_with(test_f_name, ANY, ANY ), 'wrong mock args'
+    retrieve_gemini_mock.assert_called_with(test_f_name, ANY, ANY), 'wrong mock args'
