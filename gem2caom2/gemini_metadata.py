@@ -555,7 +555,7 @@ def retrieve_headers(source_name, logger, clients, config):
 
 def retrieve_gemini_headers(source_name, logger, session):
     logger.debug(f'Begin retrieve_headers for {source_name}')
-    header_url = f'{HEADER_URL}{source_name}.fits'
+    header_url = f'{HEADER_URL}{source_name}'
     # Open the URL and fetch the JSON document for the observation
     response = None
     try:
