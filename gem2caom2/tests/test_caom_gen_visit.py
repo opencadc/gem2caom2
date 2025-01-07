@@ -117,9 +117,7 @@ def pytest_generate_tests(metafunc):
             Inst.GHOST,
         ]:
             walk_dir = _get_inst_name(ii)
-            for root, dirs, files in os.walk(
-                f'{gem_mocks.TEST_DATA_DIR}/{walk_dir}'
-            ):
+            for root, dirs, files in os.walk(f'{gem_mocks.TEST_DATA_DIR}/{walk_dir}'):
                 for file in files:
                     if file.endswith(".header"):
                         file_list.append(os.path.join(root, file))
@@ -171,15 +169,18 @@ def test_visitor(
     in_fqn = expected_fqn.replace('.expected.', '.in.')
 
     clients_mock = Mock()
+
     def _mock_repo_read(collection, obs_id):
         input_observation = None
         if os.path.exists(in_fqn):
             input_observation = read_obs_from_file(in_fqn)
         return input_observation
+
     clients_mock.metadata_client.read.side_effect = _mock_repo_read
 
     def _read_header_mock(ignore1, ignore2, ignore3, ignore4):
         return data_util.get_local_file_headers(test_name)
+
     header_mock.side_effect = _read_header_mock
 
     actual_fqn = expected_fqn.replace('expected', 'actual')
@@ -201,8 +202,8 @@ def test_visitor(
         test_subject.execute(context)
     except CadcException as e:
         if storage_name.file_name in ['N20220915S0113.fits', 'S20230301S0170.fits']:
-            assert (
-                test_reporter._observable.rejected.is_mystery_value(storage_name.file_name)
+            assert test_reporter._observable.rejected.is_mystery_value(
+                storage_name.file_name
             ), 'expect rejected mystery value record'
         else:
             raise e
@@ -210,12 +211,10 @@ def test_visitor(
     gem_mocks.compare(expected_fqn, actual_fqn, test_subject._observation)
 
     if test_subject._observation.observation_id in ['GS-2022B-Q-235-137-045', 'GS-2023A-LP-103-23-017']:
-        assert (
-            test_reporter._observable.rejected.is_bad_metadata(storage_name.file_name)
-        ), 'expect rejected record'
+        assert test_reporter._observable.rejected.is_bad_metadata(storage_name.file_name), 'expect rejected record'
     else:
-        assert (
-            not test_reporter._observable.rejected.is_bad_metadata(storage_name.file_name)
+        assert not test_reporter._observable.rejected.is_bad_metadata(
+            storage_name.file_name
         ), 'expect no rejected record'
 
 

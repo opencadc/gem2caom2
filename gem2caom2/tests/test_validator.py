@@ -125,9 +125,7 @@ def test_validator(caps_mock, tap_mock):
     os.getcwd = Mock(return_value=gem_mocks.TEST_DATA_DIR)
     try:
         test_subject = validator.GeminiValidator()
-        test_listing_fqn = (
-            f'{test_subject._config.working_directory}/{mc.VALIDATE_OUTPUT}'
-        )
+        test_listing_fqn = f'{test_subject._config.working_directory}/{mc.VALIDATE_OUTPUT}'
         if os.path.exists(test_listing_fqn):
             os.unlink(test_listing_fqn)
         if os.path.exists(test_subject._config.work_fqn):
@@ -145,9 +143,7 @@ def test_validator(caps_mock, tap_mock):
         assert os.path.exists(test_listing_fqn), 'should create file record'
 
         test_subject.write_todo()
-        assert os.path.exists(
-            test_subject._config.work_fqn
-        ), 'should create file record'
+        assert os.path.exists(test_subject._config.work_fqn), 'should create file record'
         with open(test_subject._config.work_fqn, 'r') as f:
             content = f.readlines()
         content_sorted = sorted(content)

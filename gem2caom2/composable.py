@@ -244,9 +244,7 @@ def _run_incremental_diskfiles():
     :return 0 if successful, -1 if there's any sort of failure.
     """
     clients, config, meta_visitors, filter_cache = _common_init()
-    incremental_source = data_source.IncrementalSourceDiskfiles(
-        config, clients.gemini_session, GemName, filter_cache
-    )
+    incremental_source = data_source.IncrementalSourceDiskfiles(config, clients.gemini_session, GemName, filter_cache)
     return rc.run_by_state_runner_meta(
         config=config,
         meta_visitors=meta_visitors,

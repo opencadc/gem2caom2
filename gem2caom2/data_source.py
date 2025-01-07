@@ -85,6 +85,7 @@ __all__ = ['GEM_BOOKMARK', 'IncrementalSource', 'PublicIncremental']
 GEM_BOOKMARK = 'gemini_timestamp'
 MAX_ENTRIES = 500
 
+
 class IncrementalSource(dsc.IncrementalDataSource):
     """Implements the identification of the work to be done, by querying
     archive.gemini.edu's incremental endpoint, in time-boxed chunks.
@@ -213,9 +214,7 @@ class PublicIncremental(dsc.QueryTimeBoxDataSource):
         for row in result:
             gem_name = GemName(file_name=CaomName(row['uri']).file_name, filter_cache=self._filter_cache)
             gem_name._obs_id = repair_data_label(CaomName(row['uri']).file_name, row['observationID'])
-            entries.append(
-                dsc.RunnerMeta(gem_name, make_datetime(row['lastModified']))
-            )
+            entries.append(dsc.RunnerMeta(gem_name, make_datetime(row['lastModified'])))
         self._reporter.capture_todo(len(entries), 0, 0)
         self._logger.debug('End get_time_box_work')
         return entries
@@ -274,11 +273,9 @@ class IncrementalSourceDiskfiles(dsc.IncrementalDataSource):
                 metadata = self._parse_diskfiles_response(response.text)
                 response.close()
                 if len(metadata) == 0:
-                    self._logger.warning(
-                        f'No query results returned for interval from {prev_exec_dt} to {exec_dt}.'
-                    )
+                    self._logger.warning(f'No query results returned for interval from {prev_exec_dt} to {exec_dt}.')
                 else:
-                    for entry_dt, values  in metadata.items():
+                    for entry_dt, values in metadata.items():
                         for value in values:
                             file_name = value.get('filename')
                             storage_name = self._storage_name_ctor(file_name, self._filter_cache)
@@ -306,7 +303,7 @@ class IncrementalSourceDiskfiles(dsc.IncrementalDataSource):
     def _parse_diskfiles_response(self, html_string):
         temp = defaultdict(list)
         soup = BeautifulSoup(html_string, features='lxml')
-        rows = soup.find_all('tr', {'class':'alternating'})
+        rows = soup.find_all('tr', {'class': 'alternating'})
         for row in rows:
             cells = row.find_all('td')
             entry_time = make_datetime(cells[5].text.strip())  # what the https query is keyed on

@@ -123,33 +123,26 @@ def test_is_processed():
         'rgN20091120S0124_FRINGE': True,
     }
     for ii in tests:
-        assert (
-            obs_file_relationship.is_processed(ii) == tests[ii]
-        ), f'failed {ii}'
+        assert obs_file_relationship.is_processed(ii) == tests[ii], f'failed {ii}'
 
 
 def test_repair_data_label(test_config):
     # test_config is present so that caom2pipe.StorageName.collection is set properly
     for ii in gem_mocks.LOOKUP.keys():
-        test_result = obs_file_relationship.repair_data_label(
-            ii, gem_mocks.LOOKUP[ii][0]
-        )
+        test_result = obs_file_relationship.repair_data_label(ii, gem_mocks.LOOKUP[ii][0])
         if ii == 'S20181230S0025':
             # what happens when an entry is not found
             assert test_result == 'S20181230S0025', (
-                f'repair failed for {ii} actual {test_result} expected '
-                f'{gem_mocks.LOOKUP[ii][0]}'
+                f'repair failed for {ii} actual {test_result} expected ' f'{gem_mocks.LOOKUP[ii][0]}'
             )
         elif ii == 'S20201023Z0001b':
             # Alopeke/Zorro have different observationID rules
             assert test_result == 'S20201023Z0001', (
-                f'repair failed for {ii} actual {test_result} expected '
-                f'{gem_mocks.LOOKUP[ii][0]}'
+                f'repair failed for {ii} actual {test_result} expected ' f'{gem_mocks.LOOKUP[ii][0]}'
             )
         else:
             assert test_result == gem_mocks.LOOKUP[ii][0], (
-                f'repair failed for {ii} actual {test_result} expected '
-                f'{gem_mocks.LOOKUP[ii][0]}'
+                f'repair failed for {ii} actual {test_result} expected ' f'{gem_mocks.LOOKUP[ii][0]}'
             )
 
 
@@ -189,9 +182,7 @@ def test_repair_data_label_247():
     for key, value in d.items():
         index = 0 if len(value) == 1 else 1
         temp = obs_file_relationship.repair_data_label(key, value[0])
-        assert (
-            temp == value[index]
-        ), f'file id {key} expected {value[index]} actual {temp}'
+        assert temp == value[index], f'file id {key} expected {value[index]} actual {temp}'
 
 
 test_subjects = [
@@ -574,12 +565,8 @@ def test_repair_data_label_2():
         'gS20150906S0307_bias.fits': [
             'GS-CAL20150906-1-086-BIAS/MBIAS/G-BIAS',
             'GS-CAL20150906-1-086-g-bias',
-        ]
+        ],
     }
     for f_name in repairs.keys():
-        result = obs_file_relationship.repair_data_label(
-            f_name, repairs[f_name][0]
-        )
-        assert (
-            repairs[f_name][1] == result
-        ), f'{result} should have been {repairs[f_name][1]}'
+        result = obs_file_relationship.repair_data_label(f_name, repairs[f_name][0])
+        assert repairs[f_name][1] == result, f'{result} should have been {repairs[f_name][1]}'

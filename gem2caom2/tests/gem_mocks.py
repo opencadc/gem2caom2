@@ -336,7 +336,11 @@ LOOKUP = {
     '02nov12.0043': ['GS-CAL20021112-4-0043', Inst.FLAMINGOS, 'GS-CAL20021112'],
     '02jun24.0057': ['GS-CAL20020624-9-0057', Inst.FLAMINGOS, 'GS-CAL20020624'],
     # GHOST
-    'S20240601S0038_blue001_dragons': ['GS-2024A-LP-106-12-013-BLUE-001-SQ-BLUE001-DRAGONS', Inst.GHOST, 'GS-2024A-LP-106-12-013'],
+    'S20240601S0038_blue001_dragons': [
+        'GS-2024A-LP-106-12-013-BLUE-001-SQ-BLUE001-DRAGONS',
+        Inst.GHOST,
+        'GS-2024A-LP-106-12-013',
+    ],
     'S20240607S0038': ['GS-2024A-Q-144-3-004', Inst.GHOST, 'GS-2024A-Q-144'],
     'S20230517S0047': ['GS-CAL20230517-12-001', Inst.GHOST, 'GS-CAL20230517'],
     'S20240215S0050': ['GS-CAL20240215-15-001', Inst.GHOST, 'GS-CAL20240215'],
@@ -589,9 +593,7 @@ def mock_get_votable(url, ignore_session):
     try:
         x = url.split('/')
         filter_name = x[-1].replace('&VERB=0', '')
-        votable = parse_single_table(
-            f'{TEST_DATA_DIR}/votable/{filter_name}.xml'
-        )
+        votable = parse_single_table(f'{TEST_DATA_DIR}/votable/{filter_name}.xml')
         return votable, None
     except Exception as e:
         logging.error(f'get_vo_table failure for url {url}')
@@ -657,9 +659,7 @@ def mock_get_obs_metadata(file_id, ignore1, ignore2):
             # TODO
             y = [
                 {
-                    'data_label': TAP_QUERY_LOOKUP.get(
-                        file_id, 'test_data_label'
-                    ),
+                    'data_label': TAP_QUERY_LOOKUP.get(file_id, 'test_data_label'),
                     'filename': f'{file_id}.fits.bz2',
                     'name': f'{file_id}.fits.bz2',
                     'lastmod': '2020-02-25T20:36:31.230',
@@ -723,9 +723,7 @@ def mock_query_endpoint(url, timeout=-1):
             now_dt = datetime.now(tz=timezone.utc).replace(tzinfo=None)
             now_date_str = datetime.strftime(now_dt, '%Y-%m-%d')
             now_time_str = datetime.strftime(now_dt, '%H:%M:%S')
-            result.text = temp.replace('2019-10-10', now_date_str).replace(
-                '05:09:24', now_time_str
-            )
+            result.text = temp.replace('2019-10-10', now_date_str).replace('05:09:24', now_time_str)
     elif call_count == 1 and '20030106' not in url:
         with open(SECOND_FILE_LIST) as f:
             result.text = f.read()
@@ -746,9 +744,7 @@ def mock_query_endpoint_2(url, timeout=-1):
     def x():
         if 'entrytimedaterange' in url:
             if '2021-01-01T20:03:00.000000' in url:
-                with open(
-                    f'{TEST_DATA_DIR}/incremental/with_records.json'
-                ) as f:
+                with open(f'{TEST_DATA_DIR}/incremental/with_records.json') as f:
                     temp = f.read()
             else:
                 with open(f'{TEST_DATA_DIR}/incremental/empty.json') as f:
@@ -788,9 +784,7 @@ def mock_query_endpoint_2(url, timeout=-1):
 def mock_query_endpoint_reproduce(url, timeout=-1):
     # returns response.json
     def x():
-        fqn = (
-            f'/usr/src/app/gem2caom2/gem2caom2/tests/data/json/reproduce.json'
-        )
+        fqn = f'/usr/src/app/gem2caom2/gem2caom2/tests/data/json/reproduce.json'
         with open(fqn) as f:
             temp = f.read()
         return json.loads(temp)
@@ -893,9 +887,7 @@ def mock_repo_read(arg1, arg2):
         read_call_count = 1
         return None
     else:
-        return mc.read_obs_from_file(
-            f'{TEST_DATA_DIR}/GS-2019B-Q-222-181-001.expected.xml'
-        )
+        return mc.read_obs_from_file(f'{TEST_DATA_DIR}/GS-2019B-Q-222-181-001.expected.xml')
 
 
 def mock_repo_update(ignore1):
@@ -933,12 +925,7 @@ def mock_query_tap(query_string, mock_tap_client):
     elif query_string.strip().startswith('SELECT max(A.lastModified'):
         return Table.read(f'm\n2020-02-25T20:36:31.230\n'.split('\n'), format='ascii.tab')
     else:
-        file_id = (
-            query_string.split('gemini:GEMINI/')[1]
-            .split('\'')[0]
-            .replace('.fits', '')
-            .strip()
-        )
+        file_id = query_string.split('gemini:GEMINI/')[1].split('\'')[0].replace('.fits', '').strip()
         result = TAP_QUERY_LOOKUP.get(file_id, 'test_data_label')
         return Table.read(
             f'observationID,instrument_name\n' f'{result},hrwfs\n'.split('\n'),
@@ -970,9 +957,7 @@ def _mock_headers(key, file_id):
         # the case if GeminiMetadataReader is being mocked
         if file_id in LOOKUP:
             instrument = LOOKUP.get(file_id)[1]
-            test_fqn = (
-                f'{TEST_DATA_DIR}/{instrument.value}/{file_id}.fits.header'
-            )
+            test_fqn = f'{TEST_DATA_DIR}/{instrument.value}/{file_id}.fits.header'
     if 'S20210518S0022' in file_id:
         # mocking the test case where unauthorized to retrieve metadata from
         # archive.gemini.edu - no headers, no file
@@ -1052,6 +1037,7 @@ def _run_test_common(
                 return []
             else:
                 return get_local_file_headers(test_f_name)
+
         header_mock.side_effect = _read_header_mock
 
         clients_mock.metadata_client.read.return_value = observation
@@ -1061,18 +1047,16 @@ def _run_test_common(
             test_subject.execute(context)
         except mc.CadcException as e:
             if storage_name.file_name in ['N20220915S0113.fits', 'S20230301S0170.fits']:
-                assert (
-                    test_reporter._observable.rejected.is_mystery_value(storage_name.file_name)
+                assert test_reporter._observable.rejected.is_mystery_value(
+                    storage_name.file_name
                 ), 'expect rejected mystery value record'
             raise e
 
     compare(expected_fqn, actual_fqn, test_subject._observation)
 
     if test_subject._observation.observation_id in ['GS-2022B-Q-235-137-045', 'GS-2023A-LP-103-23-017']:
-        assert (
-            test_reporter._observable.rejected.is_bad_metadata(storage_name.file_name)
-        ), 'expect rejected record'
+        assert test_reporter._observable.rejected.is_bad_metadata(storage_name.file_name), 'expect rejected record'
     else:
-        assert (
-            not test_reporter._observable.rejected.is_bad_metadata(storage_name.file_name)
+        assert not test_reporter._observable.rejected.is_bad_metadata(
+            storage_name.file_name
         ), 'expect no rejected record'
