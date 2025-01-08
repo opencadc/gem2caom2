@@ -87,9 +87,7 @@ def test_storage_name(tap_mock, cap_mock, test_config):
     test_config.tap_id = 'ivo://cadc.nrc.ca/test'
     for extension in ['.gz', '.bz2']:
         test_sn = GemName(file_name=f'N20131203S0006i.fits{extension}')
-        assert (
-            test_sn.file_uri == f'{test_config.scheme}:{test_config.collection}/N20131203S0006i.fits'
-        )
+        assert test_sn.file_uri == f'{test_config.scheme}:{test_config.collection}/N20131203S0006i.fits'
         assert test_sn.file_name == f'N20131203S0006i.fits{extension}'
         assert test_sn.prev == 'N20131203S0006i.jpg'
         assert test_sn.thumb == 'N20131203S0006i_th.jpg'

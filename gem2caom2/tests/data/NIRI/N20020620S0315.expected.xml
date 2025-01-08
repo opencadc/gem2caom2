@@ -37,10 +37,6 @@
         <caom2:producer>NOAO-IRAF FITS Image Kernel July 1999</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/GN-2002A-C-5-21-002</caom2:reference>
       </caom2:provenance>
-      <caom2:position/>
-      <caom2:energy/>
-      <caom2:time/>
-      <caom2:polarization/>
       <caom2:artifacts>
         <caom2:artifact caom2:id="00000000-0000-0000-8ee9-01524714340e" caom2:lastModified="2018-05-16T18:45:09.316" caom2:maxLastModified="2018-05-16T18:45:09.316" caom2:metaChecksum="md5:e2cf22f126e6031614f993763e50725e" caom2:accMetaChecksum="md5:c34deeddc26715b188abb05136878f63" caom2:metaProducer="gem2caom2/0.8.1">
           <caom2:uri>gemini:GEMINI/N20020620S0315.fits</caom2:uri>

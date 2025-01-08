@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+
+<title>Detail for Program: GS-2024A-Q-144</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-2024A-Q-144</h1>
+
+<table>
+ <tr><td>Title:<td>Searching for the chemical signature of planet formation in planet-hosting binary systems</tr>
+ <tr><td>PI:<td>Emiliano Jofré</tr>
+ <tr><td>Co-I(s):<td> Luciano García,  Romina Petrucci,  Yilen Gómez Maqueo,  Carlos Saffe,  Matias Flores,  Paula Miquelarena,  Camila Zuloaga</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+In recent years it has been suggested that the formation and evolution of planets could leave a chemical signature on the atmospheres of the host stars. If these results are confirmed, in addition to providing constraints on planet formation models, they could revolutionize the strategy for Earth-like planets search programs. However, the detection of this signature is a very challenging task that requires the highest precision in stellar abundances (&lt;0.01 dex), and, furthermore, stellar systems that have experienced the same evolution and environment throughout their lives. The differential analysis of wide binary systems with very similar or twin components, based on high-quality spectra, is the only technique that allows us to achieve the necessary precision to search for the chemical signature of planetary formation. However, to date, only 6 binary systems with similar components, where one of the stars hosts a planet, have been studied via a strictly differential analysis. Moreover, only 3 of these binaries show robust evidence of chemical differences between their stellar components and, therefore, it remains unclear how and when planet formation leaves an imprint in the observed elemental abundance differences between binary components. Given the possible link between planet formation and stellar composition, it is critical to increase the sample of binary systems hosting planets exposed to high-precision differential abundance analysis. In this context, from high-quality GHOST spectra, we propose to perform the first high-precision differential chemical analysis of the exceptional binary system WASP-127 A/B. A transiting inflated super-Neptune has been detected around the primary component WASP-127 A (Lam et al. 2017). A few short observations will allow us to test the chemical signature of planet formation in this system. Moreover, the high-quality spectra will permit us to obtain refined stellar/planetary parameters and precise chemical abundances that will be required for a refined characterization of the extended atmosphere of the low-density planet around WASP-127 A with JWST. 
+</div>
+
+
+
+</body>
+</html>

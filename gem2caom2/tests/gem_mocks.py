@@ -2,7 +2,7 @@
 # ******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
 # *************  CENTRE CANADIEN DE DONNÉES ASTRONOMIQUES  **************
 #
-#  (c) 2019.                            (c) 2019.
+#  (c) 2025.                            (c) 2025.
 #  Government of Canada                 Gouvernement du Canada
 #  National Research Council            Conseil national de recherches
 #  Ottawa, Canada, K1A 0R6              Ottawa, Canada, K1A 0R6
@@ -77,16 +77,19 @@ from astropy.table import Table
 from astropy.utils.exceptions import AstropyWarning
 from bs4 import BeautifulSoup
 from collections import OrderedDict
-from datetime import datetime
+from datetime import datetime, timezone
 from hashlib import md5
 from mock import Mock
 
 from cadcdata import FileInfo
 from caom2.diff import get_differences
+from caom2 import Algorithm, SimpleObservation
 from caom2pipe import astro_composable as ac
 from caom2pipe import manage_composable as mc
+from caom2pipe.run_composable import set_logging
+from caom2utils.data_util import get_local_file_headers
 
-from gem2caom2 import data_source, obs_file_relationship, builder, svofps
+from gem2caom2 import data_source, obs_file_relationship, svofps
 from gem2caom2 import gemini_metadata, fits2caom2_augmentation
 from gem2caom2.gem_name import GemName
 from gem2caom2.util import Inst
@@ -279,16 +282,8 @@ TAP_QUERY_LOOKUP = {
 # instrument name
 LOOKUP = {
     # bHROS
-    'S20050825S0143': [
-        'GS-2005B-SV-301-16-005',
-        Inst.BHROS,
-        'GS-2005B-SV-301',
-    ],
-    'S20051027S0089': [
-        'GS-2005B-SV-302-20-001',
-        Inst.BHROS,
-        'GS-2005B-SV-302',
-    ],
+    'S20050825S0143': ['GS-2005B-SV-301-16-005', Inst.BHROS, 'GS-2005B-SV-301'],
+    'S20051027S0089': ['GS-2005B-SV-302-20-001', Inst.BHROS, 'GS-2005B-SV-302'],
     'S20070130S0048': ['GS-2006B-Q-47-76-003', Inst.BHROS, 'GS-2006B-Q-47'],
     'S20070113S0060': ['GS-2006B-Q-7-32-008', Inst.BHROS, 'GS-2006B-Q-7'],
     'S20050824S0106': ['GS-2005B-SV-302-1-009', Inst.BHROS, 'GS-2005B-SV-302'],
@@ -307,129 +302,58 @@ LOOKUP = {
     'S20171123S0216': ['GS-2017B-Q-18-96-006', Inst.F2, 'GS-2017B-Q-18'],
     'S20171123S0166': ['GS-2017B-Q-45-156-079', Inst.F2, 'GS-2017B-Q-45'],
     'S20170221S0005': ['GS-CAL20170221-1-005', Inst.F2, 'GS-CAL20170221'],
-    'S20181230S0026': [
-        'GS-2018B-SV-301-144-020',
-        Inst.F2,
-        'GS-2018B-SV-301',
-    ],
+    'S20181230S0026': ['GS-2018B-SV-301-144-020', Inst.F2, 'GS-2018B-SV-301'],
     'S20170905S0318': ['GS-2017A-Q-58-66-027', Inst.F2, 'GS-2017A-Q-58'],
     'S20191214S0301': ['GS-CAL20191214-1-029', Inst.F2, 'GS-CAL20191214'],
     'S20141130S0001': ['GS-CAL20141129-3-001', Inst.F2, 'GS-CAL20141129'],
+    'S20210522S0033': ['GS-2021A-Q-322-12-033', Inst.F2, 'GS-2021A-Q-322'],
+    'S20230301S0170': ['GS-2023A-LP-103-23-017', Inst.F2, '>GS-2023A-LP-103'],
+    'S20210530S0047': ['GS-2021A-Q-416-20-001', Inst.F2, 'GS-2021A-Q-416'],
+    'S20220220S0198': ['GS-CAL20220220-3-012', Inst.F2, 'GS-CAL20220220'],
+    'S20220912S0299': ['GS-2022B-Q-306-70-014', Inst.F2, 'GS-2022B-Q-306'],
+    'S20221020S0034': ['GS-2022B-DD-101-31-004', Inst.F2, 'GS-2022B-DD-101'],
+    'S20220203S0019': ['GS-CAL20220203-1-005', Inst.F2, 'GS-CAL20220203'],
+    'S20221115S0124': ['GS-2022B-Q-235-137-045', Inst.F2, 'GS-2022B-Q-235'],
     # Flamingos
-    '02jul07.0186': [
-        'GS-2002A-Q-13-2-0186',
-        Inst.FLAMINGOS,
-        'GS-2002A-Q-13',
-    ],
+    '02jul07.0186': ['GS-2002A-Q-13-2-0186', Inst.FLAMINGOS, 'GS-2002A-Q-13'],
     '02jun25.0071': ['GS-2002A-Q-7-1-0071', Inst.FLAMINGOS, 'GS-2002A-Q-7'],
-    '02sep04.0230': [
-        'GS-2002B-DD-2-6-0230',
-        Inst.FLAMINGOS,
-        'GS-2002B-DD-2',
+    '02sep04.0230': ['GS-2002B-DD-2-6-0230', Inst.FLAMINGOS, 'GS-2002B-DD-2'],
+    '02nov05.0072': ['GS-2002B-DS-1-31-0072', Inst.FLAMINGOS, 'GS-2002B-DS-1'],
+    '02nov05.0011': ['GS-2002B-DS-1-41-0011', Inst.FLAMINGOS, 'GS-2002B-DS-1'],
+    '02nov05.0016': ['GS-2002B-DS-1-41-0016', Inst.FLAMINGOS, 'GS-2002B-DS-1'],
+    '02nov06.0031': ['GS-2002B-DS-1-46-0031', Inst.FLAMINGOS, 'GS-2002B-DS-1'],
+    '02nov06.0042': ['GS-2002B-DS-1-46-0042', Inst.FLAMINGOS, 'GS-2002B-DS-1'],
+    '02oct30.0205': ['GS-2002B-Q-5-20-0205', Inst.FLAMINGOS, 'GS-2002B-Q-5'],
+    '02jun25.0115': ['GS-CAL20020625-10-0115', Inst.FLAMINGOS, 'GS-CAL20020625'],
+    '02jun25.0121': ['GS-CAL20020625-11-0121', Inst.FLAMINGOS, 'GS-CAL20020625'],
+    '02jul07.0034': ['GS-CAL20020707-8-0034', Inst.FLAMINGOS, 'GS-CAL20020707'],
+    '02jul07.0040': ['GS-CAL20020707-9-0040', Inst.FLAMINGOS, 'GS-CAL20020707'],
+    '02nov05.0001': ['GS-CAL20021105-1-0001', Inst.FLAMINGOS, 'GS-CAL20021105'],
+    '02nov10.0008': ['GS-CAL20021110-2-0008', Inst.FLAMINGOS, 'GS-CAL20021110'],
+    '02nov10.0174': ['GS-CAL20021110-6-0174', Inst.FLAMINGOS, 'GS-CAL20021110'],
+    '02nov12.0455': ['GS-CAL20021112-26-0455', Inst.FLAMINGOS, 'GS-CAL20021112'],
+    '02nov12.0024': ['GS-CAL20021112-3-0024', Inst.FLAMINGOS, 'GS-CAL20021112'],
+    '02nov12.0043': ['GS-CAL20021112-4-0043', Inst.FLAMINGOS, 'GS-CAL20021112'],
+    '02jun24.0057': ['GS-CAL20020624-9-0057', Inst.FLAMINGOS, 'GS-CAL20020624'],
+    # GHOST
+    'S20240601S0038_blue001_dragons': [
+        'GS-2024A-LP-106-12-013-BLUE-001-SQ-BLUE001-DRAGONS',
+        Inst.GHOST,
+        'GS-2024A-LP-106-12-013',
     ],
-    '02nov05.0072': [
-        'GS-2002B-DS-1-31-0072',
-        Inst.FLAMINGOS,
-        'GS-2002B-DS-1',
-    ],
-    '02nov05.0011': [
-        'GS-2002B-DS-1-41-0011',
-        Inst.FLAMINGOS,
-        'GS-2002B-DS-1',
-    ],
-    '02nov05.0016': [
-        'GS-2002B-DS-1-41-0016',
-        Inst.FLAMINGOS,
-        'GS-2002B-DS-1',
-    ],
-    '02nov06.0031': [
-        'GS-2002B-DS-1-46-0031',
-        Inst.FLAMINGOS,
-        'GS-2002B-DS-1',
-    ],
-    '02nov06.0042': [
-        'GS-2002B-DS-1-46-0042',
-        Inst.FLAMINGOS,
-        'GS-2002B-DS-1',
-    ],
-    '02oct30.0205': [
-        'GS-2002B-Q-5-20-0205',
-        Inst.FLAMINGOS,
-        'GS-2002B-Q-5',
-    ],
-    '02jun25.0115': [
-        'GS-CAL20020625-10-0115',
-        Inst.FLAMINGOS,
-        'GS-CAL20020625',
-    ],
-    '02jun25.0121': [
-        'GS-CAL20020625-11-0121',
-        Inst.FLAMINGOS,
-        'GS-CAL20020625',
-    ],
-    '02jul07.0034': [
-        'GS-CAL20020707-8-0034',
-        Inst.FLAMINGOS,
-        'GS-CAL20020707',
-    ],
-    '02jul07.0040': [
-        'GS-CAL20020707-9-0040',
-        Inst.FLAMINGOS,
-        'GS-CAL20020707',
-    ],
-    '02nov05.0001': [
-        'GS-CAL20021105-1-0001',
-        Inst.FLAMINGOS,
-        'GS-CAL20021105',
-    ],
-    '02nov10.0008': [
-        'GS-CAL20021110-2-0008',
-        Inst.FLAMINGOS,
-        'GS-CAL20021110',
-    ],
-    '02nov10.0174': [
-        'GS-CAL20021110-6-0174',
-        Inst.FLAMINGOS,
-        'GS-CAL20021110',
-    ],
-    '02nov12.0455': [
-        'GS-CAL20021112-26-0455',
-        Inst.FLAMINGOS,
-        'GS-CAL20021112',
-    ],
-    '02nov12.0024': [
-        'GS-CAL20021112-3-0024',
-        Inst.FLAMINGOS,
-        'GS-CAL20021112',
-    ],
-    '02nov12.0043': [
-        'GS-CAL20021112-4-0043',
-        Inst.FLAMINGOS,
-        'GS-CAL20021112',
-    ],
-    '02jun24.0057': [
-        'GS-CAL20020624-9-0057',
-        Inst.FLAMINGOS,
-        'GS-CAL20020624',
-    ],
+    'S20240607S0038': ['GS-2024A-Q-144-3-004', Inst.GHOST, 'GS-2024A-Q-144'],
+    'S20230517S0047': ['GS-CAL20230517-12-001', Inst.GHOST, 'GS-CAL20230517'],
+    'S20240215S0050': ['GS-CAL20240215-15-001', Inst.GHOST, 'GS-CAL20240215'],
+    'S20231224S0444': ['GS-CAL20231224-19-001', Inst.GHOST, 'GS-CAL20231224'],
+    'S20230518S0121': ['GS-2023A-SV-101-13-009', Inst.GHOST, 'GS-2023A-SV-101'],
+    'S20230516S0039': ['GS-2023A-SV-104-12-003', Inst.GHOST, 'GS-2023A-SV-104'],
+    'S20231208S0060': ['GS-2023B-FT-104-11-001', Inst.GHOST, 'GS-2023B-FT-104'],
     # GMOS
     'N20030107S0163': ['GN-2003A-Q-22-3-004', Inst.GMOS, 'GN-2003A-Q-22'],
-    'N20071219S0193': [
-        'GN-2007B-Q-112-14-018',
-        Inst.GMOS,
-        'GN-2007B-Q-112',
-    ],
+    'N20071219S0193': ['GN-2007B-Q-112-14-018', Inst.GMOS, 'GN-2007B-Q-112'],
     'N20090313S0180': ['GN-2009A-Q-21-115-001', Inst.GMOS, 'GN-2009A-Q-21'],
-    'N20100104S0208': [
-        'GN-2009B-Q-121-15-001',
-        Inst.GMOS,
-        'GN-2009B-Q-121',
-    ],
-    'N20100104S0210': [
-        'GN-2009B-Q-121-15-003',
-        Inst.GMOS,
-        'GN-2009B-Q-121',
-    ],
+    'N20100104S0208': ['GN-2009B-Q-121-15-001', Inst.GMOS, 'GN-2009B-Q-121'],
+    'N20100104S0210': ['GN-2009B-Q-121-15-003', Inst.GMOS, 'GN-2009B-Q-121'],
     'N20100115S0346': ['GN-2010A-Q-35-10-002', Inst.GMOS, 'GN-2010A-Q-35'],
     'N20120105S0344': ['GN-2011A-Q-31-21-005', Inst.GMOS, 'GN-2011A-Q-31'],
     'N20131203S0006': ['GN-2013B-Q-28-150-002', Inst.GMOS, 'GN-2013B-Q-28'],
@@ -437,16 +361,8 @@ LOOKUP = {
     'N20150220S0320': ['GN-2015A-C-4-24-086', Inst.GMOS, 'GN-2015A-C-4'],
     'N20150216S0129': ['GN-2015A-Q-36-15-001', Inst.GMOS, 'GN-2015A-Q-36'],
     'N20150216S0142': ['GN-2015A-Q-91-5-002', Inst.GMOS, 'GN-2015A-Q-91'],
-    'N20030104S0065': [
-        'GN-CAL20030104-14-001',
-        Inst.GMOS,
-        'GN-CAL20030104',
-    ],
-    'N20030104S0161': [
-        'GN-CAL20030104-18-003',
-        Inst.GMOS,
-        'GN-CAL20030104',
-    ],
+    'N20030104S0065': ['GN-CAL20030104-14-001', Inst.GMOS, 'GN-CAL20030104'],
+    'N20030104S0161': ['GN-CAL20030104-18-003', Inst.GMOS, 'GN-CAL20030104'],
     'N20150217S0274': ['GN-CAL20150217-2-003', Inst.GMOS, 'GN-CAL20150217'],
     'N20150929S0013': ['GN-CAL20150925-2-007', Inst.GMOS, 'GN-CAL20150925'],
     'S20040124S0077': ['GS-2003B-Q-5-29-003', Inst.GMOS, 'GS-2003B-Q-5'],
@@ -461,95 +377,42 @@ LOOKUP = {
     'S20060125S0027': ['GS-CAL20060125-1-002', Inst.GMOS, 'GS-CAL20060125'],
     'GN2001BQ013-04': ['GN2001BQ013-04', Inst.GMOS, 'GN-2001B-Q-13'],
     'N20110318S0581': ['GN-2011A-Q-87-69-001', Inst.GMOS, 'GN-2011A-Q-87'],
-    'gS20210428S0295_bias': [
-        'GS-CAL20171114-2-086-G-BIAS',
-        Inst.GMOS,
-        'GS-CAL20171114-2',
-    ],
+    'gS20210428S0295_bias': ['GS-CAL20171114-2-086-G-BIAS', Inst.GMOS, 'GS-CAL20171114-2'],
+    'N20120825S0597_arc': ['GN-2012B-Q-110-64-001', Inst.GMOS, 'GN-2012B-Q-110'],
+    'N20030301S0166b': ['GN-2003A-Q-74-6-001', Inst.GMOS, 'GN-2003A-Q-74'],
+    'N20040708S0116_BIAS': ['GN-CAL20040708-14-977-BIAS', Inst.GMOS, 'GN-CAL20040708-14'],
+    'rgS20140408S0042_FRINGE': ['GS-CAL20140408-2-001-RG-FRINGE', Inst.GMOS, 'GS-CAL20140408-2'],
+    'rgS20140408S0043_fringe': ['GS-CAL20140408-2-001-RG-FRINGE', Inst.GMOS, 'GS-CAL20140408-2'],
+    'N20120117S0009_stack_fringe': ['GN-CAL20120117-900-009-STACK-FRINGE', Inst.GMOS, 'GS-CAL20131007-1'],
+    'rS20040502S0077': ['GS-CAL20040502-3-002', Inst.GMOS, 'GS-CAL20040502-3'],
+    'S20131007S0001_flat': ['GS-CAL20131007-1-001-FLAT', Inst.GMOS, 'GS-CAL20131007-1'],
+    'N20220915S0113': ['GN-CAL20220915-20-001', Inst.GMOSN, 'GN-CAL20220915'],
     # GNIRS
     'N20100915S0167': ['GN-2010B-Q-2-44-003', Inst.GNIRS, 'GN-2010B-Q-2'],
-    'N20100722S0185': [
-        'GN-2010B-SV-142-10-007',
-        Inst.GNIRS,
-        'GN-2010B-SV-142',
-    ],
+    'N20100722S0185': ['GN-2010B-SV-142-10-007', Inst.GNIRS, 'GN-2010B-SV-142'],
     'N20110323S0235': ['GN-2011A-Q-53-42-007', Inst.GNIRS, 'GN-2011A-Q-53'],
-    'N20120104S0167': [
-        'GN-2011B-Q-63-101-006',
-        Inst.GNIRS,
-        'GN-2011B-Q-63',
-    ],
-    'N20120102S0213': [
-        'GN-2011B-Q-63-126-005',
-        Inst.GNIRS,
-        'GN-2011B-Q-63',
-    ],
-    'N20120101S0195': [
-        'GN-2011B-Q-68-116-013',
-        Inst.GNIRS,
-        'GN-2011B-Q-68',
-    ],
+    'N20120104S0167': ['GN-2011B-Q-63-101-006', Inst.GNIRS, 'GN-2011B-Q-63'],
+    'N20120102S0213': ['GN-2011B-Q-63-126-005', Inst.GNIRS, 'GN-2011B-Q-63'],
+    'N20120101S0195': ['GN-2011B-Q-68-116-013', Inst.GNIRS, 'GN-2011B-Q-68'],
     'N20120103S0100': ['GN-2011B-Q-7-193-010', Inst.GNIRS, 'GN-2011B-Q-7'],
     'N20120103S0134': ['GN-2011B-Q-7-193-044', Inst.GNIRS, 'GN-2011B-Q-7'],
-    'N20130419S0198': [
-        'GN-2013A-Q-71-102-086',
-        Inst.GNIRS,
-        'GN-2013A-Q-71',
-    ],
+    'N20130419S0198': ['GN-2013A-Q-71-102-086', Inst.GNIRS, 'GN-2013A-Q-71'],
     'N20130408S0105': ['GN-2013A-Q-71-86-031', Inst.GNIRS, 'GN-2013A-Q-71'],
-    'N20160123S0097': [
-        'GN-2015B-SV-101-1061-005',
-        Inst.GNIRS,
-        'GN-2015B-SV-101',
-    ],
-    'N20151213S0022': [
-        'GN-CAL20151213-6-002',
-        Inst.GNIRS,
-        'GN-CAL20151213',
-    ],
-    'N20160202S0098': [
-        'GN-CAL20160202-3-039',
-        Inst.GNIRS,
-        'GN-CAL20160202',
-    ],
+    'N20160123S0097': ['GN-2015B-SV-101-1061-005', Inst.GNIRS, 'GN-2015B-SV-101'],
+    'N20151213S0022': ['GN-CAL20151213-6-002', Inst.GNIRS, 'GN-CAL20151213'],
+    'N20160202S0098': ['GN-CAL20160202-3-039', Inst.GNIRS, 'GN-CAL20160202'],
     'S20041101S0215': ['GS-2004B-Q-19-20-023', Inst.GNIRS, 'GS-2004B-Q-19'],
     'N20170201S0246': ['GN-2017A-Q-44-25-031', Inst.GNIRS, 'GS-2017A-Q-44'],
-    'S20050601S0032': [
-        'GS-CAL20050601-3-002',
-        Inst.GNIRS,
-        'GS-CAL20050601',
-    ],
-    'S20050601S0411': [
-        'GS-CAL20050601-24-035',
-        Inst.GNIRS,
-        'GS-CAL20050601',
-    ],
-    'N20180224S0063': [
-        'GN-CAL20180224-3-001',
-        Inst.GNIRS,
-        'GN-CAL20180224-3',
-    ],
-    'N20171106S0187': [
-        'GN-2017B-LP-16-470-002',
-        Inst.GNIRS,
-        'GN-2017B-LP-16',
-    ],
-    'N20170210S0013': [
-        'GN-CAL20170209-5-003',
-        Inst.GNIRS,
-        'GN-CAL20170209-5',
-    ],
+    'S20050601S0032': ['GS-CAL20050601-3-002', Inst.GNIRS, 'GS-CAL20050601'],
+    'S20050601S0411': ['GS-CAL20050601-24-035', Inst.GNIRS, 'GS-CAL20050601'],
+    'N20180224S0063': ['GN-CAL20180224-3-001', Inst.GNIRS, 'GN-CAL20180224-3'],
+    'N20171106S0187': ['GN-2017B-LP-16-470-002', Inst.GNIRS, 'GN-2017B-LP-16'],
+    'N20170210S0013': ['GN-CAL20170209-5-003', Inst.GNIRS, 'GN-CAL20170209-5'],
+    'S20040212S0191': ['GS-2004A-SV-1-1-002', Inst.GNIRS, 'GS-2004A-SV-1'],
+    'S20040212S0281': ['GS-2004A-SV-1-4-024', Inst.GNIRS, 'GS-2004A-SV-1'],
     # GPI
-    'S20140422S0167': [
-        'GS-2014A-SV-408-6-003',
-        Inst.GPI,
-        'GS-2014A-SV-408',
-    ],
-    'S20180313S0108': [
-        'GS-2018A-FT-101-5-043',
-        Inst.GPI,
-        'GS-2018A-FT-101',
-    ],
+    'S20140422S0167': ['GS-2014A-SV-408-6-003', Inst.GPI, 'GS-2014A-SV-408'],
+    'S20180313S0108': ['GS-2018A-FT-101-5-043', Inst.GPI, 'GS-2018A-FT-101'],
     'S20140315S0348': ['GS-CAL20140315-4-004', Inst.GPI, 'GS-CAL20140315'],
     'S20140317S0028': ['GS-CAL20140316-5-012', Inst.GPI, 'GS-CAL20140316'],
     'S20140321S0011': ['GS-CAL20140320-7-011', Inst.GPI, 'GS-CAL20140320'],
@@ -559,127 +422,40 @@ LOOKUP = {
     'S20150129S0028': ['GS-2014B-Q-501-10-001', Inst.GPI, 'GS-2014B-Q-501'],
     'S20200118S0371': ['GS-CAL20200118-10-001', Inst.GPI, 'GS-CAL20200118'],
     # GRACES
-    'N20150604G0003': [
-        'GN-CAL20150604-1000-1072',
-        Inst.GRACES,
-        'GN-CAL20150604',
-    ],
-    'N20150604G0014': [
-        'GN-CAL20150604-1000-1081',
-        Inst.GRACES,
-        'GN-CAL20150604',
-    ],
-    'N20150807G0046': [
-        'GN-CAL20150807-1000-1035',
-        Inst.GRACES,
-        'GN-CAL20150807',
-    ],
+    'N20150604G0003': ['GN-CAL20150604-1000-1072', Inst.GRACES, 'GN-CAL20150604'],
+    'N20150604G0014': ['GN-CAL20150604-1000-1081', Inst.GRACES, 'GN-CAL20150604'],
+    'N20150807G0046': ['GN-CAL20150807-1000-1035', Inst.GRACES, 'GN-CAL20150807'],
     # GSAOI
-    'S20130126S0134': [
-        'GS-2012B-SV-499-21-002',
-        Inst.GSAOI,
-        'GS-2012B-SV-499',
-    ],
+    'S20130126S0134': ['GS-2012B-SV-499-21-002', Inst.GSAOI, 'GS-2012B-SV-499'],
     'S20140113S0002': ['GS-2013B-DD-1-13-002', Inst.GSAOI, 'GS-2013B-DD-1'],
     'S20140122S0227': ['GS-2013B-Q-26-19-004', Inst.GSAOI, 'GS-2013B-Q-26'],
     'S20140113S0167': ['GS-2013B-Q-61-8-008', Inst.GSAOI, 'GS-2013B-Q-61'],
-    'S20130201S0246': [
-        'GS-CAL20130201-3-017',
-        Inst.GSAOI,
-        'GS-CAL20130201',
-    ],
-    'S20140109S0210': [
-        'GS-CAL20140109-3-009',
-        Inst.GSAOI,
-        'GS-CAL20140109',
-    ],
-    'S20181023S0087': [
-        'GS-CAL20181023-5-001',
-        Inst.GSAOI,
-        'GS-CAL20181023',
-    ],
+    'S20130201S0246': ['GS-CAL20130201-3-017', Inst.GSAOI, 'GS-CAL20130201'],
+    'S20140109S0210': ['GS-CAL20140109-3-009', Inst.GSAOI, 'GS-CAL20140109'],
+    'S20181023S0087': ['GS-CAL20181023-5-001', Inst.GSAOI, 'GS-CAL20181023'],
     # HOKUPAA
-    '2002APR23_591': [
-        'GN-2002A-DD-1-319-591',
-        Inst.HOKUPAA,
-        'GN-2002A-DD-1',
-    ],
-    '2002APR24_007': [
-        'GN-CAL20020424-1-007',
-        Inst.HOKUPAA,
-        'GN-CAL20020424',
-    ],
+    '2002APR23_591': ['GN-2002A-DD-1-319-591', Inst.HOKUPAA, 'GN-2002A-DD-1'],
+    '2002APR24_007': ['GN-CAL20020424-1-007', Inst.HOKUPAA, 'GN-CAL20020424'],
     '01sep20_044': ['GN-2001B-DD-1-16-044', Inst.HOKUPAA, 'GN-2001B-DD-1'],
     # hrwfs
     'S20030218S0027': ['GS-2003A-Q-6-1-002', Inst.HRWFS, 'GS-2003A-Q-6'],
     'S20030218S0042': ['GS-2003A-Q-6-1-002', Inst.HRWFS, 'GS-2003A-Q-6'],
-    '2003jan05_0082': [
-        'GS-CAL20030105-2-0072',
-        Inst.HRWFS,
-        'GS-CAL20030105',
-    ],
-    '2003mar03_0052': [
-        'GS-CAL20030303-7-0006',
-        Inst.HRWFS,
-        'GS-CAL20030303',
-    ],
-    'S20030730S0036': [
-        'GS-CAL20030730-10-006',
-        Inst.HRWFS,
-        'GS-CAL20030730',
-    ],
-    'S20031218S0049': [
-        'GS-CAL20031218-1-034',
-        Inst.HRWFS,
-        'GS-CAL20031218',
-    ],
+    '2003jan05_0082': ['GS-CAL20030105-2-0072', Inst.HRWFS, 'GS-CAL20030105'],
+    '2003mar03_0052': ['GS-CAL20030303-7-0006', Inst.HRWFS, 'GS-CAL20030303'],
+    'S20030730S0036': ['GS-CAL20030730-10-006', Inst.HRWFS, 'GS-CAL20030730'],
+    'S20031218S0049': ['GS-CAL20031218-1-034', Inst.HRWFS, 'GS-CAL20031218'],
     '2001nov16_0164': ['GS-2001B-DD-4-1-0002', Inst.HRWFS, 'GS-2001B-DD-4'],
     # Michelle
-    'N20060705S0054': [
-        'GN-2006A-C-14-49-002',
-        Inst.MICHELLE,
-        'GN-2006A-C-14',
-    ],
-    'N20060418S0123': [
-        'GN-2006A-Q-58-9-007',
-        Inst.MICHELLE,
-        'GN-2006A-Q-58',
-    ],
-    'N20070310S0156': [
-        'GN-2007A-C-11-234-001',
-        Inst.MICHELLE,
-        'GN-2007A-C-11',
-    ],
-    'N20080612S0038': [
-        'GN-2008A-Q-43-6-002',
-        Inst.MICHELLE,
-        'GN-2008A-Q-43',
-    ],
-    'N20100131S0131': [
-        'GN-2009B-C-1-62-001',
-        Inst.MICHELLE,
-        'GN-2009B-C-1',
-    ],
-    'N20110127S0219': [
-        'GN-2010B-C-3-21-002',
-        Inst.MICHELLE,
-        'GN-2010B-C-3',
-    ],
-    'N20050826S0137': [
-        'GN-2005B-Q-16-85-001',
-        Inst.MICHELLE,
-        'GN-2005B-Q-16',
-    ],
-    'N20060413S0129': [
-        'GN-CAL20060413-7-001',
-        Inst.MICHELLE,
-        'GN-CAL20060413',
-    ],
-    'N20080308S0086': [
-        'GN-CAL20080308-8-016',
-        Inst.MICHELLE,
-        'GN-CAL20080308',
-    ],
+    'N20060705S0054': ['GN-2006A-C-14-49-002', Inst.MICHELLE, 'GN-2006A-C-14'],
+    'N20060418S0123': ['GN-2006A-Q-58-9-007', Inst.MICHELLE, 'GN-2006A-Q-58'],
+    'N20070310S0156': ['GN-2007A-C-11-234-001', Inst.MICHELLE, 'GN-2007A-C-11'],
+    'N20080612S0038': ['GN-2008A-Q-43-6-002', Inst.MICHELLE, 'GN-2008A-Q-43'],
+    'N20100131S0131': ['GN-2009B-C-1-62-001', Inst.MICHELLE, 'GN-2009B-C-1'],
+    'N20110127S0219': ['GN-2010B-C-3-21-002', Inst.MICHELLE, 'GN-2010B-C-3'],
+    'N20050826S0137': ['GN-2005B-Q-16-85-001', Inst.MICHELLE, 'GN-2005B-Q-16'],
+    'N20060413S0129': ['GN-CAL20060413-7-001', Inst.MICHELLE, 'GN-CAL20060413'],
+    'N20080308S0086': ['GN-CAL20080308-8-016', Inst.MICHELLE, 'GN-CAL20080308'],
+    'N20100116S0154': ['GN-2009B-Q-3-64-002', Inst.MICHELLE, 'GN-2009B-Q-3'],
     # NICI
     'S20100102S0035': ['GS-2009B-Q-14-129-029', Inst.NICI, 'GS-2009B-Q-14'],
     'S20100218S0028': ['GS-2009B-Q-21-19-001', Inst.NICI, 'GS-2009B-Q-21'],
@@ -697,11 +473,7 @@ LOOKUP = {
     'N20161007S0382': ['GN-2016B-Q-27-31-007', Inst.NIFS, 'GN-2016B-Q-27'],
     'N20060723S0132': ['GN-2006A-C-11-670-006', Inst.NIFS, 'GN-2006A-C-11'],
     'N20061217S0228': ['GN-2006B-C-9-17-034', Inst.NIFS, 'GN-2006B-C-9'],
-    'N20200103S0434': [
-        'GN-CAL20200104-13-001',
-        Inst.NIFS,
-        'GN-CAL20200104',
-    ],
+    'N20200103S0434': ['GN-CAL20200104-13-001', Inst.NIFS, 'GN-CAL20200104'],
     # NIRI
     'N20020405S0044': ['GN-2002A-C-4-2-001', Inst.NIRI, ''],
     'N20020620S0021': ['GN-2002A-C-5-1-001', Inst.NIRI, 'GN-2002A-C-5'],
@@ -715,364 +487,103 @@ LOOKUP = {
     'N20090105S0060': ['GN-2008B-C-3-2-012', Inst.NIRI, 'GN-2008B-C-3'],
     'N20070818S0031': ['GN-2007B-Q-75-63-002', Inst.NIRI, 'GN-2007B-Q-75'],
     'N20030912S0301': ['GN-2003B-C-3-66-001', Inst.NIRI, 'GN-2003B-C-3'],
-    'N20090918S0386': [
-        'GN-2009B-Q-52-332-011',
-        Inst.NIRI,
-        'GN-20009B-Q-52',
-    ],
+    'N20090918S0386': ['GN-2009B-Q-52-332-011', Inst.NIRI, 'GN-20009B-Q-52'],
     'N20100620S0126': ['GN-2010A-Q-44-175-015', Inst.NIRI, 'GN-2009B-Q-44'],
     'N20120118S0441': ['GN-2011B-Q-28-10-002', Inst.NIRI, 'GN-2011B-Q-28'],
     'N20170302S0331': ['GN-2017A-SV-1-98-331', Inst.NIRI, 'GN-2017A-SV-1'],
     'N20170523S0331': ['GN-2017A-Q-70-214-001', Inst.NIRI, 'GN-2017A-Q-70'],
     'N20141203S0891': ['GN-2014B-C-1-157-100', Inst.NIRI, 'GN-2014B-C-1'],
     'N20030325S0098': ['GN-2003A-Q-51-2-004', Inst.NIRI, 'GN-2003A-Q-51'],
+    'N20211017S0139': ['GN-2021B-Q-110-28-126', Inst.NIRI, 'GN-2021B-Q-110'],
+    'N20030325S0353': ['GN-CAL20030325-21-003', Inst.NIRI, 'GN-CAL20030325'],
     # OSCIR
     'r01dec05_007': ['GS-2001B-Q-31-9-007', Inst.OSCIR, 'GS-2001B-Q-31'],
     '01MAY08_023': ['GN-2001A-C-4-11-9023', Inst.OSCIR, 'GN-2001A-C-4'],
     '01DEC05_004': ['GS-2001B-Q-31-9-9004', Inst.OSCIR, 'GS-2001B-Q-31'],
     # Phoenix
-    '2002jun10_0171': [
-        'GS-2002A-DD-1-17-0171',
-        Inst.PHOENIX,
-        'GS-2002A-DD-1',
-    ],
-    '2003aug20_0073': [
-        'GS-2003B-Q-51-27-0073',
-        Inst.PHOENIX,
-        'GS-2003B-Q-51',
-    ],
-    '2006apr07_0258': [
-        'GS-2006A-C-10-1-0258',
-        Inst.PHOENIX,
-        'GS-2006A-C-10',
-    ],
-    '2006apr02_0073': [
-        'GS-2006A-DD-1-1-0073',
-        Inst.PHOENIX,
-        'GS-2006A-DD-1',
-    ],
+    '2002jun10_0171': ['GS-2002A-DD-1-17-0171', Inst.PHOENIX, 'GS-2002A-DD-1'],
+    '2003aug20_0073': ['GS-2003B-Q-51-27-0073', Inst.PHOENIX, 'GS-2003B-Q-51'],
+    '2006apr07_0258': ['GS-2006A-C-10-1-0258', Inst.PHOENIX, 'GS-2006A-C-10'],
+    '2006apr02_0073': ['GS-2006A-DD-1-1-0073', Inst.PHOENIX, 'GS-2006A-DD-1'],
     '2006dec10_0052': ['GS-2006B-C-8-2-0052', Inst.PHOENIX, 'GS-2006B-C-8'],
-    '2003apr24_0080': [
-        'GS-2003A-Q-13-15-0080',
-        Inst.PHOENIX,
-        'GS-2003A-Q-13',
-    ],
-    '2002may12_0277': [
-        'GS-CAL20020512-9-0277',
-        Inst.PHOENIX,
-        'GS-CAL20020512',
-    ],
-    '2007sep15_0001': [
-        'GS-2007B-Q-214-45-0001',
-        Inst.PHOENIX,
-        'GS-2007B-Q-214',
-    ],
+    '2003apr24_0080': ['GS-2003A-Q-13-15-0080', Inst.PHOENIX, 'GS-2003A-Q-13'],
+    '2002may12_0277': ['GS-CAL20020512-9-0277', Inst.PHOENIX, 'GS-CAL20020512'],
+    '2007sep15_0001': ['GS-2007B-Q-214-45-0001', Inst.PHOENIX, 'GS-2007B-Q-214'],
+    '2003may05_0188_sub': ['GS-2003A-Q-41-4-0188', Inst.PHOENIX, 'GS-2003A-Q-41'],
     # TReCS
     'S20050621S0037': ['GS-2005A-Q-15-1-001', Inst.TRECS, 'GS-2005A-Q-15'],
     'S20050918S0058': ['GS-2005B-Q-10-22-003', Inst.TRECS, 'GS-2005B-Q-10'],
     'S20080610S0045': ['GS-2008A-C-5-35-002', Inst.TRECS, 'GS-2008A-C-5'],
     'S20120922S0372': ['GS-2012A-Q-7-31-001', Inst.TRECS, 'GS-2012A-Q-7'],
-    'S20050102S0024': [
-        'GS-CAL20050102-1-001',
-        Inst.TRECS,
-        'GS-CAL20050102',
-    ],
+    'S20050102S0024': ['GS-CAL20050102-1-001', Inst.TRECS, 'GS-CAL20050102'],
     'S20050718S0172': ['GS-2005A-Q-50-55-003', Inst.TRECS, 'GS-2005A-Q-50'],
-    'rS20060306S0090': [
-        'GS-2005B-Q-10-63-003',
-        Inst.TRECS,
-        'GS-2005B-Q-10',
-    ],
-    'S20120605S0053': [
-        'GS-2012A-SV-101-6-009',
-        Inst.TRECS,
-        'GS-2012A-SV-101',
-    ],
-    'rS20050916S0159': [
-        'GS-2003B-Q-23-17-001',
-        Inst.TRECS,
-        'GS-2003B-Q-23',
-    ],
+    'rS20060306S0090': ['GS-2005B-Q-10-63-003', Inst.TRECS, 'GS-2005B-Q-10'],
+    'S20120605S0053': ['GS-2012A-SV-101-6-009', Inst.TRECS, 'GS-2012A-SV-101'],
+    'rS20050916S0159': ['GS-2003B-Q-23-17-001', Inst.TRECS, 'GS-2003B-Q-23'],
     # CIRPASS
-    '2003mar09_1204': [
-        'GS-2003A-Q-10-19-1204',
-        Inst.CIRPASS,
-        'GS-2003A-Q-10',
-    ],
-    '2003jun30_3507': [
-        'GS-2003A-Q-14-2-3507',
-        Inst.CIRPASS,
-        'GS-2003A-Q-14',
-    ],
-    '2003mar09_1161': [
-        'GS-2003A-Q-24-1-1161',
-        Inst.CIRPASS,
-        'GS-2003A-Q-24',
-    ],
-    '2003jul01_3598': [
-        'GS-2003A-Q-3-22-3598',
-        Inst.CIRPASS,
-        'GS-2003A-Q-3',
-    ],
-    '2003mar08_1055': [
-        'GS-CAL20030308-4-1055',
-        Inst.CIRPASS,
-        'GS-CAL20030308',
-    ],
-    '2003mar09_1247': [
-        'GS-CAL20030309-9-1247',
-        Inst.CIRPASS,
-        'GS-CAL20030309',
-    ],
-    '2003mar13_1769': [
-        'GS-CAL20030313-3-1769',
-        Inst.CIRPASS,
-        'GS-CAL20030313',
-    ],
-    '2003mar15_2027': [
-        'GS-CAL20030315-18-2027',
-        Inst.CIRPASS,
-        'GS-CAL20030315',
-    ],
-    '2003mar20_2731': [
-        'GS-CAL20030320-3-2731',
-        Inst.CIRPASS,
-        'GS-CAL20030320',
-    ],
-    '2003jun30_3384': [
-        'GS-CAL20030630-1-3384',
-        Inst.CIRPASS,
-        'GS-CAL20030630',
-    ],
-    '2003jun30_3532': [
-        'GS-CAL20030630-11-3532',
-        Inst.CIRPASS,
-        'GS-CAL20030630',
-    ],
-    '2003jun30_3463': [
-        'GS-CAL20030630-4-3463',
-        Inst.CIRPASS,
-        'GS-CAL20030630',
-    ],
-    '2003jun30_3385': [
-        'GS-CAL20030630-1-3385',
-        Inst.CIRPASS,
-        'GS-CAL20030630',
-    ],
+    '2003mar09_1204': ['GS-2003A-Q-10-19-1204', Inst.CIRPASS, 'GS-2003A-Q-10'],
+    '2003jun30_3507': ['GS-2003A-Q-14-2-3507', Inst.CIRPASS, 'GS-2003A-Q-14'],
+    '2003mar09_1161': ['GS-2003A-Q-24-1-1161', Inst.CIRPASS, 'GS-2003A-Q-24'],
+    '2003jul01_3598': ['GS-2003A-Q-3-22-3598', Inst.CIRPASS, 'GS-2003A-Q-3'],
+    '2003mar08_1055': ['GS-CAL20030308-4-1055', Inst.CIRPASS, 'GS-CAL20030308'],
+    '2003mar09_1247': ['GS-CAL20030309-9-1247', Inst.CIRPASS, 'GS-CAL20030309'],
+    '2003mar13_1769': ['GS-CAL20030313-3-1769', Inst.CIRPASS, 'GS-CAL20030313'],
+    '2003mar15_2027': ['GS-CAL20030315-18-2027', Inst.CIRPASS, 'GS-CAL20030315'],
+    '2003mar20_2731': ['GS-CAL20030320-3-2731', Inst.CIRPASS, 'GS-CAL20030320'],
+    '2003jun30_3384': ['GS-CAL20030630-1-3384', Inst.CIRPASS, 'GS-CAL20030630'],
+    '2003jun30_3532': ['GS-CAL20030630-11-3532', Inst.CIRPASS, 'GS-CAL20030630'],
+    '2003jun30_3463': ['GS-CAL20030630-4-3463', Inst.CIRPASS, 'GS-CAL20030630'],
+    '2003jun30_3385': ['GS-CAL20030630-1-3385', Inst.CIRPASS, 'GS-CAL20030630'],
     # TEXES
-    'TX20071021_FLT.2037': [
-        'GN-2007B-C-6-5-005-FLT',
-        Inst.TEXES,
-        'GN-2007B-C-6',
-    ],
-    'TX20131117_flt.3002': [
-        'TX20131117_flt.3002',
-        Inst.TEXES,
-        'GN-2013B-Q-38',
-    ],
+    'TX20071021_FLT.2037': ['GN-2007B-C-6-5-005-FLT', Inst.TEXES, 'GN-2007B-C-6'],
+    'TX20131117_flt.3002': ['TX20131117_flt.3002', Inst.TEXES, 'GN-2013B-Q-38'],
     'TX20131117_raw.3002': ['TX20131117.3002', Inst.TEXES, 'GN-2013B-Q-38'],
-    'TX20170321_flt.2505': [
-        'TX20170321_flt.2505',
-        Inst.TEXES,
-        'GN-2017A-Q-56',
-    ],
-    'TX20170321_flt.2507': [
-        'TX20170321_flt.2507',
-        Inst.TEXES,
-        'GN-2017A-Q-56',
-    ],
+    'TX20170321_flt.2505': ['TX20170321_flt.2505', Inst.TEXES, 'GN-2017A-Q-56'],
+    'TX20170321_flt.2507': ['TX20170321_flt.2507', Inst.TEXES, 'GN-2017A-Q-56'],
     # processed
-    'GS20141226S0203_BIAS': [
-        'GS-CAL20141226-7-026-G-BIAS',
-        Inst.GMOS,
-        'GS-CAL20141226',
-    ],
-    'N20070819S0339_dark': [
-        'GN-2007B-Q-107-150-004-DARK',
-        Inst.GMOS,
-        'GN-2007B-Q-107',
-    ],
-    'N20110927S0170_fringe': [
-        'GN-CAL20110927-900-170',
-        Inst.GMOS,
-        'GN-CAL20110927',
-    ],
-    'N20120320S0328_stack_fringe': [
-        'GN-CAL20120320-900-328-STACK-FRINGE',
-        Inst.GMOS,
-        'GN-CAL20120320',
-    ],
-    'N20130404S0512_flat': [
-        'GN-2013A-Q-63-54-051-FLAT',
-        Inst.NIRI,
-        'GN-2013A-Q-63',
-    ],
-    'N20140313S0072_flat': [
-        'GN-2013B-Q-75-163-011-FLAT',
-        Inst.NIRI,
-        'GN-2013B-Q-75',
-    ],
-    'N20141109S0266_bias': [
-        'GN-CAL20141109-2-001-BIAS',
-        Inst.GMOS,
-        'GN-CAL20141109',
-    ],
-    'N20150804S0348_dark': [
-        'GN-2015B-Q-53-138-061-DARK',
-        Inst.GMOS,
-        'GN-2015B-Q-53',
-    ],
-    'N20160403S0236_flat_pasted': [
-        'GN-CAL20160404-7-017-FLAT-PASTED',
-        Inst.GMOS,
-        'GN-CAL20160404',
-    ],
+    'GS20141226S0203_BIAS': ['GS-CAL20141226-7-026-G-BIAS', Inst.GMOS, 'GS-CAL20141226'],
+    'N20070819S0339_dark': ['GN-2007B-Q-107-150-004-DARK', Inst.GMOS, 'GN-2007B-Q-107'],
+    'N20110927S0170_fringe': ['GN-CAL20110927-900-170', Inst.GMOS, 'GN-CAL20110927'],
+    'N20120320S0328_stack_fringe': ['GN-CAL20120320-900-328-STACK-FRINGE', Inst.GMOS, 'GN-CAL20120320'],
+    'N20130404S0512_flat': ['GN-2013A-Q-63-54-051-FLAT', Inst.NIRI, 'GN-2013A-Q-63'],
+    'N20140313S0072_flat': ['GN-2013B-Q-75-163-011-FLAT', Inst.NIRI, 'GN-2013B-Q-75'],
+    'N20141109S0266_bias': ['GN-CAL20141109-2-001-BIAS', Inst.GMOS, 'GN-CAL20141109'],
+    'N20150804S0348_dark': ['GN-2015B-Q-53-138-061-DARK', Inst.GMOS, 'GN-2015B-Q-53'],
+    'N20160403S0236_flat_pasted': ['GN-CAL20160404-7-017-FLAT-PASTED', Inst.GMOS, 'GN-CAL20160404'],
     'S20120922S0406': ['GS-2012B-Q-1-32-002', Inst.GMOS, 'GS-2012B-Q-1'],
-    'S20131007S0067_fringe': [
-        'GS-CAL20131007-900-067',
-        Inst.GMOS,
-        'GS-CAL20131007',
-    ],
-    'S20140124S0039_dark': [
-        'GS-2013B-Q-16-277-019-DARK',
-        Inst.F2,
-        'GS-2013B-Q-16',
-    ],
-    'S20141129S0331_dark': [
-        'GS-CAL20141129-1-001-DARK',
-        Inst.F2,
-        'GS-CAL20141129',
-    ],
+    'S20131007S0067_fringe': ['GS-CAL20131007-900-067', Inst.GMOS, 'GS-CAL20131007'],
+    'S20140124S0039_dark': ['GS-2013B-Q-16-277-019-DARK', Inst.F2, 'GS-2013B-Q-16'],
+    'S20141129S0331_dark': ['GS-CAL20141129-1-001-DARK', Inst.F2, 'GS-CAL20141129'],
     'S20161227S0051': ['GS-CAL20161227-5-001', Inst.GMOS, 'GS-CAL20161227'],
-    'fmrgN20020413S0120_add': [
-        'GN-2002A-SV-78-7-003-FMRG-ADD',
-        Inst.GMOS,
-        'GN-2002A-SV-78',
-    ],
-    'gS20181219S0216_flat': [
-        'GS-CAL20181219-4-021-G-FLAT',
-        Inst.GMOS,
-        'GS-CAL20181219',
-    ],
-    'gS20190301S0556_bias': [
-        'GS-CAL20190301-4-046-G-BIAS',
-        Inst.GMOS,
-        'GS-CAL20190301',
-    ],
-    'mfrgS20041117S0073_add': [
-        'GS-2004B-Q-42-1-001-MFRG-ADD',
-        Inst.GMOS,
-        'GS-2004B-Q-42',
-    ],
-    'mfrgS20160310S0154_add': [
-        'GS-2016A-Q-7-175-001-MFRG-ADD',
-        Inst.GMOS,
-        'GS-2016A-Q-7',
-    ],
-    'mrgN20041016S0095': [
-        'GN-2004B-Q-30-1-001',
-        Inst.GMOS,
-        'GN-2004B-Q-30',
-    ],
-    'mrgN20050831S0770_add': [
-        'GN-2005B-Q-28-32-001-MRG-ADD',
-        Inst.GMOS,
-        'GN-2005B-Q-28',
-    ],
-    'mrgN20160311S0691_add': [
-        'GN-2016A-Q-68-46-001-MRG-ADD',
-        Inst.GMOS,
-        'GN-2016A-Q-68',
-    ],
+    'fmrgN20020413S0120_add': ['GN-2002A-SV-78-7-003-FMRG-ADD', Inst.GMOS, 'GN-2002A-SV-78'],
+    'gS20181219S0216_flat': ['GS-CAL20181219-4-021-G-FLAT', Inst.GMOS, 'GS-CAL20181219'],
+    'gS20190301S0556_bias': ['GS-CAL20190301-4-046-G-BIAS', Inst.GMOS, 'GS-CAL20190301'],
+    'mfrgS20041117S0073_add': ['GS-2004B-Q-42-1-001-MFRG-ADD', Inst.GMOS, 'GS-2004B-Q-42'],
+    'mfrgS20160310S0154_add': ['GS-2016A-Q-7-175-001-MFRG-ADD', Inst.GMOS, 'GS-2016A-Q-7'],
+    'mrgN20041016S0095': ['GN-2004B-Q-30-1-001', Inst.GMOS, 'GN-2004B-Q-30'],
+    'mrgN20050831S0770_add': ['GN-2005B-Q-28-32-001-MRG-ADD', Inst.GMOS, 'GN-2005B-Q-28'],
+    'mrgN20160311S0691_add': ['GN-2016A-Q-68-46-001-MRG-ADD', Inst.GMOS, 'GN-2016A-Q-68'],
     'mrgS20120922S0406': ['GS-2012B-Q-1-32-002', Inst.GMOS, 'GS-2012B-Q-1'],
-    'mrgS20160901S0122_add': [
-        'GS-2016B-Q-72-23-001-MRG-ADD',
-        Inst.GMOS,
-        'GS-2016B-Q-72',
-    ],
-    'mrgS20181016S0184_fringe': [
-        'GS-CAL20181016-5-001-MRG-FRINGE',
-        Inst.GMOS,
-        'GS-CAL20181016',
-    ],
-    'rS20121030S0136': [
-        'GS-2012B-Q-90-366-003',
-        Inst.TRECS,
-        'GS-2012B-Q-90',
-    ],
+    'mrgS20160901S0122_add': ['GS-2016B-Q-72-23-001-MRG-ADD', Inst.GMOS, 'GS-2016B-Q-72'],
+    'mrgS20181016S0184_fringe': ['GS-CAL20181016-5-001-MRG-FRINGE', Inst.GMOS, 'GS-CAL20181016'],
+    'rS20121030S0136': ['GS-2012B-Q-90-366-003', Inst.TRECS, 'GS-2012B-Q-90'],
     'rgS20100212S0301': ['GS-2010A-Q-36-5-246', Inst.GMOS, 'GS-2010A-Q-36'],
     'rgS20100316S0366': ['GS-2010A-Q-36-6-358', Inst.GMOS, 'GS-2010A-Q-36'],
-    'rgS20130103S0098_FRINGE': [
-        'GS-CAL20130103-3-001-RG-FRINGE',
-        Inst.GMOS,
-        'GS-CAL20130103',
-    ],
-    'rgS20131109S0166_FRINGE': [
-        'GS-CAL20131109-17-001-RG-FRINGE',
-        Inst.GMOS,
-        'GS-CAL20131109',
-    ],
-    'rgS20161227S0051_fringe': [
-        'GS-CAL20161227-5-001-RG-FRINGE',
-        Inst.GMOS,
-        'GS-CAL20161227',
-    ],
-    'p2004may20_0048_FLAT': [
-        'GS-CAL20040520-7-0048-P-FLAT',
-        Inst.PHOENIX,
-        'GS-CAL20040520',
-    ],
-    'p2004may19_0255_COMB': [
-        'GS-2004A-Q-6-27-0255-P-COMB',
-        Inst.PHOENIX,
-        'GS-2004A-Q-6',
-    ],
-    'P2003JAN14_0148_DARK': [
-        'GS-CAL20030114-7-0148',
-        Inst.PHOENIX,
-        'GS-CAL2003011',
-    ],
-    'P2002FEB03_0045_DARK10SEC': [
-        'GS-CAL20020203-4-0045',
-        Inst.PHOENIX,
-        'GS-CAL20020203',
-    ],
-    'P2002DEC02_0075_SUB.0001': [
-        'GS-CAL20021202-3-0075',
-        Inst.PHOENIX,
-        'GS-CAL2002120',
-    ],
-    '2004may19_0255': [
-        'GS-2004A-Q-6-27-0255',
-        Inst.PHOENIX,
-        'GS-2004A-Q-6',
-    ],
-    'mrgN20060130S0149_add': [
-        'GN-2006A-Q-90-1-001-MRG-ADD',
-        Inst.GMOS,
-        'GS-2006A-Q-90',
-    ],
-    'S20181016S0184': [
-        'GS-CAL20181016-5-001',
-        Inst.GMOS,
-        'GS-CAL20181016-5',
-    ],
-    'N20200210S0077_bias': [
-        'GN-CAL20200210-22-076-BIAS',
-        Inst.GMOS,
-        'GN-CAL20200210',
-    ],
-    'rgnN20140428S0171_flat': [
-        'GN-2014A-Q-85-16-003-RGN-FLAT',
-        Inst.NIFS,
-        'GN-2014A-Q-85',
-    ],
+    'rgS20130103S0098_FRINGE': ['GS-CAL20130103-3-001-RG-FRINGE', Inst.GMOS, 'GS-CAL20130103'],
+    'rgS20131109S0166_FRINGE': ['GS-CAL20131109-17-001-RG-FRINGE', Inst.GMOS, 'GS-CAL20131109'],
+    'rgS20161227S0051_fringe': ['GS-CAL20161227-5-001-RG-FRINGE', Inst.GMOS, 'GS-CAL20161227'],
+    'p2004may20_0048_FLAT': ['GS-CAL20040520-7-0048-P-FLAT', Inst.PHOENIX, 'GS-CAL20040520'],
+    'p2004may19_0255_COMB': ['GS-2004A-Q-6-27-0255-P-COMB', Inst.PHOENIX, 'GS-2004A-Q-6'],
+    'P2003JAN14_0148_DARK': ['GS-CAL20030114-7-0148', Inst.PHOENIX, 'GS-CAL2003011'],
+    'P2002FEB03_0045_DARK10SEC': ['GS-CAL20020203-4-0045', Inst.PHOENIX, 'GS-CAL20020203'],
+    'P2002DEC02_0075_SUB.0001': ['GS-CAL20021202-3-0075', Inst.PHOENIX, 'GS-CAL2002120'],
+    '2004may19_0255': ['GS-2004A-Q-6-27-0255', Inst.PHOENIX, 'GS-2004A-Q-6'],
+    'mrgN20060130S0149_add': ['GN-2006A-Q-90-1-001-MRG-ADD', Inst.GMOS, 'GS-2006A-Q-90'],
+    'S20181016S0184': ['GS-CAL20181016-5-001', Inst.GMOS, 'GS-CAL20181016-5'],
+    'N20200210S0077_bias': ['GN-CAL20200210-22-076-BIAS', Inst.GMOS, 'GN-CAL20200210'],
+    'rgnN20140428S0171_flat': ['GN-2014A-Q-85-16-003-RGN-FLAT', Inst.NIFS, 'GN-2014A-Q-85'],
     'S20201023Z0001b': ['GS-CAL20201023-0-0', Inst.ZORRO, 'GS-CAL20201023'],
-    'SDCH_20200131_0010': [
-        'GS-CAL20200131-10-0131',
-        Inst.IGRINS,
-        'GS-CAL20200131',
-    ],
+    'SDCH_20200131_0010': ['GS-CAL20200131-10-0131', Inst.IGRINS, 'GS-CAL20200131'],
 }
 
 call_count = 0
@@ -1082,9 +593,7 @@ def mock_get_votable(url, ignore_session):
     try:
         x = url.split('/')
         filter_name = x[-1].replace('&VERB=0', '')
-        votable = parse_single_table(
-            f'{TEST_DATA_DIR}/votable/{filter_name}.xml'
-        )
+        votable = parse_single_table(f'{TEST_DATA_DIR}/votable/{filter_name}.xml')
         return votable, None
     except Exception as e:
         logging.error(f'get_vo_table failure for url {url}')
@@ -1136,10 +645,10 @@ def mock_get_file_info(file_id):
 
 
 def mock_retrieve_json(source_name, ign1, ign2):
-    return mock_get_obs_metadata(source_name)
+    return mock_get_obs_metadata(source_name, ign1, ign2)
 
 
-def mock_get_obs_metadata(file_id):
+def mock_get_obs_metadata(file_id, ignore1, ignore2):
     file_id = obs_file_relationship.remove_extensions(file_id.split('/')[-1])
     try:
         fname = f'{TEST_DATA_DIR}/json/{file_id}.json'
@@ -1150,9 +659,7 @@ def mock_get_obs_metadata(file_id):
             # TODO
             y = [
                 {
-                    'data_label': TAP_QUERY_LOOKUP.get(
-                        file_id, 'test_data_label'
-                    ),
+                    'data_label': TAP_QUERY_LOOKUP.get(file_id, 'test_data_label'),
                     'filename': f'{file_id}.fits.bz2',
                     'name': f'{file_id}.fits.bz2',
                     'lastmod': '2020-02-25T20:36:31.230',
@@ -1166,10 +673,14 @@ def mock_get_obs_metadata(file_id):
         logging.error(tb)
 
 
+def mock_get_obs_metadata_37(file_id):
+    return mock_get_obs_metadata(file_id, None, None)
+
+
 def mock_get_data_label(uri):
     ignore_scheme, ignore_collection, f_name = mc.decompose_uri(uri)
     file_id = GemName.remove_extensions(f_name)
-    temp = mock_get_obs_metadata(file_id)
+    temp = mock_get_obs_metadata(file_id, None, None)
     result = None
     for ii in temp:
         y = obs_file_relationship.remove_extensions(ii.get('filename'))
@@ -1185,6 +696,20 @@ class Object:
     def close(self):
         pass
 
+    def raise_for_status(self):
+        pass
+
+
+def mock_fullheader_endpoint(url, timeout=1):
+    result = Object()
+    result.text = None
+    if url == 'https://archive.gemini.edu/fullheader/N20220314S0229.fits':
+        with open(f'{TEST_DATA_DIR}/N20220314S0229.fits') as f:
+            result.text = f.read()
+    else:
+        raise mc.CadcException('mock_fullheader_endpoint failure')
+    return result
+
 
 def mock_query_endpoint(url, timeout=-1):
     # returns response.text
@@ -1195,12 +720,10 @@ def mock_query_endpoint(url, timeout=-1):
     if call_count == 0 and '20030106' not in url:
         with open(FIRST_FILE_LIST) as f:
             temp = f.read()
-            now_dt = datetime.utcnow()
+            now_dt = datetime.now(tz=timezone.utc).replace(tzinfo=None)
             now_date_str = datetime.strftime(now_dt, '%Y-%m-%d')
             now_time_str = datetime.strftime(now_dt, '%H:%M:%S')
-            result.text = temp.replace('2019-10-10', now_date_str).replace(
-                '05:09:24', now_time_str
-            )
+            result.text = temp.replace('2019-10-10', now_date_str).replace('05:09:24', now_time_str)
     elif call_count == 1 and '20030106' not in url:
         with open(SECOND_FILE_LIST) as f:
             result.text = f.read()
@@ -1221,9 +744,7 @@ def mock_query_endpoint_2(url, timeout=-1):
     def x():
         if 'entrytimedaterange' in url:
             if '2021-01-01T20:03:00.000000' in url:
-                with open(
-                    f'{TEST_DATA_DIR}/incremental/with_records.json'
-                ) as f:
+                with open(f'{TEST_DATA_DIR}/incremental/with_records.json') as f:
                     temp = f.read()
             else:
                 with open(f'{TEST_DATA_DIR}/incremental/empty.json') as f:
@@ -1263,15 +784,48 @@ def mock_query_endpoint_2(url, timeout=-1):
 def mock_query_endpoint_reproduce(url, timeout=-1):
     # returns response.json
     def x():
-        fqn = (
-            f'/usr/src/app/gem2caom2/gem2caom2/tests/data/json/reproduce.json'
-        )
+        fqn = f'/usr/src/app/gem2caom2/gem2caom2/tests/data/json/reproduce.json'
         with open(fqn) as f:
             temp = f.read()
         return json.loads(temp)
 
     result = Object()
     result.json = x
+    return result
+
+
+def mock_query_endpoint_4(url, timeout=-1):
+    # returns response.text
+    result = Object()
+    result.text = None
+
+    if url.startswith('https://archive.gemini.edu/diskfiles'):
+        with open(f'{TEST_DATA_DIR}/diskfiles_mock/gemini_out.html') as f:
+            result.text = f.read()
+    else:
+        raise Exception(f'wut {url} count {call_count}')
+    return result
+
+
+def mock_query_endpoint_5(url, timeout=-1):
+    # returns response.text
+    result = Object()
+    result.text = '<title>x</title>'
+
+    if url.startswith('https://archive.gemini.edu/diskfiles/entrytimedaterange=2024-08-28T17:05:00'):
+        with open(f'{TEST_DATA_DIR}/diskfiles_mock/query_limit.html') as f:
+            result.text = f.read()
+    elif url.startswith('https://archive.gemini.edu/diskfiles/entrytimedaterange=2024-08-27T03:50:00'):
+        with open(f'{TEST_DATA_DIR}/diskfiles_mock/md.html') as f:
+            result.text = f.read()
+    return result
+
+
+def mock_query_endpoint_6(url, timeout=-1):
+    # returns response.text
+    result = Object()
+    with open(f'{TEST_DATA_DIR}/diskfiles_mock/md.html') as f:
+        result.text = f.read()
     return result
 
 
@@ -1298,7 +852,7 @@ def mock_write_state2(prior_timestamp=None):
     # must have a starting time greater than one config.interval prior
     # to 'now', default interval is 10 minutes
     if prior_timestamp is None:
-        prior_s = datetime.utcnow().timestamp() - 15 * 60
+        prior_s = datetime.now(tz=timezone.utc).timestamp() - 15 * 60
     else:
         prior_s = mc.make_seconds(prior_timestamp)
     test_start_time = datetime.fromtimestamp(prior_s)
@@ -1333,9 +887,7 @@ def mock_repo_read(arg1, arg2):
         read_call_count = 1
         return None
     else:
-        return mc.read_obs_from_file(
-            f'{TEST_DATA_DIR}/GS-2019B-Q-222-181-001.expected.xml'
-        )
+        return mc.read_obs_from_file(f'{TEST_DATA_DIR}/GS-2019B-Q-222-181-001.expected.xml')
 
 
 def mock_repo_update(ignore1):
@@ -1343,47 +895,37 @@ def mock_repo_update(ignore1):
 
 
 def compare(expected_fqn, actual_fqn, observation):
-    try:
-        expected = mc.read_obs_from_file(expected_fqn)
-        compare_result = get_differences(expected, observation)
-    except Exception as e:
-        mc.write_obs_to_file(observation, actual_fqn)
-        assert False, f'{e}'
-    if compare_result is not None:
-        mc.write_obs_to_file(observation, actual_fqn)
-        compare_text = '\n'.join([r for r in compare_result])
-        raise AssertionError(
-            f'Differences found in observation {expected.observation_id}\n{compare_text}.\nCheck {actual_fqn}'
-        )
-
-
-def _query_mock_none(ignore1, ignore2):
-    return Table.read('observationID,lastModified\n'.split('\n'), format='csv')
-
-
-def _query_mock_one(ignore1, ignore2):
-    return Table.read(
-        'observationID,lastModified\n'
-        'test_data_label,2020-02-25T20:36:31.230\n'.split('\n'),
-        format='csv',
-    )
+    if observation:
+        if os.path.exists(expected_fqn):
+            expected = mc.read_obs_from_file(expected_fqn)
+            try:
+                compare_result = get_differences(expected, observation)
+            except Exception as e:
+                mc.write_obs_to_file(observation, actual_fqn)
+                assert False, f'{e}'
+            if compare_result is not None:
+                mc.write_obs_to_file(observation, actual_fqn)
+                compare_text = '\n'.join([r for r in compare_result])
+                raise AssertionError(
+                    f'Differences found in observation {expected.observation_id}\n{compare_text}.\nCheck {actual_fqn}'
+                )
+        else:
+            raise AssertionError(f'No expected observation here {expected_fqn}. See actual here {actual_fqn}')
+    else:
+        raise AssertionError(f'No observation created for comparison with {expected_fqn}')
 
 
 def mock_query_tap(query_string, mock_tap_client):
-    if query_string.startswith('SELECT A.uri'):
+    if query_string.startswith('SELECT O.observationID, A.uri'):
         return Table.read(
-            f'uri,lastModified\n'
-            f'gemini:GEMINI/N20191101S0007.fits,'
-            f'2020-02-25T20:36:31.230\n'.split('\n'),
+            f'observationID,uri,lastModified\n'
+            f'GN-2019B-ENG-1-160-008,gemini:GEMINI/N20191101S0007.fits,2020-02-25T20:36:31.230\n'.split('\n'),
             format='csv',
         )
+    elif query_string.strip().startswith('SELECT max(A.lastModified'):
+        return Table.read(f'm\n2020-02-25T20:36:31.230\n'.split('\n'), format='ascii.tab')
     else:
-        file_id = (
-            query_string.split('gemini:GEMINI/')[1]
-            .split('\'')[0]
-            .replace('.fits', '')
-            .strip()
-        )
+        file_id = query_string.split('gemini:GEMINI/')[1].split('\'')[0].replace('.fits', '').strip()
         result = TAP_QUERY_LOOKUP.get(file_id, 'test_data_label')
         return Table.read(
             f'observationID,instrument_name\n' f'{result},hrwfs\n'.split('\n'),
@@ -1415,9 +957,7 @@ def _mock_headers(key, file_id):
         # the case if GeminiMetadataReader is being mocked
         if file_id in LOOKUP:
             instrument = LOOKUP.get(file_id)[1]
-            test_fqn = (
-                f'{TEST_DATA_DIR}/{instrument.value}/{file_id}.fits.header'
-            )
+            test_fqn = f'{TEST_DATA_DIR}/{instrument.value}/{file_id}.fits.header'
     if 'S20210518S0022' in file_id:
         # mocking the test case where unauthorized to retrieve metadata from
         # archive.gemini.edu - no headers, no file
@@ -1433,18 +973,12 @@ def _mock_retrieve_headers(mock_name, ign1, ign2):
     return _mock_headers(mock_name, mock_name)
 
 
-def _mock_get_head(file_id):
-    return _mock_headers(file_id, file_id)
+def _mock_retrieve_headers_37(mock_name, ign1, ign2, ignore3):
+    return _mock_headers(mock_name, mock_name)
 
 
-class MockFileReader(gemini_metadata.GeminiFileMetadataReader):
-
-    def __init__(self, pf_mock, filter_mock):
-        super().__init__(http_session=Mock(), provenance_finder=pf_mock, filter_cache=filter_mock)
-
-    def _retrieve_headers(self, key, file_id):
-        result = _mock_headers(key, file_id)
-        self._headers[key] = result
+def read_mock_37(collection, obs_id):
+    return SimpleObservation(collection='OMM', observation_id='test_obs_id', algorithm=Algorithm(name='exposure'))
 
 
 def _run_test_common(
@@ -1452,6 +986,7 @@ def _run_test_common(
     get_pi_mock,
     svofps_mock,
     pf_mock,
+    header_mock,
     json_mock,
     file_type_mock,
     test_set,
@@ -1462,70 +997,66 @@ def _run_test_common(
     warnings.simplefilter('ignore', AstropyWarning)
     get_pi_mock.side_effect = mock_get_pi_metadata
     svofps_mock.side_effect = mock_get_votable
-    pf_mock.get.side_effect = mock_get_data_label
+    pf_mock.return_value.get.side_effect = mock_get_data_label
     json_mock.side_effect = mock_get_obs_metadata
     file_type_mock.return_value = 'application/fits'
 
-    orig_cwd = os.getcwd()
-    try:
-        os.chdir(tmp_path)
-        test_config.task_types = [mc.TaskType.SCRAPE]
-        test_config.use_local_files = True
-        test_config.data_sources = data_sources
-        test_config.change_working_directory(tmp_path.as_posix())
-        test_config.proxy_file_name = 'test_proxy.pem'
-        test_config.write_to_file(test_config)
+    test_config.task_types = [mc.TaskType.SCRAPE]
+    test_config.use_local_files = True
+    test_config.log_to_file = True  # set the xml creation location
+    test_config.data_sources = data_sources
+    test_config.change_working_directory(tmp_path.as_posix())
+    test_config.proxy_file_name = 'test_proxy.pem'
+    test_config.logging_level = 'ERROR'
+    test_config.write_to_file(test_config)
+    set_logging(test_config)
 
-        with open(test_config.proxy_fqn, 'w') as f:
-            f.write('test content')
+    with open(test_config.proxy_fqn, 'w') as f:
+        f.write('test content')
 
-        observation = None
-        in_fqn = expected_fqn.replace('.expected.', '.in.')
-        if os.path.exists(in_fqn):
-            observation = mc.read_obs_from_file(in_fqn)
-        actual_fqn = expected_fqn.replace('expected', 'actual')
-        if os.path.exists(actual_fqn):
-            os.unlink(actual_fqn)
+    observation = None
+    in_fqn = expected_fqn.replace('.expected.', '.in.')
+    if os.path.exists(in_fqn):
+        observation = mc.read_obs_from_file(in_fqn)
+    actual_fqn = expected_fqn.replace('expected', 'actual')
+    if os.path.exists(actual_fqn):
+        os.unlink(actual_fqn)
 
-        test_observable = mc.Observable(rejected=mc.Rejected(test_config.rejected_fqn), metrics=None)
-        for entry in test_set:
-            filter_cache = svofps.FilterMetadataCache(svofps_mock)
-            metadata_reader = MockFileReader(pf_mock, filter_cache)
-            test_metadata = gemini_metadata.GeminiMetadataLookup(
-                metadata_reader
-            )
-            test_builder = builder.GemObsIDBuilder(
-                test_config, metadata_reader, test_metadata
-            )
-            storage_name = test_builder.build(entry)
-            client_mock = Mock()
-            kwargs = {
-                'storage_name': storage_name,
-                'metadata_reader': metadata_reader,
-                'clients': client_mock,
-                'observable': test_observable,
-            }
-            logging.getLogger(
-                'caom2utils.caom2blueprint',
-            ).setLevel(logging.INFO)
-            logging.getLogger('GeminiFits2caom2Visitor').setLevel(logging.INFO)
-            logging.getLogger('ValueRepairCache').setLevel(logging.INFO)
-            logging.getLogger('root').setLevel(logging.INFO)
-            # logging.getLogger('Gmos').setLevel(logging.INFO)
-            try:
-                observation = fits2caom2_augmentation.visit(observation, **kwargs)
-            except mc.CadcException as e:
-                if storage_name.file_name == 'N20220915S0113.fits':
-                    assert (
-                        test_observable.rejected.is_mystery_value(storage_name.file_name)
-                    ), 'expect rejected mystery value record'
-                raise e
+    test_reporter = mc.ExecutionReporter2(test_config)
+    filter_cache = svofps.FilterMetadataCache(svofps_mock)
+    clients_mock = Mock()
+    for test_f_name, test_obs_id in test_set.items():
+        storage_name = GemName(test_f_name, filter_cache)
+        storage_name.obs_id = test_obs_id
+        test_subject = gemini_metadata.GeminiMetaVisitRunnerMeta(
+            clients_mock, test_config, [fits2caom2_augmentation], test_reporter
+        )
 
-        compare(expected_fqn, actual_fqn, observation)
+        def _read_header_mock(ignore1, ignore2, ignore3, ignore4):
+            if 'S20210518S0022' in test_f_name:
+                return []
+            else:
+                return get_local_file_headers(test_f_name)
 
-        if observation.observation_id == 'GS-2022B-Q-235-137-045':
-            assert test_observable.rejected.is_bad_metadata(storage_name.file_name), 'expect rejected record'
-        else:
-            assert not test_observable.rejected.is_bad_metadata(storage_name.file_name), 'expect no rejected record'
-    finally:
-        os.chdir(orig_cwd)
+        header_mock.side_effect = _read_header_mock
+
+        clients_mock.metadata_client.read.return_value = observation
+
+        context = {'storage_name': storage_name}
+        try:
+            test_subject.execute(context)
+        except mc.CadcException as e:
+            if storage_name.file_name in ['N20220915S0113.fits', 'S20230301S0170.fits']:
+                assert test_reporter._observable.rejected.is_mystery_value(
+                    storage_name.file_name
+                ), 'expect rejected mystery value record'
+            raise e
+
+    compare(expected_fqn, actual_fqn, test_subject._observation)
+
+    if test_subject._observation.observation_id in ['GS-2022B-Q-235-137-045', 'GS-2023A-LP-103-23-017']:
+        assert test_reporter._observable.rejected.is_bad_metadata(storage_name.file_name), 'expect rejected record'
+    else:
+        assert not test_reporter._observable.rejected.is_bad_metadata(
+            storage_name.file_name
+        ), 'expect no rejected record'

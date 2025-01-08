@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
 # ***********************************************************************
 # ******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
 # *************  CENTRE CANADIEN DE DONNÉES ASTRONOMIQUES  **************
 #
-#  (c) 2022.                            (c) 2022.
+#  (c) 2025.                            (c) 2025.
 #  Government of Canada                 Gouvernement du Canada
 #  National Research Council            Conseil national de recherches
 #  Ottawa, Canada, K1A 0R6              Ottawa, Canada, K1A 0R6
@@ -72,13 +71,13 @@ from caom2pipe import caom_composable as cc
 from gem2caom2 import main_app
 
 
-class GeminiFits2caom2Visitor(cc.Fits2caom2Visitor):
+class GeminiFits2caom2Visitor(cc.Fits2caom2VisitorRunnerMeta):
     def __init__(self, observation, **kwargs):
         super().__init__(observation, **kwargs)
 
-    def _get_mapping(self, headers):
+    def _get_mapping(self, dest_uri):
         return main_app.mapping_factory(
-            self._storage_name, headers, self._metadata_reader, self._clients, self._observable
+            self._storage_name, self._clients, self._reporter, self._observation, self._config
         )
 
 

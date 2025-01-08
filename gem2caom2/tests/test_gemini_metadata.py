@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
 # ***********************************************************************
 # ******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
 # *************  CENTRE CANADIEN DE DONNÉES ASTRONOMIQUES  **************
 #
-#  (c) 2022.                            (c) 2022.
+#  (c) 2025.                            (c) 2025.
 #  Government of Canada                 Gouvernement du Canada
 #  National Research Council            Conseil national de recherches
 #  Ottawa, Canada, K1A 0R6              Ottawa, Canada, K1A 0R6
@@ -72,29 +71,14 @@ import os
 from astropy.io import fits
 from astropy.table import Table
 
-from mock import patch, Mock
+from mock import ANY, patch, Mock
 
+from cadcutils import exceptions
+from caom2utils.data_util import get_local_file_headers
 from caom2pipe import manage_composable as mc
 from gem2caom2 import gemini_metadata, gem_name
 
-
 import gem_mocks
-
-
-@patch('gem2caom2.gemini_metadata.retrieve_headers')
-@patch('gem2caom2.gemini_metadata.GeminiMetadataReader._retrieve_json')
-def test_set(retrieve_json_mock, retrieve_headers_mock):
-    retrieve_json_mock.side_effect = gem_mocks.mock_get_obs_metadata
-    test_f_name = 'N20030104S0065.fits'
-    test_obs_id = 'GN-CAL20030104-14-001'
-    retrieve_headers_mock.side_effect = gem_mocks._mock_retrieve_headers
-    test_storage_name = gem_name.GemName(file_name=test_f_name)
-    test_storage_name.obs_id = test_obs_id
-    test_subject = gemini_metadata.GeminiMetadataReader(Mock(), Mock(), Mock())
-    test_subject.set(test_storage_name)
-    assert len(test_subject._json_metadata) == 1, 'json entries'
-    assert len(test_subject._headers) == 1, 'header entries'
-    assert len(test_subject._file_info) == 1, 'file info entries'
 
 
 @patch('caom2utils.data_util.get_local_file_headers', autospec=True)
@@ -107,9 +91,7 @@ def test_provenance_finder(caom2_mock, local_mock):
 
     def _caom2_mock(ignore1, ignore2):
         return Table.read(
-            f'observationID,instrument_name\n'
-            f'{test_data_label},'
-            f'GMOS\n'.split('\n'),
+            f'observationID,instrument_name\n' f'{test_data_label},' f'GMOS\n'.split('\n'),
             format='csv',
         )
 
@@ -127,9 +109,7 @@ def test_provenance_finder(caom2_mock, local_mock):
 
     test_config = mc.Config()
     test_config.data_sources = [gem_mocks.TEST_DATA_DIR]
-    test_config.proxy_fqn = os.path.join(
-        gem_mocks.TEST_DATA_DIR, 'cadcproxy.pem'
-    )
+    test_config.proxy_fqn = os.path.join(gem_mocks.TEST_DATA_DIR, 'cadcproxy.pem')
     test_config.tap_id = 'ivo://cadc.nrc.ca/test'
 
     try:
@@ -141,19 +121,13 @@ def test_provenance_finder(caom2_mock, local_mock):
                 else:
                     test_config.task_types = [mc.TaskType.SCRAPE]
 
-                test_subject = gemini_metadata.ProvenanceFinder(
-                    test_config, Mock(), Mock()
-                )
+                test_subject = gemini_metadata.ProvenanceFinder(Mock(), test_config)
                 assert test_subject is not None, (
-                    f'ctor does not work:: '
-                    f'local {test_use_local}, '
-                    f'connected {test_connected}'
+                    f'ctor does not work:: ' f'local {test_use_local}, ' f'connected {test_connected}'
                 )
                 test_result = test_subject.get(test_uri)
                 assert test_result is not None, (
-                    f'expect a result '
-                    f'local {test_use_local}, '
-                    f'connected {test_connected}'
+                    f'expect a result ' f'local {test_use_local}, ' f'connected {test_connected}'
                 )
                 assert test_result == repaired_data_label, (
                     f'data_label should be {repaired_data_label} '
@@ -162,3 +136,39 @@ def test_provenance_finder(caom2_mock, local_mock):
                 )
     finally:
         os.path.exists = os_path_exists_orig
+
+
+@patch('caom2pipe.client_composable.ClientCollection')
+@patch('gem2caom2.gemini_metadata.retrieve_gemini_headers')
+def test_header_not_at_cadc_no_reader(retrieve_gemini_mock, clients_mock, test_config):
+    # the file is private, re-ingestion fails to find headers at CADC, needs to go back to archive.gemini.edu
+    test_f_name = 'N20220314S0229.fits.bz2'
+    test_obs_id = 'GN-CAL20220314-18-083'
+    retrieve_gemini_mock.side_effect = gem_mocks._mock_retrieve_headers
+    clients_mock.data_client.get_head.side_effect = exceptions.UnexpectedException
+    test_storage_name = gem_name.GemName(file_name=test_f_name)
+    test_storage_name.obs_id = test_obs_id
+    test_result = gemini_metadata.retrieve_headers(test_f_name, Mock(), clients_mock, test_config)
+    assert test_result is not None, 'expect a result'
+    assert retrieve_gemini_mock.called, 'retrieve mock not called'
+    retrieve_gemini_mock.assert_called_with(test_f_name, ANY, ANY), 'wrong mock args'
+
+
+@patch('gem2caom2.composable.GemClientCollection')
+def test_header_not_at_cadc_no_reader_session_mock(clients_mock, test_data_dir, test_config):
+    # the file is private, re-ingestion fails to find headers at CADC, needs to go back to archive.gemini.edu
+    test_f_name = 'N20220314S0229.fits.bz2'
+    test_obs_id = 'GN-CAL20220314-18-083'
+    clients_mock.data_client.get_head.side_effect = exceptions.UnexpectedException
+    session_return = gem_mocks.Object()
+    with open (f'{test_data_dir}/N20220314S0229.fits') as f_in:
+        session_return.text = f_in.read()
+    clients_mock.gemini_session.get.return_value = session_return
+    test_storage_name = gem_name.GemName(file_name=test_f_name)
+    test_storage_name.obs_id = test_obs_id
+    test_result = gemini_metadata.retrieve_headers(test_f_name, Mock(), clients_mock, test_config)
+    assert test_result is not None, 'expect a result'
+    assert clients_mock.gemini_session.get.called, 'get mock not called'
+    clients_mock.gemini_session.get.assert_called_with(
+        'https://archive.gemini.edu/fullheader/N20220314S0229.fits.bz2', timeout=20
+    ), 'wrong mock args'

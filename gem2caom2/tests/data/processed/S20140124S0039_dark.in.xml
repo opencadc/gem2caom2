@@ -36,11 +36,11 @@
     </caom2:plane>
   </caom2:planes>
   <caom2:members>
-    <caom2:observationURI>caom:GEMINI/GS-2013B-Q-16-277-024</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GS-2013B-Q-16-277-019</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GS-2013B-Q-16-277-020</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GS-2013B-Q-16-277-021</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GS-2013B-Q-16-277-023</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GS-2013B-Q-16-277-022</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GS-2013B-Q-16-277-021</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GS-2013B-Q-16-277-020</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GS-2013B-Q-16-277-024</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GS-2013B-Q-16-277-023</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GS-2013B-Q-16-277-019</caom2:observationURI>
   </caom2:members>
 </caom2:Observation>

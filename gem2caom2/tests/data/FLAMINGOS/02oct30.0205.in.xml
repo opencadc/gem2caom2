@@ -34,10 +34,6 @@
         <caom2:producer>Gemini Observatory</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/GS-2002B-Q-5-20-0205</caom2:reference>
       </caom2:provenance>
-      <caom2:position/>
-      <caom2:energy/>
-      <caom2:time/>
-      <caom2:polarization/>
       <caom2:artifacts>
         <caom2:artifact caom2:id="00000000-0000-0000-b83a-7e2573337361" caom2:lastModified="2018-10-10T04:26:47.105" caom2:maxLastModified="2018-10-10T04:26:47.105" caom2:metaChecksum="md5:0dd86a1c80c2eaa76a8a92e4edbc7f54" caom2:accMetaChecksum="md5:026ed866fad1be70ecafb548a2afff3e" caom2:metaProducer="gem2caom2/0.8.1">
           <caom2:uri>gemini:GEMINI/02oct30.0205.fits</caom2:uri>

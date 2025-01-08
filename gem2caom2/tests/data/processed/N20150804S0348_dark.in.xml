@@ -33,15 +33,15 @@
     </caom2:plane>
   </caom2:planes>
   <caom2:members>
-    <caom2:observationURI>caom:GEMINI/GN-2015B-Q-53-138-062</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GN-2015B-Q-53-138-064</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GN-2015B-Q-53-138-068</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GN-2015B-Q-53-138-061</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GN-2015B-Q-53-138-067</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GN-2015B-Q-53-138-070</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GN-2015B-Q-53-138-062</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GN-2015B-Q-53-138-065</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GN-2015B-Q-53-138-067</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GN-2015B-Q-53-138-061</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GN-2015B-Q-53-138-069</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GN-2015B-Q-53-138-068</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GN-2015B-Q-53-138-063</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GN-2015B-Q-53-138-066</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GN-2015B-Q-53-138-069</caom2:observationURI>
   </caom2:members>
 </caom2:Observation>

@@ -37,21 +37,21 @@
         <caom2:producer>NOAO-IRAF FITS Image Kernel July 2003</caom2:producer>
         <caom2:reference>http://archive.gemini.edu/searchform/filepre=p2004may20_0048_FLAT.fits</caom2:reference>
         <caom2:inputs>
-          <caom2:planeURI>caom:GEMINI/GS-CAL20040520-7-0056/2004may20_0056</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/GS-CAL20040520-7-0048/2004may20_0048</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/GS-CAL20040520-7-0057/2004may20_0057</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/GS-CAL20040520-7-0049/2004may20_0049</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GS-CAL20040520-7-0054/2004may20_0054</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GS-CAL20040520-7-0048/2004may20_0048</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GS-CAL20040520-7-0051/2004may20_0051</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GS-CAL20040520-7-0050/2004may20_0050</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GS-CAL20040520-7-0057/2004may20_0057</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GS-CAL20040520-7-0056/2004may20_0056</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GS-CAL20040520-7-0058/2004may20_0058</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/GS-CAL20040520-7-0060/2004may20_0060</caom2:planeURI>
+          <caom2:planeURI>caom:GEMINI/GS-CAL20040520-7-0062/2004may20_0062</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/GS-CAL20040520-7-0059/2004may20_0059</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/GS-CAL20040520-7-0052/2004may20_0052</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/GS-CAL20040520-7-0053/2004may20_0053</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/GS-CAL20040520-7-0061/2004may20_0061</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/GS-CAL20040520-7-0051/2004may20_0051</caom2:planeURI>
           <caom2:planeURI>caom:GEMINI/GS-CAL20040520-7-0055/2004may20_0055</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/GS-CAL20040520-7-0050/2004may20_0050</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/GS-CAL20040520-7-0062/2004may20_0062</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/GS-CAL20040520-7-0054/2004may20_0054</caom2:planeURI>
-          <caom2:planeURI>caom:GEMINI/GS-CAL20040520-7-0058/2004may20_0058</caom2:planeURI>
         </caom2:inputs>
       </caom2:provenance>
       <caom2:artifacts>
@@ -171,20 +171,20 @@
     </caom2:plane>
   </caom2:planes>
   <caom2:members>
-    <caom2:observationURI>caom:GEMINI/GS-CAL20040520-7-0049</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GS-CAL20040520-7-0059</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GS-CAL20040520-7-0048</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GS-CAL20040520-7-0061</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GS-CAL20040520-7-0050</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GS-CAL20040520-7-0060</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GS-CAL20040520-7-0054</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GS-CAL20040520-7-0055</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GS-CAL20040520-7-0062</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GS-CAL20040520-7-0052</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GS-CAL20040520-7-0058</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GS-CAL20040520-7-0057</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GS-CAL20040520-7-0059</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GS-CAL20040520-7-0056</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GS-CAL20040520-7-0053</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GS-CAL20040520-7-0056</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GS-CAL20040520-7-0049</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GS-CAL20040520-7-0051</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GS-CAL20040520-7-0048</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GS-CAL20040520-7-0062</caom2:observationURI>
-    <caom2:observationURI>caom:GEMINI/GS-CAL20040520-7-0055</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GS-CAL20040520-7-0054</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GS-CAL20040520-7-0050</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GS-CAL20040520-7-0060</caom2:observationURI>
   </caom2:members>
 </caom2:Observation>

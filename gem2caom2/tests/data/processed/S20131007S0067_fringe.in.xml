@@ -65,8 +65,8 @@
     </caom2:plane>
   </caom2:planes>
   <caom2:members>
-    <caom2:observationURI>caom:GEMINI/GS-2013B-Q-69-59-004</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GS-2013B-Q-69-59-005</caom2:observationURI>
     <caom2:observationURI>caom:GEMINI/GS-2013B-Q-69-59-006</caom2:observationURI>
+    <caom2:observationURI>caom:GEMINI/GS-2013B-Q-69-59-004</caom2:observationURI>
   </caom2:members>
 </caom2:Observation>

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # ***********************************************************************
 # ******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
 # *************  CENTRE CANADIEN DE DONNÉES ASTRONOMIQUES  **************
@@ -70,7 +69,7 @@
 import logging
 import os
 
-from datetime import datetime
+from datetime import datetime, timezone
 
 from caom2 import Observation
 from caom2pipe import manage_composable as mc
@@ -89,32 +88,21 @@ def visit(observation, **kwargs):
     if clients is None:
         logging.warning('Need clients to update. Stopping pull visitor.')
         return
-    observable = kwargs.get('observable')
-    if observable is None:
-        raise mc.CadcException('Visitor needs a observable parameter.')
-    metadata_reader = kwargs.get('metadata_reader')
-    if metadata_reader is None:
-        raise mc.CadcException('Visitor needs a metadata_reader parameter.')
+    reporter = kwargs.get('reporter')
+    if reporter is None:
+        raise mc.CadcException('Visitor needs a reporter parameter.')
+    observable = reporter._observable
     storage_name = kwargs.get('storage_name')
     if storage_name is None:
         raise mc.CadcException('Visitor needs a storage_name parameter.')
 
     count = 0
     if observable.rejected.is_bad_metadata(observation.observation_id):
-        logging.info(
-            f'Stopping visit for {observation.observation_id} '
-            f'because of bad metadata.'
-        )
+        logging.info(f'Stopping visit for {observation.observation_id} ' f'because of bad metadata.')
     else:
         for plane in observation.planes.values():
-            if (
-                plane.data_release is None
-                or plane.data_release > datetime.utcnow()
-            ):
-                logging.info(
-                    f'Plane {plane.product_id} is proprietary. No file '
-                    f'access.'
-                )
+            if plane.data_release is None or plane.data_release > datetime.now(tz=timezone.utc).replace(tzinfo=None):
+                logging.info(f'Plane {plane.product_id} is proprietary. No file ' f'access.')
                 continue
 
             for artifact in plane.artifacts.values():
@@ -122,38 +110,25 @@ def visit(observation, **kwargs):
                 # change the URIs
                 artifact_f_name = artifact.uri.split('/')[-1]
                 if artifact_f_name != storage_name.file_name:
-                    logging.debug(
-                        f'Leave {artifact.uri}, want {storage_name.file_uri}'
-                    )
+                    logging.debug(f'Leave {artifact.uri}, want {storage_name.file_uri}')
                     continue
                 try:
                     f_name = mc.CaomName(artifact.uri).file_name
                     if '.jpg' not in f_name:
-                        logging.debug(f'Checking for {f_name}')
+                        logging.debug(f'Checking for {f_name} against {artifact.uri}')
                         file_url = f'{FILE_URL}/{f_name}'
                         fqn = os.path.join(working_dir, f_name)
 
                         # want to compare the checksum from the JSON, and the
                         # checksum at CADC storage - if they are not the same,
                         # retrieve the file from archive.gemini.edu again
-                        json_md5sum = metadata_reader.file_info.get(
-                            artifact.uri
-                        ).md5sum
-                        look_pull_and_put(
-                            artifact.uri, fqn, file_url, clients, json_md5sum
-                        )
+                        json_md5sum = storage_name.file_info.get(artifact.uri).md5sum
+                        look_pull_and_put(artifact.uri, fqn, file_url, clients, json_md5sum)
                         if os.path.exists(fqn):
-                            logging.info(
-                                f'Removing local copy of {f_name} after '
-                                f'successful storage call.'
-                            )
+                            logging.info(f'Removing local copy of {f_name} after ' f'successful storage call.')
                             os.unlink(fqn)
                 except Exception as e:
-                    if not (
-                        observable.rejected.check_and_record(
-                            str(e), observation.observation_id
-                        )
-                    ):
+                    if not (observable.rejected.check_and_record(str(e), observation.observation_id)):
                         raise e
     logging.info(f'Completed pull visitor for {observation.observation_id}.')
     result = {'observation': count}
@@ -175,18 +150,11 @@ def look_pull_and_put(storage_name, fqn, url, clients, checksum):
     """
     cadc_meta = clients.data_client.info(storage_name)
     if (
-        checksum is not None
-        and cadc_meta is not None
-        and cadc_meta.md5sum.replace('md5:', '') != checksum
+        checksum is not None and cadc_meta is not None and cadc_meta.md5sum.replace('md5:', '') != checksum
     ) or cadc_meta is None:
-        logging.debug(
-            f'Different checksums: Source {checksum}, CADC {cadc_meta}'
-        )
+        logging.debug(f'Different checksums: Source {checksum}, CADC {cadc_meta}')
         mc.http_get(url, fqn)
         clients.data_client.put(os.path.dirname(fqn), storage_name)
-        logging.info(
-            f'Retrieved {os.path.basename(fqn)} for storage as '
-            f'{storage_name}'
-        )
+        logging.info(f'Retrieved {os.path.basename(fqn)} for storage as ' f'{storage_name}')
     else:
         logging.info(f'{os.path.basename(fqn)} already exists at CADC.')

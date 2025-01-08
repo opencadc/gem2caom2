@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
 # ***********************************************************************
 # ******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
 # *************  CENTRE CANADIEN DE DONNÉES ASTRONOMIQUES  **************
 #
-#  (c) 2022.                            (c) 2022.
+#  (c) 2025.                            (c) 2025.
 #  Government of Canada                 Gouvernement du Canada
 #  National Research Council            Conseil national de recherches
 #  Ottawa, Canada, K1A 0R6              Ottawa, Canada, K1A 0R6
@@ -67,12 +66,16 @@
 # ***********************************************************************
 #
 
+from os.path import dirname, join, realpath
 from caom2pipe.manage_composable import Config, StorageName
 import pytest
 
 COLLECTION = 'GEMINI'
 SCHEME = 'gemini'
 PREVIEW_SCHEME = 'cadc'
+
+THIS_DIR = dirname(realpath(__file__))
+TEST_DATA_DIR = join(THIS_DIR, 'data')
 
 
 @pytest.fixture()
@@ -82,7 +85,21 @@ def test_config():
     config.preview_scheme = PREVIEW_SCHEME
     config.scheme = SCHEME
     config.logging_level = 'INFO'
+    config.rejected_directory = TEST_DATA_DIR
+    config.rejected_file_name = 'rejected.yml'
+    config.data_source_extensions = ['.fits', '.fits.bz2']
     StorageName.collection = config.collection
     StorageName.preview_scheme = config.preview_scheme
     StorageName.scheme = config.scheme
+    StorageName.data_source_extensions = config.data_source_extensions
     return config
+
+
+@pytest.fixture()
+def test_data_dir():
+    return TEST_DATA_DIR
+
+
+@pytest.fixture()
+def change_test_dir(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)

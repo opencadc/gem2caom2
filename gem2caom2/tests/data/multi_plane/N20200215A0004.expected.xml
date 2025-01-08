@@ -10,6 +10,8 @@
   <caom2:intent>calibration</caom2:intent>
   <caom2:proposal>
     <caom2:id>GN-2019B-Q-415</caom2:id>
+    <caom2:pi>Maria Laura Arias</caom2:pi>
+    <caom2:title>Studying the CO disk structure of B[e] stars</caom2:title>
   </caom2:proposal>
   <caom2:target>
     <caom2:name>ALT_HD224688</caom2:name>

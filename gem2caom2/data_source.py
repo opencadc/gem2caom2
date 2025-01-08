@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
 # ***********************************************************************
 # ******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
 # *************  CENTRE CANADIEN DE DONNÉES ASTRONOMIQUES  **************
 #
-#  (c) 2020.                            (c) 2020.
+#  (c) 2025.                            (c) 2025.
 #  Government of Canada                 Gouvernement du Canada
 #  National Research Council            Conseil national de recherches
 #  Ottawa, Canada, K1A 0R6              Ottawa, Canada, K1A 0R6
@@ -67,20 +66,27 @@
 # ***********************************************************************
 #
 
-from collections import deque
-from datetime import datetime, timezone
+from bs4 import BeautifulSoup
+from collections import defaultdict, deque, OrderedDict
+from datetime import datetime
 
+from cadcdata import FileInfo
+from caom2utils.blueprints import _to_int
+from caom2utils.data_util import get_file_type
 from caom2pipe import client_composable as clc
 from caom2pipe import data_source_composable as dsc
-from caom2pipe import manage_composable as mc
+from caom2pipe.manage_composable import CaomName, ISO_8601_FORMAT, make_datetime, query_endpoint_session
+from gem2caom2.gem_name import GemName
+from gem2caom2.obs_file_relationship import repair_data_label
 
 
 __all__ = ['GEM_BOOKMARK', 'IncrementalSource', 'PublicIncremental']
 
 GEM_BOOKMARK = 'gemini_timestamp'
+MAX_ENTRIES = 500
 
 
-class IncrementalSource(dsc.DataSource):
+class IncrementalSource(dsc.IncrementalDataSource):
     """Implements the identification of the work to be done, by querying
     archive.gemini.edu's incremental endpoint, in time-boxed chunks.
 
@@ -89,30 +95,29 @@ class IncrementalSource(dsc.DataSource):
     created.
     """
 
-    def __init__(self, reader):
-        super(IncrementalSource, self).__init__(config=None)
+    def __init__(self, config, session, filter_cache):
+        super().__init__(config, start_key=GEM_BOOKMARK)
         self._max_records_encountered = False
         self._encounter_start = None
         self._encounter_end = None
-        self._session = reader._session
-        self._metadata_reader = reader
+        self._session = session
+        self._filter_cache = filter_cache
 
-    def get_time_box_work(self, prev_exec_time, exec_time):
-        """
-        :param prev_exec_time float timestamp start of the time-boxed chunk
-        :param exec_time float timestamp end of the time-boxed chunk
-        :return: a deque of file names with time their associated JSON (DB)
-            records were modified from archive.gemini.edu.
-        """
+    def _initialize_end_dt(self):
+        self._end_dt = datetime.now()
 
-        self._logger.debug(
-            f'Begin get_time_box_work from {prev_exec_time} to {exec_time}.'
-        )
+    def get_time_box_work(self, prev_exec_dt, exec_dt):
+        """
+        :param prev_exec_dt datetime start of the time-boxed chunk
+        :param exec_dt datetime end of the time-boxed chunk
+        :return: a deque of StorageName instances with time their associated JSON (DB) records were modified from
+            archive.gemini.edu.
+        """
+        self._logger.debug(f'Begin get_time_box_work from {prev_exec_dt} to {exec_dt}.')
+        self._max_records_encountered = False
         # datetime format 2019-12-01T00:00:00.000000
-        prev_dt_str = mc.make_time_tz(prev_exec_time).strftime(
-            mc.ISO_8601_FORMAT
-        )
-        exec_dt_str = mc.make_time_tz(exec_time).strftime(mc.ISO_8601_FORMAT)
+        prev_dt_str = prev_exec_dt.strftime(ISO_8601_FORMAT)
+        exec_dt_str = exec_dt.strftime(ISO_8601_FORMAT)
         url = (
             f'https://archive.gemini.edu/jsonsummary/canonical/'
             f'NotFail/notengineering/'
@@ -125,7 +130,7 @@ class IncrementalSource(dsc.DataSource):
         entries = deque()
         response = None
         try:
-            response = mc.query_endpoint_session(url, self._session)
+            response = query_endpoint_session(url, self._session)
             if response is None:
                 self._logger.warning(f'Could not query {url}.')
             else:
@@ -134,42 +139,29 @@ class IncrementalSource(dsc.DataSource):
                 if metadata is not None:
                     if len(metadata) == 0:
                         self._logger.warning(
-                            f'No query results returned for interval from '
-                            f'{prev_exec_time} to {exec_time}.'
+                            f'No query results returned for interval from {prev_exec_dt} to {exec_dt}.'
                         )
                     else:
                         for entry in metadata:
                             file_name = entry.get('name')
-                            entrytime = mc.make_time_tz(entry.get('entrytime'))
+                            entry_dt = make_datetime(entry.get('entrytime'))
                             entries.append(
-                                dsc.StateRunnerMeta(
-                                    file_name, entrytime.timestamp()
+                                dsc.RunnerMeta(
+                                    GemName(file_name=file_name, filter_cache=self._filter_cache), entry_dt
                                 )
                             )
-                            uri = mc.build_uri(mc.StorageName.collection, file_name, mc.StorageName.scheme)
-                            # all the other cases where add_json_record is
-                            # called, there's a list as input, so conform to
-                            # that typing here
-                            self._metadata_reader.add_json_record(uri, [entry])
-                            self._metadata_reader.add_file_info_record(uri)
         finally:
             if response is not None:
                 response.close()
-        if len(entries) == 10000:
+        if len(entries) == MAX_ENTRIES:
             self._max_records_encountered = True
-            self._encounter_start = prev_exec_time
-            self._encounter_end = exec_time
+            self._encounter_start = prev_exec_dt
+            self._encounter_end = exec_dt
         self._reporter.capture_todo(len(entries), 0, 0)
         self._logger.debug('End get_time_box_work.')
         return entries
 
-    @property
     def max_records_encountered(self):
-        if self._max_records_encountered:
-            self._logger.error(
-                f'Max records window {self._encounter_start} to '
-                f'{self._encounter_end}.'
-            )
         return self._max_records_encountered
 
 
@@ -177,27 +169,27 @@ class PublicIncremental(dsc.QueryTimeBoxDataSource):
     """Implements the identification of the work to be done, by querying
     the local TAP service for files that have recently gone public."""
 
-    def __init__(self, config, query_client):
-        super(PublicIncremental, self).__init__(config)
+    def __init__(self, config, query_client, filter_cache):
+        super().__init__(config)
         self._query_client = query_client
+        self._filter_cache = filter_cache
 
-    def get_time_box_work(self, prev_exec_time, exec_time):
+    def _initialize_end_dt(self):
+        self._end_dt = datetime.now()
+
+    def get_time_box_work(self, prev_exec_dt, exec_dt):
         """
-        :param prev_exec_time datetime start of the timestamp chunk
-        :param exec_time datetime end of the timestamp chunk
+        :param prev_exec_dt datetime start of the timestamp chunk
+        :param exec_dt datetime end of the timestamp chunk
         :return: a list of file names with time they were modified in /ams,
             structured as an astropy Table (for now).
         """
         self._logger.debug('Begin get_time_box_work')
         # datetime format 2019-12-01T00:00:00.000000
-        prev_dt_str = datetime.fromtimestamp(
-            prev_exec_time, tz=timezone.utc
-        ).strftime(mc.ISO_8601_FORMAT)
-        exec_dt_str = datetime.fromtimestamp(
-            exec_time, tz=timezone.utc
-        ).strftime(mc.ISO_8601_FORMAT)
+        prev_dt_str = prev_exec_dt.strftime(ISO_8601_FORMAT)
+        exec_dt_str = exec_dt.strftime(ISO_8601_FORMAT)
         query = (
-            f"SELECT A.uri, A.lastModified "
+            f"SELECT O.observationID, A.uri, A.lastModified "
             f"FROM caom2.Observation AS O "
             f"JOIN caom2.Plane AS P ON O.obsID = P.obsID "
             f"JOIN caom2.Artifact AS A ON P.planeID = A.planeID "
@@ -216,16 +208,135 @@ class PublicIncremental(dsc.QueryTimeBoxDataSource):
         )
         result = clc.query_tap_client(query, self._query_client)
         # results look like:
-        # gemini:GEM/N20191202S0125.fits, ISO 8601
+        # GN-2019B-ENG-1-160-008, gemini:GEM/N20191202S0125.fits, ISO 8601
 
         entries = deque()
         for row in result:
-            entries.append(
-                dsc.StateRunnerMeta(
-                    mc.CaomName(row['uri']).file_name,
-                    mc.make_time(row['lastModified']).timestamp(),
-                )
-            )
+            gem_name = GemName(file_name=CaomName(row['uri']).file_name, filter_cache=self._filter_cache)
+            gem_name._obs_id = repair_data_label(CaomName(row['uri']).file_name, row['observationID'])
+            entries.append(dsc.RunnerMeta(gem_name, make_datetime(row['lastModified'])))
         self._reporter.capture_todo(len(entries), 0, 0)
         self._logger.debug('End get_time_box_work')
         return entries
+
+
+class IncrementalSourceDiskfiles(dsc.IncrementalDataSource):
+    """Implements the identification of the work to be done, by querying archive.gemini.edu's incremental diskfiles
+    endpoint, in time-boxed chunks.
+
+    OO - email 21-04-21
+    entrytime is when the DB record behind the JSON being displayed was created.
+    """
+
+    def __init__(self, config, gemini_session, storage_name_ctor, filter_cache):
+        super().__init__(config, start_key=GEM_BOOKMARK)
+        self._max_records_encountered = False
+        self._encounter_start = None
+        self._encounter_end = None
+        self._session = gemini_session
+        self._storage_name_ctor = storage_name_ctor
+        self._filter_cache = filter_cache
+
+    def _initialize_end_dt(self):
+        self._end_dt = datetime.now()
+
+    def get_time_box_work(self, prev_exec_dt, exec_dt):
+        """
+        :param prev_exec_dt datetime start of the time-boxed chunk
+        :param exec_dt datetime end of the time-boxed chunk
+        :return: a deque of file names with time their associated JSON (DB) records were modified from
+            archive.gemini.edu.
+        """
+
+        self._logger.debug(f'Begin get_time_box_work from {prev_exec_dt} to {exec_dt}.')
+        self._max_records_encountered = False
+        # datetime format 2019-12-01T00:00:00 => no microseconds in the url
+        prev_exec_dt_iso = prev_exec_dt.replace(microsecond=0)
+        exec_dt_iso = exec_dt.replace(microsecond=0)
+        url = (
+            f'https://archive.gemini.edu/diskfiles/entrytimedaterange='
+            f'{prev_exec_dt_iso.isoformat()}--{exec_dt_iso.isoformat()}'
+        )
+
+        # needs to be ordered by timestamps when processed
+        self._logger.info(f'Querying {url}')
+        entries = deque()
+        response = None
+        try:
+            response = query_endpoint_session(url, self._session)
+            if response is None:
+                self._logger.warning(f'Could not query {url}.')
+            else:
+                # x is a dict, sorted by the key
+                # key is the timestamp
+                # value is the html meta that comes back, also in a dict
+                metadata = self._parse_diskfiles_response(response.text)
+                response.close()
+                if len(metadata) == 0:
+                    self._logger.warning(f'No query results returned for interval from {prev_exec_dt} to {exec_dt}.')
+                else:
+                    for entry_dt, values in metadata.items():
+                        for value in values:
+                            file_name = value.get('filename')
+                            storage_name = self._storage_name_ctor(file_name, self._filter_cache)
+                            storage_name.file_info[storage_name.destination_uris[0]] = FileInfo(
+                                id=file_name,
+                                size=_to_int(value.get('data_size')),
+                                md5sum=value.get('data_md5'),
+                                file_type=get_file_type(file_name),
+                            )
+                            repaired_data_label = repair_data_label(file_name, value.get('datalabel'))
+                            storage_name.obs_id = repaired_data_label
+                            entries.append(dsc.RunnerMeta(storage_name, entry_dt))
+        finally:
+            if response is not None:
+                response.close()
+        if len(entries) == MAX_ENTRIES:
+            self._logger.warning(f'Max records window {self._encounter_start} to {self._encounter_end}.')
+            self._max_records_encountered = True
+            self._encounter_start = prev_exec_dt
+            self._encounter_end = exec_dt
+        self._reporter.capture_todo(len(entries), 0, 0)
+        self._logger.debug('End get_time_box_work.')
+        return entries
+
+    def _parse_diskfiles_response(self, html_string):
+        temp = defaultdict(list)
+        soup = BeautifulSoup(html_string, features='lxml')
+        rows = soup.find_all('tr', {'class': 'alternating'})
+        for row in rows:
+            cells = row.find_all('td')
+            entry_time = make_datetime(cells[5].text.strip())  # what the https query is keyed on
+            file_name = cells[0].text.strip()
+            if file_name.endswith('-fits!-md!'):
+                continue
+            value = {
+                'filename': file_name,
+                'datalabel': cells[1].text.strip().split('\n')[-1],
+                'instrument': cells[2].text.strip(),
+                'lastmod': make_datetime(cells[6].text.strip()),
+                'data_size': cells[10].text.strip(),
+                'data_md5': cells[11].text.strip(),
+            }
+            temp[entry_time].append(value)
+        result = OrderedDict(sorted(temp.items()))
+        return result
+
+    def max_records_encountered(self):
+        return self._max_records_encountered
+
+
+class GeminiTodoFile(dsc.TodoFileDataSourceRunnerMeta):
+
+    def __init__(self, config, filter_cache):
+        super().__init__(config, GemName)
+        self._filter_cache = filter_cache
+
+    def _find_work(self, entry_path):
+        with open(entry_path) as f:
+            for line in f:
+                temp = line.strip()
+                if len(temp) > 0:
+                    # ignore empty lines
+                    self._logger.debug(f'Adding entry {temp} to work list.')
+                    self._work.append(GemName(file_name=temp, filter_cache=self._filter_cache))

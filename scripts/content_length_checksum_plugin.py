@@ -2,7 +2,7 @@
 # ******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
 # *************  CENTRE CANADIEN DE DONNÉES ASTRONOMIQUES  **************
 #
-#  (c) 2018.                            (c) 2018.
+#  (c) 2021.                            (c) 2021.
 #  Government of Canada                 Gouvernement du Canada
 #  National Research Council            Conseil national de recherches
 #  Ottawa, Canada, K1A 0R6              Ottawa, Canada, K1A 0R6
@@ -65,100 +65,35 @@
 #
 # ***********************************************************************
 #
-
-import os
-import warnings
-
-import pytest
-
-from astropy.wcs import FITSFixedWarning
-from gem2caom2.util import Inst
-from gem2caom2 import obs_file_relationship
-
-from unittest.mock import patch
-import gem_mocks
+from caom2.observation import Observation
+from cadcutils import net
+from cadcdata import CadcDataClient
 
 
-pytest.main(args=['-s', os.path.abspath(__file__)])
+class ObservationUpdater(object):
+    """ObservationUpdater that adds a plane to the observation."""
 
+    subject = net.Subject(certificate='/usr/src/app/cadcproxy.pem')
+    data_client = CadcDataClient(subject=subject)
 
-def pytest_generate_tests(metafunc):
-    if os.path.exists(gem_mocks.TEST_DATA_DIR):
-
-        file_list = []
-        for ii in [
-            Inst.GMOS,
-            Inst.NIRI,
-            Inst.GPI,
-            Inst.F2,
-            Inst.GSAOI,
-            Inst.NICI,
-            Inst.TRECS,
-            Inst.MICHELLE,
-            Inst.GRACES,
-            Inst.NIFS,
-            Inst.GNIRS,
-            Inst.PHOENIX,
-            Inst.FLAMINGOS,
-            Inst.HRWFS,
-            Inst.HOKUPAA,
-            Inst.OSCIR,
-            Inst.BHROS,
-            Inst.CIRPASS,
-            Inst.TEXES,
-            'processed',
-            Inst.ALOPEKE,
-            Inst.ZORRO,
-            Inst.IGRINS,
-        ]:
-            walk_dir = _get_inst_name(ii)
-            for root, dirs, files in os.walk(
-                f'{gem_mocks.TEST_DATA_DIR}/{walk_dir}'
-            ):
-                for file in files:
-                    if file.endswith(".header"):
-                        file_list.append(os.path.join(root, file))
-
-        metafunc.parametrize('test_name', file_list)
-
-
-@patch('caom2utils.data_util.get_file_type')
-@patch('gem2caom2.gemini_metadata.AbstractGeminiMetadataReader._retrieve_json')
-@patch('caom2pipe.astro_composable.get_vo_table_session')
-@patch('gem2caom2.program_metadata.get_pi_metadata')
-@patch('gem2caom2.gemini_metadata.ProvenanceFinder')
-def test_visitor(
-    pf_mock,
-    get_pi_mock,
-    svofps_mock,
-    json_mock,
-    file_type_mock,
-    test_name,
-    test_config,
-    tmp_path,
-):
-    warnings.simplefilter('ignore', category=FITSFixedWarning)
-    test_file_id = obs_file_relationship.remove_extensions(
-        os.path.basename(test_name)
-    )
-    expected_fqn = f'{os.path.dirname(test_name)}/{test_file_id}.expected.xml'
-
-    gem_mocks._run_test_common(
-        data_sources=[os.path.dirname(test_name)],
-        get_pi_mock=get_pi_mock,
-        svofps_mock=svofps_mock,
-        pf_mock=pf_mock,
-        json_mock=json_mock,
-        file_type_mock=file_type_mock,
-        test_set=[test_name],
-        expected_fqn=expected_fqn,
-        test_config=test_config,
-        tmp_path=tmp_path,
-    )
-
-
-def _get_inst_name(inst):
-    walk_dir = inst
-    if inst != 'processed' and isinstance(inst, Inst):
-        walk_dir = inst.value
-    return walk_dir
+    def update(self, observation, **kwargs):
+        """
+        Processes an observation and updates it
+        """
+        assert isinstance(observation, Observation), (
+            "observation %s is not an Observation".format(observation))
+        print("Observation: {}".format(observation.observation_id))
+        for plane in observation.planes.values():
+            for artifact in plane.artifacts.values():
+                if (
+                    artifact.contentChecksum is None
+                    or artifact.contentLength is None
+                ):
+                    archive = artifact.uri.split(':')[1].split('/')[0]
+                    f_name = artifact.uri.split('/')[-1]
+                    file_info = ObservationUpdater.data_client.get_file_info(
+                        archive, f_name
+                    )
+                    artifact.contentLength = file_info.get('size')
+                    artifact.contentChecksum = file_info.get('md5sum')
+        return True

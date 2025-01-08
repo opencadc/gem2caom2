@@ -44,6 +44,3 @@ storage_inventory_resource_id: ivo://cadc.nrc.ca/test
 task_types:
   - ingest
   - visit
-features:
-  supports_multiple_files: False
-  supports_latest_client: True

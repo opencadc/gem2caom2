@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
 # ***********************************************************************
 # ******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
 # *************  CENTRE CANADIEN DE DONNÉES ASTRONOMIQUES  **************
 #
-#  (c) 2018.                            (c) 2018.
+#  (c) 2025.                            (c) 2025.
 #  Government of Canada                 Gouvernement du Canada
 #  National Research Council            Conseil national de recherches
 #  Ottawa, Canada, K1A 0R6              Ottawa, Canada, K1A 0R6
@@ -70,7 +69,7 @@
 import logging
 import traceback
 
-from datetime import datetime
+from datetime import datetime, timezone
 from os import access, remove
 from os.path import basename, exists, join
 
@@ -79,6 +78,7 @@ import matplotlib.image as image
 from cadcutils import exceptions
 from caom2 import Observation, ProductType, ReleaseType
 from caom2pipe import manage_composable as mc
+from gem2caom2.util import Inst
 
 __all__ = ['visit']
 
@@ -94,23 +94,26 @@ def visit(observation, **kwargs):
     clients = kwargs.get('clients')
     if clients is None or clients.data_client is None:
         logging.warning('Need a cadc_client to update preview records.')
-    observable = kwargs.get('observable')
-    if observable is None:
-        raise mc.CadcException('Visitor needs a observable parameter.')
+    reporter = kwargs.get('reporter')
+    if reporter is None:
+        raise mc.CadcException('Visitor needs a reporter parameter.')
+    observable = reporter._observable
     storage_name = kwargs.get('storage_name')
     if storage_name is None:
         raise mc.CadcException('Visitor needs a storage_name parameter.')
+
+    if observation.instrument.name == Inst.GHOST.value:
+        logging.info(f'Skip generic preview augmentation for GHOST.')
+        return observation
 
     count = 0
     for plane in observation.planes.values():
         if (
             plane.data_release is None
-            or plane.data_release > datetime.utcnow()
+            # data_release is timezone naive
+            or plane.data_release > datetime.now(tz=timezone.utc).replace(tzinfo=None)
         ):
-            logging.info(
-                f'Plane {plane.product_id} is proprietary. No '
-                f'preview access or thumbnail creation.'
-            )
+            logging.info(f'Plane {plane.product_id} is proprietary. No ' f'preview access or thumbnail creation.')
             continue
         if plane.product_id != storage_name.product_id:
             continue
@@ -123,10 +126,7 @@ def visit(observation, **kwargs):
             storage_name,
         )
     result = {'artifacts': count}
-    logging.info(
-        f'Completed preview augmentation for {observation.observation_id}.'
-        f'{count} artifacts modified.'
-    )
+    logging.info(f'Completed preview augmentation for {observation.observation_id}.' f'{count} artifacts modified.')
     return observation
 
 
@@ -138,14 +138,9 @@ def _do_prev(obs_id, working_dir, plane, clients, observable, gem_name):
     count = 0
 
     if observable.rejected.is_no_preview(gem_name.prev):
-        logging.info(
-            f'Stopping visit because no preview exists for {gem_name.prev} '
-            f'in observation {obs_id}.'
-        )
+        logging.info(f'Stopping visit because no preview exists for {gem_name.prev} ' f'in observation {obs_id}.')
         observable.rejected.record(mc.Rejected.NO_PREVIEW, gem_name.prev)
-        count += _check_for_delete(
-            gem_name.prev, gem_name.prev_uri, observable, plane
-        )
+        count += _check_for_delete(gem_name.prev, gem_name.prev_uri, observable, plane)
     else:
         preview_fqn = join(working_dir, gem_name.prev)
         thumb = gem_name.thumb
@@ -154,18 +149,12 @@ def _do_prev(obs_id, working_dir, plane, clients, observable, gem_name):
         # get the file - try disk first, then CADC, then Gemini
         # Only try to retrieve from Gemini if the eventual purpose is
         # storage (i.e. cadc_client is not None), though
-        if (
-            not access(preview_fqn, 0)
-            and clients is not None
-            and clients.data_client is not None
-        ):
+        if not access(preview_fqn, 0) and clients is not None and clients.data_client is not None:
             try:
                 logging.debug(f'Check CADC for {gem_name.prev_uri}.')
                 clients.data_client.get(working_dir, gem_name.prev_uri)
             except exceptions.UnexpectedException:
-                logging.debug(
-                    f'Retrieve {gem_name.prev} from archive.gemini.edu.'
-                )
+                logging.debug(f'Retrieve {gem_name.prev} from archive.gemini.edu.')
                 _retrieve_from_gemini(
                     gem_name,
                     observable,
@@ -179,8 +168,7 @@ def _do_prev(obs_id, working_dir, plane, clients, observable, gem_name):
                 fp = open(preview_fqn, 'r')
             except PermissionError as e:
                 raise mc.CadcException(
-                    f'Should not have reached this point in thumbnail '
-                    f'generation for {plane.product_id}'
+                    f'Should not have reached this point in thumbnail ' f'generation for {plane.product_id}'
                 )
 
             logging.debug(f'Generate thumbnail for file id {plane.product_id}')
@@ -201,8 +189,7 @@ def _do_prev(obs_id, working_dir, plane, clients, observable, gem_name):
                 # that might otherwise fix the value
                 logging.debug(traceback.format_exc())
                 logging.warning(
-                    f'matplotlib error handling {gem_name.prev}.Try to '
-                    f'retrieve from {PREVIEW_URL} one more time.'
+                    f'matplotlib error handling {gem_name.prev}.Try to ' f'retrieve from {PREVIEW_URL} one more time.'
                 )
                 _retrieve_from_gemini(
                     gem_name,
@@ -212,16 +199,12 @@ def _do_prev(obs_id, working_dir, plane, clients, observable, gem_name):
                 )
                 image.thumbnail(preview_fqn, thumb_fqn, scale=0.25)
 
-            count += _augment(
-                plane, gem_name.prev_uri, preview_fqn, ProductType.PREVIEW
-            )
+            count += _augment(plane, gem_name.prev_uri, preview_fqn, ProductType.PREVIEW)
             if clients is not None and clients.data_client is not None:
                 clients.data_client.put(working_dir, gem_name.prev_uri)
             count += 1
 
-            count += _augment(
-                plane, gem_name.thumb_uri, thumb_fqn, ProductType.THUMBNAIL
-            )
+            count += _augment(plane, gem_name.thumb_uri, thumb_fqn, ProductType.THUMBNAIL)
             if clients is not None and clients.data_client is not None:
                 clients.data_client.put(working_dir, gem_name.thumb_uri)
             count += 1
@@ -232,10 +215,7 @@ def _check_for_delete(file_name, uri, observable, plane):
     """If the preview file doesn't exist, but the artifact that represents it
     does, remove that artifact from the Observation instance."""
     result = 0
-    if (
-        observable.rejected.is_no_preview(file_name)
-        and uri in plane.artifacts.keys()
-    ):
+    if observable.rejected.is_no_preview(file_name) and uri in plane.artifacts.keys():
         logging.warning(f'Removing artifact for non-existent preview {uri}')
         plane.artifacts.pop(uri)
         result = 1
@@ -247,9 +227,7 @@ def _augment(plane, uri, fqn, product_type):
     temp = None
     if uri in plane.artifacts:
         temp = plane.artifacts[uri]
-    plane.artifacts[uri] = mc.get_artifact_metadata(
-        fqn, product_type, ReleaseType.DATA, uri, temp
-    )
+    plane.artifacts[uri] = mc.get_artifact_metadata(fqn, product_type, ReleaseType.DATA, uri, temp)
     return count
 
 
@@ -265,8 +243,6 @@ def _retrieve_from_gemini(
         mc.http_get(preview_url, preview_fqn)
     except Exception as e:
         if observable.rejected.check_and_record(str(e), gem_name.prev):
-            _check_for_delete(
-                gem_name.prev, gem_name.prev_uri, observable, plane
-            )
+            _check_for_delete(gem_name.prev, gem_name.prev_uri, observable, plane)
         else:
             raise e

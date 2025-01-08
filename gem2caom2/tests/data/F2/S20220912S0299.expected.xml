@@ -1,7 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4"
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation"
-                   caom2:id="db739af9-54d4-4ec3-a7be-973eba13844d" caom2:metaProducer="gem2caom2/0.9.4">
+<caom2:Observation xmlns:caom2="http://www.opencadc.org/caom2/xml/v2.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="caom2:SimpleObservation" caom2:id="db739af9-54d4-4ec3-a7be-973eba13844d" caom2:metaProducer="gem2caom2/0.9.4">
   <caom2:collection>GEMINI</caom2:collection>
   <caom2:observationID>GS-2022B-Q-306-70-014</caom2:observationID>
   <caom2:metaRelease>2022-09-12T10:18:33.200</caom2:metaRelease>

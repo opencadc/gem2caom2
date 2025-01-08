@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # ***********************************************************************
 # ******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
 # *************  CENTRE CANADIEN DE DONNÉES ASTRONOMIQUES  **************
@@ -98,9 +97,7 @@ def visit(observation, **kwargs):
                 file_id = obs_file_relationship.remove_extensions(file_name)
                 # it's the suffix that has the different case, so use it
                 # to figure out which artifacts shouldn't exist
-                suffixes = obs_file_relationship.get_suffix(
-                    file_id, observation.observation_id
-                )
+                suffixes = obs_file_relationship.get_suffix(file_id, observation.observation_id)
                 for key in all_artifact_keys:
                     for suffix in suffixes:
                         if suffix.upper() in key:
@@ -119,9 +116,7 @@ def visit(observation, **kwargs):
 
         for entry in set(delete_these_planes):
             observation.planes.pop(entry)
-            logging.info(
-                f'Removing {entry} from {observation.observation_id}.'
-            )
+            logging.info(f'Removing {entry} from {observation.observation_id}.')
             plane_count += 1
 
     logging.info(

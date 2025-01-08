@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
 # ***********************************************************************
 # ******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
 # *************  CENTRE CANADIEN DE DONNÉES ASTRONOMIQUES  **************
 #
-#  (c) 2018.                            (c) 2018.
+#  (c) 2025.                            (c) 2025.
 #  Government of Canada                 Gouvernement du Canada
 #  National Research Council            Conseil national de recherches
 #  Ottawa, Canada, K1A 0R6              Ottawa, Canada, K1A 0R6
@@ -95,11 +94,15 @@ import math
 import re
 import traceback
 
+from astropy.time import Time
+
 from caom2 import CalibrationLevel, Chunk, ProductType
 from caom2 import TypedList, DerivedObservation, DataProductType
 from caom2 import ObservationIntentType, TargetType, CoordAxis1D, Axis
 from caom2 import SpectralWCS, RefCoord, CoordRange1D
-from caom2utils import FitsWcsParser, update_artifact_meta
+from caom2utils.caom2blueprint import update_artifact_meta
+from caom2utils.blueprints import _to_float
+from caom2utils.wcs_parsers import FitsWcsParser
 from caom2utils.data_util import get_file_type
 from caom2pipe import manage_composable as mc
 from caom2pipe import caom_composable as cc
@@ -108,13 +111,11 @@ from caom2pipe import astro_composable as ac
 import gem2caom2.obs_file_relationship as ofr
 from gem2caom2.gem_name import GemName
 from gem2caom2 import program_metadata, svofps
-from gem2caom2.gemini_metadata import GeminiMetadataLookup
+from gem2caom2.gemini_metadata import GeminiMetadataLookupStorageName, ProvenanceFinder
 from gem2caom2.util import Inst
 
 
-__all__ = ['GeminiMapping', 'APPLICATION', 'mapping_factory']
-
-APPLICATION = 'gem2caom2'
+__all__ = ['GeminiMapping', 'mapping_factory']
 
 # DB 01-04-21
 # PINHOLE is CALIBRATION
@@ -159,6 +160,7 @@ FILTER_VALUES_TO_IGNORE = ['open', 'invalid', 'pupil', 'clear', 'nd']
 # NIFS - DB - 04-03-19 - hard-code 3" FOV
 # TEXES - DB - 07-03-19 - cd11=cd22 = 5.0/3600.0
 # IGRINS - DB - 21-07-21 - hard-code 5" FOV
+# GHOST - DB - 12-01-24 - hard-code to sqrt(0.94)"
 RADIUS_LOOKUP = {
     Inst.GPI: 2.8 / 3600.0,  # units are arcseconds
     Inst.GRACES: 1.2 / 3600.0,
@@ -169,6 +171,7 @@ RADIUS_LOOKUP = {
     Inst.NIFS: 3.0 / 3600.0,
     Inst.TEXES: 5.0 / 3600.0,
     Inst.IGRINS: 5.0 / 3600.0,
+    Inst.GHOST: math.sqrt(0.94) / 3600.0,
 }
 
 
@@ -185,6 +188,9 @@ class GeminiValueRepair(mc.ValueRepairCache):
         'chunk.position.axis.axis1.ctype': {
             'RA--TAN': 'RA---TAN',
         },
+        # WF - 02-02-23
+        # APPT is a typo, repair to GAPPT
+        'chunk.position.coordsys': {'APPT': 'GAPPT'},
     }
 
     def __init__(self):
@@ -194,17 +200,27 @@ class GeminiValueRepair(mc.ValueRepairCache):
         self._logger = logging.getLogger(self.__class__.__name__)
 
 
-class GeminiMapping(cc.TelescopeMapping):
+class GeminiMapping(cc.TelescopeMapping2):
 
     # value repair cache
     value_repair = GeminiValueRepair()
 
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, clients, observable)
-        self._metadata_reader = lookup.reader
+    def __init__(
+        self,
+        storage_name,
+        lookup,
+        instrument,
+        clients,
+        reporter,
+        observation,
+        config,
+        provenance_finder,
+    ):
+        super().__init__(storage_name, clients, reporter, observation, config)
         self._instrument = instrument
         self._lookup = lookup
-        self._filter_cache = self._metadata_reader.filter_cache
+        self._filter_cache = self._storage_name._filter_cache
+        self._provenance_finder = provenance_finder
         self.fm = None
 
     def get_art_content_checksum(self, ext):
@@ -219,9 +235,7 @@ class GeminiMapping(cc.TelescopeMapping):
     def get_calibration_level(self, ext):
         result = CalibrationLevel.RAW_STANDARD
         reduction = self._lookup.reduction(self._storage_name.file_uri)
-        if reduction is not None and (
-            'PROCESSED' in reduction or 'PREPARED' in reduction
-        ):
+        if reduction is not None and ('PROCESSED' in reduction or 'PREPARED' in reduction):
             result = CalibrationLevel.CALIBRATED
         return result
 
@@ -250,9 +264,7 @@ class GeminiMapping(cc.TelescopeMapping):
         obs_type = self._lookup.observation_type(self._storage_name.file_uri)
         obs_class = self._lookup.observation_class(self._storage_name.file_uri)
 
-        self._logger.debug(
-            f'obs type is {obs_type} obs class is {obs_class} for {data_label}'
-        )
+        self._logger.debug(f'obs type is {obs_type} obs class is {obs_class} for {data_label}')
         if obs_type is not None and obs_type == 'MASK':
             result = ProductType.AUXILIARY
         elif obs_class is None:
@@ -273,15 +285,11 @@ class GeminiMapping(cc.TelescopeMapping):
     def get_data_product_type(self, ext):
         mode = self._lookup.mode(self._storage_name.file_uri)
         obs_type = self._lookup.observation_type(self._storage_name.file_uri)
-
         if mode is None:
             raise mc.CadcException(
-                f'{self._instrument}: No mode information found for '
-                f'{self._storage_name.file_name}'
+                f'{self._instrument}: No mode information found for ' f'{self._storage_name.file_name}'
             )
-        elif (mode == 'imaging') or (
-            obs_type is not None and obs_type == 'MASK'
-        ):
+        elif (mode == 'imaging') or (obs_type is not None and obs_type == 'MASK'):
             result = DataProductType.IMAGE
         else:
             result = DataProductType.SPECTRUM
@@ -310,7 +318,7 @@ class GeminiMapping(cc.TelescopeMapping):
         total exposure time for some of the IR instruments.  For these EXPTIME
         is usually the individual exposure time for each chop/nod and a bunch
         of chops/nods are executed for one observation.  Gemini correctly
-         allows for this in the json ‘exposure_time’ value.
+        allows for this in the json ‘exposure_time’ value.
         """
         return self._lookup.exposure_time(self._storage_name.file_uri)
 
@@ -320,41 +328,34 @@ class GeminiMapping(cc.TelescopeMapping):
         :return: The Observation/Plane release date, or None if not found.
         """
         # TODO - this is a bit different ROTFL
-        if self._headers is None:
-            # GenericParser, so no headers retrieved from archive.gemini.edu,
-            # probably a 403 being returned by the site, assume proprietary
-            meta_release = self._lookup.release(self._storage_name.file_uri)
-        else:
+        if self._headers:
             # DB 21-08-19
             # If PROP_MD is T, use JSON ‘release’ value for metadata release
             # date. If no PROP_MD present or value is F use the JSON
             # ut_datetime value.
             prop_md = self._headers[ext].get('PROP_MD')
+            meta_release = None
             if prop_md is None or prop_md is False or prop_md == 'F':
-                meta_release = self._lookup.ut_datetime(
-                    self._storage_name.file_uri
-                )
-            else:
-                meta_release = self._lookup.release(
-                    self._storage_name.file_uri
-                )
-        return meta_release
+                meta_release = self._lookup.ut_datetime(self._storage_name.file_uri)
+            if meta_release is None or prop_md and prop_md == 'T' or prop_md:
+                # a late value is better than None, since that makes the Observation unfindable
+                meta_release = self._lookup.release(self._storage_name.file_uri)
+        else:
+            # GenericParser, so no headers retrieved from archive.gemini.edu,
+            # probably a 403 being returned by the site, assume proprietary
+            meta_release = self._lookup.release(self._storage_name.file_uri)
+
+        return mc.make_datetime(meta_release)
 
     def get_obs_intent(self, ext):
         result = ObservationIntentType.CALIBRATION
         data_label = self._lookup.data_label(self._storage_name.file_uri)
         obs_class = self._lookup.observation_class(self._storage_name.file_uri)
-        self._logger.debug(
-            f'observation_class is {obs_class} for {data_label}'
-        )
+        self._logger.debug(f'observation_class is {obs_class} for {data_label}')
         if obs_class is None:
-            obs_type = self._lookup.observation_type(
-                self._storage_name.file_uri
-            )
+            obs_type = self._lookup.observation_type(self._storage_name.file_uri)
 
-            self._logger.debug(
-                f'observation_type is {obs_type} for {data_label}'
-            )
+            self._logger.debug(f'observation_type is {obs_type} for {data_label}')
             if obs_type is None:
                 self._logger.debug(f'data_label is {data_label}')
                 if (
@@ -363,9 +364,7 @@ class GeminiMapping(cc.TelescopeMapping):
                     and self._headers[ext] is not None
                 ):
                     object_value = self._headers[ext].get('OBJECT')
-                    self._logger.debug(
-                        f'object_value is {object_value} for ' f'{data_label}'
-                    )
+                    self._logger.debug(f'object_value is {object_value} for ' f'{data_label}')
                     if object_value is not None:
                         if object_value in CAL_VALUES:
                             result = ObservationIntentType.CALIBRATION
@@ -397,9 +396,7 @@ class GeminiMapping(cc.TelescopeMapping):
     def get_obs_type(self, ext):
         result = self._lookup.observation_type(self._storage_name.file_uri)
         obs_class = self._lookup.observation_class(self._storage_name.file_uri)
-        if obs_class is not None and (
-            obs_class == 'acq' or obs_class == 'acqCal'
-        ):
+        if obs_class is not None and (obs_class == 'acq' or obs_class == 'acqCal'):
             result = 'ACQUISITION'
         return result
 
@@ -429,8 +426,7 @@ class GeminiMapping(cc.TelescopeMapping):
             result = None
             temp = comments.split('\n')
             if len(temp) > 6 and 'HST' in temp[6]:
-                # go from HST to UTC
-                result = mc.make_time(temp[6])
+                result = mc.make_datetime(temp[6])
             return result
 
         return self._get_provenance_breakout(ext, breakout)
@@ -450,9 +446,7 @@ class GeminiMapping(cc.TelescopeMapping):
 
     def get_provenance_reference(self, ext):
         def breakout(comments):
-            return (
-                'https://www.gemini.edu/instrumentation/graces/data-reduction'
-            )
+            return 'https://www.gemini.edu/instrumentation/graces/data-reduction'
 
         return self._get_provenance_breakout(ext, breakout)
 
@@ -539,15 +533,50 @@ class GeminiMapping(cc.TelescopeMapping):
         Calculate the Chunk Time WCS function value, in 'mjd'.
         """
         time_string = self._lookup.ut_datetime(self._storage_name.file_uri)
-        return ac.get_datetime(time_string)
+        result = ac.get_datetime_mjd(mc.make_datetime(time_string))
+        if result and isinstance(result, Time):
+            result = result.value
+        return result
 
-    def accumulate_blueprint(self, bp, application=None):
+    def _accumulate_chunk_position_axes_blueprint(self, bp, extension):
+        bp.set('Chunk.position.axis.axis1.ctype', 'RA---TAN', extension)
+        bp.set('Chunk.position.axis.axis1.cunit', 'deg', extension)
+        bp.set('Chunk.position.axis.axis2.ctype', 'DEC--TAN', extension)
+        bp.set('Chunk.position.axis.axis2.cunit', 'deg', extension)
+        bp.set('Chunk.position.axis.function.cd11', 'get_cd11()', extension)
+        bp.set('Chunk.position.axis.function.cd12', 0.0, extension)
+        bp.set('Chunk.position.axis.function.cd21', 0.0, extension)
+        bp.set('Chunk.position.axis.function.cd22', 'get_cd22()', extension)
+        bp.set('Chunk.position.axis.function.dimension.naxis1', 1)
+        bp.set('Chunk.position.axis.function.dimension.naxis2', 1)
+        bp.set('Chunk.position.axis.function.refCoord.coord1.pix', 'get_crpix1()', extension)
+        bp.set('Chunk.position.axis.function.refCoord.coord1.val', 'get_ra()', extension)
+        bp.set('Chunk.position.axis.function.refCoord.coord2.pix', 'get_crpix2()', extension)
+        bp.set('Chunk.position.axis.function.refCoord.coord2.val', 'get_dec()', extension)
+        bp.add_attribute('Chunk.position.coordsys', '', extension)
+        bp.add_attribute('Chunk.position.equinox', 'EQUINOX', extension)
+        bp.add_attribute('Chunk.position.resolution', '', extension)
+
+    def _accumulate_chunk_time_axis_blueprint(self, bp, axis):
+        bp.configure_time_axis(axis)
+        # The Chunk time metadata is calculated using keywords from the primary header, and the only way I could
+        # figure out to access keywords in the primary is through a function.
+        bp.set('Chunk.time.resolution', 'get_exposure()')
+        bp.set('Chunk.time.exposure', 'get_exposure()')
+        bp.set('Chunk.time.axis.axis.ctype', 'TIME')
+        bp.set('Chunk.time.axis.axis.cunit', 'd')
+        bp.set('Chunk.time.axis.error.syser', '1e-07')
+        bp.set('Chunk.time.axis.error.rnder', '1e-07')
+        bp.set('Chunk.time.axis.function.naxis', '1')
+        bp.set('Chunk.time.axis.function.delta', 'get_time_delta()')
+        bp.set('Chunk.time.axis.function.refCoord.pix', '0.5')
+        bp.set('Chunk.time.axis.function.refCoord.val', 'get_time_function_val()')
+
+    def _accumulate_obs_plane_artifact_blueprint(self, bp):
         """Configure the telescope-specific ObsBlueprint at the CAOM model
         Observation level."""
-        super().accumulate_blueprint(bp, APPLICATION)
-        self._logger.debug(
-            f'Begin accumulate_fits_bp for {self._storage_name.file_id}.'
-        )
+        super().accumulate_blueprint(bp)
+        self._logger.debug(f'Begin accumulate_blueprint for {self._storage_name.file_id}.')
         bp.set('Observation.type', 'get_obs_type()')
         bp.set('Observation.intent', 'get_obs_intent()')
         bp.set('Observation.metaRelease', 'get_meta_release()')
@@ -579,10 +608,7 @@ class GeminiMapping(cc.TelescopeMapping):
         bp.add_attribute('Plane.provenance.producer', 'IMAGESWV')
         bp.set_default('Plane.provenance.producer', 'Gemini Observatory')
         data_label = self._lookup.data_label(self._storage_name.file_uri)
-        bp.set(
-            'Plane.provenance.reference',
-            f'http://archive.gemini.edu/searchform/{data_label}',
-        )
+        bp.set('Plane.provenance.reference', f'http://archive.gemini.edu/searchform/{data_label}')
 
         bp.set('Artifact.productType', 'get_art_product_type()')
         bp.set('Artifact.contentChecksum', 'get_art_content_checksum()')
@@ -592,38 +618,23 @@ class GeminiMapping(cc.TelescopeMapping):
         bp.set('Artifact.releaseType', 'data')
         bp.set('Artifact.uri', self._storage_name.file_uri)
 
-        bp.configure_time_axis(3)
+    def accumulate_blueprint(self, bp):
+        """Configure the telescope-specific ObsBlueprint at the CAOM model
+        Observation level."""
+        self._logger.debug(f'Begin accumulate_blueprint for {self._storage_name.file_id}.')
+        self._accumulate_obs_plane_artifact_blueprint(bp)
+        self._accumulate_chunk_time_axis_blueprint(bp, 3)
+        self._logger.debug('Done accumulate_blueprint.')
 
-        # The Chunk time metadata is calculated using keywords from the
-        # primary header, and the only I could figure out to access keywords
-        # in the primary is through a function. JB
-        bp.set('Chunk.time.resolution', 'get_exposure()')
-        bp.set('Chunk.time.exposure', 'get_exposure()')
-        bp.set('Chunk.time.axis.axis.ctype', 'TIME')
-        bp.set('Chunk.time.axis.axis.cunit', 'd')
-        bp.set('Chunk.time.axis.error.syser', '1e-07')
-        bp.set('Chunk.time.axis.error.rnder', '1e-07')
-        bp.set('Chunk.time.axis.function.naxis', '1')
-        bp.set('Chunk.time.axis.function.delta', 'get_time_delta()')
-        bp.set('Chunk.time.axis.function.refCoord.pix', '0.5')
-        bp.set(
-            'Chunk.time.axis.function.refCoord.val',
-            'get_time_function_val()',
-        )
-
-        self._logger.debug('Done accumulate_fits_bp.')
-
-    def update(self, observation, file_info):
+    def update(self):
 
         if self._headers is None:
             # proprietary header metadata at archive.gemini.edu, so do nothing
-            return observation
+            return self._observation
 
         # processed files
-        if cc.is_composite(self._headers) and not isinstance(
-            observation, DerivedObservation
-        ):
-            observation = self._update_composite(observation)
+        if cc.is_composite(self._headers) and not isinstance(self._observation, DerivedObservation):
+            self._observation = self._update_composite(self._observation)
 
         if self._instrument in [Inst.MICHELLE, Inst.GNIRS]:
             # CSD-2511
@@ -643,19 +654,13 @@ class GeminiMapping(cc.TelescopeMapping):
             if len(self._headers) == 1:
                 self._logger.warning(
                     f'{self._instrument}: no image data for '
-                    f'{observation.observation_id}. Cannot build an '
-                    f'observation.'
+                    f'{self._observation.observation_id}. Cannot build an observation.'
                 )
                 return None
 
-        config = mc.Config()
-        config.get_executors()
         try:
-            for plane in observation.planes.values():
-                if (
-                    self._storage_name.product_id is not None
-                    and self._storage_name.product_id != plane.product_id
-                ):
+            for plane in self._observation.planes.values():
+                if self._storage_name.product_id is not None and self._storage_name.product_id != plane.product_id:
                     continue
 
                 for artifact in plane.artifacts.values():
@@ -663,7 +668,11 @@ class GeminiMapping(cc.TelescopeMapping):
                         continue
                     if GemName.is_preview(artifact.uri):
                         continue
-                    update_artifact_meta(artifact, file_info)
+                    if self._lookup._reader:
+                        update_artifact_meta(artifact, self._lookup._reader.file_info.get(artifact.uri))
+                    else:
+                        update_artifact_meta(artifact, self._storage_name.file_info.get(artifact.uri))
+                    self._update_artifact(artifact)
                     processed = ofr.is_processed(self._storage_name.file_name)
                     if self._instrument in [
                         Inst.MICHELLE,
@@ -691,7 +700,7 @@ class GeminiMapping(cc.TelescopeMapping):
                             # for each pixel (no WCS).
                             self._logger.info(
                                 f'GPI: Setting chunks to None for part {part} '
-                                f'for {observation.observation_id}'
+                                f'for {self._observation.observation_id}'
                             )
                             artifact.parts[part].chunks = TypedList(
                                 Chunk,
@@ -706,18 +715,13 @@ class GeminiMapping(cc.TelescopeMapping):
 
                             # energy WCS
                             filter_name = self._get_filter_name(int(part))
-                            if self._reset_energy(
-                                observation.type, filter_name
-                            ):
+                            if self._reset_energy(self._observation.type, filter_name):
                                 cc.reset_energy(c)
                             else:
-                                self._update_energy(
-                                    c, plane.data_product_type, filter_name
-                                )
+                                self._update_energy(c, plane.data_product_type, filter_name)
                             # position WCS
-                            if self._reset_position(
-                                observation.type, artifact.product_type
-                            ):
+                            if self._reset_position(self._observation.type, artifact.product_type):
+                                self._logger.warning(f'Resetting position for part {part}')
                                 cc.reset_position(c)
                             else:
                                 self._update_position(part, c, int(part))
@@ -727,59 +731,50 @@ class GeminiMapping(cc.TelescopeMapping):
 
                             self._make_axes_consistent(c)
 
-                    if isinstance(observation, DerivedObservation):
-                        values = cc.find_keywords_in_headers(
-                            self._headers[1:], ['IMCMB']
-                        )
-                        repaired_values = _remove_processing_detritus(
-                            values, observation.observation_id
-                        )
+                    if isinstance(self._observation, DerivedObservation):
+                        values = cc.find_keywords_in_headers(self._headers[1:], ['IMCMB'])
+                        repaired_values = _remove_processing_detritus(values, self._observation.observation_id)
                         cc.update_plane_provenance_from_values(
                             plane,
                             self._repair_provenance_value,
                             repaired_values,
                             self._storage_name.collection,
-                            observation.observation_id,
+                            self._observation.observation_id,
                         )
 
                     if (
                         processed
-                        or isinstance(observation, DerivedObservation)
+                        or isinstance(self._observation, DerivedObservation)
                         or self._instrument is Inst.TEXES
                     ) and 'jpg' not in self._storage_name.file_name:
                         # not the preview artifact
                         if plane.provenance is not None:
                             if self._instrument is not Inst.GRACES:
                                 plane.provenance.reference = (
-                                    f'http://archive.gemini.edu/searchform/'
-                                    f'filepre={self._storage_name.file_name}'
+                                    f'http://archive.gemini.edu/searchform/' f'filepre={self._storage_name.file_name}'
                                 )
 
                     for part in delete_these_parts:
-                        self._logger.warning(
-                            f'Delete part {part} from artifact {artifact.uri}'
-                        )
+                        self._logger.warning(f'Delete part {part} from artifact {artifact.uri}')
                         artifact.parts.pop(part)
 
-                if observation.proposal is not None:
-                    program = program_metadata.get_pi_metadata(
-                        observation.proposal.id
-                    )
+                if self._observation.proposal is not None:
+                    program = program_metadata.get_pi_metadata(self._observation.proposal.id)
                     if program is not None:
-                        observation.proposal.pi_name = program['pi_name']
-                        observation.proposal.title = program['title']
+                        self._observation.proposal.pi_name = program['pi_name']
+                        self._observation.proposal.title = program['title']
 
-            if isinstance(observation, DerivedObservation):
-                cc.update_observation_members(observation)
+            if isinstance(self._observation, DerivedObservation):
+                cc.update_observation_members(self._observation)
 
-            GeminiMapping.value_repair.repair(observation)
+            GeminiMapping.value_repair.repair(self._observation)
         except Exception as e:
-            self._logger.error(f'Error {e} for {observation.observation_id}')
+            self._logger.error(f'Error {e} for {self._observation.observation_id}')
             tb = traceback.format_exc()
             self._logger.error(tb)
             raise mc.CadcException(e)
         self._logger.debug('Done update.')
-        return observation
+        return self._observation
 
     def _build_chunk_energy(self, chunk, filter_name):
         # If n_axis=1 (as I guess it will be for all but processes GRACES
@@ -795,11 +790,7 @@ class GeminiMapping(cc.TelescopeMapping):
 
         # DB - 14-02-19 value looks clearer (as two filters) with a space on
         # both sides of the ‘+’.
-        bandpass_name = (
-            None
-            if (filter_name is None or len(filter_name) == 0)
-            else filter_name.replace('+', ' + ')
-        )
+        bandpass_name = None if (filter_name is None or len(filter_name) == 0) else filter_name.replace('+', ' + ')
 
         if bandpass_name is not None and 'empty' in bandpass_name:
             # DB 02-12-19 - But some files have filters open1-6 and empty_01.
@@ -849,9 +840,7 @@ class GeminiMapping(cc.TelescopeMapping):
         if filter_name is None or len(filter_name.strip()) == 0:
             result = self._search_through_keys(ext, ['FILTER'])
             filter_name = result
-        self._logger.debug(
-            f'Filter names are "{filter_name}" in {self._storage_name.obs_id}'
-        )
+        self._logger.debug(f'Filter names are "{filter_name}" in {self._storage_name.obs_id}')
         return filter_name
 
     def _make_axes_consistent(self, chunk):
@@ -866,11 +855,7 @@ class GeminiMapping(cc.TelescopeMapping):
         # chunk.time_axis value DB 06-01-21 - no calibration file cutouts to
         # support, so removing this axis information is not removing
         # downstream functionality
-        if (
-            chunk.naxis == 3
-            and chunk.position is None
-            and chunk.time is not None
-        ):
+        if chunk.naxis == 3 and chunk.position is None and chunk.time is not None:
             if chunk.time.axis.function.naxis == 1:
                 chunk.naxis = None
                 chunk.time_axis = None
@@ -896,13 +881,8 @@ class GeminiMapping(cc.TelescopeMapping):
                 wl_max = lookup[ii][2]
                 wl_min = lookup[ii][1]
             else:
-                msg = (
-                    f'{self._instrument} Unprepared for filter {ii} from '
-                    f'{self._storage_name.obs_id}'
-                )
-                if self._instrument is Inst.MICHELLE and (
-                    ii.startswith('I') or (ii == 'Grid_T')
-                ):
+                msg = f'{self._instrument} Unprepared for filter {ii} from ' f'{self._storage_name.obs_id}'
+                if self._instrument is Inst.MICHELLE and (ii.startswith('I') or (ii == 'Grid_T')):
                     self._logger.info(msg)
                     continue
                 else:
@@ -914,16 +894,15 @@ class GeminiMapping(cc.TelescopeMapping):
         return w_max, w_min
 
     def _repair_provenance_value(self, value, obs_id):
-        self._logger.debug(
-            f'Being _repair_provenance_value of {value} for {obs_id}.'
-        )
+        self._logger.debug(f'Being _repair_provenance_value of {value} for {obs_id}.')
         prov_file_id = value
         try:
             uri = mc.build_uri(self._storage_name.collection, prov_file_id, self._storage_name.scheme)
             # TODO - what to do about the data label search here? there's no
             # file metadata, it would be _most_ efficient to do this from CADC
             # so need to re-use this code somehow :(
-            prov_obs_id = self._metadata_reader.provenance_finder.get(uri)
+            prov_obs_id = self._provenance_finder.get(uri)
+            self._logger.error(f'{prov_obs_id} uri {uri} {self._provenance_finder.get}')
         except mc.CadcException as e:
             # the file id probably does not exist at on disk, at CADC, or at
             # Gemini, ignore, because it's provenance
@@ -931,9 +910,7 @@ class GeminiMapping(cc.TelescopeMapping):
             # DB 01-06-21 - use not found for the DATALAB/observationID value
             # so it's easy to find in the database and let Gemini know.
             prov_obs_id = 'not_found'
-        self._logger.debug(
-            f'End _repair_provenance_value. {prov_obs_id} {prov_file_id}'
-        )
+        self._logger.debug(f'End _repair_provenance_value. {prov_obs_id} {prov_file_id}')
         return prov_obs_id, prov_file_id
 
     def _reset_energy(self, observation_type, filter_name):
@@ -950,14 +927,8 @@ class GeminiMapping(cc.TelescopeMapping):
                 ]
                 and observation_type in ['BIAS', 'MASK']
             )
-            or (
-                om_filter_name is not None
-                and ('blank' in om_filter_name or 'Blank' in om_filter_name)
-            )
-            or (
-                filter_name is not None
-                and ('unknown' in filter_name or filter_name == '')
-            )
+            or (om_filter_name is not None and ('blank' in om_filter_name or 'Blank' in om_filter_name))
+            or (filter_name is not None and ('unknown' in filter_name or filter_name == ''))
         ):
             self._logger.info(
                 f'No chunk energy for {self._storage_name.obs_id} obs type '
@@ -1010,9 +981,7 @@ class GeminiMapping(cc.TelescopeMapping):
             trkframe = self._headers[1].get('TRKFRAME')
             frame = self._headers[1].get('FRAME')
 
-        if (trkframe is not None and trkframe == 'AZEL_TOPO') or (
-            frame is not None and frame == 'AZEL_TOPO'
-        ):
+        if (trkframe is not None and trkframe == 'AZEL_TOPO') or (frame is not None and frame == 'AZEL_TOPO'):
             result = True
 
         # DB 15-07-22
@@ -1054,12 +1023,14 @@ class GeminiMapping(cc.TelescopeMapping):
                         result.append(self._headers[ext].get(key).strip())
         return '+'.join(result)
 
+    def _update_artifact(self, artifact):
+        pass
+
     def _update_composite(self, obs):
         result = None
         if self._instrument is Inst.TRECS:
             if self._storage_name.product_id is not None and (
-                self._storage_name.product_id.startswith('rS')
-                or self._storage_name.product_id.startswith('rN')
+                self._storage_name.product_id.startswith('rS') or self._storage_name.product_id.startswith('rN')
             ):
                 # DB 02-06-20
                 # processed TReCS files in Gemini's archive are derived by
@@ -1072,15 +1043,11 @@ class GeminiMapping(cc.TelescopeMapping):
                 result = obs
         else:
             result = cc.change_to_composite(obs)
-            self._logger.info(
-                f'{obs.observation_id} is a Derived Observation.'
-            )
+            self._logger.info(f'{obs.observation_id} is a Derived Observation.')
         return result
 
     def _update_position(self, part, chunk, extension):
-        self._logger.debug(
-            f'Enter _update_position for {self._storage_name.file_uri}'
-        )
+        self._logger.debug(f'Enter _update_position for {self._storage_name.file_uri}')
         if chunk.position is not None:
             # DB 14-07-22
             # test if the absolute value of any CD element is > 1/3600
@@ -1096,10 +1063,7 @@ class GeminiMapping(cc.TelescopeMapping):
                         break
 
             if fail:
-                self._logger.warning(
-                    f'Large CD matrix values, no Spatial WCS for '
-                    f'{self._storage_name.file_uri}'
-                )
+                self._logger.warning(f'Large CD matrix values, no Spatial WCS for ' f'{self._storage_name.file_uri}')
                 cc.reset_position(chunk)
         self._logger.debug('End _update_position')
 
@@ -1119,9 +1083,7 @@ class GeminiMapping(cc.TelescopeMapping):
         ra_json = self.get_ra(0)
         dec_json = self._lookup.dec(self._storage_name.file_uri)
         if ('AZEL_TARGET' in types and ra is None) or (
-            self._instrument is Inst.GNIRS
-            and ra_json is None
-            and dec_json is None
+            self._instrument is Inst.GNIRS and ra_json is None and dec_json is None
         ):
             # DB - 02-04-19 - Az-El coordinate frame likely means the telescope
             # was parked or at least not tracking so spatial information is
@@ -1135,13 +1097,9 @@ class GeminiMapping(cc.TelescopeMapping):
             # DB 24-04-19
             # Ignore spatial WCS if RA/Dec are not available for GNIRS.
 
-            self._logger.info(
-                f'Spatial WCS is None for {self._storage_name.obs_id}'
-            )
+            self._logger.info(f'Spatial WCS is None for {self._storage_name.obs_id}')
         else:
-            wcs_parser = FitsWcsParser(
-                primary_header, self._storage_name.obs_id, 0
-            )
+            wcs_parser = FitsWcsParser(primary_header, self._storage_name.obs_id, 0)
             wcs_parser.augment_position(primary_chunk)
 
         for part in artifact.parts:
@@ -1210,10 +1168,8 @@ def _remove_processing_detritus(values, obs_id):
 
 
 class Bhros(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
         super().accumulate_blueprint(bp)
         bp.set_default('Observation.telescope.name', 'Gemini-South')
 
@@ -1252,13 +1208,9 @@ class Bhros(GeminiMapping):
         # guess-timate rather than imply that entire spectrum is present.
 
         if data_product_type == DataProductType.SPECTRUM:
-            self._logger.debug(
-                f'SpectralWCS spectroscopy for {self._storage_name.obs_id}.'
-            )
+            self._logger.debug(f'SpectralWCS spectroscopy for {self._storage_name.obs_id}.')
             self.fm = svofps.FilterMetadata()
-            self.fm.central_wl = self._lookup.central_wavelength(
-                self._storage_name.file_uri
-            )
+            self.fm.central_wl = self._lookup.central_wavelength(self._storage_name.file_uri)
             self.fm.adjust_bandpass(0.2)
             self.fm.resolving_power = 150000.0
             ccd_sum = self._headers[0].get('CCDSUM')
@@ -1291,12 +1243,8 @@ class Bhros(GeminiMapping):
         self._headers[0]['CD1_2'] = 0.0
         self._headers[0]['CD2_1'] = 0.0
         self._headers[0]['CD2_2'] = self.get_cd22(0)
-        self._headers[0]['EQUINOX'] = mc.to_float(
-            self._headers[0].get('TRKEQUIN')
-        )
-        wcs_parser = FitsWcsParser(
-            self._headers[0], self._storage_name.obs_id, 0
-        )
+        self._headers[0]['EQUINOX'] = mc.to_float(self._headers[0].get('TRKEQUIN'))
+        wcs_parser = FitsWcsParser(self._headers[0], self._storage_name.obs_id, 0)
         if chunk is None:
             chunk = Chunk()
             part.chunks.append(chunk)
@@ -1308,10 +1256,8 @@ class Bhros(GeminiMapping):
 
 
 class Cirpass(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
         super().accumulate_blueprint(bp)
         bp.set_default('Observation.telescope.name', 'Gemini-South')
         bp.configure_position_axes((1, 2))
@@ -1382,9 +1328,7 @@ class Cirpass(GeminiMapping):
         self._logger.debug(f'Begin _update_energy')
         filter_name = ''
         if data_product_type == DataProductType.SPECTRUM:
-            self._logger.debug(
-                f'SpectralWCS spectral mode for {self._storage_name.obs_id}.'
-            )
+            self._logger.debug(f'SpectralWCS spectral mode for {self._storage_name.obs_id}.')
             self.fm = svofps.FilterMetadata()
             self.fm.set_central_wl(1.0, 1.67)
             self.fm.set_bandpass(1.0, 1.67)
@@ -1444,9 +1388,7 @@ class Cirpass(GeminiMapping):
         self._headers[0]['CD1_2'] = 0.0
         self._headers[0]['CD2_1'] = 0.0
         self._headers[0]['CD2_2'] = self.get_cd22(0)
-        wcs_parser = FitsWcsParser(
-            self._headers[0], self._storage_name.obs_id, 0
-        )
+        wcs_parser = FitsWcsParser(self._headers[0], self._storage_name.obs_id, 0)
         if chunk is None:
             chunk = Chunk()
             part.chunks.append(chunk)
@@ -1457,23 +1399,20 @@ class Cirpass(GeminiMapping):
 
 
 class F2(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
         """Configure the telescope-specific ObsBlueprint at the CAOM model
         Observation level."""
         super().accumulate_blueprint(bp)
-        if (
-            self.get_obs_type(0) != 'FLAT'
-            or (self.get_data_product_type(0) == DataProductType.SPECTRUM and self.get_obs_type(0) == 'FLAT')
+        if self.get_obs_type(0) != 'FLAT' or (
+            self.get_data_product_type(0) == DataProductType.SPECTRUM and self.get_obs_type(0) == 'FLAT'
         ):
             # WF 07-12-22
             # - be specific about the problem and ingest as best as possible
             # - would like to know when the problem gets fixed (so, need to know when the problem first occurs)
             ctype1 = mc.get_keyword(self._headers, 'CTYPE1')
             ctype2 = mc.get_keyword(self._headers, 'CTYPE2')
-            if ctype1 is None or ctype2 is None or ctype1 == '?' or ctype2 == '?':
+            if ctype1 is None or ctype2 is None or '?' in ctype1 or '?' in ctype2:
                 self._observable.rejected.record(mc.Rejected.BAD_METADATA, self._storage_name.file_name)
             else:
                 bp.configure_position_axes((1, 2))
@@ -1507,18 +1446,12 @@ class F2(GeminiMapping):
             self._headers[0].get('LYOT'),
         ]:
             filter_name = self._scrub_filter_name(filter_name)
-            if (
-                filter_name is None
-                or len(filter_name.strip()) == 0
-                or filter_name.lower() == 'open'
-            ):
+            if filter_name is None or len(filter_name.strip()) == 0 or filter_name.lower() == 'open':
                 continue
             else:
                 break
 
-        self._logger.debug(
-            f'Filter names are "{filter_name}" in {self._storage_name.obs_id}'
-        )
+        self._logger.debug(f'Filter names are "{filter_name}" in {self._storage_name.obs_id}')
         return filter_name
 
     def _update_energy(self, chunk, data_product_type, filter_name):
@@ -1562,19 +1495,15 @@ class F2(GeminiMapping):
                 self._lookup.telescope(self._storage_name.file_uri),
             )
             if data_product_type == DataProductType.IMAGE:
-                self._logger.debug(
-                    f'SpectralWCS: imaging mode for '
-                    f'{self._storage_name.obs_id}.'
-                )
+                self._logger.debug(f'SpectralWCS: imaging mode for ' f'{self._storage_name.obs_id}.')
                 if filter_md is None:
-                    self._logger.warning(f'No filter metadata found for {filter_name} in {self._storage_name.file_uri}')
+                    self._logger.warning(
+                        f'No filter metadata found for {filter_name} in {self._storage_name.file_uri}'
+                    )
                     reset_energy = True
                 self.fm = filter_md
             elif data_product_type == DataProductType.SPECTRUM:
-                self._logger.debug(
-                    f'SpectralWCS: LS|Spectroscopy mode for '
-                    f'{self._storage_name.obs_id}.'
-                )
+                self._logger.debug(f'SpectralWCS: LS|Spectroscopy mode for ' f'{self._storage_name.obs_id}.')
                 fp_mask = self._headers[0].get('MASKNAME')
                 mode = self._lookup.mode(self._storage_name.file_uri)
                 slit_width = None
@@ -1585,8 +1514,7 @@ class F2(GeminiMapping):
                 self.fm.bandpass = filter_md.bandpass
                 grism_name = self._headers[0].get('GRISM')
                 self._logger.debug(
-                    f'grism name is {grism_name} fp_mask is {fp_mask} for '
-                    f'{self._storage_name.obs_id}'
+                    f'grism name is {grism_name} fp_mask is {fp_mask} for ' f'{self._storage_name.obs_id}'
                 )
                 # lookup values from
                 # https://www.gemini.edu/sciops/instruments/flamingos2/spectroscopy/longslit-spectroscopy
@@ -1630,27 +1558,16 @@ class F2(GeminiMapping):
         fits2caom2, so using the blueprint will not work to adjust that
         value. Set delta specifically here."""
         self._logger.debug(f'Begin _update_time')
-        if (
-            chunk.time is not None
-            and chunk.time.axis is not None
-            and chunk.time.axis.function is not None
-        ):
-            exposure = mc.to_float(
-                self._lookup.exposure_time(self._storage_name.file_uri)
-            )
+        if chunk.time is not None and chunk.time.axis is not None and chunk.time.axis.function is not None:
+            exposure = mc.to_float(self._lookup.exposure_time(self._storage_name.file_uri))
             chunk.time.axis.function.delta = mc.convert_to_days(exposure)
-            self._logger.info(
-                f'Updated time delta for {self._storage_name.obs_id} to '
-                f'{exposure}.'
-            )
+            self._logger.info(f'Updated time delta for {self._storage_name.obs_id} to ' f'{exposure}.')
         self._logger.debug(f'End _update_time')
 
 
 class Flamingos(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
         super().accumulate_blueprint(bp)
         bp.configure_position_axes((1, 2))
         # DB 27-05-19
@@ -1706,8 +1623,7 @@ class Flamingos(GeminiMapping):
         data_type = DataProductType.SPECTRUM
         if decker is None:
             raise mc.CadcException(
-                f'{self._instrument}: No mode information found for '
-                f'{self._storage_name.file_name}'
+                f'{self._instrument}: No mode information found for ' f'{self._storage_name.file_name}'
             )
         else:
             if decker == 'imaging':
@@ -1765,8 +1681,7 @@ class Flamingos(GeminiMapping):
                         obs_type = 'DARK'
         else:
             raise mc.CadcException(
-                f'{self._instrument}: No mode information found for '
-                f'{self._storage_name.file_name}'
+                f'{self._instrument}: No mode information found for ' f'{self._storage_name.file_name}'
             )
         if obs_type is None:
             # DB - Also, since I’ve found FLAMINGOS spectra if OBJECT keyword
@@ -1847,16 +1762,13 @@ class Flamingos(GeminiMapping):
             if self.fm is None:
                 self._observable.rejected.record(mc.Rejected.MYSTERY_VALUE, self._storage_name.file_name)
                 raise mc.CadcException(
-                    f'{self._instrument}: Mystery filter {filter_name} for '
-                    f'{self._storage_name.obs_id}'
+                    f'{self._instrument}: Mystery filter {filter_name} for ' f'{self._storage_name.obs_id}'
                 )
         if data_product_type == DataProductType.SPECTRUM:
             self._logger.debug(f'SpectralWCS for {self._storage_name.obs_id}.')
             self.fm.resolving_power = 1300.0
         elif data_product_type == DataProductType.IMAGE:
-            self._logger.debug(
-                f'SpectralWCS imaging mode for {self._storage_name.obs_id}.'
-            )
+            self._logger.debug(f'SpectralWCS imaging mode for {self._storage_name.obs_id}.')
         else:
             raise mc.CadcException(
                 f'{self._instrument}: mystery data product type '
@@ -1889,28 +1801,13 @@ class Flamingos(GeminiMapping):
                 c_delt1 = header.get('CDELT1')
                 c_delt2 = header.get('CDELT2')
                 c_rota1 = header.get('CROTA1')
-                if (
-                    c_delt1 is not None
-                    and c_delt2 is not None
-                    and c_rota1 is not None
-                ):
-                    chunk.position.axis.function.cd11 = c_delt1 * math.cos(
-                        c_rota1
-                    )
-                    chunk.position.axis.function.cd12 = -c_delt2 * math.sin(
-                        c_rota1
-                    )
-                    chunk.position.axis.function.cd21 = c_delt1 * math.sin(
-                        c_rota1
-                    )
-                    chunk.position.axis.function.cd22 = c_delt2 * math.cos(
-                        c_rota1
-                    )
+                if c_delt1 is not None and c_delt2 is not None and c_rota1 is not None:
+                    chunk.position.axis.function.cd11 = c_delt1 * math.cos(c_rota1)
+                    chunk.position.axis.function.cd12 = -c_delt2 * math.sin(c_rota1)
+                    chunk.position.axis.function.cd21 = c_delt1 * math.sin(c_rota1)
+                    chunk.position.axis.function.cd22 = c_delt2 * math.cos(c_rota1)
                 else:
-                    self._logger.info(
-                        f'Missing spatial wcs inputs for '
-                        f'{self._storage_name.obs_id}'
-                    )
+                    self._logger.info(f'Missing spatial wcs inputs for ' f'{self._storage_name.obs_id}')
                     chunk.position.axis.function.cd11 = None
                     chunk.position.axis.function.cd12 = None
                     chunk.position.axis.function.cd21 = None
@@ -1927,28 +1824,24 @@ class Flamingos(GeminiMapping):
                 )
                 cc.reset_position(chunk)
         else:
-            self._logger.info(
-                f'Missing spatial wcs for {self._storage_name.obs_id}'
-            )
+            self._logger.info(f'Missing spatial wcs for {self._storage_name.obs_id}')
 
 
 class Fox(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
         """Configure the telescope-specific ObsBlueprint at the CAOM model
         Observation level."""
         super().accumulate_blueprint(bp)
         bp.set(
             'Plane.provenance.reference',
-            f'http://archive.gemini.edu/searchform/filepre='
-            f'{self._storage_name.file_id}.fits',
+            f'http://archive.gemini.edu/searchform/filepre=' f'{self._storage_name.file_id}.fits',
         )
         bp.clear('Chunk.time.axis.function.naxis')
         bp.add_attribute('Chunk.time.axis.function.naxis', 'NAXIS3')
         bp.set_default('Chunk.time.axis.function.naxis', 1)
         bp.configure_position_axes((1, 2))
+        bp.set('Chunk.position.equinox', 'get_position_equinox()')
 
     def get_data_product_type(self, ext):
         # DB 31-08-20
@@ -1965,6 +1858,13 @@ class Fox(GeminiMapping):
         # end up with the correct (distinct) energy metadata.
         return DataProductType.IMAGE
 
+    def get_position_equinox(self, ext):
+        result = self._headers[ext].get('EQUINOX', self._headers[ext].get('EPOCH'))
+        if result and 1800.0 <= result <= 2500:
+            return result
+        else:
+            return None
+
     def get_target_type(self, ext):
         return TargetType.OBJECT
 
@@ -1972,10 +1872,7 @@ class Fox(GeminiMapping):
         """General chunk-level Energy WCS construction."""
         self._logger.debug(f'Begin _update_energy')
         if data_product_type is DataProductType.IMAGE:
-            self._logger.debug(
-                f'Spectral WCS {data_product_type} mode for '
-                f'{self._storage_name.obs_id}.'
-            )
+            self._logger.debug(f'Spectral WCS {data_product_type} mode for ' f'{self._storage_name.obs_id}.')
             self.fm = self._filter_cache.get_filter_metadata(
                 self._instrument,
                 filter_name,
@@ -1983,9 +1880,7 @@ class Fox(GeminiMapping):
             )
             if self.fm is None:
                 self._observable.rejected.record(mc.Rejected.MYSTERY_VALUE, self._storage_name.file_name)
-                raise mc.CadcException(
-                    f'{self._instrument}: mystery filter {filter_name}'
-                )
+                raise mc.CadcException(f'{self._instrument}: mystery filter {filter_name}')
             self._build_chunk_energy(chunk, filter_name)
         else:
             raise mc.CadcException(
@@ -2011,11 +1906,151 @@ class Fox(GeminiMapping):
         self._logger.debug(f'End _update_time')
 
 
-class Gmos(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
+class GHOSTSpectralTemporal(GeminiMapping):
+    """Fibre-fed spectrograph"""
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
+        """Configure the telescope-specific ObsBlueprint at the CAOM model Observation level."""
+        super(GeminiMapping, self).accumulate_blueprint(bp)
+        self._accumulate_obs_plane_artifact_blueprint(bp)
+        # DB 02-02-24
+        # for temporal WCS use JSON ut_datetime for the starting time, exposure_time for the exposure time and add
+        # the exposure_time to the ut_datetime to determine the end time for ALL obstypes.
+        self._accumulate_chunk_time_axis_blueprint(bp, 4)
+        bp.configure_energy_axis(3)
+        for extension in range(0, len(self._headers)):
+            bp.set('Chunk.energy.specsys', 'TOPOCENT', extension)
+
+            camera = self._headers[extension].get('CAMERA')
+            if camera and camera in ['RED', 'BLUE']:
+                # if camera is SLITV, there's no interesting science information in the HDU
+                bp.set('Chunk.energy.axis.axis.ctype', 'WAVE', extension)
+                bp.set('Chunk.energy.axis.axis.cunit', 'nm', extension)
+                bp.set('Chunk.energy.axis.range.start.pix', 0.5, extension)
+                bp.set('Chunk.energy.axis.range.start.val', '_get_energy_chunk_range_start_val()', extension)
+                bp.set('Chunk.energy.axis.range.end.pix', 1.5, extension)
+                bp.set('Chunk.energy.axis.range.end.val', '_get_energy_chunk_range_end_val()', extension)
+                bp.set('Chunk.energy.resolvingPower', '_get_energy_chunk_resolving_power()', extension)
+
+        self._logger.debug(f'End accumulate_blueprint')
+
+    def get_target_type(self, ext):
+        return TargetType.OBJECT
+
+    def _get_energy_chunk_range_end_val(self, ext):
+        # DB 18-01-24
+        # blue channel wavelength coverage is 347 to 530 nm; red channel is 520 to 1060 nm. So 347 to 1060 nm total.
+        result = None
+        camera = self._headers[ext].get('CAMERA')
+        if camera == 'RED':
+            result = 1060.0  # nm
+        elif camera == 'BLUE':
+            result = 530.0  # nm
+        return result
+
+    def _get_energy_chunk_range_start_val(self, ext):
+        # DB 18-01-24
+        # blue channel wavelength coverage is 347 to 530 nm; red channel is 520 to 1060 nm. So 347 to 1060 nm total.
+        result = None
+        camera = self._headers[ext].get('CAMERA')
+        if camera == 'RED':
+            result = 520.0  # nm
+        elif camera == 'BLUE':
+            result = 347.0  # nm
+        return result
+
+    def _get_energy_chunk_resolving_power(self, ext):
+        """
+        DB 18-01-24
+        1. resolution is determined by the value for the PHU RESOLUT keyword.  If the value is Standard then the
+        starting point for the resolution is 56,000; if High then it's 76,000.
+
+        2. PHU keywords REDCCDS and BLUCCDS give the binning factor along the X (dispersion) and Y (spatial)
+        direction.  e.g. a value of 2 x 4 would reduce the resolution by a factor of about 2 (the first number
+        in that value).
+        """
+        result = None
+        start = None
+        resolut = self._headers[0].get('RESOLUT')
+        if resolut == 'Standard':
+            start = 56000.0
+        elif resolut == 'High':
+            start = 76000.0
+        elif resolut == 'No Value':
+            return result
+
+        if start:
+            red_ccds = self._headers[0].get('REDCCDS')
+            blue_ccds = self._headers[0].get('BLUCCDS')
+
+            factor_1 = _to_float(red_ccds.split('x')[0])
+            factor_2 = _to_float(blue_ccds.split('x')[0])
+            if factor_1 == factor_2:
+                factor = factor_1
+            else:
+                raise mc.CadcException(
+                    f'Factors do not match for {self._storage_name.file_uri}. Blue {factor_2}, Red {factor_1}'
+                )
+            result = start / factor
+        else:
+            self._logger.error(f'Could not determine resolution for {resolut} for {self._storage_name.file_uri}')
+        return result
+
+    def _reset_energy(self, observation_type, filter_name):
+        return False
+
+    def _update_energy(self, part, chunk, extension):
+        pass
+
+    def _reset_position(self, observation_type, artifact_type):
+        return
+
+    def _update_position(self, part, chunk, extension):
+        pass
+
+    def _update_artifact(self, artifact):
+        self._logger.debug(f'Begin _update_artifact for {artifact.uri}')
+        for part in artifact.parts.values():
+            extension = int(part.name)
+            camera = self._headers[extension].get('CAMERA')
+            if camera and camera == 'SLITV':
+                part.product_type = ProductType.AUXILIARY
+        self._logger.debug('End _update_artifact')
+
+    def _update_time(self, chunk):
+        if (
+            chunk is not None
+            and chunk.time is not None
+            and chunk.time.axis is not None
+            and chunk.time.axis.function is not None
+            and chunk.time.axis.function.ref_coord is not None
+        ):
+            temp = self._lookup.max_exputend(self._storage_name.file_uri)
+            if temp:
+                chunk.time.axis.function.ref_coord.val = temp
+            else:
+                self._logger.warning(f'Missing EXPUTEND. Set time to None for {self._storage_name.file_uri}.')
+                chunk.time = None
+                chunk.time_axis = None
+
+
+class GHOSTSpatialSpectralTemporal(GHOSTSpectralTemporal):
+
+    def accumulate_blueprint(self, bp):
+        """Configure the telescope-specific ObsBlueprint at the CAOM model Observation level."""
+        super().accumulate_blueprint(bp)
+        bp.configure_position_axes((1, 2))
+        for extension in range(0, len(self._headers)):
+            camera = self._headers[extension].get('CAMERA', extension)
+            if camera and camera in ['RED', 'BLUE']:
+                # if camera is SLITV, there's no interesting science information in the HDU
+                self._accumulate_chunk_position_axes_blueprint(bp, extension)
+        self._logger.debug(f'End accumulate_blueprint')
+
+
+class Gmos(GeminiMapping):
+
+    def accumulate_blueprint(self, bp):
         super().accumulate_blueprint(bp)
         bp.set('Observation.instrument.keywords', 'get_provenance_keywords()')
         bp.configure_position_axes((1, 2))
@@ -2044,10 +2079,7 @@ class Gmos(GeminiMapping):
         # with null exposure time. These would have only
         # instrument, obstype, datatype (spectrum) and
         # product type (AUXILIARY) set.
-        return (
-            super()._reset_position(observation_type, artifact_type)
-            or observation_type == 'MASK'
-        )
+        return super()._reset_position(observation_type, artifact_type) or observation_type == 'MASK'
 
     def _update_energy(self, chunk, data_product_type, filter_name):
         self._logger.debug('Begin _update_energy')
@@ -2059,7 +2091,8 @@ class Gmos(GeminiMapping):
             'R600': 3744.0,
             'R400': 1918.0,
             'R150': 631.0,
-            # 'B480': 1522.0,  # WF - 16-09-22  ## TODO WF - 23-09-22 - need more accurate min/max values
+            # current best value available from https://gemini.edu/instrumentation/gmos/components#Gratings
+            'B480': 1522.0,  # WF - 16-09-22  ## TODO WF - 23-09-22 - need more accurate min/max values
         }
         # DB 02-12-19
         # Found basic info for the Lya395 filter in a published paper.
@@ -2122,11 +2155,7 @@ class Gmos(GeminiMapping):
         reset_energy = False
 
         filter_md = None
-        if (
-            'open' not in filter_name
-            and 'No_Value' not in filter_name
-            and 'empty' not in filter_name
-        ):
+        if 'open' not in filter_name and 'No_Value' not in filter_name and 'empty' not in filter_name:
             filter_md = self._filter_cache.get_filter_metadata(
                 self._instrument,
                 filter_name,
@@ -2164,9 +2193,7 @@ class Gmos(GeminiMapping):
         filter_md.set_resolving_power(w_max, w_min)
 
         if data_product_type == DataProductType.SPECTRUM:
-            self._logger.debug(
-                f'SpectralWCS spectroscopy for {self._storage_name.obs_id}.'
-            )
+            self._logger.debug(f'SpectralWCS spectroscopy for {self._storage_name.obs_id}.')
             if math.isclose(filter_md.central_wl, 0.0):
                 self._logger.info(
                     f'no spectral wcs, central wavelength is '
@@ -2177,12 +2204,7 @@ class Gmos(GeminiMapping):
             # 'unknown' in disperser test obs is GN-2004B-Q-30-15-002
             # 'OLDMIRROR' in disperser test obs is GN-CAL20020329-2-025
             # 'No Value' in disperser test obs is GN-2013B-SV-152-120-001
-            if (
-                disperser is None
-                or 'unknown' in disperser
-                or 'OLDMIRROR' in disperser
-                or 'No Value' in disperser
-            ):
+            if disperser is None or 'unknown' in disperser or 'OLDMIRROR' in disperser or 'No Value' in disperser:
                 # DB 23-04-19
                 # GMOS observation with OLDMIRROR looks to be a direct image
                 # with the pinhole mask in the beam.  But Gemini json info is
@@ -2222,13 +2244,10 @@ class Gmos(GeminiMapping):
                 else:
                     self._observable.rejected.record(mc.Rejected.MYSTERY_VALUE, self._storage_name.file_name)
                     raise mc.CadcException(
-                        f'{self._instrument}: mystery disperser {disperser} '
-                        f'for {self._storage_name.obs_id}'
+                        f'{self._instrument}: mystery disperser {disperser} ' f'for {self._storage_name.obs_id}'
                     )
         elif data_product_type == DataProductType.IMAGE:
-            self._logger.debug(
-                f'SpectralWCS imaging for {self._storage_name.obs_id}.'
-            )
+            self._logger.debug(f'SpectralWCS imaging for {self._storage_name.obs_id}.')
             self.fm = filter_md
         else:
             raise mc.CadcException(
@@ -2243,10 +2262,8 @@ class Gmos(GeminiMapping):
 
 
 class Gnirs(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
         """Configure the telescope-specific ObsBlueprint at the CAOM model
         Observation level."""
         super().accumulate_blueprint(bp)
@@ -2271,12 +2288,7 @@ class Gnirs(GeminiMapping):
         # DB 13-05-19
         # GNIRS “Dark” trumps the “L” filter, so no energy.
         return super()._reset_energy(observation_type, filter_name) or (
-            filter_name is not None
-            and (
-                'Moving' in filter_name
-                or 'Dark' in filter_name
-                or 'DARK' in filter_name
-            )
+            filter_name is not None and ('Moving' in filter_name or 'Dark' in filter_name or 'DARK' in filter_name)
         )
 
     def _update_energy(self, chunk, data_product_type, filter_name):
@@ -2486,26 +2498,16 @@ class Gnirs(GeminiMapping):
         else:
             self.fm = svofps.FilterMetadata('GNIRS')
             if data_product_type == DataProductType.SPECTRUM:
-                self._logger.info(
-                    f'SpectralWCS Spectroscopy mode for '
-                    f'{self._storage_name.obs_id}.'
-                )
+                self._logger.info(f'SpectralWCS Spectroscopy mode for ' f'{self._storage_name.obs_id}.')
                 disperser = self._lookup.disperser(self._storage_name.file_uri)
                 if disperser is None:
-                    self._logger.info(
-                        f'No disperser. No energy for '
-                        f'{self._storage_name.obs_id}'
-                    )
+                    self._logger.info(f'No disperser. No energy for ' f'{self._storage_name.obs_id}')
                     reset_energy = True
                 else:
                     grating = disperser.split('_')[0]
                     # 'UNKNOWN' in grating test obs GS-CAL20040924-6-006
                     # 'ENG -' in grating test obs GN-CAL20130813-22-010
-                    if (
-                        'UNKNOWN' in grating
-                        or 'Moving' in grating
-                        or 'ENG' in grating
-                    ):
+                    if 'UNKNOWN' in grating or 'Moving' in grating or 'ENG' in grating:
                         # DB 23-04-19 - GNIRS grating UNKNOWN:  no energy
                         # DB 18-04-19
                         # If grating is moving then the observation is almost
@@ -2513,53 +2515,34 @@ class Gnirs(GeminiMapping):
                         # DB 13-05-19
                         # No energy for the invalid “ENG - 170000" grating
                         # entry.
-                        self._logger.warning(
-                            f'grating is {grating}. No energy for '
-                            f'{self._storage_name.obs_id}'
-                        )
+                        self._logger.warning(f'grating is {grating}. No energy for ' f'{self._storage_name.obs_id}')
                         reset_energy = True
                     else:
                         if grating not in gnirs_lookup:
                             self._observable.rejected.record(mc.Rejected.MYSTERY_VALUE, self._storage_name.file_name)
                             raise mc.CadcException(
-                                f'{self._instrument} Mystery grating {grating} '
-                                f'for {self._storage_name.obs_id}'
+                                f'{self._instrument} Mystery grating {grating} ' f'for {self._storage_name.obs_id}'
                             )
 
-                        camera = self._lookup.camera(
-                            self._storage_name.file_uri
-                        )
+                        camera = self._lookup.camera(self._storage_name.file_uri)
                         if camera == 'Moving':
                             # DB 21-08-19
                             # No energy for the ‘moving’ camera
-                            self._logger.info(
-                                f'Camera is moving. No energy for '
-                                f'{self._storage_name.obs_id}'
-                            )
+                            self._logger.info(f'Camera is moving. No energy for ' f'{self._storage_name.obs_id}')
                             reset_energy = True
                         else:
-                            focal_plane_mask = self._lookup.focal_plane_mask(
-                                self._storage_name.file_uri
-                            )
-                            if (
-                                focal_plane_mask is None
-                                or 'arcsec' not in focal_plane_mask
-                            ):
+                            focal_plane_mask = self._lookup.focal_plane_mask(self._storage_name.file_uri)
+                            if focal_plane_mask is None or 'arcsec' not in focal_plane_mask:
                                 # DB 24-04-19
                                 # Assume slit width of 1.0 for GNIRS
                                 # observation without a focal plane mask
                                 # value.
                                 slit_width = 1.0
                             else:
-                                slit_width = mc.to_float(
-                                    focal_plane_mask.split('arcsec')[0]
-                                )
+                                slit_width = mc.to_float(focal_plane_mask.split('arcsec')[0])
 
                             if 'XD' in disperser:
-                                self._logger.debug(
-                                    f'cross dispersed mode for '
-                                    f'{self._storage_name.obs_id}.'
-                                )
+                                self._logger.debug(f'cross dispersed mode for ' f'{self._storage_name.obs_id}.')
                                 # https://www.gemini.edu/sciops/instruments/gnirs/spectroscopy/crossdispersed-xd-spectroscopy/xd-prisms
                                 #
                                 # 0 = lower
@@ -2613,10 +2596,7 @@ class Gnirs(GeminiMapping):
                                         f'{self._storage_name.obs_id}'
                                     )
                             else:
-                                self._logger.debug(
-                                    f'long slit mode for '
-                                    f'{self._storage_name.obs_id}.'
-                                )
+                                self._logger.debug(f'long slit mode for ' f'{self._storage_name.obs_id}.')
                                 if filter_name == 'PAH':
                                     lookup = filter_name
                                 else:
@@ -2626,14 +2606,10 @@ class Gnirs(GeminiMapping):
                                         slit_table_value = 0.1
                                         lookup_index = 3
                                     elif camera.startswith('Short'):
-                                        date_time = ac.get_datetime(
-                                            self._lookup.ut_datetime(
-                                                self._storage_name.file_uri
-                                            )
+                                        date_time = ac.get_datetime_mjd(
+                                            self._lookup.ut_datetime(self._storage_name.file_uri)
                                         )
-                                        if date_time > ac.get_datetime(
-                                            '2012-11-01T00:00:00'
-                                        ):
+                                        if date_time > ac.get_datetime_mjd('2012-11-01T00:00:00'):
                                             slit_table_value = 0.3
                                             if grating == '32':
                                                 lookup_index = 4
@@ -2667,16 +2643,10 @@ class Gnirs(GeminiMapping):
                             if lookup == 'PAH':
                                 self.fm.resolving_power = None
                             else:
-                                self.fm.resolving_power = (
-                                    slit_table_value
-                                    * bounds[lookup_index]
-                                    / slit_width
-                                )
+                                self.fm.resolving_power = slit_table_value * bounds[lookup_index] / slit_width
                             self.fm.set_central_wl(bounds[1], bounds[0])
             elif data_product_type == DataProductType.IMAGE:
-                self._logger.debug(
-                    f'SpectralWCS imaging mode for {self._storage_name.obs_id}.'
-                )
+                self._logger.debug(f'SpectralWCS imaging mode for {self._storage_name.obs_id}.')
                 # https://www.gemini.edu/sciops/instruments/gnirs/imaging
                 # https://www.gemini.edu/sciops/instruments/gnirs/spectroscopy/orderblocking-acq-nd-filters
 
@@ -2712,17 +2682,10 @@ class Gnirs(GeminiMapping):
                 # PV+K: ‘PV’ = pupil viewer.  Shouldn’t affect transmission
                 # values (I think) so ignore when looking up lower/upper
                 # bandpasses.
-                filter_name = filter_name.replace('PupilViewer', '').replace(
-                    'PV', ''
-                )
+                filter_name = filter_name.replace('PupilViewer', '').replace('PV', '')
                 filter_name = filter_name.strip('+')
 
-                if (
-                    len(filter_name) == 1
-                    or filter_name == 'H2'
-                    or filter_name == 'PAH'
-                    or filter_name == 'XD'
-                ):
+                if len(filter_name) == 1 or filter_name == 'H2' or filter_name == 'PAH' or filter_name == 'XD':
                     bandpass = filter_name
                 else:
                     bandpass = filter_name[0]
@@ -2752,26 +2715,56 @@ class Gnirs(GeminiMapping):
 
 
 class Gpi(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
         super().accumulate_blueprint(bp)
-        bp.configure_position_axes((1, 2))
+        equinox = self._headers[0].get('TRKEQUIN')
+        if equinox and 1800.0 <= equinox <= 2500.0:
+            # DB 07-06-21
+            # No spatial WCS if equinox not properly set
+            #
+            # DB - 22-02-19 - GPI
+            # WCS info is garbage in header, so for spatial WCS (for both image and spectrum)
+            # override with the following functions
+            bp.configure_position_axes((1, 2))
+            for extension in range(1, len(self._headers)):
+                bp.set('Chunk.position.axis.axis1.ctype', 'RA---TAN', extension)
+                bp.set('Chunk.position.axis.axis1.cunit', 'deg', extension)
+                bp.set('Chunk.position.axis.axis2.ctype', 'DEC--TAN', extension)
+                bp.set('Chunk.position.axis.axis2.cunit', 'deg', extension)
+                bp.set('Chunk.position.axis.function.cd11', 'get_cd11()', extension)
+                # cd1_2 = cd2_1 = 0.0 since we don’t know rotation value
+                bp.set('Chunk.position.axis.function.cd12', 0.0, extension)
+                bp.set('Chunk.position.axis.function.cd21', 0.0, extension)
+                bp.set('Chunk.position.axis.function.cd22', 'get_cd22()', extension)
+                bp.set('Chunk.position.axis.function.refCoord.coord1.pix', 'get_crpix1()', extension)
+                # crval1 = json ra value
+                # crval2 = json dec value
+                bp.set('Chunk.position.axis.function.refCoord.coord1.val', 'get_ra()', extension)
+                bp.set('Chunk.position.axis.function.refCoord.coord2.pix', 'get_crpix2()', extension)
+                bp.set('Chunk.position.axis.function.refCoord.coord2.val', 'get_dec()', extension)
+                bp.set('Chunk.position.equinox', '_get_trkequin()', extension)
+                bp.add_attribute('Chunk.position.coordsys', 'RADESYS', extension)
 
-    def get_cd11(self, ext):
-        return RADIUS_LOOKUP[self._instrument] / self._headers[ext].get(
-            'NAXIS1'
-        )
+    def _get_trkequin(self, ext):
+        return self._headers[0].get('TRKEQUIN')
+
+    def get_cd11(self, ext, keyword='NAXIS1'):
+        # FOV is 2.8" x 2.8" on each side or 2.8/3600.0 degrees
+        # cd1_1 = 2.8/(3600.0 * naxis1)
+        # cd2_2 = 2.8/(3600.0 * naxis2)
+        return RADIUS_LOOKUP[self._instrument] / self._headers[ext].get(keyword)
 
     def get_cd22(self, ext):
-        return self.get_cd11(ext)
+        return self.get_cd11(ext, 'NAXIS2')
 
     def get_crpix1(self, ext, keyword='NAXIS1'):
+        # naxis1 = extension header NAXIS1 value
+        # naxis2 = extension header NAXIS2 value
+        # crpix1 = naxis1/2.0
+        # crpix2 = naxis2/2.0
         naxis1 = self._headers[ext].get(keyword)
-        if naxis1 is None:
-            result = None
-        else:
+        if naxis1:
             result = naxis1 / 2.0
         return result
 
@@ -2782,8 +2775,7 @@ class Gpi(GeminiMapping):
         mode = self._lookup.mode(self._storage_name.file_uri)
         if mode is None:
             raise mc.CadcException(
-                f'{self._instrument}: No mode information found for '
-                f'{self._storage_name.file_name}'
+                f'{self._instrument}: No mode information found for ' f'{self._storage_name.file_name}'
             )
         # DB - 22-02-19 FOR GPI only:  To determine if the data type
         # is an ‘image’ or ‘spectrum’:
@@ -2795,10 +2787,7 @@ class Gpi(GeminiMapping):
             result = DataProductType.SPECTRUM
         else:
             self._observable.rejected.record(mc.Rejected.MYSTERY_VALUE, self._storage_name.file_name)
-            raise mc.CadcException(
-                f'{self._instrument} Mystery mode {mode} for '
-                f'{self._storage_name.file_name}'
-            )
+            raise mc.CadcException(f'{self._instrument} Mystery mode {mode} for ' f'{self._storage_name.file_name}')
         return result
 
     def _update_energy(self, chunk, data_product_type, filter_name):
@@ -2832,15 +2821,10 @@ class Gpi(GeminiMapping):
             self._lookup.telescope(self._storage_name.file_uri),
         )
         if data_product_type == DataProductType.IMAGE:
-            self._logger.debug(
-                f'SpectralWCS imaging mode for {self._storage_name.obs_id}.'
-            )
+            self._logger.debug(f'SpectralWCS imaging mode for {self._storage_name.obs_id}.')
             self.fm = filter_md
         elif data_product_type == DataProductType.SPECTRUM:
-            self._logger.debug(
-                f'SpectralWCS Spectroscopy mode for '
-                f'{self._storage_name.obs_id}.'
-            )
+            self._logger.debug(f'SpectralWCS Spectroscopy mode for ' f'{self._storage_name.obs_id}.')
             self.fm = svofps.FilterMetadata()
             self.fm.central_wl = filter_md.central_wl
             self.fm.bandpass = filter_md.bandpass
@@ -2862,119 +2846,25 @@ class Gpi(GeminiMapping):
         self._logger.debug('End _update_energy')
 
     def _update_position(self, part, chunk, extension):
-        self._logger.debug('Begin _update_position')
-
-        # DB - 18-02-19 - for hard-coded field of views use:
-        # CRVAL1  = RA value from json or header (degrees
-        # CRVAL2  = Dec value from json or header (degrees)
-        # CDELT1  = 5.0/3600.0 (Plate scale along axis1 in degrees/pixel
-        #           for 5" size)
-        # CDELT2  = 5.0/3600.0
-        # CROTA1  = 0.0 / Rotation in degrees
-        # NAXIS1 = 1
-        # NAXIS2 = 1
-        # CRPIX1 = 1.0
-        # CRPIX2 = 1.0
-        # CTYPE1 = RA---TAN
-        # CTYPE2 = DEC--TAN
-        #
-        # DB - 22-02-19 - GPI
-        # WCS info is garbage in header, so for spatial WCS (for both image and
-        # spectrum):
-        #
-        # crval1 = json ra value
-        # crval2 = json dec value
-        # naxis1 = extension header NAXIS1 value
-        # naxis2 = extension header NAXIS2 value
-        # crpix1 = naxis1/2.0
-        # crpix2 = naxis2/2.0
-        #
-        # FOV is 2.8" x 2.8" on each side or 2.8/3600.0 degrees
-        # cd1_1 = 2.8/(3600.0 * naxis1)
-        # cd2_2 = 2.8/(3600.0 * naxis2)
-        # cd1_2 = cd2_1 = 0.0 since we don’t know rotation value
-
-        header = self._headers[1]
-        header['CTYPE1'] = 'RA---TAN'
-        header['CTYPE2'] = 'DEC--TAN'
-        header['CUNIT1'] = 'deg'
-        header['CUNIT2'] = 'deg'
-        header['CRVAL1'] = self.get_ra(extension)
-        header['CRVAL2'] = self.get_dec(extension)
-        header['CRPIX1'] = self.get_crpix1(extension)
-        header['CRPIX2'] = self.get_crpix2(extension)
-        header['CD1_1'] = self.get_cd11(extension)
-        header['CD1_2'] = 0.0
-        header['CD2_1'] = 0.0
-        header['CD2_2'] = self.get_cd22(extension)
-
-        wcs_parser = FitsWcsParser(
-            header, self._storage_name.obs_id, extension
-        )
-        if chunk is None:
-            chunk = Chunk()
-            part.chunks.append(chunk)
-        wcs_parser.augment_position(chunk)
-        chunk.position_axis_1 = 1
-        chunk.position_axis_2 = 2
-        chunk.position.coordsys = header.get('RADESYS')
-        if extension == 1:
-            # equinox information only available from
-            # 0th header
-            equinox = self._headers[0].get('TRKEQUIN')
-            if equinox is not None and 1800.0 <= equinox <= 2500.0:
-                chunk.position.equinox = equinox
-            else:
-                # DB 07-06-21
-                # No spatial WCS in these cases.
-                cc.reset_position(chunk)
-        self._logger.debug('End update_position')
+        pass
 
 
-class Graces(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
+class GracesSpectralTemporal(GeminiMapping):
+    """Fibre-fed spectrograph"""
 
-    def accumulate_blueprint(self, bp, application=None):
-        """Configure the telescope-specific ObsBlueprint at the CAOM model
-        Observation level."""
+    def accumulate_blueprint(self, bp):
+        """Configure the telescope-specific ObsBlueprint at the CAOM model Observation level."""
         super().accumulate_blueprint(bp)
-        bp.set(
-            'Plane.provenance.lastExecuted', 'get_provenance_last_executed()'
-        )
+        bp.set('Plane.provenance.lastExecuted', 'get_provenance_last_executed()')
         bp.set('Plane.provenance.producer', 'get_provenance_producer()')
         bp.set('Plane.provenance.reference', 'get_provenance_reference()')
         bp.set('Plane.provenance.version', 'get_provenance_version()')
-        mode = self._lookup.mode(self._storage_name.file_uri)
-        if mode is not None and mode != 'imaging':
-            bp.configure_position_axes((1, 2))
 
     def _get_filter_name(self, ext):
         return None
 
     def _reset_position(self, observation_type, artifact_type):
-        result = super()._reset_position(observation_type, artifact_type)
-        # DB 23-04-19
-        # Ignore spatial WCS for the GRACES dataset with EPOCH=0.0.  Not
-        # important for a bias. For GMOS we skip spatial WCS for biases
-        # (and maybe for some other instruments).
-
-        # DB 24-04-19
-        # GRACES:  you can ignore spatial WCS for flats if RA/Dec are not
-        # available.   Ditto for GNIRS darks.
-
-        # DB 30-04-19
-        # Ignore spatial WCS for any GRACES arcs without RA/Dec values.
-
-        ra = self._lookup.ra(self._storage_name.file_uri)
-        dec = self._lookup.dec(self._storage_name.file_uri)
-        if (ra is None and dec is None) or observation_type in [
-            'BIAS',
-            'FLAT',
-            'ARC',
-        ]:
-            result = True
-        return result
+        pass
 
     def _update_energy(self, chunk, data_product_type, filter_name):
         """graces-specific chunk-level Energy WCS construction."""
@@ -2989,18 +2879,11 @@ class Graces(GeminiMapping):
         # range correct for an echelle spectrograph.
 
         if data_product_type == DataProductType.SPECTRUM:
-            self._logger.debug(
-                f'SpectralWCS {data_product_type} for '
-                f'{self._storage_name.obs_id}.'
-            )
+            self._logger.debug(f'SpectralWCS {data_product_type} for ' f'{self._storage_name.obs_id}.')
             self.fm = svofps.FilterMetadata()
-            self.fm.central_wl = self._lookup.central_wavelength(
-                self._storage_name.file_uri
-            )
+            self.fm.central_wl = self._lookup.central_wavelength(self._storage_name.file_uri)
             self.fm.set_bandpass(1.0, 0.4)
-            ccd_sum = self._lookup.detector_binning(
-                self._storage_name.file_uri
-            )
+            ccd_sum = self._lookup.detector_binning(self._storage_name.file_uri)
             self.fm.resolving_power = 67500.0
             if ccd_sum is not None:
                 temp = float(ccd_sum.split('x')[1])
@@ -3014,40 +2897,25 @@ class Graces(GeminiMapping):
         self._logger.debug(f'End _update_energy')
 
     def _update_position(self, part, chunk, ext):
-        mode = self._lookup.mode(self._storage_name.file_uri)
-        if mode is not None and mode != 'imaging':
-            header = self._headers[ext]
-            header['CTYPE1'] = 'RA---TAN'
-            header['CTYPE2'] = 'DEC--TAN'
-            header['CUNIT1'] = 'deg'
-            header['CUNIT2'] = 'deg'
-            header['CRVAL1'] = self.get_ra(ext)
-            header['CRVAL2'] = self.get_dec(ext)
-            header['CDELT1'] = RADIUS_LOOKUP[self._instrument]
-            header['CDELT2'] = RADIUS_LOOKUP[self._instrument]
-            header['CROTA1'] = 0.0
-            header['NAXIS1'] = 1
-            header['NAXIS2'] = 1
-            header['CRPIX1'] = self.get_crpix1(ext)
-            header['CRPIX2'] = self.get_crpix2(ext)
-            header['CD1_1'] = self.get_cd11(ext)
-            header['CD1_2'] = 0.0
-            header['CD2_1'] = 0.0
-            header['CD2_2'] = self.get_cd22(ext)
-            wcs_parser = FitsWcsParser(header, self._storage_name.obs_id, ext)
-            if chunk is None:
-                chunk = Chunk()
-            wcs_parser.augment_position(chunk)
-            chunk.position_axis_1 = 1
-            chunk.position_axis_2 = 2
-        self._logger.debug('End update_position')
+        pass
+
+    def _update_time(self, chunk):
+        cc.undo_astropy_cdfix_call(chunk, self.get_time_delta(0))
+
+
+class GracesSpatialSpectralTemporal(GracesSpectralTemporal):
+    """Fibre-fed spectrograph"""
+
+    def accumulate_blueprint(self, bp):
+        """Configure the telescope-specific ObsBlueprint at the CAOM model Observation level."""
+        super().accumulate_blueprint(bp)
+        bp.configure_position_axes((1, 2))
+        self._accumulate_chunk_position_axes_blueprint(bp, 0)
 
 
 class Gsaoi(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
         """Configure the telescope-specific ObsBlueprint at the CAOM model
         Observation level."""
         super().accumulate_blueprint(bp)
@@ -3057,8 +2925,7 @@ class Gsaoi(GeminiMapping):
         # DB 24-04-19
         # ‘Unknown+Blocked2’ filter, no spectral WCS.
         return super()._reset_energy(observation_type, filter_name) or (
-            filter_name is not None
-            and ('Unknown' in filter_name or 'Blocked' in filter_name)
+            filter_name is not None and ('Unknown' in filter_name or 'Blocked' in filter_name)
         )
 
     def _update_energy(self, chunk, data_product_type, filter_name):
@@ -3067,10 +2934,7 @@ class Gsaoi(GeminiMapping):
         """
         self._logger.debug(f'Begin _update_energy')
         if data_product_type is DataProductType.IMAGE:
-            self._logger.debug(
-                f'Spectral WCS {data_product_type} mode for '
-                f'{self._storage_name.obs_id}.'
-            )
+            self._logger.debug(f'Spectral WCS {data_product_type} mode for ' f'{self._storage_name.obs_id}.')
             self.fm = self._filter_cache.get_filter_metadata(
                 self._instrument,
                 filter_name,
@@ -3078,9 +2942,7 @@ class Gsaoi(GeminiMapping):
             )
             if self.fm is None:
                 self._observable.rejected.record(mc.Rejected.MYSTERY_VALUE, self._storage_name.file_name)
-                raise mc.CadcException(
-                    f'{self._instrument}: mystery filter {filter_name}'
-                )
+                raise mc.CadcException(f'{self._instrument}: mystery filter {filter_name}')
             self._build_chunk_energy(chunk, filter_name)
         else:
             raise mc.CadcException(
@@ -3092,10 +2954,8 @@ class Gsaoi(GeminiMapping):
 
 
 class Hokupaa(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
         super().accumulate_blueprint(bp)
         bp.set_default('Observation.telescope.name', 'Gemini-South')
 
@@ -3146,8 +3006,7 @@ class Hokupaa(GeminiMapping):
         # no energy since ‘home’ might either be an open position or a blocked
         # position.
         return super()._reset_energy(observation_type, filter_name) or (
-            filter_name is not None
-            and ('LowFlx' in filter_name or 'home' in filter_name)
+            filter_name is not None and ('LowFlx' in filter_name or 'home' in filter_name)
         )
 
     def _reset_position(self, observation_type, artifact_type):
@@ -3239,14 +3098,10 @@ class Hokupaa(GeminiMapping):
         if filter_name not in hokupaa_lookup:
             self._observable.rejected.record(mc.Rejected.MYSTERY_VALUE, self._storage_name.file_name)
             raise mc.CadcException(
-                f'{self._instrument}: Mystery filter {filter_name} for '
-                f'{self._storage_name.obs_id}'
+                f'{self._instrument}: Mystery filter {filter_name} for ' f'{self._storage_name.obs_id}'
             )
         if data_product_type == DataProductType.IMAGE:
-            self._logger.debug(
-                f'SpectralWCS imaging mode for '
-                f'{self._storage_name.obs_id}.'
-            )
+            self._logger.debug(f'SpectralWCS imaging mode for ' f'{self._storage_name.obs_id}.')
             self.fm = svofps.FilterMetadata()
             self.fm.central_wl = hokupaa_lookup[filter_name][0]
             self.fm.bandpass = hokupaa_lookup[filter_name][1]
@@ -3263,8 +3118,7 @@ class Hokupaa(GeminiMapping):
         equinox = mc.to_float(header.get('EQUINOX'))
         if not 1800.0 <= equinox <= 2500.0:
             self._logger.warning(
-                f'EQUINOX value is wrong ({equinox}), no spatial WCS for '
-                f'{self._storage_name.obs_id}'
+                f'EQUINOX value is wrong ({equinox}), no spatial WCS for ' f'{self._storage_name.obs_id}'
             )
             return
 
@@ -3297,10 +3151,8 @@ class Hokupaa(GeminiMapping):
 
 
 class Hrwfs(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
         super().accumulate_blueprint(bp)
         bp.set_default('Observation.telescope.name', 'Gemini-South')
         bp.configure_position_axes((1, 2))
@@ -3309,9 +3161,7 @@ class Hrwfs(GeminiMapping):
         filter_name = super()._get_filter_name(ext)
         if filter_name is None or len(filter_name.strip()) == 0:
             filter_name = self._search_through_keys(0, ['FILTER1', 'FILTER2'])
-        self._logger.info(
-            f'Filter names are "{filter_name}" in {self._storage_name.obs_id}'
-        )
+        self._logger.info(f'Filter names are "{filter_name}" in {self._storage_name.obs_id}')
         return filter_name
 
     def _update_energy(self, chunk, data_product_type, filter_name):
@@ -3321,15 +3171,8 @@ class Hrwfs(GeminiMapping):
         # filter2=‘open’, so treat similarly to “open” for GMOS since it’s a
         # similar CCD:  maybe 0.35 - 1.0 microns.
         if data_product_type == DataProductType.IMAGE:
-            self._logger.debug(
-                f'Spectral WCS {data_product_type} mode for '
-                f'{self._storage_name.obs_id}.'
-            )
-            if (
-                'open' in filter_name
-                or 'neutral' in filter_name
-                or 'undefined' in filter_name
-            ):
+            self._logger.debug(f'Spectral WCS {data_product_type} mode for ' f'{self._storage_name.obs_id}.')
+            if 'open' in filter_name or 'neutral' in filter_name or 'undefined' in filter_name:
                 w_min = 0.35
                 w_max = 1.0
                 self.fm = svofps.FilterMetadata()
@@ -3360,10 +3203,8 @@ class Hrwfs(GeminiMapping):
 
 
 class Igrins(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
         """Configure the telescope-specific ObsBlueprint at the CAOM model
         Observation level."""
         super().accumulate_blueprint(bp)
@@ -3394,18 +3235,13 @@ class Igrins(GeminiMapping):
         lookup = {'H': [1.47, 1.83], 'K': [1.93, 2.5]}
         if filter_name in lookup.keys():
             self.fm = svofps.FilterMetadata()
-            self.fm.set_bandpass(
-                lookup.get(filter_name)[1], lookup.get(filter_name)[0]
-            )
-            self.fm.set_central_wl(
-                lookup.get(filter_name)[1], lookup.get(filter_name)[0]
-            )
+            self.fm.set_bandpass(lookup.get(filter_name)[1], lookup.get(filter_name)[0])
+            self.fm.set_central_wl(lookup.get(filter_name)[1], lookup.get(filter_name)[0])
             self.fm.resolving_power = 45000.0
         else:
             self._observable.rejected.record(mc.Rejected.MYSTERY_VALUE, self._storage_name.file_name)
             raise mc.CadcException(
-                f'{self._instrument}: Mystery filter {filter_name} for '
-                f'{self._storage_name.obs_id}'
+                f'{self._instrument}: Mystery filter {filter_name} for ' f'{self._storage_name.obs_id}'
             )
         self._build_chunk_energy(chunk, filter_name)
         self._logger.debug('End _update_energy')
@@ -3442,10 +3278,8 @@ class Igrins(GeminiMapping):
 
 
 class Michelle(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
         super().accumulate_blueprint(bp)
         bp.set_default('Observation.telescope.name', 'Gemini-South')
         bp.configure_position_axes((1, 2))
@@ -3477,8 +3311,7 @@ class Michelle(GeminiMapping):
         # apparently and those shouldn't have energy WCS.
         # DB 23-04-19 - “No Value” -> no energy
         return super()._reset_energy(observation_type, filter_name) or (
-            filter_name is not None
-            and ('Blank' in filter_name or 'No Value' in filter_name)
+            filter_name is not None and ('Blank' in filter_name or 'No Value' in filter_name)
         )
 
     def _update_energy(self, chunk, data_product_type, filter_name):
@@ -3565,33 +3398,24 @@ class Michelle(GeminiMapping):
         )
         if self.fm is None:  # means filter_name not found
             # DB 09-04-19 - Use 100 microns for the initial max for michelle.
-            w_max, w_min = self._multiple_filter_lookup(michelle, wl_max=100)
+            w_max, w_min = self._multiple_filter_lookup(filter_name, michelle, wl_max=100)
             self.fm = svofps.FilterMetadata()
             self.fm.set_bandpass(w_max, w_min)
             self.fm.set_central_wl(w_max, w_min)
         if data_product_type == DataProductType.SPECTRUM:
-            self._logger.debug(
-                f'Spectral WCS spectrum for {self._storage_name.obs_id}.'
-            )
+            self._logger.debug(f'Spectral WCS spectrum for {self._storage_name.obs_id}.')
             if data_product_type == DataProductType.SPECTRUM:
                 disperser = self._lookup.disperser(self._storage_name.file_uri)
-                focal_plane_mask = self._lookup.focal_plane_mask(
-                    self._storage_name.file_uri
-                )
+                focal_plane_mask = self._lookup.focal_plane_mask(self._storage_name.file_uri)
                 slit_width = float(focal_plane_mask.split('_')[0])
                 if disperser not in lookup:
                     self._observable.rejected.record(mc.Rejected.MYSTERY_VALUE, self._storage_name.file_name)
                     raise mc.CadcException(
-                        f'{self._instrument}: Mystery disperser {disperser} '
-                        f'for {self._storage_name.obs_id}'
+                        f'{self._instrument}: Mystery disperser {disperser} ' f'for {self._storage_name.obs_id}'
                     )
-                self.fm.resolving_power = (
-                    lookup[disperser][0] * lookup[disperser][1] / slit_width
-                )
+                self.fm.resolving_power = lookup[disperser][0] * lookup[disperser][1] / slit_width
         elif data_product_type == DataProductType.IMAGE:
-            self._logger.debug(
-                f'Spectral WCS imaging mode for {self._storage_name.obs_id}.'
-            )
+            self._logger.debug(f'Spectral WCS imaging mode for {self._storage_name.obs_id}.')
         else:
             raise mc.CadcException(
                 f'{self._instrument}: no Spectral WCS support when '
@@ -3607,10 +3431,8 @@ class Michelle(GeminiMapping):
 
 
 class Nici(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
         """Configure the telescope-specific ObsBlueprint at the CAOM model
         Observation level."""
         super().accumulate_blueprint(bp)
@@ -3677,13 +3499,9 @@ class Nici(GeminiMapping):
             self._lookup.telescope(self._storage_name.file_uri),
         )
         if data_product_type == DataProductType.IMAGE:
-            self._logger.debug(
-                f'SpectralWCS imaging mode for {self._storage_name.obs_id}.'
-            )
+            self._logger.debug(f'SpectralWCS imaging mode for {self._storage_name.obs_id}.')
             if self.fm is None:  # means filter_name not found
-                w_max, w_min = self._multiple_filter_lookup(
-                    filter_name, nici_lookup
-                )
+                w_max, w_min = self._multiple_filter_lookup(filter_name, nici_lookup)
                 self.fm = svofps.FilterMetadata()
                 self.fm.set_bandpass(w_max, w_min)
                 self.fm.set_central_wl(w_max, w_min)
@@ -3706,19 +3524,15 @@ class Nici(GeminiMapping):
 
 
 class Nifs(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
         super().accumulate_blueprint(bp)
         bp.set_default('Observation.telescope.name', 'Gemini-South')
 
     def get_cd11(self, ext):
         # DB - 05-03-19 - NIFS needs a division by NAXIS1/2 for the
         # cdelta1/2 calculations.
-        return RADIUS_LOOKUP[self._instrument] / self._headers[ext].get(
-            'NAXIS1'
-        )
+        return RADIUS_LOOKUP[self._instrument] / self._headers[ext].get('NAXIS1')
 
     def get_cd22(self, ext):
         return self.get_cd11(ext)
@@ -3735,8 +3549,7 @@ class Nifs(GeminiMapping):
         # should likely be skipped.  In this case the json value is
         # INVALID&INVALID.
         return super()._reset_energy(observation_type, filter_name) or (
-            filter_name is not None
-            and ('Blocked' in filter_name or 'INVALID' in filter_name)
+            filter_name is not None and ('Blocked' in filter_name or 'INVALID' in filter_name)
         )
 
     def _reset_position(self, observation_type, artifact_type):
@@ -3753,12 +3566,7 @@ class Nifs(GeminiMapping):
         dec = self._lookup.dec(self._storage_name.file_uri)
         if ra is None and dec is None:
             result = True
-        elif (
-            ra is not None
-            and math.isclose(ra, 0.0)
-            and dec is not None
-            and math.isclose(dec, 0.0)
-        ):
+        elif ra is not None and math.isclose(ra, 0.0) and dec is not None and math.isclose(dec, 0.0):
             result = True
         return result
 
@@ -3861,9 +3669,7 @@ class Nifs(GeminiMapping):
         )
 
         if data_product_type == DataProductType.SPECTRUM:
-            self._logger.debug(
-                f'spectroscopy for {self._storage_name.obs_id}.'
-            )
+            self._logger.debug(f'spectroscopy for {self._storage_name.obs_id}.')
             grating = self._lookup.disperser(self._storage_name.file_uri)
             if grating in nifs_lookup:
                 if filter_name in nifs_lookup[grating]:
@@ -3872,19 +3678,13 @@ class Nifs(GeminiMapping):
                         nifs_lookup[grating][filter_name][2],
                         nifs_lookup[grating][filter_name][1],
                     )
-                    self.fm.central_wl = self._lookup.central_wavelength(
-                        self._storage_name.file_uri
-                    )
-                    self.fm.resolving_power = nifs_lookup[grating][
-                        filter_name
-                    ][3]
+                    self.fm.central_wl = self._lookup.central_wavelength(self._storage_name.file_uri)
+                    self.fm.resolving_power = nifs_lookup[grating][filter_name][3]
                     if self.fm.central_wl is None:
                         # DB 14-04-21
                         #  if no central wavelength in json then use filter
                         #  bounds
-                        self.fm.central_wl = nifs_lookup[grating][filter_name][
-                            0
-                        ]
+                        self.fm.central_wl = nifs_lookup[grating][filter_name][0]
                         self._logger.warning(
                             f'JSON central_wavelength is None for '
                             f'{self._storage_name.obs_id}. Using '
@@ -3897,22 +3697,16 @@ class Nifs(GeminiMapping):
                     )
                     fm = None
             else:
-                self._logger.info(
-                    f'No energy. grating {grating} for '
-                    f'{self._storage_name.obs_id}'
-                )
+                self._logger.info(f'No energy. grating {grating} for ' f'{self._storage_name.obs_id}')
                 fm = None
         elif data_product_type == DataProductType.IMAGE:
-            self._logger.debug(
-                f'NIFS: imaging for {self._storage_name.obs_id}.'
-            )
+            self._logger.debug(f'NIFS: imaging for {self._storage_name.obs_id}.')
             # DB - 01-03-19
             # NIFS images should just use the standard imaging procedure
             # for resolution (central_wavelength/bandpass).
         else:
             raise mc.CadcException(
-                f'{self._instrument}: DataProductType {data_product_type} for '
-                f'{self._storage_name.obs_id}'
+                f'{self._instrument}: DataProductType {data_product_type} for ' f'{self._storage_name.obs_id}'
             )
         if self.fm is None or self.fm.central_wl is None:
             cc.reset_energy(chunk)
@@ -3982,10 +3776,8 @@ class Nifs(GeminiMapping):
 
 
 class Niri(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
         super().accumulate_blueprint(bp)
         bp.configure_position_axes((1, 2))
 
@@ -3995,8 +3787,7 @@ class Niri(GeminiMapping):
 
     def _reset_energy(self, observation_type, filter_name):
         return super()._reset_energy(observation_type, filter_name) or (
-            filter_name is not None
-            and (filter_name == '' or 'INVALID' in filter_name)
+            filter_name is not None and (filter_name == '' or 'INVALID' in filter_name)
         )
 
     def _update_energy(self, chunk, data_product_type, filter_name):
@@ -4138,29 +3929,22 @@ class Niri(GeminiMapping):
             if filter_md is None:
                 self._observable.rejected.record(mc.Rejected.MYSTERY_VALUE, self._storage_name.file_name)
                 raise mc.CadcException(
-                    f'{self._instrument}: mystery filter {filter_name} for '
-                    f'{self._storage_name.obs_id}'
+                    f'{self._instrument}: mystery filter {filter_name} for ' f'{self._storage_name.obs_id}'
                 )
 
         filter_name = self._lookup.filter_name(self._storage_name.file_uri)
         if data_product_type == DataProductType.IMAGE:
-            self._logger.debug(
-                f'SpectralWCS imaging for {self._storage_name.obs_id}.'
-            )
+            self._logger.debug(f'SpectralWCS imaging for {self._storage_name.obs_id}.')
             self.fm = filter_md
             self.fm.adjust_resolving_power()
         elif data_product_type == DataProductType.SPECTRUM:
-            self._logger.debug(
-                f'SpectralWCS spectroscopy for {self._storage_name.obs_id}.'
-            )
+            self._logger.debug(f'SpectralWCS spectroscopy for {self._storage_name.obs_id}.')
             self.fm = svofps.FilterMetadata('NIRI')
             self.fm.central_wl = filter_md.central_wl
             self.fm.bandpass = filter_md.bandpass
             # add the 'split' call because NIRI: Mystery disperser value
             # Mgrism_G5206 for GN-2007B-Q-75-61-003
-            disperser = self._lookup.disperser(
-                self._storage_name.file_uri
-            ).split('_')[0]
+            disperser = self._lookup.disperser(self._storage_name.file_uri).split('_')[0]
             if disperser in [
                 'Jgrism',
                 'Jgrismf32',
@@ -4172,31 +3956,17 @@ class Niri(GeminiMapping):
                 'Mgrism',
             ]:
                 bandpass_name = disperser[0]
-                f_ratio = self._lookup.focal_plane_mask(
-                    self._storage_name.file_uri
-                )
+                f_ratio = self._lookup.focal_plane_mask(self._storage_name.file_uri)
                 self._logger.debug(
-                    f'Bandpass name is {bandpass_name} f_ratio is '
-                    f'{f_ratio} for {self._storage_name.obs_id}'
+                    f'Bandpass name is {bandpass_name} f_ratio is ' f'{f_ratio} for {self._storage_name.obs_id}'
                 )
-                if (
-                    bandpass_name in NIRI_RESOLVING_POWER
-                    and f_ratio in NIRI_RESOLVING_POWER[bandpass_name]
-                ):
-                    self.fm.resolving_power = NIRI_RESOLVING_POWER[
-                        bandpass_name
-                    ][f_ratio]
+                if bandpass_name in NIRI_RESOLVING_POWER and f_ratio in NIRI_RESOLVING_POWER[bandpass_name]:
+                    self.fm.resolving_power = NIRI_RESOLVING_POWER[bandpass_name][f_ratio]
                 elif 'pinhole' in f_ratio:
-                    self._logger.info(
-                        f'Pinhole. Setting energy to None for '
-                        f'{self._storage_name.obs_id}'
-                    )
+                    self._logger.info(f'Pinhole. Setting energy to None for ' f'{self._storage_name.obs_id}')
                     reset_energy = True
                 elif f_ratio == 'INVALID':
-                    self._logger.info(
-                        f'INVALID f_ratio. Setting energy to None for '
-                        f'{self._storage_name.obs_id}'
-                    )
+                    self._logger.info(f'INVALID f_ratio. Setting energy to None for ' f'{self._storage_name.obs_id}')
                     reset_energy = True
                 else:
                     self._observable.rejected.record(mc.Rejected.MYSTERY_VALUE, self._storage_name.file_name)
@@ -4208,13 +3978,11 @@ class Niri(GeminiMapping):
             else:
                 self._observable.rejected.record(mc.Rejected.MYSTERY_VALUE, self._storage_name.file_name)
                 raise mc.CadcException(
-                    f'{self._instrument} Mystery disperser value {disperser} '
-                    f'for {self._storage_name.obs_id}'
+                    f'{self._instrument} Mystery disperser value {disperser} ' f'for {self._storage_name.obs_id}'
                 )
         else:
             raise mc.CadcException(
-                f'{self._instrument}: Do not understand mode '
-                f'{data_product_type} for {self._storage_name.obs_id}'
+                f'{self._instrument}: Do not understand mode ' f'{data_product_type} for {self._storage_name.obs_id}'
             )
 
         if reset_energy:
@@ -4237,23 +4005,15 @@ class Niri(GeminiMapping):
             hdu0 = self._headers[1]
             pdu_cd1_1 = pdu.get('CD1_1')
             hdu0_cd1_1 = hdu0.get('CD1_1')
-            if (
-                (
-                    not math.isclose(pdu_cd1_1, hdu0_cd1_1) and math.isclose(
-                        pdu_cd1_1 * 1e-50, hdu0_cd1_1
-                    )
-                ) or
-                    (
-                        hdu0.get('CRPIX1') != 0.0
-                        and hdu0.get('CRVAL1') != 0.0
-                        and hdu0.get('CRPIX2') != 0.0
-                        and hdu0.get('CRVAL2') != 0.0)
+            if (not math.isclose(pdu_cd1_1, hdu0_cd1_1) and math.isclose(pdu_cd1_1 * 1e-50, hdu0_cd1_1)) or (
+                hdu0.get('CRPIX1') != 0.0
+                and hdu0.get('CRVAL1') != 0.0
+                and hdu0.get('CRPIX2') != 0.0
+                and hdu0.get('CRVAL2') != 0.0
             ):
                 pdu['NAXIS1'] = hdu0.get('NAXIS1')
                 pdu['NAXIS2'] = hdu0.get('NAXIS2')
-                wcs_parser = FitsWcsParser(
-                    pdu, self._storage_name.obs_id, extension
-                )
+                wcs_parser = FitsWcsParser(pdu, self._storage_name.obs_id, extension)
                 if chunk is None:
                     chunk = Chunk()
                     part.chunks.append(chunk)
@@ -4270,10 +4030,8 @@ class Niri(GeminiMapping):
 
 
 class Oscir(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
         super().accumulate_blueprint(bp)
         bp.set_default('Observation.telescope.name', 'Gemini-South')
 
@@ -4389,8 +4147,7 @@ class Oscir(GeminiMapping):
         if filter_name not in oscir_lookup:
             self._observable.rejected.record(mc.Rejected.MYSTERY_VALUE, self._storage_name.file_name)
             raise mc.CadcException(
-                f'{self._instrument}: Mystery FILTER keyword {filter_name} '
-                f'for {self._storage_name.obs_id}'
+                f'{self._instrument}: Mystery FILTER keyword {filter_name} ' f'for {self._storage_name.obs_id}'
             )
         # DB 23-02-21
         # OSCIR files with the 'r' prefix will cause issues because they are
@@ -4398,9 +4155,7 @@ class Oscir(GeminiMapping):
         #   'if data_product_type == DataProductType.IMAGE:'
         # and assume they are all images.  The filter bandpass is the best we
         # can do for the energy WCS in any case.
-        self._logger.debug(
-            f'SpectralWCS imaging mode for {self._storage_name.obs_id}.'
-        )
+        self._logger.debug(f'SpectralWCS imaging mode for {self._storage_name.obs_id}.')
         self.fm = svofps.FilterMetadata()
         self.fm.central_wl = oscir_lookup[filter_name][0]
         self.fm.bandpass = oscir_lookup[filter_name][1]
@@ -4439,10 +4194,8 @@ class Oscir(GeminiMapping):
 
 
 class Phoenix(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
         """Configure the telescope-specific ObsBlueprint at the CAOM model
         Observation level."""
         super().accumulate_blueprint(bp)
@@ -4492,9 +4245,7 @@ class Phoenix(GeminiMapping):
         view_pos = self._headers[ext].get('VIEW_POS')
         if 'flat' in object_value:
             result = 'FLAT'
-        elif 'dark' in object_value or (
-            view_pos is not None and 'dark' in view_pos
-        ):
+        elif 'dark' in object_value or (view_pos is not None and 'dark' in view_pos):
             result = 'DARK'
         elif 'gcal' in object_value:
             result = 'FLAT'
@@ -4510,9 +4261,7 @@ class Phoenix(GeminiMapping):
     def _get_filter_name(self, ext):
         filter_name = super()._get_filter_name(ext)
         if filter_name is None or len(filter_name.strip()) == 0:
-            filter_name = self._search_through_keys(
-                ext, ['CVF_POS', 'FILT_POS']
-            )
+            filter_name = self._search_through_keys(ext, ['CVF_POS', 'FILT_POS'])
         return filter_name
 
     def _make_axes_consistent(self, chunk):
@@ -4571,12 +4320,7 @@ class Phoenix(GeminiMapping):
         dec = self._lookup.dec(self._storage_name.file_uri)
         if ra is None and dec is None:
             result = True
-        elif (
-            ra is not None
-            and math.isclose(ra, 0.0)
-            and dec is not None
-            and math.isclose(dec, 0.0)
-        ):
+        elif ra is not None and math.isclose(ra, 0.0) and dec is not None and math.isclose(dec, 0.0):
             result = True
         return result
 
@@ -4637,22 +4381,15 @@ class Phoenix(GeminiMapping):
             if '_' in filter_name:
                 filter_name = filter_name.split('_')[0]
 
-        self._logger.debug(
-            f'filter_name is {filter_name} for {self._storage_name.obs_id}'
-        )
+        self._logger.debug(f'filter_name is {filter_name} for {self._storage_name.obs_id}')
         self.fm = svofps.FilterMetadata('Phoenix')
         if data_product_type in [
             DataProductType.SPECTRUM,
             DataProductType.IMAGE,
         ]:
-            self._logger.debug(
-                f'DataProductType {data_product_type} for '
-                f'{self._storage_name.obs_id}.'
-            )
+            self._logger.debug(f'DataProductType {data_product_type} for ' f'{self._storage_name.obs_id}.')
             if filter_name in PHOENIX:
-                self.fm.set_bandpass(
-                    PHOENIX[filter_name][2], PHOENIX[filter_name][1]
-                )
+                self.fm.set_bandpass(PHOENIX[filter_name][2], PHOENIX[filter_name][1])
                 self.fm.central_wl = PHOENIX[filter_name][0]
             elif len(filter_name) == 0:
                 # DB 11-02-21
@@ -4665,8 +4402,7 @@ class Phoenix(GeminiMapping):
             else:
                 self._observable.rejected.record(mc.Rejected.MYSTERY_VALUE, self._storage_name.file_name)
                 raise mc.CadcException(
-                    f'{self._instrument} mystery filter name {filter_name} for '
-                    f'{self._storage_name.obs_id}'
+                    f'{self._instrument} mystery filter name {filter_name} for ' f'{self._storage_name.obs_id}'
                 )
         else:
             raise mc.CadcException(
@@ -4711,10 +4447,8 @@ class Phoenix(GeminiMapping):
 
 
 class Texes(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
         """Configure the telescope-specific ObsBlueprint at the CAOM model
         Observation level."""
         super().accumulate_blueprint(bp)
@@ -4723,10 +4457,7 @@ class Texes(GeminiMapping):
 
     def get_calibration_level(self, ext):
         result = CalibrationLevel.RAW_STANDARD
-        if (
-            '_red' in self._storage_name.file_uri.lower()
-            or '_sum' in self._storage_name.file_uri.lower()
-        ):
+        if '_red' in self._storage_name.file_uri.lower() or '_sum' in self._storage_name.file_uri.lower():
             result = CalibrationLevel.CALIBRATED
         return result
 
@@ -4789,9 +4520,7 @@ class Texes(GeminiMapping):
         # fixed FWHM bandpass.
         self._logger.debug('Begin _update_energy')
         if data_product_type == DataProductType.SPECTRUM:
-            self._logger.debug(
-                f'SpectralWCS spectral mode for {self._storage_name.obs_id}.'
-            )
+            self._logger.debug(f'SpectralWCS spectral mode for {self._storage_name.obs_id}.')
             self.fm = svofps.FilterMetadata('TEXES')
             self.fm.central_wl = 10000 / self._headers[0].get('WAVENO0')
             self.fm.bandpass = 0.25
@@ -4834,10 +4563,8 @@ class Texes(GeminiMapping):
 
 
 class Trecs(GeminiMapping):
-    def __init__(self, storage_name, headers, lookup, instrument, clients, observable):
-        super().__init__(storage_name, headers, lookup, instrument, clients, observable)
 
-    def accumulate_blueprint(self, bp, application=None):
+    def accumulate_blueprint(self, bp):
         """Configure the telescope-specific ObsBlueprint at the CAOM model
         Observation level."""
         super().accumulate_blueprint(bp)
@@ -4873,9 +4600,7 @@ class Trecs(GeminiMapping):
         # DB 23-04-19
         # GMOS GS-2005A-Q-26-12-001.  Lots of missing metadata, including
         # release date so no energy.  Ditto for TReCS GS-CAL20041206-6-007.
-        return super()._reset_energy(observation_type, filter_name) or (
-            filter_name is not None and filter_name == ''
-        )
+        return super()._reset_energy(observation_type, filter_name) or (filter_name is not None and filter_name == '')
 
     def _update_energy(self, chunk, data_product_type, filter_name):
         self._logger.debug('Begin _update_energy')
@@ -4892,10 +4617,7 @@ class Trecs(GeminiMapping):
             # I think it might be better to not provide wavelength info rather
             # than a very wide range.  That’s how some other TReCS data with
             # null filter names are treated.
-            self._logger.info(
-                f'Filter is {filter_name}, no Spectral WCS for '
-                f'{self._storage_name.obs_id}'
-            )
+            self._logger.info(f'Filter is {filter_name}, no Spectral WCS for ' f'{self._storage_name.obs_id}')
         else:
             if filter_name == 'Qone-17.8um':
                 # DB 22-08-19
@@ -4917,17 +4639,11 @@ class Trecs(GeminiMapping):
                 )
             if self.fm is None:
                 self._observable.rejected.record(mc.Rejected.MYSTERY_VALUE, self._storage_name.file_name)
-                raise mc.CadcException(
-                    f'{self._instrument}: Mystery filter {filter_name}'
-                )
+                raise mc.CadcException(f'{self._instrument}: Mystery filter {filter_name}')
             if data_product_type == DataProductType.IMAGE:
-                self._logger.debug(
-                    f'imaging mode for {self._storage_name.obs_id}.'
-                )
+                self._logger.debug(f'imaging mode for {self._storage_name.obs_id}.')
             elif data_product_type == DataProductType.SPECTRUM:
-                self._logger.debug(
-                    f'LS|Spectroscopy mode for {self._storage_name.obs_id}.'
-                )
+                self._logger.debug(f'LS|Spectroscopy mode for {self._storage_name.obs_id}.')
                 disperser = self._lookup.disperser(self._storage_name.file_uri)
                 if disperser is not None:
                     if disperser == 'LowRes-20':
@@ -4955,17 +4671,11 @@ class Trecs(GeminiMapping):
                 # test is rS20060306S0090, GS-2005B-Q-10-63-003
                 if ctype1 == '0':
                     self._headers[ext]['CTYPE1'] = 'RA---TAN'
-                wcs_parser = FitsWcsParser(
-                    self._headers[ext], self._storage_name.obs_id, ext
-                )
+                wcs_parser = FitsWcsParser(self._headers[ext], self._storage_name.obs_id, ext)
             else:
-                wcs_parser = FitsWcsParser(
-                    self._headers[0], self._storage_name.obs_id, ext
-                )
+                wcs_parser = FitsWcsParser(self._headers[0], self._storage_name.obs_id, ext)
         else:
-            wcs_parser = FitsWcsParser(
-                self._headers[0], self._storage_name.obs_id, ext
-            )
+            wcs_parser = FitsWcsParser(self._headers[0], self._storage_name.obs_id, ext)
 
         if chunk is None:
             chunk = Chunk()
@@ -4976,13 +4686,20 @@ class Trecs(GeminiMapping):
             chunk.position_axis_1 = 1
             chunk.position_axis_2 = 2
             chunk.position.coordsys = self._headers[0].get('FRAME')
-            chunk.position.equinox = mc.to_float(
-                self._headers[0].get('EQUINOX')
-            )
+            chunk.position.equinox = mc.to_float(self._headers[0].get('EQUINOX'))
 
 
-def mapping_factory(storage_name, headers, metadata_reader, clients, observable):
-    metadata_lookup = GeminiMetadataLookup(metadata_reader)
+def get_obs_type(lookup, storage_name):
+    result = lookup.observation_type(storage_name.file_uri)
+    obs_class = lookup.observation_class(storage_name.file_uri)
+    if obs_class is not None and (obs_class == 'acq' or obs_class == 'acqCal'):
+        result = 'ACQUISITION'
+    return result
+
+
+def mapping_factory(storage_name, clients, reporter, observation, config):
+    metadata_lookup = GeminiMetadataLookupStorageName(storage_name)
+    provenance_finder = ProvenanceFinder(clients, config)
     inst = metadata_lookup.instrument(storage_name.file_uri)
     lookup = {
         Inst.BHROS: Bhros,
@@ -4996,7 +4713,6 @@ def mapping_factory(storage_name, headers, metadata_reader, clients, observable)
         Inst.GMOSN: Gmos,
         Inst.GNIRS: Gnirs,
         Inst.GPI: Gpi,
-        Inst.GRACES: Graces,
         Inst.GSAOI: Gsaoi,
         Inst.HOKUPAA: Hokupaa,
         Inst.HRWFS: Hrwfs,
@@ -5010,8 +4726,41 @@ def mapping_factory(storage_name, headers, metadata_reader, clients, observable)
         Inst.TEXES: Texes,
         Inst.TRECS: Trecs,
     }
+    result = None
     if inst in lookup:
-        return lookup.get(inst)(storage_name, headers, metadata_lookup, inst, clients, observable)
+        result = lookup.get(inst)(
+            storage_name, metadata_lookup, inst, clients, reporter, observation, config, provenance_finder
+        )
+    elif inst is Inst.GHOST:
+        obs_type = get_obs_type(metadata_lookup, storage_name)
+        if obs_type in ['ARC', 'BIAS', 'FLAT']:
+            result = GHOSTSpectralTemporal(
+                storage_name, metadata_lookup, inst, clients, reporter, observation, config, provenance_finder
+            )
+        else:
+            result = GHOSTSpatialSpectralTemporal(
+                storage_name, metadata_lookup, inst, clients, reporter, observation, config, provenance_finder
+            )
+    elif inst is Inst.GRACES:
+        obs_type = get_obs_type(metadata_lookup, storage_name)
+        mode = metadata_lookup.mode(storage_name.file_uri)
+        # DB 30-04-19
+        # Ignore spatial WCS for any GRACES arcs without RA/Dec values.  Ditto for GNIRS darks.
+        ra = metadata_lookup.ra(storage_name.file_uri)
+        dec = metadata_lookup.dec(storage_name.file_uri)
+        if (ra is None and dec is None) or mode == 'imaging' or obs_type in ['ARC', 'BIAS', 'FLAT']:
+            # DB 23-04-19
+            # Ignore spatial WCS for the GRACES dataset with EPOCH=0.0.  Not important for a bias. For GMOS we skip
+            # spatial WCS for biases  (and maybe for some other instruments).
+            result = GracesSpectralTemporal(
+                storage_name, metadata_lookup, inst, clients, reporter, observation, config, provenance_finder
+            )
+        else:
+            result = GracesSpatialSpectralTemporal(
+                storage_name, metadata_lookup, inst, clients, reporter, observation, config, provenance_finder
+            )
     else:
-        observable.rejected.record(mc.Rejected.MYSTERY_VALUE, storage_name.file_name)
+        reporter.rejected.record(mc.Rejected.MYSTERY_VALUE, storage_name.file_name)
         raise mc.CadcException(f'Mystery name {inst}.')
+    logging.debug(f'Created {result.__class__.__name__} for mapping.')
+    return result

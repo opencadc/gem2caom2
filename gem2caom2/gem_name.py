@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
 # ***********************************************************************
 # ******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
 # *************  CENTRE CANADIEN DE DONNÉES ASTRONOMIQUES  **************
 #
-#  (c) 2019.                            (c) 2019.
+#  (c) 2025.                            (c) 2025.
 #  Government of Canada                 Gouvernement du Canada
 #  National Research Council            Conseil national de recherches
 #  Ottawa, Canada, K1A 0R6              Ottawa, Canada, K1A 0R6
@@ -66,6 +65,8 @@
 #
 # ***********************************************************************
 #
+
+from os.path import basename
 
 from caom2pipe import manage_composable as mc
 
@@ -146,10 +147,20 @@ class GemName(mc.StorageName):
     def __init__(
         self,
         file_name=None,
+        filter_cache=None,
     ):
-        super().__init__(file_name=file_name.replace('.header', ''))
-        # use the file id because the extension doesn't help much in the archive.gemini.edu URL
-        self._source_names = [self._file_id]
+        super().__init__(file_name=basename(file_name.replace('.header', '')))
+        self._source_names = [file_name]
+        self._json_metadata = {}
+        self._filter_cache = filter_cache
+
+    @property
+    def json_metadata(self):
+        return self._json_metadata
+
+    @property
+    def name(self):
+        return self._file_id
 
     @property
     def prev(self):
@@ -188,9 +199,7 @@ class GemName(mc.StorageName):
                 # DB 20-07-21
                 #  each pair of H/K files will be one observation with one
                 #  plane with two artifacts.
-                self._product_id = self._file_id.replace(
-                    'SDCH', 'SDC'
-                ).replace('SDCK', 'SDC')
+                self._product_id = self._file_id.replace('SDCH', 'SDC').replace('SDCK', 'SDC')
             else:
                 self._product_id = self._file_id
 
