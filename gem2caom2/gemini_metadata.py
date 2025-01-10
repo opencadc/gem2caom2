@@ -546,7 +546,7 @@ def retrieve_headers(source_name, logger, clients, config):
     else:
         try:
             result = clients.data_client.get_head(f'{config.scheme}:{config.collection}/{path.basename(source_name)}')
-        except exceptions.UnexpectedException as e:
+        except exceptions.UnexpectedException as _:
             # the exceptions.NotFoundException is turned into exceptions.UnexpectedException in data_util
             # the header is not at CADC, retrieve it from archive.gemini.edu
             result = retrieve_gemini_headers(source_name, logger, clients.gemini_session)
@@ -554,7 +554,7 @@ def retrieve_headers(source_name, logger, clients, config):
 
 
 def retrieve_gemini_headers(source_name, logger, session):
-    logger.debug(f'Begin retrieve_headers for {source_name}')
+    logger.debug(f'Begin retrieve_gemini_headers for {source_name}')
     header_url = f'{HEADER_URL}{source_name}'
     # Open the URL and fetch the JSON document for the observation
     response = None

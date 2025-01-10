@@ -115,6 +115,7 @@ def pytest_generate_tests(metafunc):
             Inst.ZORRO,
             Inst.IGRINS,
             Inst.GHOST,
+            Inst.MAROONX,
         ]:
             walk_dir = _get_inst_name(ii)
             for root, dirs, files in os.walk(f'{gem_mocks.TEST_DATA_DIR}/{walk_dir}'):

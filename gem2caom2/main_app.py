@@ -161,6 +161,7 @@ FILTER_VALUES_TO_IGNORE = ['open', 'invalid', 'pupil', 'clear', 'nd']
 # TEXES - DB - 07-03-19 - cd11=cd22 = 5.0/3600.0
 # IGRINS - DB - 21-07-21 - hard-code 5" FOV
 # GHOST - DB - 12-01-24 - hard-code to sqrt(0.94)"
+# MAROONX - https://gemini.edu/instrumentation/maroon-x/capability
 RADIUS_LOOKUP = {
     Inst.GPI: 2.8 / 3600.0,  # units are arcseconds
     Inst.GRACES: 1.2 / 3600.0,
@@ -172,6 +173,7 @@ RADIUS_LOOKUP = {
     Inst.TEXES: 5.0 / 3600.0,
     Inst.IGRINS: 5.0 / 3600.0,
     Inst.GHOST: math.sqrt(0.94) / 3600.0,
+    Inst.MAROONX: math.sqrt(0.77) / 3600.0,
 }
 
 
@@ -3277,6 +3279,180 @@ class Igrins(GeminiMapping):
         self._logger.debug('End _update_position')
 
 
+class MAROONXTemporal(GeminiMapping):
+    """
+    A high-resolution (R~80,000) optical (500-920nm), bench-mounted, fiber-fed echelle spectrograph designed to
+    deliver 1 m/s radial velocity precision for M dwarfs down to and beyond V = 16.
+    https://gemini.edu/instrumentation/maroon-x
+    https://gemini.edu/instrumentation/maroon-x/capability
+    https://astro.uchicago.edu/~jbean/spectrograph.html
+    https://arxiv.org/pdf/1606.07140
+    https://astro.uchicago.edu/~jbean/documents/SPIE2018_MAROON_X.pdf
+
+    WF 07-01-25
+    It is a spectrograph like any other instrument, and so its observations are fully described by a wavelength
+    range, and resolution. It has two arms (blue and red; just like ghost), so that each integration comes along
+    with two separate exposures. The resolution is typically R~85k. The data from both arms are contained in each
+    MEF image, so the spectral range can be set to 500-920nm.
+
+    Both the spectral range and the resolution are fixed, and will always be the same. Similarly, there are no user
+    selectable filters. So in that sense, the data will always be the same, with just times and locations changing
+    from image to image.
+    """
+
+    def accumulate_blueprint(self, bp):
+        """Configure the telescope-specific ObsBlueprint at the CAOM model Observation level."""
+        super().accumulate_blueprint(bp)
+        self._accumulate_obs_plane_artifact_blueprint(bp)
+
+        bp.configure_time_axis(4)
+        bp.set('Chunk.time.axis.function.refCoord.pix', '0.5')
+        bp.set('Chunk.time.axis.axis.ctype', 'TIME')
+        bp.set('Chunk.time.axis.axis.cunit', 'd')
+        bp.set('Chunk.time.axis.error.syser', '1e-07')
+        bp.set('Chunk.time.axis.error.rnder', '1e-07')
+        bp.set('Chunk.time.axis.function.naxis', '1')
+        bp.set('Chunk.time.axis.function.refCoord.val', 'get_time_function_val()')
+        bp.add_attribute('Chunk.time.timesys', 'TIMESYS')
+        bp.set_default('Chunk.time.timesys', 'UTC')
+        for extension in range(0, len(self._headers)):
+            camera_arm = self._headers[extension].get('ARM')
+            if camera_arm and camera_arm in ['RED', 'BLUE']:
+                bp.set('Chunk.time.resolution', 'get_exposure()', extension)
+                bp.set('Chunk.time.exposure', 'get_exposure()', extension)
+                bp.set('Chunk.time.axis.function.delta', 'get_time_delta()', extension)
+        self._logger.debug(f'End accumulate_blueprint')
+
+    def update(self):
+        try:
+            cc.TelescopeMapping2.update(self)
+            if self._headers is None:
+                # proprietary header metadata at archive.gemini.edu, so do nothing
+                return self._observation
+
+            # processed files
+            if cc.is_composite(self._headers) and not isinstance(self._observation, DerivedObservation):
+                self._observation = self._update_composite(self._observation)
+
+            if isinstance(self._observation, DerivedObservation):
+                cc.update_observation_members(self._observation)
+
+            if self._observation.proposal is not None:
+                program = program_metadata.get_pi_metadata(self._observation.proposal.id)
+                if program is not None:
+                    self._observation.proposal.pi_name = program['pi_name']
+                    self._observation.proposal.title = program['title']
+
+            GeminiMapping.value_repair.repair(self._observation)
+        except Exception as e:
+            self._logger.error(f'Error {e} for {self._observation.observation_id}')
+            tb = traceback.format_exc()
+            self._logger.error(tb)
+            raise mc.CadcException(e)
+        self._logger.debug('Done update.')
+        return self._observation
+
+    def get_exposure(self, ext):
+        return _to_float(self._headers[ext].get('EXPTIME'))
+
+    def get_time_delta(self, ext):
+        result = None
+        exptime = self.get_exposure(ext)
+        if exptime:
+            result = mc.convert_to_days(exptime)
+        return result
+
+    def _update_plane(self, plane):
+        if isinstance(self._observation, DerivedObservation):
+            values = cc.find_keywords_in_headers(self._headers[1:], ['IMCMB'])
+            repaired_values = _remove_processing_detritus(values, self._observation.observation_id)
+            cc.update_plane_provenance_from_values(
+                plane,
+                self._repair_provenance_value,
+                repaired_values,
+                self._storage_name.collection,
+                self._observation.observation_id,
+            )
+
+        if (
+            ofr.is_processed(self._storage_name.file_name) or isinstance(self._observation, DerivedObservation)
+        ) and 'jpg' not in self._storage_name.file_name:
+            # not the preview artifact
+            if plane.provenance is not None:
+                plane.provenance.reference = (
+                    f'http://archive.gemini.edu/searchform/' f'filepre={self._storage_name.file_name}'
+                )
+
+    def _update_artifact(self, artifact):
+        self._logger.debug(f'Begin _update_artifact for {artifact.uri}')
+        for part in artifact.parts.values():
+            for chunk in part.chunks:
+                if chunk.time and chunk.time_axis:
+                    chunk.time_axis = None
+                if chunk.energy:
+                    chunk.energy_axis = 1
+                    chunk.naxis = 1
+                else:
+                    chunk.naxis = None
+                if chunk.position:
+                    chunk.position_axis_1 = None
+                    chunk.position_axis_2 = None
+        self._logger.debug('End _update_artifact')
+
+
+class MAROONXSpectralTemporal(MAROONXTemporal):
+
+    def accumulate_blueprint(self, bp):
+        """Configure the telescope-specific ObsBlueprint at the CAOM model Observation level."""
+        super().accumulate_blueprint(bp)
+        bp.configure_energy_axis(1)
+        # https://gemini.edu/instrumentation/maroon-x/capability
+        # A dichroic splits the light into a
+        # ‘blue’ (full range: 491-670nm, order 124-92;
+        #       useful range: 499-663nm, order 122-93)
+        # and
+        # ‘red’ (649-920nm, order 94-67).
+        for extension in range(0, len(self._headers)):
+            bp.set('Chunk.energy.specsys', 'TOPOCENT', extension)
+            camera_arm = self._headers[extension].get('ARM')
+            if camera_arm and camera_arm in ['RED', 'BLUE']:
+                bp.set('Chunk.energy.axis.axis.ctype', 'WAVE', extension)
+                bp.set('Chunk.energy.axis.axis.cunit', 'nm', extension)
+                bp.set('Chunk.energy.axis.range.start.pix', 0.5, extension)
+                bp.set('Chunk.energy.axis.range.start.val', '_get_energy_chunk_range_start_val()', extension)
+                bp.set('Chunk.energy.axis.range.end.pix', 1.5, extension)
+                bp.set('Chunk.energy.axis.range.end.val', '_get_energy_chunk_range_end_val()', extension)
+        # WF 07-01-25 resolving power ~85k
+        bp.set('Chunk.energy.resolvingPower', 85000.0)
+        self._logger.debug(f'End accumulate_blueprint')
+
+    def _get_energy_chunk_range_end_val(self, ext):
+        result = None
+        if (camera_arm := self._headers[ext].get('ARM')) == 'RED':
+            result = 920.0  # nm
+        elif camera_arm == 'BLUE':
+            result = 663.0  # nm
+        return result
+
+    def _get_energy_chunk_range_start_val(self, ext):
+        result = None
+        if (camera_arm := self._headers[ext].get('ARM')) == 'RED':
+            result = 649.0  # nm
+        elif camera_arm == 'BLUE':
+            result = 499.0  # nm
+        return result
+
+
+class MAROONXSpatialSpectralTemporal(MAROONXSpectralTemporal):
+    def accumulate_blueprint(self, bp):
+        """Configure the telescope-specific ObsBlueprint at the CAOM model Observation level."""
+        super().accumulate_blueprint(bp)
+        bp.configure_position_axes((2, 3))
+        for extension in range(0, len(self._headers)):
+            self._accumulate_chunk_position_axes_blueprint(bp, extension)
+        self._logger.debug(f'End accumulate_blueprint')
+
+
 class Michelle(GeminiMapping):
 
     def accumulate_blueprint(self, bp):
@@ -4757,6 +4933,20 @@ def mapping_factory(storage_name, clients, reporter, observation, config):
             )
         else:
             result = GracesSpatialSpectralTemporal(
+                storage_name, metadata_lookup, inst, clients, reporter, observation, config, provenance_finder
+            )
+    elif inst is Inst.MAROONX:
+        obs_type = get_obs_type(metadata_lookup, storage_name)
+        if obs_type == 'DARK':
+            result = MAROONXTemporal(
+                storage_name, metadata_lookup, inst, clients, reporter, observation, config, provenance_finder
+            )
+        elif obs_type in ['ARC', 'FLAT']:
+            result = MAROONXSpectralTemporal(
+                storage_name, metadata_lookup, inst, clients, reporter, observation, config, provenance_finder
+            )
+        else:
+            result = MAROONXSpatialSpectralTemporal(
                 storage_name, metadata_lookup, inst, clients, reporter, observation, config, provenance_finder
             )
     else:

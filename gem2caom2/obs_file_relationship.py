@@ -227,6 +227,7 @@ whereas the -G versions show up as distinct observations.
 import logging
 import re
 from caom2pipe.manage_composable import StorageName
+from gem2caom2.util import Inst
 
 
 __all__ = ['repair_data_label', 'remove_extensions']
@@ -320,7 +321,7 @@ def is_processed(file_name):
     return result
 
 
-def repair_data_label(file_name, data_label):
+def repair_data_label(file_name, data_label, instrument=None):
     """For processed files, try to provide a consistent naming pattern,
     because data labels aren't unique within Gemini, although the files
     they refer to are, and can be in different CAOM Observations.
@@ -393,6 +394,9 @@ def repair_data_label(file_name, data_label):
     GS-2020B-Q-315-23-0 for file SDCH_20201104_0023.fits, by grabbing the
     MMDD from the file name (1104 in this case) and replacing the trailing
     -0 with -MMDD.
+
+    08-01-25 use the same naming pattern for MAROON-X as for IGRINS. If the data_label exists, the metadata that
+    includes the instrument name is also available, from either the header or the JSON.
     """
     # if the data label is missing, the file name, including
     # extensions, is treated as the data label, so get rid of .fits
@@ -497,6 +501,11 @@ def repair_data_label(file_name, data_label):
         file_id_bits = file_id.split('_')
         data_label_good_bits = data_label.rsplit('-0', 1)
         repaired = f'{data_label_good_bits[0]}-{file_id_bits[1][4:]}'
+    elif instrument == Inst.MAROONX:
+        # MAROON-X - was going to use the IGRINS algorithm, but easily found a duplicate observation ID value
+        file_id_bits = file_id.split('M')
+        data_label_good_bits = data_label.rsplit('-0', 1)
+        repaired = f'{data_label_good_bits[0]}-{file_id_bits[1]}'
     else:
         repaired = file_id if repaired is None else repaired
     logging.debug(f'End repair_data_label with file {file_name} and data label ' f'{repaired}.')

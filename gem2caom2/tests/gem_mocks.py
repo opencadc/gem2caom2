@@ -445,6 +445,12 @@ LOOKUP = {
     'S20030730S0036': ['GS-CAL20030730-10-006', Inst.HRWFS, 'GS-CAL20030730'],
     'S20031218S0049': ['GS-CAL20031218-1-034', Inst.HRWFS, 'GS-CAL20031218'],
     '2001nov16_0164': ['GS-2001B-DD-4-1-0002', Inst.HRWFS, 'GS-2001B-DD-4'],
+    # MAROON-X
+    'N20241227M0103': ['GN-CAL20241227-0-0103', Inst.MAROONX, 'GN-CAL20241227',],
+    'N20250101M0656': ['GN-CAL20250101-0-0656', Inst.MAROONX, 'GN-CAL20250101',],
+    'N20250103M0079': ['GN-CAL20250103-0-0079', Inst.MAROONX, 'GN-CAL20250103',],
+    'N20250102M0564': ['GN-2024B-CAL-201-0-0564', Inst.MAROONX, 'GN-2024B-CAL-201',],
+    'N20250101M0624': ['GN-CAL20250101-0-0624', Inst.MAROONX, 'GN-CAL20250101',],
     # Michelle
     'N20060705S0054': ['GN-2006A-C-14-49-002', Inst.MICHELLE, 'GN-2006A-C-14'],
     'N20060418S0123': ['GN-2006A-Q-58-9-007', Inst.MICHELLE, 'GN-2006A-Q-58'],
@@ -897,8 +903,8 @@ def mock_repo_update(ignore1):
 def compare(expected_fqn, actual_fqn, observation):
     if observation:
         if os.path.exists(expected_fqn):
-            expected = mc.read_obs_from_file(expected_fqn)
             try:
+                expected = mc.read_obs_from_file(expected_fqn)
                 compare_result = get_differences(expected, observation)
             except Exception as e:
                 mc.write_obs_to_file(observation, actual_fqn)
