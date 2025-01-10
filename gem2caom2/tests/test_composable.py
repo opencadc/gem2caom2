@@ -635,11 +635,13 @@ def test_run_incremental_diskfiles_limit(
     query_mock.assert_has_calls(
         [
             call(
-                'https://archive.gemini.edu/diskfiles/entrytimedaterange=2024-08-28T17:05:00--2024-08-28T18:05:00',
+                'https://archive.gemini.edu/diskfiles/NotFail/notengineering/not_site_monitoring/'
+                'entrytimedaterange=2024-08-28T17:05:00--2024-08-28T18:05:00',
                 ANY,
             ),
             call(
-                'https://archive.gemini.edu/diskfiles/entrytimedaterange=2024-08-28T17:07:32--2024-08-28T18:05:00',
+                'https://archive.gemini.edu/diskfiles/NotFail/notengineering/not_site_monitoring/'
+                'entrytimedaterange=2024-08-28T17:07:32--2024-08-28T18:05:00',
                 ANY,
             ),
         ]

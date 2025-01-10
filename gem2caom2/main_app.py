@@ -609,7 +609,8 @@ class GeminiMapping(cc.TelescopeMapping2):
         # Add IMAGESWV for GRACES
         bp.add_attribute('Plane.provenance.producer', 'IMAGESWV')
         bp.set_default('Plane.provenance.producer', 'Gemini Observatory')
-        data_label = self._lookup.data_label(self._storage_name.file_uri)
+        # want the un-repaired data label value for resolving at archive.gemini.edu
+        data_label = self._storage_name.json_metadata.get(self._storage_name.file_uri).get('data_label')
         bp.set('Plane.provenance.reference', f'http://archive.gemini.edu/searchform/{data_label}')
 
         bp.set('Artifact.productType', 'get_art_product_type()')

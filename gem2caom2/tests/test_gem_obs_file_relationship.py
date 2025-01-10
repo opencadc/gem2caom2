@@ -70,7 +70,7 @@ import os
 
 from unittest.mock import Mock
 
-from gem2caom2 import obs_file_relationship, main_app
+from gem2caom2 import obs_file_relationship, main_app, util
 
 import gem_mocks
 
@@ -129,7 +129,7 @@ def test_is_processed():
 def test_repair_data_label(test_config):
     # test_config is present so that caom2pipe.StorageName.collection is set properly
     for ii in gem_mocks.LOOKUP.keys():
-        test_result = obs_file_relationship.repair_data_label(ii, gem_mocks.LOOKUP[ii][0])
+        test_result = obs_file_relationship.repair_data_label(ii, gem_mocks.LOOKUP[ii][0], gem_mocks.LOOKUP[ii][1])
         if ii == 'S20181230S0025':
             # what happens when an entry is not found
             assert test_result == 'S20181230S0025', (
@@ -181,7 +181,7 @@ def test_repair_data_label_247():
 
     for key, value in d.items():
         index = 0 if len(value) == 1 else 1
-        temp = obs_file_relationship.repair_data_label(key, value[0])
+        temp = obs_file_relationship.repair_data_label(key, value[0], util.Inst.UNKNOWN)
         assert temp == value[index], f'file id {key} expected {value[index]} actual {temp}'
 
 
@@ -568,5 +568,5 @@ def test_repair_data_label_2():
         ],
     }
     for f_name in repairs.keys():
-        result = obs_file_relationship.repair_data_label(f_name, repairs[f_name][0])
+        result = obs_file_relationship.repair_data_label(f_name, repairs[f_name][0], util.Inst.UNKNOWN)
         assert repairs[f_name][1] == result, f'{result} should have been {repairs[f_name][1]}'

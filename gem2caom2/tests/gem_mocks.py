@@ -818,10 +818,16 @@ def mock_query_endpoint_5(url, timeout=-1):
     result = Object()
     result.text = '<title>x</title>'
 
-    if url.startswith('https://archive.gemini.edu/diskfiles/entrytimedaterange=2024-08-28T17:05:00'):
+    if url.startswith(
+        'https://archive.gemini.edu/diskfiles/NotFail/notengineering/not_site_monitoring/'
+        'entrytimedaterange=2024-08-28T17:05:00'
+    ):
         with open(f'{TEST_DATA_DIR}/diskfiles_mock/query_limit.html') as f:
             result.text = f.read()
-    elif url.startswith('https://archive.gemini.edu/diskfiles/entrytimedaterange=2024-08-27T03:50:00'):
+    elif url.startswith(
+        'https://archive.gemini.edu/diskfiles/NotFail/notengineering/not_site_monitoring/'
+        'entrytimedaterange=2024-08-27T03:50:00'
+    ):
         with open(f'{TEST_DATA_DIR}/diskfiles_mock/md.html') as f:
             result.text = f.read()
     return result

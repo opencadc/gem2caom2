@@ -321,7 +321,7 @@ def is_processed(file_name):
     return result
 
 
-def repair_data_label(file_name, data_label, instrument=None):
+def repair_data_label(file_name, data_label, instrument):
     """For processed files, try to provide a consistent naming pattern,
     because data labels aren't unique within Gemini, although the files
     they refer to are, and can be in different CAOM Observations.
@@ -400,7 +400,9 @@ def repair_data_label(file_name, data_label, instrument=None):
     """
     # if the data label is missing, the file name, including
     # extensions, is treated as the data label, so get rid of .fits
-    logging.debug(f'Begin repair_data_label with file {file_name} and data label ' f'{data_label}.')
+    logging.debug(
+        f'Begin repair_data_label with file {file_name}, data label {data_label}, instrument {instrument}.'
+    )
     file_id = remove_extensions(file_name)
     if data_label is not None and data_label.endswith('BIAS/MBIAS/G-BIAS'):
         # from Oliver Oberdorf at Gemini, 26-05-21: "prefer lower case, as

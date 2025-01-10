@@ -213,7 +213,7 @@ class PublicIncremental(dsc.QueryTimeBoxDataSource):
         entries = deque()
         for row in result:
             gem_name = GemName(file_name=CaomName(row['uri']).file_name, filter_cache=self._filter_cache)
-            gem_name._obs_id = repair_data_label(CaomName(row['uri']).file_name, row['observationID'])
+            gem_name._obs_id = row['observationID']
             entries.append(dsc.RunnerMeta(gem_name, make_datetime(row['lastModified'])))
         self._reporter.capture_todo(len(entries), 0, 0)
         self._logger.debug('End get_time_box_work')
@@ -254,7 +254,7 @@ class IncrementalSourceDiskfiles(dsc.IncrementalDataSource):
         prev_exec_dt_iso = prev_exec_dt.replace(microsecond=0)
         exec_dt_iso = exec_dt.replace(microsecond=0)
         url = (
-            f'https://archive.gemini.edu/diskfiles/entrytimedaterange='
+            f'https://archive.gemini.edu/diskfiles/NotFail/notengineering/not_site_monitoring/entrytimedaterange='
             f'{prev_exec_dt_iso.isoformat()}--{exec_dt_iso.isoformat()}'
         )
 
@@ -285,7 +285,9 @@ class IncrementalSourceDiskfiles(dsc.IncrementalDataSource):
                                 md5sum=value.get('data_md5'),
                                 file_type=get_file_type(file_name),
                             )
-                            repaired_data_label = repair_data_label(file_name, value.get('datalabel'))
+                            repaired_data_label = repair_data_label(
+                                file_name, value.get('datalabel'), value.get('instrument')
+                            )
                             storage_name.obs_id = repaired_data_label
                             entries.append(dsc.RunnerMeta(storage_name, entry_dt))
         finally:
