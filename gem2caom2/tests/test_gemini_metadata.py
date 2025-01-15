@@ -74,7 +74,6 @@ from astropy.table import Table
 from mock import ANY, patch, Mock
 
 from cadcutils import exceptions
-from caom2utils.data_util import get_local_file_headers
 from caom2pipe import manage_composable as mc
 from gem2caom2 import gemini_metadata, gem_name
 
@@ -148,7 +147,7 @@ def test_header_not_at_cadc_no_reader(retrieve_gemini_mock, clients_mock, test_c
     clients_mock.data_client.get_head.side_effect = exceptions.UnexpectedException
     test_storage_name = gem_name.GemName(file_name=test_f_name)
     test_storage_name.obs_id = test_obs_id
-    test_result = gemini_metadata.retrieve_headers(test_f_name, Mock(), clients_mock, test_config)
+    test_result = gemini_metadata.retrieve_headers(test_storage_name, 0, Mock(), clients_mock, test_config)
     assert test_result is not None, 'expect a result'
     assert retrieve_gemini_mock.called, 'retrieve mock not called'
     retrieve_gemini_mock.assert_called_with(test_f_name, ANY, ANY), 'wrong mock args'
@@ -166,7 +165,7 @@ def test_header_not_at_cadc_no_reader_session_mock(clients_mock, test_data_dir, 
     clients_mock.gemini_session.get.return_value = session_return
     test_storage_name = gem_name.GemName(file_name=test_f_name)
     test_storage_name.obs_id = test_obs_id
-    test_result = gemini_metadata.retrieve_headers(test_f_name, Mock(), clients_mock, test_config)
+    test_result = gemini_metadata.retrieve_headers(test_storage_name, 0, Mock(), clients_mock, test_config)
     assert test_result is not None, 'expect a result'
     assert clients_mock.gemini_session.get.called, 'get mock not called'
     clients_mock.gemini_session.get.assert_called_with(

@@ -289,6 +289,7 @@ class IncrementalSourceDiskfiles(dsc.IncrementalDataSource):
                                 file_name, value.get('datalabel'), value.get('instrument')
                             )
                             storage_name.obs_id = repaired_data_label
+                            storage_name._fullheader = value.get('fullheader')
                             entries.append(dsc.RunnerMeta(storage_name, entry_dt))
         finally:
             if response is not None:
@@ -312,6 +313,7 @@ class IncrementalSourceDiskfiles(dsc.IncrementalDataSource):
             file_name = cells[0].text.strip()
             if file_name.endswith('-fits!-md!'):
                 continue
+            fullheader = cells[0].find_all('a')[0].get('href')
             value = {
                 'filename': file_name,
                 'datalabel': cells[1].text.strip().split('\n')[-1],
@@ -319,6 +321,7 @@ class IncrementalSourceDiskfiles(dsc.IncrementalDataSource):
                 'lastmod': make_datetime(cells[6].text.strip()),
                 'data_size': cells[10].text.strip(),
                 'data_md5': cells[11].text.strip(),
+                'fullheader': fullheader.split('/')[-1],
             }
             temp[entry_time].append(value)
         result = OrderedDict(sorted(temp.items()))

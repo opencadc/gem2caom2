@@ -985,8 +985,8 @@ def _mock_retrieve_headers(mock_name, ign1, ign2):
     return _mock_headers(mock_name, mock_name)
 
 
-def _mock_retrieve_headers_37(mock_name, ign1, ign2, ignore3):
-    return _mock_headers(mock_name, mock_name)
+def _mock_retrieve_headers_37(mock_name, index, ign2, ignore3, ignore5):
+    return _mock_headers(mock_name.source_names[index], mock_name.source_names[index])
 
 
 def read_mock_37(collection, obs_id):
@@ -1044,7 +1044,7 @@ def _run_test_common(
             clients_mock, test_config, [fits2caom2_augmentation], test_reporter
         )
 
-        def _read_header_mock(ignore1, ignore2, ignore3, ignore4):
+        def _read_header_mock(ignore1, ignore2, ignore3, ignore4, ignore5):
             if 'S20210518S0022' in test_f_name:
                 return []
             else:

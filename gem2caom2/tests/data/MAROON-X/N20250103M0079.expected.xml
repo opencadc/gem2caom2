@@ -97,7 +97,7 @@
                     <caom2:axis>
                       <caom2:axis>
                         <caom2:ctype>WAVE</caom2:ctype>
-                        <caom2:cunit>m</caom2:cunit>
+                        <caom2:cunit>nm</caom2:cunit>
                       </caom2:axis>
                       <caom2:range>
                         <caom2:start>

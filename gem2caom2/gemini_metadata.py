@@ -428,7 +428,7 @@ class GeminiMetaVisitRunnerMeta(MetaVisitRunnerMeta):
                 self._storage_name.metadata[uri] = []
                 if '.fits' in uri:
                     self._storage_name._metadata[uri] = retrieve_headers(
-                        source_name, self._logger, self._clients, self._config
+                        self._storage_name, index, self._logger, self._clients, self._config
                     )
             # TODO - is there a time when not needing archive.gemini.edu is possible?
             if uri not in self._storage_name.json_metadata:
@@ -546,24 +546,33 @@ def repair_instrument(in_name):
     return Inst(in_name)
 
 
-def retrieve_headers(source_name, logger, clients, config):
+def retrieve_headers(storage_name, index, logger, clients, config):
+    logger.debug(f'Begin retrieve_headers for {storage_name.source_names[index]}')
     result = None
     if config.use_local_files:
-        result = data_util.get_local_file_headers(source_name)
+        result = data_util.get_local_file_headers(storage_name.source_names[index])
     else:
         try:
-            result = clients.data_client.get_head(f'{config.scheme}:{config.collection}/{path.basename(source_name)}')
+            result = clients.data_client.get_head(
+                f'{config.scheme}:{config.collection}/{path.basename(storage_name.source_names[index])}'
+            )
         except exceptions.UnexpectedException as _:
             # the exceptions.NotFoundException is turned into exceptions.UnexpectedException in data_util
-            # the header is not at CADC, retrieve it from archive.gemini.edu
-            result = retrieve_gemini_headers(source_name, logger, clients.gemini_session)
+            try:
+                # the header is not at CADC, retrieve it from archive.gemini.edu
+                result = retrieve_gemini_headers(storage_name.source_names[index], logger, clients.gemini_session)
+            except exceptions.NotFoundException as _:
+                # MAROON-X uses a different key than file name for FITS header lookup
+                result = retrieve_gemini_headers(storage_name._fullheader, logger, clients.gemini_session)
+
+    logger.debug(f'End retrieve_headers')
     return result
 
 
 def retrieve_gemini_headers(source_name, logger, session):
     logger.debug(f'Begin retrieve_gemini_headers for {source_name}')
     header_url = f'{HEADER_URL}{source_name}'
-    # Open the URL and fetch the JSON document for the observation
+    # Open the URL and fetch the FITS header for the file
     response = None
     try:
         response = session.get(header_url, timeout=20)

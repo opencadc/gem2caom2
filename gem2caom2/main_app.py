@@ -3348,7 +3348,7 @@ class MAROONXTemporal(GeminiMapping):
         except Exception as e:
             self._logger.error(f'Error {e} for {self._observation.observation_id}')
             tb = traceback.format_exc()
-            self._logger.error(tb)
+            self._logger.debug(tb)
             raise mc.CadcException(e)
         self._logger.debug('Done update.')
         return self._observation

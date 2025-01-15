@@ -153,6 +153,9 @@ class GemName(mc.StorageName):
         self._source_names = [file_name]
         self._json_metadata = {}
         self._filter_cache = filter_cache
+        # the URL to retrieve the FITS header for the MAROON-X files is a number instead of the file name, so
+        # track that number here
+        self._fullheader = None
 
     @property
     def json_metadata(self):
