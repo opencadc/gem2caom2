@@ -357,7 +357,7 @@ class ProvenanceFinder:
                     if temp is not None:
                         result = headers[0].get('DATALAB')
                         instrument = headers[0].get('INSTRUME')
-                        self._logger.debug(f'Found observation ID {result} for {f_name} on ' f'disk.')
+                        self._logger.debug(f'Found observation ID {result} for {f_name} on disk.')
                         break
         self._logger.debug('End _check_local')
         return result, instrument
@@ -562,7 +562,7 @@ def retrieve_headers(storage_name, index, logger, clients, config):
                 # the header is not at CADC, retrieve it from archive.gemini.edu
                 result = retrieve_gemini_headers(storage_name.source_names[index], logger, clients.gemini_session)
             except exceptions.NotFoundException as _:
-                # MAROON-X uses a different key than file name for FITS header lookup
+                # MAROON-X uses a different key than file name for FITS header lookup (or maybe not always?)
                 result = retrieve_gemini_headers(storage_name._fullheader, logger, clients.gemini_session)
 
     logger.debug(f'End retrieve_headers')
@@ -600,6 +600,6 @@ def retrieve_json(source_name, logger, session):
         if response is not None:
             response.close()
     if len(metadata) == 0:
-        raise mc.CadcException(f'Could not find JSON record for {source_name} at ' f'{gemini_url}.')
+        raise mc.CadcException(f'Could not find JSON record for {source_name} at {gemini_url}.')
     logger.debug(f'End retrieve_json')
     return metadata

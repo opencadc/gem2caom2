@@ -90,7 +90,7 @@ def test_provenance_finder(caom2_mock, local_mock):
 
     def _caom2_mock(ignore1, ignore2):
         return Table.read(
-            f'observationID,instrument_name\n' f'{test_data_label},' f'GMOS\n'.split('\n'),
+            f'observationID,instrument_name\n{test_data_label},GMOS\n'.split('\n'),
             format='csv',
         )
 
@@ -122,11 +122,11 @@ def test_provenance_finder(caom2_mock, local_mock):
 
                 test_subject = gemini_metadata.ProvenanceFinder(Mock(), test_config)
                 assert test_subject is not None, (
-                    f'ctor does not work:: ' f'local {test_use_local}, ' f'connected {test_connected}'
+                    f'ctor does not work:: local {test_use_local}, connected {test_connected}'
                 )
                 test_result = test_subject.get(test_uri)
                 assert test_result is not None, (
-                    f'expect a result ' f'local {test_use_local}, ' f'connected {test_connected}'
+                    f'expect a result local {test_use_local}, connected {test_connected}'
                 )
                 assert test_result == repaired_data_label, (
                     f'data_label should be {repaired_data_label} '

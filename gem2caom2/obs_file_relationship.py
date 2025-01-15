@@ -2,7 +2,7 @@
 # ******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
 # *************  CENTRE CANADIEN DE DONNÉES ASTRONOMIQUES  **************
 #
-#  (c) 2019.                            (c) 2019.
+#  (c) 2025.                            (c) 2025.
 #  Government of Canada                 Gouvernement du Canada
 #  National Research Council            Conseil national de recherches
 #  Ottawa, Canada, K1A 0R6              Ottawa, Canada, K1A 0R6
@@ -408,7 +408,7 @@ def repair_data_label(file_name, data_label, instrument):
         # from Oliver Oberdorf at Gemini, 26-05-21: "prefer lower case, as
         # that's what we use today"
         data_label = data_label.replace('BIAS/MBIAS/G-BIAS', 'g-bias')
-        logging.debug(f'End repair_data_label with file {file_name} and data label ' f'{data_label}.')
+        logging.debug(f'End repair_data_label with file {file_name} and data label {data_label}.')
         return data_label
     repaired = data_label if data_label else ''
     if is_processed(file_id) or file_id.startswith('TX2'):
@@ -504,13 +504,14 @@ def repair_data_label(file_name, data_label, instrument):
         data_label_good_bits = data_label.rsplit('-0', 1)
         repaired = f'{data_label_good_bits[0]}-{file_id_bits[1][4:]}'
     elif instrument == Inst.MAROONX:
-        # MAROON-X - was going to use the IGRINS algorithm, but easily found a duplicate observation ID value
+        # MAROON-X - was going to use the IGRINS algorithm, but easily found a duplicate observation ID value, so
+        # use the digits after the 'M' to differentiate data label values.
         file_id_bits = file_id.split('M')
         data_label_good_bits = data_label.rsplit('-0', 1)
         repaired = f'{data_label_good_bits[0]}-{file_id_bits[1]}'
     else:
         repaired = file_id if repaired is None else repaired
-    logging.debug(f'End repair_data_label with file {file_name} and data label ' f'{repaired}.')
+    logging.debug(f'End repair_data_label with file {file_name} and data label {repaired}.')
     return repaired
 
 

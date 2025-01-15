@@ -147,7 +147,7 @@ def test_visitor(
     tmp_path,
     change_test_dir,
 ):
-    expected_fqn = f'{gem_mocks.TEST_DATA_DIR}/multi_plane/' f'{test_name}.expected.xml'
+    expected_fqn = f'{gem_mocks.TEST_DATA_DIR}/multi_plane/{test_name}.expected.xml'
     test_set = []
     for f_name in LOOKUP[test_name]:
         test_set.append(f'{gem_mocks.TEST_DATA_DIR}/multi_plane/{f_name}.fits.header')

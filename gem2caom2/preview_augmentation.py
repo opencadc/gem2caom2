@@ -113,7 +113,7 @@ def visit(observation, **kwargs):
             # data_release is timezone naive
             or plane.data_release > datetime.now(tz=timezone.utc).replace(tzinfo=None)
         ):
-            logging.info(f'Plane {plane.product_id} is proprietary. No ' f'preview access or thumbnail creation.')
+            logging.info(f'Plane {plane.product_id} is proprietary. No preview access or thumbnail creation.')
             continue
         if plane.product_id != storage_name.product_id:
             continue
@@ -126,7 +126,7 @@ def visit(observation, **kwargs):
             storage_name,
         )
     result = {'artifacts': count}
-    logging.info(f'Completed preview augmentation for {observation.observation_id}.' f'{count} artifacts modified.')
+    logging.info(f'Completed preview augmentation for {observation.observation_id}.{count} artifacts modified.')
     return observation
 
 
@@ -138,7 +138,7 @@ def _do_prev(obs_id, working_dir, plane, clients, observable, gem_name):
     count = 0
 
     if observable.rejected.is_no_preview(gem_name.prev):
-        logging.info(f'Stopping visit because no preview exists for {gem_name.prev} ' f'in observation {obs_id}.')
+        logging.info(f'Stopping visit because no preview exists for {gem_name.prev} in observation {obs_id}.')
         observable.rejected.record(mc.Rejected.NO_PREVIEW, gem_name.prev)
         count += _check_for_delete(gem_name.prev, gem_name.prev_uri, observable, plane)
     else:
@@ -168,7 +168,7 @@ def _do_prev(obs_id, working_dir, plane, clients, observable, gem_name):
                 fp = open(preview_fqn, 'r')
             except PermissionError as e:
                 raise mc.CadcException(
-                    f'Should not have reached this point in thumbnail ' f'generation for {plane.product_id}'
+                    f'Should not have reached this point in thumbnail generation for {plane.product_id}'
                 )
 
             logging.debug(f'Generate thumbnail for file id {plane.product_id}')
@@ -189,7 +189,7 @@ def _do_prev(obs_id, working_dir, plane, clients, observable, gem_name):
                 # that might otherwise fix the value
                 logging.debug(traceback.format_exc())
                 logging.warning(
-                    f'matplotlib error handling {gem_name.prev}.Try to ' f'retrieve from {PREVIEW_URL} one more time.'
+                    f'matplotlib error handling {gem_name.prev}.Try to retrieve from {PREVIEW_URL} one more time.'
                 )
                 _retrieve_from_gemini(
                     gem_name,

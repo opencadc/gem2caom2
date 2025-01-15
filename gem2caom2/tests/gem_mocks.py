@@ -940,7 +940,7 @@ def mock_query_tap(query_string, mock_tap_client):
         file_id = query_string.split('gemini:GEMINI/')[1].split('\'')[0].replace('.fits', '').strip()
         result = TAP_QUERY_LOOKUP.get(file_id, 'test_data_label')
         return Table.read(
-            f'observationID,instrument_name\n' f'{result},hrwfs\n'.split('\n'),
+            f'observationID,instrument_name\n{result},hrwfs\n'.split('\n'),
             format='csv',
         )
 
