@@ -115,6 +115,7 @@ def pytest_generate_tests(metafunc):
             Inst.ZORRO,
             Inst.IGRINS,
             Inst.GHOST,
+            Inst.MAROONX,
         ]:
             walk_dir = _get_inst_name(ii)
             for root, dirs, files in os.walk(f'{gem_mocks.TEST_DATA_DIR}/{walk_dir}'):
@@ -178,7 +179,7 @@ def test_visitor(
 
     clients_mock.metadata_client.read.side_effect = _mock_repo_read
 
-    def _read_header_mock(ignore1, ignore2, ignore3, ignore4):
+    def _read_header_mock(ignore1, ignore2, ignore3, ignore4, ignore5):
         return data_util.get_local_file_headers(test_name)
 
     header_mock.side_effect = _read_header_mock

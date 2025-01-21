@@ -154,9 +154,11 @@ def test_diskfiles_incremental_source(query_mock, test_config):
     assert len(test_result) == 16, 'wrong number of results'
     test_first_entry = test_result.popleft()
     assert test_first_entry.storage_entry.file_name == 'S20241030S0188.fits', 'wrong first file'
+    assert test_first_entry.storage_entry._fullheader == '5745302', 'fullheader'
     assert test_first_entry.entry_dt == datetime(2024, 10, 30, 10, 51, 37, 360130), 'wrong fits datetime'
     test_last_entry = test_result.pop()
     assert test_last_entry.storage_entry.file_name == 'S20241030S0203.fits', 'wrong 2nd file'
+    assert test_last_entry.storage_entry._fullheader == '5745317', 'fullheader'
     assert test_last_entry.entry_dt == datetime(2024, 10, 30, 10, 54, 45, 941860), 'wrong last datetime'
     assert test_reporter.capture_todo.called, 'capture_todo'
     assert test_reporter.capture_todo.call_count == 1, 'wrong number of capture_todo calls'

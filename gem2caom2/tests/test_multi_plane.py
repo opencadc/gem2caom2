@@ -147,7 +147,7 @@ def test_visitor(
     tmp_path,
     change_test_dir,
 ):
-    expected_fqn = f'{gem_mocks.TEST_DATA_DIR}/multi_plane/' f'{test_name}.expected.xml'
+    expected_fqn = f'{gem_mocks.TEST_DATA_DIR}/multi_plane/{test_name}.expected.xml'
     test_set = []
     for f_name in LOOKUP[test_name]:
         test_set.append(f'{gem_mocks.TEST_DATA_DIR}/multi_plane/{f_name}.fits.header')
@@ -196,7 +196,7 @@ def test_visitor(
 
         clients_mock.metadata_client.read.side_effect = _mock_repo_read
 
-        def _read_header_mock(ignore1, ignore2, ignore3, ignore4):
+        def _read_header_mock(ignore1, ignore2, ignore3, ignore4, ignore5):
             return data_util.get_local_file_headers(entry)
 
         header_mock.side_effect = _read_header_mock

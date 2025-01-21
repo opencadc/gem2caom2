@@ -287,7 +287,7 @@ def test_preview_augment(http_mock, test_data_dir, test_config, tmp_path):
         cadc_client_mock.get.side_effect = exceptions.UnexpectedException('test')
         http_mock.side_effect = _get_mock
         obs = preview_augmentation.visit(obs, **kwargs)
-        test_url = f'{preview_augmentation.PREVIEW_URL}' f'{TEST_PRODUCT_ID}.fits'
+        test_url = f'{preview_augmentation.PREVIEW_URL}{TEST_PRODUCT_ID}.fits'
         assert http_mock.called, 'http mock should be called'
         http_mock.assert_called_with(test_url, test_prev), 'mock not called'
         assert cadc_client_mock.put.called, 'put mock not called'
@@ -347,7 +347,7 @@ def test_preview_augment_failure(http_mock, test_data_dir, test_config, tmp_path
         cadc_client_mock.get.side_effect = exceptions.UnexpectedException('test')
         http_mock.side_effect = _failure_mock
         obs = preview_augmentation.visit(obs, **kwargs)
-        test_url = f'{preview_augmentation.PREVIEW_URL}' f'{TEST_PRODUCT_ID}.fits'
+        test_url = f'{preview_augmentation.PREVIEW_URL}{TEST_PRODUCT_ID}.fits'
         assert http_mock.called, 'http mock should be called'
         http_mock.assert_called_with(test_url, test_prev), 'mock not called'
         assert not cadc_client_mock.put.called, 'put mock should not be called'

@@ -94,8 +94,9 @@ PROGRESS_FILE = f'{gem_mocks.TEST_DATA_DIR}/logs/progress.txt'
 PUBLIC_TEST_JSON = f'{gem_mocks.TEST_DATA_DIR}/json/GN-2019B-ENG-1-160-008.json'
 
 
+@patch('gem2caom2.composable.GemClientCollection')
 @patch('caom2pipe.execute_composable.OrganizeExecutesRunnerMeta.do_one')
-def test_run(run_mock, test_config, tmp_path, change_test_dir):
+def test_run(run_mock, clients_mock, test_config, tmp_path, change_test_dir):
     # use a todo.txt file to drive work
     test_f_id = 'S20070130S0048'
     test_f_name = f'{test_f_id}.fits'
@@ -120,6 +121,7 @@ def test_run(run_mock, test_config, tmp_path, change_test_dir):
     assert isinstance(test_storage, gem_name.GemName), type(test_storage)
     # don't check obs_id, because it will be set by the do_one call in this scenario
     assert test_storage.file_name == test_f_name, 'wrong file name'
+    clients_mock.return_value.metadata_client.read.assert_not_called(), 'meta read'
 
 
 @patch('gem2caom2.composable.GemClientCollection')
@@ -635,11 +637,13 @@ def test_run_incremental_diskfiles_limit(
     query_mock.assert_has_calls(
         [
             call(
-                'https://archive.gemini.edu/diskfiles/entrytimedaterange=2024-08-28T17:05:00--2024-08-28T18:05:00',
+                'https://archive.gemini.edu/diskfiles/NotFail/notengineering/not_site_monitoring/'
+                'entrytimedaterange=2024-08-28T17:05:00--2024-08-28T18:05:00',
                 ANY,
             ),
             call(
-                'https://archive.gemini.edu/diskfiles/entrytimedaterange=2024-08-28T17:07:32--2024-08-28T18:05:00',
+                'https://archive.gemini.edu/diskfiles/NotFail/notengineering/not_site_monitoring/'
+                'entrytimedaterange=2024-08-28T17:07:32--2024-08-28T18:05:00',
                 ANY,
             ),
         ]

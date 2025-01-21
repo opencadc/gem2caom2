@@ -2,7 +2,7 @@
 # ******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
 # *************  CENTRE CANADIEN DE DONNÉES ASTRONOMIQUES  **************
 #
-#  (c) 2020.                            (c) 2020.
+#  (c) 2025.                            (c) 2025.
 #  Government of Canada                 Gouvernement du Canada
 #  National Research Council            Conseil national de recherches
 #  Ottawa, Canada, K1A 0R6              Ottawa, Canada, K1A 0R6
@@ -98,11 +98,11 @@ def visit(observation, **kwargs):
 
     count = 0
     if observable.rejected.is_bad_metadata(observation.observation_id):
-        logging.info(f'Stopping visit for {observation.observation_id} ' f'because of bad metadata.')
+        logging.info(f'Stopping visit for {observation.observation_id} because of bad metadata.')
     else:
         for plane in observation.planes.values():
             if plane.data_release is None or plane.data_release > datetime.now(tz=timezone.utc).replace(tzinfo=None):
-                logging.info(f'Plane {plane.product_id} is proprietary. No file ' f'access.')
+                logging.info(f'Plane {plane.product_id} is proprietary. No file access.')
                 continue
 
             for artifact in plane.artifacts.values():
@@ -125,7 +125,7 @@ def visit(observation, **kwargs):
                         json_md5sum = storage_name.file_info.get(artifact.uri).md5sum
                         look_pull_and_put(artifact.uri, fqn, file_url, clients, json_md5sum)
                         if os.path.exists(fqn):
-                            logging.info(f'Removing local copy of {f_name} after ' f'successful storage call.')
+                            logging.info(f'Removing local copy of {f_name} after successful storage call.')
                             os.unlink(fqn)
                 except Exception as e:
                     if not (observable.rejected.check_and_record(str(e), observation.observation_id)):
@@ -155,6 +155,6 @@ def look_pull_and_put(storage_name, fqn, url, clients, checksum):
         logging.debug(f'Different checksums: Source {checksum}, CADC {cadc_meta}')
         mc.http_get(url, fqn)
         clients.data_client.put(os.path.dirname(fqn), storage_name)
-        logging.info(f'Retrieved {os.path.basename(fqn)} for storage as ' f'{storage_name}')
+        logging.info(f'Retrieved {os.path.basename(fqn)} for storage as {storage_name}')
     else:
         logging.info(f'{os.path.basename(fqn)} already exists at CADC.')

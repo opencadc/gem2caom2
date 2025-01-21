@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
 # ***********************************************************************
 # ******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
 # *************  CENTRE CANADIEN DE DONNÉES ASTRONOMIQUES  **************
 #
-#  (c) 2018.                            (c) 2018.
+#  (c) 2025.                            (c) 2025.
 #  Government of Canada                 Gouvernement du Canada
 #  National Research Council            Conseil national de recherches
 #  Ottawa, Canada, K1A 0R6              Ottawa, Canada, K1A 0R6
@@ -241,7 +240,7 @@ class FilterMetadataCache:
                         url = f"{ac.SVO_URL}Gemini/{filter_id}w&VERB=0"
                     votable, error_message = ac.get_vo_table_session(url, self._svo_session)
                 if not votable:
-                    logging.error(f'Unable to download SVO filter data from {url} because ' f'{error_message}')
+                    logging.error(f'Unable to download SVO filter data from {url} because {error_message}')
                     continue
 
                 # DB - 14-04-19 After discussion with a few others use the
@@ -269,7 +268,7 @@ class FilterMetadataCache:
                 # microns
                 local_fm.central_wl = wl_eff / 1.0e4
                 local_fm.bandpass = wl_width / 1.0e4
-                logging.info(f'Filter(s): {filter_names}  MD: {local_fm.central_wl}, ' f'{local_fm.bandpass}')
+                logging.info(f'Filter(s): {filter_names}  MD: {local_fm.central_wl}, {local_fm.bandpass}')
                 return local_fm
             else:
                 return None
@@ -288,7 +287,7 @@ class FilterMetadataCache:
         )
         repaired_inst = FilterMetadataCache._repair_instrument_name_for_svo(instrument, telescope)
         repaired_filters = FilterMetadataCache._repair_filter_name_for_svo(instrument, filter_name)
-        self._logger.debug(f'Find information for filter {repaired_filters} on instrument ' f'{repaired_inst}')
+        self._logger.debug(f'Find information for filter {repaired_filters} on instrument {repaired_inst}')
         if repaired_filters is None:
             # nothing to look up, try something else
             return None
