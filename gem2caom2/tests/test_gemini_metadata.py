@@ -121,13 +121,11 @@ def test_provenance_finder(caom2_mock, local_mock):
                     test_config.task_types = [mc.TaskType.SCRAPE]
 
                 test_subject = gemini_metadata.ProvenanceFinder(Mock(), test_config)
-                assert test_subject is not None, (
-                    f'ctor does not work:: local {test_use_local}, connected {test_connected}'
-                )
+                assert (
+                    test_subject is not None
+                ), f'ctor does not work:: local {test_use_local}, connected {test_connected}'
                 test_result = test_subject.get(test_uri)
-                assert test_result is not None, (
-                    f'expect a result local {test_use_local}, connected {test_connected}'
-                )
+                assert test_result is not None, f'expect a result local {test_use_local}, connected {test_connected}'
                 assert test_result == repaired_data_label, (
                     f'data_label should be {repaired_data_label} '
                     f'local {test_use_local}, '
@@ -160,7 +158,7 @@ def test_header_not_at_cadc_no_reader_session_mock(clients_mock, test_data_dir, 
     test_obs_id = 'GN-CAL20220314-18-083'
     clients_mock.data_client.get_head.side_effect = exceptions.UnexpectedException
     session_return = gem_mocks.Object()
-    with open (f'{test_data_dir}/N20220314S0229.fits') as f_in:
+    with open(f'{test_data_dir}/N20220314S0229.fits') as f_in:
         session_return.text = f_in.read()
     clients_mock.gemini_session.get.return_value = session_return
     test_storage_name = gem_name.GemName(file_name=test_f_name)

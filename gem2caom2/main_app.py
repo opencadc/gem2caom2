@@ -1513,9 +1513,7 @@ class F2(GeminiMapping):
                 self.fm.central_wl = filter_md.central_wl
                 self.fm.bandpass = filter_md.bandpass
                 grism_name = self._headers[0].get('GRISM')
-                self._logger.debug(
-                    f'grism name is {grism_name} fp_mask is {fp_mask} for {self._storage_name.obs_id}'
-                )
+                self._logger.debug(f'grism name is {grism_name} fp_mask is {fp_mask} for {self._storage_name.obs_id}')
                 # lookup values from
                 # https://www.gemini.edu/sciops/instruments/flamingos2/spectroscopy/longslit-spectroscopy
                 lookup = {

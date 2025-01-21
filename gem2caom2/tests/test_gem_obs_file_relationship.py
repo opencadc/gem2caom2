@@ -125,6 +125,7 @@ def test_is_processed():
     for ii in tests:
         assert obs_file_relationship.is_processed(ii) == tests[ii], f'failed {ii}'
 
+
 ORIGINAL_DATA_LABELS = {
     '01DEC05_004': 'GS-2001B-Q-31-9-9004',
     '01MAY08_023': 'GN-2001A-C-4-11-9023',
@@ -427,24 +428,25 @@ ORIGINAL_DATA_LABELS = {
     'rgS20161227S0051_fringe': 'GS-CAL20161227-5-001',
 }
 
+
 def test_repair_data_label(test_config):
     # test_config is present so that caom2pipe.StorageName.collection is set properly
     for file_id, original in ORIGINAL_DATA_LABELS.items():
         test_result = obs_file_relationship.repair_data_label(file_id, original, gem_mocks.LOOKUP[file_id][1])
         if file_id == 'S20181230S0025':
             # what happens when an entry is not found
-            assert test_result == 'S20181230S0025', (
-                f'repair failed for {file_id} actual {test_result} expected {gem_mocks.LOOKUP[file_id][0]}'
-            )
+            assert (
+                test_result == 'S20181230S0025'
+            ), f'repair failed for {file_id} actual {test_result} expected {gem_mocks.LOOKUP[file_id][0]}'
         elif file_id == 'S20201023Z0001b':
             # Alopeke/Zorro have different observationID rules
-            assert test_result == 'S20201023Z0001', (
-                f'repair failed for {file_id} actual {test_result} expected {gem_mocks.LOOKUP[file_id][0]}'
-            )
+            assert (
+                test_result == 'S20201023Z0001'
+            ), f'repair failed for {file_id} actual {test_result} expected {gem_mocks.LOOKUP[file_id][0]}'
         else:
-            assert test_result == gem_mocks.LOOKUP[file_id][0], (
-                f'repair failed for {file_id} actual {test_result} expected {gem_mocks.LOOKUP[file_id][0]}'
-            )
+            assert (
+                test_result == gem_mocks.LOOKUP[file_id][0]
+            ), f'repair failed for {file_id} actual {test_result} expected {gem_mocks.LOOKUP[file_id][0]}'
 
 
 def test_repair_data_label_247():

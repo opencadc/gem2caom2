@@ -400,9 +400,7 @@ def repair_data_label(file_name, data_label, instrument: Inst):
     """
     # if the data label is missing, the file name, including
     # extensions, is treated as the data label, so get rid of .fits
-    logging.debug(
-        f'Begin repair_data_label with file {file_name}, data label {data_label}, instrument {instrument}.'
-    )
+    logging.debug(f'Begin repair_data_label with file {file_name}, data label {data_label}, instrument {instrument}.')
     file_id = remove_extensions(file_name)
     if data_label is not None and data_label.endswith('BIAS/MBIAS/G-BIAS'):
         # from Oliver Oberdorf at Gemini, 26-05-21: "prefer lower case, as
