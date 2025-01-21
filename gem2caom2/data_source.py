@@ -286,7 +286,6 @@ class IncrementalSourceDiskfiles(dsc.IncrementalDataSource):
                                 md5sum=value.get('data_md5'),
                                 file_type=get_file_type(file_name),
                             )
-                            self._logger.error(value)
                             repaired_data_label = repair_data_label(
                                 file_name, value.get('datalabel'), set_instrument_case(value.get('instrument'))
                             )

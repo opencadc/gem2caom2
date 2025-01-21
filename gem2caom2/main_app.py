@@ -773,7 +773,7 @@ class GeminiMapping(cc.TelescopeMapping2):
         except Exception as e:
             self._logger.error(f'Error {e} for {self._observation.observation_id}')
             tb = traceback.format_exc()
-            self._logger.error(tb)
+            self._logger.debug(tb)
             raise mc.CadcException(e)
         self._logger.debug('Done update.')
         return self._observation
@@ -904,7 +904,6 @@ class GeminiMapping(cc.TelescopeMapping2):
             # file metadata, it would be _most_ efficient to do this from CADC
             # so need to re-use this code somehow :(
             prov_obs_id = self._provenance_finder.get(uri)
-            self._logger.error(f'{prov_obs_id} uri {uri} {self._provenance_finder.get}')
         except mc.CadcException as e:
             # the file id probably does not exist at on disk, at CADC, or at
             # Gemini, ignore, because it's provenance
