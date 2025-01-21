@@ -3385,13 +3385,10 @@ class MAROONXTemporal(GeminiMapping):
         self._logger.debug(f'Begin _update_artifact for {artifact.uri}')
         for part in artifact.parts.values():
             for chunk in part.chunks:
-                if chunk.time and chunk.time_axis:
+                # JJK 20-01-25 - no cutouts
+                chunk.naxis = None
+                if chunk.time:
                     chunk.time_axis = None
-                if chunk.energy:
-                    chunk.energy_axis = 1
-                    chunk.naxis = 1
-                else:
-                    chunk.naxis = None
                 if chunk.position:
                     chunk.position_axis_1 = None
                     chunk.position_axis_2 = None

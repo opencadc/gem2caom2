@@ -54,8 +54,6 @@
               <caom2:name>1</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="eaea81d4-eab9-4064-a407-932a17806b8f" caom2:metaProducer="GEMINI2caom2/0.0.0">
-                  <caom2:naxis>1</caom2:naxis>
-                  <caom2:energyAxis>1</caom2:energyAxis>
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>
@@ -106,8 +104,6 @@
               <caom2:name>2</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="8182a86c-c827-4545-9514-64cb7929feeb" caom2:metaProducer="GEMINI2caom2/0.0.0">
-                  <caom2:naxis>1</caom2:naxis>
-                  <caom2:energyAxis>1</caom2:energyAxis>
                   <caom2:energy>
                     <caom2:axis>
                       <caom2:axis>

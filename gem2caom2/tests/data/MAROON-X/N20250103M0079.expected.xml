@@ -54,8 +54,6 @@
               <caom2:name>1</caom2:name>
               <caom2:chunks>
                 <caom2:chunk caom2:id="b5c27a68-b430-4619-8bc7-65da1d93a6ad" caom2:metaProducer="GEMINI2caom2/0.0.0">
-                  <caom2:naxis>1</caom2:naxis>
-                  <caom2:energyAxis>1</caom2:energyAxis>
                   <caom2:position>
                     <caom2:axis>
                       <caom2:axis1>
