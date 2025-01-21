@@ -99,8 +99,6 @@ class IncrementalSource(dsc.IncrementalDataSource):
     def __init__(self, config, session, filter_cache):
         super().__init__(config, start_key=GEM_BOOKMARK)
         self._max_records_encountered = False
-        self._encounter_start = None
-        self._encounter_end = None
         self._session = session
         self._filter_cache = filter_cache
 
@@ -156,8 +154,6 @@ class IncrementalSource(dsc.IncrementalDataSource):
                 response.close()
         if len(entries) == MAX_ENTRIES:
             self._max_records_encountered = True
-            self._encounter_start = prev_exec_dt
-            self._encounter_end = exec_dt
         self._reporter.capture_todo(len(entries), 0, 0)
         self._logger.debug('End get_time_box_work.')
         return entries
@@ -232,8 +228,6 @@ class IncrementalSourceDiskfiles(dsc.IncrementalDataSource):
     def __init__(self, config, gemini_session, storage_name_ctor, filter_cache):
         super().__init__(config, start_key=GEM_BOOKMARK)
         self._max_records_encountered = False
-        self._encounter_start = None
-        self._encounter_end = None
         self._session = gemini_session
         self._storage_name_ctor = storage_name_ctor
         self._filter_cache = filter_cache
@@ -296,10 +290,7 @@ class IncrementalSourceDiskfiles(dsc.IncrementalDataSource):
             if response is not None:
                 response.close()
         if len(entries) == MAX_ENTRIES:
-            self._logger.warning(f'Max records window {self._encounter_start} to {self._encounter_end}.')
             self._max_records_encountered = True
-            self._encounter_start = prev_exec_dt
-            self._encounter_end = exec_dt
         self._reporter.capture_todo(len(entries), 0, 0)
         self._logger.debug('End get_time_box_work.')
         return entries
