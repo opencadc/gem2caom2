@@ -88,7 +88,7 @@ from caom2pipe.astro_composable import get_datetime_mjd
 from caom2pipe import client_composable as clc
 from caom2pipe.execute_composable import MetaVisitRunnerMeta, OrganizeExecutesRunnerMeta
 from caom2pipe import manage_composable as mc
-from gem2caom2.util import Inst
+from gem2caom2.util import set_instrument_case
 from gem2caom2 import obs_file_relationship
 
 
@@ -118,7 +118,7 @@ class GeminiMetadataLookup:
         return self._search_json(uri, 'central_wavelength')
 
     def data_label(self, uri):
-        instrument = self.instrument(uri)
+        instrument = set_instrument_case(self.instrument(uri))
         temp = self._search_json(uri, 'data_label')
         if temp is None:
             temp = self._search_fits(uri, 'DATALAB')
@@ -380,7 +380,7 @@ class ProvenanceFinder:
         """
         :param uri: Artifact URI at CADC
         """
-        ignore_scheme, collection, f_name = mc.decompose_uri(uri)
+        _, collection, f_name = mc.decompose_uri(uri)
         if self._connected:
             result = None
             instrument = None
@@ -394,7 +394,9 @@ class ProvenanceFinder:
             result, instrument = self._check_local(f_name)
         repaired_data_label = None
         if result is not None:
-            repaired_data_label = obs_file_relationship.repair_data_label(f_name, result, instrument)
+            repaired_data_label = obs_file_relationship.repair_data_label(
+                f_name, result, set_instrument_case(instrument)
+            )
         return repaired_data_label
 
 
@@ -464,7 +466,9 @@ class GeminiMetaVisitRunnerMeta(MetaVisitRunnerMeta):
             self._storage_name.obs_id = obs_file_relationship.repair_data_label(
                 self._storage_name.file_name,
                 self._storage_name._json_metadata.get(self._storage_name.file_uri).get('data_label'),
-                self._storage_name._json_metadata.get(self._storage_name.file_uri).get('instrument'),
+                set_instrument_case(
+                    self._storage_name._json_metadata.get(self._storage_name.file_uri).get('instrument')
+                ),
             )
 
         self._logger.debug('End _set_preconditions')
@@ -543,7 +547,7 @@ def repair_instrument(in_name):
         # GN-2001A-C-2-8-009
         # GN-2001A-C-2-9-010
         in_name = 'OSCIR'
-    return Inst(in_name)
+    return set_instrument_case(in_name)
 
 
 def retrieve_headers(storage_name, index, logger, clients, config):

@@ -98,3 +98,16 @@ class Inst(Enum):
     TRECS = 'TReCS'
     ZORRO = 'Zorro'
     UNKNOWN = None
+
+
+def set_instrument_case(value: str):
+    if isinstance(value, Inst):
+        return value
+
+    for v in [value, value.capitalize(), value.upper(), value.lower]:
+        try:
+            result = Inst(v)
+            return result
+        except ValueError as _:
+            pass
+    raise ValueError(value)

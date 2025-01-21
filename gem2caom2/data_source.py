@@ -78,6 +78,7 @@ from caom2pipe import data_source_composable as dsc
 from caom2pipe.manage_composable import CaomName, ISO_8601_FORMAT, make_datetime, query_endpoint_session
 from gem2caom2.gem_name import GemName
 from gem2caom2.obs_file_relationship import repair_data_label
+from gem2caom2.util import set_instrument_case
 
 
 __all__ = ['GEM_BOOKMARK', 'IncrementalSource', 'PublicIncremental']
@@ -285,8 +286,9 @@ class IncrementalSourceDiskfiles(dsc.IncrementalDataSource):
                                 md5sum=value.get('data_md5'),
                                 file_type=get_file_type(file_name),
                             )
+                            self._logger.error(value)
                             repaired_data_label = repair_data_label(
-                                file_name, value.get('datalabel'), value.get('instrument')
+                                file_name, value.get('datalabel'), set_instrument_case(value.get('instrument'))
                             )
                             storage_name.obs_id = repaired_data_label
                             storage_name._fullheader = value.get('fullheader')
@@ -314,10 +316,11 @@ class IncrementalSourceDiskfiles(dsc.IncrementalDataSource):
             if file_name.endswith('-fits!-md!'):
                 continue
             fullheader = cells[0].find_all('a')[0].get('href')
+            instrument = cells[3].find_all('a')[0].get('href')
             value = {
                 'filename': file_name,
                 'datalabel': cells[1].text.strip().split('\n')[-1],
-                'instrument': cells[2].text.strip(),
+                'instrument': instrument.split('/')[-1],
                 'lastmod': make_datetime(cells[6].text.strip()),
                 'data_size': cells[10].text.strip(),
                 'data_md5': cells[11].text.strip(),

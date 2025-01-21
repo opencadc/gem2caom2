@@ -321,7 +321,7 @@ def is_processed(file_name):
     return result
 
 
-def repair_data_label(file_name, data_label, instrument):
+def repair_data_label(file_name, data_label, instrument: Inst):
     """For processed files, try to provide a consistent naming pattern,
     because data labels aren't unique within Gemini, although the files
     they refer to are, and can be in different CAOM Observations.
