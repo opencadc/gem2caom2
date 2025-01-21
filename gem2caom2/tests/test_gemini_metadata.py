@@ -74,6 +74,7 @@ from astropy.table import Table
 from mock import ANY, patch, Mock
 
 from cadcutils import exceptions
+from caom2utils.data_util import get_local_file_headers
 from caom2pipe import manage_composable as mc
 from gem2caom2 import gemini_metadata, gem_name
 
