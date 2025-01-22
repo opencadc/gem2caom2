@@ -555,9 +555,7 @@ class GeminiMapping(cc.TelescopeMapping2):
         bp.set('Chunk.position.axis.function.refCoord.coord1.val', 'get_ra()', extension)
         bp.set('Chunk.position.axis.function.refCoord.coord2.pix', 'get_crpix2()', extension)
         bp.set('Chunk.position.axis.function.refCoord.coord2.val', 'get_dec()', extension)
-        bp.add_attribute('Chunk.position.coordsys', '', extension)
         bp.add_attribute('Chunk.position.equinox', 'EQUINOX', extension)
-        bp.add_attribute('Chunk.position.resolution', '', extension)
 
     def _accumulate_chunk_time_axis_blueprint(self, bp, axis):
         bp.configure_time_axis(axis)
@@ -3275,6 +3273,91 @@ class Igrins(GeminiMapping):
         self._logger.debug('End _update_position')
 
 
+class Igrins2(GeminiMapping):
+
+    def accumulate_blueprint(self, bp):
+        """Configure the telescope-specific ObsBlueprint at the CAOM model Observation level."""
+        super().accumulate_blueprint(bp)
+        telescope = self._lookup.telescope(self._storage_name.file_uri)
+        if telescope is not None and 'North' in telescope:
+            x, y, z = ac.get_location(19.823806, -155.46906, 4213.0)
+        else:
+            x, y, z = ac.get_location(-30.240750, -70.736693, 2722.0)
+        bp.set('Observation.telescope.geoLocationX', x)
+        bp.set('Observation.telescope.geoLocationY', y)
+        bp.set('Observation.telescope.geoLocationZ', z)
+        # avoid the self._lookup.data_label, because that data label is
+        # repaired with DDMM to be more unique
+        data_label = self._headers[0].get('DATALAB')
+        bp.set('Plane.provenance.reference', f'http://archive.gemini.edu/searchform/{data_label}')
+        bp.configure_position_axes((1, 2))
+
+    def get_target_type(self, ext):
+        return TargetType.OBJECT
+
+    def _update_energy(self, chunk, data_product_type, filter_name):
+        self._logger.debug('Begin _update_energy')
+        # https://gemini.edu/instrumentation/igrins-2/capability
+        # 0 minimum wavelength in microns
+        # 1 max wavelength in microns
+        lookup = {'H': [1.49, 1.80], 'K': [1.96, 2.46]}
+        if filter_name in lookup.keys():
+            self.fm = svofps.FilterMetadata()
+            self.fm.set_bandpass(lookup.get(filter_name)[1], lookup.get(filter_name)[0])
+            self.fm.set_central_wl(lookup.get(filter_name)[1], lookup.get(filter_name)[0])
+            self.fm.resolving_power = 45000.0
+        else:
+            self._observable.rejected.record(mc.Rejected.MYSTERY_VALUE, self._storage_name.file_name)
+            raise mc.CadcException(
+                f'{self._instrument}: Mystery filter {filter_name} for {self._storage_name.obs_id}'
+            )
+        self._build_chunk_energy(chunk, filter_name)
+        self._logger.debug('End _update_energy')
+
+    def _update_artifact(self, artifact):
+        self._logger.debug(f'Begin _update_artifact for {artifact.uri}')
+        for part in artifact.parts.values():
+            for chunk in part.chunks:
+                chunk.naxis = None
+                if chunk.time:
+                    chunk.time_axis = None
+                if chunk.position:
+                    chunk.position_axis_1 = None
+                    chunk.position_axis_2 = None
+        self._logger.debug('End _update_artifact')
+
+    def _update_position(self, part, chunk, ext):
+        self._logger.debug('Begin _update_position')
+        header = self._headers[0]
+        header['CTYPE1'] = 'RA---TAN'
+        header['CTYPE2'] = 'DEC--TAN'
+        header['CUNIT1'] = 'deg'
+        header['CUNIT2'] = 'deg'
+        header['CRVAL1'] = self.get_ra(0)
+        header['CRVAL2'] = self.get_dec(0)
+        # https://gemini.edu/instrumentation/igrins-2
+        header['CDELT1'] = 0.33  # arcseconds
+        header['CDELT2'] = 5.0  # arcseconds
+        header['CROTA1'] = 0.0
+        header['NAXIS1'] = 1
+        header['NAXIS2'] = 1
+        header['CRPIX1'] = 1.0
+        header['CRPIX2'] = 1.0
+        header['CD1_1'] = 0.33  # arcseconds
+        header['CD1_2'] = 0.0
+        header['CD2_1'] = 0.0
+        header['CD2_2'] = 5.0  # arcseconds
+
+        wcs_parser = FitsWcsParser(header, self._storage_name.obs_id, ext)
+        if chunk is None:
+            chunk = Chunk()
+            part.chunks.append(chunk)
+        wcs_parser.augment_position(chunk)
+        chunk.position_axis_1 = None
+        chunk.position_axis_2 = None
+        self._logger.debug('End _update_position')
+
+
 class MAROONXTemporal(GeminiMapping):
     """
     A high-resolution (R~80,000) optical (500-920nm), bench-mounted, fiber-fed echelle spectrograph designed to
@@ -4886,6 +4969,7 @@ def mapping_factory(storage_name, clients, reporter, observation, config):
         Inst.HOKUPAA: Hokupaa,
         Inst.HRWFS: Hrwfs,
         Inst.IGRINS: Igrins,
+        Inst.IGRINS2: Igrins2,
         Inst.MICHELLE: Michelle,
         Inst.NICI: Nici,
         Inst.NIFS: Nifs,
@@ -4943,7 +5027,7 @@ def mapping_factory(storage_name, clients, reporter, observation, config):
                 storage_name, metadata_lookup, inst, clients, reporter, observation, config, provenance_finder
             )
     else:
-        reporter.rejected.record(mc.Rejected.MYSTERY_VALUE, storage_name.file_name)
+        reporter.observable.rejected.record(mc.Rejected.MYSTERY_VALUE, storage_name.file_name)
         raise mc.CadcException(f'Mystery name {inst}.')
     logging.debug(f'Created {result.__class__.__name__} for mapping.')
     return result

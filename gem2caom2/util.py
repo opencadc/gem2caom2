@@ -87,6 +87,7 @@ class Inst(Enum):
     HOKUPAA = 'Hokupaa+QUIRC'
     HRWFS = 'hrwfs'
     IGRINS = 'IGRINS'
+    IGRINS2 = 'IGRINS-2'
     MAROONX = 'MAROON-X'
     MICHELLE = 'michelle'
     NICI = 'NICI'

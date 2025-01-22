@@ -114,6 +114,7 @@ def pytest_generate_tests(metafunc):
             Inst.ALOPEKE,
             Inst.ZORRO,
             Inst.IGRINS,
+            Inst.IGRINS2,
             Inst.GHOST,
             Inst.MAROONX,
         ]:
