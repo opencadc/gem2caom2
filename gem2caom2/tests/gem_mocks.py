@@ -445,6 +445,32 @@ LOOKUP = {
     'S20030730S0036': ['GS-CAL20030730-10-006', Inst.HRWFS, 'GS-CAL20030730'],
     'S20031218S0049': ['GS-CAL20031218-1-034', Inst.HRWFS, 'GS-CAL20031218'],
     '2001nov16_0164': ['GS-2001B-DD-4-1-0002', Inst.HRWFS, 'GS-2001B-DD-4'],
+    # MAROON-X
+    'N20241227M0103': [
+        'GN-CAL20241227-0-0103',
+        Inst.MAROONX,
+        'GN-CAL20241227',
+    ],
+    'N20250101M0656': [
+        'GN-CAL20250101-0-0656',
+        Inst.MAROONX,
+        'GN-CAL20250101',
+    ],
+    'N20250103M0079': [
+        'GN-CAL20250103-0-0079',
+        Inst.MAROONX,
+        'GN-CAL20250103',
+    ],
+    'N20250102M0564': [
+        'GN-2024B-CAL-201-0-0564',
+        Inst.MAROONX,
+        'GN-2024B-CAL-201',
+    ],
+    'N20250101M0624': [
+        'GN-CAL20250101-0-0624',
+        Inst.MAROONX,
+        'GN-CAL20250101',
+    ],
     # Michelle
     'N20060705S0054': ['GN-2006A-C-14-49-002', Inst.MICHELLE, 'GN-2006A-C-14'],
     'N20060418S0123': ['GN-2006A-Q-58-9-007', Inst.MICHELLE, 'GN-2006A-Q-58'],
@@ -536,6 +562,8 @@ LOOKUP = {
     '2003jun30_3385': ['GS-CAL20030630-1-3385', Inst.CIRPASS, 'GS-CAL20030630'],
     # TEXES
     'TX20071021_FLT.2037': ['GN-2007B-C-6-5-005-FLT', Inst.TEXES, 'GN-2007B-C-6'],
+    'TX20071021_RAW.2037': ['GN-2007B-C-6-5-005', Inst.TEXES, 'GN-2007B-C-6'],
+    'TX20071021_SUM.2037': ['GN-2007B-C-6-5-005', Inst.TEXES, 'GN-2007B-C-6'],
     'TX20131117_flt.3002': ['TX20131117_flt.3002', Inst.TEXES, 'GN-2013B-Q-38'],
     'TX20131117_raw.3002': ['TX20131117.3002', Inst.TEXES, 'GN-2013B-Q-38'],
     'TX20170321_flt.2505': ['TX20170321_flt.2505', Inst.TEXES, 'GN-2017A-Q-56'],
@@ -552,6 +580,8 @@ LOOKUP = {
     'N20160403S0236_flat_pasted': ['GN-CAL20160404-7-017-FLAT-PASTED', Inst.GMOS, 'GN-CAL20160404'],
     'S20120922S0406': ['GS-2012B-Q-1-32-002', Inst.GMOS, 'GS-2012B-Q-1'],
     'S20131007S0067_fringe': ['GS-CAL20131007-900-067', Inst.GMOS, 'GS-CAL20131007'],
+    'N20120905S0122': ['GN-2012A-Q-124-1-003', Inst.GMOSN, 'GN-2012A-Q-124'],
+    'N20120905S0122_arc': ['GN-2012A-Q-124-1-003', Inst.GMOSN, 'GN-2012A-Q-124'],
     'S20140124S0039_dark': ['GS-2013B-Q-16-277-019-DARK', Inst.F2, 'GS-2013B-Q-16'],
     'S20141129S0331_dark': ['GS-CAL20141129-1-001-DARK', Inst.F2, 'GS-CAL20141129'],
     'S20161227S0051': ['GS-CAL20161227-5-001', Inst.GMOS, 'GS-CAL20161227'],
@@ -567,8 +597,17 @@ LOOKUP = {
     'mrgS20160901S0122_add': ['GS-2016B-Q-72-23-001-MRG-ADD', Inst.GMOS, 'GS-2016B-Q-72'],
     'mrgS20181016S0184_fringe': ['GS-CAL20181016-5-001-MRG-FRINGE', Inst.GMOS, 'GS-CAL20181016'],
     'rS20121030S0136': ['GS-2012B-Q-90-366-003', Inst.TRECS, 'GS-2012B-Q-90'],
+    'rS20060412S0056': ['GS-2006A-Q-60-11-001', Inst.TRECS, 'GS-2006A-Q-60'],
     'rgS20100212S0301': ['GS-2010A-Q-36-5-246', Inst.GMOS, 'GS-2010A-Q-36'],
     'rgS20100316S0366': ['GS-2010A-Q-36-6-358', Inst.GMOS, 'GS-2010A-Q-36'],
+    'N20200210S0077': ['GN-CAL20200210-22-076', Inst.GMOS, 'GN-CAL20200210-22'],
+    'N20200210S0077_bias': ['GN-CAL20200210-22-076-BIAS', Inst.GMOS, 'GN-CAL20200210-22'],
+    'S20101028S0134': ['GS-CAL20101028-5-004', Inst.GMOS, 'GS-CAL20101028-5'],
+    'S20130922S0130': ['GS-2013B-Q-75-187-001', Inst.GMOS, 'GS-2013B-Q-75'],
+    'S20130922S0130_arc': ['GS-2013B-Q-75-187-001', Inst.GMOS, 'GS-2013B-Q-75'],
+    'S20181219S0216': ['GS-CAL20181219-4-012', Inst.GMOS, 'GS-CAL20181219-4'],
+    'gS20171114S0185_bias': ['GS-CAL20171114-2-086-G-BIAS', Inst.GMOS, 'GS-CAL20171114-2'],
+    'mrgS20101028S0134': ['GS-CAL20101028-5-004', Inst.GMOS, 'GS-CAL20101028-5'],
     'rgS20130103S0098_FRINGE': ['GS-CAL20130103-3-001-RG-FRINGE', Inst.GMOS, 'GS-CAL20130103'],
     'rgS20131109S0166_FRINGE': ['GS-CAL20131109-17-001-RG-FRINGE', Inst.GMOS, 'GS-CAL20131109'],
     'rgS20161227S0051_fringe': ['GS-CAL20161227-5-001-RG-FRINGE', Inst.GMOS, 'GS-CAL20161227'],
@@ -578,12 +617,23 @@ LOOKUP = {
     'P2002FEB03_0045_DARK10SEC': ['GS-CAL20020203-4-0045', Inst.PHOENIX, 'GS-CAL20020203'],
     'P2002DEC02_0075_SUB.0001': ['GS-CAL20021202-3-0075', Inst.PHOENIX, 'GS-CAL2002120'],
     '2004may19_0255': ['GS-2004A-Q-6-27-0255', Inst.PHOENIX, 'GS-2004A-Q-6'],
+    '2002dec02_0161': ['GS-2002B-Q-22-13-0161', Inst.PHOENIX, 'GS-2002B-Q-22'],
+    'P2002DEC02_0161_SUB.0001': ['GS-2002B-Q-22-13-0161', Inst.PHOENIX, 'GS-2002B-Q-22'],
+    'P2002DEC02_0161_SUB': ['GS-2002B-Q-22-13-0161', Inst.PHOENIX, 'GS-2002B-Q-22'],
     'mrgN20060130S0149_add': ['GN-2006A-Q-90-1-001-MRG-ADD', Inst.GMOS, 'GS-2006A-Q-90'],
     'S20181016S0184': ['GS-CAL20181016-5-001', Inst.GMOS, 'GS-CAL20181016-5'],
     'N20200210S0077_bias': ['GN-CAL20200210-22-076-BIAS', Inst.GMOS, 'GN-CAL20200210'],
     'rgnN20140428S0171_flat': ['GN-2014A-Q-85-16-003-RGN-FLAT', Inst.NIFS, 'GN-2014A-Q-85'],
     'S20201023Z0001b': ['GS-CAL20201023-0-0', Inst.ZORRO, 'GS-CAL20201023'],
     'SDCH_20200131_0010': ['GS-CAL20200131-10-0131', Inst.IGRINS, 'GS-CAL20200131'],
+    'SDCH_20200201_0023': ['GS-CAL20200202-23-0201', Inst.IGRINS, 'GS-CAL20200202-23'],
+    'N20150807G0044': ['GN-2015B-Q-1-12-1003', Inst.GRACES, 'GN-2015B-Q-1'],
+    'N20150807G0044i': ['GN-2015B-Q-1-12-1003', Inst.GRACES, 'GN-2015B-Q-1'],
+    'N20150807G0044m': ['GN-2015B-Q-1-12-1003', Inst.GRACES, 'GN-2015B-Q-1'],
+    'N20190313A0002b': ['N20190313A0002', Inst.ALOPEKE, 'GN-2019A-Q-214'],
+    'N20190313A0002r': ['N20190313A0002', Inst.ALOPEKE, 'GN-2019A-Q-214'],
+    'N20191219A0001b': ['N20191219A0001', Inst.ALOPEKE, 'GN-2020A-Q-132'],
+    'N20191219A0001r': ['N20191219A0001', Inst.ALOPEKE, 'GN-2020A-Q-132'],
 }
 
 call_count = 0
@@ -812,10 +862,16 @@ def mock_query_endpoint_5(url, timeout=-1):
     result = Object()
     result.text = '<title>x</title>'
 
-    if url.startswith('https://archive.gemini.edu/diskfiles/entrytimedaterange=2024-08-28T17:05:00'):
+    if url.startswith(
+        'https://archive.gemini.edu/diskfiles/NotFail/notengineering/not_site_monitoring/'
+        'entrytimedaterange=2024-08-28T17:05:00'
+    ):
         with open(f'{TEST_DATA_DIR}/diskfiles_mock/query_limit.html') as f:
             result.text = f.read()
-    elif url.startswith('https://archive.gemini.edu/diskfiles/entrytimedaterange=2024-08-27T03:50:00'):
+    elif url.startswith(
+        'https://archive.gemini.edu/diskfiles/NotFail/notengineering/not_site_monitoring/'
+        'entrytimedaterange=2024-08-27T03:50:00'
+    ):
         with open(f'{TEST_DATA_DIR}/diskfiles_mock/md.html') as f:
             result.text = f.read()
     return result
@@ -897,8 +953,8 @@ def mock_repo_update(ignore1):
 def compare(expected_fqn, actual_fqn, observation):
     if observation:
         if os.path.exists(expected_fqn):
-            expected = mc.read_obs_from_file(expected_fqn)
             try:
+                expected = mc.read_obs_from_file(expected_fqn)
                 compare_result = get_differences(expected, observation)
             except Exception as e:
                 mc.write_obs_to_file(observation, actual_fqn)
@@ -928,7 +984,7 @@ def mock_query_tap(query_string, mock_tap_client):
         file_id = query_string.split('gemini:GEMINI/')[1].split('\'')[0].replace('.fits', '').strip()
         result = TAP_QUERY_LOOKUP.get(file_id, 'test_data_label')
         return Table.read(
-            f'observationID,instrument_name\n' f'{result},hrwfs\n'.split('\n'),
+            f'observationID,instrument_name\n{result},hrwfs\n'.split('\n'),
             format='csv',
         )
 
@@ -973,8 +1029,8 @@ def _mock_retrieve_headers(mock_name, ign1, ign2):
     return _mock_headers(mock_name, mock_name)
 
 
-def _mock_retrieve_headers_37(mock_name, ign1, ign2, ignore3):
-    return _mock_headers(mock_name, mock_name)
+def _mock_retrieve_headers_37(mock_name, index, ign2, ignore3, ignore5):
+    return _mock_headers(mock_name.source_names[index], mock_name.source_names[index])
 
 
 def read_mock_37(collection, obs_id):
@@ -1032,7 +1088,7 @@ def _run_test_common(
             clients_mock, test_config, [fits2caom2_augmentation], test_reporter
         )
 
-        def _read_header_mock(ignore1, ignore2, ignore3, ignore4):
+        def _read_header_mock(ignore1, ignore2, ignore3, ignore4, ignore5):
             if 'S20210518S0022' in test_f_name:
                 return []
             else:

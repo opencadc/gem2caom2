@@ -74,7 +74,6 @@ from astropy.table import Table
 from mock import ANY, patch, Mock
 
 from cadcutils import exceptions
-from caom2utils.data_util import get_local_file_headers
 from caom2pipe import manage_composable as mc
 from gem2caom2 import gemini_metadata, gem_name
 
@@ -91,7 +90,7 @@ def test_provenance_finder(caom2_mock, local_mock):
 
     def _caom2_mock(ignore1, ignore2):
         return Table.read(
-            f'observationID,instrument_name\n' f'{test_data_label},' f'GMOS\n'.split('\n'),
+            f'observationID,instrument_name\n{test_data_label},GMOS\n'.split('\n'),
             format='csv',
         )
 
@@ -122,13 +121,11 @@ def test_provenance_finder(caom2_mock, local_mock):
                     test_config.task_types = [mc.TaskType.SCRAPE]
 
                 test_subject = gemini_metadata.ProvenanceFinder(Mock(), test_config)
-                assert test_subject is not None, (
-                    f'ctor does not work:: ' f'local {test_use_local}, ' f'connected {test_connected}'
-                )
+                assert (
+                    test_subject is not None
+                ), f'ctor does not work:: local {test_use_local}, connected {test_connected}'
                 test_result = test_subject.get(test_uri)
-                assert test_result is not None, (
-                    f'expect a result ' f'local {test_use_local}, ' f'connected {test_connected}'
-                )
+                assert test_result is not None, f'expect a result local {test_use_local}, connected {test_connected}'
                 assert test_result == repaired_data_label, (
                     f'data_label should be {repaired_data_label} '
                     f'local {test_use_local}, '
@@ -148,7 +145,7 @@ def test_header_not_at_cadc_no_reader(retrieve_gemini_mock, clients_mock, test_c
     clients_mock.data_client.get_head.side_effect = exceptions.UnexpectedException
     test_storage_name = gem_name.GemName(file_name=test_f_name)
     test_storage_name.obs_id = test_obs_id
-    test_result = gemini_metadata.retrieve_headers(test_f_name, Mock(), clients_mock, test_config)
+    test_result = gemini_metadata.retrieve_headers(test_storage_name, 0, Mock(), clients_mock, test_config)
     assert test_result is not None, 'expect a result'
     assert retrieve_gemini_mock.called, 'retrieve mock not called'
     retrieve_gemini_mock.assert_called_with(test_f_name, ANY, ANY), 'wrong mock args'
@@ -161,12 +158,12 @@ def test_header_not_at_cadc_no_reader_session_mock(clients_mock, test_data_dir, 
     test_obs_id = 'GN-CAL20220314-18-083'
     clients_mock.data_client.get_head.side_effect = exceptions.UnexpectedException
     session_return = gem_mocks.Object()
-    with open (f'{test_data_dir}/N20220314S0229.fits') as f_in:
+    with open(f'{test_data_dir}/N20220314S0229.fits') as f_in:
         session_return.text = f_in.read()
     clients_mock.gemini_session.get.return_value = session_return
     test_storage_name = gem_name.GemName(file_name=test_f_name)
     test_storage_name.obs_id = test_obs_id
-    test_result = gemini_metadata.retrieve_headers(test_f_name, Mock(), clients_mock, test_config)
+    test_result = gemini_metadata.retrieve_headers(test_storage_name, 0, Mock(), clients_mock, test_config)
     assert test_result is not None, 'expect a result'
     assert clients_mock.gemini_session.get.called, 'get mock not called'
     clients_mock.gemini_session.get.assert_called_with(

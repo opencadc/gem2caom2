@@ -88,7 +88,7 @@ from caom2pipe.astro_composable import get_datetime_mjd
 from caom2pipe import client_composable as clc
 from caom2pipe.execute_composable import MetaVisitRunnerMeta, OrganizeExecutesRunnerMeta
 from caom2pipe import manage_composable as mc
-from gem2caom2.util import Inst
+from gem2caom2.util import set_instrument_case
 from gem2caom2 import obs_file_relationship
 
 
@@ -118,10 +118,11 @@ class GeminiMetadataLookup:
         return self._search_json(uri, 'central_wavelength')
 
     def data_label(self, uri):
+        instrument = set_instrument_case(self.instrument(uri))
         temp = self._search_json(uri, 'data_label')
         if temp is None:
             temp = self._search_fits(uri, 'DATALAB')
-        return obs_file_relationship.repair_data_label(uri.split('/')[-1], temp)
+        return obs_file_relationship.repair_data_label(uri.split('/')[-1], temp, instrument)
 
     def data_size(self, uri):
         return self._search_json(uri, 'data_size')
@@ -305,7 +306,6 @@ class ProvenanceFinder:
     for provenance T/F case.
     """
 
-    # def __init__(self, config, tap_client, gemini_session):
     def __init__(self, clients, config):
         self._use_local_files = config.use_local_files
         self._connected = mc.TaskType.SCRAPE not in config.task_types
@@ -320,7 +320,7 @@ class ProvenanceFinder:
         # sometimes there's only file ids in the file headers, and guessing
         # the extension for gemini is not predictive.
         query_string = f"""
-        SELECT O.observationID
+        SELECT O.observationID, O.instrument_name
         FROM caom2.Observation AS O
         JOIN caom2.Plane AS P on P.obsID = O.obsID
         JOIN caom2.Artifact AS A on A.planeID = P.planeID
@@ -329,11 +329,13 @@ class ProvenanceFinder:
         """
         table = clc.query_tap_client(query_string, self._tap_client)
         result = None
+        instrument = None
         if len(table) == 1:
             result = table[0]['observationID']
+            instrument = table[0]['instrument_name']
             self._logger.debug(f'Found observation ID {result} for {uri} at CADC.')
         self._logger.debug('End _check_caom2')
-        return result
+        return result, instrument
 
     def _check_local(self, f_name):
         self._logger.debug(f'Begin _check_local for {f_name}')
@@ -345,6 +347,7 @@ class ProvenanceFinder:
             f'{file_id}.fits.gz',
         ]
         result = None
+        instrument = None
         for data_source in self._data_sources:
             for f_name in try_these:
                 fqn = path.join(data_source, f_name)
@@ -353,10 +356,11 @@ class ProvenanceFinder:
                     temp = headers[0].get('DATALAB').upper()
                     if temp is not None:
                         result = headers[0].get('DATALAB')
-                        self._logger.debug(f'Found observation ID {result} for {f_name} on ' f'disk.')
+                        instrument = headers[0].get('INSTRUME')
+                        self._logger.debug(f'Found observation ID {result} for {f_name} on disk.')
                         break
         self._logger.debug('End _check_local')
-        return result
+        return result, instrument
 
     def _check_remote(self, uri):
         self._logger.debug(f'Begin _check_remote for {uri}')
@@ -367,28 +371,32 @@ class ProvenanceFinder:
             y = obs_file_relationship.remove_extensions(ii.get('name'))
             if y == f_id:
                 result = ii.get('data_label')
+                instrument = ii.get('instrument')
                 break
         self._logger.debug(f'End _check_remote with result {result}')
-        return result
+        return result, instrument
 
     def get(self, uri):
         """
         :param uri: Artifact URI at CADC
         """
-        ignore_scheme, collection, f_name = mc.decompose_uri(uri)
+        _, collection, f_name = mc.decompose_uri(uri)
         if self._connected:
             result = None
+            instrument = None
             if self._use_local_files:
-                result = self._check_local(f_name)
+                result, instrument = self._check_local(f_name)
             if result is None:
-                result = self._check_caom2(uri, collection)
+                result, instrument = self._check_caom2(uri, collection)
             if result is None:
-                result = self._check_remote(uri)
+                result, instrument = self._check_remote(uri)
         else:
-            result = self._check_local(f_name)
+            result, instrument = self._check_local(f_name)
         repaired_data_label = None
         if result is not None:
-            repaired_data_label = obs_file_relationship.repair_data_label(f_name, result)
+            repaired_data_label = obs_file_relationship.repair_data_label(
+                f_name, result, set_instrument_case(instrument)
+            )
         return repaired_data_label
 
 
@@ -422,7 +430,7 @@ class GeminiMetaVisitRunnerMeta(MetaVisitRunnerMeta):
                 self._storage_name.metadata[uri] = []
                 if '.fits' in uri:
                     self._storage_name._metadata[uri] = retrieve_headers(
-                        source_name, self._logger, self._clients, self._config
+                        self._storage_name, index, self._logger, self._clients, self._config
                     )
             # TODO - is there a time when not needing archive.gemini.edu is possible?
             if uri not in self._storage_name.json_metadata:
@@ -458,6 +466,9 @@ class GeminiMetaVisitRunnerMeta(MetaVisitRunnerMeta):
             self._storage_name.obs_id = obs_file_relationship.repair_data_label(
                 self._storage_name.file_name,
                 self._storage_name._json_metadata.get(self._storage_name.file_uri).get('data_label'),
+                set_instrument_case(
+                    self._storage_name._json_metadata.get(self._storage_name.file_uri).get('instrument')
+                ),
             )
 
         self._logger.debug('End _set_preconditions')
@@ -536,27 +547,36 @@ def repair_instrument(in_name):
         # GN-2001A-C-2-8-009
         # GN-2001A-C-2-9-010
         in_name = 'OSCIR'
-    return Inst(in_name)
+    return set_instrument_case(in_name)
 
 
-def retrieve_headers(source_name, logger, clients, config):
+def retrieve_headers(storage_name, index, logger, clients, config):
+    logger.debug(f'Begin retrieve_headers for {storage_name.source_names[index]}')
     result = None
     if config.use_local_files:
-        result = data_util.get_local_file_headers(source_name)
+        result = data_util.get_local_file_headers(storage_name.source_names[index])
     else:
         try:
-            result = clients.data_client.get_head(f'{config.scheme}:{config.collection}/{path.basename(source_name)}')
-        except exceptions.UnexpectedException as e:
+            result = clients.data_client.get_head(
+                f'{config.scheme}:{config.collection}/{path.basename(storage_name.source_names[index])}'
+            )
+        except exceptions.UnexpectedException as _:
             # the exceptions.NotFoundException is turned into exceptions.UnexpectedException in data_util
-            # the header is not at CADC, retrieve it from archive.gemini.edu
-            result = retrieve_gemini_headers(source_name, logger, clients.gemini_session)
+            try:
+                # the header is not at CADC, retrieve it from archive.gemini.edu
+                result = retrieve_gemini_headers(storage_name.source_names[index], logger, clients.gemini_session)
+            except exceptions.NotFoundException as _:
+                # MAROON-X uses a different key than file name for FITS header lookup (or maybe not always?)
+                result = retrieve_gemini_headers(storage_name._fullheader, logger, clients.gemini_session)
+
+    logger.debug(f'End retrieve_headers')
     return result
 
 
 def retrieve_gemini_headers(source_name, logger, session):
-    logger.debug(f'Begin retrieve_headers for {source_name}')
+    logger.debug(f'Begin retrieve_gemini_headers for {source_name}')
     header_url = f'{HEADER_URL}{source_name}'
-    # Open the URL and fetch the JSON document for the observation
+    # Open the URL and fetch the FITS header for the file
     response = None
     try:
         response = session.get(header_url, timeout=20)
@@ -584,6 +604,6 @@ def retrieve_json(source_name, logger, session):
         if response is not None:
             response.close()
     if len(metadata) == 0:
-        raise mc.CadcException(f'Could not find JSON record for {source_name} at ' f'{gemini_url}.')
+        raise mc.CadcException(f'Could not find JSON record for {source_name} at {gemini_url}.')
     logger.debug(f'End retrieve_json')
     return metadata

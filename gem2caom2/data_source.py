@@ -78,6 +78,7 @@ from caom2pipe import data_source_composable as dsc
 from caom2pipe.manage_composable import CaomName, ISO_8601_FORMAT, make_datetime, query_endpoint_session
 from gem2caom2.gem_name import GemName
 from gem2caom2.obs_file_relationship import repair_data_label
+from gem2caom2.util import set_instrument_case
 
 
 __all__ = ['GEM_BOOKMARK', 'IncrementalSource', 'PublicIncremental']
@@ -98,8 +99,6 @@ class IncrementalSource(dsc.IncrementalDataSource):
     def __init__(self, config, session, filter_cache):
         super().__init__(config, start_key=GEM_BOOKMARK)
         self._max_records_encountered = False
-        self._encounter_start = None
-        self._encounter_end = None
         self._session = session
         self._filter_cache = filter_cache
 
@@ -155,8 +154,6 @@ class IncrementalSource(dsc.IncrementalDataSource):
                 response.close()
         if len(entries) == MAX_ENTRIES:
             self._max_records_encountered = True
-            self._encounter_start = prev_exec_dt
-            self._encounter_end = exec_dt
         self._reporter.capture_todo(len(entries), 0, 0)
         self._logger.debug('End get_time_box_work.')
         return entries
@@ -213,7 +210,7 @@ class PublicIncremental(dsc.QueryTimeBoxDataSource):
         entries = deque()
         for row in result:
             gem_name = GemName(file_name=CaomName(row['uri']).file_name, filter_cache=self._filter_cache)
-            gem_name._obs_id = repair_data_label(CaomName(row['uri']).file_name, row['observationID'])
+            gem_name._obs_id = row['observationID']
             entries.append(dsc.RunnerMeta(gem_name, make_datetime(row['lastModified'])))
         self._reporter.capture_todo(len(entries), 0, 0)
         self._logger.debug('End get_time_box_work')
@@ -231,8 +228,6 @@ class IncrementalSourceDiskfiles(dsc.IncrementalDataSource):
     def __init__(self, config, gemini_session, storage_name_ctor, filter_cache):
         super().__init__(config, start_key=GEM_BOOKMARK)
         self._max_records_encountered = False
-        self._encounter_start = None
-        self._encounter_end = None
         self._session = gemini_session
         self._storage_name_ctor = storage_name_ctor
         self._filter_cache = filter_cache
@@ -254,7 +249,7 @@ class IncrementalSourceDiskfiles(dsc.IncrementalDataSource):
         prev_exec_dt_iso = prev_exec_dt.replace(microsecond=0)
         exec_dt_iso = exec_dt.replace(microsecond=0)
         url = (
-            f'https://archive.gemini.edu/diskfiles/entrytimedaterange='
+            f'https://archive.gemini.edu/diskfiles/NotFail/notengineering/not_site_monitoring/entrytimedaterange='
             f'{prev_exec_dt_iso.isoformat()}--{exec_dt_iso.isoformat()}'
         )
 
@@ -285,17 +280,17 @@ class IncrementalSourceDiskfiles(dsc.IncrementalDataSource):
                                 md5sum=value.get('data_md5'),
                                 file_type=get_file_type(file_name),
                             )
-                            repaired_data_label = repair_data_label(file_name, value.get('datalabel'))
+                            repaired_data_label = repair_data_label(
+                                file_name, value.get('datalabel'), set_instrument_case(value.get('instrument'))
+                            )
                             storage_name.obs_id = repaired_data_label
+                            storage_name._fullheader = value.get('fullheader')
                             entries.append(dsc.RunnerMeta(storage_name, entry_dt))
         finally:
             if response is not None:
                 response.close()
         if len(entries) == MAX_ENTRIES:
-            self._logger.warning(f'Max records window {self._encounter_start} to {self._encounter_end}.')
             self._max_records_encountered = True
-            self._encounter_start = prev_exec_dt
-            self._encounter_end = exec_dt
         self._reporter.capture_todo(len(entries), 0, 0)
         self._logger.debug('End get_time_box_work.')
         return entries
@@ -310,13 +305,16 @@ class IncrementalSourceDiskfiles(dsc.IncrementalDataSource):
             file_name = cells[0].text.strip()
             if file_name.endswith('-fits!-md!'):
                 continue
+            fullheader = cells[0].find_all('a')[0].get('href')
+            instrument = cells[3].find_all('a')[0].get('href')
             value = {
                 'filename': file_name,
                 'datalabel': cells[1].text.strip().split('\n')[-1],
-                'instrument': cells[2].text.strip(),
+                'instrument': instrument.split('/')[-1],
                 'lastmod': make_datetime(cells[6].text.strip()),
                 'data_size': cells[10].text.strip(),
                 'data_md5': cells[11].text.strip(),
+                'fullheader': fullheader.split('/')[-1],
             }
             temp[entry_time].append(value)
         result = OrderedDict(sorted(temp.items()))

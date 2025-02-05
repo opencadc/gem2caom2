@@ -2,7 +2,7 @@
 # ******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
 # *************  CENTRE CANADIEN DE DONNÉES ASTRONOMIQUES  **************
 #
-#  (c) 2021.                            (c) 2021.
+#  (c) 2025.                            (c) 2025.
 #  Government of Canada                 Gouvernement du Canada
 #  National Research Council            Conseil national de recherches
 #  Ottawa, Canada, K1A 0R6              Ottawa, Canada, K1A 0R6
@@ -87,6 +87,7 @@ class Inst(Enum):
     HOKUPAA = 'Hokupaa+QUIRC'
     HRWFS = 'hrwfs'
     IGRINS = 'IGRINS'
+    MAROONX = 'MAROON-X'
     MICHELLE = 'michelle'
     NICI = 'NICI'
     NIFS = 'NIFS'
@@ -97,3 +98,16 @@ class Inst(Enum):
     TRECS = 'TReCS'
     ZORRO = 'Zorro'
     UNKNOWN = None
+
+
+def set_instrument_case(value: str):
+    if isinstance(value, Inst):
+        return value
+
+    for v in [value, value.capitalize(), value.upper(), value.lower]:
+        try:
+            result = Inst(v)
+            return result
+        except ValueError as _:
+            pass
+    raise ValueError(value)

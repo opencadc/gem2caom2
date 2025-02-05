@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
 # ***********************************************************************
 # ******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
 # *************  CENTRE CANADIEN DE DONNÉES ASTRONOMIQUES  **************
 #
-#  (c) 2019.                            (c) 2019.
+#  (c) 2025.                            (c) 2025.
 #  Government of Canada                 Gouvernement du Canada
 #  National Research Council            Conseil national de recherches
 #  Ottawa, Canada, K1A 0R6              Ottawa, Canada, K1A 0R6
@@ -152,7 +151,7 @@ class GeminiValidator(Validator):
                 index = 2
                 splitter = candidate[6]
             else:
-                logging.warning(f'Pretty sure this is an unexpected file name format ' f'{file_name}')
+                logging.warning(f'Pretty sure this is an unexpected file name format {file_name}')
 
             candidate = candidate[index:]
             if candidate.count('G') == 1:
