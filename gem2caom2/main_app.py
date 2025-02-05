@@ -3425,6 +3425,8 @@ class MAROONXSpectralTemporal(MAROONXTemporal):
             result = 920.0  # nm
         elif camera_arm == 'BLUE':
             result = 663.0  # nm
+        else:
+            raise mc.CadcException(f'Unexpected ARM value {camera_arm}.')
         return result
 
     def _get_energy_chunk_range_start_val(self, ext):
