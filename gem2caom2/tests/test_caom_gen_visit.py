@@ -79,7 +79,7 @@ from gem2caom2.util import Inst
 from gem2caom2 import fits2caom2_augmentation, gemini_metadata, obs_file_relationship, svofps
 from gem2caom2.gem_name import GemName
 
-from unittest.mock import Mock, patch
+from unittest.mock import ANY, Mock, patch
 import gem_mocks
 
 
@@ -217,6 +217,9 @@ def test_visitor(
         assert not test_reporter._observable.rejected.is_bad_metadata(
             storage_name.file_name
         ), 'expect no rejected record'
+
+    assert json_mock.called, 'json mock'
+    json_mock.assert_called_with(storage_name.file_id, ANY, ANY), 'json mock args'
 
 
 def _get_inst_name(inst):

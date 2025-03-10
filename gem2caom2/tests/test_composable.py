@@ -125,8 +125,6 @@ def test_run(run_mock, clients_mock, test_config, tmp_path, change_test_dir):
 
 
 @patch('gem2caom2.composable.GemClientCollection')
-@patch('gem2caom2.gemini_metadata.retrieve_headers')
-@patch('gem2caom2.gemini_metadata.retrieve_json')
 @patch('caom2pipe.execute_composable.OrganizeExecutesRunnerMeta.do_one')
 @patch('gem2caom2.data_source.query_endpoint_session')
 @patch('caom2pipe.client_composable.query_tap_client')
@@ -134,8 +132,6 @@ def test_run_incremental_rc(
     tap_mock,
     query_mock,
     run_mock,
-    json_mock,
-    header_mock,
     clients_mock,
     test_config,
     tmp_path,
@@ -144,12 +140,11 @@ def test_run_incremental_rc(
     # use the original incremental endpoint to drive work
     query_mock.side_effect = gem_mocks.mock_query_endpoint_2
     tap_mock.side_effect = gem_mocks.mock_query_tap
-    json_mock.side_effect = gem_mocks.mock_retrieve_json
-    header_mock.side_effect = gem_mocks._mock_retrieve_headers
 
     test_config.change_working_directory(tmp_path)
     test_config.proxy_file_name = 'testproxy.pem'
     test_config.task_types = [TaskType.INGEST]
+    test_config.interval = 600
     Config.write_to_file(test_config)
     with open(test_config.proxy_fqn, 'w') as f:
         f.write('test content')
@@ -171,8 +166,6 @@ def test_run_incremental_rc(
     assert test_storage.file_id == f'{test_fid}', 'wrong file_id'
 
 
-@patch('gem2caom2.gemini_metadata.retrieve_headers')
-@patch('gem2caom2.gemini_metadata.retrieve_json')
 @patch('caom2pipe.execute_composable.OrganizeExecutes.do_one')
 @patch('gem2caom2.composable.GemClientCollection')
 @patch('caom2pipe.manage_composable.read_obs_from_file')
@@ -182,8 +175,6 @@ def test_run_by_incremental2(
     read_mock,
     clients_mock,
     exec_mock,
-    json_mock,
-    header_mock,
 ):
     clients_mock.data_client.return_value.info.side_effect = gem_mocks.mock_get_file_info
     clients_mock.data_client.return_value.get.side_effect = Mock()
@@ -191,8 +182,6 @@ def test_run_by_incremental2(
     clients_mock.metadata_client.create.side_effect = gem_mocks.mock_repo_create
     clients_mock.metadata_client.side_effect = gem_mocks.mock_repo_read
     clients_mock.metadata_client.update.side_effect = gem_mocks.mock_repo_update
-    json_mock.side_effect = gem_mocks.mock_retrieve_json
-    header_mock.side_effect = gem_mocks._mock_retrieve_headers
 
     def _read_mock(ignore_fqn):
         return SimpleObservation(collection='TEST', observation_id='TEST_OBS_ID', algorithm=Algorithm('exposure'))

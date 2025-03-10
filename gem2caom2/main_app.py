@@ -4948,4 +4948,4 @@ def mapping_factory(storage_name, clients, reporter, observation, config):
         reporter.rejected.record(mc.Rejected.MYSTERY_VALUE, storage_name.file_name)
         raise mc.CadcException(f'Mystery name {inst}.')
     logging.debug(f'Created {result.__class__.__name__} for mapping.')
-    return result
+    return [result]
