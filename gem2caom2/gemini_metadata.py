@@ -140,6 +140,7 @@ class GeminiMetadataLookup:
         return self._search_json(uri, 'exposure_time')
 
     def data_md5(self, uri):
+        # uncompressed md5sum, which is how the file is stored at CADC
         return self._search_json(uri, 'data_md5')
 
     def filter_name(self, uri):
