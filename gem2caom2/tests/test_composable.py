@@ -330,7 +330,7 @@ def test_run_by_public(exec_mock, json_mock, header_mock, clients_mock, query_mo
 
 @patch('caom2pipe.manage_composable.http_get')
 @patch('gem2caom2.svofps.FilterMetadataCache.filter_metadata')
-@patch('gem2caom2.program_metadata.get_pi_metadata')
+@patch('gem2caom2.program_metadata.PIMetadata.get_pi_metadata')
 @patch('caom2pipe.client_composable.ClientCollection.metadata_client')
 @patch('caom2pipe.client_composable.ClientCollection.data_client')
 @patch('gem2caom2.gemini_metadata.retrieve_headers')
@@ -436,7 +436,7 @@ def test_run_state_compression_commands(
 
     def _mock_dir_list(arg1, output_file='', data_only=True, response_format='arg4'):
         result = deque()
-        test_gem_name = gem_name.GemName(file_name='/test_files/S20050825S0143.fits.bz2', filter_cache=Mock())
+        test_gem_name = gem_name.GemName(file_name='/test_files/S20050825S0143.fits.bz2', md_cache=Mock())
         result.append(RunnerMeta(test_gem_name, datetime(2019, 10, 23, 16, 19)))
         return result
 

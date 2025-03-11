@@ -78,6 +78,7 @@ from caom2pipe.manage_composable import CadcException, ExecutionReporter2, read_
 from gem2caom2.util import Inst
 from gem2caom2 import fits2caom2_augmentation, gemini_metadata, obs_file_relationship, svofps
 from gem2caom2.gem_name import GemName
+from gem2caom2.program_metadata import MDCache, PIMetadata
 
 from unittest.mock import ANY, Mock, patch
 import gem_mocks
@@ -130,11 +131,9 @@ def pytest_generate_tests(metafunc):
 @patch('gem2caom2.gemini_metadata.retrieve_headers')
 @patch('gem2caom2.gemini_metadata.retrieve_json')
 @patch('caom2pipe.astro_composable.get_vo_table_session')
-@patch('gem2caom2.program_metadata.get_pi_metadata')
 @patch('gem2caom2.main_app.ProvenanceFinder')
 def test_visitor(
     pf_mock,
-    get_pi_mock,
     svofps_mock,
     json_mock,
     header_mock,
@@ -147,7 +146,6 @@ def test_visitor(
     warnings.simplefilter('ignore', category=FITSFixedWarning)
     warnings.simplefilter('ignore', AstropyWarning)
     test_file_id = obs_file_relationship.remove_extensions(os.path.basename(test_name))
-    get_pi_mock.side_effect = gem_mocks.mock_get_pi_metadata
     svofps_mock.side_effect = gem_mocks.mock_get_votable
     pf_mock.return_value.get.side_effect = gem_mocks.mock_get_data_label
     json_mock.side_effect = gem_mocks.mock_get_obs_metadata
@@ -190,10 +188,13 @@ def test_visitor(
 
     test_reporter = ExecutionReporter2(test_config)
     filter_cache = svofps.FilterMetadataCache(svofps_mock)
+    pi_metadata_cache = PIMetadata(gemini_session=Mock())
+    pi_metadata_cache.get_pi_metadata = Mock(side_effect=gem_mocks.mock_get_pi_metadata)
+    md_cache = MDCache(filter_cache, pi_metadata_cache)
     test_subject = gemini_metadata.GeminiMetaVisitRunnerMeta(
         clients_mock, test_config, [fits2caom2_augmentation], test_reporter
     )
-    storage_name = GemName(test_name, filter_cache)
+    storage_name = GemName(test_name, md_cache)
     if gem_mocks.LOOKUP[test_file_id][1] == Inst.ZORRO:
         storage_name.obs_id = test_file_id[:-1]
     else:

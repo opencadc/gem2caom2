@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
 # ***********************************************************************
 # ******************  CANADIAN ASTRONOMY DATA CENTRE  *******************
 # *************  CENTRE CANADIEN DE DONNÉES ASTRONOMIQUES  **************
 #
-#  (c) 2021.                            (c) 2021.
+#  (c) 2025.                            (c) 2025.
 #  Government of Canada                 Gouvernement du Canada
 #  National Research Council            Conseil national de recherches
 #  Ottawa, Canada, K1A 0R6              Ottawa, Canada, K1A 0R6
@@ -74,49 +73,59 @@ from bs4 import BeautifulSoup
 from caom2pipe import manage_composable as mc
 
 
-__all__ = ['get_pi_metadata']
+__all__ = ['MDCache', 'PIMetadata']
 
 
-def get_pi_metadata(program_id):
-    global pm
-    if program_id in pm:
-        metadata = pm[program_id]
-    else:
-        # for TaskType.SCRAPE
-        if gemini_session is None:
-            metadata = None
-            logging.warning(f'No external access. No PI metadata.')
-        else:
-            program_url = f'https://archive.gemini.edu/programinfo/{program_id}'
-            # Open the URL and fetch the JSON document for the observation
-            response = None
-            try:
-                response = mc.query_endpoint_session(program_url, gemini_session)
-                xml_metadata = response.text
-            finally:
-                if response:
-                    response.close()
-            metadata = None
-            soup = BeautifulSoup(xml_metadata, 'lxml')
-            tds = soup.find_all('td')
-            if len(tds) > 0:
-                # sometimes the program id points to an html page with an
-                # empty table, see e.g. N20200210S0077_bias
-                title = None
-                if len(tds[1].contents) > 0:
-                    title = tds[1].contents[0].replace('\n', ' ')
-                pi_name = None
-                if len(tds[3].contents) > 0:
-                    pi_name = tds[3].contents[0]
-                metadata = {
-                    'title': title,
-                    'pi_name': pi_name,
-                }
-                pm[program_id] = metadata
-        logging.debug('End get_pi_metadata')
-    return metadata
+class PIMetadata:
+    """Cache the PI Metadata query resuilts."""
+
+    def __init__(self, gemini_session):
+        self._pm = {}
+        self._gemini_session = gemini_session
+        self._logger = logging.getLogger(self.__class__.__name__)
+
+    def get_pi_metadata(self, program_id):
+        self._logger.debug(f'Begin get_pi_metadata for {program_id}')
+        metadata = self._pm.get(program_id)
+        if not metadata:
+            # for TaskType.SCRAPE
+            if self._gemini_session is None:
+                metadata = None
+                self._logger.warning(f'No external access. No PI metadata.')
+            else:
+                program_url = f'https://archive.gemini.edu/programinfo/{program_id}'
+                # Open the URL and fetch the JSON document for the observation
+                response = None
+                try:
+                    response = mc.query_endpoint_session(program_url, self._gemini_session)
+                    xml_metadata = response.text
+                finally:
+                    if response:
+                        response.close()
+                metadata = None
+                soup = BeautifulSoup(xml_metadata, 'lxml')
+                tds = soup.find_all('td')
+                if len(tds) > 0:
+                    # sometimes the program id points to an html page with an
+                    # empty table, see e.g. N20200210S0077_bias
+                    title = None
+                    if len(tds[1].contents) > 0:
+                        title = tds[1].contents[0].replace('\n', ' ')
+                    pi_name = None
+                    if len(tds[3].contents) > 0:
+                        pi_name = tds[3].contents[0]
+                    metadata = {
+                        'title': title,
+                        'pi_name': pi_name,
+                    }
+                    self._pm[program_id] = metadata
+            self._logger.debug('End get_pi_metadata')
+        return metadata
 
 
-gemini_session = mc.get_endpoint_session()
-# lazy initialization for program metadata from Gemini
-pm = {}
+class MDCache:
+    """Composition class to hold the fileter and pi metadata caches for easier attachment to GemName instances."""
+
+    def __init__(self, filter_cache, pi_metadata):
+        self.filter_cache = filter_cache
+        self.pi_metadata = pi_metadata

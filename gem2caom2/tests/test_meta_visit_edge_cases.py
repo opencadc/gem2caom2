@@ -74,6 +74,7 @@ from caom2pipe import astro_composable as ac
 from caom2pipe import manage_composable as mc
 from gem2caom2 import svofps, gemini_metadata, gem_name
 from gem2caom2 import fits2caom2_augmentation
+from gem2caom2.program_metadata import MDCache, PIMetadata
 
 from mock import ANY, patch, Mock
 import gem_mocks
@@ -83,11 +84,9 @@ import gem_mocks
 @patch('gem2caom2.gemini_metadata.retrieve_headers')
 @patch('gem2caom2.gemini_metadata.retrieve_json')
 @patch('caom2pipe.astro_composable.get_vo_table_session')
-@patch('gem2caom2.program_metadata.get_pi_metadata')
 @patch('gem2caom2.main_app.ProvenanceFinder')
 def test_broken_obs(
     pf_mock,
-    get_pi_mock,
     svofps_mock,
     json_mock,
     header_mock,
@@ -106,7 +105,6 @@ def test_broken_obs(
 
     gem_mocks._run_test_common(
         data_sources=[f'{gem_mocks.TEST_DATA_DIR}/broken_files'],
-        get_pi_mock=get_pi_mock,
         svofps_mock=svofps_mock,
         pf_mock=pf_mock,
         header_mock=header_mock,
@@ -123,11 +121,9 @@ def test_broken_obs(
 @patch('gem2caom2.gemini_metadata.retrieve_headers')
 @patch('gem2caom2.gemini_metadata.retrieve_json')
 @patch('caom2pipe.astro_composable.get_vo_table_session')
-@patch('gem2caom2.program_metadata.get_pi_metadata')
 @patch('gem2caom2.main_app.ProvenanceFinder')
 def test_unauthorized_at_gemini(
     pf_mock,
-    get_pi_mock,
     svofps_mock,
     json_mock,
     header_mock,
@@ -147,7 +143,6 @@ def test_unauthorized_at_gemini(
     test_set = {test_fqn: 'GS-2021A-Q-777-1-001'}
     gem_mocks._run_test_common(
         data_sources=[f'{gem_mocks.TEST_DATA_DIR}/broken_files'],
-        get_pi_mock=get_pi_mock,
         svofps_mock=svofps_mock,
         pf_mock=pf_mock,
         json_mock=json_mock,
@@ -164,11 +159,9 @@ def test_unauthorized_at_gemini(
 @patch('caom2utils.data_util.get_file_type')
 @patch('gem2caom2.gemini_metadata.retrieve_json')
 @patch('caom2pipe.astro_composable.get_vo_table_session')
-@patch('gem2caom2.program_metadata.get_pi_metadata')
 @patch('gem2caom2.gemini_metadata.ProvenanceFinder')
 def test_going_public(
     pf_mock,
-    get_pi_mock,
     svofps_mock,
     json_mock,
     file_type_mock,
@@ -186,7 +179,6 @@ def test_going_public(
     remote_headers_mock.side_effect = [ac.make_headers_from_file(mock_return_fqn)]
     expected_fqn = f'{gem_mocks.TEST_DATA_DIR}/GMOS/{test_fid}.expected.xml'
 
-    get_pi_mock.side_effect = gem_mocks.mock_get_pi_metadata
     svofps_mock.side_effect = gem_mocks.mock_get_votable
     pf_mock.get.side_effect = gem_mocks.mock_get_data_label
     json_mock.side_effect = gem_mocks.mock_get_obs_metadata
@@ -209,7 +201,10 @@ def test_going_public(
         unlink(actual_fqn)
 
     filter_cache = svofps.FilterMetadataCache(svofps_mock)
-    storage_name = gem_name.GemName(mock_return_fqn, filter_cache)
+    pi_metadata_cache = PIMetadata(Mock())
+    pi_metadata_cache.get_pi_metadata = Mock(side_effect=gem_mocks.mock_get_pi_metadata)
+    md_cache = MDCache(filter_cache, pi_metadata_cache)
+    storage_name = gem_name.GemName(mock_return_fqn, md_cache)
     client_mock = Mock()
     client_mock.data_client.get_head.side_effect = exceptions.UnexpectedException
     client_mock.metadata_client.read.return_value = observation

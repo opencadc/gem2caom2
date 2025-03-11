@@ -69,6 +69,7 @@
 from bs4 import BeautifulSoup
 from collections import defaultdict, deque, OrderedDict
 from datetime import datetime
+from os import scandir
 
 from cadcdata import FileInfo
 from caom2utils.blueprints import _to_int
@@ -96,11 +97,11 @@ class IncrementalSource(dsc.IncrementalDataSource):
     created.
     """
 
-    def __init__(self, config, session, filter_cache):
+    def __init__(self, config, session, md_cache):
         super().__init__(config, start_key=GEM_BOOKMARK)
         self._max_records_encountered = False
         self._session = session
-        self._filter_cache = filter_cache
+        self.md_cache = md_cache
 
     def _initialize_end_dt(self):
         self._end_dt = datetime.now()
@@ -146,7 +147,7 @@ class IncrementalSource(dsc.IncrementalDataSource):
                             entry_dt = make_datetime(entry.get('entrytime'))
                             entries.append(
                                 dsc.RunnerMeta(
-                                    GemName(file_name=file_name, filter_cache=self._filter_cache), entry_dt
+                                    GemName(file_name=file_name, md_cache=self.md_cache), entry_dt
                                 )
                             )
         finally:
@@ -166,10 +167,10 @@ class PublicIncremental(dsc.QueryTimeBoxDataSource):
     """Implements the identification of the work to be done, by querying
     the local TAP service for files that have recently gone public."""
 
-    def __init__(self, config, query_client, filter_cache):
+    def __init__(self, config, query_client, md_cache):
         super().__init__(config)
         self._query_client = query_client
-        self._filter_cache = filter_cache
+        self.md_cache = md_cache
 
     def _initialize_end_dt(self):
         self._end_dt = datetime.now()
@@ -209,7 +210,7 @@ class PublicIncremental(dsc.QueryTimeBoxDataSource):
 
         entries = deque()
         for row in result:
-            gem_name = GemName(file_name=CaomName(row['uri']).file_name, filter_cache=self._filter_cache)
+            gem_name = GemName(file_name=CaomName(row['uri']).file_name, md_cache=self.md_cache)
             gem_name._obs_id = row['observationID']
             entries.append(dsc.RunnerMeta(gem_name, make_datetime(row['lastModified'])))
         self._reporter.capture_todo(len(entries), 0, 0)
@@ -225,12 +226,12 @@ class IncrementalSourceDiskfiles(dsc.IncrementalDataSource):
     entrytime is when the DB record behind the JSON being displayed was created.
     """
 
-    def __init__(self, config, gemini_session, storage_name_ctor, filter_cache):
+    def __init__(self, config, gemini_session, storage_name_ctor, md_cache):
         super().__init__(config, start_key=GEM_BOOKMARK)
         self._max_records_encountered = False
         self._session = gemini_session
         self._storage_name_ctor = storage_name_ctor
-        self._filter_cache = filter_cache
+        self.md_cache = md_cache
 
     def _initialize_end_dt(self):
         self._end_dt = datetime.now()
@@ -273,7 +274,7 @@ class IncrementalSourceDiskfiles(dsc.IncrementalDataSource):
                     for entry_dt, values in metadata.items():
                         for value in values:
                             file_name = value.get('filename')
-                            storage_name = self._storage_name_ctor(file_name, self._filter_cache)
+                            storage_name = self._storage_name_ctor(file_name, self.md_cache)
                             storage_name.file_info[storage_name.destination_uris[0]] = FileInfo(
                                 id=file_name,
                                 size=_to_int(value.get('data_size')),
@@ -326,9 +327,9 @@ class IncrementalSourceDiskfiles(dsc.IncrementalDataSource):
 
 class GeminiTodoFile(dsc.TodoFileDataSourceRunnerMeta):
 
-    def __init__(self, config, filter_cache):
+    def __init__(self, config, md_cache):
         super().__init__(config, GemName)
-        self._filter_cache = filter_cache
+        self.md_cache = md_cache
 
     def _find_work(self, entry_path):
         with open(entry_path) as f:
@@ -337,4 +338,21 @@ class GeminiTodoFile(dsc.TodoFileDataSourceRunnerMeta):
                 if len(temp) > 0:
                     # ignore empty lines
                     self._logger.debug(f'Adding entry {temp} to work list.')
-                    self._work.append(GemName(file_name=temp, filter_cache=self._filter_cache))
+                    self._work.append(GemName(file_name=temp, md_cache=self.md_cache))
+
+
+class GeminiListDirSeparateDataSource(dsc.ListDirSeparateDataSource):
+
+    def __init__(self, config, md_cache):
+        super().__init__(config)
+        self.md_cache = md_cache
+
+    def _append_work(self, entry):
+        with scandir(entry) as dir_listing:
+            for entry in dir_listing:
+                if entry.is_dir() and self._recursive:
+                    self._append_work(entry.path)
+                else:
+                    if self.default_filter(entry):
+                        self._logger.debug(f'Adding {entry.path} to work list.')
+                        self._work.append(GemName(source_names=[entry.path], md_cache=self.md_cache))

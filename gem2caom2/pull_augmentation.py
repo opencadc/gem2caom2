@@ -163,6 +163,7 @@ def look_pull_and_put(storage_name, fqn, url, clients, checksum):
             fqn = f'{fqn}.bz2'
         mc.http_get(url, fqn)
         decompressed_fqn = fqn.replace('.bz2', '')
+        # PD 10-03-25
         # decompress before storing, as the bzip2 compression algorithm does not support random access
         with open(decompressed_fqn, 'wb') as f_out, bz2.BZ2File(fqn, 'rb') as f_in:
             # use shutil to control memory consumption
