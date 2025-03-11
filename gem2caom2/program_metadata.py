@@ -77,7 +77,7 @@ __all__ = ['MDCache', 'PIMetadata']
 
 
 class PIMetadata:
-    """Cache the PI Metadata query resuilts."""
+    """Cache the PI Metadata query results."""
 
     def __init__(self, gemini_session):
         self._pm = {}
