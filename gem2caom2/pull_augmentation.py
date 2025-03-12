@@ -66,10 +66,12 @@
 # ***********************************************************************
 #
 
+import bz2
 import logging
 import os
 
 from datetime import datetime, timezone
+from shutil import copyfileobj
 
 from caom2 import Observation
 from caom2pipe import manage_composable as mc
@@ -136,8 +138,8 @@ def visit(observation, **kwargs):
 
 
 def look_pull_and_put(storage_name, fqn, url, clients, checksum):
-    """Checks to see if a file exists at CADC. If yes, stop. If no,
-    pull via https to local storage, then put to CADC storage.
+    """Checks to see if a file exists at CADC. If yes, stop. If no, pull via https to local storage, decompress,
+    then put to CADC storage.
 
     :param storage_name Artifact URI as the file will appear at CADC
     :param fqn name on disk for caching between the
@@ -148,12 +150,24 @@ def look_pull_and_put(storage_name, fqn, url, clients, checksum):
         just the checksum part of ChecksumURI please, or the comparison will
         always fail.
     """
+    # this should be a decompressed to decompressed size comparison - the decompressed checksum is available
+    # from the /jsonsummary endpoint
     cadc_meta = clients.data_client.info(storage_name)
     if (
         checksum is not None and cadc_meta is not None and cadc_meta.md5sum.replace('md5:', '') != checksum
     ) or cadc_meta is None:
         logging.debug(f'Different checksums: Source {checksum}, CADC {cadc_meta}')
+        if url.endswith('.fits'):
+            url = f'{url}.bz2'
+        if fqn.endswith('.fits'):
+            fqn = f'{fqn}.bz2'
         mc.http_get(url, fqn)
+        decompressed_fqn = fqn.replace('.bz2', '')
+        # PD 10-03-25
+        # decompress before storing, as the bzip2 compression algorithm does not support random access
+        with open(decompressed_fqn, 'wb') as f_out, bz2.BZ2File(fqn, 'rb') as f_in:
+            # use shutil to control memory consumption
+            copyfileobj(f_in, f_out)
         clients.data_client.put(os.path.dirname(fqn), storage_name)
         logging.info(f'Retrieved {os.path.basename(fqn)} for storage as {storage_name}')
     else:

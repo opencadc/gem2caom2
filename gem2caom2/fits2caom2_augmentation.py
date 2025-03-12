@@ -75,7 +75,7 @@ class GeminiFits2caom2Visitor(cc.Fits2caom2VisitorRunnerMeta):
     def __init__(self, observation, **kwargs):
         super().__init__(observation, **kwargs)
 
-    def _get_mapping(self, dest_uri):
+    def _get_mappings(self, dest_uri):
         return main_app.mapping_factory(
             self._storage_name, self._clients, self._reporter, self._observation, self._config
         )

@@ -140,6 +140,7 @@ class GeminiMetadataLookup:
         return self._search_json(uri, 'exposure_time')
 
     def data_md5(self, uri):
+        # uncompressed md5sum, which is how the file is stored at CADC
         return self._search_json(uri, 'data_md5')
 
     def filter_name(self, uri):
@@ -365,8 +366,8 @@ class ProvenanceFinder:
     def _check_remote(self, uri):
         self._logger.debug(f'Begin _check_remote for {uri}')
         result = None
-        json = retrieve_json(uri, self._logger, self._gemini_session)
         f_id = obs_file_relationship.remove_extensions(uri.split('/')[-1])
+        json = retrieve_json(f_id, self._logger, self._gemini_session)
         for ii in json:
             y = obs_file_relationship.remove_extensions(ii.get('name'))
             if y == f_id:
@@ -434,7 +435,7 @@ class GeminiMetaVisitRunnerMeta(MetaVisitRunnerMeta):
                     )
             # TODO - is there a time when not needing archive.gemini.edu is possible?
             if uri not in self._storage_name.json_metadata:
-                json_record = retrieve_json(source_name, self._logger, self._clients.gemini_session)
+                json_record = retrieve_json(self._storage_name.file_id, self._logger, self._clients.gemini_session)
                 # json is an array of dicts, one dict per file, find the right dict
                 for jj in json_record:
                     # choose this key, and the comparison, because the lhs can be
@@ -589,12 +590,12 @@ def retrieve_gemini_headers(source_name, logger, session):
     return headers
 
 
-def retrieve_json(source_name, logger, session):
+def retrieve_json(file_id, logger, session):
     # source name is a file id, because that's the only part that's
     # required to be unique for a retrieval from archive.gemini.edu
     #
-    logger.debug(f'Begin retrieve_json for {source_name}')
-    gemini_url = f'{GEMINI_METADATA_URL}{source_name}'
+    logger.debug(f'Begin retrieve_json for {file_id}')
+    gemini_url = f'{GEMINI_METADATA_URL}{file_id}'
     # Open the URL and fetch the JSON document for the observation
     response = None
     try:
@@ -604,6 +605,6 @@ def retrieve_json(source_name, logger, session):
         if response is not None:
             response.close()
     if len(metadata) == 0:
-        raise mc.CadcException(f'Could not find JSON record for {source_name} at {gemini_url}.')
+        raise mc.CadcException(f'Could not find JSON record for {file_id} at {gemini_url}.')
     logger.debug(f'End retrieve_json')
     return metadata

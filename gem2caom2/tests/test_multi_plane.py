@@ -74,8 +74,9 @@ from astropy.utils.exceptions import AstropyWarning
 from astropy.wcs import FITSFixedWarning
 from caom2utils import data_util
 from caom2pipe.manage_composable import CadcException, ExecutionReporter2, read_obs_from_file, TaskType
-from gem2caom2 import fits2caom2_augmentation, gemini_metadata, obs_file_relationship, svofps
+from gem2caom2 import fits2caom2_augmentation, gemini_metadata, svofps
 from gem2caom2.gem_name import GemName
+from gem2caom2.program_metadata import MDContext, PIMetadata
 
 from unittest.mock import Mock, patch
 
@@ -134,9 +135,7 @@ def pytest_generate_tests(metafunc):
 @patch('gem2caom2.gemini_metadata.retrieve_json')
 @patch('caom2pipe.astro_composable.get_vo_table_session')
 @patch('gem2caom2.gemini_metadata.ProvenanceFinder')
-@patch('gem2caom2.program_metadata.get_pi_metadata')
 def test_visitor(
-    get_pi_mock,
     pf_mock,
     svofps_mock,
     json_mock,
@@ -153,8 +152,9 @@ def test_visitor(
         test_set.append(f'{gem_mocks.TEST_DATA_DIR}/multi_plane/{f_name}.fits.header')
     warnings.simplefilter('ignore', category=FITSFixedWarning)
     warnings.simplefilter('ignore', AstropyWarning)
-    get_pi_mock.side_effect = gem_mocks.mock_get_pi_metadata
     svofps_mock.side_effect = gem_mocks.mock_get_votable
+    pi_metadata = PIMetadata(gemini_session=Mock())
+    pi_metadata.get_pi_metadata = Mock(side_effect=gem_mocks.mock_get_pi_metadata)
     pf_mock.return_value.get.side_effect = gem_mocks.mock_get_data_label
     json_mock.side_effect = gem_mocks.mock_get_obs_metadata
     file_type_mock.return_value = 'application/fits'
@@ -185,6 +185,7 @@ def test_visitor(
 
     test_reporter = ExecutionReporter2(test_config)
     filter_cache = svofps.FilterMetadataCache(svofps_mock)
+    md_context = MDContext(filter_cache, pi_metadata)
     test_subject = gemini_metadata.GeminiMetaVisitRunnerMeta(
         clients_mock, test_config, [fits2caom2_augmentation], test_reporter
     )
@@ -201,7 +202,7 @@ def test_visitor(
 
         header_mock.side_effect = _read_header_mock
 
-        storage_name = GemName(entry, filter_cache)
+        storage_name = GemName(entry, md_context)
         context = {'storage_name': storage_name}
         try:
             test_subject.execute(context)

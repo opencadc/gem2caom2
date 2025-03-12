@@ -221,7 +221,7 @@ class GeminiMapping(cc.TelescopeMapping2):
         super().__init__(storage_name, clients, reporter, observation, config)
         self._instrument = instrument
         self._lookup = lookup
-        self._filter_cache = self._storage_name._filter_cache
+        self._filter_cache = self._storage_name.md_context.filter_cache
         self._provenance_finder = provenance_finder
         self.fm = None
 
@@ -760,11 +760,11 @@ class GeminiMapping(cc.TelescopeMapping2):
                         self._logger.warning(f'Delete part {part} from artifact {artifact.uri}')
                         artifact.parts.pop(part)
 
-                if self._observation.proposal is not None:
-                    program = program_metadata.get_pi_metadata(self._observation.proposal.id)
-                    if program is not None:
-                        self._observation.proposal.pi_name = program['pi_name']
-                        self._observation.proposal.title = program['title']
+                if self._observation.proposal is not None and self._observation.proposal.pi_name is None:
+                    program = self._storage_name.md_context.pi_metadata.get_pi_metadata(self._observation.proposal.id)
+                    if program:
+                        self._observation.proposal.pi_name = program.get('pi_name')
+                        self._observation.proposal.title = program.get('title')
 
             if isinstance(self._observation, DerivedObservation):
                 cc.update_observation_members(self._observation)
@@ -3333,11 +3333,11 @@ class MAROONXTemporal(GeminiMapping):
             if isinstance(self._observation, DerivedObservation):
                 cc.update_observation_members(self._observation)
 
-            if self._observation.proposal is not None:
-                program = program_metadata.get_pi_metadata(self._observation.proposal.id)
-                if program is not None:
-                    self._observation.proposal.pi_name = program['pi_name']
-                    self._observation.proposal.title = program['title']
+            if self._observation.proposal is not None and self._observation.proposal.pi_name is None:
+                program = self._storage_name.md_context.pi_metadata.get_pi_metadata(self._observation.proposal.id)
+                if program:
+                    self._observation.proposal.pi_name = program.get('pi_name')
+                    self._observation.proposal.title = program.get('title')
 
             GeminiMapping.value_repair.repair(self._observation)
         except Exception as e:
@@ -4948,4 +4948,4 @@ def mapping_factory(storage_name, clients, reporter, observation, config):
         reporter.rejected.record(mc.Rejected.MYSTERY_VALUE, storage_name.file_name)
         raise mc.CadcException(f'Mystery name {inst}.')
     logging.debug(f'Created {result.__class__.__name__} for mapping.')
-    return result
+    return [result]

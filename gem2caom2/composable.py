@@ -71,7 +71,6 @@ import sys
 import traceback
 
 from caom2pipe.client_composable import ClientCollection
-from caom2pipe import data_source_composable as dsc
 from caom2pipe import manage_composable as mc
 from caom2pipe import run_composable as rc
 from gem2caom2 import ghost_preview_augmentation, preview_augmentation
@@ -79,6 +78,7 @@ from gem2caom2 import pull_augmentation, data_source
 from gem2caom2 import cleanup_augmentation, fits2caom2_augmentation
 from gem2caom2 import svofps
 from gem2caom2.gem_name import GemName
+from gem2caom2.program_metadata import MDContext, PIMetadata
 
 
 DATA_VISITORS = [ghost_preview_augmentation]
@@ -121,6 +121,8 @@ def _common_init():
     gemini_session = mc.get_endpoint_session()
     svofps_session = mc.get_endpoint_session()
     filter_cache = svofps.FilterMetadataCache(svofps_session)
+    pi_metadata = PIMetadata(gemini_session)
+    md_context = MDContext(filter_cache, pi_metadata)
     clients.gemini_session = gemini_session
     clients.svo_session = svofps_session
     if config.use_local_files or mc.TaskType.SCRAPE in config.task_types:
@@ -132,7 +134,7 @@ def _common_init():
     mc.StorageName.collection = config.collection
     mc.StorageName.scheme = config.scheme
     mc.StorageName.preview_scheme = config.preview_scheme
-    return clients, config, meta_visitors, filter_cache
+    return clients, config, meta_visitors, md_context
 
 
 def _run():
@@ -140,11 +142,12 @@ def _run():
     Uses a todo file with file names, even though Gemini provides
     information about existing data referenced by observation ID.
     """
-    clients, config, meta_visitors, filter_cache = _common_init()
+    clients, config, meta_visitors, md_context = _common_init()
     if config.use_local_files or mc.TaskType.SCRAPE in config.task_types:
-        source = dsc.ListDirSeparateDataSource(config)
+        # source = dsc.ListDirSeparateDataSource(config)
+        source = data_source.GeminiListDirSeparateDataSource(config, md_context)
     else:
-        source = data_source.GeminiTodoFile(config, filter_cache)
+        source = data_source.GeminiTodoFile(config, md_context)
     return rc.run_by_todo_runner_meta(
         config=config,
         meta_visitors=meta_visitors,
@@ -180,8 +183,8 @@ def _run_by_public():
     :return 0 if successful, -1 if there's any sort of failure. Return status
         is used by airflow for task instance management and reporting.
     """
-    clients, config, meta_visitors, filter_cache = _common_init()
-    incremental_source = data_source.PublicIncremental(config, clients.query_client, filter_cache)
+    clients, config, meta_visitors, md_context = _common_init()
+    incremental_source = data_source.PublicIncremental(config, clients.query_client, md_context)
     return rc.run_by_state_runner_meta(
         config=config,
         meta_visitors=meta_visitors,
@@ -212,8 +215,8 @@ def _run_state():
     :return 0 if successful, -1 if there's any sort of failure. Return status
         is used by airflow for task instance management and reporting.
     """
-    clients, config, meta_visitors, filter_cache = _common_init()
-    incremental_source = data_source.IncrementalSource(config, clients.gemini_session, filter_cache)
+    clients, config, meta_visitors, md_context = _common_init()
+    incremental_source = data_source.IncrementalSource(config, clients.gemini_session, md_context)
     return rc.run_by_state_runner_meta(
         config=config,
         meta_visitors=meta_visitors,
@@ -243,8 +246,8 @@ def _run_incremental_diskfiles():
 
     :return 0 if successful, -1 if there's any sort of failure.
     """
-    clients, config, meta_visitors, filter_cache = _common_init()
-    incremental_source = data_source.IncrementalSourceDiskfiles(config, clients.gemini_session, GemName, filter_cache)
+    clients, config, meta_visitors, md_context = _common_init()
+    incremental_source = data_source.IncrementalSourceDiskfiles(config, clients.gemini_session, GemName, md_context)
     return rc.run_by_state_runner_meta(
         config=config,
         meta_visitors=meta_visitors,

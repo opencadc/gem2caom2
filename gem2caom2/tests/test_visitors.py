@@ -79,6 +79,7 @@ from caom2 import Instrument
 from gem2caom2 import ghost_preview_augmentation, preview_augmentation, pull_augmentation, cleanup_augmentation
 from gem2caom2 import gemini_metadata, util
 from gem2caom2 import svofps, gem_name
+from gem2caom2.program_metadata import MDContext
 from caom2pipe import caom_composable as cc
 from caom2pipe import manage_composable as mc
 import gem_mocks
@@ -179,11 +180,12 @@ def test_preview_augment_unknown_no_preview(test_data_dir, test_config, tmp_path
 def test_pull_augmentation(http_mock, json_mock, file_type_mock, test_config, test_data_dir, tmp_path):
     test_config.change_working_directory(tmp_path)
     obs = mc.read_obs_from_file(f'{test_data_dir}/visit_original_uri_start.xml')
-    obs.planes[TEST_PRODUCT_ID].data_release = datetime.now(tz=timezone.utc).replace(tzinfo=None)
-    original_uri = 'gemini:GEMINI/GN2001BQ013-04.fits'
-    assert len(obs.planes[TEST_PRODUCT_ID].artifacts) == 1, 'initial condition'
-    assert original_uri in obs.planes[TEST_PRODUCT_ID].artifacts.keys(), 'initial condition'
-    test_uri = f'{test_config.scheme}:{test_config.collection}/{TEST_PRODUCT_ID}.fits'
+    test_product_id = 'S20050825S0143'
+    obs.planes[test_product_id].data_release = datetime.now(tz=timezone.utc).replace(tzinfo=None)
+    original_uri = 'gemini:GEMINI/S20050825S0143.fits'
+    assert len(obs.planes[test_product_id].artifacts) == 1, 'initial condition'
+    assert original_uri in obs.planes[test_product_id].artifacts.keys(), 'initial condition'
+    test_uri = f'{test_config.scheme}:{test_config.collection}/{test_product_id}.fits'
 
     test_reporter = mc.ExecutionReporter2(test_config)
     cadc_client_mock = Mock()
@@ -192,10 +194,11 @@ def test_pull_augmentation(http_mock, json_mock, file_type_mock, test_config, te
     clients_mock.data_client = cadc_client_mock
     json_mock.side_effect = gem_mocks.mock_retrieve_json
     filter_cache = svofps.FilterMetadataCache(Mock())
-    test_storage_name = gem_name.GemName(file_name='GN2001BQ013-04.fits', filter_cache=filter_cache)
+    md_context = MDContext(filter_cache, pi_metadata=Mock())
+    test_storage_name = gem_name.GemName(file_name='S20050825S0143.fits', md_context=md_context)
     file_type_mock.return_values = 'application/fits'
     kwargs = {
-        'working_directory': test_data_dir,
+        'working_directory': '/test_files',
         'clients': clients_mock,
         'reporter': test_reporter,
         'storage_name': test_storage_name,
@@ -206,18 +209,18 @@ def test_pull_augmentation(http_mock, json_mock, file_type_mock, test_config, te
     test_precondition._set_preconditions()
 
     obs = pull_augmentation.visit(obs, **kwargs)
-    test_url = f'{pull_augmentation.FILE_URL}/{TEST_PRODUCT_ID}.fits'
-    test_prev = f'{test_data_dir}/{TEST_PRODUCT_ID}.fits'
-    http_mock.assert_called_with(test_url, test_prev), 'mock not called'
+    test_url = f'{pull_augmentation.FILE_URL}/{test_product_id}.fits'
+    test_prev = f'/test_files/{test_product_id}.fits'
+    http_mock.assert_called_with(f'{test_url}.bz2', f'{test_prev}.bz2'), 'mock not called'
     assert cadc_client_mock.put.called, 'put mock not called'
-    cadc_client_mock.put.assert_called_with(test_data_dir, 'gemini:GEMINI/GN2001BQ013-04.fits'), 'wrong put args'
+    cadc_client_mock.put.assert_called_with('/test_files', 'gemini:GEMINI/S20050825S0143.fits'), 'wrong put args'
     assert obs is not None, 'expect a result'
-    assert len(obs.planes[TEST_PRODUCT_ID].artifacts) == 1, 'no new artifacts'
+    assert len(obs.planes[test_product_id].artifacts) == 1, 'no new artifacts'
     try:
-        ignore = obs.planes[TEST_PRODUCT_ID].artifacts[test_uri]
+        ignore = obs.planes[test_product_id].artifacts[test_uri]
     except KeyError as ke:
         # because CAOM does magic
-        result = obs.planes[TEST_PRODUCT_ID].artifacts[original_uri]
+        result = obs.planes[test_product_id].artifacts[original_uri]
         assert result.uri == test_uri, f'wrong uri {result.uri}'
 
 
@@ -408,19 +411,18 @@ def test_cleanup(test_data_dir):
 
 @patch('caom2pipe.client_composable.ClientCollection')
 @patch('caom2pipe.manage_composable.http_get')
-def test_look_pull_and_put(http_mock, mock_client, test_data_dir):
-    test_storage_name = 'cadc:GEMINI/TEST.fits'
+def test_look_pull_and_put(http_mock, mock_client, test_config):
+    test_storage_name = 'gemini:GEMINI/S20050825S0143.fits'
     mock_client.info.return_value = FileInfo(
         id=test_storage_name,
         size=1234,
         md5sum='9473fdd0d880a43c21b7778d34872157',
     )
-    f_name = 'TEST.fits'
+    f_name = 'S20050825S0143.fits'
     url = f'https://localhost/{f_name}'
-    test_config = mc.Config()
     test_config.observe_execution = True
     mock_client.info.return_value = None
-    test_fqn = os.path.join(test_data_dir, f_name)
+    test_fqn = os.path.join('/test_files', f_name)
     pull_augmentation.look_pull_and_put(
         test_storage_name,
         test_fqn,
@@ -428,8 +430,8 @@ def test_look_pull_and_put(http_mock, mock_client, test_data_dir):
         mock_client,
         'md5:01234',
     )
-    mock_client.data_client.put.assert_called_with(test_data_dir, test_storage_name), 'mock not called'
-    http_mock.assert_called_with(url, test_fqn), 'http mock not called'
+    mock_client.data_client.put.assert_called_with('/test_files', test_storage_name), 'mock not called'
+    http_mock.assert_called_with(f'{url}.bz2', f'{test_fqn}.bz2'), 'http mock not called'
 
 
 def test_ghost_preview_augmentation(test_config, test_data_dir, tmp_path):
