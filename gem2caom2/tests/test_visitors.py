@@ -79,7 +79,7 @@ from caom2 import Instrument
 from gem2caom2 import ghost_preview_augmentation, preview_augmentation, pull_augmentation, cleanup_augmentation
 from gem2caom2 import gemini_metadata, util
 from gem2caom2 import svofps, gem_name
-from gem2caom2.program_metadata import MDCache
+from gem2caom2.program_metadata import MDContext
 from caom2pipe import caom_composable as cc
 from caom2pipe import manage_composable as mc
 import gem_mocks
@@ -194,8 +194,8 @@ def test_pull_augmentation(http_mock, json_mock, file_type_mock, test_config, te
     clients_mock.data_client = cadc_client_mock
     json_mock.side_effect = gem_mocks.mock_retrieve_json
     filter_cache = svofps.FilterMetadataCache(Mock())
-    md_cache = MDCache(filter_cache, pi_metadata=Mock())
-    test_storage_name = gem_name.GemName(file_name='S20050825S0143.fits', md_cache=md_cache)
+    md_context = MDContext(filter_cache, pi_metadata=Mock())
+    test_storage_name = gem_name.GemName(file_name='S20050825S0143.fits', md_context=md_context)
     file_type_mock.return_values = 'application/fits'
     kwargs = {
         'working_directory': '/test_files',

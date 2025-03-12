@@ -73,11 +73,11 @@ from bs4 import BeautifulSoup
 from caom2pipe import manage_composable as mc
 
 
-__all__ = ['MDCache', 'PIMetadata']
+__all__ = ['MDContext', 'PIMetadata']
 
 
 class PIMetadata:
-    """Cache the PI Metadata query resuilts."""
+    """Store the PI Metadata query results for the length of the application run."""
 
     def __init__(self, gemini_session):
         self._pm = {}
@@ -123,8 +123,8 @@ class PIMetadata:
         return metadata
 
 
-class MDCache:
-    """Composition class to hold the fileter and pi metadata caches for easier attachment to GemName instances."""
+class MDContext:
+    """Composition class to hold the filter cache and pi metadata for easier attachment to GemName instances."""
 
     def __init__(self, filter_cache, pi_metadata):
         self.filter_cache = filter_cache

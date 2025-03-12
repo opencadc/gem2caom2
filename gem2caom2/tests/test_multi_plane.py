@@ -76,7 +76,7 @@ from caom2utils import data_util
 from caom2pipe.manage_composable import CadcException, ExecutionReporter2, read_obs_from_file, TaskType
 from gem2caom2 import fits2caom2_augmentation, gemini_metadata, svofps
 from gem2caom2.gem_name import GemName
-from gem2caom2.program_metadata import MDCache, PIMetadata
+from gem2caom2.program_metadata import MDContext, PIMetadata
 
 from unittest.mock import Mock, patch
 
@@ -185,7 +185,7 @@ def test_visitor(
 
     test_reporter = ExecutionReporter2(test_config)
     filter_cache = svofps.FilterMetadataCache(svofps_mock)
-    md_cache = MDCache(filter_cache, pi_metadata)
+    md_context = MDContext(filter_cache, pi_metadata)
     test_subject = gemini_metadata.GeminiMetaVisitRunnerMeta(
         clients_mock, test_config, [fits2caom2_augmentation], test_reporter
     )
@@ -202,7 +202,7 @@ def test_visitor(
 
         header_mock.side_effect = _read_header_mock
 
-        storage_name = GemName(entry, md_cache)
+        storage_name = GemName(entry, md_context)
         context = {'storage_name': storage_name}
         try:
             test_subject.execute(context)

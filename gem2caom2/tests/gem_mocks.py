@@ -92,7 +92,7 @@ from caom2utils.data_util import get_local_file_headers
 from gem2caom2 import data_source, obs_file_relationship, svofps
 from gem2caom2 import gemini_metadata, fits2caom2_augmentation
 from gem2caom2.gem_name import GemName
-from gem2caom2.program_metadata import MDCache, PIMetadata
+from gem2caom2.program_metadata import MDContext, PIMetadata
 from gem2caom2.util import Inst
 
 
@@ -1079,12 +1079,12 @@ def _run_test_common(
 
     test_reporter = mc.ExecutionReporter2(test_config)
     filter_cache = svofps.FilterMetadataCache(svofps_mock)
-    pi_metadata_cache = PIMetadata(Mock())
-    pi_metadata_cache.get_pi_metadata = Mock(side_effect=mock_get_pi_metadata)
-    md_cache = MDCache(filter_cache, pi_metadata_cache)
+    pi_metadata = PIMetadata(Mock())
+    pi_metadata.get_pi_metadata = Mock(side_effect=mock_get_pi_metadata)
+    md_context = MDContext(filter_cache, pi_metadata)
     clients_mock = Mock()
     for test_f_name, test_obs_id in test_set.items():
-        storage_name = GemName(test_f_name, md_cache)
+        storage_name = GemName(test_f_name, md_context)
         storage_name.obs_id = test_obs_id
         test_subject = gemini_metadata.GeminiMetaVisitRunnerMeta(
             clients_mock, test_config, [fits2caom2_augmentation], test_reporter

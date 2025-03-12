@@ -74,7 +74,7 @@ from caom2pipe import astro_composable as ac
 from caom2pipe import manage_composable as mc
 from gem2caom2 import svofps, gemini_metadata, gem_name
 from gem2caom2 import fits2caom2_augmentation
-from gem2caom2.program_metadata import MDCache, PIMetadata
+from gem2caom2.program_metadata import MDContext, PIMetadata
 
 from mock import ANY, patch, Mock
 import gem_mocks
@@ -201,10 +201,10 @@ def test_going_public(
         unlink(actual_fqn)
 
     filter_cache = svofps.FilterMetadataCache(svofps_mock)
-    pi_metadata_cache = PIMetadata(Mock())
-    pi_metadata_cache.get_pi_metadata = Mock(side_effect=gem_mocks.mock_get_pi_metadata)
-    md_cache = MDCache(filter_cache, pi_metadata_cache)
-    storage_name = gem_name.GemName(mock_return_fqn, md_cache)
+    pi_metadata = PIMetadata(Mock())
+    pi_metadata.get_pi_metadata = Mock(side_effect=gem_mocks.mock_get_pi_metadata)
+    md_context = MDContext(filter_cache, pi_metadata)
+    storage_name = gem_name.GemName(mock_return_fqn, md_context)
     client_mock = Mock()
     client_mock.data_client.get_head.side_effect = exceptions.UnexpectedException
     client_mock.metadata_client.read.return_value = observation

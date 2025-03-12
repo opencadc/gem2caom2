@@ -78,7 +78,7 @@ from caom2pipe.manage_composable import CadcException, ExecutionReporter2, read_
 from gem2caom2.util import Inst
 from gem2caom2 import fits2caom2_augmentation, gemini_metadata, obs_file_relationship, svofps
 from gem2caom2.gem_name import GemName
-from gem2caom2.program_metadata import MDCache, PIMetadata
+from gem2caom2.program_metadata import MDContext, PIMetadata
 
 from unittest.mock import ANY, Mock, patch
 import gem_mocks
@@ -188,13 +188,13 @@ def test_visitor(
 
     test_reporter = ExecutionReporter2(test_config)
     filter_cache = svofps.FilterMetadataCache(svofps_mock)
-    pi_metadata_cache = PIMetadata(gemini_session=Mock())
-    pi_metadata_cache.get_pi_metadata = Mock(side_effect=gem_mocks.mock_get_pi_metadata)
-    md_cache = MDCache(filter_cache, pi_metadata_cache)
+    pi_metadata = PIMetadata(gemini_session=Mock())
+    pi_metadata.get_pi_metadata = Mock(side_effect=gem_mocks.mock_get_pi_metadata)
+    md_context = MDContext(filter_cache, pi_metadata)
     test_subject = gemini_metadata.GeminiMetaVisitRunnerMeta(
         clients_mock, test_config, [fits2caom2_augmentation], test_reporter
     )
-    storage_name = GemName(test_name, md_cache)
+    storage_name = GemName(test_name, md_context)
     if gem_mocks.LOOKUP[test_file_id][1] == Inst.ZORRO:
         storage_name.obs_id = test_file_id[:-1]
     else:

@@ -436,7 +436,7 @@ def test_run_state_compression_commands(
 
     def _mock_dir_list(arg1, output_file='', data_only=True, response_format='arg4'):
         result = deque()
-        test_gem_name = gem_name.GemName(file_name='/test_files/S20050825S0143.fits.bz2', md_cache=Mock())
+        test_gem_name = gem_name.GemName(file_name='/test_files/S20050825S0143.fits.bz2', md_context=Mock())
         result.append(RunnerMeta(test_gem_name, datetime(2019, 10, 23, 16, 19)))
         return result
 
