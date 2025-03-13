@@ -74,8 +74,8 @@ from gem2caom2.program_metadata import PIMetadata
 @patch('gem2caom2.program_metadata.mc.query_endpoint_session')
 def test_get_pi_metadata_no_response(mock_query):
     # Mock the response to return an empty document
-    test_query_result = gem_mocks.Object()
-    test_query_result.text = """<!DOCTYPE html>
+    # the flavours of empty document that I know about as of writing
+    text1 = """<!DOCTYPE html>
 <html><head>
 <meta charset="UTF-8">
 <link rel="stylesheet" type="text/css" href="/static/table.css">
@@ -84,16 +84,57 @@ def test_get_pi_metadata_no_response(mock_query):
 </head>
 <body>
 <h1>Program: GS-CAL20240215</h1>
+
+<h2>There is no information about this program</h2>
+
 </body>
 </html>
 """
 
-    mock_query.return_value = test_query_result
-    gemini_session = MagicMock()
-    test_subject = PIMetadata(gemini_session)
-    test_result = test_subject.get_pi_metadata('test_program_id')
-    assert test_result == {}, f'empty program id {test_result}'
-    test_result_2 = test_subject.get_pi_metadata('test_program_id')
-    assert test_result_2 is not None, 'None check'
-    assert mock_query.called, 'query call'
-    assert mock_query.call_count == 1, 'query call count'
+    text2 = """<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+
+<title>Detail for Program: GN-CAL20180224</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GN-CAL20180224</h1>
+
+<table>
+ <tr><td>Title:<td>GN-CAL20180224</tr>
+ <tr><td>PI:<td></tr>
+ <tr><td>Co-I(s):<td></tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+No abstract
+</div>
+
+
+
+</body>
+</html>
+"""
+    test_data = {
+        'GS-CAL20240215': text1,
+        'GN-CAL20180224': text2,
+    }
+    expected_call_count = 1
+    for program_id, program_id_xml in test_data.items():
+        test_query_result = gem_mocks.Object()
+        test_query_result.text = program_id_xml
+
+        mock_query.return_value = test_query_result
+        gemini_session = MagicMock()
+        test_subject = PIMetadata(gemini_session)
+        test_result = test_subject.get(program_id)
+        assert test_result == {}, f'empty program id {test_result}'
+        test_result_2 = test_subject.get(program_id)
+        assert test_result_2 is not None, 'None check'
+        assert mock_query.called, 'query call'
+        assert mock_query.call_count == expected_call_count, 'query call count'
+        expected_call_count += 1

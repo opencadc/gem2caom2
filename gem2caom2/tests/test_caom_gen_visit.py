@@ -127,6 +127,7 @@ def pytest_generate_tests(metafunc):
         metafunc.parametrize('test_name', file_list)
 
 
+@patch('gem2caom2.program_metadata.mc.query_endpoint_session')
 @patch('caom2utils.data_util.get_file_type')
 @patch('gem2caom2.gemini_metadata.retrieve_headers')
 @patch('gem2caom2.gemini_metadata.retrieve_json')
@@ -138,6 +139,7 @@ def test_visitor(
     json_mock,
     header_mock,
     file_type_mock,
+    pi_mock,
     test_name,
     test_config,
     tmp_path,
@@ -150,6 +152,7 @@ def test_visitor(
     pf_mock.return_value.get.side_effect = gem_mocks.mock_get_data_label
     json_mock.side_effect = gem_mocks.mock_get_obs_metadata
     file_type_mock.return_value = 'application/fits'
+    pi_mock.side_effect = gem_mocks.mock_get_pi_metadata
 
     test_config.task_types = [TaskType.SCRAPE]
     test_config.use_local_files = True
@@ -189,7 +192,6 @@ def test_visitor(
     test_reporter = ExecutionReporter2(test_config)
     filter_cache = svofps.FilterMetadataCache(svofps_mock)
     pi_metadata = PIMetadata(gemini_session=Mock())
-    pi_metadata.get_pi_metadata = Mock(side_effect=gem_mocks.mock_get_pi_metadata)
     md_context = MDContext(filter_cache, pi_metadata)
     test_subject = gemini_metadata.GeminiMetaVisitRunnerMeta(
         clients_mock, test_config, [fits2caom2_augmentation], test_reporter

@@ -84,8 +84,8 @@ class PIMetadata:
         self._gemini_session = gemini_session
         self._logger = logging.getLogger(self.__class__.__name__)
 
-    def get_pi_metadata(self, program_id):
-        self._logger.debug(f'Begin get_pi_metadata for {program_id}')
+    def get(self, program_id):
+        self._logger.debug(f'Begin get for {program_id}')
         metadata = self._pm.get(program_id)
         if metadata is None:
             # for TaskType.SCRAPE
@@ -112,16 +112,19 @@ class PIMetadata:
                     title = None
                     if len(tds[1].contents) > 0:
                         title = tds[1].contents[0].replace('\n', ' ')
+                        if title == program_id:
+                            # the additional information adds no value so don't keep it
+                            title = None
                     pi_name = None
-                    if len(tds[3].contents) > 0:
-                        pi_name = tds[3].contents[0]
-                    metadata = {
-                        'title': title,
-                        'pi_name': pi_name,
-                    }
+                    pi_name = tds[3].contents[0] if len(tds[3].contents) > 0 else None
+                    if title is not None and pi_name is not None:
+                        metadata = {
+                            'title': title,
+                            'pi_name': pi_name,
+                        }
                 # keep empty entries to minimize archive.gemini.edu queries each run
                 self._pm[program_id] = metadata
-        self._logger.debug('End get_pi_metadata')
+        self._logger.debug('End get')
         return metadata
 
 
