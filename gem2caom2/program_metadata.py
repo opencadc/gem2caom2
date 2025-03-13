@@ -97,12 +97,13 @@ class PIMetadata:
                 # Open the URL and fetch the JSON document for the observation
                 response = None
                 try:
+                    self._logger.debug(f'Querying {program_url} for program metadata.')
                     response = mc.query_endpoint_session(program_url, self._gemini_session)
                     xml_metadata = response.text
                 finally:
                     if response:
                         response.close()
-                metadata = None
+                metadata = {}
                 soup = BeautifulSoup(xml_metadata, 'lxml')
                 tds = soup.find_all('td')
                 if len(tds) > 0:
@@ -118,8 +119,9 @@ class PIMetadata:
                         'title': title,
                         'pi_name': pi_name,
                     }
-                    self._pm[program_id] = metadata
-            self._logger.debug('End get_pi_metadata')
+                # keep empty entries to minimize archive.gemini.edu queries each run
+                self._pm[program_id] = metadata
+        self._logger.debug('End get_pi_metadata')
         return metadata
 
 
