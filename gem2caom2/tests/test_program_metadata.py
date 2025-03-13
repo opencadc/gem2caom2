@@ -138,3 +138,5 @@ No abstract
         assert mock_query.called, 'query call'
         assert mock_query.call_count == expected_call_count, 'query call count'
         expected_call_count += 1
+
+    assert (expected_call_count - 1) == 2, 'in-memory capture failure'
