@@ -129,7 +129,7 @@ def pytest_generate_tests(metafunc):
         obs_id_list.append(ii)
     metafunc.parametrize('test_name', obs_id_list)
 
-
+@patch('gem2caom2.program_metadata.mc.query_endpoint_session')
 @patch('caom2utils.data_util.get_file_type')
 @patch('gem2caom2.gemini_metadata.retrieve_headers')
 @patch('gem2caom2.gemini_metadata.retrieve_json')
@@ -141,6 +141,7 @@ def test_visitor(
     json_mock,
     header_mock,
     file_type_mock,
+    pi_mock,
     test_name,
     test_config,
     tmp_path,
@@ -154,7 +155,7 @@ def test_visitor(
     warnings.simplefilter('ignore', AstropyWarning)
     svofps_mock.side_effect = gem_mocks.mock_get_votable
     pi_metadata = PIMetadata(gemini_session=Mock())
-    pi_metadata.get_pi_metadata = Mock(side_effect=gem_mocks.mock_get_pi_metadata)
+    pi_mock.side_effect = gem_mocks.mock_get_pi_metadata
     pf_mock.return_value.get.side_effect = gem_mocks.mock_get_data_label
     json_mock.side_effect = gem_mocks.mock_get_obs_metadata
     file_type_mock.return_value = 'application/fits'

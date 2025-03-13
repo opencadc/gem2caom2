@@ -80,6 +80,7 @@ from mock import ANY, patch, Mock
 import gem_mocks
 
 
+@patch('gem2caom2.program_metadata.mc.query_endpoint_session')
 @patch('caom2utils.data_util.get_file_type')
 @patch('gem2caom2.gemini_metadata.retrieve_headers')
 @patch('gem2caom2.gemini_metadata.retrieve_json')
@@ -91,6 +92,7 @@ def test_broken_obs(
     json_mock,
     header_mock,
     file_type_mock,
+    pi_mock,
     test_config,
     tmp_path,
     change_test_dir,
@@ -109,6 +111,7 @@ def test_broken_obs(
         pf_mock=pf_mock,
         header_mock=header_mock,
         json_mock=json_mock,
+        pi_mock=pi_mock,
         file_type_mock=file_type_mock,
         test_set=test_set,
         expected_fqn=expected_fqn,
@@ -117,6 +120,7 @@ def test_broken_obs(
     )
 
 
+@patch('gem2caom2.program_metadata.mc.query_endpoint_session')
 @patch('caom2utils.data_util.get_file_type')
 @patch('gem2caom2.gemini_metadata.retrieve_headers')
 @patch('gem2caom2.gemini_metadata.retrieve_json')
@@ -128,6 +132,7 @@ def test_unauthorized_at_gemini(
     json_mock,
     header_mock,
     file_type_mock,
+    pi_mock,
     test_config,
     tmp_path,
 ):
@@ -148,6 +153,7 @@ def test_unauthorized_at_gemini(
         json_mock=json_mock,
         header_mock=header_mock,
         file_type_mock=file_type_mock,
+        pi_mock=pi_mock,
         test_set=test_set,
         expected_fqn=expected_fqn,
         test_config=test_config,
@@ -155,6 +161,7 @@ def test_unauthorized_at_gemini(
     )
 
 
+@patch('gem2caom2.program_metadata.mc.query_endpoint_session')
 @patch('gem2caom2.gemini_metadata.retrieve_headers')
 @patch('caom2utils.data_util.get_file_type')
 @patch('gem2caom2.gemini_metadata.retrieve_json')
@@ -166,6 +173,7 @@ def test_going_public(
     json_mock,
     file_type_mock,
     remote_headers_mock,
+    pi_mock,
     test_config,
     tmp_path,
 ):
@@ -202,7 +210,7 @@ def test_going_public(
 
     filter_cache = svofps.FilterMetadataCache(svofps_mock)
     pi_metadata = PIMetadata(Mock())
-    pi_metadata.get_pi_metadata = Mock(side_effect=gem_mocks.mock_get_pi_metadata)
+    pi_mock.side_effect = gem_mocks.mock_get_pi_metadata
     md_context = MDContext(filter_cache, pi_metadata)
     storage_name = gem_name.GemName(mock_return_fqn, md_context)
     client_mock = Mock()

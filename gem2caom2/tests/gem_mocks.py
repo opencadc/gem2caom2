@@ -652,23 +652,14 @@ def mock_get_votable(url, ignore_session):
         return None, None
 
 
-def mock_get_pi_metadata(program_id):
+def mock_get_pi_metadata(program_url, ignore_session_mock):
+    program_id = os.path.basename(program_url)
+    result = Object()
     try:
         fname = f'{TEST_DATA_DIR}/programs/{program_id}.xml'
         with open(fname) as f:
-            y = f.read()
-            soup = BeautifulSoup(y, 'lxml')
-            tds = soup.find_all('td')
-            if len(tds) > 0:
-                title = None
-                if len(tds[1].contents) > 0:
-                    title = tds[1].contents[0].replace('\n', ' ')
-                pi_name = None
-                if len(tds[3].contents) > 0:
-                    pi_name = tds[3].contents[0]
-                metadata = {'title': title, 'pi_name': pi_name}
-                return metadata
-        return None
+            result.text = f.read()
+        return result
     except Exception as e:
         logging.error(e)
         tb = traceback.format_exc()
@@ -1045,6 +1036,7 @@ def _run_test_common(
     header_mock,
     json_mock,
     file_type_mock,
+    pi_mock,
     test_set,
     expected_fqn,
     test_config,
@@ -1080,7 +1072,7 @@ def _run_test_common(
     test_reporter = mc.ExecutionReporter2(test_config)
     filter_cache = svofps.FilterMetadataCache(svofps_mock)
     pi_metadata = PIMetadata(Mock())
-    pi_metadata.get_pi_metadata = Mock(side_effect=mock_get_pi_metadata)
+    pi_mock.side_effect = mock_get_pi_metadata
     md_context = MDContext(filter_cache, pi_metadata)
     clients_mock = Mock()
     for test_f_name, test_obs_id in test_set.items():

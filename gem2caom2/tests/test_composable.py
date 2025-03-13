@@ -330,7 +330,7 @@ def test_run_by_public(exec_mock, json_mock, header_mock, clients_mock, query_mo
 
 @patch('caom2pipe.manage_composable.http_get')
 @patch('gem2caom2.svofps.FilterMetadataCache.filter_metadata')
-@patch('gem2caom2.program_metadata.PIMetadata.get_pi_metadata')
+@patch('gem2caom2.program_metadata.PIMetadata.get')
 @patch('caom2pipe.client_composable.ClientCollection.metadata_client')
 @patch('caom2pipe.client_composable.ClientCollection.data_client')
 @patch('gem2caom2.gemini_metadata.retrieve_headers')
@@ -362,7 +362,7 @@ def test_run_by_incremental_reproduce(
     header_mock.return_value = [test_header]
     data_client_mock.get_head.return_value = [test_header]
     meta_client_mock.read.return_value = None
-    pi_mock.return_value = None
+    pi_mock.return_value = {}
     svo_mock.return_value = None
 
     def _repo_create_mock(observation):

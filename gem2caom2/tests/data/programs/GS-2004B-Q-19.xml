@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+
+<title>Detail for Program: GS-2004B-Q-19</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-2004B-Q-19</h1>
+
+<table>
+ <tr><td>Title:<td>The Universe at z&gt;7: z-drops in the Ultra Deep Field</tr>
+ <tr><td>PI:<td>Andrew Bunker</tr>
+ <tr><td>Co-I(s):<td> Elizabeth Stanway,  Richard McMahon,  David Crampton,  Karl Glazebrook,  Warrick Couch,  Patrick McCarthy,  Isobel Hook,  Roberto Abraham,  The GLARE Consortium</tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+In preliminary work with Gemini (the ongoing GLARE project) we have 
+spectroscopically confirmed the existence of sample of galaxies at z=6. 
+This proposal aims to obtain the first spectra of unlensed galaxies at 
+redshifts 7&lt;z&lt;10. This redshift range represents a totally unexplored 
+transition epoch in the history of the Universe, between the onset of 
+Gunn-Peterson absorption by HI at z~6.2 and a predominantly neutral 
+Universe at z&gt;10. Our observations will probe both the first sources of 
+reionizing radiation in the Universe and the very first phases of galaxy 
+formation at the end of the cosmic dark age.
+
+</div>
+
+
+<h2>Publications using this program's data</h2>
+<ul>
+<li>
+<a href="/searchform/publication=2012MNRAS.427.3055C" target="_blank">[data]</a>
+<a href="https://ui.adsabs.harvard.edu/#abs/2012MNRAS.427.3055C/abstract" target="_blank">[ADS]</a> No evidence for Lyman &alpha; emission in spectroscopy of z &gt; 7 candidate galaxies
+</ul>
+
+
+</body>
+</html>

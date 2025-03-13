@@ -761,7 +761,7 @@ class GeminiMapping(cc.TelescopeMapping2):
                         artifact.parts.pop(part)
 
                 if self._observation.proposal is not None and self._observation.proposal.pi_name is None:
-                    program = self._storage_name.md_context.pi_metadata.get_pi_metadata(self._observation.proposal.id)
+                    program = self._storage_name.md_context.pi_metadata.get(self._observation.proposal.id)
                     if program:
                         self._observation.proposal.pi_name = program.get('pi_name')
                         self._observation.proposal.title = program.get('title')
@@ -3334,7 +3334,7 @@ class MAROONXTemporal(GeminiMapping):
                 cc.update_observation_members(self._observation)
 
             if self._observation.proposal is not None and self._observation.proposal.pi_name is None:
-                program = self._storage_name.md_context.pi_metadata.get_pi_metadata(self._observation.proposal.id)
+                program = self._storage_name.md_context.pi_metadata.get(self._observation.proposal.id)
                 if program:
                     self._observation.proposal.pi_name = program.get('pi_name')
                     self._observation.proposal.title = program.get('title')

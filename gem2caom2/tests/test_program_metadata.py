@@ -66,71 +66,77 @@
 # ***********************************************************************
 #
 
-import logging
-
-from bs4 import BeautifulSoup
-
-from caom2pipe import manage_composable as mc
+import gem_mocks
+from unittest.mock import MagicMock, patch
+from gem2caom2.program_metadata import PIMetadata
 
 
-__all__ = ['MDContext', 'PIMetadata']
+@patch('gem2caom2.program_metadata.mc.query_endpoint_session')
+def test_get_pi_metadata_no_response(mock_query):
+    # Mock the response to return an empty document
+    # the flavours of empty document that I know about as of writing
+    text1 = """<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+<title>Detail for Program: GS-CAL20240215</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GS-CAL20240215</h1>
+
+<h2>There is no information about this program</h2>
+
+</body>
+</html>
+"""
+
+    text2 = """<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
 
 
-class PIMetadata:
-    """Store the PI Metadata query results for the length of the application run."""
+<link rel="stylesheet" type="text/css" href="/static/table.css">
 
-    def __init__(self, gemini_session):
-        self._pm = {}
-        self._gemini_session = gemini_session
-        self._logger = logging.getLogger(self.__class__.__name__)
+<title>Detail for Program: GN-CAL20180224</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GN-CAL20180224</h1>
 
-    def get(self, program_id):
-        self._logger.debug(f'Begin get for {program_id}')
-        metadata = self._pm.get(program_id)
-        if metadata is None:
-            # for TaskType.SCRAPE
-            if self._gemini_session is None:
-                metadata = None
-                self._logger.warning(f'No external access. No PI metadata.')
-            else:
-                program_url = f'https://archive.gemini.edu/programinfo/{program_id}'
-                # Open the URL and fetch the JSON document for the observation
-                response = None
-                try:
-                    self._logger.debug(f'Querying {program_url} for program metadata.')
-                    response = mc.query_endpoint_session(program_url, self._gemini_session)
-                    xml_metadata = response.text
-                finally:
-                    if response:
-                        response.close()
-                metadata = {}
-                soup = BeautifulSoup(xml_metadata, 'lxml')
-                tds = soup.find_all('td')
-                if len(tds) > 0:
-                    # sometimes the program id points to an html page with an
-                    # empty table, see e.g. N20200210S0077_bias
-                    title = None
-                    if len(tds[1].contents) > 0:
-                        title = tds[1].contents[0].replace('\n', ' ')
-                        if title == program_id:
-                            # the additional information adds no value so don't keep it
-                            title = None
-                    pi_name = None
-                    pi_name = tds[3].contents[0] if len(tds[3].contents) > 0 else None
-                    if title is not None and pi_name is not None:
-                        metadata = {
-                            'title': title,
-                            'pi_name': pi_name,
-                        }
-                # keep empty entries to minimize archive.gemini.edu queries each run
-                self._pm[program_id] = metadata
-        self._logger.debug('End get')
-        return metadata
+<table>
+ <tr><td>Title:<td>GN-CAL20180224</tr>
+ <tr><td>PI:<td></tr>
+ <tr><td>Co-I(s):<td></tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+No abstract
+</div>
 
 
-class MDContext:
-    """Composition class to hold the filter cache and pi metadata for easier attachment to GemName instances."""
 
-    def __init__(self, filter_cache, pi_metadata):
-        self.filter_cache = filter_cache
-        self.pi_metadata = pi_metadata
+</body>
+</html>
+"""
+    test_data = {
+        'GS-CAL20240215': text1,
+        'GN-CAL20180224': text2,
+    }
+    expected_call_count = 1
+    for program_id, program_id_xml in test_data.items():
+        test_query_result = gem_mocks.Object()
+        test_query_result.text = program_id_xml
+
+        mock_query.return_value = test_query_result
+        gemini_session = MagicMock()
+        test_subject = PIMetadata(gemini_session)
+        test_result = test_subject.get(program_id)
+        assert test_result == {}, f'empty program id {test_result}'
+        test_result_2 = test_subject.get(program_id)
+        assert test_result_2 is not None, 'None check'
+        assert mock_query.called, 'query call'
+        assert mock_query.call_count == expected_call_count, 'query call count'
+        expected_call_count += 1
+
+    assert (expected_call_count - 1) == 2, 'in-memory capture failure'

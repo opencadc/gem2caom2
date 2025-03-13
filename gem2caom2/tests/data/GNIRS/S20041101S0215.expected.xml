@@ -10,6 +10,8 @@
   <caom2:intent>science</caom2:intent>
   <caom2:proposal>
     <caom2:id>GS-2004B-Q-19</caom2:id>
+    <caom2:pi>Andrew Bunker</caom2:pi>
+    <caom2:title>The Universe at z&gt;7: z-drops in the Ultra Deep Field</caom2:title>
   </caom2:proposal>
   <caom2:target>
     <caom2:name>UDF-265</caom2:name>
