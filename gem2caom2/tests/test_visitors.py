@@ -71,7 +71,7 @@ import pytest
 import shutil
 
 from datetime import datetime, timezone
-from mock import patch, Mock
+from mock import ANY, call, patch, Mock
 
 from cadcutils import exceptions
 from cadcdata import FileInfo
@@ -136,8 +136,8 @@ def test_preview_augment_known_no_preview(test_data_dir, test_config, tmp_path):
     assert os.path.exists(test_config.rejected_fqn)
 
 
-def test_preview_augment_unknown_no_preview(test_data_dir, test_config, tmp_path):
-    # what happens when it's not known that there's no preview
+@patch('caom2pipe.client_composable.ClientCollection')
+def test_preview_augment_cadc_retrieval_fails(clients_mock, test_data_dir, test_config, tmp_path):
     test_config.change_working_directory(tmp_path)
     obs = mc.read_obs_from_file(f'{test_data_dir}/visit_obs_start.xml')
     obs.planes[TEST_PRODUCT_ID].data_release = datetime.now(tz=timezone.utc).replace(tzinfo=None)
@@ -145,33 +145,24 @@ def test_preview_augment_unknown_no_preview(test_data_dir, test_config, tmp_path
 
     test_reporter = mc.ExecutionReporter2(test_config)
     test_storage_name = gem_name.GemName(file_name=f'{TEST_PRODUCT_ID}.fits')
-
-    cadc_client_mock = Mock()
-    clients_mock = Mock()
-    clients_mock.data_client = cadc_client_mock
     kwargs = {
         'working_directory': test_data_dir,
         'clients': clients_mock,
-        'stream': 'stream',
         'reporter': test_reporter,
         'storage_name': test_storage_name,
     }
 
-    with patch(
-        'caom2pipe.manage_composable.http_get',
-        side_effect=mc.CadcException('Not Found for url: https://archive.gemini.edu/preview'),
-    ) as http_mock, patch('caom2pipe.manage_composable.get_artifact_metadata') as art_mock, patch(
-        'caom2pipe.manage_composable.exec_cmd'
-    ) as exec_mock:
-        cadc_client_mock.get.side_effect = exceptions.UnexpectedException('test')
+    clients_mock.data_client.info.side_effect = [
+        FileInfo(id='abc:DEF/test.jpg', file_type='application/jpeg', size=123, md5sum='a2b3'), None
+    ]
+    clients_mock.data_client.get.side_effect = exceptions.UnexpectedException('test')
+    try:
         obs = preview_augmentation.visit(obs, **kwargs)
-        assert obs is not None, 'expect result'
-        test_url = f'{preview_augmentation.PREVIEW_URL}{TEST_PRODUCT_ID}.fits'
-        test_prev = f'{test_data_dir}/{TEST_PRODUCT_ID}.jpg'
-        http_mock.assert_called_with(test_url, test_prev), 'mock not called'
-        assert not cadc_client_mock.put.called, 'put mock should not be called'
-        assert not art_mock.called, 'art mock should not be called'
-        assert not exec_mock.called, 'exec mock should not be called'
+    except exceptions.UnexpectedException as _:
+        assert clients_mock.data_client.info.called, 'info called'
+        assert clients_mock.data_client.info.call_count == 2, 'info call count'
+        return
+    assert False, 'should have raised an exception'
 
 
 @patch('caom2utils.data_util.get_file_type')
@@ -247,8 +238,7 @@ def test_preview_augment_delete_preview(test_data_dir, test_config, tmp_path):
     test_storage_name = gem_name.GemName(file_name=f'{test_product_id}.fits')
     kwargs = {
         'working_directory': test_data_dir,
-        'clients': None,
-        'stream': 'stream',
+        'clients': Mock(),
         'reporter': test_reporter,
         'storage_name': test_storage_name,
     }
@@ -271,6 +261,7 @@ def test_preview_augment(http_mock, test_data_dir, test_config, tmp_path):
     cadc_client_mock = Mock()
     clients_mock = Mock()
     clients_mock.data_client = cadc_client_mock
+    clients_mock.data_client.info.return_value = None
     test_storage_name = gem_name.GemName(file_name=f'{TEST_PRODUCT_ID}.fits')
     kwargs = {
         'working_directory': '/test_files',
@@ -334,6 +325,7 @@ def test_preview_augment_failure(http_mock, test_data_dir, test_config, tmp_path
     cadc_client_mock = Mock()
     clients_mock = Mock()
     clients_mock.data_client = cadc_client_mock
+    clients_mock.data_client.info.return_value = None
     test_storage_name = gem_name.GemName(file_name=f'{TEST_PRODUCT_ID}.fits')
     kwargs = {
         'working_directory': '/test_files',
@@ -347,27 +339,28 @@ def test_preview_augment_failure(http_mock, test_data_dir, test_config, tmp_path
         os.unlink(test_prev)
 
     try:
-        cadc_client_mock.get.side_effect = exceptions.UnexpectedException('test')
         http_mock.side_effect = _failure_mock
-        obs = preview_augmentation.visit(obs, **kwargs)
-        test_url = f'{preview_augmentation.PREVIEW_URL}{TEST_PRODUCT_ID}.fits'
-        assert http_mock.called, 'http mock should be called'
-        http_mock.assert_called_with(test_url, test_prev), 'mock not called'
-        assert not cadc_client_mock.put.called, 'put mock should not be called'
-        assert obs is not None, 'expect a result'
-        assert len(obs.planes[TEST_PRODUCT_ID].artifacts) == 1, 'same as the pre-condition'
-        prev_uri = mc.build_uri(test_config.collection, f'{TEST_PRODUCT_ID}.jpg', test_config.scheme)
-        thumb_uri = mc.build_uri(test_config.collection, f'{TEST_PRODUCT_ID}_th.jpg', test_config.preview_scheme)
-        assert prev_uri not in obs.planes[TEST_PRODUCT_ID].artifacts.keys(), 'should be no preview'
-        assert thumb_uri not in obs.planes[TEST_PRODUCT_ID].artifacts, 'should be no thumbnail'
-        assert not (test_reporter._observable._rejected.is_no_preview(prev_uri)), 'preview should be tracked'
+        try:
+            obs = preview_augmentation.visit(obs, **kwargs)
+        except mc.CadcException as _:
+            test_url = f'{preview_augmentation.PREVIEW_URL}{TEST_PRODUCT_ID}.fits'
+            assert http_mock.called, 'http mock should be called'
+            http_mock.assert_called_with(test_url, test_prev), 'mock not called'
+            assert not cadc_client_mock.put.called, 'put mock should not be called'
+            assert obs is not None, 'expect a result'
+            assert len(obs.planes[TEST_PRODUCT_ID].artifacts) == 1, 'same as the pre-condition'
+            prev_uri = mc.build_uri(test_config.collection, f'{TEST_PRODUCT_ID}.jpg', test_config.scheme)
+            thumb_uri = mc.build_uri(test_config.collection, f'{TEST_PRODUCT_ID}_th.jpg', test_config.preview_scheme)
+            assert prev_uri not in obs.planes[TEST_PRODUCT_ID].artifacts.keys(), 'should be no preview'
+            assert thumb_uri not in obs.planes[TEST_PRODUCT_ID].artifacts, 'should be no thumbnail'
+            assert not (test_reporter._observable._rejected.is_no_preview(prev_uri)), 'preview should be tracked'
 
-        assert http_mock.call_count == 1, 'wrong number of calls'
-        # now try again to generate the preview, and ensure that the
-        # rejected tracking is working
-        obs = preview_augmentation.visit(obs, **kwargs)
-        assert obs is not None, 'expect a result the second time'
-        assert http_mock.call_count == 1, 'never even tried to retrieve it'
+            assert http_mock.call_count == 1, 'wrong number of calls'
+            # now try again to generate the preview, and ensure that the
+            # rejected tracking is working
+            obs = preview_augmentation.visit(obs, **kwargs)
+            assert obs is not None, 'expect a result the second time'
+            assert http_mock.call_count == 1, 'never even tried to retrieve it'
     finally:
         if os.path.exists(test_prev):
             os.unlink(test_prev)
@@ -484,3 +477,136 @@ def test_ghost_preview_augmentation_2(test_config, test_data_dir, tmp_path):
     obs = ghost_preview_augmentation.visit(obs, **kwargs)
     assert obs is not None, 'expect a result'
     assert len(obs.planes[test_f_id].artifacts) == 1, 'GHOST post-condition, there is no preview data'
+
+
+def test_get_representation_with_existing_info(test_config, test_data_dir):
+    # both the preview and thumbnail already exist at CADC
+    clients = Mock()
+    clients.data_client = Mock()
+    clients.data_client.info = Mock(return_value=FileInfo(
+        id='abc:DEF/test.jpg', file_type='application/jpeg', size=123, md5sum='a2b3'
+    ))
+    clients.data_client.get = Mock()
+    clients.data_client.put = Mock()
+
+    test_f_id = 'S20231208S0060'
+    test_storage_name = gem_name.GemName(file_name=f'{test_f_id}.fits')
+    observation = mc.read_obs_from_file(f'{test_data_dir}/GHOST/{test_f_id}.expected.xml')
+    assert len(observation.planes[test_f_id].artifacts) == 1, 'pre-condition'
+    plane = observation.planes.get(test_storage_name.product_id)
+    observable = Mock()
+
+    result = preview_augmentation.get_representation(clients, test_storage_name, test_data_dir, plane, observable)
+    assert result == 0, 'expected no files to be put'
+    clients.data_client.get.assert_not_called()
+    clients.data_client.put.assert_not_called()
+    assert clients.data_client.info.call_count == 2, 'info call count'
+    assert len(observation.planes[test_f_id].artifacts) == 1, 'post-condition'
+
+
+@patch('gem2caom2.preview_augmentation.mc.http_get')
+def test_get_representation_without_existing_info(http_get_mock, test_config, test_data_dir):
+    # preview and thumbnail do not exist at CADC yet
+    clients = Mock()
+    clients.data_client = Mock()
+    clients.data_client.info = Mock(return_value=None)
+    clients.data_client.get = Mock()
+    clients.data_client.put = Mock()
+
+    test_f_id = 'S20201023Z0001b'
+    test_storage_name = gem_name.GemName(file_name=f'{test_f_id}.fits')
+    observation = mc.read_obs_from_file(f'{test_data_dir}/Zorro/{test_f_id}.expected.xml')
+    assert len(observation.planes[test_f_id].artifacts) == 1, 'pre-condition'
+    plane = observation.planes.get(test_storage_name.product_id)
+    observable = Mock()
+
+    result = preview_augmentation.get_representation(clients, test_storage_name, '/test_files', plane, observable)
+    assert result == 2, 'expected two files to be modified'
+    clients.data_client.get.assert_not_called()
+    clients.data_client.put.assert_called()
+    clients.data_client.put.call_count == 2, 'put call count'
+    clients.data_client.put.assert_has_calls([
+        call('/test_files', 'cadc:GEMINI/S20201023Z0001b_th.jpg'),
+        call('/test_files', 'gemini:GEMINI/S20201023Z0001b.jpg'),
+    ],
+        any_order=True,
+    ), 'put call args'
+    assert clients.data_client.info.call_count == 2, 'info call count'
+    assert len(observation.planes[test_f_id].artifacts) == 3, 'post-condition'
+    http_get_mock.assert_called_with(
+        'https://archive.gemini.edu/preview/S20201023Z0001b.fits', '/test_files/S20201023Z0001b.jpg'
+    ), 'http get args'
+
+
+@patch('gem2caom2.preview_augmentation.mc.http_get')
+def test_get_representation_with_partial_info(http_get_mock, test_config, test_data_dir):
+    # preview only exists at CADC
+    clients = Mock()
+    clients.data_client = Mock()
+    clients.data_client.info = Mock()
+    clients.data_client.info.side_effect = [
+        FileInfo(id='abc:DEF/test.jpg', file_type='application/jpeg', size=123, md5sum='a2b3'), None
+    ]
+    clients.data_client.get = Mock()
+    clients.data_client.put = Mock()
+
+    test_f_id = 'S20050825S0143'
+    test_storage_name = gem_name.GemName(file_name=f'{test_f_id}.fits')
+    observation = mc.read_obs_from_file(f'{test_data_dir}/bHROS/{test_f_id}.expected.xml')
+    assert len(observation.planes[test_f_id].artifacts) == 2, 'pre-condition'
+    plane = observation.planes.get(test_storage_name.product_id)
+    observable = Mock()
+
+    result = preview_augmentation.get_representation(clients, test_storage_name, '/test_files', plane, observable)
+    assert result == 1, 'expected one file to be added'
+    clients.data_client.get.assert_called()
+    clients.data_client.get.assert_called_with('/test_files', 'gemini:GEMINI/S20050825S0143.jpg'), 'get call args'
+    clients.data_client.put.assert_called()
+    clients.data_client.put.call_count == 1, 'put call count'
+    clients.data_client.put.assert_called_with('/test_files', 'cadc:GEMINI/S20050825S0143_th.jpg' ), 'put call args'
+    assert clients.data_client.info.call_count == 2, 'info call count'
+    assert len(observation.planes[test_f_id].artifacts) == 3, 'post-condition'
+    http_get_mock.assert_not_called(), 'http get call'
+
+
+@patch('gem2caom2.preview_augmentation.mc.http_get')
+def test_get_representation_with_value_error(http_get_mock, test_config, test_data_dir):
+    # preview and thumbnail do not exist at CADC yet
+    clients = Mock()
+    clients.data_client = Mock()
+    clients.data_client.info = Mock(return_value=None)
+    clients.data_client.get = Mock()
+    clients.data_client.put = Mock()
+
+    test_f_id = 'S20201023Z0001b'
+    test_storage_name = gem_name.GemName(file_name=f'{test_f_id}.fits')
+    observation = mc.read_obs_from_file(f'{test_data_dir}/Zorro/{test_f_id}.expected.xml')
+    assert len(observation.planes[test_f_id].artifacts) == 1, 'pre-condition'
+    plane = observation.planes.get(test_storage_name.product_id)
+    observable = Mock()
+    image_thumbnail_original = preview_augmentation.image.thumbnail
+
+    preview_augmentation.image.thumbnail = Mock(side_effect=[ValueError('mocked'), image_thumbnail_original])
+
+    try:
+        result = preview_augmentation.get_representation(
+            clients, test_storage_name, '/test_files', plane, observable
+        )
+        assert result == 3, 'expected two files to be modified'
+        clients.data_client.get.assert_not_called()
+        clients.data_client.put.assert_called()
+        assert clients.data_client.put.call_count == 3, 'put call count'
+        clients.data_client.put.assert_has_calls([
+            call('/test_files', 'cadc:GEMINI/S20201023Z0001b_th.jpg'),
+            call('/test_files', 'gemini:GEMINI/S20201023Z0001b.jpg'),
+        ],
+            any_order=True,
+        ), 'put call args'
+        assert clients.data_client.info.call_count == 2, 'info call count'
+        assert len(observation.planes[test_f_id].artifacts) == 3, 'post-condition'
+        assert http_get_mock.call_count == 2, 'https get'
+        http_get_mock.assert_called_with(
+            'https://archive.gemini.edu/preview/S20201023Z0001b.fits', '/test_files/S20201023Z0001b.jpg'
+        ), 'http get args'
+    finally:
+        preview_augmentation.image.thumbnail = image_thumbnail_original

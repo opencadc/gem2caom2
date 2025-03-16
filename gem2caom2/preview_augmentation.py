@@ -77,6 +77,7 @@ import matplotlib.image as image
 
 from cadcutils import exceptions
 from caom2 import Observation, ProductType, ReleaseType
+from caom2pipe.caom_composable import update_file_info
 from caom2pipe import manage_composable as mc
 from gem2caom2.util import Inst
 
@@ -93,7 +94,8 @@ def visit(observation, **kwargs):
     working_dir = kwargs.get('working_directory', './')
     clients = kwargs.get('clients')
     if clients is None or clients.data_client is None:
-        logging.warning('Need a cadc_client to update preview records.')
+        logging.warning('Need a cadc_client to retrieve preview records.')
+        return observation
     reporter = kwargs.get('reporter')
     if reporter is None:
         raise mc.CadcException('Visitor needs a reporter parameter.')
@@ -125,8 +127,8 @@ def visit(observation, **kwargs):
             observable,
             storage_name,
         )
-    result = {'artifacts': count}
-    logging.info(f'Completed preview augmentation for {observation.observation_id}.{count} artifacts modified.')
+    result = {'files': count}
+    logging.info(f'Completed preview augmentation for {observation.observation_id}. {count} files modified.')
     return observation
 
 
@@ -135,6 +137,7 @@ def _do_prev(obs_id, working_dir, plane, clients, observable, gem_name):
     store the preview if necessary, and the thumbnail, to CADC storage.
     Then augment the CAOM observation with the two additional artifacts.
     """
+    logging.debug('Begin _do_prev')
     count = 0
 
     if observable.rejected.is_no_preview(gem_name.prev):
@@ -142,72 +145,8 @@ def _do_prev(obs_id, working_dir, plane, clients, observable, gem_name):
         observable.rejected.record(mc.Rejected.NO_PREVIEW, gem_name.prev)
         count += _check_for_delete(gem_name.prev, gem_name.prev_uri, observable, plane)
     else:
-        preview_fqn = join(working_dir, gem_name.prev)
-        thumb = gem_name.thumb
-        thumb_fqn = join(working_dir, thumb)
-
-        # get the file - try disk first, then CADC, then Gemini
-        # Only try to retrieve from Gemini if the eventual purpose is
-        # storage (i.e. cadc_client is not None), though
-        if not access(preview_fqn, 0) and clients is not None and clients.data_client is not None:
-            try:
-                logging.debug(f'Check CADC for {gem_name.prev_uri}.')
-                clients.data_client.get(working_dir, gem_name.prev_uri)
-            except exceptions.UnexpectedException:
-                logging.debug(f'Retrieve {gem_name.prev} from archive.gemini.edu.')
-                _retrieve_from_gemini(
-                    gem_name,
-                    observable,
-                    plane,
-                    preview_fqn,
-                )
-
-        if exists(preview_fqn):
-            # in case TaskType == SCRAPE + MODIFY
-            try:
-                fp = open(preview_fqn, 'r')
-            except PermissionError as e:
-                raise mc.CadcException(
-                    f'Should not have reached this point in thumbnail generation for {plane.product_id}'
-                )
-
-            logging.debug(f'Generate thumbnail for file id {plane.product_id}')
-            if access(thumb_fqn, 0):
-                remove(thumb_fqn)
-            try:
-                image.thumbnail(preview_fqn, thumb_fqn, scale=0.25)
-            except ValueError as e:
-                # probably the jpg did not transfer properly from
-                # archive.gemini.edu, so try to retrieve it one more time,
-                # but ignore the count, because the count before this is
-                # wrong
-                #
-                # have a retry here, because otherwise there's no way to
-                # update the file in CADC storage without intervention
-                # from Ops - i.e. the file will retrieve from CADC, so
-                # there will be no succeeding attempt to retrieve from Gemini
-                # that might otherwise fix the value
-                logging.debug(traceback.format_exc())
-                logging.warning(
-                    f'matplotlib error handling {gem_name.prev}.Try to retrieve from {PREVIEW_URL} one more time.'
-                )
-                _retrieve_from_gemini(
-                    gem_name,
-                    observable,
-                    plane,
-                    preview_fqn,
-                )
-                image.thumbnail(preview_fqn, thumb_fqn, scale=0.25)
-
-            count += _augment(plane, gem_name.prev_uri, preview_fqn, ProductType.PREVIEW)
-            if clients is not None and clients.data_client is not None:
-                clients.data_client.put(working_dir, gem_name.prev_uri)
-            count += 1
-
-            count += _augment(plane, gem_name.thumb_uri, thumb_fqn, ProductType.THUMBNAIL)
-            if clients is not None and clients.data_client is not None:
-                clients.data_client.put(working_dir, gem_name.thumb_uri)
-            count += 1
+        count = get_representation(clients, gem_name, working_dir, plane, observable)
+    logging.debug('End _do_prev')
     return count
 
 
@@ -237,12 +176,62 @@ def _retrieve_from_gemini(
     plane,
     preview_fqn,
 ):
+    logging.debug(f'Retrieve {gem_name.prev} from archive.gemini.edu.')
     temp = basename(gem_name.file_name)
     preview_url = f'{PREVIEW_URL}{temp}'
     try:
         mc.http_get(preview_url, preview_fqn)
     except Exception as e:
+        logging.warning(e)
         if observable.rejected.check_and_record(str(e), gem_name.prev):
             _check_for_delete(gem_name.prev, gem_name.prev_uri, observable, plane)
+        raise e
+
+
+def get_representation(clients, storage_name, working_dir, plane, observable):
+    logging.debug(f'Begin get_representation for {storage_name.file_uri}')
+    count = 0
+    prev_info = clients.data_client.info(storage_name.prev_uri)
+    thumb_info = clients.data_client.info(storage_name.thumb_uri)
+
+    if prev_info and thumb_info:
+        logging.info(f'Updating FileInfo for {storage_name.file_uri}')
+        update_file_info(prev_info, storage_name.prev_uri, plane)
+        update_file_info(thumb_info, storage_name.thumb_uri, plane)
+    else:
+        preview_fqn = join(working_dir, storage_name.prev)
+        thumb_fqn = join(working_dir, storage_name.thumb)
+        if prev_info:
+            # get the preview from CADC
+            clients.data_client.get(working_dir, storage_name.prev_uri)
         else:
-            raise e
+            # get the preview from Gemini
+            _retrieve_from_gemini(storage_name, observable, plane, preview_fqn)
+            clients.data_client.put(working_dir, storage_name.prev_uri)
+            count += 1
+
+        # build the thumbnail - include the retry for failure to pull down the preview from Gemini
+        try:
+            image.thumbnail(preview_fqn, thumb_fqn, scale=0.25)
+        except ValueError as _:
+            # probably the jpg did not transfer properly, so try to retrieve it one more time
+            #
+            # have a retry here, because otherwise there's no way to update the file in CADC storage without
+            # intervention from Ops - i.e. the file will retrieve from CADC, so there will be no succeeding
+            # attempt to retrieve from Gemini that might otherwise fix the value
+            logging.debug(traceback.format_exc())
+            logging.warning(
+                f'matplotlib error handling {storage_name.prev}.Try to retrieve from {PREVIEW_URL} one more time.'
+            )
+            _retrieve_from_gemini(storage_name, observable, plane, preview_fqn)
+            clients.data_client.put(working_dir, storage_name.prev_uri)
+            count += 1
+            image.thumbnail(preview_fqn, thumb_fqn, scale=0.25)
+
+        clients.data_client.put(working_dir, storage_name.thumb_uri)
+        count += 1
+
+        _augment(plane, storage_name.prev_uri, preview_fqn, ProductType.PREVIEW)
+        _augment(plane, storage_name.thumb_uri, thumb_fqn, ProductType.THUMBNAIL)
+    logging.debug('End get_representation')
+    return count
