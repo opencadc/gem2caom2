@@ -302,14 +302,9 @@ class GeminiMapping(cc.TelescopeMapping2):
         Determine the plane-level data release date.
         :return: The Plane release date, or None if not found.
         """
-        # every instrument has a 'release' keyword in the JSON summary
-        # not every instrument (Michelle) has a RELEASE keyword in
-        # the appropriate headers
-        result = self._lookup.release(self._storage_name.file_uri)
-        if result is not None and result.startswith('0001'):
-            # because obs id GN-2008A-Q-39-69-015
-            result = result.replace('0001', '2001')
-        return result
+        # every instrument has a 'release' keyword in the JSON summary not every instrument (Michelle) has a
+        # RELEASE keyword in the appropriate headers
+        return self._lookup.release(self._storage_name.file_uri)
 
     def get_dec(self, ext):
         return self._lookup.dec(self._storage_name.file_uri)

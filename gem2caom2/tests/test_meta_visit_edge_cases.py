@@ -73,7 +73,7 @@ from cadcutils import exceptions
 from caom2pipe import astro_composable as ac
 from caom2pipe import manage_composable as mc
 from gem2caom2 import svofps, gemini_metadata, gem_name
-from gem2caom2 import fits2caom2_augmentation
+from gem2caom2 import fits2caom2_augmentation, pull_augmentation
 from gem2caom2.program_metadata import MDContext, PIMetadata
 
 from mock import ANY, patch, Mock
@@ -82,7 +82,7 @@ import gem_mocks
 
 @patch('gem2caom2.program_metadata.mc.query_endpoint_session')
 @patch('caom2utils.data_util.get_file_type')
-@patch('gem2caom2.gemini_metadata.retrieve_headers')
+@patch('gem2caom2.pull_augmentation.retrieve_headers')
 @patch('gem2caom2.gemini_metadata.retrieve_json')
 @patch('caom2pipe.astro_composable.get_vo_table_session')
 @patch('gem2caom2.main_app.ProvenanceFinder')
@@ -117,12 +117,14 @@ def test_broken_obs(
         expected_fqn=expected_fqn,
         test_config=test_config,
         tmp_path=tmp_path,
+        info_return_value=Mock(md5sum='e2780b688386bb954c5f795646071d56'),
     )
 
 
+@patch('gem2caom2.pull_augmentation.http_get')
 @patch('gem2caom2.program_metadata.mc.query_endpoint_session')
 @patch('caom2utils.data_util.get_file_type')
-@patch('gem2caom2.gemini_metadata.retrieve_headers')
+@patch('gem2caom2.pull_augmentation.retrieve_headers')
 @patch('gem2caom2.gemini_metadata.retrieve_json')
 @patch('caom2pipe.astro_composable.get_vo_table_session')
 @patch('gem2caom2.main_app.ProvenanceFinder')
@@ -133,6 +135,7 @@ def test_unauthorized_at_gemini(
     header_mock,
     file_type_mock,
     pi_mock,
+    http_get_mock,
     test_config,
     tmp_path,
 ):
@@ -146,6 +149,7 @@ def test_unauthorized_at_gemini(
     test_fqn = f'{gem_mocks.TEST_DATA_DIR}/broken_files/{test_f_name}'
     expected_fqn = f'{gem_mocks.TEST_DATA_DIR}/GMOS/{test_fid}.expected.xml'
     test_set = {test_fqn: 'GS-2021A-Q-777-1-001'}
+    http_get_mock.side_effect = mc.CadcException('401 Access Denied')
     gem_mocks._run_test_common(
         data_sources=[f'{gem_mocks.TEST_DATA_DIR}/broken_files'],
         svofps_mock=svofps_mock,
@@ -161,8 +165,9 @@ def test_unauthorized_at_gemini(
     )
 
 
+@patch('gem2caom2.pull_augmentation.PullVisitor.look_pull_and_put')
 @patch('gem2caom2.program_metadata.mc.query_endpoint_session')
-@patch('gem2caom2.gemini_metadata.retrieve_headers')
+@patch('gem2caom2.pull_augmentation.retrieve_headers')
 @patch('caom2utils.data_util.get_file_type')
 @patch('gem2caom2.gemini_metadata.retrieve_json')
 @patch('caom2pipe.astro_composable.get_vo_table_session')
@@ -174,6 +179,7 @@ def test_going_public(
     file_type_mock,
     remote_headers_mock,
     pi_mock,
+    look_pull_put_mock,
     test_config,
     tmp_path,
 ):
@@ -218,9 +224,10 @@ def test_going_public(
     client_mock.metadata_client.read.return_value = observation
     test_reporter = mc.ExecutionReporter2(test_config)
     test_subject = gemini_metadata.GeminiMetaVisitRunnerMeta(
-        client_mock, test_config, [fits2caom2_augmentation], test_reporter
+        client_mock, test_config, [pull_augmentation, fits2caom2_augmentation], test_reporter
     )
     context = {'storage_name': storage_name}
     test_subject.execute(context)
     assert remote_headers_mock.called, 'expect remote header retrieval'
     remote_headers_mock.assert_called_with(storage_name, ANY, ANY, ANY, ANY), 'wrong remote header args'
+    look_pull_put_mock.assert_called_once(), 'look pull put'

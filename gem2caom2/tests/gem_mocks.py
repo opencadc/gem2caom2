@@ -75,7 +75,6 @@ import warnings
 from astropy.io.votable import parse_single_table
 from astropy.table import Table
 from astropy.utils.exceptions import AstropyWarning
-from bs4 import BeautifulSoup
 from collections import OrderedDict
 from datetime import datetime, timezone
 from hashlib import md5
@@ -90,7 +89,7 @@ from caom2pipe.run_composable import set_logging
 from caom2utils.data_util import get_local_file_headers
 
 from gem2caom2 import data_source, obs_file_relationship, svofps
-from gem2caom2 import gemini_metadata, fits2caom2_augmentation
+from gem2caom2 import gemini_metadata, fits2caom2_augmentation, pull_augmentation
 from gem2caom2.gem_name import GemName
 from gem2caom2.program_metadata import MDContext, PIMetadata
 from gem2caom2.util import Inst
@@ -1041,6 +1040,7 @@ def _run_test_common(
     expected_fqn,
     test_config,
     tmp_path,
+    info_return_value=None,
 ):
     warnings.simplefilter('ignore', AstropyWarning)
     svofps_mock.side_effect = mock_get_votable
@@ -1075,11 +1075,12 @@ def _run_test_common(
     pi_mock.side_effect = mock_get_pi_metadata
     md_context = MDContext(filter_cache, pi_metadata)
     clients_mock = Mock()
+    clients_mock.data_client.info.return_value = info_return_value
     for test_f_name, test_obs_id in test_set.items():
         storage_name = GemName(test_f_name, md_context)
         storage_name.obs_id = test_obs_id
         test_subject = gemini_metadata.GeminiMetaVisitRunnerMeta(
-            clients_mock, test_config, [fits2caom2_augmentation], test_reporter
+            clients_mock, test_config, [pull_augmentation, fits2caom2_augmentation], test_reporter
         )
 
         def _read_header_mock(ignore1, ignore2, ignore3, ignore4, ignore5):

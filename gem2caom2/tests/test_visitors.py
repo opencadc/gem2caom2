@@ -167,20 +167,12 @@ def test_preview_augment_cadc_retrieval_fails(clients_mock, test_data_dir, test_
 
 @patch('caom2utils.data_util.get_file_type')
 @patch('gem2caom2.gemini_metadata.retrieve_json')
-@patch('caom2pipe.manage_composable.http_get')
+@patch('gem2caom2.pull_augmentation.http_get')
 def test_pull_augmentation(http_mock, json_mock, file_type_mock, test_config, test_data_dir, tmp_path):
     test_config.change_working_directory(tmp_path)
-    obs = mc.read_obs_from_file(f'{test_data_dir}/visit_original_uri_start.xml')
-    test_product_id = 'S20050825S0143'
-    obs.planes[test_product_id].data_release = datetime.now(tz=timezone.utc).replace(tzinfo=None)
-    original_uri = 'gemini:GEMINI/S20050825S0143.fits'
-    assert len(obs.planes[test_product_id].artifacts) == 1, 'initial condition'
-    assert original_uri in obs.planes[test_product_id].artifacts.keys(), 'initial condition'
-    test_uri = f'{test_config.scheme}:{test_config.collection}/{test_product_id}.fits'
-
     test_reporter = mc.ExecutionReporter2(test_config)
     cadc_client_mock = Mock()
-    cadc_client_mock.return_value.info.return_value = None
+    cadc_client_mock.info.return_value = Mock(md5sum='70d5fd6e9b90ede10d429f9b67e3d45b')
     clients_mock = Mock()
     clients_mock.data_client = cadc_client_mock
     json_mock.side_effect = gem_mocks.mock_retrieve_json
@@ -193,26 +185,18 @@ def test_pull_augmentation(http_mock, json_mock, file_type_mock, test_config, te
         'clients': clients_mock,
         'reporter': test_reporter,
         'storage_name': test_storage_name,
+        'config': test_config,
     }
 
     test_precondition = gemini_metadata.GeminiMetaVisitRunnerMeta(clients_mock, test_config, [], test_reporter)
     test_precondition._storage_name = test_storage_name
     test_precondition._set_preconditions()
 
+    obs = None
     obs = pull_augmentation.visit(obs, **kwargs)
-    test_url = f'{pull_augmentation.FILE_URL}/{test_product_id}.fits'
-    test_prev = f'/test_files/{test_product_id}.fits'
-    http_mock.assert_called_with(f'{test_url}.bz2', f'{test_prev}.bz2'), 'mock not called'
-    assert cadc_client_mock.put.called, 'put mock not called'
-    cadc_client_mock.put.assert_called_with('/test_files', 'gemini:GEMINI/S20050825S0143.fits'), 'wrong put args'
-    assert obs is not None, 'expect a result'
-    assert len(obs.planes[test_product_id].artifacts) == 1, 'no new artifacts'
-    try:
-        ignore = obs.planes[test_product_id].artifacts[test_uri]
-    except KeyError as ke:
-        # because CAOM does magic
-        result = obs.planes[test_product_id].artifacts[original_uri]
-        assert result.uri == test_uri, f'wrong uri {result.uri}'
+    http_mock.assert_not_called(), 'http mock called'
+    cadc_client_mock.put.assert_not_called(), 'put mock called'
+    cadc_client_mock.info.assert_called_once(), 'info'
 
 
 def test_preview_augment_delete_preview(test_data_dir, test_config, tmp_path):
@@ -400,31 +384,6 @@ def test_cleanup(test_data_dir):
     fox_obs = cleanup_augmentation.visit(fox_obs, **test_kwargs)
     post_fox_length = len(cc.get_all_artifact_keys(fox_obs))
     assert initial_fox_length == post_fox_length, 'wrong fox post conditions'
-
-
-@patch('caom2pipe.client_composable.ClientCollection')
-@patch('caom2pipe.manage_composable.http_get')
-def test_look_pull_and_put(http_mock, mock_client, test_config):
-    test_storage_name = 'gemini:GEMINI/S20050825S0143.fits'
-    mock_client.info.return_value = FileInfo(
-        id=test_storage_name,
-        size=1234,
-        md5sum='9473fdd0d880a43c21b7778d34872157',
-    )
-    f_name = 'S20050825S0143.fits'
-    url = f'https://localhost/{f_name}'
-    test_config.observe_execution = True
-    mock_client.info.return_value = None
-    test_fqn = os.path.join('/test_files', f_name)
-    pull_augmentation.look_pull_and_put(
-        test_storage_name,
-        test_fqn,
-        url,
-        mock_client,
-        'md5:01234',
-    )
-    mock_client.data_client.put.assert_called_with('/test_files', test_storage_name), 'mock not called'
-    http_mock.assert_called_with(f'{url}.bz2', f'{test_fqn}.bz2'), 'http mock not called'
 
 
 def test_ghost_preview_augmentation(test_config, test_data_dir, tmp_path):

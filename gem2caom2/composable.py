@@ -82,7 +82,7 @@ from gem2caom2.program_metadata import MDContext, PIMetadata
 
 
 DATA_VISITORS = [ghost_preview_augmentation]
-META_VISITORS = [fits2caom2_augmentation, pull_augmentation, preview_augmentation, cleanup_augmentation]
+META_VISITORS = [pull_augmentation, fits2caom2_augmentation, preview_augmentation, cleanup_augmentation]
 
 
 class GemClientCollection(ClientCollection):
@@ -144,7 +144,6 @@ def _run():
     """
     clients, config, meta_visitors, md_context = _common_init()
     if config.use_local_files or mc.TaskType.SCRAPE in config.task_types:
-        # source = dsc.ListDirSeparateDataSource(config)
         source = data_source.GeminiListDirSeparateDataSource(config, md_context)
     else:
         source = data_source.GeminiTodoFile(config, md_context)

@@ -74,7 +74,7 @@ from astropy.utils.exceptions import AstropyWarning
 from astropy.wcs import FITSFixedWarning
 from caom2utils import data_util
 from caom2pipe.manage_composable import CadcException, ExecutionReporter2, read_obs_from_file, TaskType
-from gem2caom2 import fits2caom2_augmentation, gemini_metadata, svofps
+from gem2caom2 import fits2caom2_augmentation, gemini_metadata, pull_augmentation, svofps
 from gem2caom2.gem_name import GemName
 from gem2caom2.program_metadata import MDContext, PIMetadata
 
@@ -129,6 +129,8 @@ def pytest_generate_tests(metafunc):
         obs_id_list.append(ii)
     metafunc.parametrize('test_name', obs_id_list)
 
+
+@patch('gem2caom2.pull_augmentation.PullVisitor.look_pull_and_put')
 @patch('gem2caom2.program_metadata.mc.query_endpoint_session')
 @patch('caom2utils.data_util.get_file_type')
 @patch('gem2caom2.gemini_metadata.retrieve_headers')
@@ -142,6 +144,7 @@ def test_visitor(
     header_mock,
     file_type_mock,
     pi_mock,
+    pull_mock,
     test_name,
     test_config,
     tmp_path,
@@ -188,7 +191,7 @@ def test_visitor(
     filter_cache = svofps.FilterMetadataCache(svofps_mock)
     md_context = MDContext(filter_cache, pi_metadata)
     test_subject = gemini_metadata.GeminiMetaVisitRunnerMeta(
-        clients_mock, test_config, [fits2caom2_augmentation], test_reporter
+        clients_mock, test_config, [pull_augmentation, fits2caom2_augmentation], test_reporter
     )
     test_subject._observation = input_observation
     for entry in test_set:

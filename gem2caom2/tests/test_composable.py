@@ -287,7 +287,7 @@ def test_run_by_incremental2(
 
 @patch('caom2pipe.client_composable.query_tap_client')
 @patch('gem2caom2.composable.GemClientCollection')
-@patch('gem2caom2.gemini_metadata.retrieve_headers')
+@patch('gem2caom2.pull_augmentation.retrieve_headers')
 @patch('gem2caom2.gemini_metadata.retrieve_json')
 @patch('caom2pipe.execute_composable.OrganizeExecutes.do_one')
 def test_run_by_public(exec_mock, json_mock, header_mock, clients_mock, query_mock):
@@ -328,12 +328,13 @@ def test_run_by_public(exec_mock, json_mock, header_mock, clients_mock, query_mo
     assert test_storage.file_id == test_f_id, 'wrong file_id'
 
 
-@patch('caom2pipe.manage_composable.http_get')
+@patch('gem2caom2.gemini_metadata.retrieve_json')
+@patch('gem2caom2.pull_augmentation.http_get')
 @patch('gem2caom2.svofps.FilterMetadataCache.filter_metadata')
 @patch('gem2caom2.program_metadata.PIMetadata.get')
 @patch('caom2pipe.client_composable.ClientCollection.metadata_client')
 @patch('caom2pipe.client_composable.ClientCollection.data_client')
-@patch('gem2caom2.gemini_metadata.retrieve_headers')
+@patch('gem2caom2.pull_augmentation.retrieve_headers')
 @patch('gem2caom2.data_source.query_endpoint_session')
 @patch('cadcutils.net.ws.WsCapabilities.get_access_url')
 def test_run_by_incremental_reproduce(
@@ -345,6 +346,7 @@ def test_run_by_incremental_reproduce(
     pi_mock,
     svo_mock,
     http_get_mock,
+    json_mock,
     test_config,
     tmp_path,
     change_test_dir,
@@ -364,6 +366,7 @@ def test_run_by_incremental_reproduce(
     meta_client_mock.read.return_value = None
     pi_mock.return_value = {}
     svo_mock.return_value = None
+    json_mock.side_effect = gem_mocks.mock_retrieve_json
 
     def _repo_create_mock(observation):
         plane_count = 0
@@ -401,10 +404,10 @@ def test_run_by_incremental_reproduce(
     composable._run_state()
     assert meta_client_mock.read.called, 'should have been called'
     assert meta_client_mock.read.call_count == 2, f'wrong call count {meta_client_mock.read.call_count}'
-    meta_client_mock.read.assert_called_with('GEMINI', 'GN-CAL20220314-18-090'), 'wrong run args'
+    meta_client_mock.read.assert_called_with('GEMINI', 'test_data_label'), 'wrong run args'
 
 
-@patch('gem2caom2.gemini_metadata.retrieve_headers')
+@patch('gem2caom2.pull_augmentation.retrieve_headers')
 @patch('gem2caom2.gemini_metadata.retrieve_json')
 @patch('gem2caom2.composable.GemClientCollection')
 @patch('gem2caom2.data_source.IncrementalSource.get_time_box_work', autospec=True)
@@ -528,7 +531,7 @@ def test_run_is_valid_fails(cap_mock, summary_mock, test_config, tmp_path):
 
 
 @patch('gem2caom2.composable.GemClientCollection')
-@patch('gem2caom2.gemini_metadata.retrieve_headers')
+@patch('gem2caom2.pull_augmentation.retrieve_headers')
 @patch('gem2caom2.gemini_metadata.retrieve_json')
 @patch('gem2caom2.data_source.query_endpoint_session')
 @patch('caom2pipe.client_composable.query_tap_client')
