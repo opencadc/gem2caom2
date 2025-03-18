@@ -74,6 +74,7 @@ import traceback
 from datetime import datetime, timezone
 from shutil import copyfileobj
 
+from caom2pipe.astro_composable import check_fitsverify
 from caom2pipe.manage_composable import CadcException, http_get, make_datetime
 from caom2utils.data_util import get_local_file_headers
 from gem2caom2.gemini_metadata import retrieve_headers
@@ -164,14 +165,15 @@ class PullVisitor:
                 fqn = f'{fqn}.bz2'
             try:
                 http_get(url, fqn)
-                # PD 10-03-25
-                # decompress before storing, as the bzip2 compression algorithm does not support random access
-                with open(self.decompressed_fqn, 'wb') as f_out, bz2.BZ2File(fqn, 'rb') as f_in:
-                    # use shutil to control memory consumption
-                    copyfileobj(f_in, f_out)
-                self.clients.data_client.put(os.path.dirname(fqn), self.storage_name.file_uri)
-                self.result = {'file': 1}
-                self.logger.info(f'Retrieved {os.path.basename(fqn)} for storage as {self.storage_name.file_name}')
+                if check_fitsverify(fqn):
+                    # PD 10-03-25
+                    # decompress before storing, as the bzip2 compression algorithm does not support random access
+                    with open(self.decompressed_fqn, 'wb') as f_out, bz2.BZ2File(fqn, 'rb') as f_in:
+                        # use shutil to control memory consumption
+                        copyfileobj(f_in, f_out)
+                    self.clients.data_client.put(os.path.dirname(fqn), self.storage_name.file_uri)
+                    self.result = {'file': 1}
+                    self.logger.info(f'Retrieved {os.path.basename(fqn)} for storage as {self.storage_name.file_name}')
             except CadcException as e:
                 # continue metadata ingestion without the file at CADC
                 self.logger.error(e)
