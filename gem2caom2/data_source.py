@@ -250,7 +250,7 @@ class IncrementalSourceDiskfiles(dsc.IncrementalDataSource):
         prev_exec_dt_iso = prev_exec_dt.replace(microsecond=0)
         exec_dt_iso = exec_dt.replace(microsecond=0)
         url = (
-            f'https://archive.gemini.edu/diskfiles/NotFail/notengineering/not_site_monitoring/entrytimedaterange='
+            f'https://archive.gemini.edu/diskfiles/NotFail/notengineering/not_site_monitoring/canonical/entrytimedaterange='
             f'{prev_exec_dt_iso.isoformat()}--{exec_dt_iso.isoformat()}'
         )
 

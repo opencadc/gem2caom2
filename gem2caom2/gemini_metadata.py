@@ -207,7 +207,14 @@ class GeminiMetadataLookup:
         return self._search_json(uri, 'reduction')
 
     def release(self, uri):
-        return self._search_json(uri, 'release')
+        temp = self._search_json(uri, 'release')
+        result = None
+        if temp is not None:
+            if temp.startswith('0001'):
+                # because obs id GN-2008A-Q-39-69-015
+                temp = temp.replace('0001', '2001')
+            result = mc.make_datetime(temp)
+        return result
 
     def spectroscopy(self, uri):
         return self._search_json(uri, 'spectroscopy')
@@ -427,12 +434,6 @@ class GeminiMetaVisitRunnerMeta(MetaVisitRunnerMeta):
         # ask archive.gemini.edu for the information
         for index, source_name in enumerate(self._storage_name.source_names):
             uri = self._storage_name.destination_uris[index]
-            if uri not in self._storage_name.metadata:
-                self._storage_name.metadata[uri] = []
-                if '.fits' in uri:
-                    self._storage_name._metadata[uri] = retrieve_headers(
-                        self._storage_name, index, self._logger, self._clients, self._config
-                    )
             # TODO - is there a time when not needing archive.gemini.edu is possible?
             if uri not in self._storage_name.json_metadata:
                 json_record = retrieve_json(self._storage_name.file_id, self._logger, self._clients.gemini_session)

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+
+
+<link rel="stylesheet" type="text/css" href="/static/table.css">
+
+<title>Detail for Program: GN-2024B-SV-111</title>
+<meta name="description" content="">
+</head>
+<body>
+<h1>Program: GN-2024B-SV-111</h1>
+
+<table>
+ <tr><td>Title:<td>Probing the Gas Content in Young Planetary Systems (GoodWeather)</tr>
+ <tr><td>PI:<td>Cicero Lu</tr>
+ <tr><td>Co-I(s):<td></tr>
+</table>
+<h2>Abstract</h2>
+<div style="max-width: 20cm">
+We plan to observe high S/N (SNR~100-300) IGRINS-2 H and K spectra of  young planetary systems to search for the CO overtone emission (~2.3 microns) and H2 emission. The selected planetary systems span in both their evolutionary stages (from gas-rich protoplanetary disks to gas-poor hybrid disk and debris disk) and stellar types, consequently exhibiting a continuous change in their UV emission features, from strong to weak. More specifically, while 51 Oph has previous epochs of NIR hi-res spectra, we aim to obtain another epoch of data to examine the time variable nature of the CO overtone emission. On the other hand, CO and H2 overtone emission has not been previously searched for in 49 Ceti and AU Mic but HST and JWST data suggest otherwise. Mounting evidence from the JWST NIRSpec low-res spectra has shown CO fundamental emission, pointing to the possibility of CO overtone emission in 49 Ceti and H2 emission or absorption in AU Mic. 
+</div>
+
+
+
+</body>
+</html>

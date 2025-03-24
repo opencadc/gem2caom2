@@ -76,7 +76,7 @@ from astropy.wcs import FITSFixedWarning
 from caom2utils import data_util
 from caom2pipe.manage_composable import CadcException, ExecutionReporter2, read_obs_from_file, TaskType
 from gem2caom2.util import Inst
-from gem2caom2 import fits2caom2_augmentation, gemini_metadata, obs_file_relationship, svofps
+from gem2caom2 import fits2caom2_augmentation, gemini_metadata, obs_file_relationship, pull_augmentation, svofps
 from gem2caom2.gem_name import GemName
 from gem2caom2.program_metadata import MDContext, PIMetadata
 
@@ -115,6 +115,7 @@ def pytest_generate_tests(metafunc):
             Inst.ALOPEKE,
             Inst.ZORRO,
             Inst.IGRINS,
+            Inst.IGRINS2,
             Inst.GHOST,
             Inst.MAROONX,
         ]:
@@ -127,6 +128,7 @@ def pytest_generate_tests(metafunc):
         metafunc.parametrize('test_name', file_list)
 
 
+@patch('gem2caom2.pull_augmentation.PullVisitor.look_pull_and_put')
 @patch('gem2caom2.program_metadata.mc.query_endpoint_session')
 @patch('caom2utils.data_util.get_file_type')
 @patch('gem2caom2.gemini_metadata.retrieve_headers')
@@ -140,6 +142,7 @@ def test_visitor(
     header_mock,
     file_type_mock,
     pi_mock,
+    pull_mock,
     test_name,
     test_config,
     tmp_path,
@@ -194,7 +197,7 @@ def test_visitor(
     pi_metadata = PIMetadata(gemini_session=Mock())
     md_context = MDContext(filter_cache, pi_metadata)
     test_subject = gemini_metadata.GeminiMetaVisitRunnerMeta(
-        clients_mock, test_config, [fits2caom2_augmentation], test_reporter
+        clients_mock, test_config, [pull_augmentation, fits2caom2_augmentation], test_reporter
     )
     storage_name = GemName(test_name, md_context)
     if gem_mocks.LOOKUP[test_file_id][1] == Inst.ZORRO:
@@ -223,6 +226,18 @@ def test_visitor(
 
     assert json_mock.called, 'json mock'
     json_mock.assert_called_with(storage_name.file_id, ANY, ANY), 'json mock args'
+    if storage_name.file_name in [
+        'N20120825S0597_arc.fits',
+        '2007sep15_0001.fits',
+        'TX20131117_flt.3002.fits',
+        'TX20131117_raw.3002.fits',
+        'S20240601S0038_blue001_dragons.fits',
+        'S20240607S0038.fits',
+    ]:
+        # the proprietary files
+        pull_mock.assert_not_called(), 'pull mock not called'
+    else:
+        pull_mock.assert_called_once(), 'pull mock called once'
 
 
 def _get_inst_name(inst):

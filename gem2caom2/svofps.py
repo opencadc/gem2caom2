@@ -275,9 +275,8 @@ class FilterMetadataCache:
         except Exception as e:
             logging.error(e)
             import traceback
-
             tb = traceback.format_exc()
-            logging.error(tb)
+            logging.debug(tb)
 
     def get_filter_metadata(self, instrument, filter_name, telescope):
         """A way to lazily initialize all the filter metadata reads from SVO."""
