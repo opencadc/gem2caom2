@@ -116,7 +116,6 @@ def visit(observation, **kwargs):
         ):
             logging.info(f'Plane {plane.product_id} is proprietary. No preview access or thumbnail creation.')
             continue
-        logging.error(f'plane {plane.product_id} storage_name {storage_name.product_id}')
         if plane.product_id != storage_name.product_id:
             continue
         count += _do_prev(
