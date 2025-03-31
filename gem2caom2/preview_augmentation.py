@@ -70,7 +70,6 @@ import logging
 import traceback
 
 from datetime import datetime, timezone
-from os import access, remove
 from os.path import basename, exists, join
 
 import matplotlib.image as image
@@ -185,7 +184,6 @@ def _retrieve_from_gemini(
         logging.warning(e)
         if observable.rejected.check_and_record(str(e), gem_name.prev):
             _check_for_delete(gem_name.prev, gem_name.prev_uri, observable, plane)
-        raise e
 
 
 def get_representation(clients, storage_name, working_dir, plane, observable):
@@ -207,8 +205,11 @@ def get_representation(clients, storage_name, working_dir, plane, observable):
         else:
             # get the preview from Gemini
             _retrieve_from_gemini(storage_name, observable, plane, preview_fqn)
-            clients.data_client.put(working_dir, storage_name.prev_uri)
-            count += 1
+            if exists(preview_fqn):
+                clients.data_client.put(working_dir, storage_name.prev_uri)
+                count += 1
+            else:
+                return count
 
         # build the thumbnail - include the retry for failure to pull down the preview from Gemini
         try:
@@ -224,9 +225,12 @@ def get_representation(clients, storage_name, working_dir, plane, observable):
                 f'matplotlib error handling {storage_name.prev}.Try to retrieve from {PREVIEW_URL} one more time.'
             )
             _retrieve_from_gemini(storage_name, observable, plane, preview_fqn)
-            clients.data_client.put(working_dir, storage_name.prev_uri)
-            count += 1
-            image.thumbnail(preview_fqn, thumb_fqn, scale=0.25)
+            if exists(preview_fqn):
+                clients.data_client.put(working_dir, storage_name.prev_uri)
+                count += 1
+                image.thumbnail(preview_fqn, thumb_fqn, scale=0.25)
+            else:
+                return count
 
         clients.data_client.put(working_dir, storage_name.thumb_uri)
         count += 1

@@ -136,6 +136,37 @@ def test_preview_augment_known_no_preview(test_data_dir, test_config, tmp_path):
     assert os.path.exists(test_config.rejected_fqn)
 
 
+@patch('gem2caom2.preview_augmentation.mc.http_get')
+@patch('caom2pipe.client_composable.ClientCollection')
+def test_preview_augment_no_preview(clients_mock, http_get_mock, test_data_dir, test_config, tmp_path):
+    # no preview retrievable from GEMINI
+    test_config.change_working_directory(tmp_path.as_posix())
+    http_get_mock.side_effect = mc.CadcException('test')
+    obs = mc.read_obs_from_file(f'{test_data_dir}/visit_obs_start.xml')
+    obs.planes[TEST_PRODUCT_ID].data_release = datetime.now(tz=timezone.utc).replace(tzinfo=None)
+    assert len(obs.planes[TEST_PRODUCT_ID].artifacts) == 1, 'initial condition'
+
+    clients_mock.data_client.info.return_value = None
+
+    test_reporter = mc.ExecutionReporter2(test_config)
+    test_storage_name = gem_name.GemName(file_name='GN2001BQ013-04.fits')
+    kwargs = {
+        'working_directory': tmp_path,
+        'clients': clients_mock,
+        'reporter': test_reporter,
+        'storage_name': test_storage_name,
+    }
+
+    obs = preview_augmentation.visit(obs, **kwargs)
+    assert obs is not None, 'expect a result'
+    assert len(obs.planes[TEST_PRODUCT_ID].artifacts) == 1, 'no new artifacts'
+    assert http_get_mock.called, 'http get call'
+    http_get_mock.assert_called_with(
+        'https://archive.gemini.edu/preview/GN2001BQ013-04.fits', f'{tmp_path}/GN2001BQ013-04.jpg'
+    ), 'http get args'
+    assert not clients_mock.data_client.put.called, 'data client put'
+
+
 @patch('caom2pipe.client_composable.ClientCollection')
 def test_preview_augment_cadc_retrieval_fails(clients_mock, test_data_dir, test_config, tmp_path):
     test_config.change_working_directory(tmp_path)
